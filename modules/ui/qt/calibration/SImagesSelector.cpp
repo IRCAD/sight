@@ -207,8 +207,8 @@ void SImagesSelector::add(core::HiResClock::HiResClockType timestamp)
     image->setOrigin(origin);
     const data::Image::Spacing spacing = {1., 1., 1.};
     image->setSpacing(spacing);
-    image->setWindowWidth(100);
-    image->setWindowCenter(0);
+    image->setWindowWidth({100});
+    image->setWindowCenter({0});
 
     const auto dumpLock = image->dump_lock();
 

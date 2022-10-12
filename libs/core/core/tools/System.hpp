@@ -61,7 +61,7 @@ public:
 
         //------------------------------------------------------------------------------
 
-        [[nodiscard]] inline std::filesystem::path getTemporaryFilePath() const
+        [[nodiscard]] inline const std::filesystem::path& filePath() const
         {
             return m_filePath;
         }

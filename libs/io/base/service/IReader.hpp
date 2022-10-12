@@ -56,7 +56,7 @@ public:
     /// Enum to define a password policy
     enum class DialogPolicy : uint8_t
     {
-        NEVER   = 0,     /// Never use show the dialog
+        NEVER   = 0,     /// Never show the dialog
         ONCE    = 1,     /// Show only once, store the location as long as the service is started
         ALWAYS  = 2,     /// Always show the location dialog
         DEFAULT = NEVER, /// Default behavior if nothing is set

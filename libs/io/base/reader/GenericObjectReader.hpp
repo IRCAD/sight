@@ -37,7 +37,7 @@ namespace sight::io::base::reader
  * 'getConcretObject' Returns m_object casted into DataType.
  */
 template<class DATATYPE>
-class GenericObjectReader : virtual public io::base::reader::IObjectReader
+class GenericObjectReader : public io::base::reader::IObjectReader
 {
 public:
 

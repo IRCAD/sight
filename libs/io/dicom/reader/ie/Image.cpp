@@ -210,19 +210,29 @@ void Image::readVOILUTModule()
     std::vector<std::string> splitedWindowCenters;
     if(!windowCenter.empty())
     {
-        // If there is several window center we only take the first one
         boost::split(splitedWindowCenters, windowCenter, boost::is_any_of("\\"));
-        m_object->setWindowCenter(boost::lexical_cast<double>(splitedWindowCenters[0]));
+        std::vector<double> windowCenters;
+        std::ranges::transform(
+            splitedWindowCenters,
+            std::back_inserter(windowCenters),
+            [](const auto& e){return std::stod(e);});
+
+        m_object->setWindowCenter(windowCenters);
     }
 
     //Image's window width (double)
     std::string windowWidth = io::dicom::helper::DicomDataReader::getTagValue<0x0028, 0x1051>(dataset);
-    std::vector<std::string> splitedWindowWidth;
+    std::vector<std::string> splitedWindowWidths;
     if(!windowWidth.empty())
     {
-        // If there is several window width we only take the first one
-        boost::split(splitedWindowWidth, windowWidth, boost::is_any_of("\\"));
-        m_object->setWindowWidth(boost::lexical_cast<double>(splitedWindowWidth[0]));
+        boost::split(splitedWindowWidths, windowWidth, boost::is_any_of("\\"));
+        std::vector<double> windowWidths;
+        std::ranges::transform(
+            splitedWindowWidths,
+            std::back_inserter(windowWidths),
+            [](const auto& e){return std::stod(e);});
+
+        m_object->setWindowWidth(windowWidths);
     }
 }
 

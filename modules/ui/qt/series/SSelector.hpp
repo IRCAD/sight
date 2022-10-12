@@ -23,7 +23,6 @@
 #pragma once
 
 #include "modules/ui/qt/config.hpp"
-#include "modules/ui/qt/series/Selector.hpp"
 
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
@@ -32,6 +31,7 @@
 #include <data/Vector.hpp>
 
 #include <ui/base/IEditor.hpp>
+#include <ui/qt/series/Selector.hpp>
 
 #include <QAbstractItemView>
 #include <QObject>
@@ -69,7 +69,7 @@ namespace sight::module::ui::qt::series
  * - \b allowedRemove (optional, bool, default=true): allows user to remove series.
  * - \b insertMode (optional, bool, default=false): only allows selection of module::ui::qt::InsertSeries.
  * - \b removeStudyIcon (optional, string, default=""): remove study button icon.
- * - \b removeSerieIcon (optional, string, default=""): remove serie button icon.
+ * - \b removeSerieIcon (optional, string, default=""): remove series button icon.
  * - \b icons (optional): defines the icon to associate for a series.
  *     - \b series (mandatory, string): series name, e.g. {data::ImageSeries, data::ModelSeries, ...}.
  *     - \b icon (mandatory, string): icon path.
@@ -155,16 +155,16 @@ private:
     RemoveSeriesSlotType::sptr m_slotRemoveSeries;
 
     /// Contains the selector widget.
-    QPointer<Selector> m_selectorWidget {nullptr};
+    QPointer<sight::ui::qt::series::Selector> m_selectorWidget {nullptr};
 
     /// Contains the signal emitted when there is a double click on a series.
     SeriesDoubleClickedSignalType::sptr m_sigSeriesDoubleClicked {nullptr};
 
     /// Stores a map containing the specified icons for a series (map\<series classname, icon path\>).
-    Selector::SeriesIconType m_seriesIcons;
+    sight::ui::qt::series::Selector::SeriesIconType m_seriesIcons;
 
     /// Defines if series can be removed.
-    bool m_allowedRemove {true};
+    bool m_removeAllowed {true};
 
     /// Defines the behaviour of the treeview selection mode.
     QAbstractItemView::SelectionMode m_selectionMode {QAbstractItemView::ExtendedSelection};
@@ -175,8 +175,8 @@ private:
     /// Defines the path of the remove study button icon.
     std::filesystem::path m_removeStudyIcon;
 
-    /// Defines the path of the remove serie button icon.
-    std::filesystem::path m_removeSerieIcon;
+    /// Defines the path of the remove series button icon.
+    std::filesystem::path m_removeSeriesIcon;
 
     static constexpr std::string_view s_SERIES_SET = "seriesSet";
     static constexpr std::string_view s_SELECTION  = "selection";

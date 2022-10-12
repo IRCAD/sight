@@ -419,6 +419,19 @@ void SeriesTest::sopClassUIDTest()
 
 //------------------------------------------------------------------------------
 
+void SeriesTest::sopClassNameTest()
+{
+    // This can be found in DICOM PS 3.3 (or gdcmSOPClassUIDToIOD.cxx)
+    static constexpr auto SOPClassUID  = "1.2.840.10008.5.1.4.1.1.2";
+    static constexpr auto SOPClassName = "CT Image Storage";
+
+    auto series = data::Series::New();
+    series->setSOPClassUID(SOPClassUID);
+    CPPUNIT_ASSERT_EQUAL(std::string(SOPClassName), series->getSOPClassName());
+}
+
+//------------------------------------------------------------------------------
+
 void SeriesTest::sopInstanceUIDTest()
 {
     static const std::string sopInstanceUID(UUID::generateUUID());
@@ -440,6 +453,71 @@ void SeriesTest::sopInstanceUIDTest()
 
 //------------------------------------------------------------------------------
 
+void SeriesTest::specificCharacterSetTest()
+{
+    static const std::string specificCharacterSet("ISO 2022\\IR 100");
+
+    {
+        auto series = data::Series::New();
+        series->setSpecificCharacterSet(specificCharacterSet);
+        CPPUNIT_ASSERT_EQUAL(specificCharacterSet, series->getSpecificCharacterSet());
+        CPPUNIT_ASSERT_EQUAL(specificCharacterSet, series->getByteValue(0x0008, 0x0005));
+    }
+
+    {
+        auto series = data::Series::New();
+        series->setByteValue(0x0008, 0x0005, specificCharacterSet);
+        CPPUNIT_ASSERT_EQUAL(specificCharacterSet, series->getSpecificCharacterSet());
+        CPPUNIT_ASSERT_EQUAL(specificCharacterSet, series->getByteValue(0x0008, 0x0005));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::encodingTest()
+{
+    static const std::array<std::pair<std::string, std::string>, 19> CHARACTER_SET {{
+        {"GB18030", "GB18030"},
+        {"GBK", "GBK"},
+        {"ISO 2022\\IR 6", "UTF-8"},
+        {"ISO 2022\\IR 100", "ISO-8859-1"},
+        {"ISO 2022\\IR 101", "ISO-8859-2"},
+        {"ISO 2022\\IR 109", "ISO-8859-3"},
+        {"ISO 2022\\IR 110", "ISO-8859-4"},
+        {"ISO 2022\\IR 144", "ISO-8859-5"},
+        {"ISO 2022\\IR 127", "ISO-8859-6"},
+        {"ISO 2022\\IR 126", "ISO-8859-7"},
+        {"ISO 2022\\IR 138", "ISO-8859-8"},
+        {"ISO 2022\\IR 148", "ISO-8859-9"},
+        {"ISO 2022\\IR 13", "Shift_JIS"},
+        {"ISO 2022\\IR 166", "TIS-620"},
+        {"ISO 2022\\IR 192", "UTF-8"},
+        {"ISO 2022\\IR 87", "ISO-2022-JP-1"},
+        {"ISO 2022\\IR 159", "ISO-2022-JP-2"},
+        {"ISO 2022\\IR 149", "ISO-2022-KR"},
+        {"ISO 2022\\IR 58", "ISO-2022-CN"}
+    }
+    };
+
+    {
+        auto series = data::Series::New();
+
+        for(const auto& character_set : CHARACTER_SET)
+        {
+            series->setSpecificCharacterSet(character_set.first);
+            CPPUNIT_ASSERT_EQUAL(character_set.second, series->getEncoding());
+        }
+    }
+
+    {
+        // By default, UTF-8 should be used...
+        auto series = data::Series::New();
+        CPPUNIT_ASSERT_EQUAL(std::string("UTF-8"), series->getEncoding());
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SeriesTest::seriesDateTest()
 {
     static const std::string seriesDate("20180201");
@@ -456,12 +534,6 @@ void SeriesTest::seriesDateTest()
         series->setByteValue(0x0008, 0x0021, seriesDate);
         CPPUNIT_ASSERT_EQUAL(seriesDate, series->getSeriesDate());
         CPPUNIT_ASSERT_EQUAL(seriesDate, series->getByteValue(0x0008, 0x0021));
-
-        // Invalid data (too big)
-        CPPUNIT_ASSERT_THROW(
-            series->setByteValue(0x0008, 0x0021, seriesDate + seriesDate),
-            sight::data::Exception
-        );
     }
 }
 
@@ -483,12 +555,6 @@ void SeriesTest::seriesTimeTest()
         series->setByteValue(0x0008, 0x0031, seriesTime);
         CPPUNIT_ASSERT_EQUAL(seriesTime, series->getSeriesTime());
         CPPUNIT_ASSERT_EQUAL(seriesTime, series->getByteValue(0x0008, 0x0031));
-
-        // Invalid data (too big)
-        CPPUNIT_ASSERT_THROW(
-            series->setByteValue(0x0008, 0x0031, seriesTime + seriesTime),
-            sight::data::Exception
-        );
     }
 }
 
@@ -510,12 +576,6 @@ void SeriesTest::modalityTest()
         series->setByteValue(0x0008, 0x0060, modality);
         CPPUNIT_ASSERT_EQUAL(modality, series->getModality());
         CPPUNIT_ASSERT_EQUAL(modality, series->getByteValue(0x0008, 0x0060));
-
-        // Invalid data (too big)
-        CPPUNIT_ASSERT_THROW(
-            series->setByteValue(0x0008, 0x0060, modality + UUID::generateUUID()),
-            sight::data::Exception
-        );
     }
 }
 
@@ -1252,6 +1312,69 @@ void SeriesTest::acquisitionTimeTest()
 
 //------------------------------------------------------------------------------
 
+void SeriesTest::acquisitionNumberTest()
+{
+    static const std::int32_t acquisitionNumber = 0x00200012;
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setAcquisitionNumber(acquisitionNumber);
+        CPPUNIT_ASSERT_EQUAL(acquisitionNumber, series->getAcquisitionNumber().value_or(0));
+        CPPUNIT_ASSERT_EQUAL(std::to_string(acquisitionNumber), series->getByteValue(0x0020, 0x0012));
+    }
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setByteValue(0x0020, 0x0012, std::to_string(acquisitionNumber));
+        CPPUNIT_ASSERT_EQUAL(acquisitionNumber, series->getAcquisitionNumber().value_or(0));
+        CPPUNIT_ASSERT_EQUAL(std::to_string(acquisitionNumber), series->getByteValue(0x0020, 0x0012));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::instanceNumberTest()
+{
+    static const std::int32_t instanceNumber = 0x00200013;
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setInstanceNumber(instanceNumber);
+        CPPUNIT_ASSERT_EQUAL(instanceNumber, series->getInstanceNumber().value_or(0));
+        CPPUNIT_ASSERT_EQUAL(std::to_string(instanceNumber), series->getByteValue(0x0020, 0x0013));
+    }
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setByteValue(0x0020, 0x0013, std::to_string(instanceNumber));
+        CPPUNIT_ASSERT_EQUAL(instanceNumber, series->getInstanceNumber().value_or(0));
+        CPPUNIT_ASSERT_EQUAL(std::to_string(instanceNumber), series->getByteValue(0x0020, 0x0013));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::contentTimeTest()
+{
+    static const std::string contentTime("224513.123456");
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setContentTime(contentTime);
+        CPPUNIT_ASSERT_EQUAL(contentTime, series->getContentTime());
+        CPPUNIT_ASSERT_EQUAL(contentTime, series->getByteValue(0x0008, 0x0033));
+    }
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setByteValue(0x0008, 0x0033, contentTime);
+        CPPUNIT_ASSERT_EQUAL(contentTime, series->getContentTime());
+        CPPUNIT_ASSERT_EQUAL(contentTime, series->getByteValue(0x0008, 0x0033));
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SeriesTest::contrastBolusAgentTest()
 {
     static const std::string contrastBolusAgent(UUID::generateUUID());
@@ -1582,6 +1705,208 @@ void SeriesTest::contrastBolusIngredientConcentrationTest()
 
         CPPUNIT_ASSERT(!series->getContrastBolusIngredientConcentration());
         CPPUNIT_ASSERT_EQUAL(std::string(), series->getByteValue(0x0018, 0x1049));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::rowsTest()
+{
+    static const std::uint16_t rows = 256;
+    static const std::string rows_bytes(reinterpret_cast<const char*>(&rows), sizeof(rows));
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setRows(rows);
+        CPPUNIT_ASSERT_EQUAL(rows, series->getRows().value_or(0));
+        CPPUNIT_ASSERT_EQUAL(rows_bytes, series->getByteValue(0x0028, 0x0010));
+    }
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setByteValue(0x0028, 0x0010, rows_bytes);
+        CPPUNIT_ASSERT_EQUAL(rows, series->getRows().value_or(0));
+        CPPUNIT_ASSERT_EQUAL(rows_bytes, series->getByteValue(0x0028, 0x0010));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::columnsTest()
+{
+    static const std::uint16_t columns = 256;
+    static const std::string columns_bytes(reinterpret_cast<const char*>(&columns), sizeof(columns));
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setColumns(columns);
+        CPPUNIT_ASSERT_EQUAL(columns, series->getColumns().value_or(0));
+        CPPUNIT_ASSERT_EQUAL(columns_bytes, series->getByteValue(0x0028, 0x0011));
+    }
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setByteValue(0x0028, 0x0011, columns_bytes);
+        CPPUNIT_ASSERT_EQUAL(columns, series->getColumns().value_or(0));
+        CPPUNIT_ASSERT_EQUAL(columns_bytes, series->getByteValue(0x0028, 0x0011));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::windowCenterTest()
+{
+    static const double center = 333.33;
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setWindowCenter({center});
+        CPPUNIT_ASSERT_EQUAL(center, series->getWindowCenter().front());
+        CPPUNIT_ASSERT_EQUAL(center, std::stod(series->getByteValue(0x0028, 0x1050)));
+    }
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setByteValue(0x0028, 0x1050, std::to_string(center));
+        CPPUNIT_ASSERT_EQUAL(center, series->getWindowCenter().front());
+        CPPUNIT_ASSERT_EQUAL(center, std::stod(series->getByteValue(0x0028, 0x1050)));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::windowWidthTest()
+{
+    static const double width = 666.66;
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setWindowWidth({width});
+        CPPUNIT_ASSERT_EQUAL(width, series->getWindowWidth().front());
+        CPPUNIT_ASSERT_EQUAL(width, std::stod(series->getByteValue(0x0028, 0x1051)));
+    }
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setByteValue(0x0028, 0x1051, std::to_string(width));
+        CPPUNIT_ASSERT_EQUAL(width, series->getWindowWidth().front());
+        CPPUNIT_ASSERT_EQUAL(width, std::stod(series->getByteValue(0x0028, 0x1051)));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::imagePositionPatientTest()
+{
+    static const std::vector<double> position {111.111, 222.222, 333.333};
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setImagePositionPatient(position);
+        CPPUNIT_ASSERT(position == series->getImagePositionPatient());
+
+        const auto values = series->getByteValues(0x0020, 0x0032);
+        const std::vector<double> actual {
+            std::stod(values[0]),
+            std::stod(values[1]),
+            std::stod(values[2])
+        };
+
+        CPPUNIT_ASSERT(position == actual);
+    }
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setByteValues(
+            0x0020,
+            0x0032,
+            {
+                std::to_string(position[0]),
+                std::to_string(position[1]),
+                std::to_string(position[2])
+            });
+
+        CPPUNIT_ASSERT(position == series->getImagePositionPatient());
+
+        const auto values = series->getByteValues(0x0020, 0x0032);
+        const std::vector<double> actual {
+            std::stod(values[0]),
+            std::stod(values[1]),
+            std::stod(values[2])
+        };
+
+        CPPUNIT_ASSERT(position == actual);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::imageOrientationPatientTest()
+{
+    static const std::vector<double> orientation {111.111, 222.222, 333.333, 444.444, 555.555, 666.666};
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setImageOrientationPatient(orientation);
+        CPPUNIT_ASSERT(orientation == series->getImageOrientationPatient());
+
+        const auto values = series->getByteValues(0x0020, 0x0037);
+        const std::vector<double> actual {
+            std::stod(values[0]),
+            std::stod(values[1]),
+            std::stod(values[2]),
+            std::stod(values[3]),
+            std::stod(values[4]),
+            std::stod(values[5])
+        };
+
+        CPPUNIT_ASSERT(orientation == actual);
+    }
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setByteValues(
+            0x0020,
+            0x0037,
+            {
+                std::to_string(orientation[0]),
+                std::to_string(orientation[1]),
+                std::to_string(orientation[2]),
+                std::to_string(orientation[3]),
+                std::to_string(orientation[4]),
+                std::to_string(orientation[5])
+            });
+
+        CPPUNIT_ASSERT(orientation == series->getImageOrientationPatient());
+
+        const auto values = series->getByteValues(0x0020, 0x0037);
+        const std::vector<double> actual {
+            std::stod(values[0]),
+            std::stod(values[1]),
+            std::stod(values[2]),
+            std::stod(values[3]),
+            std::stod(values[4]),
+            std::stod(values[5])
+        };
+
+        CPPUNIT_ASSERT(orientation == actual);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::stringConversionTest()
+{
+    // Test binary to string and string to binary conversion for binary attributes
+
+    // Unsigned Short (US)
+    {
+        static const uint16_t rows = 666;
+        auto series                = data::ImageSeries::New();
+
+        // Rows - "666" string (4) is bigger than short size (2)
+        series->setStringValue(0x0018, 0x1049, std::to_string(rows));
+        CPPUNIT_ASSERT_EQUAL(std::to_string(rows), series->getStringValue(0x0018, 0x1049));
     }
 }
 

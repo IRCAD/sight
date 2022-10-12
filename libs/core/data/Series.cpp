@@ -19,464 +19,36 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-
 #include "data/ImageSeries.hpp"
-#include "data/Series.hpp"
+#include "data/ModelSeries.hpp"
 
+#include "data/detail/SeriesImpl.hpp"
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/join.hpp>
-#include <boost/algorithm/string/split.hpp>
+#include <glm/glm.hpp>
 
-#include <gdcmDataSet.h>
-#include <gdcmTagKeywords.h>
-#include <gdcmTagToVR.h>
+#include <chrono>
+#include <utility>
 
 SIGHT_REGISTER_DATA(sight::data::Series)
 
 namespace sight::data
 {
 
-static constexpr char SPACE_PADDING_CHAR  = ' ';
-static constexpr char NULL_PADDING_CHAR   = '\0';
-static constexpr auto BACKSLASH_SEPARATOR = "\\";
-
-/// Returns the maximum or fixed size of a Value Representation and its padding character.
-/// @note the data come from https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
-/// @param[in] vr_type The Value Representation to get the size of.
-static constexpr std::tuple<std::size_t, bool, char> getVRFormat(gdcm::VR::VRType vr_type)
+/// helper function to get the value of a tag as a string like "(0020,0011)", which can be searched on the internet.
+inline static std::string tagToString(const gdcm::Tag& tag)
 {
-    switch(vr_type)
-    {
-        case gdcm::VR::AE:
-            return {16LL, false, NULL_PADDING_CHAR};
+    std::stringstream ss;
+    ss << "("
+    << std::hex << std::setfill('0') << std::setw(4) << tag.GetGroup() << ","
+    << std::hex << std::setfill('0') << std::setw(4) << tag.GetElement() << ")";
 
-        case gdcm::VR::AS:
-        case gdcm::VR::AT:
-            return {4LL, true, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::CS:
-            return {16LL, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::DA:
-            return {8LL, true, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::DS:
-            return {16LL, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::DT:
-            return {26LL, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::FL:
-            return {4LL, true, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::FD:
-            return {8LL, true, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::IS:
-            return {12LL, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::LO:
-            return {64LL, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::LT:
-            return {10240LL, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::OB:
-            return {(1LL << 32) - 2, false, NULL_PADDING_CHAR};
-
-        case gdcm::VR::OD:
-            return {(1LL << 32) - 8, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::OF:
-        case gdcm::VR::OL:
-            return {(1LL << 32) - 4, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::OV:
-            return {(1LL << 32) - 8, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::OW:
-            return {(1LL << 32) - 2, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::PN:
-            return {64 * 5LL, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::SH:
-            return {16LL, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::SL:
-            return {4LL, true, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::SQ:
-            return {0LL, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::SS:
-            return {2LL, true, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::ST:
-            return {1024LL, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::SV:
-            return {8LL, true, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::TM:
-            return {14LL, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::UC:
-        case gdcm::VR::UN:
-        case gdcm::VR::UR:
-        case gdcm::VR::UT:
-            return {(1LL << 32) - 2, false, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::UI:
-            return {64LL, false, NULL_PADDING_CHAR};
-
-        case gdcm::VR::UL:
-            return {4LL, true, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::US:
-            return {2LL, true, SPACE_PADDING_CHAR};
-
-        case gdcm::VR::UV:
-            return {8LL, true, SPACE_PADDING_CHAR};
-
-        default:
-            return {(1LL << 32) - 2, false, SPACE_PADDING_CHAR};
-    }
+    return ss.str();
 }
-
-/// Returns a string from a number to be stored in a Integer String or Decimal String. The precision is set
-/// coordinately to the VR.
-/// @param value The value to be converted.
-/// @param vr_type The Value Representation of the value.
-/// @return The string representation of the value.
-template<typename V>
-static inline std::string toString(const V& value, gdcm::VR::VRType vr_type)
-{
-    const auto [size, fixed, padding] = getVRFormat(vr_type);
-
-    std::ostringstream oss;
-
-    if(fixed)
-    {
-        oss << std::setprecision(int(size) - 1) << std::showpoint << std::fixed << value;
-    }
-    else
-    {
-        oss << std::setprecision(int(size) - 1) << std::noshowpoint << std::defaultfloat << value;
-    }
-
-    return oss.str();
-}
-
-/// Remove the trailing padding \0 characters from a string.
-/// @param[in] source The string to be trimmed.
-/// @return The trimmed string.
-static inline std::string shrink(const std::string& source)
-{
-    std::string result(source);
-    result.erase(result.find_last_not_of(NULL_PADDING_CHAR) + 1);
-    return result;
-}
-
-/// Private Series implementation
-class Series::SeriesImpl final
-{
-public:
-
-    /// Delete default constructors and assignment operators
-    /// @{
-    SeriesImpl(const SeriesImpl&)            = delete;
-    SeriesImpl(SeriesImpl&&)                 = delete;
-    SeriesImpl& operator=(const SeriesImpl&) = delete;
-    SeriesImpl& operator=(SeriesImpl&&)      = delete;
-    /// @}
-
-    /// Constructor
-    inline explicit SeriesImpl(Series* const series) noexcept :
-        m_series(series)
-    {
-    }
-
-    /// Default destructor
-    inline ~SeriesImpl() noexcept = default;
-
-    /// Retrieve a DICOM tag value. If the tag is not found, an null optional is returned.
-    template<typename A>
-    [[nodiscard]] constexpr std::optional<typename A::ArrayType> getValue() const noexcept
-    {
-        // Unfortunately with GDCM, all non pure string attributes (Integer String, Decimal String, ...) will always
-        // be found with a random value, despite the underlying string is "". For example, if the attribute
-        // "SeriesNumber" is a "" string, gdcm::Attribute<NULL_CHAR20, NULL_CHAR11>::GetNumberOfValues() will return 1
-        // (as 1 is anyway the minimum multiplicity), but with a random integer/decimal value, and there is no way to
-        // know if the value is "" (which is valid, it means "unknown") or not.
-        //
-        // Therefore, we need to access to the underlying data to know if the attribute is empty or not, which is not
-        // very efficient or elegant.
-        if(m_dataset.FindDataElement(A::GetTag()))
-        {
-            if(const auto& data_element = m_dataset.GetDataElement(A::GetTag()); !data_element.IsEmpty())
-            {
-                if(const auto& byte_value = data_element.GetByteValue();
-                   byte_value != nullptr && byte_value->GetPointer() != nullptr && byte_value->GetLength() > 0)
-                {
-                    // Now, we know that we have a non empty value, so we can safely return it.
-                    A attribute {};
-
-                    attribute.SetFromDataSet(m_dataset);
-                    return attribute.GetValue();
-                }
-            }
-        }
-
-        return std::nullopt;
-    }
-
-    /// Retrieve a string DICOM tag value. If the tag is not found, an empty string is returned.
-    template<typename A>
-    [[nodiscard]] inline std::string getStringValue() const noexcept
-    {
-        const auto& value = getValue<A>();
-
-        if(value)
-        {
-            if constexpr(std::is_base_of_v<std::string, typename A::ArrayType>)
-            {
-                // Use trimmed string, as we don't care about DICOM string padding with space
-                return shrink(value->Trim());
-            }
-            else
-            {
-                // Convert the value to a string
-                return toString(*value, A::GetVR());
-            }
-        }
-
-        // Returns an empty string if the value is not found
-        return {};
-    }
-
-    /// Retrieve multi-value DICOM tag. If the tag is not found, an empty vector is returned.
-    template<typename A>
-    [[nodiscard]] constexpr std::vector<typename A::ArrayType> getValues() const noexcept
-    {
-        A attribute;
-        attribute.SetFromDataSet(m_dataset);
-
-        const auto count = attribute.GetNumberOfValues();
-
-        if(count > 0)
-        {
-            auto values_pointer = attribute.GetValues();
-
-            // Pointer can be treated as iterator ;)
-            return std::vector<typename A::ArrayType>(
-                values_pointer,
-                values_pointer + count
-            );
-        }
-
-        return std::vector<typename A::ArrayType>();
-    }
-
-    /// Retrieve multi-value DICOM tag as a single joined string. Use '\' as separator.
-    template<typename A>
-    [[nodiscard]] inline std::string getJoinedValues() const noexcept
-    {
-        return boost::join(getStringValues<A>(), BACKSLASH_SEPARATOR);
-    }
-
-    /// Retrieve a multi-value string DICOM tag. If the tag is not found, an empty vector is returned.
-    template<typename A>
-    [[nodiscard]] inline std::vector<std::string> getStringValues() const noexcept
-    {
-        A attribute;
-        attribute.SetFromDataSet(m_dataset);
-
-        const auto values = attribute.GetValues();
-
-        std::vector<std::string> vector;
-
-        for(std::size_t i = 0 ; i < attribute.GetNumberOfValues() ; ++i)
-        {
-            if constexpr(std::is_base_of_v<std::string, typename A::ArrayType>)
-            {
-                // Use trimmed string, as we don't care about DICOM string padding with space
-                vector.push_back(shrink(values[i].Trim()));
-            }
-            else
-            {
-                vector.push_back(toString(values[i], A::GetVR()));
-            }
-        }
-
-        return vector;
-    }
-
-    /// Set a DICOM tag value. If the value is null, the tag is replaced by and empty element.
-    template<typename A>
-    constexpr void setValue(const std::optional<typename A::ArrayType>& value)
-    {
-        if(value)
-        {
-            A attribute {};
-            attribute.SetValue(*value);
-            m_dataset.Replace(attribute.GetAsDataElement());
-        }
-        else
-        {
-            // We need to put an "empty" value. Since GDCM doesn't allow us to do it with non string values, we need to
-            // hack the system. Sorry GDCM, but an Integer String definitively could be "unknown" and an empty string
-            // **IS** valid..
-            m_dataset.Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
-        }
-    }
-
-    /// Set a string DICOM tag value. If the value is null, the tag is replaced by and empty element.
-    template<typename A>
-    constexpr void setStringValue(const std::string& value)
-    {
-        if(value.empty())
-        {
-            // Force a real emtpy value..
-            m_dataset.Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
-        }
-        else
-        {
-            A attribute;
-
-            if constexpr(std::is_floating_point_v<typename A::ArrayType>)
-            {
-                attribute.SetValue(A::ArrayType(std::stod(value)));
-            }
-            else if constexpr(std::is_integral_v<typename A::ArrayType>)
-            {
-                // cspell: ignore stoll
-                attribute.SetValue(A::ArrayType(std::stoll(value)));
-            }
-            else
-            {
-                // Maybe it works...
-                attribute.SetValue(value);
-            }
-
-            m_dataset.Replace(attribute.GetAsDataElement());
-        }
-    }
-
-    /// Set a multi-value DICOM tag. If the vector is empty, the tag is replaced by and empty element.
-    template<typename A>
-    constexpr void setValues(const std::vector<typename A::ArrayType>& values)
-    {
-        if(values.empty())
-        {
-            // Force a real emtpy value..
-            m_dataset.Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
-        }
-        else
-        {
-            A attribute;
-            attribute.SetValues(values.data(), std::uint32_t(values.size()), true);
-            m_dataset.Replace(attribute.GetAsDataElement());
-        }
-    }
-
-    /// Set a multi-value DICOM tag from a single string. Use '\' as separator.
-    template<typename A>
-    inline void setJoinedValues(const std::string& values)
-    {
-        // Split the original string
-        std::vector<std::string> split;
-        boost::split(split, values, boost::is_any_of(BACKSLASH_SEPARATOR));
-
-        setStringValues<A>(split);
-    }
-
-    /// Set a string multi-value DICOM tag. If the vector is empty, the tag is replaced by and empty element.
-    template<typename A>
-    constexpr void setStringValues(const std::vector<std::string>& values)
-    {
-        if(!values.empty())
-        {
-            std::vector<typename A::ArrayType> array;
-            array.reserve(values.size());
-
-            for(const auto& value : values)
-            {
-                /// Yes this could happen, which means empty attribute
-                if(!value.empty())
-                {
-                    if constexpr(std::is_floating_point_v<typename A::ArrayType>)
-                    {
-                        array.push_back(typename A::ArrayType(std::stod(value)));
-                    }
-                    else if constexpr(std::is_integral_v<typename A::ArrayType>)
-                    {
-                        // cspell: ignore stoll
-                        array.push_back(typename A::ArrayType(std::stoll(value)));
-                    }
-                    else
-                    {
-                        // Maybe it works...
-                        array.push_back(value);
-                    }
-                }
-            }
-
-            if(!array.empty())
-            {
-                A attribute;
-                attribute.SetValues(array.data(), std::uint32_t(array.size()), true);
-                m_dataset.Replace(attribute.GetAsDataElement());
-
-                // Exit here...
-                return;
-            }
-        }
-
-        // Default: force a real emtpy value..
-        m_dataset.Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
-    }
-
-    //------------------------------------------------------------------------------
-
-    template<typename A>
-    inline void copyElement(const gdcm::DataSet& source)
-    {
-        copyElement(source, A::GetTag());
-    }
-
-    //------------------------------------------------------------------------------
-
-    inline void copyElement(const gdcm::DataSet& source, const gdcm::Tag& tag)
-    {
-        if(source.FindDataElement(tag))
-        {
-            // Make an explicit copy
-            // NOLINTNEXTLINE(performance-unnecessary-copy-initialization)
-            gdcm::DataElement data_element(source.GetDataElement(tag));
-
-            // Replace the element with the copy
-            m_dataset.Replace(data_element);
-        }
-        else
-        {
-            // Tag not found, remove it
-            m_dataset.Remove(tag);
-        }
-    }
-
-    /// Pointer to the public class
-    Series* const m_series {nullptr};
-
-    /// Dicom data set instance
-    gdcm::DataSet m_dataset;
-};
 
 Series::Series(Object::Key /*unused*/) :
-    m_pimpl(std::make_unique<SeriesImpl>(this))
+    m_pimpl(std::make_unique<detail::SeriesImpl>(this))
 {
 }
 
@@ -496,7 +68,7 @@ void Series::shallowCopy(const Object::csptr& source)
         !bool(other)
     );
 
-    m_pimpl->m_dataset = other->m_pimpl->m_dataset;
+    m_pimpl->m_frame_datasets = other->m_pimpl->m_frame_datasets;
 
     BaseClass::shallowCopy(source);
 }
@@ -514,7 +86,7 @@ void Series::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCop
         !bool(other)
     );
 
-    m_pimpl->m_dataset = other->m_pimpl->m_dataset;
+    m_pimpl->m_frame_datasets = other->m_pimpl->m_frame_datasets;
 
     BaseClass::deepCopy(source, cache);
 }
@@ -526,7 +98,7 @@ void Series::copyPatientModule(const Series::csptr& source)
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->m_pimpl->m_dataset;
+    const auto& source_dataset = source->getDataSet();
     m_pimpl->copyElement<gdcm::Keywords::PatientName>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::PatientID>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::IssuerOfPatientID>(source_dataset);
@@ -561,7 +133,7 @@ void Series::copyClinicalTrialSubjectModule(const Series::csptr& source)
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->m_pimpl->m_dataset;
+    const auto& source_dataset = source->getDataSet();
     m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSponsorName>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialProtocolID>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialProtocolName>(source_dataset);
@@ -580,7 +152,7 @@ void Series::copyGeneralStudyModule(const Series::csptr& source)
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->m_pimpl->m_dataset;
+    const auto& source_dataset = source->getDataSet();
     m_pimpl->copyElement<gdcm::Keywords::StudyInstanceUID>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::StudyDate>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::StudyTime>(source_dataset);
@@ -607,7 +179,7 @@ void Series::copyPatientStudyModule(const Series::csptr& source)
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->m_pimpl->m_dataset;
+    const auto& source_dataset = source->getDataSet();
     m_pimpl->copyElement<gdcm::Keywords::AdmittingDiagnosesDescription>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::AdmittingDiagnosesCodeSequence>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::PatientAge>(source_dataset);
@@ -631,7 +203,7 @@ void Series::copyClinicalTrialStudyModule(const Series::csptr& source)
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->m_pimpl->m_dataset;
+    const auto& source_dataset = source->getDataSet();
     m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialTimePointID>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialTimePointDescription>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::ConsentForClinicalTrialUseSequence>(source_dataset);
@@ -644,7 +216,7 @@ void Series::copyGeneralSeriesModule(const Series::csptr& source)
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->m_pimpl->m_dataset;
+    const auto& source_dataset = source->getDataSet();
     m_pimpl->copyElement<gdcm::Keywords::Modality>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::SeriesInstanceUID>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::SeriesNumber>(source_dataset);
@@ -685,7 +257,7 @@ void Series::copyClinicalTrialSeriesModule(const Series::csptr& source)
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->m_pimpl->m_dataset;
+    const auto& source_dataset = source->getDataSet();
     m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialCoordinatingCenterName>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSeriesID>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSeriesDescription>(source_dataset);
@@ -698,7 +270,7 @@ void Series::copyGeneralEquipmentModule(const Series::csptr& source)
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->m_pimpl->m_dataset;
+    const auto& source_dataset = source->getDataSet();
     m_pimpl->copyElement<gdcm::Keywords::Manufacturer>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::InstitutionName>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::InstitutionAddress>(source_dataset);
@@ -723,7 +295,7 @@ void Series::copyFrameOfReferenceModule(const Series::csptr& source)
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->m_pimpl->m_dataset;
+    const auto& source_dataset = source->getDataSet();
     m_pimpl->copyElement<gdcm::Keywords::FrameOfReferenceUID>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::PositionReferenceIndicator>(source_dataset);
 }
@@ -735,7 +307,7 @@ void Series::copySOPCommonModule(const Series::csptr& source)
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->m_pimpl->m_dataset;
+    const auto& source_dataset = source->getDataSet();
     m_pimpl->copyElement<gdcm::Keywords::SOPClassUID>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::SOPInstanceUID>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::SpecificCharacterSet>(source_dataset);
@@ -767,7 +339,7 @@ void Series::copyGeneralImageModule(const Series::csptr& source)
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->m_pimpl->m_dataset;
+    const auto& source_dataset = source->getDataSet();
     m_pimpl->copyElement<gdcm::Keywords::InstanceNumber>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::PatientOrientation>(source_dataset);
     m_pimpl->copyElement<gdcm::Keywords::ContentDate>(source_dataset);
@@ -800,9 +372,19 @@ void Series::copyGeneralImageModule(const Series::csptr& source)
 
 bool Series::operator==(const Series& other) const noexcept
 {
-    if(m_pimpl->m_dataset.GetDES() != other.m_pimpl->m_dataset.GetDES())
+    // Check number of frames
+    if(m_pimpl->m_frame_datasets.size() != other.m_pimpl->m_frame_datasets.size())
     {
         return false;
+    }
+
+    // Check frames specific attributes
+    for(std::size_t i = 0, end = m_pimpl->m_frame_datasets.size() ; i < end ; ++i)
+    {
+        if(m_pimpl->m_frame_datasets[i].first.GetDES() != other.m_pimpl->m_frame_datasets[i].first.GetDES())
+        {
+            return false;
+        }
     }
 
     // Super class last
@@ -818,17 +400,19 @@ bool Series::operator!=(const Series& other) const noexcept
 
 //-----------------------------------------------------------------------------
 
-std::string Series::getByteValue(std::uint16_t group, std::uint16_t element) const noexcept
+std::string Series::getByteValue(std::uint16_t group, std::uint16_t element, std::size_t instance) const
 {
+    const auto& dataset = m_pimpl->getDataSet(instance);
     gdcm::Tag tag(group, element);
-    if(m_pimpl->m_dataset.FindDataElement(tag))
+
+    if(dataset.FindDataElement(tag))
     {
-        if(const auto& data_element = m_pimpl->m_dataset.GetDataElement(tag); !data_element.IsEmpty())
+        if(const auto& data_element = dataset.GetDataElement(tag); !data_element.IsEmpty())
         {
-            if(const auto& byte_value = data_element.GetByteValue();
+            if(const auto* byte_value = data_element.GetByteValue();
                byte_value != nullptr && byte_value->GetPointer() != nullptr)
             {
-                return shrink(gdcm::String<>(byte_value->GetPointer(), byte_value->GetLength()).Trim());
+                return detail::shrink(gdcm::String<>(byte_value->GetPointer(), byte_value->GetLength()).Trim());
             }
         }
     }
@@ -838,25 +422,14 @@ std::string Series::getByteValue(std::uint16_t group, std::uint16_t element) con
 
 //------------------------------------------------------------------------------
 
-void Series::setByteValue(std::uint16_t group, std::uint16_t element, const std::string& value)
+void Series::setByteValue(std::uint16_t group, std::uint16_t element, const std::string& value, std::size_t instance)
 {
     // Get the VR
     const gdcm::Tag tag(group, element);
     const gdcm::VR vr(gdcm::GetVRFromTag(tag));
 
-    // Ensure the string is valid.
-    const auto [size, fixed, padding] = getVRFormat(vr);
-
-    SIGHT_THROW_EXCEPTION_IF(
-        Exception(
-            "The length of the value '"
-            + value
-            + "' is incorrect: "
-            + std::to_string(value.size())
-            + (fixed ? " != " : " > ") + std::to_string(size)
-        ),
-        (fixed && value.size() != size) || (!fixed && value.size() > size)
-    );
+    // Get the padding char.
+    const auto [size, fixed, padding] = detail::getVRFormat(vr);
 
     const auto& padded =
         [&](char padding_char)
@@ -877,48 +450,213 @@ void Series::setByteValue(std::uint16_t group, std::uint16_t element, const std:
     data_element.SetByteValue(padded.c_str(), std::uint32_t(padded.size()));
 
     // Store back the data element to the data set
-    m_pimpl->m_dataset.Replace(data_element);
+    m_pimpl->getDataSet(instance).Replace(data_element);
 }
 
 //------------------------------------------------------------------------------
 
-std::vector<std::string> Series::getByteValues(std::uint16_t group, std::uint16_t element) const noexcept
+void Series::setStringValue(std::uint16_t group, std::uint16_t element, const std::string& value, std::size_t instance)
+{
+    // cspell:ignore stoull
+    // Get the VR
+    const gdcm::Tag tag(group, element);
+    const gdcm::VR vr(gdcm::GetVRFromTag(tag));
+
+    // Nothing to do if the VR is an ASCII one
+    if(gdcm::VR::IsASCII(vr))
+    {
+        setByteValue(group, element, value, instance);
+    }
+    else if(vr == gdcm::VR::FL)
+    {
+        m_pimpl->setArithmeticValue(tag, vr, std::stof(value), instance);
+    }
+    else if(vr == gdcm::VR::FD)
+    {
+        m_pimpl->setArithmeticValue(tag, vr, std::stod(value), instance);
+    }
+    else if(vr == gdcm::VR::US)
+    {
+        m_pimpl->setArithmeticValue(tag, vr, static_cast<uint16_t>(std::stoul(value)), instance);
+    }
+    else if(vr == gdcm::VR::UL)
+    {
+        m_pimpl->setArithmeticValue(tag, vr, static_cast<uint32_t>(std::stoul(value)), instance);
+    }
+    else if(vr == gdcm::VR::UV)
+    {
+        m_pimpl->setArithmeticValue(tag, vr, std::stoull(value), instance);
+    }
+    else if(vr == gdcm::VR::SS)
+    {
+        m_pimpl->setArithmeticValue(tag, vr, static_cast<int16_t>(std::stol(value)), instance);
+    }
+    else if(vr == gdcm::VR::SL)
+    {
+        m_pimpl->setArithmeticValue(tag, vr, static_cast<int32_t>(std::stol(value)), instance);
+    }
+    else if(vr == gdcm::VR::SV)
+    {
+        // cspell:ignore stoll
+        m_pimpl->setArithmeticValue(tag, vr, std::stoll(value), instance);
+    }
+    else
+    {
+        SIGHT_THROW_EXCEPTION(Exception("The value at " + tagToString(tag) + " cannot be converted from a string."));
+    }
+}
+
+//------------------------------------------------------------------------------
+
+std::string Series::getStringValue(std::uint16_t group, std::uint16_t element, std::size_t instance) const
+{
+    // Get the VR
+    const gdcm::Tag tag(group, element);
+    const gdcm::VR vr(gdcm::GetVRFromTag(tag));
+
+    // Nothing to do if the VR is an ASCII one
+    if(gdcm::VR::IsASCII(vr))
+    {
+        return getByteValue(group, element, instance);
+    }
+
+    if(vr == gdcm::VR::FL)
+    {
+        return m_pimpl->getArithmeticValue<float>(tag, instance);
+    }
+
+    if(vr == gdcm::VR::FD)
+    {
+        return m_pimpl->getArithmeticValue<double>(tag, instance);
+    }
+
+    if(vr == gdcm::VR::US)
+    {
+        return m_pimpl->getArithmeticValue<std::uint16_t>(tag, instance);
+    }
+
+    if(vr == gdcm::VR::UL)
+    {
+        return m_pimpl->getArithmeticValue<std::uint32_t>(tag, instance);
+    }
+
+    if(vr == gdcm::VR::UV)
+    {
+        return m_pimpl->getArithmeticValue<std::uint64_t>(tag, instance);
+    }
+
+    if(vr == gdcm::VR::SS)
+    {
+        return m_pimpl->getArithmeticValue<std::int16_t>(tag, instance);
+    }
+
+    if(vr == gdcm::VR::SL)
+    {
+        return m_pimpl->getArithmeticValue<std::int32_t>(tag, instance);
+    }
+
+    if(vr == gdcm::VR::SV)
+    {
+        return m_pimpl->getArithmeticValue<std::int64_t>(tag, instance);
+    }
+
+    SIGHT_THROW_EXCEPTION(Exception("The value at " + tagToString(tag) + " cannot be converted to a string."));
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<std::string> Series::getByteValues(std::uint16_t group, std::uint16_t element, std::size_t instance) const
 {
     std::vector<std::string> values;
 
-    const std::string joined = getByteValue(group, element);
-    boost::split(values, joined, boost::is_any_of(BACKSLASH_SEPARATOR));
+    const std::string joined = getByteValue(group, element, instance);
+    boost::split(values, joined, boost::is_any_of(detail::BACKSLASH_SEPARATOR));
 
     return values;
 }
 
 //------------------------------------------------------------------------------
 
-void Series::setByteValues(std::uint16_t group, std::uint16_t element, const std::vector<std::string>& values)
+void Series::setByteValues(
+    std::uint16_t group,
+    std::uint16_t element,
+    const std::vector<std::string>& values,
+    std::size_t instance
+)
 {
-    const auto& joined = boost::join(values, BACKSLASH_SEPARATOR);
-    setByteValue(group, element, joined);
+    const auto& joined = boost::join(values, detail::BACKSLASH_SEPARATOR);
+    setByteValue(group, element, joined, instance);
 }
 
 //------------------------------------------------------------------------------
 
-const gdcm::DataSet& Series::getDataSet() const noexcept
+const gdcm::DataSet& Series::getDataSet(std::size_t instance) const
 {
-    return m_pimpl->m_dataset;
+    return m_pimpl->getDataSet(instance);
 }
 
 //------------------------------------------------------------------------------
 
-gdcm::DataSet& Series::getDataSet() noexcept
+gdcm::DataSet& Series::getDataSet(std::size_t instance)
 {
-    return m_pimpl->m_dataset;
+    return m_pimpl->getDataSet(instance);
 }
 
 //------------------------------------------------------------------------------
 
-void Series::setDataSet(const gdcm::DataSet& dataset) noexcept
+void Series::setDataSet(const gdcm::DataSet& dataset, std::size_t instance)
 {
-    m_pimpl->m_dataset = dataset;
+    m_pimpl->getDataSet(instance) = dataset;
+}
+
+//------------------------------------------------------------------------------
+
+std::filesystem::path Series::getFile(std::size_t instance) const
+{
+    return m_pimpl->getFile(instance);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setFile(const std::filesystem::path& file, std::size_t instance)
+{
+    m_pimpl->getFile(instance) = file;
+}
+
+//------------------------------------------------------------------------------
+
+std::size_t Series::numInstances() const noexcept
+{
+    return m_pimpl->m_frame_datasets.size();
+}
+
+//------------------------------------------------------------------------------
+
+bool Series::sort(const std::vector<std::size_t>& sorted)
+{
+    // Some checks to be sure everything is fine
+    // If almost no frame are kept, we may want to try to sort the frames differently.
+    if(sorted.size() < 2)
+    {
+        return false;
+    }
+
+    SIGHT_WARN_IF(
+        "Some duplicated frames have been dropped during the sorting process.",
+        sorted.size() != m_pimpl->m_frame_datasets.size()
+    );
+
+    // Finally, we can sort the frames in the series
+    detail::FrameDatasets sorted_frame_datasets;
+
+    for(const auto& from : sorted)
+    {
+        sorted_frame_datasets.push_back(std::move(m_pimpl->m_frame_datasets[from]));
+    }
+
+    m_pimpl->m_frame_datasets = std::move(sorted_frame_datasets);
+
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -926,6 +664,22 @@ void Series::setDataSet(const gdcm::DataSet& dataset) noexcept
 std::string Series::getSOPClassUID() const noexcept
 {
     return m_pimpl->getStringValue<gdcm::Keywords::SOPClassUID>();
+}
+
+//------------------------------------------------------------------------------
+
+std::string Series::getSOPClassName() const noexcept
+{
+    if(const auto& sop_class_uid = m_pimpl->getValue<gdcm::Keywords::SOPClassUID>(); sop_class_uid)
+    {
+        gdcm::UIDs uid {};
+        if(uid.SetFromUID(*sop_class_uid))
+        {
+            return {uid.GetName()};
+        }
+    }
+
+    return getClassname();
 }
 
 //------------------------------------------------------------------------------
@@ -947,6 +701,164 @@ std::string Series::getSOPInstanceUID() const noexcept
 void Series::setSOPInstanceUID(const std::string& sopInstanceUID)
 {
     m_pimpl->setValue<gdcm::Keywords::SOPInstanceUID>(sopInstanceUID);
+}
+
+//------------------------------------------------------------------------------
+
+std::string Series::getSpecificCharacterSet() const noexcept
+{
+    return m_pimpl->getJoinedValues<gdcm::Keywords::SpecificCharacterSet>();
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setSpecificCharacterSet(const std::string& specificCharacterSet)
+{
+    m_pimpl->setJoinedValues<gdcm::Keywords::SpecificCharacterSet>(specificCharacterSet);
+}
+
+//------------------------------------------------------------------------------
+
+std::string Series::getEncoding() const noexcept
+{
+    const auto& specific_character_set = getSpecificCharacterSet();
+
+    if(specific_character_set.empty())
+    {
+        // Legally, we should return ASCII, but since ASCII can be directly mapped to UTF-8, we return UTF-8
+        return "UTF-8";
+    }
+
+    if(specific_character_set == "GB18030")
+    {
+        // Chinese (multi-byte)
+        return "GB18030";
+    }
+
+    if(specific_character_set == "GBK")
+    {
+        // Chinese (multi-byte, subset of "GB 18030")
+        return "GBK";
+    }
+
+    // Transform a bit the string to help conversion
+    // Basically, there are three possible versions of the same meaning:
+    // - (empty) => ASCII
+    // - ISO_IR 6
+    // - ISO 2022 IR 6
+    // - ISO 2022\IR 6
+    const std::size_t pos                 = specific_character_set.find("IR ");
+    const std::string& simplified_charset = pos == std::string::npos
+                                            ? specific_character_set
+                                            : specific_character_set.substr(pos + 3);
+
+    if(simplified_charset == "6")
+    {
+        // Legally, we should return ASCII, but since ASCII can be directly mapped to UTF-8, we return UTF-8
+        return "UTF-8";
+    }
+
+    if(simplified_charset == "100")
+    {
+        // Latin alphabet No. 1
+        return "ISO-8859-1";
+    }
+
+    if(simplified_charset == "101")
+    {
+        // Latin alphabet No. 2
+        return "ISO-8859-2";
+    }
+
+    if(simplified_charset == "109")
+    {
+        // Latin alphabet No. 3
+        return "ISO-8859-3";
+    }
+
+    if(simplified_charset == "110")
+    {
+        // Latin alphabet No. 4
+        return "ISO-8859-4";
+    }
+
+    if(simplified_charset == "144")
+    {
+        // Cyrillic
+        return "ISO-8859-5";
+    }
+
+    if(simplified_charset == "127")
+    {
+        // Arabic
+        return "ISO-8859-6";
+    }
+
+    if(simplified_charset == "126")
+    {
+        // Greek
+        return "ISO-8859-7";
+    }
+
+    if(simplified_charset == "138")
+    {
+        // Hebrew
+        return "ISO-8859-8";
+    }
+
+    if(simplified_charset == "148")
+    {
+        // Latin alphabet No. 5
+        return "ISO-8859-9";
+    }
+
+    if(simplified_charset == "13")
+    {
+        // Japanese
+        /// @note: this is not a perfect match, but better than nothing
+        return "Shift_JIS";
+    }
+
+    if(simplified_charset == "166")
+    {
+        // Thai
+        /// @note: this is not a perfect match, but better than nothing
+        return "TIS-620";
+    }
+
+    if(simplified_charset == "192")
+    {
+        // Unicode in UTF-8 (multi-byte)
+        return "UTF-8";
+    }
+
+    if(simplified_charset == "87")
+    {
+        // Japanese (multi-byte)
+        return "ISO-2022-JP-1";
+    }
+
+    if(simplified_charset == "159")
+    {
+        // Japanese (multi-byte)
+        return "ISO-2022-JP-2";
+    }
+
+    if(simplified_charset == "149")
+    {
+        // Korean (multi-byte)
+        return "ISO-2022-KR";
+    }
+
+    if(simplified_charset == "58")
+    {
+        // Simplified Chinese (multi-byte)
+        return "ISO-2022-CN";
+    }
+
+    // We hope that the underlying codec will deal with it...
+    // This case is used for DICOM official sample with one "WINDOWS_1252" encoding
+    return specific_character_set;
 }
 
 //-----------------------------------------------------------------------------
@@ -1080,6 +992,95 @@ void Series::setProtocolName(const std::string& protocolName)
 std::string Series::getPatientPosition() const noexcept
 {
     return m_pimpl->getStringValue<gdcm::Keywords::PatientPosition>();
+}
+
+//------------------------------------------------------------------------------
+
+std::string Series::getPatientPositionString() const noexcept
+{
+    const auto& patient_position = getPatientPosition();
+
+    if(patient_position == "HFP")
+    {
+        return "Head First-Prone";
+    }
+
+    if(patient_position == "HFS")
+    {
+        return "Head First-Supine";
+    }
+
+    if(patient_position == "HFDR")
+    {
+        return "Head First-Decubitus Right";
+    }
+
+    if(patient_position == "HFDL")
+    {
+        return "Head First-Decubitus Left";
+    }
+
+    if(patient_position == "FFDR")
+    {
+        return "Feet First-Decubitus Right";
+    }
+
+    if(patient_position == "FFDL")
+    {
+        return "Feet First-Decubitus Left";
+    }
+
+    if(patient_position == "FFP")
+    {
+        return "Feet First-Prone";
+    }
+
+    if(patient_position == "FFS")
+    {
+        return "Feet First-Supine";
+    }
+
+    if(patient_position == "LFP")
+    {
+        return "Left First-Prone";
+    }
+
+    if(patient_position == "LFS")
+    {
+        return "Left First-Supine";
+    }
+
+    if(patient_position == "RFP")
+    {
+        return "Right First-Prone";
+    }
+
+    if(patient_position == "RFS")
+    {
+        return "Right First-Supine";
+    }
+
+    if(patient_position == "AFDR")
+    {
+        return "Anterior First-Decubitus Right";
+    }
+
+    if(patient_position == "AFDL")
+    {
+        return "Anterior First-Decubitus Left";
+    }
+
+    if(patient_position == "PFDR")
+    {
+        return "Posterior First-Decubitus Right";
+    }
+
+    if(patient_position == "PFDL")
+    {
+        return "Posterior First-Decubitus Left";
+    }
+
+    return patient_position;
 }
 
 //------------------------------------------------------------------------------
@@ -1427,200 +1428,562 @@ void Series::setPatientWeight(const std::optional<double>& patientWeight)
 
 //------------------------------------------------------------------------------
 
-std::string ImageSeries::getAcquisitionDate() const noexcept
+Series::DicomType Series::getDicomType() const noexcept
 {
-    return m_pimpl->getStringValue<gdcm::Keywords::AcquisitionDate>();
+    // First try with dynamic cast
+    if(dynamic_cast<const ImageSeries*>(this) != nullptr)
+    {
+        return DicomType::IMAGE;
+    }
+
+    if(dynamic_cast<const ModelSeries*>(this) != nullptr)
+    {
+        return DicomType::MODEL;
+    }
+
+    // Then try with the SOPClassUID
+    if(const auto& sop_class_uid = m_pimpl->getValue<gdcm::Keywords::SOPClassUID>(); sop_class_uid)
+    {
+        if(const DicomType result = getDicomType(*sop_class_uid); result != DicomType::UNKNOWN)
+        {
+            return result;
+        }
+    }
+
+    // On last resort, try with semi deprecated GDCM MediaStorage
+    /// @note This GDCM class is no more updated and many things are missing: for example, Surface Scan Mesh Storage
+    /// (1.2.840.10008.5.1.4.1.1.68.1) and Surface Scan Point Cloud Storage (1.2.840.10008.5.1.4.1.1.68.2) which are
+    /// somewhat "models", are unknown to GDCM MediaStorage.
+    gdcm::MediaStorage media_storage;
+    media_storage.SetFromDataSet(getDataSet());
+
+    if(gdcm::MediaStorage::IsImage(media_storage))
+    {
+        return DicomType::IMAGE;
+    }
+
+    if(media_storage == gdcm::MediaStorage::SurfaceSegmentationStorage)
+    {
+        return DicomType::MODEL;
+    }
+
+    // If we are here, nothing worked...
+    return DicomType::UNKNOWN;
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setAcquisitionDate(const std::string& acquisitionDate)
+Series::DicomType Series::getDicomType(const std::string& sop_class_uid) noexcept
 {
-    m_pimpl->setValue<gdcm::Keywords::AcquisitionDate>(acquisitionDate);
+    gdcm::UIDs uid {};
+    if(uid.SetFromUID(sop_class_uid.c_str()))
+    {
+        // cspell:ignore Multiframe Radiofluoroscopic Tomosynthesis Bscan
+        const unsigned int ts = uid;
+
+        switch(ts)
+        {
+            case gdcm::UIDs::SurfaceSegmentationStorage:
+            case gdcm::UIDs::SurfaceScanMeshStorage:
+            case gdcm::UIDs::SurfaceScanPointCloudStorage:
+                return DicomType::MODEL;
+
+            case gdcm::UIDs::ComputedRadiographyImageStorage:
+            case gdcm::UIDs::CTImageStorage:
+            case gdcm::UIDs::MRImageStorage:
+            case gdcm::UIDs::NuclearMedicineImageStorage:
+            case gdcm::UIDs::UltrasoundImageStorage:
+            case gdcm::UIDs::UltrasoundMultiframeImageStorage:
+            case gdcm::UIDs::SecondaryCaptureImageStorage:
+            case gdcm::UIDs::MultiframeSingleBitSecondaryCaptureImageStorage:
+            case gdcm::UIDs::MultiframeGrayscaleByteSecondaryCaptureImageStorage:
+            case gdcm::UIDs::MultiframeGrayscaleWordSecondaryCaptureImageStorage:
+            case gdcm::UIDs::MultiframeTrueColorSecondaryCaptureImageStorage:
+            case gdcm::UIDs::XRayAngiographicImageStorage:
+            case gdcm::UIDs::XRayRadiofluoroscopicImageStorage:
+            case gdcm::UIDs::RTImageStorage:
+            case gdcm::UIDs::RTDoseStorage:
+            case gdcm::UIDs::PositronEmissionTomographyImageStorage:
+            case gdcm::UIDs::DigitalXRayImageStorageForPresentation:
+            case gdcm::UIDs::DigitalXRayImageStorageForProcessing:
+            case gdcm::UIDs::DigitalMammographyXRayImageStorageForPresentation:
+            case gdcm::UIDs::DigitalMammographyXRayImageStorageForProcessing:
+            case gdcm::UIDs::DigitalIntraoralXRayImageStorageForPresentation:
+            case gdcm::UIDs::DigitalIntraoralXRayImageStorageForProcessing:
+            case gdcm::UIDs::VLEndoscopicImageStorage:
+            case gdcm::UIDs::VLMicroscopicImageStorage:
+            case gdcm::UIDs::VLSlideCoordinatesMicroscopicImageStorage:
+            case gdcm::UIDs::VLPhotographicImageStorage:
+            case gdcm::UIDs::VideoEndoscopicImageStorage:
+            case gdcm::UIDs::VideoMicroscopicImageStorage:
+            case gdcm::UIDs::VideoPhotographicImageStorage:
+            case gdcm::UIDs::VLWholeSlideMicroscopyImageStorage:
+            case gdcm::UIDs::EnhancedMRImageStorage:
+            case gdcm::UIDs::EnhancedMRColorImageStorage:
+            case gdcm::UIDs::EnhancedCTImageStorage:
+            case gdcm::UIDs::OphthalmicPhotography8BitImageStorage:
+            case gdcm::UIDs::OphthalmicPhotography16BitImageStorage:
+            case gdcm::UIDs::EnhancedXAImageStorage:
+            case gdcm::UIDs::EnhancedXRFImageStorage:
+            case gdcm::UIDs::SegmentationStorage:
+            case gdcm::UIDs::OphthalmicTomographyImageStorage:
+            case gdcm::UIDs::XRay3DAngiographicImageStorage:
+            case gdcm::UIDs::XRay3DCraniofacialImageStorage:
+            case gdcm::UIDs::BreastTomosynthesisImageStorage:
+            case gdcm::UIDs::EnhancedPETImageStorage:
+            case gdcm::UIDs::EnhancedUSVolumeStorage:
+            case gdcm::UIDs::IntravascularOpticalCoherenceTomographyImageStorageForPresentation:
+            case gdcm::UIDs::IntravascularOpticalCoherenceTomographyImageStorageForProcessing:
+            case gdcm::UIDs::OphthalmicThicknessMapStorage:
+            case gdcm::UIDs::LegacyConvertedEnhancedCTImageStorage:
+            case gdcm::UIDs::LegacyConvertedEnhancedMRImageStorage:
+            case gdcm::UIDs::LegacyConvertedEnhancedPETImageStorage:
+            case gdcm::UIDs::CornealTopographyMapStorage:
+            case gdcm::UIDs::BreastProjectionXRayImageStorageForPresentation:
+            case gdcm::UIDs::BreastProjectionXRayImageStorageForProcessing:
+            case gdcm::UIDs::ParametricMapStorage:
+            case gdcm::UIDs::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage:
+            case gdcm::UIDs::WideFieldOphthalmicPhotography3DCoordinatesImageStorage:
+            case gdcm::UIDs::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage:
+            case gdcm::UIDs::OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage:
+                return DicomType::IMAGE;
+
+            default:
+                return DicomType::UNKNOWN;
+        }
+    }
+
+    return DicomType::UNKNOWN;
 }
 
 //------------------------------------------------------------------------------
 
-std::string ImageSeries::getAcquisitionTime() const noexcept
+std::string Series::dicomTypesToString(Series::DicomTypes types) noexcept
 {
-    return m_pimpl->getStringValue<gdcm::Keywords::AcquisitionTime>();
+    std::string dicom_types;
+
+    if((types & static_cast<DicomTypes>(DicomType::IMAGE)) == types)
+    {
+        if(!dicom_types.empty())
+        {
+            dicom_types += ", ";
+        }
+
+        dicom_types += dicomTypeToString(DicomType::IMAGE);
+    }
+
+    if((types & static_cast<DicomTypes>(DicomType::MODEL)) == types)
+    {
+        if(!dicom_types.empty())
+        {
+            dicom_types += ", ";
+        }
+
+        dicom_types += dicomTypeToString(DicomType::MODEL);
+    }
+
+    if((types & static_cast<DicomTypes>(DicomType::REPORT)) == types)
+    {
+        if(!dicom_types.empty())
+        {
+            dicom_types += ", ";
+        }
+
+        dicom_types += dicomTypeToString(DicomType::REPORT);
+    }
+
+    return dicom_types;
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setAcquisitionTime(const std::string& acquisitionTime)
+Series::DicomTypes Series::stringToDicomTypes(const std::string& types) noexcept
 {
-    m_pimpl->setValue<gdcm::Keywords::AcquisitionTime>(acquisitionTime);
+    DicomTypes dicom_types = 0;
+
+    std::vector<std::string> split;
+    boost::split(split, types, boost::is_any_of(","));
+
+    for(const auto& type : split)
+    {
+        const auto& trimmed = boost::trim_copy(type);
+
+        if(!trimmed.empty())
+        {
+            if(const auto& dicom_type = stringToDicomType(trimmed); dicom_type != DicomType::UNKNOWN)
+            {
+                dicom_types |= static_cast<DicomTypes>(dicom_type);
+            }
+        }
+    }
+
+    return dicom_types;
 }
 
 //------------------------------------------------------------------------------
 
-std::string ImageSeries::getContrastBolusAgent() const noexcept
+std::string Series::getAcquisitionDate(std::size_t instance) const
+{
+    return m_pimpl->getStringValue<gdcm::Keywords::AcquisitionDate>(instance);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setAcquisitionDate(const std::string& acquisitionDate, std::size_t instance)
+{
+    m_pimpl->setValue<gdcm::Keywords::AcquisitionDate>(acquisitionDate, instance);
+}
+
+//------------------------------------------------------------------------------
+
+std::string Series::getAcquisitionTime(std::size_t instance) const
+{
+    return m_pimpl->getStringValue<gdcm::Keywords::AcquisitionTime>(instance);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setAcquisitionTime(const std::string& acquisitionTime, std::size_t instance)
+{
+    m_pimpl->setValue<gdcm::Keywords::AcquisitionTime>(acquisitionTime, instance);
+}
+
+//------------------------------------------------------------------------------
+
+std::string Series::getContentTime(std::size_t instance) const
+{
+    return m_pimpl->getStringValue<gdcm::Keywords::ContentTime>(instance);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setContentTime(const std::string& contentTime, std::size_t instance)
+{
+    m_pimpl->setValue<gdcm::Keywords::ContentTime>(contentTime, instance);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::int32_t> Series::getInstanceNumber(std::size_t instance) const
+{
+    return m_pimpl->getValue<gdcm::Keywords::InstanceNumber>(instance);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setInstanceNumber(const std::optional<std::int32_t>& instanceNumber, std::size_t instance)
+{
+    m_pimpl->setValue<gdcm::Keywords::InstanceNumber>(instanceNumber, instance);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::int32_t> Series::getAcquisitionNumber(std::size_t instance) const
+{
+    return m_pimpl->getValue<gdcm::Keywords::AcquisitionNumber>(instance);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setAcquisitionNumber(std::optional<std::int32_t> acquisitionNumber, std::size_t instance)
+{
+    m_pimpl->setValue<gdcm::Keywords::AcquisitionNumber>(acquisitionNumber, instance);
+}
+
+//------------------------------------------------------------------------------
+
+std::string Series::getContrastBolusAgent() const noexcept
 {
     return m_pimpl->getStringValue<gdcm::Keywords::ContrastBolusAgent>();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setContrastBolusAgent(const std::string& contrastBolusAgent)
+void Series::setContrastBolusAgent(const std::string& contrastBolusAgent)
 {
     m_pimpl->setValue<gdcm::Keywords::ContrastBolusAgent>(contrastBolusAgent);
 }
 
 //------------------------------------------------------------------------------
 
-std::string ImageSeries::getContrastBolusRoute() const noexcept
+std::string Series::getContrastBolusRoute() const noexcept
 {
     return m_pimpl->getStringValue<gdcm::Keywords::ContrastBolusRoute>();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setContrastBolusRoute(const std::string& contrastBolusRoute)
+void Series::setContrastBolusRoute(const std::string& contrastBolusRoute)
 {
     m_pimpl->setValue<gdcm::Keywords::ContrastBolusRoute>(contrastBolusRoute);
 }
 
 //------------------------------------------------------------------------------
 
-std::optional<double> ImageSeries::getContrastBolusVolume() const noexcept
+std::optional<double> Series::getContrastBolusVolume() const noexcept
 {
     return m_pimpl->getValue<gdcm::Keywords::ContrastBolusVolume>();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setContrastBolusVolume(const std::optional<double>& contrastBolusVolume)
+void Series::setContrastBolusVolume(const std::optional<double>& contrastBolusVolume)
 {
     m_pimpl->setValue<gdcm::Keywords::ContrastBolusVolume>(contrastBolusVolume);
 }
 
 //------------------------------------------------------------------------------
 
-std::string ImageSeries::getContrastBolusStartTime() const noexcept
+std::string Series::getContrastBolusStartTime() const noexcept
 {
     return m_pimpl->getStringValue<gdcm::Keywords::ContrastBolusStartTime>();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setContrastBolusStartTime(const std::string& contrastBolusStartTime)
+void Series::setContrastBolusStartTime(const std::string& contrastBolusStartTime)
 {
     m_pimpl->setValue<gdcm::Keywords::ContrastBolusStartTime>(contrastBolusStartTime);
 }
 
 //------------------------------------------------------------------------------
 
-std::string ImageSeries::getContrastBolusStopTime() const noexcept
+std::string Series::getContrastBolusStopTime() const noexcept
 {
     return m_pimpl->getStringValue<gdcm::Keywords::ContrastBolusStopTime>();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setContrastBolusStopTime(const std::string& contrastBolusStopTime)
+void Series::setContrastBolusStopTime(const std::string& contrastBolusStopTime)
 {
     m_pimpl->setValue<gdcm::Keywords::ContrastBolusStopTime>(contrastBolusStopTime);
 }
 
 //------------------------------------------------------------------------------
 
-std::optional<double> ImageSeries::getContrastBolusTotalDose() const noexcept
+std::optional<double> Series::getContrastBolusTotalDose() const noexcept
 {
     return m_pimpl->getValue<gdcm::Keywords::ContrastBolusTotalDose>();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setContrastBolusTotalDose(const std::optional<double>& contrastBolusTotalDose)
+void Series::setContrastBolusTotalDose(const std::optional<double>& contrastBolusTotalDose)
 {
     m_pimpl->setValue<gdcm::Keywords::ContrastBolusTotalDose>(contrastBolusTotalDose);
 }
 
 //------------------------------------------------------------------------------
 
-std::vector<double> ImageSeries::getContrastFlowRates() const noexcept
+std::vector<double> Series::getContrastFlowRates() const noexcept
 {
     return m_pimpl->getValues<gdcm::Keywords::ContrastFlowRate>();
 }
 
 //------------------------------------------------------------------------------
 
-std::string ImageSeries::getContrastFlowRate() const noexcept
+std::string Series::getContrastFlowRate() const noexcept
 {
     return m_pimpl->getJoinedValues<gdcm::Keywords::ContrastFlowRate>();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setContrastFlowRates(const std::vector<double>& contrastFlowRates)
+void Series::setContrastFlowRates(const std::vector<double>& contrastFlowRates)
 {
     m_pimpl->setValues<gdcm::Keywords::ContrastFlowRate>(contrastFlowRates);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setContrastFlowRate(const std::string& contrastFlowRates)
+void Series::setContrastFlowRate(const std::string& contrastFlowRates)
 {
     m_pimpl->setJoinedValues<gdcm::Keywords::ContrastFlowRate>(contrastFlowRates);
 }
 
 //------------------------------------------------------------------------------
 
-std::vector<double> ImageSeries::getContrastFlowDurations() const noexcept
+std::vector<double> Series::getContrastFlowDurations() const noexcept
 {
     return m_pimpl->getValues<gdcm::Keywords::ContrastFlowDuration>();
 }
 
 //------------------------------------------------------------------------------
 
-std::string ImageSeries::getContrastFlowDuration() const noexcept
+std::string Series::getContrastFlowDuration() const noexcept
 {
     return m_pimpl->getJoinedValues<gdcm::Keywords::ContrastFlowDuration>();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setContrastFlowDurations(const std::vector<double>& contrastFlowDurations)
+void Series::setContrastFlowDurations(const std::vector<double>& contrastFlowDurations)
 {
     m_pimpl->setValues<gdcm::Keywords::ContrastFlowDuration>(contrastFlowDurations);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setContrastFlowDuration(const std::string& contrastFlowDurations)
+void Series::setContrastFlowDuration(const std::string& contrastFlowDurations)
 {
     m_pimpl->setJoinedValues<gdcm::Keywords::ContrastFlowDuration>(contrastFlowDurations);
 }
 
 //------------------------------------------------------------------------------
 
-std::string ImageSeries::getContrastBolusIngredient() const noexcept
+std::string Series::getContrastBolusIngredient() const noexcept
 {
     return m_pimpl->getStringValue<gdcm::Keywords::ContrastBolusIngredient>();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setContrastBolusIngredient(const std::string& contrastBolusIngredient)
+void Series::setContrastBolusIngredient(const std::string& contrastBolusIngredient)
 {
     m_pimpl->setValue<gdcm::Keywords::ContrastBolusIngredient>(contrastBolusIngredient);
 }
 
 //------------------------------------------------------------------------------
 
-std::optional<double> ImageSeries::getContrastBolusIngredientConcentration() const noexcept
+std::optional<double> Series::getContrastBolusIngredientConcentration() const noexcept
 {
     return m_pimpl->getValue<gdcm::Keywords::ContrastBolusIngredientConcentration>();
 }
 
 //------------------------------------------------------------------------------
 
-void ImageSeries::setContrastBolusIngredientConcentration(
+void Series::setContrastBolusIngredientConcentration(
     const std::optional<double>& contrastBolusIngredientConcentration
 )
 {
     m_pimpl->setValue<gdcm::Keywords::ContrastBolusIngredientConcentration>(contrastBolusIngredientConcentration);
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<double> Series::getWindowCenter() const noexcept
+{
+    return m_pimpl->getValues<gdcm::Keywords::WindowCenter>();
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setWindowCenter(const std::vector<double>& windowCenters)
+{
+    m_pimpl->setValues<gdcm::Keywords::WindowCenter>(windowCenters);
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<double> Series::getWindowWidth() const noexcept
+{
+    return m_pimpl->getValues<gdcm::Keywords::WindowWidth>();
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setWindowWidth(const std::vector<double>& windowWidths)
+{
+    m_pimpl->setValues<gdcm::Keywords::WindowWidth>(windowWidths);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<double> Series::getRescaleIntercept(std::size_t instance) const noexcept
+{
+    return m_pimpl->getValue<gdcm::Keywords::RescaleIntercept>(instance);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setRescaleIntercept(const std::optional<double>& rescaleIntercept, std::size_t instance)
+{
+    m_pimpl->setValue<gdcm::Keywords::ContrastBolusIngredientConcentration>(rescaleIntercept, instance);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<double> Series::getRescaleSlope(std::size_t instance) const noexcept
+{
+    return m_pimpl->getValue<gdcm::Keywords::RescaleSlope>(instance);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setRescaleSlope(const std::optional<double>& rescaleSlope, std::size_t instance)
+{
+    m_pimpl->setValue<gdcm::Keywords::ContrastBolusIngredientConcentration>(rescaleSlope, instance);
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<double> Series::getImagePositionPatient(std::size_t instance) const
+{
+    return m_pimpl->getValues<gdcm::Keywords::ImagePositionPatient>(instance);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setImagePositionPatient(const std::vector<double>& imagePositionPatient, std::size_t instance)
+{
+    m_pimpl->setValues<gdcm::Keywords::ImagePositionPatient>(imagePositionPatient, instance);
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<double> Series::getImageOrientationPatient(std::size_t instance) const
+{
+    return m_pimpl->getValues<gdcm::Keywords::ImageOrientationPatient>(instance);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setImageOrientationPatient(const std::vector<double>& imageOrientationPatient, std::size_t instance)
+{
+    m_pimpl->setValues<gdcm::Keywords::ImageOrientationPatient>(imageOrientationPatient, instance);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<double> Series::getSliceThickness() const noexcept
+{
+    return m_pimpl->getValue<gdcm::Keywords::SliceThickness>();
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setSliceThickness(const std::optional<double>& sliceThickness)
+{
+    m_pimpl->setValue<gdcm::Keywords::SliceThickness>(sliceThickness);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::uint16_t> Series::getRows() const noexcept
+{
+    return m_pimpl->getValue<gdcm::Keywords::Rows>();
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setRows(const std::optional<std::uint16_t>& rows)
+{
+    m_pimpl->setValue<gdcm::Keywords::Rows>(rows);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::uint16_t> Series::getColumns() const noexcept
+{
+    return m_pimpl->getValue<gdcm::Keywords::Columns>();
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setColumns(const std::optional<std::uint16_t>& columns)
+{
+    m_pimpl->setValue<gdcm::Keywords::Columns>(columns);
 }
 
 } // namespace sight::data

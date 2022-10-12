@@ -117,7 +117,7 @@ void Series::writeGeneralSeriesModule()
 
     io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1030>(m_object->getProtocolName(), dataset);
 
-    // Serie's description
+    // Series' description
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x103e>(m_object->getSeriesDescription(), dataset);
     io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x0015>(m_object->getBodyPartExamined(), dataset);
     io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x5100>(m_object->getPatientPosition(), dataset);
@@ -229,7 +229,7 @@ void Series::writeSegmentationSeriesModule()
     // Retrieve dataset
     gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
-    // Series's modality - Type 1
+    // Series' modality - Type 1
     dataset.Remove(gdcm::Tag(0x0008, 0x0060));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0060>("SEG", dataset);
 }
@@ -244,15 +244,15 @@ void Series::writeSRDocumentSeriesModule()
     // Create generator
     gdcm::UIDGenerator uidGenerator;
 
-    // Series's modality - Type 1
+    // Series' modality - Type 1
     dataset.Remove(gdcm::Tag(0x0008, 0x0060));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0060>("SR", dataset);
 
-    // Serie's instance UID - Type 1
+    // Series' instance UID - Type 1
     dataset.Remove(gdcm::Tag(0x0020, 0x000e));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x000e>(uidGenerator.Generate(), dataset);
 
-    // Serie's number - Type 1
+    // Series' number - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0011>(0, dataset);
 
     // Referenced Performed Procedure Step Sequence  - Type 2
@@ -269,11 +269,11 @@ void Series::writeSpatialFiducialsSeriesModule()
     // Create uid generator
     gdcm::UIDGenerator uidGenerator;
 
-    // Serie's instance UID - Type 1
+    // Series' instance UID - Type 1
     dataset.Remove(gdcm::Tag(0x0020, 0x000e));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x000e>(uidGenerator.Generate(), dataset);
 
-    // Series's modality - Type 1
+    // Series' modality - Type 1
     dataset.Remove(gdcm::Tag(0x0008, 0x0060));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0060>("FID", dataset);
 }

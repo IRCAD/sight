@@ -187,8 +187,8 @@ void Image::copyInformation(Image::csptr _source)
     m_spacing       = _source->m_spacing;
     m_origin        = _source->m_origin;
     m_type          = _source->m_type;
-    m_windowCenter  = _source->m_windowCenter;
-    m_windowWidth   = _source->m_windowWidth;
+    m_windowCenters = _source->m_windowCenters;
+    m_windowWidths  = _source->m_windowWidths;
     m_numComponents = _source->m_numComponents;
     m_pixelFormat   = _source->m_pixelFormat;
 }
@@ -425,8 +425,8 @@ bool Image::operator==(const Image& other) const noexcept
        || !core::tools::is_equal(m_spacing, other.m_spacing)
        || !core::tools::is_equal(m_origin, other.m_origin)
        || m_type != other.m_type
-       || !core::tools::is_equal(m_windowCenter, other.m_windowCenter)
-       || !core::tools::is_equal(m_windowWidth, other.m_windowWidth)
+       || !core::tools::is_equal(m_windowCenters, other.m_windowCenters)
+       || !core::tools::is_equal(m_windowWidths, other.m_windowWidths)
        || m_numComponents != other.m_numComponents
        || m_pixelFormat != other.m_pixelFormat
        || !core::tools::is_equal(m_dataArray, other.m_dataArray))

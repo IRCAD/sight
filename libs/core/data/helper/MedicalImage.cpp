@@ -167,10 +167,11 @@ bool updateDefaultTransferFunction(data::Image& image)
         fieldIsCreated = true;
     }
 
-    if(image.getWindowWidth() != 0.)
+    if(const auto& windowWidths = image.getWindowWidth(), windowCenters = image.getWindowCenter();
+       !windowWidths.empty() && !windowCenters.empty() && windowWidths.front() != 0.0 && windowCenters.front() != 0.0)
     {
-        tf->setWindow(image.getWindowWidth());
-        tf->setLevel(image.getWindowCenter());
+        tf->setWindow(windowWidths.front());
+        tf->setLevel(windowCenters.front());
     }
     else if(checkImageValidity(image))
     {

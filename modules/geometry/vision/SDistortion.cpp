@@ -248,8 +248,8 @@ void SDistortion::remap()
 
         const data::Image::Spacing spacing = {1., 1., 1.};
         outputImage->setSpacing(spacing);
-        outputImage->setWindowWidth(1);
-        outputImage->setWindowCenter(0);
+        outputImage->setWindowWidth({1});
+        outputImage->setWindowCenter({0});
     }
 
     const auto newSize = outputImage->getSize();

@@ -65,7 +65,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b model [sight::data::ModelSeries]: adapted model series.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the modelSeries's layer
+ * - \b layer (mandatory, string): defines the modelSeries' layer
  * - \b transform (optional, string, default=""): the transformation matrix to associate to the adaptor.
  * - \b material (optional, string, default=""): the name of the base Ogre material to pass to the mesh adaptors.
  * - \b autoresetcamera (optional, true/false, default=true): reset the camera when this mesh is modified, "true" or

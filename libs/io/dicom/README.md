@@ -6,8 +6,10 @@ Library containing functions for reading and writing DICOM files. It also contai
 
 ### Reader / Writer
 
-- **Series**: reads / writes a sight::data::Series from/to DICOM files.
-- **series_set**: reads / writes a sight::data::SeriesSet from/to DICOM files. It uses internally Series reader / writer
+- **Reader**: New general purpose DICOM image reader. It is intended to replace all other Readers, when it will be able
+              to read non image DICOM. It reads images and put them in a sight::data::SeriesSet
+- **Series**: reads / writes a sight::data::Series from/to DICOM files. For Images, prefer "Reader"
+- **seriesSet**: reads / writes a sight::data::SeriesSet from/to DICOM files. It uses internally Series reader / writer
 - **SurfaceSegmentation**: writes a sight::data::ModelSeries to a surface segmentation in DICOM files.
 
 ### Container

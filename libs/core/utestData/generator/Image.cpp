@@ -159,8 +159,8 @@ void Image::generateRandomImage(data::Image::sptr image, core::Type type, std::u
 
     randomizeImage(image, seed);
 
-    image->setWindowWidth((safeRand() % DOUBLE_SIZE) / double(SIZE / 10.) + 1);
-    image->setWindowCenter((safeRand() % DOUBLE_SIZE - SIZE) / double(SIZE / 10.));
+    image->setWindowWidth({(safeRand() % DOUBLE_SIZE) / double(SIZE / 10.) + 1});
+    image->setWindowCenter({(safeRand() % DOUBLE_SIZE - SIZE) / double(SIZE / 10.)});
 
     sight::data::helper::MedicalImage::updateDefaultTransferFunction(*image);
     sight::data::helper::MedicalImage::checkImageSliceIndex(image);

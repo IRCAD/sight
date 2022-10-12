@@ -22,42 +22,35 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
-
-#include "SelectorModel.hpp"
-
-#include <data/Series.hpp>
+#include "ui/qt/config.hpp"
+#include "ui/qt/series/SelectorModel.hpp"
 
 #include <QModelIndex>
-#include <QPointer>
-#include <QStandardItem>
-#include <QStandardItemModel>
-#include <QString>
 #include <QTreeView>
 #include <QVector>
 
-#include <map>
-
-namespace sight::module::ui::qt::series
+namespace sight::ui::qt::series
 {
 
 /**
  * @brief This selector represents the Series in a hierarchical view (Study/Patient->Series).
  */
-class MODULE_UI_QT_CLASS_API Selector : public QTreeView
+class UI_QT_CLASS_API Selector : public QTreeView
 {
 Q_OBJECT
 
 public:
 
     /// Defines a map associating icons to series (map\<series classname, icon path\>)
-    typedef SelectorModel::SeriesIconType SeriesIconType;
+    using SeriesIconType = SelectorModel::SeriesIconType;
+
+    using SeriesVectorType = QVector<data::Series::sptr>;
 
     /// Initializes the tree view.
-    MODULE_UI_QT_API Selector(QWidget* _parent = nullptr);
+    UI_QT_API Selector(QWidget* _parent = nullptr);
 
     /// Destroys the selector.
-    MODULE_UI_QT_API ~Selector() override;
+    UI_QT_API ~Selector() override = default;
 
     /// Clears all items in the tree.
     void clear();
@@ -67,28 +60,28 @@ public:
      * this study.
      * @param _series series to add in the tree.
      */
-    MODULE_UI_QT_API void addSeries(data::Series::sptr _series);
+    UI_QT_API void addSeries(data::Series::sptr _series);
 
     /**
      * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
      * @param _series series to remove from the tree.
      */
-    MODULE_UI_QT_API void removeSeries(data::Series::sptr _series);
+    UI_QT_API void removeSeries(data::Series::sptr _series);
 
     /// Returns the type of the item (SERIES or STUDY)
-    MODULE_UI_QT_API SelectorModel::ItemType getItemType(const QModelIndex& _index);
+    UI_QT_API SelectorModel::ItemType getItemType(const QModelIndex& _index) const;
 
     /// Catches the delete key event and remove the selected items.
-    MODULE_UI_QT_API void keyPressEvent(QKeyEvent* _event) override;
+    UI_QT_API void keyPressEvent(QKeyEvent* _event) override;
 
     /**
      * @brief Sets the specific icons for series in selector.
      * @param _seriesIcons map\<series classname, icon path\>
      */
-    MODULE_UI_QT_API void setSeriesIcons(const SeriesIconType& _seriesIcons);
+    UI_QT_API void setSeriesIcons(const SeriesIconType& _seriesIcons);
 
     /// Allows removing items or not.
-    MODULE_UI_QT_API void setAllowedRemove(bool _allowed);
+    UI_QT_API void allowRemove(bool _allowed);
 
     /// Sets if the selector must be in insert mode.
     void setInsertMode(bool _insert);
@@ -96,8 +89,17 @@ public:
     /// Sets the remove study button icon.
     void setRemoveStudyIcon(const std::filesystem::path& _path);
 
-    /// Sets the remove serie button icon.
-    void setRemoveSerieIcon(const std::filesystem::path& _path);
+    /// Sets the remove series button icon.
+    void setRemoveSeriesIcon(const std::filesystem::path& _path);
+
+    /// Returns the selected series.
+    inline SeriesVectorType getSelectedSeries() const
+    {
+        return getSeries(this->selectedIndexes());
+    }
+
+    /// Returns a meaningful preferred size for the selector.
+    UI_QT_API QSize sizeHint() const override;
 
 Q_SIGNALS:
 
@@ -108,7 +110,7 @@ Q_SIGNALS:
      * @note selection and deselection contain only the change of selection. The series always selected or deselected
      * don't appear in this selection/deselection.
      */
-    void selectSeries(
+    void seriesSelected(
         QVector<data::Series::sptr> _selection,
         QVector<data::Series::sptr> _deselection
     );
@@ -140,20 +142,21 @@ private Q_SLOTS:
     void onRemoveStudyInstanceUID(const std::string& _uid);
 
     /**
-     * @brief SLOT: called when the selector model sends a signal to remove the serie.
-     * @param _id the ID of the serie to remove.
+     * @brief SLOT: called when the selector model sends a signal to remove the series.
+     * @param _id the ID of the series to remove.
      */
-    void onRemoveSerieID(const std::string& _id);
+    void onRemoveSeriesID(const std::string& _id);
 
 private:
-
-    typedef QVector<data::Series::sptr> SeriesVectorType;
 
     /**
      * @brief Returns all the Series associated to the selection.
      * @note If a study is selected, return an empty selection.
      */
-    static SeriesVectorType getSeries(const QItemSelection& _selection);
+    static inline SeriesVectorType getSeries(const QItemSelection& _selection)
+    {
+        return getSeries(_selection.indexes());
+    }
 
     /**
      * @brief Returns all the Series associated to the selection.
@@ -165,7 +168,7 @@ private:
     static QModelIndexList getStudyIndexes(const QModelIndexList& _indexList);
 
     /// Returns all the series associated with the study index
-    SeriesVectorType getSeriesFromStudyIndex(const QModelIndex& _index);
+    SeriesVectorType getSeriesFromStudyIndex(const QModelIndex& _index) const;
 
     /// Deletes the selected items and notify the deleted series.
     void deleteSelection();
@@ -174,7 +177,7 @@ private:
     QPointer<SelectorModel> m_model {nullptr};
 
     /// Allows to remove items.
-    bool m_allowedRemove {true};
+    bool m_removeAllowed {true};
 };
 
 //-----------------------------------------------------------------------------
@@ -200,11 +203,9 @@ inline void Selector::setRemoveStudyIcon(const std::filesystem::path& _path)
 
 //-----------------------------------------------------------------------------
 
-inline void Selector::setRemoveSerieIcon(const std::filesystem::path& _path)
+inline void Selector::setRemoveSeriesIcon(const std::filesystem::path& _path)
 {
-    m_model->setRemoveSerieIcon(_path);
+    m_model->setRemoveSeriesIcon(_path);
 }
 
-//-----------------------------------------------------------------------------
-
-} // namespace sight::module::ui::qt::series
+} // namespace sight::ui::qt::series

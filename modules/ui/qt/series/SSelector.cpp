@@ -22,8 +22,6 @@
 
 #include "SSelector.hpp"
 
-#include "modules/ui/qt/series/Selector.hpp"
-
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -40,6 +38,7 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/series/Selector.hpp>
 
 #include <QVBoxLayout>
 
@@ -120,7 +119,7 @@ void SSelector::configuring()
         const auto removeSerieIconCfg = configAttr->get_optional<std::string>(s_REMOVE_SERIE_ICON_CONFIG);
         if(removeSerieIconCfg)
         {
-            m_removeSerieIcon = core::runtime::getModuleResourceFilePath(removeSerieIconCfg.value());
+            m_removeSeriesIcon = core::runtime::getModuleResourceFilePath(removeSerieIconCfg.value());
         }
 
         const auto selectionMode = configAttr->get<std::string>(s_SELECTION_MODE_CONFIG, "extended");
@@ -140,7 +139,7 @@ void SSelector::configuring()
             );
         }
 
-        m_allowedRemove = configAttr->get<bool>(s_ALLOWED_REMOVE_CONFIG, m_allowedRemove);
+        m_removeAllowed = configAttr->get<bool>(s_ALLOWED_REMOVE_CONFIG, m_removeAllowed);
         m_insertMode    = configAttr->get<bool>(s_INSERT_MODE_CONFIG, m_insertMode);
     }
 }
@@ -155,13 +154,13 @@ void SSelector::starting()
         this->getContainer()
     );
 
-    m_selectorWidget = new Selector();
+    m_selectorWidget = new sight::ui::qt::series::Selector();
     m_selectorWidget->setSeriesIcons(m_seriesIcons);
     m_selectorWidget->setSelectionMode(m_selectionMode);
-    m_selectorWidget->setAllowedRemove(m_allowedRemove);
+    m_selectorWidget->allowRemove(m_removeAllowed);
     m_selectorWidget->setInsertMode(m_insertMode);
     m_selectorWidget->setRemoveStudyIcon(m_removeStudyIcon);
-    m_selectorWidget->setRemoveSerieIcon(m_removeSerieIcon);
+    m_selectorWidget->setRemoveSeriesIcon(m_removeSeriesIcon);
 
     auto* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
@@ -171,7 +170,7 @@ void SSelector::starting()
     QObject::connect(
         m_selectorWidget,
         SIGNAL(
-            selectSeries(
+            seriesSelected(
                 QVector<data::Series::sptr>,
                 QVector<data::Series::sptr>
             )
@@ -195,7 +194,7 @@ void SSelector::starting()
         );
     }
 
-    if(m_allowedRemove)
+    if(m_removeAllowed)
     {
         QObject::connect(
             m_selectorWidget,
@@ -270,7 +269,7 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
 
     const auto selectionVector = m_selection.lock();
 
-    if(m_selectorWidget->getItemType(_index) == SelectorModel::SERIES)
+    if(m_selectorWidget->getItemType(_index) == sight::ui::qt::series::SelectorModel::SERIES)
     {
         SIGHT_ASSERT("There must be only one object selected",selectionVector->size() == 1);
         data::Object::sptr obj    = selectionVector->front();

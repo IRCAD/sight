@@ -157,13 +157,13 @@ void verifyTagValues(const std::string& filename, const data::SeriesSet::sptr& s
             boost::split(windowCenterValues, windowCenter, boost::is_any_of("\\"));
             CPPUNIT_ASSERT_DOUBLES_EQUAL(
                 boost::lexical_cast<double>(windowCenterValues[0]),
-                series->getWindowCenter(),
+                series->getWindowCenter().front(),
                 delta
             );
         }
         else
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(0, series->getWindowCenter(), delta);
+            CPPUNIT_ASSERT(series->getWindowCenter().empty());
         }
 
         // Window Width
@@ -174,13 +174,13 @@ void verifyTagValues(const std::string& filename, const data::SeriesSet::sptr& s
             boost::split(windowWidthValues, windowWidth, boost::is_any_of("\\"));
             CPPUNIT_ASSERT_DOUBLES_EQUAL(
                 boost::lexical_cast<double>(windowWidthValues[0]),
-                series->getWindowWidth(),
+                series->getWindowWidth().front(),
                 delta
             );
         }
         else
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(0, series->getWindowWidth(), delta);
+            CPPUNIT_ASSERT(series->getWindowWidth().empty());
         }
 
         // Number of components
@@ -490,10 +490,10 @@ void SeriesSetReaderTest::readCTSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[2], delta);
 
     // Check window center
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), series->getWindowCenter(), delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, series->getWindowCenter().front(), delta);
 
     // Check window width
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), series->getWindowWidth(), delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, series->getWindowWidth().front(), delta);
 
     // Check image type
     CPPUNIT_ASSERT_EQUAL(core::Type::INT16, series->getType());
@@ -557,10 +557,10 @@ void SeriesSetReaderTest::readMRSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(97.1478), origin[2], delta);
 
     // Check window center
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1000), series->getWindowCenter(), delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(1000), series->getWindowCenter().front(), delta);
 
     // Check window width
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(2000), series->getWindowWidth(), delta);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(2000), series->getWindowWidth().front(), delta);
 
     // Check image type
     CPPUNIT_ASSERT_EQUAL(core::Type::DOUBLE, series->getType());
@@ -623,10 +623,10 @@ void SeriesSetReaderTest::readOTSeries()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), origin[2], delta);
 
     // Check window center
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), series->getWindowCenter(), delta);
+    CPPUNIT_ASSERT(series->getWindowCenter().empty());
 
     // Check window width
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(double(0), series->getWindowWidth(), delta);
+    CPPUNIT_ASSERT(series->getWindowWidth().empty());
 
     // Check image type
     CPPUNIT_ASSERT_EQUAL(core::Type::UINT8, series->getType());

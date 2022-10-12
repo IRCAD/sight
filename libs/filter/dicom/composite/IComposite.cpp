@@ -53,7 +53,7 @@ IComposite::DicomSeriesContainerType IComposite::apply(
     for(const filter::dicom::IFilter::sptr& filter : m_filterContainer)
     {
         DicomSeriesContainerType filtered;
-        // For every serie
+        // For every series
         for(const data::DicomSeries::sptr& s : result)
         {
             DicomSeriesContainerType tempo = filter->apply(s, logger);

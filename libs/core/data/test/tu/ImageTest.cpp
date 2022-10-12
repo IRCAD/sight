@@ -72,14 +72,14 @@ void ImageTest::testGetterSetter()
 
     img1->setSpacing(SPACING);
     img1->setOrigin(ORIGIN);
-    img1->setWindowCenter(WINDOWCENTER);
-    img1->setWindowWidth(WINDOWWIDTH);
+    img1->setWindowCenter({WINDOWCENTER});
+    img1->setWindowWidth({WINDOWWIDTH});
 
     // check
     CPPUNIT_ASSERT(img1->getSpacing() == SPACING);
     CPPUNIT_ASSERT(img1->getOrigin() == ORIGIN);
-    CPPUNIT_ASSERT_EQUAL(WINDOWCENTER, img1->getWindowCenter());
-    CPPUNIT_ASSERT_EQUAL(WINDOWWIDTH, img1->getWindowWidth());
+    CPPUNIT_ASSERT_EQUAL(WINDOWCENTER, img1->getWindowCenter().front());
+    CPPUNIT_ASSERT_EQUAL(WINDOWWIDTH, img1->getWindowWidth().front());
 }
 
 //------------------------------------------------------------------------------

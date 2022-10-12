@@ -150,25 +150,24 @@ std::size_t Array::resize(
 {
     const std::size_t bufSize = computeSize(type.size(), size);
 
-    if(reallocate && (m_isBufferOwner || m_bufferObject->isEmpty()))
+    if(reallocate && bufSize != m_bufferObject->getSize())
     {
         if(m_bufferObject->isEmpty())
         {
+            m_isBufferOwner = true;
             m_bufferObject->allocate(bufSize);
         }
-        else
+        else if(m_isBufferOwner)
         {
             m_bufferObject->reallocate(bufSize);
         }
-
-        m_isBufferOwner = true;
-    }
-    else if(reallocate && !m_isBufferOwner)
-    {
-        SIGHT_THROW_EXCEPTION_MSG(
-            data::Exception,
-            "Tried to reallocate a not-owned Buffer."
-        );
+        else
+        {
+            SIGHT_THROW_EXCEPTION_MSG(
+                data::Exception,
+                "Tried to reallocate a not-owned Buffer."
+            );
+        }
     }
 
     m_strides = computeStrides(size, type.size());

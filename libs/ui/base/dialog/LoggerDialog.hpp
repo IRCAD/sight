@@ -59,7 +59,7 @@ public:
     UI_BASE_API LoggerDialog();
 
     /// Destructor
-    UI_BASE_API ~LoggerDialog() override;
+    UI_BASE_API ~LoggerDialog() override = default;
 
     /**
      * Constructor. Create a selector with the specified title, message and logs.

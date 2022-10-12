@@ -145,8 +145,8 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
                 image->setOrigin(origin);
                 const data::Image::Spacing spacing = {1., 1., 0.};
                 image->setSpacing(spacing);
-                image->setWindowWidth(1);
-                image->setWindowCenter(0);
+                image->setWindowWidth({1});
+                image->setWindowCenter({0});
                 m_imageInitialized = true;
 
                 //Notify

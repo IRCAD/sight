@@ -215,9 +215,9 @@ bool DicomReaderTest::checkSeriesJMSGenou(const data::ImageSeries::sptr& series)
     //(0028,0103) US 1                                                  # 2,1 Pixel Representation
     checkValue(notReallyChecked, "Image Bits Allocated correspond  :", false, series->getType().isSigned());
     //(0028,1050) DS [500 ]                                             # 4,1-n Window Center
-    checkValue(ok, "Image Window Center correspond  :", 500.0, series->getWindowCenter());
+    checkValue(ok, "Image Window Center correspond  :", 500.0, series->getWindowCenter().front());
     //(0028,1051) DS [2500]                                             # 4,1-n Window Width
-    checkValue(ok, "Image Window Width correspond  :", 2500.0, series->getWindowWidth());
+    checkValue(ok, "Image Window Width correspond  :", 2500.0, series->getWindowWidth().front());
     //(0028,1052) DS [-1024 ]                                           # 6,1 Rescale Intercept
     //(0028,1053) DS [1 ]                                               # 2,1 Rescale Slope
     //(0040,0000) UL 116                                                # 4,1 Generic Group Length
@@ -424,9 +424,9 @@ bool DicomReaderTest::checkSeriesJMSGenouTrimmed(const data::ImageSeries::sptr& 
     //(0028,0103) US 1                                                  # 2,1 Pixel Representation
     checkValue(notReallyChecked, "Image Bits Allocated correspond  :", false, series->getType().isSigned());
     //(0028,1050) DS [500 ]                                             # 4,1-n Window Center
-    checkValue(ok, "Image Window Center correspond  :", 500.0, series->getWindowCenter());
+    checkValue(ok, "Image Window Center correspond  :", 500.0, series->getWindowCenter().front());
     //(0028,1051) DS [2500]                                             # 4,1-n Window Width
-    checkValue(ok, "Image Window Width correspond  :", 2500.0, series->getWindowWidth());
+    checkValue(ok, "Image Window Width correspond  :", 2500.0, series->getWindowWidth().front());
     //(0028,1052) DS [-1024 ]                                           # 6,1 Rescale Intercept
     //(0028,1053) DS [1 ]                                               # 2,1 Rescale Slope
     //(0040,0000) UL 116                                                # 4,1 Generic Group Length

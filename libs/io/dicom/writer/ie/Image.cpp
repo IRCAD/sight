@@ -175,15 +175,23 @@ void Image::writeVOILUTModule()
     // Retrieve dataset
     gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
-    const double windowCenter = m_object->getWindowCenter();
-    const double windowWidth  = m_object->getWindowWidth();
-    if(windowCenter != 0 || windowWidth != 0)
+    const auto& windowCenters = m_object->getWindowCenter();
+    const auto& windowWidths  = m_object->getWindowWidth();
+    if(!windowCenters.empty() || !windowWidths.empty())
     {
         // Image's windows center
-        io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0028, 0x1050>(&windowCenter, 1, dataset);
+        io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0028, 0x1050>(
+            windowCenters.data(),
+            windowCenters.size(),
+            dataset
+        );
 
         // Image's windows width
-        io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0028, 0x1051>(&windowWidth, 1, dataset);
+        io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0028, 0x1051>(
+            windowWidths.data(),
+            windowWidths.size(),
+            dataset
+        );
     }
 }
 

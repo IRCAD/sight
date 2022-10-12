@@ -37,6 +37,13 @@ class DataSet;
 
 }
 
+namespace sight::data::detail
+{
+
+class SeriesImpl;
+
+}
+
 namespace sight::data
 {
 
@@ -51,17 +58,24 @@ public:
 
     /// Constructor / Destructor
     /// @{
-    DATA_API Series(Object::Key _key);
+    DATA_API Series(Object::Key key);
     DATA_API ~Series() noexcept override;
     /// @}
 
     /// Getter/Setter of DICOM SOP Common Module related attributes
     /// @{
     DATA_API std::string getSOPClassUID() const noexcept;
+    DATA_API std::string getSOPClassName() const noexcept;
     DATA_API void setSOPClassUID(const std::string& sopClassUID);
 
     DATA_API std::string getSOPInstanceUID() const noexcept;
     DATA_API void setSOPInstanceUID(const std::string& sopInstanceUID);
+
+    DATA_API std::string getSpecificCharacterSet() const noexcept;
+    DATA_API void setSpecificCharacterSet(const std::string& specificCharacterSet);
+
+    /// Translate DICOM specific character set to something compatible with iconv/ICU/Qt
+    DATA_API std::string getEncoding() const noexcept;
     /// @}
 
     /// Getter/Setter of DICOM General Series Module related attributes
@@ -95,6 +109,9 @@ public:
 
     DATA_API std::string getPatientPosition() const noexcept;
     DATA_API void setPatientPosition(const std::string& patientPosition);
+
+    /// Returns the patient position as human readable string
+    DATA_API std::string getPatientPositionString() const noexcept;
 
     DATA_API std::string getSeriesInstanceUID() const noexcept;
     DATA_API void setSeriesInstanceUID(const std::string& seriesInstanceUID);
@@ -181,6 +198,128 @@ public:
     DATA_API void setPatientWeight(const std::optional<double>& patientWeight = std::nullopt);
     /// @}
 
+    /// Getter/Setter of DICOM General Image Module related attributes
+    /// @{
+    DATA_API std::string getAcquisitionDate(std::size_t instance                              = 0) const;
+    DATA_API void setAcquisitionDate(const std::string& acquisitionDate, std::size_t instance = 0);
+
+    DATA_API std::string getAcquisitionTime(std::size_t instance                              = 0) const;
+    DATA_API void setAcquisitionTime(const std::string& acquisitionTime, std::size_t instance = 0);
+
+    DATA_API std::string getContentTime(std::size_t instance                          = 0) const;
+    DATA_API void setContentTime(const std::string& contentTime, std::size_t instance = 0);
+
+    DATA_API std::optional<std::int32_t> getInstanceNumber(std::size_t instance = 0) const;
+
+    DATA_API void setInstanceNumber(
+        const std::optional<std::int32_t>& instanceNumber = std::nullopt,
+        std::size_t instance                              = 0
+    );
+
+    DATA_API std::optional<std::int32_t> getAcquisitionNumber(
+        std::size_t instance = 0
+    ) const;
+
+    DATA_API void setAcquisitionNumber(
+        std::optional<std::int32_t> acquisitionNumber = std::nullopt,
+        std::size_t instance                          = 0
+    );
+    /// @}
+
+    /// Getter/Setter of DICOM Contrast/Bolus Module related attributes
+    /// @{
+    DATA_API std::string getContrastBolusAgent() const noexcept;
+    DATA_API void setContrastBolusAgent(const std::string& contrastBolusAgent);
+
+    DATA_API std::string getContrastBolusRoute() const noexcept;
+    DATA_API void setContrastBolusRoute(const std::string& contrastBolusRoute);
+
+    DATA_API std::optional<double> getContrastBolusVolume() const noexcept;
+    DATA_API void setContrastBolusVolume(const std::optional<double>& contrastBolusVolume = std::nullopt);
+
+    DATA_API std::string getContrastBolusStartTime() const noexcept;
+    DATA_API void setContrastBolusStartTime(const std::string& contrastBolusStartTime);
+
+    DATA_API std::string getContrastBolusStopTime() const noexcept;
+    DATA_API void setContrastBolusStopTime(const std::string& contrastBolusStopTime);
+
+    DATA_API std::optional<double> getContrastBolusTotalDose() const noexcept;
+    DATA_API void setContrastBolusTotalDose(const std::optional<double>& contrastBolusTotalDose = std::nullopt);
+
+    DATA_API std::vector<double> getContrastFlowRates() const noexcept;
+    DATA_API void setContrastFlowRates(const std::vector<double>& contrastFlowRates);
+
+    DATA_API std::string getContrastFlowRate() const noexcept;
+    DATA_API void setContrastFlowRate(const std::string& contrastFlowRates);
+
+    DATA_API std::vector<double> getContrastFlowDurations() const noexcept;
+    DATA_API void setContrastFlowDurations(const std::vector<double>& contrastFlowDurations);
+
+    DATA_API std::string getContrastFlowDuration() const noexcept;
+    DATA_API void setContrastFlowDuration(const std::string& contrastFlowDurations);
+
+    DATA_API std::string getContrastBolusIngredient() const noexcept;
+    DATA_API void setContrastBolusIngredient(const std::string& contrastBolusIngredient);
+
+    DATA_API std::optional<double> getContrastBolusIngredientConcentration() const noexcept;
+    DATA_API void setContrastBolusIngredientConcentration(
+        const std::optional<double>& contrastBolusIngredientConcentration = std::nullopt
+    );
+
+    /// Getter/Setter of DICOM Image Pixel Module
+    /// @{
+    DATA_API std::optional<std::uint16_t> getRows() const noexcept;
+    DATA_API virtual void setRows(const std::optional<std::uint16_t>& rows = std::nullopt);
+
+    DATA_API std::optional<std::uint16_t> getColumns() const noexcept;
+    DATA_API virtual void setColumns(const std::optional<std::uint16_t>& columns = std::nullopt);
+    /// @}
+
+    /// Getter/Setter of DICOM VOI LUT Module Module related attributes
+    /// @note Image also implements a getter/setter for this attribute that is overriden here
+    /// @{
+    DATA_API virtual std::vector<double> getWindowCenter() const noexcept;
+    DATA_API virtual void setWindowCenter(const std::vector<double>& windowCenters);
+
+    DATA_API virtual std::vector<double> getWindowWidth() const noexcept;
+    DATA_API virtual void setWindowWidth(const std::vector<double>& windowWidths);
+    /// @}
+
+    /// Getter/Setter of DICOM Modality LUT Module
+    /// @{
+    DATA_API std::optional<double> getRescaleIntercept(std::size_t instance = 0) const noexcept;
+    DATA_API void setRescaleIntercept(
+        const std::optional<double>& rescaleIntercept = std::nullopt,
+        std::size_t instance                          = 0
+    );
+
+    DATA_API std::optional<double> getRescaleSlope(std::size_t instance = 0) const noexcept;
+    DATA_API void setRescaleSlope(
+        const std::optional<double>& rescaleSlope = std::nullopt,
+        std::size_t instance                      = 0
+    );
+    /// @}
+
+    /// Getter/Setter of DICOM Image Plane Module related attributes
+    /// @{
+    DATA_API std::vector<double> getImagePositionPatient(std::size_t instance = 0) const;
+
+    DATA_API void setImagePositionPatient(
+        const std::vector<double>& imagePositionPatient,
+        std::size_t instance = 0
+    );
+
+    DATA_API std::vector<double> getImageOrientationPatient(std::size_t instance = 0) const;
+
+    DATA_API void setImageOrientationPatient(
+        const std::vector<double>& imageOrientationPatient,
+        std::size_t instance = 0
+    );
+
+    DATA_API std::optional<double> getSliceThickness() const noexcept;
+    DATA_API void setSliceThickness(const std::optional<double>& sliceThickness = std::nullopt);
+    /// @}
+
     /// Equality comparison operators
     /// @{
     DATA_API bool operator==(const Series& other) const noexcept;
@@ -218,45 +357,174 @@ public:
     DATA_API void copyGeneralImageModule(const Series::csptr& source);
     /// @}
 
-    /// Value getter using given tag
+    /// Value getter using given tag. The returned string is used as a Byte buffer and is not necessarily a string.
     /// @throws data::Exception if tag doesn't exist
     /// @param[in] group the group tag to get
     /// @param[in] element the element tag to get
+    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @return the values as a string
-    DATA_API std::string getByteValue(std::uint16_t group, std::uint16_t element) const noexcept;
+    DATA_API std::string getByteValue(
+        std::uint16_t group,
+        std::uint16_t element,
+        std::size_t instance = 0
+    ) const;
 
-    /// Value setter using given tag
+    /// Value setter using given tag. The string argument is used as a Byte buffer and is not necessarily a string.
     /// @throws data::Exception if the data mismatch the tag type
     /// @param[in] group the group tag to set
     /// @param[in] element the element tag to set
     /// @param[in] value the value to insert
-    DATA_API void setByteValue(std::uint16_t group, std::uint16_t element, const std::string& value);
+    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    ///                     (nullopt means the global common instance, for attributes shared by all instance.)
+    /// @throw data::Exception if tag doesn't exist
+    /// @throw data::Exception if value size is not correct
+    /// @throw data::Exception if instance index is out of bounds
+    DATA_API void setByteValue(
+        std::uint16_t group,
+        std::uint16_t element,
+        const std::string& value,
+        std::size_t instance = 0
+    );
 
     /// Values getter using given tag. Initial string is split using DICOM delimiter '\'.
     /// @throws data::Exception if tag doesn't exist
     /// @param[in] group the group tag to get
     /// @param[in] element the element tag to get
+    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @return the values as a vector of strings
-    DATA_API std::vector<std::string> getByteValues(std::uint16_t group, std::uint16_t element) const noexcept;
+    DATA_API std::vector<std::string> getByteValues(
+        std::uint16_t group,
+        std::uint16_t element,
+        std::size_t instance = 0
+    ) const;
 
     /// Values setter using given tag. Strings are joined using DICOM delimiter '\'.
     /// @throws data::Exception if the data mismatch the tag type
     /// @param[in] group the group tag to set
     /// @param[in] element the element tag to set
     /// @param[in] value the vector of value to insert
-    DATA_API void setByteValues(std::uint16_t group, std::uint16_t element, const std::vector<std::string>& values);
+    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    ///                     (nullopt means the global common instance, for attributes shared by all instance.)
+    DATA_API void setByteValues(
+        std::uint16_t group,
+        std::uint16_t element,
+        const std::vector<std::string>& values,
+        std::size_t instance = 0
+    );
 
-    /// DataSet getter/setter
+    /// Value getter using given tag. The value is converted to string, depending of the VR.
+    /// @throws data::Exception if tag doesn't exist
+    /// @param[in] group the group tag to get
+    /// @param[in] element the element tag to get
+    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    ///                     (nullopt means the global common instance, for attributes shared by all instance.)
+    /// @return the values as a string
+    DATA_API std::string getStringValue(
+        std::uint16_t group,
+        std::uint16_t element,
+        std::size_t instance = 0
+    ) const;
+
+    /// Value setter using given tag. The string argument is converted to the right, depending of the VR.
+    /// @throws data::Exception if the data mismatch the tag type
+    /// @param[in] group the group tag to set
+    /// @param[in] element the element tag to set
+    /// @param[in] value the value to insert
+    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    ///                     (nullopt means the global common instance, for attributes shared by all instance.)
+    /// @throw data::Exception if tag doesn't exist
+    /// @throw data::Exception if value size is not correct
+    /// @throw data::Exception if instance index is out of bounds
+    DATA_API void setStringValue(
+        std::uint16_t group,
+        std::uint16_t element,
+        const std::string& value,
+        std::size_t instance = 0
+    );
+
+    /// Enum that defines the kind of DICOM Series we are
+    enum class DicomType : std::uint64_t
+    {
+        IMAGE   = 1,
+        MODEL   = IMAGE << 1,
+        REPORT  = MODEL << 1,
+        UNKNOWN = 0
+    };
+
+    /// In case we want to filter Series by type
+    using DicomTypes = std::underlying_type_t<DicomType>;
+
+    /// Convenience function to convert from DicomType enum value to string
+    /// @param[in] type the DicomType enum value to convert
+    constexpr static std::string_view dicomTypeToString(DicomType type) noexcept
+    {
+        switch(type)
+        {
+            case DicomType::IMAGE:
+                return "image";
+
+            case DicomType::MODEL:
+                return "model";
+
+            case DicomType::REPORT:
+                return "report";
+
+            default:
+                return "unknown";
+        }
+    }
+
+    /// Convenience function to convert from string to DicomType enum value
+    /// @param[in] type the string to convert
+    constexpr static DicomType stringToDicomType(std::string_view type) noexcept
+    {
+        if(constexpr auto IMAGE = dicomTypeToString(DicomType::IMAGE); type == IMAGE)
+        {
+            return DicomType::IMAGE;
+        }
+        else if(constexpr auto MODEL = dicomTypeToString(DicomType::MODEL); type == MODEL)
+        {
+            return DicomType::MODEL;
+        }
+        else if(constexpr auto REPORT = dicomTypeToString(DicomType::REPORT); type == REPORT)
+        {
+            return DicomType::REPORT;
+        }
+        else
+        {
+            return DicomType::UNKNOWN;
+        }
+    }
+
+    /// Convenience function to convert from / to DicomTypes values to string
+    DATA_API static std::string dicomTypesToString(DicomTypes types) noexcept;
+    DATA_API static DicomTypes stringToDicomTypes(const std::string& types) noexcept;
+
+    /// Returns the type of the Series. For now, only "Image" and "Model" are supported.
+    DATA_API DicomType getDicomType() const noexcept;
+    DATA_API static DicomType getDicomType(const std::string& SOPClassUID) noexcept;
+
+    /// DataSet getter/setter, needed for serialization.
     /// @{
-    DATA_API const gdcm::DataSet& getDataSet() const noexcept;
-    DATA_API gdcm::DataSet& getDataSet() noexcept;
-    DATA_API void setDataSet(const gdcm::DataSet& dataset) noexcept;
+    DATA_API const gdcm::DataSet& getDataSet(std::size_t instance               = 0) const;
+    DATA_API gdcm::DataSet& getDataSet(std::size_t instance                     = 0);
+    DATA_API void setDataSet(const gdcm::DataSet& dataset, std::size_t instance = 0);
     /// @}
+
+    /// This is used when sorting DICOM files
+    DATA_API std::filesystem::path getFile(std::size_t instance                   = 0) const;
+    DATA_API void setFile(const std::filesystem::path& file, std::size_t instance = 0);
+    DATA_API std::size_t numInstances() const noexcept;
+
+    /// Utility function that sort instances according to a sorted map of instance index.
+    /// @param[in] sorted the sorted vector of instance.
+    DATA_API bool sort(const std::vector<std::size_t>& sorted);
 
 protected:
 
-    class SeriesImpl;
-    std::unique_ptr<SeriesImpl> m_pimpl;
+    std::unique_ptr<detail::SeriesImpl> m_pimpl;
 };
 
 } // Namespace fwMedData.

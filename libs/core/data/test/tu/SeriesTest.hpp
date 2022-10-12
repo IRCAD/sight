@@ -46,7 +46,10 @@ CPPUNIT_TEST(attrDescriptionTest);
 CPPUNIT_TEST(equalityTest);
 
 CPPUNIT_TEST(sopClassUIDTest);
+CPPUNIT_TEST(sopClassNameTest);
 CPPUNIT_TEST(sopInstanceUIDTest);
+CPPUNIT_TEST(specificCharacterSetTest);
+CPPUNIT_TEST(encodingTest);
 CPPUNIT_TEST(seriesDateTest);
 CPPUNIT_TEST(seriesTimeTest);
 CPPUNIT_TEST(modalityTest);
@@ -82,6 +85,9 @@ CPPUNIT_TEST(patientSizeTest);
 CPPUNIT_TEST(patientWeightTest);
 CPPUNIT_TEST(acquisitionDateTest);
 CPPUNIT_TEST(acquisitionTimeTest);
+CPPUNIT_TEST(acquisitionNumberTest);
+CPPUNIT_TEST(instanceNumberTest);
+CPPUNIT_TEST(contentTimeTest);
 CPPUNIT_TEST(contrastBolusAgentTest);
 CPPUNIT_TEST(contrastBolusRouteTest);
 CPPUNIT_TEST(contrastBolusVolumeTest);
@@ -92,6 +98,14 @@ CPPUNIT_TEST(contrastFlowRateTest);
 CPPUNIT_TEST(contrastFlowDurationTest);
 CPPUNIT_TEST(contrastBolusIngredientTest);
 CPPUNIT_TEST(contrastBolusIngredientConcentrationTest);
+CPPUNIT_TEST(rowsTest);
+CPPUNIT_TEST(columnsTest);
+CPPUNIT_TEST(windowCenterTest);
+CPPUNIT_TEST(windowWidthTest);
+CPPUNIT_TEST(imagePositionPatientTest);
+CPPUNIT_TEST(imageOrientationPatientTest);
+
+CPPUNIT_TEST(stringConversionTest);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -113,7 +127,10 @@ public:
     static void equalityTest();
 
     static void sopClassUIDTest();
+    static void sopClassNameTest();
     static void sopInstanceUIDTest();
+    static void specificCharacterSetTest();
+    static void encodingTest();
     static void seriesDateTest();
     static void seriesTimeTest();
     static void modalityTest();
@@ -149,6 +166,9 @@ public:
     static void patientWeightTest();
     static void acquisitionDateTest();
     static void acquisitionTimeTest();
+    static void acquisitionNumberTest();
+    static void instanceNumberTest();
+    static void contentTimeTest();
     static void contrastBolusAgentTest();
     static void contrastBolusRouteTest();
     static void contrastBolusVolumeTest();
@@ -159,6 +179,14 @@ public:
     static void contrastFlowDurationTest();
     static void contrastBolusIngredientTest();
     static void contrastBolusIngredientConcentrationTest();
+    static void rowsTest();
+    static void columnsTest();
+    static void windowCenterTest();
+    static void windowWidthTest();
+    static void imagePositionPatientTest();
+    static void imageOrientationPatientTest();
+
+    static void stringConversionTest();
 
 protected:
 

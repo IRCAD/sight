@@ -22,6 +22,9 @@
 
 #include "ui/base/Cursor.hpp"
 
+#include <core/thread/Worker.hpp>
+#include <core/thread/Worker.hxx>
+
 namespace sight::ui::base
 {
 
@@ -44,7 +47,15 @@ void Cursor::setCursor(ui::base::ICursor::CursorType cursor)
 {
     if(m_implementation)
     {
-        m_implementation->setCursor(cursor);
+        // Copy shared pointer to keep the object alive during the call.
+        auto cursor_implementation = m_implementation;
+
+        // Go to main thread....
+        core::thread::getDefaultWorker()->postTask<void>(
+            [cursor_implementation, cursor]()
+            {
+                cursor_implementation->setCursor(cursor);
+            });
     }
 }
 
@@ -54,7 +65,15 @@ void Cursor::setDefaultCursor()
 {
     if(m_implementation)
     {
-        m_implementation->setDefaultCursor();
+        // Copy shared pointer to keep the object alive during the call.
+        auto cursor_implementation = m_implementation;
+
+        // Go to main thread....
+        core::thread::getDefaultWorker()->postTask<void>(
+            [cursor_implementation]
+            {
+                cursor_implementation->setDefaultCursor();
+            });
     }
 }
 

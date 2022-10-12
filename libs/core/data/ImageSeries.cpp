@@ -22,6 +22,8 @@
 
 #include "data/ImageSeries.hpp"
 
+#include "data/detail/SeriesImpl.hpp"
+
 #include <data/Exception.hpp>
 #include <data/Image.hpp>
 #include <data/registry/macros.hpp>
@@ -97,6 +99,72 @@ bool ImageSeries::operator==(const ImageSeries& other) const noexcept
 bool ImageSeries::operator!=(const ImageSeries& other) const noexcept
 {
     return !(*this == other);
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<double> ImageSeries::getWindowCenter() const noexcept
+{
+    return Series::getWindowCenter();
+}
+
+//------------------------------------------------------------------------------
+
+void ImageSeries::setWindowCenter(const std::vector<double>& windowCenters)
+{
+    Series::setWindowCenter(windowCenters);
+    Image::setWindowCenter(windowCenters);
+}
+
+//------------------------------------------------------------------------------
+
+void ImageSeries::setWindowWidth(const std::vector<double>& windowWidths)
+{
+    Series::setWindowWidth(windowWidths);
+    Image::setWindowWidth(windowWidths);
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<double> ImageSeries::getWindowWidth() const noexcept
+{
+    return Series::getWindowWidth();
+}
+
+//------------------------------------------------------------------------------
+
+void ImageSeries::setRows(const std::optional<std::uint16_t>& rows)
+{
+    Series::setRows(rows);
+
+    // Resize the image (if possible and needed...)
+    if(const auto pixel_format = getPixelFormat(); pixel_format != sight::data::Image::PixelFormat::UNDEFINED)
+    {
+        const auto rows_value = rows.value_or(1);
+
+        if(const auto& original_size = getSize(); original_size[0] != rows_value)
+        {
+            resize({std::size_t(rows_value), original_size[1], original_size[2]}, getType(), pixel_format);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ImageSeries::setColumns(const std::optional<std::uint16_t>& columns)
+{
+    Series::setColumns(columns);
+
+    // Resize the image (if possible and needed...)
+    if(const auto pixel_format = getPixelFormat(); pixel_format != sight::data::Image::PixelFormat::UNDEFINED)
+    {
+        const auto columns_value = columns.value_or(1);
+
+        if(const auto& original_size = getSize(); original_size[1] != columns_value)
+        {
+            resize({original_size[0], std::size_t(columns_value), original_size[2]}, getType(), pixel_format);
+        }
+    }
 }
 
 } // namespace sight::data

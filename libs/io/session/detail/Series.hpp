@@ -43,7 +43,9 @@ namespace sight::io::session::detail::Series
 {
 
 constexpr static auto s_uuid {"uuid"};
-constexpr static auto s_dicom {"dataset.dcm"};
+constexpr static auto s_common_dataset {"common_dataset.dcm"};
+constexpr static auto s_instance_dataset {"instance_dataset.dcm"};
+constexpr static auto s_num_instances {"num_instances"};
 
 //------------------------------------------------------------------------------
 
@@ -60,15 +62,30 @@ inline static void serialize(
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Series>(tree, 1);
 
-    // Get an output stream
-    const auto& ostream = archive.openFile(
-        std::filesystem::path(series->getUUID() + "/" + s_dicom),
-        password
-    );
+    {
+        // Get an output stream
+        const auto& ostream = archive.openFile(
+            std::filesystem::path(series->getUUID() + "/" + s_common_dataset),
+            password
+        );
 
-    // Write to disk as raw data. This is not a "real" DICOM file as our "Series" are "generic" DICOM series with no
-    // SOPClassUID and SOPInstanceUID.
-    series->getDataSet().Write<gdcm::ExplicitDataElement, gdcm::SwapperNoOp>(*ostream);
+        // Write to disk the common dataset as raw data
+        series->getDataSet().Write<gdcm::ExplicitDataElement, gdcm::SwapperNoOp>(*ostream);
+    }
+
+    // Store the instance count to be able to know how many instances to read
+    tree.put(s_num_instances, series->numInstances());
+
+    // Write the "instance" datasets. In case the original data come from a DICOM series with several instances (files)
+    for(std::size_t instance = 0, end = series->numInstances() ; instance < end ; ++instance)
+    {
+        const auto& ostream = archive.openFile(
+            std::filesystem::path(series->getUUID() + "/" + std::to_string(instance) + "_" + s_instance_dataset),
+            password
+        );
+
+        series->getDataSet(instance).Write<gdcm::ExplicitDataElement, gdcm::SwapperNoOp>(*ostream);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -88,15 +105,32 @@ inline static data::Series::sptr deserialize(
     Helper::readVersion<data::Series>(tree, 0, 1);
 
     // Get the input stream
-    const auto& uuid    = tree.get<std::string>(s_uuid);
-    const auto& istream = archive.openFile(
-        std::filesystem::path(uuid + "/" + s_dicom),
-        password
-    );
+    const auto& uuid = tree.get<std::string>(s_uuid);
 
-    gdcm::DataSet dataset;
-    dataset.Read<gdcm::ExplicitDataElement, gdcm::SwapperNoOp>(*istream);
-    series->setDataSet(dataset);
+    {
+        const auto& istream = archive.openFile(
+            std::filesystem::path(uuid + "/" + s_common_dataset),
+            password
+        );
+
+        // Read the common dataset
+        gdcm::DataSet dataset;
+        dataset.Read<gdcm::ExplicitDataElement, gdcm::SwapperNoOp>(*istream);
+        series->setDataSet(dataset);
+    }
+
+    // Read the instance count to be able to know how many instances to read
+    for(std::size_t instance = 0, end = tree.get<std::size_t>(s_num_instances) ; instance < end ; ++instance)
+    {
+        const auto& istream = archive.openFile(
+            std::filesystem::path(uuid + "/" + std::to_string(instance) + "_" + s_instance_dataset),
+            password
+        );
+
+        gdcm::DataSet dataset;
+        dataset.Read<gdcm::ExplicitDataElement, gdcm::SwapperNoOp>(*istream);
+        series->setDataSet(dataset, instance);
+    }
 
     return series;
 }

@@ -28,7 +28,6 @@ target_link_libraries(
             Qt5::Widgets
             Qt5::QuickWidgets
 )
-
 set_target_properties(module_ui_qt PROPERTIES AUTOMOC TRUE)
 
 if(MSVC)

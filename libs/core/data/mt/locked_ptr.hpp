@@ -43,22 +43,29 @@ class weak_ptr;
 template<class DATATYPE>
 class locked_ptr final
 {
+using Lock = std::conditional_t<std::is_const_v<DATATYPE>, core::mt::ReadLock, core::mt::WriteLock>;
+
 public:
 
     /// Constructor
     explicit constexpr locked_ptr(const std::shared_ptr<DATATYPE>& data) noexcept :
-        m_data(data),
-        m_dump_locks(data)
+        m_data(data)
     {
         if(m_data)
         {
-            if constexpr(std::is_const<DATATYPE>::value)
+            m_locker = Lock(m_data->getMutex());
+
+            if constexpr(std::is_base_of_v<core::memory::IBuffered, DATATYPE>)
             {
-                m_locker = core::mt::ReadLock(data->getMutex());
+                m_dump_locks = m_data->dump_lock();
             }
-            else
+            else if(const auto& buffered = std::dynamic_pointer_cast<const core::memory::IBuffered>(m_data); buffered)
             {
-                m_locker = core::mt::WriteLock(data->getMutex());
+                m_dump_locks = buffered->dump_lock();
+            }
+
+            if constexpr(!std::is_const<DATATYPE>::value)
+            {
                 m_data->setModified();
             }
         }
@@ -83,14 +90,24 @@ public:
         {
             if(data)
             {
-                m_dump_locks = dump_locks<DATATYPE>(data);
+                if constexpr(std::is_base_of_v<core::memory::IBuffered, DATATYPE>)
+                {
+                    m_dump_locks = data->dump_lock();
+                }
+                else if(const auto& buffered = std::dynamic_pointer_cast<const core::memory::IBuffered>(data); buffered)
+                {
+                    m_dump_locks = buffered->dump_lock();
+                }
+                else
+                {
+                    m_dump_locks.clear();
+                }
 
-                m_locker = std::conditional_t<std::is_const<DATATYPE>::value, core::mt::ReadLock, core::mt::WriteLock>
-                               (data->getMutex());
+                m_locker = Lock(data->getMutex());
             }
             else
             {
-                m_dump_locks.reset();
+                m_dump_locks.clear();
                 m_locker.reset();
             }
 
@@ -194,40 +211,9 @@ private:
     std::shared_ptr<DATATYPE> m_data;
 
     /// Read lock if the data is const, write lock otherwise
-    typename std::conditional_t<std::is_const<DATATYPE>::value, core::mt::ReadLock, core::mt::WriteLock> m_locker;
+    Lock m_locker;
 
-    template<class C, class = void>
-    class dump_locks final
-    {
-    };
-
-    template<class C>
-    class dump_locks<C, typename std::enable_if_t<std::is_base_of_v<core::memory::IBuffered, C> > > final
-    {
-    friend locked_ptr;
-
-    constexpr explicit dump_locks(const std::shared_ptr<C>& data)
-    {
-        if(data)
-        {
-            m_Locks = data->dump_lock();
-        }
-    }
-
-    std::vector<core::memory::BufferObject::Lock> m_Locks;
-    };
-
-    template<class C>
-    class dump_locks<C, typename std::enable_if_t<!std::is_base_of_v<core::memory::IBuffered, C> > >
-    {
-    friend locked_ptr;
-
-    constexpr explicit dump_locks(const std::shared_ptr<C>& /*unused*/)
-    {
-    }
-    };
-
-    dump_locks<DATATYPE> m_dump_locks;
+    std::vector<core::memory::BufferObject::Lock> m_dump_locks;
 };
 
 } // namespace sight::data::mt

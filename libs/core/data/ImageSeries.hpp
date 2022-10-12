@@ -64,56 +64,22 @@ public:
     /// Sets the DICOM reference used to generate valid Dicom Segmentation.
     void setDicomReference(const DicomSeries::csptr& _reference);
 
-    /// Getter/Setter of DICOM General Image Module related attributes
+    /// Getter/Setter of DICOM VOI LUT Module Module related attributes
     /// @note the definition is in Series.cpp
+    /// @note Image also implements a getter/setter for this attribute that is overriden here
     /// @{
-    DATA_API std::string getAcquisitionDate() const noexcept;
-    DATA_API void setAcquisitionDate(const std::string& acquisitionDate);
-
-    DATA_API std::string getAcquisitionTime() const noexcept;
-    DATA_API void setAcquisitionTime(const std::string& acquisitionTime);
+    DATA_API void setWindowCenter(const std::vector<double>& windowCenters) override;
+    DATA_API std::vector<double> getWindowCenter() const noexcept override;
+    DATA_API void setWindowWidth(const std::vector<double>& windowWidths) override;
+    DATA_API std::vector<double> getWindowWidth() const noexcept override;
     /// @}
 
-    /// Getter/Setter of DICOM Contrast/Bolus Module related attributes
+    /// Getter/Setter of DICOM Image Pixel Module
     /// @note the definition is in Series.cpp
+    /// @note Image also somewhat implements a getter/setter for this attribute
     /// @{
-    DATA_API std::string getContrastBolusAgent() const noexcept;
-    DATA_API void setContrastBolusAgent(const std::string& contrastBolusAgent);
-
-    DATA_API std::string getContrastBolusRoute() const noexcept;
-    DATA_API void setContrastBolusRoute(const std::string& contrastBolusRoute);
-
-    DATA_API std::optional<double> getContrastBolusVolume() const noexcept;
-    DATA_API void setContrastBolusVolume(const std::optional<double>& contrastBolusVolume = std::nullopt);
-
-    DATA_API std::string getContrastBolusStartTime() const noexcept;
-    DATA_API void setContrastBolusStartTime(const std::string& contrastBolusStartTime);
-
-    DATA_API std::string getContrastBolusStopTime() const noexcept;
-    DATA_API void setContrastBolusStopTime(const std::string& contrastBolusStopTime);
-
-    DATA_API std::optional<double> getContrastBolusTotalDose() const noexcept;
-    DATA_API void setContrastBolusTotalDose(const std::optional<double>& contrastBolusTotalDose = std::nullopt);
-
-    DATA_API std::vector<double> getContrastFlowRates() const noexcept;
-    DATA_API void setContrastFlowRates(const std::vector<double>& contrastFlowRates);
-
-    DATA_API std::string getContrastFlowRate() const noexcept;
-    DATA_API void setContrastFlowRate(const std::string& contrastFlowRates);
-
-    DATA_API std::vector<double> getContrastFlowDurations() const noexcept;
-    DATA_API void setContrastFlowDurations(const std::vector<double>& contrastFlowDurations);
-
-    DATA_API std::string getContrastFlowDuration() const noexcept;
-    DATA_API void setContrastFlowDuration(const std::string& contrastFlowDurations);
-
-    DATA_API std::string getContrastBolusIngredient() const noexcept;
-    DATA_API void setContrastBolusIngredient(const std::string& contrastBolusIngredient);
-
-    DATA_API std::optional<double> getContrastBolusIngredientConcentration() const noexcept;
-    DATA_API void setContrastBolusIngredientConcentration(
-        const std::optional<double>& contrastBolusIngredientConcentration = std::nullopt
-    );
+    DATA_API void setRows(const std::optional<std::uint16_t>& rows       = std::nullopt) override;
+    DATA_API void setColumns(const std::optional<std::uint16_t>& columns = std::nullopt) override;
     /// @}
 
     /// Equality comparison operators

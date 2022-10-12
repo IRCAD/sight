@@ -22,25 +22,23 @@
 
 #pragma once
 
-#include "modules/ui/qt/config.hpp"
+#include "ui/qt/config.hpp"
 
 #include <data/Series.hpp>
 
 #include <QPointer>
 #include <QStandardItem>
 #include <QStandardItemModel>
-#include <QString>
 
 #include <filesystem>
-#include <map>
 
-namespace sight::module::ui::qt::series
+namespace sight::ui::qt::series
 {
 
 /**
  * @brief This class represents the Selector Model.
  */
-class MODULE_UI_QT_CLASS_API SelectorModel : public QStandardItemModel
+class UI_QT_CLASS_API SelectorModel : public QStandardItemModel
 {
 Q_OBJECT
 
@@ -85,68 +83,68 @@ public:
     using QStandardItemModel::removeRows;
 
     /// Initializes the model.
-    MODULE_UI_QT_API SelectorModel(QWidget* _parent = nullptr);
+    UI_QT_API SelectorModel(QWidget* _parent = nullptr);
 
     /// Destroys the selector.
-    MODULE_UI_QT_API ~SelectorModel() override;
+    UI_QT_API ~SelectorModel() override = default;
 
     /**
      * @brief Add the Series in the tree. If the associated study already exist in the tree, the series is added to
      * this study.
      */
-    MODULE_UI_QT_API void addSeries(data::Series::sptr _series);
+    UI_QT_API void addSeries(data::Series::sptr _series);
 
     /**
      * @brief Removes the Series from the tree. After deletion, if the study is empty, it will be removed.
      * @param _series series to remove from the tree.
      */
-    MODULE_UI_QT_API void removeSeries(data::Series::sptr _series);
+    UI_QT_API void removeSeries(data::Series::sptr _series);
 
     /// Clears all items in the model.
-    MODULE_UI_QT_API void clear();
+    UI_QT_API void clear();
 
     /// Returns item flags with non editable flag
-    [[nodiscard]] Qt::ItemFlags flags(const QModelIndex& _index) const override
+    Qt::ItemFlags flags(const QModelIndex& _index) const override
     {
         return QStandardItemModel::flags(_index) & ~Qt::ItemIsEditable;
     }
 
     /// Returns the type of the item (SERIES or STUDY) associated to the ITEM_TYPE role.
-    MODULE_UI_QT_API ItemType getItemType(const QModelIndex& _index);
+    UI_QT_API ItemType getItemType(const QModelIndex& _index);
 
     /**
      * @brief Returns the index in the same row as the given index and at the specified column.
      * @param _index index used to get the associated row.
      * @param _column the column of the index to return.
      */
-    MODULE_UI_QT_API QModelIndex getIndex(const QModelIndex& _index, int _column);
+    UI_QT_API QModelIndex getIndex(const QModelIndex& _index, int _column);
 
     /// Removes the rows given by the indexes.
-    MODULE_UI_QT_API void removeRows(const QModelIndexList _indexes);
+    UI_QT_API void removeRows(const QModelIndexList _indexes);
 
     /// Returns the series item representing the series.
-    MODULE_UI_QT_API QStandardItem* findSeriesItem(data::Series::sptr _series);
+    UI_QT_API QStandardItem* findSeriesItem(data::Series::sptr _series);
 
     /// Returns the item representing the study.
-    MODULE_UI_QT_API QStandardItem* findStudyItem(data::Series::sptr _series);
+    UI_QT_API QStandardItem* findStudyItem(data::Series::sptr _series);
 
     /**
      * @brief Sets the specific icons for series in selector.
      * @param _seriesIcons map\<series classname, icon path\>
      */
-    MODULE_UI_QT_API void setSeriesIcons(const SeriesIconType& _seriesIcons);
+    UI_QT_API void setSeriesIcons(const SeriesIconType& _seriesIcons);
 
     /// Sets if the selector must be in insert mode.
     void setInsertMode(bool _insert);
 
     /// Allows removing items or not.
-    void setAllowedRemove(bool _allowed);
+    void allowRemove(bool _allowed);
 
     /// Sets the remove study button icon.
     void setRemoveStudyIcon(const std::filesystem::path& _path);
 
-    /// Sets the remove serie button icon.
-    void setRemoveSerieIcon(const std::filesystem::path& _path);
+    /// Sets the remove series button icon.
+    void setRemoveSeriesIcon(const std::filesystem::path& _path);
 
 Q_SIGNALS:
 
@@ -157,10 +155,10 @@ Q_SIGNALS:
     void removeStudyInstanceUID(const std::string& _uid);
 
     /**
-     * @brief SIGNAL: sent when the button to remove a serie is clicked.
-     * @param _id the ID of the serie to remove.
+     * @brief SIGNAL: sent when the button to remove a series is clicked.
+     * @param _id the ID of the series to remove.
      */
-    void removeSerieID(const std::string& _id);
+    void removeSeriesID(const std::string& _id);
 
 private:
 
@@ -201,13 +199,13 @@ private:
     SeriesIconType m_seriesIcons;
 
     /// Allows to remove items.
-    bool m_allowedRemove {true};
+    bool m_removeAllowed {true};
 
     /// Defines the path of the remove study button icon.
     std::filesystem::path m_removeStudyIcon;
 
-    /// Defines the path of the remove serie button icon.
-    std::filesystem::path m_removeSerieIcon;
+    /// Defines the path of the remove series button icon.
+    std::filesystem::path m_removeSeriesIcon;
 };
 
 //------------------------------------------------------------------------------
@@ -231,7 +229,7 @@ QStandardItem* SelectorModel::getInfo(T _data, QString _separator)
         }
     }
 
-    auto* item = new QStandardItem(dataStr);
+    QStandardItem* item = new QStandardItem(dataStr);
     return item;
 }
 
@@ -244,9 +242,9 @@ inline void SelectorModel::setInsertMode(bool _insert)
 
 //------------------------------------------------------------------------------
 
-inline void SelectorModel::setAllowedRemove(bool _allowed)
+inline void SelectorModel::allowRemove(bool _allowed)
 {
-    m_allowedRemove = _allowed;
+    m_removeAllowed = _allowed;
 }
 
 //-----------------------------------------------------------------------------
@@ -258,11 +256,9 @@ inline void SelectorModel::setRemoveStudyIcon(const std::filesystem::path& _path
 
 //-----------------------------------------------------------------------------
 
-inline void SelectorModel::setRemoveSerieIcon(const std::filesystem::path& _path)
+inline void SelectorModel::setRemoveSeriesIcon(const std::filesystem::path& _path)
 {
-    m_removeSerieIcon = _path;
+    m_removeSeriesIcon = _path;
 }
 
-//-----------------------------------------------------------------------------
-
-} // namespace sight::module::ui::qt::series
+} // namespace sight::ui::qt::series.

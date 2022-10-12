@@ -142,9 +142,9 @@ void SQueryEditor::starting()
         birthDateLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         auto* const idLabel = new QLabel("Patient's ID");
         idLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        auto* const seriesUIDLabel = new QLabel("Series's ID");
+        auto* const seriesUIDLabel = new QLabel("Series' ID");
         seriesUIDLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
-        auto* const descriptionLabel = new QLabel("Series's description");
+        auto* const descriptionLabel = new QLabel("Series' description");
         descriptionLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
         auto* const modalityLabel = new QLabel("Modality");
         modalityLabel->setAlignment(Qt::AlignRight | Qt::AlignVCenter);

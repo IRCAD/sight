@@ -317,9 +317,7 @@ public:
      *
      * @param nbPts number of points to allocate
      * @param nbCells number of cells to allocate
-     * @param cellType type of cell to allocate, it defines the number of points by cell to allocate. If you want to
-     *        mix different types of cells in the same mesh, you should use
-     *        resize(std::size_t nbPts, std::size_t nbCells, std::size_t nbCellsData, Attribute arrayMask)
+     * @param cellType type of cell to allocate, it defines the number of points by cell to allocate.
      * @param arrayMask Mesh attribute: additional Arrays to allocate
      *        (ex: Attribute::POINT_COLORS | Attribute::POINT_NORMALS)
      *
@@ -341,9 +339,7 @@ public:
      * parameters.
      * @param nbPts number of points to allocate
      * @param nbCells number of cells to allocate
-     * @param cellType type of cell to allocate, it defines the number of points by cell to allocate. If you want to
-     *        use different types of cells in the same mesh, use
-     *        resize(std::size_t nbPts, std::size_t nbCells, std::size_t nbCellsData, Attribute arrayMask)
+     * @param cellType type of cell to allocate, it defines the number of points by cell to allocate.
      * @param arrayMask Mesh attribute: additional Arrays to allocate
      *        (ex: Attribute::POINT_COLORS | Attribute::POINT_NORMALS)
      *
@@ -649,6 +645,7 @@ private:
         TEX_COORDS,
         _SIZE
     };
+
     enum class CellAttribute : std::uint8_t
     {
         INDEX = 0,

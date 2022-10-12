@@ -119,19 +119,6 @@ void ITest::openFile(
 
     if(format == "DICOM")
     {
-        // When a DICOM files finish loading, a report appears as a dialog. We should close it before continuing.
-        tester.take(
-            "Reading process over window",
-            []() -> QObject* {return qApp->activeModalWidget();},
-            sight::ui::test::alwaysTrue,
-            sight::ui::test::Tester::DEFAULT_TIMEOUT*4
-        );
-        tester.yields(
-            "Ok button",
-            [](QObject* old) -> QObject* {return old->findChild<QPushButton*>("Ok");});
-        tester.interact(std::make_unique<sight::ui::test::MouseClick>());
-        tester.doubt<QWidget*>("window is closed", [](QWidget* obj) -> bool {return !obj->isVisible();});
-
         // The Show/hide volume button becomes enabled when the image effectively shows up.
         tester.take<QWidget*>(
             "Show/hide volume button",

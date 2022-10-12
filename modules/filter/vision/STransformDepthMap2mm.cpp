@@ -92,8 +92,8 @@ void STransformDepthMap2mm::updating()
         scaledFrame->setOrigin(origin);
         const data::Image::Spacing spacing = {1., 1., 1.};
         scaledFrame->setSpacing(spacing);
-        scaledFrame->setWindowWidth(1);
-        scaledFrame->setWindowCenter(0);
+        scaledFrame->setWindowWidth({1});
+        scaledFrame->setWindowCenter({0});
     }
 
     const auto origDumpLock   = originFrame->dump_lock();

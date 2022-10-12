@@ -234,15 +234,15 @@ public:
     /** @{
      *  @brief Get/set preferred window center
      */
-    double getWindowCenter() const;
-    void setWindowCenter(double val);
+    virtual std::vector<double> getWindowCenter() const noexcept;
+    virtual void setWindowCenter(const std::vector<double>& windowCenters);
     /// @}
 
     /** @{
      *  @brief Get/set preferred window width
      */
-    double getWindowWidth() const;
-    void setWindowWidth(double val);
+    virtual std::vector<double> getWindowWidth() const noexcept;
+    virtual void setWindowWidth(const std::vector<double>& windowWidths);
     /// @}
 
     /// Get the number of elements (ie: size[0]*size[1]*size[2]*nbComponents)
@@ -579,8 +579,8 @@ private:
 
     //! Preferred window center/with
     ///@{
-    double m_windowCenter {0.};
-    double m_windowWidth {0.};
+    std::vector<double> m_windowCenters {0.};
+    std::vector<double> m_windowWidths {0.};
     ///@}
 
     //! Number of components
@@ -598,30 +598,30 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline double Image::getWindowCenter() const
+inline std::vector<double> Image::getWindowCenter() const noexcept
 {
-    return m_windowCenter;
+    return m_windowCenters;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Image::setWindowCenter(double val)
+inline void Image::setWindowCenter(const std::vector<double>& windowCenters)
 {
-    m_windowCenter = val;
+    m_windowCenters = windowCenters;
 }
 
 //-----------------------------------------------------------------------------
 
-inline double Image::getWindowWidth() const
+inline std::vector<double> Image::getWindowWidth() const noexcept
 {
-    return m_windowWidth;
+    return m_windowWidths;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Image::setWindowWidth(double val)
+inline void Image::setWindowWidth(const std::vector<double>& windowWidths)
 {
-    m_windowWidth = val;
+    m_windowWidths = windowWidths;
 }
 
 //-----------------------------------------------------------------------------

@@ -36,13 +36,12 @@
         </config>
     </extension>
 
-
     <extension implements="sight::service::extension::Config" >
-        <id>SightViewer_gdcm_SrvCfg</id>
+        <id>SightViewer_dicom_SrvCfg</id>
         <desc>DICOM</desc>
         <config>
             <windowTitle>Open DICOM directory</windowTitle>
-            <filterType>sight::filter::dicom::custom::DefaultDicomFilter</filterType>
+            <dialog filter="image"/>
         </config>
     </extension>
 
@@ -306,11 +305,12 @@
             <service uid="openSeriesSetAct" type="sight::module::ui::base::io::SSelector" worker="COMPUTING_THREAD" >
                 <inout key="data" uid="seriesSet" />
                 <selection mode="exclude" />
+                <addSelection service="sight::module::io::dicom::SSeriesSetReader" />
                 <addSelection service="sight::module::io::dicom::SDicomSeriesSetReader" />
                 <config id="SightViewer_SightData_SrvCfg" service="sight::module::io::session::SReader" />
                 <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::SSeriesSetReader" />
-                <config id="SightViewer_gdcm_SrvCfg" service="sight::module::io::dicom::SSeriesSetReader" />
                 <config id="SightViewer_itk_SrvCfg" service="sight::module::io::itk::SSeriesSetReader" />
+                <config id="SightViewer_dicom_SrvCfg" service="sight::module::io::dicom::SReader" />
             </service>
 
             <!-- Show the negato/volume view -->

@@ -521,6 +521,27 @@ inline data::Series::sptr generate<data::Series>(const std::size_t variant)
     object->setPatientSize(double(variant));
     object->setPatientWeight(double(variant));
 
+    // Generate specific instance data
+    for(std::size_t i = 0 ; i < variant + 3 ; ++i)
+    {
+        object->setImagePositionPatient(
+            {
+                double(variant + i),
+                double(variant + i + 1),
+                double(variant + i + 2)
+            },
+            i
+        );
+
+        object->setImageOrientationPatient(
+            {
+                double(variant + i), double(variant + i + 1), double(variant + i + 2),
+                double(variant + i + 3), double(variant + i + 4), double(variant + i + 5)
+            },
+            i
+        );
+    }
+
     return object;
 }
 
