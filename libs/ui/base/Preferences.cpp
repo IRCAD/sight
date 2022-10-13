@@ -90,17 +90,13 @@ inline static std::filesystem::path computePreferencesFilepath()
     SIGHT_THROW_IF("Unable to determine application name", name.empty());
 
     // Get the application data directory
-    const auto& data_directory = core::tools::os::getUserDataDir("sight", name, true);
-    SIGHT_THROW_IF("Unable to define user data directory", data_directory.empty());
-    SIGHT_THROW_IF(
-        "Data directory '" + data_directory + "' doesn't exist or is not a directory",
-        !std::filesystem::is_directory(data_directory)
-    );
+    const auto& config_directory = core::tools::os::getUserConfigDir(name);
+    SIGHT_THROW_IF("Unable to define user data directory", config_directory.empty());
 
     // Build the preferences filepath
-    const auto& preferences_filepath = data_directory + "/" + (mustEncrypt() ? s_encrypted_file : s_preferences_file);
+    const auto& preferences_filepath = config_directory / (mustEncrypt() ? s_encrypted_file : s_preferences_file);
     SIGHT_THROW_IF(
-        "Preferences file '" + preferences_filepath + "' already exists and is not a regular file",
+        "Preferences file '" + preferences_filepath.string() + "' already exists and is not a regular file",
         std::filesystem::exists(preferences_filepath)
         && !std::filesystem::is_regular_file(preferences_filepath)
     );

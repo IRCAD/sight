@@ -26,14 +26,17 @@
 #include <windows.h>
 #endif
 
+#include <core/crypto/PasswordKeeper.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/runtime/profile/Profile.hpp>
-#include <core/crypto/PasswordKeeper.hpp>
+#include <core/tools/Os.hpp>
 
 #include <boost/program_options/options_description.hpp>
 #include <boost/program_options/parsers.hpp>
 #include <boost/program_options/positional_options.hpp>
 #include <boost/program_options/variables_map.hpp>
+#include <boost/property_tree/xml_parser.hpp>
+#include <boost/property_tree/ptree.hpp>
 
 #include <csignal>
 #include <filesystem>
@@ -52,7 +55,7 @@ using sight::core::crypto::secure_string;
 //------------------------------------------------------------------------------
 
 template<class A1, class A2>
-inline std::ostream& operator<<(std::ostream& s, std::vector<A1, A2> const& vec)
+inline static std::ostream& operator<<(std::ostream& s, std::vector<A1, A2> const& vec)
 {
     copy(vec.begin(), vec.end(), std::ostream_iterator<A1>(s, " "));
     return s;
@@ -62,7 +65,7 @@ inline std::ostream& operator<<(std::ostream& s, std::vector<A1, A2> const& vec)
 
 /// Wrapper for std::filesystem::absolute, needed by clang 3.0 in use with
 /// std::transform
-std::filesystem::path absolute(const std::filesystem::path& path)
+inline static std::filesystem::path absolute(const std::filesystem::path& path)
 {
     return std::filesystem::weakly_canonical(path);
 }
@@ -79,7 +82,11 @@ void signalHandler(int signal)
     try
     {
         const auto& profile = sight::core::runtime::getCurrentProfile();
-        profile->stop();
+
+        if(profile != nullptr)
+        {
+            profile->stop();
+        }
     }
     catch(const std::exception& e)
     {
@@ -93,6 +100,71 @@ void signalHandler(int signal)
     // We use brutal exit because when interrupted by a signal, we never get out from run,
     // even if the program is fully terminated
     exit(0);
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::filesystem::path buildLogFilePath(const std::filesystem::path& log_dir, bool encrypted_log)
+{
+    // Use the default log file name as base
+    std::filesystem::path log_file_path = encrypted_log
+                                          ? sight::core::log::ENCRYPTED_LOG_FILE
+                                          : sight::core::log::LOG_FILE;
+
+    // Prepend the log directory
+    if(!log_dir.empty())
+    {
+        std::filesystem::create_directories(log_dir);
+        log_file_path = log_dir / log_file_path;
+    }
+
+    // Test if the directory is writable. An exception will be thrown if not
+    {
+        std::ofstream ostream;
+        ostream.open(log_file_path, std::ios::out | std::ios::binary | std::ios::trunc);
+    }
+
+    // Cleanup
+    std::filesystem::remove_all(log_file_path);
+
+    return log_file_path;
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::filesystem::path findLogFilePath(
+    const std::filesystem::path& log_file,
+    const std::filesystem::path& profile_file,
+    bool encrypted_log
+)
+{
+    if(log_file.empty())
+    {
+        // Parse the profile.xml to get the name
+        boost::property_tree::ptree profile_tree;
+        boost::property_tree::read_xml(profile_file.string(), profile_tree);
+        const auto& profile_name = profile_tree.get<std::string>("profile.<xmlattr>.name");
+
+        try
+        {
+            // Try the user cache directory
+            return buildLogFilePath(
+                sight::core::tools::os::getUserCacheDir(profile_name),
+                encrypted_log
+            );
+        }
+        catch(...)
+        {
+            // Fallback: take temporary directory
+            return buildLogFilePath(
+                std::filesystem::temp_directory_path() / "sight" / profile_name,
+                encrypted_log
+            );
+        }
+    }
+
+    // Take the user choice
+    return log_file;
 }
 
 //-----------------------------------------------------------------------------
@@ -165,9 +237,7 @@ int main(int argc, char* argv[])
     )
     (
         "log-output",
-        po::value(&log_file)->default_value(
-            encrypted_log ? sight::core::log::ENCRYPTED_LOG_FILE : sight::core::log::LOG_FILE
-        ),
+        po::value(&log_file),
         "Log output filename"
     )
     (
@@ -268,6 +338,17 @@ int main(int argc, char* argv[])
     }
 #endif
 
+    SIGHT_INFO_IF("Profile path: " << profileFile << " => " << ::absolute(profileFile), vm.count("profile"));
+    SIGHT_INFO_IF("Profile-args: " << profileArgs, vm.count("profile-args"));
+
+    // Check if profile path exist
+    profileFile = ::absolute(profileFile);
+
+    SIGHT_FATAL_IF(
+        "Profile file " << profileFile << " do not exists or is not a regular file.",
+        !std::filesystem::is_regular_file(profileFile)
+    );
+
     // Log file
     SpyLogger& logger = SpyLogger::get();
 
@@ -278,6 +359,8 @@ int main(int argc, char* argv[])
 
     if(file_log)
     {
+        std::filesystem::path log_file_path = findLogFilePath(log_file, profileFile, encrypted_log);
+
         if(encrypted_log)
         {
             const secure_string& password =
@@ -286,7 +369,7 @@ int main(int argc, char* argv[])
                 : secure_string();
 
             logger.start_encrypted_logger(
-                log_file,
+                log_file_path,
                 static_cast<SpyLogger::LevelType>(log_level),
                 password,
                 ask_password
@@ -294,23 +377,11 @@ int main(int argc, char* argv[])
         }
         else
         {
-            logger.start_logger(log_file, static_cast<SpyLogger::LevelType>(log_level));
+            logger.start_logger(log_file_path, static_cast<SpyLogger::LevelType>(log_level));
         }
     }
 
-    SIGHT_INFO_IF("Profile path: " << profileFile << " => " << ::absolute(profileFile), vm.count("profile"));
-    SIGHT_INFO_IF("Profile-args: " << profileArgs, vm.count("profile-args"));
-
-    // Check if path exist
-    SIGHT_FATAL_IF(
-        "Profile path doesn't exist: " << profileFile.string() << " => " << ::absolute(
-            profileFile
-        ),
-        !std::filesystem::exists(profileFile.string())
-    );
-
     std::transform(modulePaths.begin(), modulePaths.end(), modulePaths.begin(), ::absolute);
-    profileFile = ::absolute(profileFile);
 
     // Automatically adds the module folders where the profile.xml is located if it was not already there
     const auto profileModulePath = profileFile.parent_path().parent_path();
@@ -361,70 +432,62 @@ int main(int argc, char* argv[])
         }
     }
 
-    if(std::filesystem::is_regular_file(profileFile))
+    sight::core::runtime::Profile::sptr profile;
+
+    try
     {
-        sight::core::runtime::Profile::sptr profile;
+        profile = sight::core::runtime::io::ProfileReader::createProfile(profileFile);
 
-        try
+        // Install a signal handler
+        if(std::signal(SIGINT, signalHandler) == SIG_ERR)
         {
-            profile = sight::core::runtime::io::ProfileReader::createProfile(profileFile);
+            perror("std::signal(SIGINT)");
+        }
 
-            // Install a signal handler
-            if(std::signal(SIGINT, signalHandler) == SIG_ERR)
-            {
-                perror("std::signal(SIGINT)");
-            }
-
-            if(std::signal(SIGTERM, signalHandler) == SIG_ERR)
-            {
-                perror("std::signal(SIGTERM)");
-            }
+        if(std::signal(SIGTERM, signalHandler) == SIG_ERR)
+        {
+            perror("std::signal(SIGTERM)");
+        }
 
 #ifndef WIN32
-            if(std::signal(SIGHUP, signalHandler) == SIG_ERR)
-            {
-                perror("std::signal(SIGHUP)");
-            }
+        if(std::signal(SIGHUP, signalHandler) == SIG_ERR)
+        {
+            perror("std::signal(SIGHUP)");
+        }
 
-            if(std::signal(SIGQUIT, signalHandler) == SIG_ERR)
-            {
-                perror("std::signal(SIGQUIT)");
-            }
+        if(std::signal(SIGQUIT, signalHandler) == SIG_ERR)
+        {
+            perror("std::signal(SIGQUIT)");
+        }
 #endif
-            profile->setParams(profileArgs);
+        profile->setParams(profileArgs);
 
-            profile->start();
-            if(macroMode)
-            {
-                sight::core::runtime::loadModule("sight::module::ui::test");
-            }
-
-            profile->run();
-            if(gSignalStatus == 0)
-            {
-                profile->stop();
-            }
-
-            if(macroMode)
-            {
-                sight::core::runtime::unloadModule("sight::module::ui::test");
-            }
-        }
-        catch(const std::exception& e)
+        profile->start();
+        if(macroMode)
         {
-            SIGHT_FATAL(e.what());
-            return 3;
+            sight::core::runtime::loadModule("sight::module::ui::test");
         }
-        catch(...)
+
+        profile->run();
+        if(gSignalStatus == 0)
         {
-            SIGHT_FATAL("An unrecoverable error has occurred.");
-            return 4;
+            profile->stop();
+        }
+
+        if(macroMode)
+        {
+            sight::core::runtime::unloadModule("sight::module::ui::test");
         }
     }
-    else
+    catch(const std::exception& e)
     {
-        SIGHT_ERROR("Profile file " << profileFile << " do not exists or is not a regular file.");
-        return 5;
+        SIGHT_FATAL(e.what());
+        return 3;
+    }
+    catch(...)
+    {
+        SIGHT_FATAL("An unrecoverable error has occurred.");
+        return 4;
     }
 
     return 0;

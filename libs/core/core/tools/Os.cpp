@@ -82,47 +82,97 @@ std::string getEnv(const std::string& name, const std::string& defaultValue)
 
 //------------------------------------------------------------------------------
 
-std::string getUserDataDir(std::string company, std::string appName, bool createDirectory)
+inline static std::filesystem::path getUserDir(
+    const std::string& variable,
+    [[maybe_unused]] const std::string& subdirectory_fallback,
+    const std::string& company,
+    const std::string& appName,
+    bool createDirectory = false
+)
 {
-    std::string dataDir;
-#ifdef WIN32
-    dataDir = core::tools::os::getEnv("APPDATA");
-#else
-    bool hasXdgConfigHome     = false;
-    bool hasHome              = false;
-    std::string xdgConfigHome = core::tools::os::getEnv("XDG_CONFIG_HOME", &hasXdgConfigHome);
-    std::string home          = core::tools::os::getEnv("HOME", &hasHome);
-    dataDir = hasXdgConfigHome ? xdgConfigHome : (hasHome ? std::string(home) + "/.config" : "");
+    // get the environment variable for user directory
+    std::filesystem::path dir = core::tools::os::getEnv(variable);
+
+#ifndef WIN32
+    // On Unix, fallback to $HOME / subdirectory_fallback
+    if(dir.empty())
+    {
+        dir = core::tools::os::getEnv("HOME");
+
+        if(dir.empty())
+        {
+            SIGHT_THROW("No $HOME environment set.");
+        }
+        else
+        {
+            dir /= subdirectory_fallback;
+        }
+    }
 #endif
+
+    // Make canonical to be prettier
+    if(!dir.empty())
+    {
+        dir = std::filesystem::weakly_canonical(dir);
+    }
 
     if(!company.empty())
     {
-        dataDir += "/" + company;
+        dir /= company;
     }
 
     if(!appName.empty())
     {
-        dataDir += "/" + appName;
+        dir /= appName;
     }
 
-    if(!dataDir.empty())
+    if(std::filesystem::exists(dir))
     {
-        if(std::filesystem::exists(dataDir))
-        {
-            if(!std::filesystem::is_directory(dataDir))
-            {
-                SIGHT_ERROR(dataDir << " already exists and is not a directory.");
-                dataDir = "";
-            }
-        }
-        else if(createDirectory)
-        {
-            SIGHT_INFO("Creating application data directory: " << dataDir);
-            std::filesystem::create_directories(dataDir);
-        }
+        SIGHT_THROW_IF(
+            dir.string() << " already exists and is not a directory.",
+            !std::filesystem::is_directory(dir)
+        );
+    }
+    else if(createDirectory)
+    {
+        SIGHT_INFO("Creating user application directory: " << dir.string());
+        std::filesystem::create_directories(dir);
     }
 
-    return dataDir;
+    return dir;
+}
+
+//------------------------------------------------------------------------------
+
+std::filesystem::path getUserDataDir(const std::string& appName, bool createDirectory, const std::string& company)
+{
+#ifdef WIN32
+    return getUserDir("APPDATA", "", company, appName, createDirectory);
+#else
+    return getUserDir("XDG_DATA_HOME", ".local/share", company, appName, createDirectory);
+#endif
+}
+
+//------------------------------------------------------------------------------
+
+std::filesystem::path getUserConfigDir(const std::string& appName, bool createDirectory, const std::string& company)
+{
+#ifdef WIN32
+    return getUserDir("APPDATA", "", company, appName, createDirectory);
+#else
+    return getUserDir("XDG_CONFIG_HOME", ".config", company, appName, createDirectory);
+#endif
+}
+
+//------------------------------------------------------------------------------
+
+std::filesystem::path getUserCacheDir(const std::string& appName, bool createDirectory, const std::string& company)
+{
+#ifdef WIN32
+    return getUserDir("APPDATA", "", company, appName, createDirectory);
+#else
+    return getUserDir("XDG_CACHE_HOME", ".cache", company, appName, createDirectory);
+#endif
 }
 
 //------------------------------------------------------------------------------

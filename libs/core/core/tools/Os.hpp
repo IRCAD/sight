@@ -50,7 +50,41 @@ CORE_API std::string getEnv(const std::string& name, bool* ok = nullptr);
 CORE_API std::string getEnv(const std::string& name, const std::string& defaultValue);
 
 /**
- * @brief   Return the users's application data directory
+ * @brief   Return the users's application config directory
+ *
+ * @param company The company name
+ * @param appName The application name
+ * @param createDirectory if true, create the returned directory if it don't exist
+ *
+ * Return the application config directory. If company or appName is not empty, append them to
+ * the path. Under unix, XDG conventions are respected.
+ * For example, the UserConfigDir under linux will be "~/.local/share/company/appName"
+ */
+CORE_API std::filesystem::path getUserDataDir(
+    const std::string& appName = "",
+    bool createDirectory       = true,
+    const std::string& company = "sight"
+);
+
+/**
+ * @brief   Return the users's application config directory
+ *
+ * @param company The company name
+ * @param appName The application name
+ * @param createDirectory if true, create the returned directory if it don't exist
+ *
+ * Return the application config directory. If company or appName is not empty, append them to
+ * the path. Under unix, XDG conventions are respected.
+ * For example, the UserConfigDir under linux will be "~/.config/company/appName"
+ */
+CORE_API std::filesystem::path getUserConfigDir(
+    const std::string& appName = "",
+    bool createDirectory       = true,
+    const std::string& company = "sight"
+);
+
+/**
+ * @brief   Return the users's application cache directory
  *
  * @param company The company name
  * @param appName The application name
@@ -58,12 +92,12 @@ CORE_API std::string getEnv(const std::string& name, const std::string& defaultV
  *
  * Return the application data directory. If company or appName is not empty, append them to
  * the path. Under unix, XDG conventions are respected.
- * For example, the UserDataDir under linux will be "~/.config/company/appName"
+ * For example, the UserCacheDir under linux will be "~/.cache/company/appName"
  */
-CORE_API std::string getUserDataDir(
-    std::string company  = "",
-    std::string appName  = "",
-    bool createDirectory = false
+CORE_API std::filesystem::path getUserCacheDir(
+    const std::string& appName = "",
+    bool createDirectory       = true,
+    const std::string& company = "sight"
 );
 
 /**

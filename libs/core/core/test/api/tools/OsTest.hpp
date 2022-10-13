@@ -31,6 +31,9 @@ class Os : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(Os);
 CPPUNIT_TEST(getSharedLibraryPath);
+CPPUNIT_TEST(getUserConfigDirTest);
+CPPUNIT_TEST(getUserDataDirTest);
+CPPUNIT_TEST(getUserCacheDirTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -39,6 +42,9 @@ public:
     void setUp() override;
     void tearDown() override;
     static void getSharedLibraryPath();
+    static void getUserConfigDirTest();
+    static void getUserDataDirTest();
+    static void getUserCacheDirTest();
 
     void idTest();
 };

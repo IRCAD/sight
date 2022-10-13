@@ -24,6 +24,9 @@
 
 #include "io/vtk/vtk.hpp"
 
+#include <core/runtime/Profile.hpp>
+#include <core/tools/Os.hpp>
+
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
@@ -69,10 +72,18 @@ static bool initVTKLogFile()
     const auto timenow =
         std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
-    // Create VTK.log in current folder.
+    // Create VTK.log in user cache folder.
+    // Find log dir
+    const auto& current_profile = core::runtime::getCurrentProfile();
+    const auto& profile_name    = current_profile ? current_profile->getName() : std::string();
+    const auto& vtk_log         = core::tools::os::getUserCacheDir(profile_name) / "VTK.log";
+
     // TODO: Gather all .log file together in Session.
     vtkSmartPointer<vtkFileOutputWindow> outwin = vtkFileOutputWindow::New();
-    outwin->SetFileName("VTK.log");
+
+    // MSVC doesn't have std::filesystem::path::c_str()
+    const auto& vtk_log_string = vtk_log.string();
+    outwin->SetFileName(vtk_log_string.c_str());
 
     // Print header.
     std::string header = "# VTK LOG File " + std::string(ctime(&timenow));

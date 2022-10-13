@@ -200,7 +200,7 @@ void SOpenvslam::configuring()
 
 void SOpenvslam::starting()
 {
-    const auto& user_path = core::tools::os::getUserDataDir("sight", "openvslam", true);
+    const auto& user_path = core::tools::os::getUserConfigDir("openvslam");
     m_vocabularyPath = std::filesystem::path(user_path) / "orb_vocab.dbow2";
 
     if(!std::filesystem::exists(m_vocabularyPath))

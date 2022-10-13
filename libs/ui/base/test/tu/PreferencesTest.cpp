@@ -55,8 +55,8 @@ void PreferencesTest::setUp()
     core::runtime::getCurrentProfile()->setName(profileName);
 
     // Compute the expected preferences file path
-    m_preferencesPath = core::tools::os::getUserDataDir("sight", profileName) + "/preferences.json";
-    m_encryptedPath   = core::tools::os::getUserDataDir("sight", profileName) + "/preferences.sight";
+    m_preferencesPath = core::tools::os::getUserConfigDir(profileName) / "preferences.json";
+    m_encryptedPath   = core::tools::os::getUserConfigDir(profileName) / "preferences.sight";
 }
 
 //------------------------------------------------------------------------------
@@ -64,8 +64,7 @@ void PreferencesTest::setUp()
 void PreferencesTest::tearDown()
 {
     ui::base::Preferences::set_enabled(false);
-    std::filesystem::remove(m_preferencesPath);
-    std::filesystem::remove(m_encryptedPath);
+    std::filesystem::remove_all(m_preferencesPath.parent_path());
 }
 
 //------------------------------------------------------------------------------

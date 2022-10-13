@@ -24,6 +24,9 @@
 
 #include "viz/scene3d/Utils.hpp"
 
+#include <core/runtime/Profile.hpp>
+#include <core/tools/Os.hpp>
+
 #include <boost/tokenizer.hpp>
 
 #include <OgreLogManager.h>
@@ -49,9 +52,14 @@ Plugin::~Plugin() noexcept =
 
 void Plugin::start()
 {
-    // Redirect Ogre Log to Sight Log.
+    // Find log dir
+    const auto& current_profile = core::runtime::getCurrentProfile();
+    const auto& profile_name    = current_profile ? current_profile->getName() : std::string();
+    const auto& ogre_log        = core::tools::os::getUserCacheDir(profile_name) / "Ogre.log";
+
+    // Start Ogre Log
     m_logManager = new Ogre::LogManager();
-    m_log        = m_logManager->createLog("Ogre.log", true, false, false);
+    m_log        = m_logManager->createLog(ogre_log.string(), true, false, false);
     m_listener   = new SightOgreListener();
     m_log->addListener(m_listener);
     m_log->setLogDetail(Ogre::LL_BOREME);
