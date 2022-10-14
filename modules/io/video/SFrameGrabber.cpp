@@ -787,6 +787,7 @@ void SFrameGrabber::grabImage()
                     m_timer->stop();
                     if(m_loopVideo)
                     {
+                        frameTL->clearTimeline();
                         m_imageCount = 0;
                         core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / m_fps);
                         m_timer->setDuration(duration);
@@ -814,6 +815,8 @@ void SFrameGrabber::grabImage()
     }
     else if(!m_isPaused && m_loopVideo)
     {
+        const auto frameTL = m_frame.lock();
+        frameTL->clearTimeline();
         m_imageCount = 0;
     }
 }

@@ -53,6 +53,8 @@ namespace sight::module::io::matrix
  * - \b readPrevious() : read previous matrices
  * - \b setStep(int step, std::string key) : set the step value between two matrices when calling readNext/readPrevious
  * slots on oneShot mode (supported key: "step")
+ * - \b toggleLoopMode() : changes the loop mode. If active, the reader loops over the file,
+ * if false, it reads the file once only
  *
  * @section XML XML Configuration
  *
@@ -81,6 +83,7 @@ namespace sight::module::io::matrix
  * - \b useTimelapse: if set to true, ignore the fps value and use the matrix
  *     timestamps to figure out at which speed to read the matrices. (default: false)
  * - \b step (optional): value to jump between two matrices when calling readNext/readPrevious slots (default: 1)
+ * - \b loop (optional): specifies if the reader loops over the file or not (default: false)
  */
 
 class MODULE_IO_MATRIX_CLASS_API SMatricesReader : public sight::io::base::service::IReader
@@ -145,6 +148,9 @@ private:
     /// SLOT: Set step used on readPrevious/readNext slots
     void setStep(int _step, std::string _key);
 
+    /// SLOT: toggle the loop mode
+    void toggleLoopMode();
+
     /// Read matrices (this function is set to the worker)
     void readMatrices();
 
@@ -168,6 +174,12 @@ private:
 
     /// If set to true, ignore the fps value and use the interval between timestamps for the timer
     bool m_useTimelapse {false};
+
+    /// If true: the grabber is paused.
+    bool m_isPaused {false};
+
+    /// If set to true, loop over the file
+    bool m_loopMatrix {false};
 
     /// Step between two matrices when calling readNext()/readPrevious() slots
     std::uint64_t m_step {1};
