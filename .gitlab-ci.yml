@@ -291,6 +291,7 @@ deploy_manual:apps-linux-release:
     - $env:FWTEST_DATA_DIR="${env:CI_PROJECT_DIR}/build/sight-data"
     - $env:IMAGE_OUTPUT_PATH="${env:CI_PROJECT_DIR}/build/testImages"
     - md "${env:IMAGE_OUTPUT_PATH}"
+    - $env:DISABLE_ABORT_DIALOG="1"
     # Launch tests
     - ctest --timeout 480 --output-on-failure -O ctest.log -j6 --output-junit junit.xml
     - |
