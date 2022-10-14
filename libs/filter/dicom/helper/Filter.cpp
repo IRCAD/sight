@@ -51,11 +51,11 @@ bool Filter::applyFilter(
             {
                 tempo = filter->apply(dicomSeries, logger);
             }
-            catch(filter::dicom::exceptions::FilterFailure& e)
+            catch(filter::dicom::exceptions::FilterFailure& /*e*/)
             {
                 if(!forcedApply)
                 {
-                    throw e;
+                    throw;
                 }
 
                 ignoredError = true;

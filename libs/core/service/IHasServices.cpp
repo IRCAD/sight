@@ -122,7 +122,7 @@ void IHasServices::unregisterServices(const std::string& _classname)
     for(auto itSrv = m_subServices.begin() ; itSrv != m_subServices.end() ; )
     {
         const service::IService::sptr& srv = itSrv->lock();
-        if(srv && (classname.empty() || (!classname.empty() && srv->getClassname() == classname)))
+        if(srv && (classname.empty() || srv->getClassname() == classname))
         {
             srv->stop().wait();
             service::OSR::unregisterService(srv);

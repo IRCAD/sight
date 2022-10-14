@@ -60,7 +60,7 @@ Series::~Series()
 void Series::readGeneralSeriesModule()
 {
     // Retrieve dataset
-    gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
+    const gdcm::DataSet& dataset = m_reader->GetFile().GetDataSet();
 
     const std::string& modality = io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x0060>(dataset);
     m_object->setModality(modality);

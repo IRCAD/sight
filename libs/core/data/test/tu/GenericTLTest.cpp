@@ -265,7 +265,7 @@ void GenericTLTest::pushPopTest()
         dataPushed2Bis = timeline->getClosestObject(time2);
         CPPUNIT_ASSERT(data2 == dataPushed2Bis);
 
-        dataPushed2Bis = timeline->getClosestObject(time3);
+        dataPushed3Bis = timeline->getClosestObject(time3);
         CPPUNIT_ASSERT(data3 == dataPushed3Bis);
 
         CSPTR(data::timeline::Object) dataPopped3 = timeline->popObject(time3);

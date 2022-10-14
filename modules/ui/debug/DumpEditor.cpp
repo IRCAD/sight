@@ -170,9 +170,9 @@ private:
 const int PolicyTableModel::s_EXTRA_INFO_NB = 1;
 
 PolicyTableModel::PolicyTableModel(QObject* parent) :
-    QAbstractTableModel(parent)
+    QAbstractTableModel(parent),
+    m_buffManager(core::memory::BufferManager::getDefault())
 {
-    m_buffManager = core::memory::BufferManager::getDefault();
 }
 
 //------------------------------------------------------------------------------
@@ -342,9 +342,9 @@ private:
 };
 
 InfoTableModel::InfoTableModel(QObject* parent) :
-    QAbstractTableModel(parent)
+    QAbstractTableModel(parent),
+    m_buffManager(core::memory::BufferManager::getDefault())
 {
-    m_buffManager = core::memory::BufferManager::getDefault();
 }
 
 //------------------------------------------------------------------------------

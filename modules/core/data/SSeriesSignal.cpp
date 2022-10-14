@@ -49,10 +49,9 @@ const core::com::Signals::SignalKeyType SSeriesSignal::s_SERIES_ADDED_SIG = "ser
 
 //------------------------------------------------------------------------------
 
-SSeriesSignal::SSeriesSignal() noexcept
+SSeriesSignal::SSeriesSignal() noexcept :
+    m_sigSeriesAdded(newSignal<SeriesAddedSignalType>(s_SERIES_ADDED_SIG))
 {
-    m_sigSeriesAdded = newSignal<SeriesAddedSignalType>(s_SERIES_ADDED_SIG);
-
     newSlot(s_REPORT_SERIES_SLOT, &SSeriesSignal::reportSeriesSlot, this);
 }
 

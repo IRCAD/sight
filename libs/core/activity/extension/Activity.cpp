@@ -43,11 +43,11 @@ namespace sight::activity::extension
 {
 
 ActivityAppConfigParam::ActivityAppConfigParam(const ConfigType& config) :
-    replace(config.get<std::string>("<xmlattr>.replace"))
-{
+    replace(config.get<std::string>("<xmlattr>.replace")),
     // @deprecated This is no longer necessary to use "uid" to get the prefix replacement, since
     // this is now done in AppConfig. However we keep that code for a while for backward compatibility
-    by = config.get_optional<std::string>("<xmlattr>.uid").get_value_or("");
+    by(config.get_optional<std::string>("<xmlattr>.uid").get_value_or(""))
+{
     if(by.empty())
     {
         by = config.get<std::string>("<xmlattr>.by");

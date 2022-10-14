@@ -47,15 +47,13 @@ const core::com::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SET_FRAME_DELAY_
 // ----------------------------------------------------------------------------
 
 SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
-
+    m_sigSynchronizationDone(newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG)),
+    m_sigSynchronizationSkipped(newSignal<synchronizationSkippedSignalType>(s_SYNCHRONIZATION_SKIPPED_SIG)),
+    m_sigAllMatricesFound(newSignal<AllMatricesFoundSignalType>(s_ALL_MATRICES_FOUND_SIG)),
+    m_sigMatrixSynchronized(newSignal<MatrixSynchronizedSignalType>(s_MATRIX_SYNCHRONIZED_SIG)),
+    m_sigMatrixUnsynchronized(newSignal<MatrixUnsynchronizedSignalType>(s_MATRIX_UNSYNCHRONIZED_SIG)),
     m_lastTimestamp(std::numeric_limits<double>::lowest())
 {
-    m_sigSynchronizationDone    = newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG);
-    m_sigSynchronizationSkipped = newSignal<synchronizationSkippedSignalType>(s_SYNCHRONIZATION_SKIPPED_SIG);
-    m_sigAllMatricesFound       = newSignal<AllMatricesFoundSignalType>(s_ALL_MATRICES_FOUND_SIG);
-    m_sigMatrixSynchronized     = newSignal<MatrixSynchronizedSignalType>(s_MATRIX_SYNCHRONIZED_SIG);
-    m_sigMatrixUnsynchronized   = newSignal<MatrixUnsynchronizedSignalType>(s_MATRIX_UNSYNCHRONIZED_SIG);
-
     newSlot(s_RESET_TIMELINE_SLOT, &SFrameMatrixSynchronizer::resetTimeline, this);
     newSlot(s_SYNCHRONIZE_SLOT, &SFrameMatrixSynchronizer::synchronize, this);
     newSlot(s_SET_FRAME_DELAY_SLOT, &SFrameMatrixSynchronizer::setFrameDelay, this);

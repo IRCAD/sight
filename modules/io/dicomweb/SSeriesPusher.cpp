@@ -170,9 +170,9 @@ void SSeriesPusher::pushSeries()
         data::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
         const std::size_t dicomContainerSize                 = dicomContainer.size();
 
-        std::size_t nbInstanceSuccess = 0;
         try
         {
+            std::size_t nbInstanceSuccess = 0;
             for(const auto& item : dicomContainer)
             {
                 const core::memory::BufferObject::sptr bufferObj = item.second;

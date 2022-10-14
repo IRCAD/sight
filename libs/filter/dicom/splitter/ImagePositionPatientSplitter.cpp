@@ -80,8 +80,6 @@ const
     DicomSeriesContainerType result;
 
     OFCondition status;
-    DcmDataset* dataset = nullptr;
-
     double previousIndex        = 0.;
     unsigned int instanceNumber = 0;
     double spacingBetweenSlices = 0.;
@@ -111,7 +109,7 @@ const
         fileFormat.loadAllDataIntoMemory();
         fileFormat.transferEnd();
 
-        dataset = fileFormat.getDataset();
+        DcmDataset* dataset = fileFormat.getDataset();
 
         if(!dataset->tagExists(DCM_ImagePositionPatient) || !dataset->tagExists(DCM_ImageOrientationPatient))
         {

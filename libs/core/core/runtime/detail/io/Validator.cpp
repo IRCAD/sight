@@ -117,11 +117,10 @@ void Validator::initializeContext()
     if(!m_schema)
     {
         m_schema = SchemaSptr(xmlSchemaParse(m_schemaParserContext.get()), xmlSchemaFree);
-    }
-
-    if(!m_schema)
-    {
-        return;
+        if(!m_schema)
+        {
+            return;
+        }
     }
 
     // Create XML schemas validation context

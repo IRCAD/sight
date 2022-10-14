@@ -244,7 +244,6 @@ void Surface::readSurfaceSegmentationModule(
 
     // Computed Mask Volume (0x5649, 0x1001)
     const gdcm::Tag computedMaskVolumeTag(0x5649, 0x1001);
-    privateCreator = gdcm::LOComp::Trim(segmentDataset.GetPrivateCreator(computedMaskVolumeTag).c_str());
     if(segmentDataset.FindDataElement(computedMaskVolumeTag))
     {
         gdcm::Attribute<0x5649, 0x1001, gdcm::VR::OD, gdcm::VM::VM1> attribute {};
@@ -323,7 +322,6 @@ void Surface::readSurfaceMeshModule(
 
     // Surface Points Normals
     const gdcm::ByteValue* normalCoordinates = surface->GetVectorCoordinateData().GetByteValue();
-    const char* normalCoordinatesPointer     = nullptr;
     if(!surface->GetVectorCoordinateData().IsEmpty())
     {
         // Check that the surface contains normals
@@ -331,8 +329,6 @@ void Surface::readSurfaceMeshModule(
         {
             throw io::dicom::exception::Failed("No normal coordinates data found.");
         }
-
-        normalCoordinatesPointer = normalCoordinates->GetPointer();
 
         // Compute number of normal coordinates
         const std::uint64_t normalCoordinateSize = normalCoordinates->GetLength() / sizeof(float);
@@ -357,7 +353,9 @@ void Surface::readSurfaceMeshModule(
                                                         data::Mesh::size_t(pointCoordinatesSize),
                                                         reinterpret_cast<const uint32_t*>(pointIndices->GetPointer()),
                                                         data::Mesh::size_t(indexSize),
-                                                        reinterpret_cast<const float*>(normalCoordinatesPointer));
+                                                        surface->GetVectorCoordinateData().IsEmpty() ? nullptr
+                                                                                                     : reinterpret_cast<
+                                                            const float*>(normalCoordinates->GetPointer()));
 
     // Set the reconstruction
     reconstruction->setMaterial(material);

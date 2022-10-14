@@ -32,9 +32,9 @@ static const core::com::Signals::SignalKeyType s_STEREO_ACTIVE_SIG = "stereoActi
 
 //------------------------------------------------------------------------------
 
-SStereoToggler::SStereoToggler()
+SStereoToggler::SStereoToggler() :
+    m_stereoActiveSig(newSignal<StereoActiveSigType>(s_STEREO_ACTIVE_SIG))
 {
-    m_stereoActiveSig = newSignal<StereoActiveSigType>(s_STEREO_ACTIVE_SIG);
 }
 
 //------------------------------------------------------------------------------

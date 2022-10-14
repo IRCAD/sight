@@ -70,7 +70,7 @@ public:
 private:
 
     /// Contains the first window.
-    Ogre::RenderWindow* m_firstWindow {};
+    Ogre::RenderWindow* m_firstWindow {nullptr};
 
     /// Stores all Ogre windows.
     std::set<Ogre::RenderWindow*> m_windows;

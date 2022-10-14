@@ -80,9 +80,9 @@ void SGetCamera::updating()
         i++;
     }
 
-    size_t j = 0;
     if(!m_extrinsicIndexNumbers.empty())
     {
+        size_t j = 0;
         for(auto& index : m_extrinsicIndexNumbers)
         {
             if(camera_set->get_extrinsic_matrix(index) == nullptr)

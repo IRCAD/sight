@@ -47,10 +47,10 @@ const core::com::Signals::SignalKeyType Reconstruction::s_VISIBILITY_MODIFIED_SI
 Reconstruction::Reconstruction(data::Object::Key /*unused*/) :
 
     m_material(data::factory::New<data::Material>()),
-    m_computedMaskVolume(Reconstruction::s_NO_COMPUTED_MASK_VOLUME)
+    m_computedMaskVolume(Reconstruction::s_NO_COMPUTED_MASK_VOLUME),
+    m_sigMeshChanged(MeshChangedSignalType::New()),
+    m_sigVisibilityModified(VisibilityModifiedSignalType::New())
 {
-    m_sigMeshChanged        = MeshChangedSignalType::New();
-    m_sigVisibilityModified = VisibilityModifiedSignalType::New();
     m_signals(s_MESH_CHANGED_SIG, m_sigMeshChanged)
         (s_VISIBILITY_MODIFIED_SIG, m_sigVisibilityModified);
 }

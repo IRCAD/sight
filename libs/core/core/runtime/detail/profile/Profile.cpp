@@ -57,8 +57,8 @@ void Profile::add(SPTR(Activater)activater)
 
 void Profile::addStarter(const std::string& identifier)
 {
-    detail::Runtime& runtime = detail::Runtime::get();
-    auto module              = std::dynamic_pointer_cast<detail::Module>(runtime.findModule(identifier));
+    const detail::Runtime& runtime = detail::Runtime::get();
+    auto module                    = std::dynamic_pointer_cast<detail::Module>(runtime.findModule(identifier));
     m_starters.insert({module->priority(), identifier});
 }
 

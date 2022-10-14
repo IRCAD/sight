@@ -113,7 +113,6 @@ void ContainOneToolTest::testValidator()
         vect_rec.push_back(rec3);
         modelSeries->setReconstructionDB(vect_rec);
         validation = objValidator->validate(modelSeries);
-        validation = objValidator->validate(modelSeries);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "ModelSeries with three reconstructions (only one Tool) should be valid",
             true,

@@ -66,14 +66,13 @@ static const std::string s_ELEVATION_CONFIG        = "elevation";
 
 //------------------------------------------------------------------------------
 
-SSequencer::SSequencer() noexcept
+SSequencer::SSequencer() noexcept :
+    m_sigActivityCreated(newSignal<ActivityCreatedSignalType>(s_ACTIVITY_CREATED_SIG)),
+    m_sigDataRequired(newSignal<DataRequiredSignalType>(s_DATA_REQUIRED_SIG)),
+    m_sigHasPrevious(newSignal<BoolSignalType>(s_HAS_PREVIOUS_SIG)),
+    m_sigHasNext(newSignal<BoolSignalType>(s_HAS_NEXT_SIG)),
+    m_sigNextEnabled(newSignal<BoolSignalType>(s_NEXT_ENABLED_SIG))
 {
-    m_sigActivityCreated = newSignal<ActivityCreatedSignalType>(s_ACTIVITY_CREATED_SIG);
-    m_sigDataRequired    = newSignal<DataRequiredSignalType>(s_DATA_REQUIRED_SIG);
-    m_sigHasPrevious     = newSignal<BoolSignalType>(s_HAS_PREVIOUS_SIG);
-    m_sigHasNext         = newSignal<BoolSignalType>(s_HAS_NEXT_SIG);
-    m_sigNextEnabled     = newSignal<BoolSignalType>(s_NEXT_ENABLED_SIG);
-
     newSlot(s_GO_TO_SLOT, &SSequencer::goTo, this);
     newSlot(s_CHECK_NEXT_SLOT, &SSequencer::checkNext, this);
     newSlot(s_NEXT_SLOT, &SSequencer::next, this);

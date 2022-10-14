@@ -83,25 +83,25 @@ Q_SIGNALS:
 private:
 
     /// Contains the effect.
-    Qt3DRender::QEffect* m_effect;
+    Qt3DRender::QEffect* m_effect {nullptr};
 
     /// Contains the compute shader.
-    Qt3DRender::QShaderProgram* m_computeShader;
+    Qt3DRender::QShaderProgram* m_computeShader {nullptr};
 
     /// Contains the render pass.
-    Qt3DRender::QRenderPass* m_computeRenderPass;
+    Qt3DRender::QRenderPass* m_computeRenderPass {nullptr};
 
     /// Contains the index buffer.
-    Qt3DRender::QBuffer* m_indexBuffer;
+    Qt3DRender::QBuffer* m_indexBuffer {nullptr};
 
     /// Contains the index buffer parameter.
-    Qt3DRender::QParameter* m_indexBufferParameter;
+    Qt3DRender::QParameter* m_indexBufferParameter {nullptr};
 
     /// Contains the filter key.
-    Qt3DRender::QFilterKey* m_computeFilterKey;
+    Qt3DRender::QFilterKey* m_computeFilterKey {nullptr};
 
     /// Contains the compute technique.
-    Qt3DRender::QTechnique* m_computeTechnique;
+    Qt3DRender::QTechnique* m_computeTechnique {nullptr};
 };
 
 //------------------------------------------------------------------------------

@@ -126,10 +126,10 @@ std::shared_ptr<profile::Profile> ProfileReader::createProfile(const std::filesy
         xmlFreeDoc(document);
         return profile;
     }
-    catch(std::exception& exception)
+    catch(std::exception& /*exception*/)
     {
         xmlFreeDoc(document);
-        throw exception;
+        throw;
     }
 }
 

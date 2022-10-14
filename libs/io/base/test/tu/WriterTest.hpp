@@ -86,7 +86,7 @@ protected:
 
 private:
 
-    io::base::service::IOPathType m_pathType;
+    io::base::service::IOPathType m_pathType {io::base::service::IOPathType::FILE};
 };
 
 /**

@@ -43,9 +43,9 @@ const std::string TagValueSorter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-TagValueSorter::TagValueSorter(filter::dicom::IFilter::Key /*unused*/)
+TagValueSorter::TagValueSorter(filter::dicom::IFilter::Key /*unused*/) :
+    m_tag(DCM_UndefinedTagKey)
 {
-    m_tag = DCM_UndefinedTagKey;
 }
 
 //-----------------------------------------------------------------------------
@@ -93,7 +93,6 @@ const
     data::DicomSeries::DicomContainerType sortedDicom;
 
     OFCondition status;
-    DcmDataset* dataset = nullptr;
     for(const auto& item : series->getDicomContainer())
     {
         const core::memory::BufferObject::sptr bufferObj = item.second;
@@ -118,7 +117,7 @@ const
         fileFormat.loadAllDataIntoMemory();
         fileFormat.transferEnd();
 
-        dataset = fileFormat.getDataset();
+        DcmDataset* dataset = fileFormat.getDataset();
 
         Sint32 index = 0;
         dataset->findAndGetSint32(m_tag, index);

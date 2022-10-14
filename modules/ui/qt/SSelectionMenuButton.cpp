@@ -57,10 +57,9 @@ static const core::com::Slots::SlotKeyType s_SENABLE_SIG     = "enable";
 static const core::com::Slots::SlotKeyType s_DISABLE_SIG     = "disable";
 
 SSelectionMenuButton::SSelectionMenuButton() noexcept :
+    m_sigSelected(newSignal<SelectedSignalType>(s_SELECTED_SIG)),
     m_text(">")
 {
-    m_sigSelected = newSignal<SelectedSignalType>(s_SELECTED_SIG);
-
     newSlot(s_SET_ENABLED_SIG, &SSelectionMenuButton::setEnabled, this);
     newSlot(s_SENABLE_SIG, &SSelectionMenuButton::enable, this);
     newSlot(s_DISABLE_SIG, &SSelectionMenuButton::disable, this);

@@ -54,11 +54,8 @@ MemoryArchiveSink::~MemoryArchiveSink()
 
 void MemoryArchiveSink::archive()
 {
-    std::size_t size             = 0;
-    boost::posix_time::ptime now = boost::date_time::not_a_date_time;
-
-    struct archive_entry* entry = archive_entry_new();
-    now = boost::posix_time::microsec_clock::universal_time();
+    struct archive_entry* entry  = archive_entry_new();
+    boost::posix_time::ptime now = boost::posix_time::microsec_clock::universal_time();
     archive_entry_set_pathname(entry, m_path.string().c_str());
     archive_entry_set_filetype(entry, AE_IFREG);
     archive_entry_set_perm(entry, 0444);
@@ -77,7 +74,7 @@ void MemoryArchiveSink::archive()
     archive_entry_free(entry);
     for(std::size_t i = 0 ; i < m_buffer.size() ; i += MemoryArchiveSink::s_WRITE_BUFFER_SIZE)
     {
-        size = MemoryArchiveSink::s_WRITE_BUFFER_SIZE;
+        std::size_t size = MemoryArchiveSink::s_WRITE_BUFFER_SIZE;
         if(std::size_t(i + MemoryArchiveSink::s_WRITE_BUFFER_SIZE) > m_buffer.size())
         {
             size = m_buffer.size() - i;

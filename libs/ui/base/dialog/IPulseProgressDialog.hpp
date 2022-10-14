@@ -71,7 +71,7 @@ public:
 protected:
 
     Stuff m_stuff;
-    MilliSecond m_frequence {};
+    MilliSecond m_frequence {1};
 };
 
 } // namespace sight::ui::base::dialog

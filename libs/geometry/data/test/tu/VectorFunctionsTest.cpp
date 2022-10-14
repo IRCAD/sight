@@ -134,7 +134,6 @@ void VectorFunctionsTest::checkNormalize()
         }
     }
 #else
-    v    = {0.4, 0.5, 0.6};
     norm = geometry::data::normalize(v);
 #endif
 

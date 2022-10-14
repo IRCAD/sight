@@ -49,17 +49,7 @@ using sight::io::base::service::IGrabber;
 //------------------------------------------------------------------------------
 
 SFrameGrabber::SFrameGrabber() noexcept :
-    m_loopVideo(false),
-    m_isInitialized(false),
-    m_fps(30),
-    m_imageCount(0)
-{
-    m_worker = core::thread::Worker::New();
-}
-
-//------------------------------------------------------------------------------
-
-SFrameGrabber::~SFrameGrabber() noexcept
+    m_worker(core::thread::Worker::New())
 {
 }
 

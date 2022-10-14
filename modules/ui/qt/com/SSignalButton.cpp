@@ -60,11 +60,10 @@ static const core::com::Slots::SlotKeyType s_HIDE_SLOT              = "hide";
 
 //-----------------------------------------------------------------------------
 
-SSignalButton::SSignalButton() noexcept
+SSignalButton::SSignalButton() noexcept :
+    m_sigClicked(newSignal<ClickedSignalType>(s_CLICKED_SIG)),
+    m_sigToggled(newSignal<ToggledSignalType>(s_TOGGLED_SIG))
 {
-    m_sigClicked = newSignal<ClickedSignalType>(s_CLICKED_SIG);
-    m_sigToggled = newSignal<ToggledSignalType>(s_TOGGLED_SIG);
-
     newSlot(s_SET_CHECKED_SLOT, &SSignalButton::setChecked, this);
     newSlot(s_CHECK_SLOT, &SSignalButton::check, this);
     newSlot(s_UNCHECK_SLOT, &SSignalButton::uncheck, this);

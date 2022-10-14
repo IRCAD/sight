@@ -73,7 +73,7 @@ void DictionaryReaderTest::test_1()
     data::StructureTraits::sptr expectedSkin = data::StructureTraits::New();
     expectedSkin->setType("Skin");
     expectedSkin->setClass(data::StructureTraits::ENVIRONMENT);
-    expectedSkin->setColor(data::Color::New(255.0F / 255.0F, 179.0F / 255.0F, 140.0F / 255.0F, 100.0 / 100.0F));
+    expectedSkin->setColor(data::Color::New(1.0F, 179.0F / 255.0F, 140.0F / 255.0F, 1.0F));
     data::StructureTraits::CategoryContainer skinCat(1);
     skinCat[0] = data::StructureTraits::BODY;
     expectedSkin->setCategories(skinCat);

@@ -77,8 +77,7 @@ struct WeakCall
         {
             m_worker.reset();
             // will throw an exception because m_weakPtr is expired
-            std::shared_ptr<T const> errorPtr(this->m_weakPtr);
-            SIGHT_NOT_USED(errorPtr);
+            throw std::bad_weak_ptr();
         }
 
         core::mt::ReadLock lock(ptr->m_workerMutex);

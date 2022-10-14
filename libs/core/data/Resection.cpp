@@ -39,12 +39,11 @@ const core::com::Signals::SignalKeyType Resection::s_VISIBILITY_MODIFIED_SIG  = 
 
 //------------------------------------------------------------------------------
 
-Resection::Resection(data::Object::Key /*unused*/)
+Resection::Resection(data::Object::Key /*unused*/) :
+    m_planeList(data::PlaneList::New()),
+    m_sigReconstructionAdded(ReconstructionAddedSignalType::New()),
+    m_sigVisibilityModified(VisibilityModifiedSignalType::New())
 {
-    m_planeList              = data::PlaneList::New();
-    m_sigReconstructionAdded = ReconstructionAddedSignalType::New();
-    m_sigVisibilityModified  = VisibilityModifiedSignalType::New();
-
     m_signals(s_RECONSTRUCTION_ADDED_SIG, m_sigReconstructionAdded)
         (s_VISIBILITY_MODIFIED_SIG, m_sigVisibilityModified);
 }

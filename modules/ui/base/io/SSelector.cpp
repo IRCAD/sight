@@ -60,13 +60,12 @@ static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT = "forwardJob";
 
 //------------------------------------------------------------------------------
 
-SSelector::SSelector()
+SSelector::SSelector() :
+    m_sigJobCreated(newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL)),
+    m_sigJobFailed(newSignal<JobFailedSignalType>(JOB_FAILED_SIGNAL)),
+    m_sigJobSucceeded(newSignal<JobSucceededSignalType>(JOB_SUCCEEDED_SIGNAL)),
+    m_slotForwardJob(newSlot(FORWARD_JOB_SLOT, &SSelector::forwardJob, this))
 {
-    m_sigJobCreated   = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
-    m_sigJobFailed    = newSignal<JobFailedSignalType>(JOB_FAILED_SIGNAL);
-    m_sigJobSucceeded = newSignal<JobSucceededSignalType>(JOB_SUCCEEDED_SIGNAL);
-
-    m_slotForwardJob = newSlot(FORWARD_JOB_SLOT, &SSelector::forwardJob, this);
 }
 
 //------------------------------------------------------------------------------

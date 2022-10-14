@@ -94,13 +94,13 @@ bool CollisionTools::collidesWithEntity(
     Ogre::Vector3 toPointAdj(_toPoint.x, _toPoint.y + _rayHeightLevel, _toPoint.z);
     Ogre::Vector3 normal = toPointAdj - fromPointAdj;
     float distToDest     = normal.normalise();
-    float distToColl     = 0.0F;
 
     std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*,
                float> res = raycastFromPoint(fromPointAdj, normal, _queryMask);
 
     if(std::get<0>(res))
     {
+        float distToColl = 0.0F;
         distToColl  = std::get<3>(res);
         distToColl -= _collisionRadius;
         return distToColl <= distToDest;
@@ -218,7 +218,7 @@ std::tuple<bool, Ogre::Vector3, Ogre::MovableObject*, float> CollisionTools::ray
             for(const Ogre::SubMesh* const submesh : mesh->getSubMeshes())
             {
                 // Store vertices one time if data are shared, else the vector is refilled each time.
-                if((!submesh->useSharedVertices) || (submesh->useSharedVertices && !addedShared))
+                if((!submesh->useSharedVertices) || !addedShared)
                 {
                     if(submesh->useSharedVertices)
                     {

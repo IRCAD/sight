@@ -41,12 +41,10 @@ static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
 //------------------------------------------------------------------------------
 
-SConfigLauncher::SConfigLauncher() noexcept
+SConfigLauncher::SConfigLauncher() noexcept :
+    m_sigLaunched(newSignal<LaunchedSignalType>(s_LAUNCHED_SIG)),
+    m_configLauncher(std::make_unique<service::helper::ConfigLauncher>())
 {
-    m_configLauncher = std::make_unique<service::helper::ConfigLauncher>();
-
-    m_sigLaunched = newSignal<LaunchedSignalType>(s_LAUNCHED_SIG);
-
     newSlot(s_STOP_CONFIG_SLOT, &SConfigLauncher::stopConfig, this);
 }
 

@@ -43,9 +43,9 @@ static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT = "launchActiv
 
 //------------------------------------------------------------------------------
 
-SView::SView()
+SView::SView() :
+    m_sigActivityLaunched(newSignal<ActivityLaunchedSignalType>(s_ACTIVITY_LAUNCHED_SIG))
 {
-    m_sigActivityLaunched = newSignal<ActivityLaunchedSignalType>(s_ACTIVITY_LAUNCHED_SIG);
     newSlot(s_LAUNCH_ACTIVITY_SLOT, &SView::launchActivity, this);
 }
 

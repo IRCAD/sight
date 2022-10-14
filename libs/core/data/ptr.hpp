@@ -344,6 +344,7 @@ public:
             m_holder = _other.m_holder;
             m_key    = _other.m_key;
             m_index  = _other.m_index;
+            return *this;
         }
 
         /// This method is only available if it is an output

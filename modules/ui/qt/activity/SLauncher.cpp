@@ -81,10 +81,9 @@ using sight::activity::IValidator;
 //------------------------------------------------------------------------------
 
 SLauncher::SLauncher() noexcept :
+    m_sigActivityLaunched(newSignal<ActivityLaunchedSignalType>(s_ACTIVITY_LAUNCHED_SIG)),
     m_mode("message")
 {
-    m_sigActivityLaunched = newSignal<ActivityLaunchedSignalType>(s_ACTIVITY_LAUNCHED_SIG);
-
     newSlot(s_LAUNCH_SERIES_SLOT, &SLauncher::launchSeries, this);
     newSlot(s_LAUNCH_ACTIVITY_SLOT, &SLauncher::launchActivity, this);
     newSlot(s_UPDATE_STATE_SLOT, &SLauncher::updateState, this);

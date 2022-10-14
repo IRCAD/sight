@@ -93,20 +93,16 @@ const core::com::Slots::SlotKeyType s_INTERNAL_DOWNLOAD_VOC_FILE_SLOT = "Interna
 
 //------------------------------------------------------------------------------
 
-SOpenvslam::SOpenvslam() noexcept
+SOpenvslam::SOpenvslam() noexcept :
+    m_sigTrackingInitialized(newSignal<SignalType>(s_TRACKING_INITIALIZED_SIG)),
+    m_sigTrackingNotInitialized(newSignal<SignalType>(s_TRACKING_NOT_INITIALIZED_SIG)),
+    m_sigTracked(newSignal<SignalType>(s_TRACKED_SIG)),
+    m_sigTrackingLost(newSignal<SignalType>(s_TRACKING_LOST_SIG)),
+    m_sigVocFileUnloaded(newSignal<SignalType>(s_VOCFILE_UNLOADED_SIG)),
+    m_sigVocFileLoadingStarted(newSignal<SignalType>(s_VOCFILE_LOADING_STARTED_SIG)),
+    m_sigVocFileLoaded(newSignal<SignalType>(s_VOCFILE_LOADED_SIG)),
+    m_sigMapLoaded(newSignal<SignalType>(s_MAP_LOADED_SIG))
 {
-    m_sigTrackingInitialized    = newSignal<SignalType>(s_TRACKING_INITIALIZED_SIG);
-    m_sigTrackingNotInitialized = newSignal<SignalType>(s_TRACKING_NOT_INITIALIZED_SIG);
-
-    m_sigTracked      = newSignal<SignalType>(s_TRACKED_SIG);
-    m_sigTrackingLost = newSignal<SignalType>(s_TRACKING_LOST_SIG);
-
-    m_sigVocFileUnloaded       = newSignal<SignalType>(s_VOCFILE_UNLOADED_SIG);
-    m_sigVocFileLoadingStarted = newSignal<SignalType>(s_VOCFILE_LOADING_STARTED_SIG);
-    m_sigVocFileLoaded         = newSignal<SignalType>(s_VOCFILE_LOADED_SIG);
-
-    m_sigMapLoaded = newSignal<SignalType>(s_MAP_LOADED_SIG);
-
     newSlot(s_ENABLE_LOCALIZATION_SLOT, &SOpenvslam::enableLocalization, this);
     newSlot(s_ACTIVATE_LOCALIZATION_SLOT, &SOpenvslam::activateLocalization, this);
 

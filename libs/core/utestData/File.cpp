@@ -40,12 +40,10 @@ bool File::contentEquals(const std::filesystem::path& l_file, const std::filesys
     std::streambuf* l_buf = l_stream.rdbuf();
     std::streambuf* r_buf = r_stream.rdbuf();
 
-    char l_char = 0;
-    char r_char = 0;
     while(true)
     {
-        l_char = static_cast<char>(l_buf->sbumpc());
-        r_char = static_cast<char>(r_buf->sbumpc());
+        const char l_char = static_cast<char>(l_buf->sbumpc());
+        const char r_char = static_cast<char>(r_buf->sbumpc());
 
         if(l_char == eof && r_char == eof)
         {

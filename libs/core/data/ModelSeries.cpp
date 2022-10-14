@@ -40,11 +40,10 @@ const core::com::Signals::SignalKeyType ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG
 const core::com::Signals::SignalKeyType ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG = "reconstructionsRemoved";
 
 ModelSeries::ModelSeries(data::Object::Key _key) :
-    Series(_key)
+    Series(_key),
+    m_sigReconstructionsAdded(ReconstructionsAddedSignalType::New()),
+    m_sigReconstructionsRemoved(ReconstructionsRemovedSignalType::New())
 {
-    m_sigReconstructionsAdded   = ReconstructionsAddedSignalType::New();
-    m_sigReconstructionsRemoved = ReconstructionsRemovedSignalType::New();
-
     m_signals(s_RECONSTRUCTIONS_ADDED_SIG, m_sigReconstructionsAdded)
         (s_RECONSTRUCTIONS_REMOVED_SIG, m_sigReconstructionsRemoved);
 }

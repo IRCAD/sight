@@ -84,10 +84,9 @@ void SDumpPolicy::starting()
 
         if(policy)
         {
-            bool success = false;
             for(const ParametersType::value_type& param : m_policyParams)
             {
-                success = policy->setParam(param.first, param.second);
+                const bool success = policy->setParam(param.first, param.second);
                 SIGHT_ERROR_IF(
                     "[" << m_policy << "] Unable to set '"
                     << param.first << "' parameter to " << param.second,

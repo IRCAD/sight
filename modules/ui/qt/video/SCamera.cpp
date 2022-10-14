@@ -434,7 +434,6 @@ void SCamera::onChooseDevice()
 
     std::vector<data::Camera::sptr> cameras = this->getCameras();
     const QList<QCameraInfo> devices        = QCameraInfo::availableCameras();
-    std::size_t count                       = 0;
     if(devices.isEmpty())
     {
         auto* errorMessageBox = new QMessageBox(
@@ -446,7 +445,8 @@ void SCamera::onChooseDevice()
     }
     else
     {
-        bool configured = true;
+        bool configured   = true;
+        std::size_t count = 0;
         for(auto& camera : cameras)
         {
             module::ui::qt::video::CameraDeviceDlg camDialog(m_resolution);

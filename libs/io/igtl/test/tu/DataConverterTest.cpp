@@ -175,7 +175,6 @@ void DataConverterTest::imageConverterTest()
 {
     DataConverter::sptr converter = DataConverter::getInstance();
     data::Image::sptr image       = data::Image::New();
-    data::Image::sptr image2      = data::Image::New();
 
     core::Type type = core::Type::INT32;
     utestData::generator::Image::generateRandomImage(image, type);
@@ -186,7 +185,7 @@ void DataConverterTest::imageConverterTest()
 
     data::Object::sptr obj = converter->fromIgtlMessage(msg);
 
-    image2 = data::Image::dynamicCast(obj);
+    data::Image::sptr image2 = data::Image::dynamicCast(obj);
 
     CPPUNIT_ASSERT_MESSAGE("Image is null", image2);
 
@@ -463,8 +462,7 @@ void DataConverterTest::compositeConverterTest()
     auto iter = destComposite->find("H_marker1_2_polaris");
     CPPUNIT_ASSERT(iter != destComposite->end());
 
-    data::Matrix4::sptr destMatrix = data::Matrix4::New();
-    destMatrix = data::Matrix4::dynamicCast(iter->second);
+    data::Matrix4::sptr destMatrix = data::Matrix4::dynamicCast(iter->second);
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
         CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, destMatrix->getCoefficients().begin() + i * 4));

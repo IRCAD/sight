@@ -48,13 +48,12 @@ using constPointListContainerType = std::list<PointList::csptr>;
 
 //------------------------------------------------------------------------------
 
-CalibrationInfo::CalibrationInfo(data::Object::Key /*unused*/)
+CalibrationInfo::CalibrationInfo(data::Object::Key /*unused*/) :
+    m_sigAddedRecord(AddedRecordSignalType::New()),
+    m_sigRemovedRecord(RemovedRecordSignalType::New()),
+    m_sigResetRecord(ResetRecordSignalType::New()),
+    m_sigGetRecord(GetRecordSignalType::New())
 {
-    m_sigAddedRecord   = AddedRecordSignalType::New();
-    m_sigRemovedRecord = RemovedRecordSignalType::New();
-    m_sigResetRecord   = ResetRecordSignalType::New();
-    m_sigGetRecord     = GetRecordSignalType::New();
-
     core::com::HasSignals::m_signals(s_ADDED_RECORD_SIG, m_sigAddedRecord);
     core::com::HasSignals::m_signals(s_REMOVED_RECORD_SIG, m_sigRemovedRecord);
     core::com::HasSignals::m_signals(s_RESET_RECORD_SIG, m_sigResetRecord);

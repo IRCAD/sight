@@ -67,12 +67,9 @@ public:
     typedef SPTR(Progressor) sptr;
 
     template<typename OBS>
-    Progressor(OBS filter, SPTR(core::tools::ProgressAdviser)observer, std::string message)
+    Progressor(OBS filter, SPTR(core::tools::ProgressAdviser)observer, std::string message) :
+        m_progressor(ProgressorBase::sptr(new ProgressItkToFw<OBS>(filter, observer, message)))
     {
-        typedef ProgressItkToFw<OBS> ProgressType;
-        m_progressor = ProgressorBase::sptr(
-            new ProgressType(filter, observer, message)
-        );
     }
 
     ProgressorBase::sptr m_progressor;

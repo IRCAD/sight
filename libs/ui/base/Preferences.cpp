@@ -167,15 +167,15 @@ Preferences::Preferences()
     // Protect preferences for writing
     std::unique_lock guard(s_preferences_mutex);
 
-    // Number of retry
-    int password_retry {0};
-
     const std::function<void(void)> load =
         [&]
         {
             // Create and load the preferences file if not already done
             if(s_is_enabled && !s_preferences)
             {
+                // Number of retry
+                int password_retry {0};
+
                 // Set the password to use
                 // NEVER policy means we never ask for a password and only rely on manually set
                 if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)

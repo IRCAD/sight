@@ -39,11 +39,9 @@ static const core::com::Signals::SignalKeyType s_CANCELLED_SIG = "cancelled";
 //-----------------------------------------------------------------------------
 
 SSignal::SSignal() noexcept :
-    m_sigTriggered(TriggeredSignalType::New()),
-    m_sigCancelled(TriggeredSignalType::New())
+    m_sigTriggered(newSignal<TriggeredSignalType>(s_TRIGGERED_SIG)),
+    m_sigCancelled(newSignal<TriggeredSignalType>(s_CANCELLED_SIG))
 {
-    m_sigTriggered = newSignal<TriggeredSignalType>(s_TRIGGERED_SIG);
-    m_sigCancelled = newSignal<TriggeredSignalType>(s_CANCELLED_SIG);
 }
 
 //-----------------------------------------------------------------------------

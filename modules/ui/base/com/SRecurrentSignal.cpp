@@ -43,11 +43,8 @@ const core::com::Signals::SignalKeyType SRecurrentSignal::s_REPEAT_STOPPED_SIGNA
 // ----------------------------------------------------------------------------
 
 SRecurrentSignal::SRecurrentSignal() noexcept :
-
-    m_sigRepeated(RepeatedSignalType::New())
+    m_sigRepeated(newSignal<RepeatedSignalType>(s_REPEATED_SIGNAL))
 {
-    m_sigRepeated = newSignal<RepeatedSignalType>(s_REPEATED_SIGNAL);
-
     newSignal<RepeatStoppedSignalType>(s_REPEAT_STOPPED_SIGNAL);
 }
 

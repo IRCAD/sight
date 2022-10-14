@@ -339,10 +339,10 @@ void AppManager::addProxyConnection(const helper::ProxyConnections& proxy)
 {
     std::unique_lock<std::mutex> lock(m_serviceMutex);
 
-    static std::size_t count = 0;
-    std::string channel      = proxy.m_channel;
+    std::string channel = proxy.m_channel;
     if(channel == "undefined")
     {
+        static std::size_t count = 0;
         channel = "AppManager_channel_" + std::to_string(count++);
     }
 

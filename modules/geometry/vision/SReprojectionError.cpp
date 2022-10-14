@@ -157,7 +157,6 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
             {
                 std::vector<cv::Point2f> points2D;
 
-                cv::Mat rot = cv::Mat(3, 3, CV_64F);
                 cv::Mat mat = cv::Mat::eye(4, 4, CV_64F);
 
                 for(std::uint8_t r = 0 ; r < 4 ; ++r)
@@ -170,7 +169,7 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
 
                 const cv::Mat pose = m_cvExtrinsic * mat;
 
-                rot = pose(cv::Rect(0, 0, 3, 3));
+                cv::Mat rot = pose(cv::Rect(0, 0, 3, 3));
 
                 cv::Mat tvec = cv::Mat(3, 1, CV_64F);
                 tvec.at<double>(0) = pose.at<double>(0, 3);

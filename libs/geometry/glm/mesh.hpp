@@ -154,13 +154,12 @@ bool isBorderlessSurface(
     EdgeHistogram edgesHistogram;
     bool isBorderless = true;
 
-    std::size_t dataLen = 0;
-    U* iter             = cellDataOffsetsBegin;
-    U* iter2            = cellDataOffsetsBegin + 1;
-    const U* iterEnd    = cellDataOffsetsEnd - 1;
-    V* iterTypes        = cellTypesBegin;
+    U* iter          = cellDataOffsetsBegin;
+    U* iter2         = cellDataOffsetsBegin + 1;
+    const U* iterEnd = cellDataOffsetsEnd - 1;
+    V* iterTypes     = cellTypesBegin;
 
-    dataLen = *iter2 - *iter;
+    std::size_t dataLen = *iter2 - *iter;
     for( ;
          iter < iterEnd || (iter < cellDataOffsetsEnd && (dataLen = (cellDataEnd - cellDataBegin) - *iter)) ;
          dataLen = *++iter2 - *++iter, ++iterTypes)

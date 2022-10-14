@@ -294,12 +294,12 @@ void writePrivateTags(
 )
 {
     // Private group
-    const auto reservedGroup         = 0x5649;
-    const auto reservingElement      = 0x0010; // Reserve group (gggg,0x1000-0x10FF)
-    const auto* const privateCreator = "Sight";
+    const auto reservedGroup    = 0x5649;
+    const auto reservingElement = 0x0010; // Reserve group (gggg,0x1000-0x10FF)
 
     // Reserve group
     {
+        const auto* const privateCreator = "Sight";
         gdcm::Attribute<reservedGroup, reservingElement, gdcm::VR::LO, gdcm::VM::VM1> attribute;
         attribute.SetValue(privateCreator);
         dataset.Insert(attribute.GetAsDataElement());

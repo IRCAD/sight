@@ -45,9 +45,9 @@ const std::string TagValueInstanceRemoveSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-TagValueInstanceRemoveSplitter::TagValueInstanceRemoveSplitter(filter::dicom::IFilter::Key /*unused*/)
+TagValueInstanceRemoveSplitter::TagValueInstanceRemoveSplitter(filter::dicom::IFilter::Key /*unused*/) :
+    m_tag(DCM_UndefinedTagKey)
 {
-    m_tag = DCM_UndefinedTagKey;
 }
 
 //-----------------------------------------------------------------------------
@@ -98,7 +98,6 @@ const
     InstanceContainerType instances;
 
     OFCondition status;
-    DcmDataset* dataset = nullptr;
     OFString data;
 
     for(const auto& item : series->getDicomContainer())
@@ -125,7 +124,7 @@ const
         fileFormat.loadAllDataIntoMemory();
         fileFormat.transferEnd();
 
-        dataset = fileFormat.getDataset();
+        DcmDataset* dataset = fileFormat.getDataset();
 
         // Get the value of the instance
         dataset->findAndGetOFStringArray(m_tag, data);

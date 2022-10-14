@@ -46,10 +46,10 @@ static const core::com::Slots::SlotKeyType FORWARD_JOB_SLOT       = "forwardJob"
 //------------------------------------------------------------------------------
 
 SDBMerger::SDBMerger() noexcept :
-    m_ioSelectorSrvConfig("IOSelectorServiceConfigVRRenderReader")
+    m_ioSelectorSrvConfig("IOSelectorServiceConfigVRRenderReader"),
+    m_sigJobCreated(newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL)),
+    m_slotForwardJob(newSlot(FORWARD_JOB_SLOT, &SDBMerger::forwardJob, this))
 {
-    m_sigJobCreated  = newSignal<JobCreatedSignalType>(JOB_CREATED_SIGNAL);
-    m_slotForwardJob = newSlot(FORWARD_JOB_SLOT, &SDBMerger::forwardJob, this);
 }
 
 //------------------------------------------------------------------------------

@@ -40,9 +40,9 @@ const service::IService::KeyType s_OBJECTS_GROUP = "objects";
 
 //-----------------------------------------------------------------------------
 
-SServerSender::SServerSender()
+SServerSender::SServerSender() :
+    m_server(std::make_shared<sight::io::igtl::Server>())
 {
-    m_server = std::make_shared<sight::io::igtl::Server>();
 }
 
 //-----------------------------------------------------------------------------

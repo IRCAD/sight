@@ -618,10 +618,7 @@ void AppManagerTest::managerWithInputsTest()
     appMgr->requireInput(INPUT_CHANNEL2, AppManagerForTest::InputType::CHANNEL, INPUT_CHANNEL2);
     CPPUNIT_ASSERT(appMgr->checkInputs());
 
-    CPPUNIT_ASSERT_EQUAL(INPUT_CHANNEL2, INPUT_CHANNEL2);
-
     appMgr->replaceInput(INPUT_CHANNEL2, appMgr->getInputID(INPUT_CHANNEL2));
-    CPPUNIT_ASSERT_EQUAL(INPUT_CHANNEL2, INPUT_CHANNEL2);
     CPPUNIT_ASSERT(appMgr->checkInputs());
 
     appMgr->requireInput(INPUT_CHANNEL1, AppManagerForTest::InputType::CHANNEL);

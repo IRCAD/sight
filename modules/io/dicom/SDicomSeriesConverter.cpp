@@ -41,9 +41,9 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesConverter::SDicomSeriesConverter() noexcept
+SDicomSeriesConverter::SDicomSeriesConverter() noexcept :
+    m_sigJobCreated(newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL))
 {
-    m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------

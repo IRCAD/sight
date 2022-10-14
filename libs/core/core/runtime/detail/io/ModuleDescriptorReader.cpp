@@ -162,10 +162,10 @@ std::shared_ptr<Module> ModuleDescriptorReader::createModule(const std::filesyst
         // Job's done!
         xmlFreeDoc(document);
     }
-    catch(std::exception& exception)
+    catch(std::exception& /*exception*/)
     {
         xmlFreeDoc(document);
-        throw exception;
+        throw;
     }
     return module;
 }

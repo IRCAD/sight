@@ -658,10 +658,7 @@ void SLandmarks::changeSliceType(int _from, int _to)
                                                                : m_orientation
                                 == fromOrientation ? toOrientation : m_orientation;
 
-    if(m_orientation != newOrientation)
-    {
-        m_orientation = newOrientation;
-    }
+    m_orientation = newOrientation;
 
     this->hideLandmarks();
 
@@ -839,11 +836,11 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _
 
         const Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
 
-        bool found                               = false;
         Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_landmarksQueryFlag);
         raySceneQuery->setSortByDistance(false);
         if(!raySceneQuery->execute().empty())
         {
+            bool found             = false;
             const Ogre::Real scale = 1.15F;
 
             const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();

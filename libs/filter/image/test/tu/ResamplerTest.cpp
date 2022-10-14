@@ -93,7 +93,7 @@ void ResamplerTest::identityTest()
 
                 // The image shouldn't change.
                 std::string msg = std::to_string(valueIn) + " " + std::to_string(valueOut);
-                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg.c_str(), valueIn, valueOut);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg, valueIn, valueOut);
             }
         }
     }
@@ -228,12 +228,12 @@ void ResamplerTest::rotateTest()
                 if(i == 0)
                 {
                     // The negative Z face must be 'white'.
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg.c_str(), 1.F, valueOut);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg, 1.F, valueOut);
                 }
                 else
                 {
                     // Everything else should be 'black'.
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg.c_str(), 0.F, valueOut);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg, 0.F, valueOut);
                 }
             }
         }

@@ -61,10 +61,10 @@ ClippingBox::ClippingBox(
     m_camera(camera),
     m_volumeSceneNode(parentSceneNode),
     m_widgetSceneNode(m_volumeSceneNode->createChildSceneNode()),
+    m_handleMtl(Ogre::MaterialManager::getSingleton().getByName(handleMtlName, RESOURCE_GROUP)),
+    m_boxMtl(Ogre::MaterialManager::getSingleton().getByName(boxMtlName, RESOURCE_GROUP)),
     m_clippingUpdateCallback(std::move(clippingUpdateCallback))
 {
-    m_boxMtl    = Ogre::MaterialManager::getSingleton().getByName(boxMtlName, RESOURCE_GROUP);
-    m_handleMtl = Ogre::MaterialManager::getSingleton().getByName(handleMtlName, RESOURCE_GROUP);
     SIGHT_ASSERT("Missing '" + boxMtlName + "' material.", m_boxMtl);
     SIGHT_ASSERT("Missing '" + handleMtlName + "' material.", m_handleMtl);
 

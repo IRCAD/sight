@@ -383,11 +383,14 @@ void InrImageIO::Read(void* buffer)
     // by
     int bytesRead     = 0;
     int nbStep        = 10;
-    std::int64_t size =
-        ((GetImageSizeInBytes() > 1024LL * 1024 * 10) ? (GetImageSizeInBytes() / nbStep) + 1 : GetImageSizeInBytes());
-    int step = 0;
+    std::int64_t size = ((GetImageSizeInBytes() > 1024LL * 1024 * 10)
+                         ? (GetImageSizeInBytes() / nbStep) + 1
+                         : GetImageSizeInBytes());
+
     try
     {
+        int step = 0;
+
         while(bytesRead < GetImageSizeInBytes() && step < nbStep)
         {
             step++;
@@ -768,11 +771,14 @@ void InrImageIO::Write(const void* buffer)
         // Replace this line :
         // gzwrite(outputFile, const_cast<void*>(buffer), GetImageSizeInBytes());
         // by
-        int written       = 0;
-        std::int64_t size =
-            ((GetImageSizeInBytes() > 1024LL * 1024 * 10) ? (GetImageSizeInBytes() / 10) + 1 : GetImageSizeInBytes());
+        std::int64_t size = ((GetImageSizeInBytes() > 1024LL * 1024 * 10)
+                             ? (GetImageSizeInBytes() / 10) + 1
+                             : GetImageSizeInBytes());
+
         try
         {
+            int written = 0;
+
             while(written < GetImageSizeInBytes())
             {
                 UpdateProgress(((float) written) / float(GetImageSizeInBytes()));
@@ -809,11 +815,14 @@ void InrImageIO::Write(const void* buffer)
         // Replace this line :
         // fwrite(buffer, 1, GetImageSizeInBytes(), outputFile);
         // by :
-        int written       = 0;
-        std::int64_t size =
-            ((GetImageSizeInBytes() > 1024LL * 1024 * 10) ? (GetImageSizeInBytes() / 10) + 1 : GetImageSizeInBytes());
+        std::int64_t size = ((GetImageSizeInBytes() > 1024LL * 1024 * 10)
+                             ? (GetImageSizeInBytes() / 10) + 1
+                             : GetImageSizeInBytes());
+
         try
         {
+            int written = 0;
+
             while(written < GetImageSizeInBytes())
             {
                 UpdateProgress(((float) written) / float(GetImageSizeInBytes()));

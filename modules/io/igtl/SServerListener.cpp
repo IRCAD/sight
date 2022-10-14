@@ -36,9 +36,9 @@ namespace sight::module::io::igtl
 
 //-----------------------------------------------------------------------------
 
-SServerListener::SServerListener()
+SServerListener::SServerListener() :
+    m_server(std::make_shared<sight::io::igtl::Server>())
 {
-    m_server = std::make_shared<sight::io::igtl::Server>();
 }
 
 //-----------------------------------------------------------------------------

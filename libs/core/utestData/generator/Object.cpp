@@ -51,7 +51,7 @@ data::StructureTraitsDictionary::sptr Object::createStructureTraitsDictionary()
     std::string skinType                             = "Skin";
     skin->setType(skinType);
     skin->setClass(data::StructureTraits::ENVIRONMENT);
-    data::Color::sptr skinColor = data::Color::New(255.0F / 255.0F, 179.0F / 255.0F, 140.0F / 255.0F, 1.0F);
+    auto skinColor = data::Color::New(1.0F, 179.0F / 255.0F, 140.0F / 255.0F, 1.0F);
     skin->setColor(skinColor);
     data::StructureTraits::CategoryContainer skinCat(1);
     skinCat[0] = data::StructureTraits::BODY;
@@ -373,7 +373,7 @@ data::Plane::sptr Object::generatePlane()
 {
     data::Plane::sptr plane = data::Plane::New();
     plane->setValue(generatePoint(), generatePoint(), generatePoint());
-    plane->setIsIntersection(((safeRand() % 1) != 0));
+    plane->setIsIntersection(((safeRand() % 2) != 0));
     return plane;
 }
 
@@ -384,9 +384,9 @@ data::Resection::sptr Object::generateResection()
     data::Resection::sptr resection = data::Resection::New();
 
     resection->setName("Resection1");
-    resection->setIsSafePart(((safeRand() % 1) != 0));
-    resection->setIsValid(((safeRand() % 1) != 0));
-    resection->setIsVisible(((safeRand() % 1) != 0));
+    resection->setIsSafePart(((safeRand() % 2) != 0));
+    resection->setIsValid(((safeRand() % 2) != 0));
+    resection->setIsVisible(((safeRand() % 2) != 0));
     data::Reconstruction::sptr recInput = data::Reconstruction::New();
 
     utestData::generator::SeriesSet::generateReconstruction(recInput);

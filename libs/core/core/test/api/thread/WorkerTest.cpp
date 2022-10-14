@@ -59,9 +59,9 @@ void WorkerTest::tearDown()
 
 struct TestHandler
 {
-    TestHandler()
+    TestHandler() :
+        m_constructorThreadId(core::thread::getCurrentThreadId())
     {
-        m_constructorThreadId = core::thread::getCurrentThreadId();
     }
 
     //------------------------------------------------------------------------------

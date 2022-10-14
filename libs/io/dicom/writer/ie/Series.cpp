@@ -87,7 +87,7 @@ void Series::writeGeneralSeriesModule()
     boost::tokenizer<boost::char_separator<char> > tokens(fulldate, sep);
     boost::tokenizer<boost::char_separator<char> >::iterator tok_iter = tokens.begin();
     const std::string date                                            = *tok_iter;
-    tok_iter++;
+    ++tok_iter;
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0021>(date, dataset);
 
     const std::string time = *tok_iter;

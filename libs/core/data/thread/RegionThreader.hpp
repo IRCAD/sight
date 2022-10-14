@@ -53,12 +53,12 @@ public:
     {
         std::vector<std::thread> threads;
 
-        const std::ptrdiff_t step  = (dataSize / static_cast<std::ptrdiff_t>(m_nbThread)) + 1;
-        std::ptrdiff_t regionBegin = 0;
-        std::size_t threadId       = 0;
+        const std::ptrdiff_t step = (dataSize / static_cast<std::ptrdiff_t>(m_nbThread)) + 1;
 
         if(m_nbThread > 1)
         {
+            std::ptrdiff_t regionBegin = 0;
+            std::size_t threadId       = 0;
             for( ; regionBegin < dataSize ; regionBegin += step, ++threadId)
             {
                 threads.push_back(

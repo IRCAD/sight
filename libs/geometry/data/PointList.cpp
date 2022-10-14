@@ -136,8 +136,7 @@ void PointList::associate(
         double distanceMin = std::numeric_limits<double>::max();
         std::list<glm::dvec3>::iterator itClosestPoint;
 
-        auto it2 = list2.begin();
-        for( ; it2 != list2.end() ; it2++)
+        for(auto it2 = list2.begin() ; it2 != list2.end() ; ++it2)
         {
             const glm::dvec3 point2 = *it2;
             const double distance   = glm::distance(point1, point2);

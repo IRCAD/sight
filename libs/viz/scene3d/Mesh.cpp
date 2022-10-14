@@ -307,8 +307,6 @@ void Mesh::updateMesh(const data::Mesh::csptr& _mesh, bool _pointsOnly)
     const bool indices32Bits     = numVertices >= (1 << 16);
     const bool indicesPrev32Bits = prevNumVertices >= (1 << 16);
     const bool hasPrimitiveColor = _mesh->has<data::Mesh::Attributes::CELL_COLORS>();
-
-    void* indexBuffer = nullptr;
     {
         FW_PROFILE_AVG("REALLOC INDEX", 5);
 
@@ -416,7 +414,7 @@ void Mesh::updateMesh(const data::Mesh::csptr& _mesh, bool _pointsOnly)
                 SIGHT_DEBUG("Index #" << m_subMesh->indexData->indexCount);
 
                 // Lock index data, we are going to write into it in the next loop
-                indexBuffer = ibuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+                void* indexBuffer = ibuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
 
                 if(indices32Bits)
                 {

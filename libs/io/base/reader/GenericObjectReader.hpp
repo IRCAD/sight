@@ -47,8 +47,7 @@ public:
     SIGHT_DECLARE_CLASS(GenericObjectReader<DATATYPE>, io::base::reader::IObjectReader);
 
     /// Constructor. Does nothing.
-    GenericObjectReader()
-    = default;
+    GenericObjectReader() = default;
 
     //------------------------------------------------------------------------------
 
@@ -79,7 +78,7 @@ public:
      *
      * This method automatically casts object in the correct DataType.
      */
-    virtual std::shared_ptr<DataType> getConcreteObject()
+    [[nodiscard]] std::shared_ptr<DataType> getConcreteObject() const
     {
         return std::dynamic_pointer_cast<DataType>(getObject());
     }

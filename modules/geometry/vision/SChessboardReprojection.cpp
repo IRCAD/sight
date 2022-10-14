@@ -168,7 +168,7 @@ void SChessboardReprojection::updating()
 
         cv::Mat img = io::opencv::Image::moveToCv(videoImage.get_shared());
 
-        const bool drawingEnabled = m_drawReprojection || m_drawReprojection || m_drawReprojectionError;
+        const bool drawingEnabled = m_drawDetected || m_drawReprojection || m_drawReprojectionError;
         SIGHT_WARN_IF(
             "An inout 'videoImage' was given to the service but no drawing operation was enabled.",
             !drawingEnabled

@@ -36,9 +36,9 @@ const IToolBarBuilder::RegistryKeyType IToolBarBuilder::REGISTRY_KEY = "::ui::ba
 
 //-----------------------------------------------------------------------------
 
-IToolBarBuilder::IToolBarBuilder()
+IToolBarBuilder::IToolBarBuilder() :
+    m_toolBitmapSize(std::make_pair(32, 32))
 {
-    m_toolBitmapSize = std::make_pair(32, 32);
 }
 
 //-----------------------------------------------------------------------------

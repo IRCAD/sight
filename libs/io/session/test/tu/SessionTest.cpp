@@ -1269,79 +1269,45 @@ inline data::Camera::sptr generate<data::Camera>(const std::size_t variant)
     object->setIsCalibrated(variant % 2 == 0);
     object->setCameraID(UUID::generateUUID());
     object->setMaximumFrameRate(random<float>());
-    object->setPixelFormat(
-        variant % 35 == 0
-        ? data::Camera::PixelFormat::ADOBEDNG
-        : variant % 35 == 1
-        ? data::Camera::PixelFormat::ARGB32
-        : variant % 35 == 2
-        ? data::Camera::PixelFormat::ARGB32_PREMULTIPLIED
-        : variant % 35 == 3
-        ? data::Camera::PixelFormat::RGB32
-        : variant % 35 == 4
-        ? data::Camera::PixelFormat::RGB24
-        : variant % 35 == 5
-        ? data::Camera::PixelFormat::RGB565
-        : variant % 35 == 6
-        ? data::Camera::PixelFormat::RGB555
-        : variant % 35 == 7
-        ? data::Camera::PixelFormat::ARGB8565_PREMULTIPLIED
-        : variant % 35 == 8
-        ? data::Camera::PixelFormat::BGRA32
-        : variant % 35 == 9
-        ? data::Camera::PixelFormat::BGRA32_PREMULTIPLIED
-        : variant % 35 == 10
-        ? data::Camera::PixelFormat::BGR32
-        : variant % 35 == 11
-        ? data::Camera::PixelFormat::BGR24
-        : variant % 35 == 12
-        ? data::Camera::PixelFormat::BGR565
-        : variant % 35 == 13
-        ? data::Camera::PixelFormat::BGR555
-        : variant % 35 == 14
-        ? data::Camera::PixelFormat::BGRA5658_PREMULTIPLIED
-        : variant % 35 == 15
-        ? data::Camera::PixelFormat::AYUV444
-        : variant % 35 == 16
-        ? data::Camera::PixelFormat::AYUV444_PREMULTIPLIED
-        : variant % 35 == 17
-        ? data::Camera::PixelFormat::YUV444
-        : variant % 35 == 18
-        ? data::Camera::PixelFormat::YUV420P
-        : variant % 35 == 19
-        ? data::Camera::PixelFormat::YV12
-        : variant % 35 == 20
-        ? data::Camera::PixelFormat::UYVY
-        : variant % 35 == 21
-        ? data::Camera::PixelFormat::YUYV
-        : variant % 35 == 22
-        ? data::Camera::PixelFormat::NV12
-        : variant % 35 == 23
-        ? data::Camera::PixelFormat::NV21
-        : variant % 35 == 24
-        ? data::Camera::PixelFormat::IMC1
-        : variant % 35 == 25
-        ? data::Camera::PixelFormat::IMC2
-        : variant % 35 == 26
-        ? data::Camera::PixelFormat::IMC3
-        : variant % 35 == 27
-        ? data::Camera::PixelFormat::IMC4
-        : variant % 35 == 28
-        ? data::Camera::PixelFormat::Y8
-        : variant % 35 == 29
-        ? data::Camera::PixelFormat::Y16
-        : variant % 35 == 30
-        ? data::Camera::PixelFormat::JPEG
-        : variant % 35 == 31
-        ? data::Camera::PixelFormat::CAMERARAW
-        : variant % 35 == 32
-        ? data::Camera::PixelFormat::ADOBEDNG
-        : variant % 35 == 33
-        ? data::Camera::PixelFormat::RGBA32
-        : variant % 35 == 34
-        ? data::Camera::PixelFormat::USER
-        : data::Camera::PixelFormat::INVALID
-    );
+    constexpr std::array pixelFormats {
+        data::Camera::PixelFormat::ADOBEDNG,
+        data::Camera::PixelFormat::ARGB32,
+        data::Camera::PixelFormat::ARGB32_PREMULTIPLIED,
+        data::Camera::PixelFormat::RGB32,
+        data::Camera::PixelFormat::RGB24,
+        data::Camera::PixelFormat::RGB565,
+        data::Camera::PixelFormat::RGB555,
+        data::Camera::PixelFormat::ARGB8565_PREMULTIPLIED,
+        data::Camera::PixelFormat::BGRA32,
+        data::Camera::PixelFormat::BGRA32_PREMULTIPLIED,
+        data::Camera::PixelFormat::BGR32,
+        data::Camera::PixelFormat::BGR24,
+        data::Camera::PixelFormat::BGR565,
+        data::Camera::PixelFormat::BGR555,
+        data::Camera::PixelFormat::BGRA5658_PREMULTIPLIED,
+        data::Camera::PixelFormat::AYUV444,
+        data::Camera::PixelFormat::AYUV444_PREMULTIPLIED,
+        data::Camera::PixelFormat::YUV444,
+        data::Camera::PixelFormat::YUV420P,
+        data::Camera::PixelFormat::YV12,
+        data::Camera::PixelFormat::UYVY,
+        data::Camera::PixelFormat::YUYV,
+        data::Camera::PixelFormat::NV12,
+        data::Camera::PixelFormat::NV21,
+        data::Camera::PixelFormat::IMC1,
+        data::Camera::PixelFormat::IMC2,
+        data::Camera::PixelFormat::IMC3,
+        data::Camera::PixelFormat::IMC4,
+        data::Camera::PixelFormat::Y8,
+        data::Camera::PixelFormat::Y16,
+        data::Camera::PixelFormat::JPEG,
+        data::Camera::PixelFormat::CAMERARAW,
+        data::Camera::PixelFormat::ADOBEDNG,
+        data::Camera::PixelFormat::RGBA32,
+        data::Camera::PixelFormat::USER,
+        data::Camera::PixelFormat::INVALID
+    };
+    object->setPixelFormat(pixelFormats[variant % 35]);
     object->setVideoFile("/" + UUID::generateUUID());
     object->setStreamUrl(UUID::generateUUID());
     object->setCameraSource(

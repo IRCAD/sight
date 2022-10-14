@@ -39,10 +39,10 @@ static const core::com::Signals::SignalKeyType s_TRIGGERED_AS_STRING_SIG = "trig
 
 //-----------------------------------------------------------------------------
 
-STimestampSignal::STimestampSignal() noexcept
+STimestampSignal::STimestampSignal() noexcept :
+    m_sigTriggered(newSignal<TriggeredSignalType>(s_TRIGGERED_SIG)),
+    m_sigTriggeredAsString(newSignal<TriggeredAsStringSignalType>(s_TRIGGERED_AS_STRING_SIG))
 {
-    m_sigTriggered         = newSignal<TriggeredSignalType>(s_TRIGGERED_SIG);
-    m_sigTriggeredAsString = newSignal<TriggeredAsStringSignalType>(s_TRIGGERED_AS_STRING_SIG);
 }
 
 //-----------------------------------------------------------------------------

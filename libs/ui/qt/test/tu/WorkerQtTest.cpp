@@ -237,7 +237,7 @@ static inline void qtTest(const std::function<void()>& f)
 //-----------------------------------------------------------------------------
 
 void runBasicTimerTest(
-    TestHandler& handler,
+    const TestHandler& handler,
     const core::thread::Timer::sptr& timer,
     core::thread::Timer::TimeDurationType
     /*unused*/

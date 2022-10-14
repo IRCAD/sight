@@ -54,7 +54,7 @@ void StructureTraitsDictionaryTest::testAddingStructure()
     std::string skinType                             = "Skin";
     skin->setType(skinType);
     skin->setClass(data::StructureTraits::ENVIRONMENT);
-    data::Color::sptr skinColor = data::Color::New(255.0F / 255.0F, 179.0F / 255.0F, 140.0F / 255.0F, 1.0F);
+    data::Color::sptr skinColor = data::Color::New(1.0F, 179.0F / 255.0F, 140.0F / 255.0F, 1.0F);
     skin->setColor(skinColor);
     data::StructureTraits::CategoryContainer skinCat(1);
     skinCat[0] = data::StructureTraits::BODY;

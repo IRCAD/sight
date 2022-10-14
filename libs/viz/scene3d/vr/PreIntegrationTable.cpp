@@ -130,8 +130,8 @@ void PreIntegrationTable::imageUpdate(
 
             if(m_table != nullptr)
             {
-                delete m_table;
-                delete m_integralTable;
+                delete[] m_table;
+                delete[] m_integralTable;
             }
 
             m_table         = new TablePixel[static_cast<std::size_t>(m_textureSize) * m_textureSize];

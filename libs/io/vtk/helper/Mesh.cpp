@@ -137,14 +137,12 @@ void fromVTKPointSet(vtkPointSet& dataset, data::Mesh& mesh)
             attributes
         );
 
-        const double* point = nullptr;
-
         {
             vtkIdType i = 0;
             for(auto& pos : mesh.range<data::iterator::point::xyz>())
             {
-                point = points->GetPoint(i++);
-                pos   = {static_cast<float>(point[0]), static_cast<float>(point[1]), static_cast<float>(point[2])};
+                const double* point = points->GetPoint(i++);
+                pos = {static_cast<float>(point[0]), static_cast<float>(point[1]), static_cast<float>(point[2])};
             }
         }
 

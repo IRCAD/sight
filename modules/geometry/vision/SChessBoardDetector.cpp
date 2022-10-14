@@ -49,11 +49,10 @@ static const core::com::Signals::SignalKeyType s_CHESSBOARD_FOUND_SIG    = "ches
 
 // ----------------------------------------------------------------------------
 
-SChessBoardDetector::SChessBoardDetector() noexcept
+SChessBoardDetector::SChessBoardDetector() noexcept :
+    m_sigChessboardDetected(newSignal<ChessboardDetectedSignalType>(s_CHESSBOARD_DETECTED_SIG)),
+    m_sigChessboardFound(newSignal<ChessboardFoundSignalType>(s_CHESSBOARD_FOUND_SIG))
 {
-    m_sigChessboardDetected = newSignal<ChessboardDetectedSignalType>(s_CHESSBOARD_DETECTED_SIG);
-    m_sigChessboardFound    = newSignal<ChessboardFoundSignalType>(s_CHESSBOARD_FOUND_SIG);
-
     newSlot(s_RECORD_POINTS_SLOT, &SChessBoardDetector::recordPoints, this);
     newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SChessBoardDetector::updateChessboardSize, this);
 }

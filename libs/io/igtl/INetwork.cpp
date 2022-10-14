@@ -29,7 +29,7 @@
 
 #include <cmath>
 
-#if defined(_WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32)
   #include <windows.h>
   #include <winsock2.h>
 #else
@@ -289,20 +289,20 @@ void INetwork::closeSocket(int socket_descriptor)
         return;
     }
 
-    #if defined(_WIN32) && !defined(__CYGWIN__)
-        #define WSA_VERSION MAKEWORD(1, 1)
+#if defined(_WIN32)
+#define WSA_VERSION MAKEWORD(1, 1)
     closesocket(socket_descriptor);
-    #else
+#else
     shutdown(socket_descriptor, 2);
     close(socket_descriptor); // closing socket for latter reuse.
-    #endif
+#endif
 }
 
 //------------------------------------------------------------------------------
 
 int INetwork::createSocket()
 {
-    #if defined(_WIN32) && !defined(__CYGWIN__)
+#if defined(_WIN32)
     // Declare variables
     WSADATA wsaData;
     //SOCKET ListenSocket;
@@ -323,6 +323,11 @@ int INetwork::createSocket()
     int on = 1;
     if(setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<char*>(&on), sizeof(on)) != 0)
     {
+#if defined(_WIN32)
+        closesocket(sock);
+#else
+        close(sock);
+#endif
         return -1;
     }
 

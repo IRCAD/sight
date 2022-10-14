@@ -45,10 +45,10 @@ public:
     MODULE_APPXML_API ~Plugin() noexcept;
 
     /// Overrides start method. .
-    MODULE_APPXML_API void start();
+    MODULE_APPXML_API void start() override;
 
     /// Overrides stop method. Do nothing
-    MODULE_APPXML_API void stop() noexcept;
+    MODULE_APPXML_API void stop() noexcept override;
 
 private:
 

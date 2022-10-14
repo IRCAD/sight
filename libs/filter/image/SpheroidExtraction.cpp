@@ -92,7 +92,7 @@ struct SpheroidExtractor
         SIGHT_DEBUG("Number of labels : " << labelGeometryFilter->GetNumberOfLabels());
 
         typename LabelStatsFilterType::LabelsType::iterator labelsIt;
-        for(labelsIt = labels.begin() ; labelsIt != labels.end() ; labelsIt++)
+        for(labelsIt = labels.begin() ; labelsIt != labels.end() ; ++labelsIt)
         {
             typename LabelStatsFilterType::LabelPixelType labelValue = *labelsIt;
 

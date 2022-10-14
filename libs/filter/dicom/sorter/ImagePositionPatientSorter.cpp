@@ -82,7 +82,6 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
     SortedDicomMapType sortedDicom;
 
     OFCondition status;
-    DcmDataset* dataset = nullptr;
 
     for(const auto& item : series->getDicomContainer())
     {
@@ -108,7 +107,7 @@ ImagePositionPatientSorter::DicomSeriesContainerType ImagePositionPatientSorter:
         fileFormat.loadAllDataIntoMemory();
         fileFormat.transferEnd();
 
-        dataset = fileFormat.getDataset();
+        DcmDataset* dataset = fileFormat.getDataset();
 
         if(!dataset->tagExists(DCM_ImagePositionPatient) || !dataset->tagExists(DCM_ImageOrientationPatient))
         {

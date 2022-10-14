@@ -54,8 +54,6 @@ void EigenToolsTest::eigenToF4s()
 {
     Eigen::Matrix<double, 4, 4> mat;
 
-    data::Matrix4::sptr f4sRes = data::Matrix4::New();
-
     for(unsigned int r = 0 ; r < 3 ; ++r)
     {
         for(unsigned int c = 0 ; c < 3 ; ++c)
@@ -73,7 +71,7 @@ void EigenToolsTest::eigenToF4s()
     mat(3, 2) = 0;
     mat(3, 3) = 1;
 
-    f4sRes = geometry::eigen::helper::toF4s(mat);
+    data::Matrix4::sptr f4sRes = geometry::eigen::helper::toF4s(mat);
 
     for(unsigned int r = 0 ; r < 4 ; ++r)
     {

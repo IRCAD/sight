@@ -44,13 +44,9 @@ const std::string Material::DEFAULT_MATERIAL_TEMPLATE_NAME = "Default";
 //------------------------------------------------------------------------------
 
 Material::Material(const std::string& _name, const std::string& _templateName) :
+    m_material(Ogre::MaterialManager::getSingleton().create(_name, viz::scene3d::RESOURCE_GROUP)),
     m_templateName(_templateName)
 {
-    m_material = Ogre::MaterialManager::getSingleton().create(
-        _name,
-        viz::scene3d::RESOURCE_GROUP
-    );
-
     const Ogre::MaterialPtr ogreMaterial = Ogre::MaterialManager::getSingleton().getByName(
         _templateName,
         RESOURCE_GROUP
@@ -500,6 +496,8 @@ void Material::cleanTransparencyTechniques()
     }
 
     // Remove in inverse order otherwise the index we stored becomes invalid ;-)
+    /// @todo modernize that once clang supports std::ranges::reverse_view
+    // NOLINTNEXTLINE(modernize-loop-convert)
     for(auto it = removeTechniqueVector.rbegin() ; it != removeTechniqueVector.rend() ; ++it)
     {
         m_material->removeTechnique(*it);

@@ -45,9 +45,9 @@ static const std::string s_BORDER_CONFIG = "border";
 
 //------------------------------------------------------------------------------
 
-SView::SView()
+SView::SView() :
+    m_sigActivityLaunched(newSignal<ActivityLaunchedSignalType>(s_ACTIVITY_LAUNCHED_SIG))
 {
-    m_sigActivityLaunched = newSignal<ActivityLaunchedSignalType>(s_ACTIVITY_LAUNCHED_SIG);
 }
 
 //------------------------------------------------------------------------------

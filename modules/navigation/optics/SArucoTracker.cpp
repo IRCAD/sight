@@ -55,10 +55,9 @@ const core::com::Slots::SlotKeyType SArucoTracker::s_SET_BOOL_PARAMETER_SLOT   =
 
 //-----------------------------------------------------------------------------
 
-SArucoTracker::SArucoTracker() noexcept
+SArucoTracker::SArucoTracker() noexcept :
+    m_sigDetectionDone(newSignal<DetectionDoneSignalType>(s_DETECTION_DONE_SIG))
 {
-    m_sigDetectionDone = newSignal<DetectionDoneSignalType>(s_DETECTION_DONE_SIG);
-
     newSignal<MarkerDetectedSignalType>(s_MARKER_DETECTED_SIG);
 
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SArucoTracker::setDoubleParameter, this);

@@ -37,7 +37,7 @@ inline static T fromBase64(const T& message)
     const std::size_t message_size = message.size();
 
     // Do nothing if the message is empty...
-    if(message_size <= 0)
+    if(message_size == 0)
     {
         return message;
     }

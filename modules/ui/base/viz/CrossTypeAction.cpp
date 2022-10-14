@@ -52,9 +52,9 @@ std::map<std::string, float> CrossTypeAction::m_scaleConversion = {{std::string(
 
 //------------------------------------------------------------------------------
 
-CrossTypeAction::CrossTypeAction() noexcept
+CrossTypeAction::CrossTypeAction() noexcept :
+    m_sigCrossTypeModified(newSignal<CrossTypeModifiedSignalType>(s_CROSS_TYPE_MODIFIED_SIG))
 {
-    m_sigCrossTypeModified = newSignal<CrossTypeModifiedSignalType>(s_CROSS_TYPE_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------

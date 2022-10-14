@@ -40,9 +40,9 @@ static const core::com::Signals::SignalKeyType s_SCREEN_SELECTED_SIG = "screenSe
 
 //------------------------------------------------------------------------------
 
-SScreenSelector::SScreenSelector()
+SScreenSelector::SScreenSelector() :
+    m_screenSelectedSig(newSignal<ScreenSelectedSignalType>(s_SCREEN_SELECTED_SIG))
 {
-    m_screenSelectedSig = newSignal<ScreenSelectedSignalType>(s_SCREEN_SELECTED_SIG);
 }
 
 //------------------------------------------------------------------------------

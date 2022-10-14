@@ -34,9 +34,9 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-StructureTraits::StructureTraits(data::Object::Key /*unused*/)
+StructureTraits::StructureTraits(data::Object::Key /*unused*/) :
+    m_color(data::Color::New())
 {
-    m_color = data::Color::New();
 }
 
 //------------------------------------------------------------------------------

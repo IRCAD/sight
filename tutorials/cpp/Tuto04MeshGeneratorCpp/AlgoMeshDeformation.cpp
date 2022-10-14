@@ -100,11 +100,10 @@ void AlgoMeshDeformation::initSimu()
 
     float max = std::numeric_limits<float>::min();
     float min = std::numeric_limits<float>::max();
-
-    float coord = NAN;
     for(const auto& p : mesh->crange<data::iterator::point::xyz>())
     {
-        coord = p.y;
+        const float coord = p.y;
+
         if(coord < min)
         {
             min = coord;

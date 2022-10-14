@@ -44,10 +44,10 @@ const core::com::Slots::SlotKeyType s_PREVIOUS_SLOT   = "previous";
 
 //------------------------------------------------------------------------------
 
-SSequencer::SSequencer()
+SSequencer::SSequencer() :
+    m_sigActivityCreated(newSignal<ActivityCreatedSignalType>(s_ACTIVITY_CREATED_SIG)),
+    m_sigDataRequired(newSignal<DataRequiredSignalType>(s_DATA_REQUIRED_SIG))
 {
-    m_sigActivityCreated = newSignal<ActivityCreatedSignalType>(s_ACTIVITY_CREATED_SIG);
-    m_sigDataRequired    = newSignal<DataRequiredSignalType>(s_DATA_REQUIRED_SIG);
     newSlot(s_GO_TO_SLOT, &SSequencer::goTo, this);
     newSlot(s_CHECK_NEXT_SLOT, &SSequencer::checkNext, this);
     newSlot(s_NEXT_SLOT, &SSequencer::next, this);

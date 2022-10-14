@@ -144,9 +144,9 @@ const core::com::Signals::SignalKeyType SReader2Test::s_CHANGED_SIG = "changed";
 
 //------------------------------------------------------------------------------
 
-SReader2Test::SReader2Test()
+SReader2Test::SReader2Test() :
+    m_sigChanged(ChangedSignalType::New())
 {
-    m_sigChanged = ChangedSignalType::New();
     // Register
     core::com::HasSignals::m_signals(s_CHANGED_SIG, m_sigChanged);
 }

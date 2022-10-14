@@ -33,9 +33,9 @@ const core::com::Signals::SignalKeyType IFilter::s_COMPUTED_SIG = "computed";
 
 //-----------------------------------------------------------------------------
 
-IFilter::IFilter()
+IFilter::IFilter() :
+    m_sigComputed(newSignal<ComputedSignalType>(s_COMPUTED_SIG))
 {
-    m_sigComputed = newSignal<ComputedSignalType>(s_COMPUTED_SIG);
 }
 
 //-----------------------------------------------------------------------------
