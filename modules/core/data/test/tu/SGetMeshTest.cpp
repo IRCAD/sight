@@ -21,6 +21,8 @@
 
 #include "SGetMeshTest.hpp"
 
+#include <core/runtime/runtime.hpp>
+
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>

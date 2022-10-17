@@ -21,6 +21,8 @@
 
 #include "SGetSeriesTest.hpp"
 
+#include <core/runtime/runtime.hpp>
+
 #include <data/ModelSeries.hpp>
 #include <data/SeriesSet.hpp>
 

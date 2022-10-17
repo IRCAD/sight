@@ -22,8 +22,8 @@
 
 #include "core/runtime/Extension.hpp"
 
-#include "core/runtime/helper.hpp"
 #include "core/runtime/Module.hpp"
+#include "core/runtime/runtime.hpp"
 
 namespace sight::core::runtime
 {

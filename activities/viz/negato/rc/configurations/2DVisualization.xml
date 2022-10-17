@@ -175,7 +175,7 @@
         </connect>
 
         <connect channel="pickerChannel">
-            <slot>landmarksEditor/addPickedPoint</slot>
+            <slot>landmarksEditor/pick</slot>
         </connect>
 
         <!-- Connection to enable "previous" action. It should be connected to a SSequencer in the application

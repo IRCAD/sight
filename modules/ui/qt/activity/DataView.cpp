@@ -26,8 +26,6 @@
 #include <activity/IObjectValidator.hpp>
 #include <activity/IValidator.hpp>
 
-#include <core/runtime/Convert.hpp>
-
 #include <data/Boolean.hpp>
 #include <data/Composite.hpp>
 #include <data/Float.hpp>

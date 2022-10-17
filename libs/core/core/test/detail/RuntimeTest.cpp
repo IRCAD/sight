@@ -26,7 +26,7 @@
 #include <core/runtime/detail/dl/Win32.hpp>
 #include <core/runtime/detail/Module.hpp>
 #include <core/runtime/detail/Runtime.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <filesystem>
 #include <regex>
@@ -60,7 +60,7 @@ void RuntimeTest::tearDown()
 #if defined(__unix__)
 void RuntimeTest::testPosix()
 {
-    const auto location = core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
+    const auto location = core::runtime::detail::Runtime::get().getWorkingPath() / MODULE_RC_PREFIX;
     auto module         = std::make_shared<Module>(location / "module_utest-0.1", "module_utest", "0.1");
 
     auto nativeLibrary = std::make_unique<dl::Posix>("sight_module_utest");
@@ -71,7 +71,7 @@ void RuntimeTest::testPosix()
 
     const auto path = nativeLibrary->getFullPath();
     CPPUNIT_ASSERT_EQUAL(
-        (core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_LIB_PREFIX
+        (core::runtime::detail::Runtime::get().getWorkingPath() / MODULE_LIB_PREFIX
          / std::filesystem::path("libsight_module_utest.so")).string(),
         path.string()
     );

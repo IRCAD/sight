@@ -22,7 +22,7 @@
 
 #include "modules/ui/qt/image/STransferFunction.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/Composite.hpp>
 #include <data/TransferFunction.hpp>

@@ -99,8 +99,8 @@ xmlNodePtr runningModulesToXml()
     xmlNodePtr inactivated_Node = xmlNewNode(nullptr, xmlCharStrdup("Inactivated"));
     xmlAddChild(node_root, inactivated_Node);
 
-    bool enable_Value        = false; // the 'do while' loop stop if enable_Value==false.
-    detail::Runtime& runtime = detail::Runtime::get();
+    bool enable_Value   = false;      // the 'do while' loop stop if enable_Value==false.
+    const auto& runtime = detail::Runtime::get();
     do
     {
         enable_Value = !enable_Value;

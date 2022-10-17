@@ -22,7 +22,6 @@
 
 #include "MacroSaver.hpp"
 
-#include <core/runtime/operations.hpp>
 #include <core/runtime/profile/Profile.hpp>
 
 #include <QAction>
@@ -420,7 +419,7 @@ void MacroSaver::save()
 
     write(cpp, 0, "#include \"GuiTest.hpp\"");
     write(cpp, 0, "");
-    write(cpp, 0, "#include <core/runtime/operations.hpp>");
+    write(cpp, 0, "#include <core/runtime/path.hpp>");
     write(cpp, 0, "#include <ui/test/Tester.hpp>");
     write(cpp, 0, "");
     QStringList dependencies {"QObject"};

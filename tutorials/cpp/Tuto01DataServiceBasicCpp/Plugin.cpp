@@ -22,7 +22,7 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <service/op/Add.hpp>
 #include <service/registry/ObjectService.hpp>

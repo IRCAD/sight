@@ -21,6 +21,8 @@
 
 #include "SGetVectorTest.hpp"
 
+#include <core/runtime/runtime.hpp>
+
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Vector.hpp>

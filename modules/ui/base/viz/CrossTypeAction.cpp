@@ -64,11 +64,10 @@ void CrossTypeAction::configuring()
 {
     sight::ui::base::IAction::initialize();
 
-    if(this->m_configuration->size() > 0)
+    const auto& config = this->getConfiguration();
+    if(const auto crossType = config.get_optional<std::string>("crossType"); crossType.has_value())
     {
-        auto vectConfig = this->m_configuration->find("crossType");
-        SIGHT_ASSERT("Missing <crossType> tag!", !vectConfig.empty());
-        m_crossType = vectConfig.at(0)->getValue();
+        m_crossType = crossType.value();
         boost::algorithm::trim(m_crossType);
         boost::algorithm::to_lower(m_crossType);
         SIGHT_ASSERT("Unknown crossType", m_scaleConversion.find(m_crossType) != m_scaleConversion.end());

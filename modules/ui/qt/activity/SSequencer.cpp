@@ -24,8 +24,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/operations.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/path.hpp>
 #include <core/tools/Os.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>

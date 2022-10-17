@@ -24,8 +24,6 @@
 
 #include "service/config.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
 
 #include <service/IXMLParser.hpp>

@@ -30,7 +30,7 @@
 #include <core/base.hpp>
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Observer.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 #include <core/tools/System.hpp>
 
 #include <boost/algorithm/string/join.hpp>

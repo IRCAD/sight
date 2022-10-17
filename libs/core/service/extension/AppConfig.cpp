@@ -23,9 +23,8 @@
 #include "service/extension/AppConfig.hpp"
 
 #include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/helper.hpp>
 #include <core/runtime/Module.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <data/Composite.hpp>
 #include <data/String.hpp>

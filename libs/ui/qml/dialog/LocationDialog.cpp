@@ -25,7 +25,7 @@
 #include <core/location/MultipleFiles.hpp>
 #include <core/location/SingleFile.hpp>
 #include <core/location/SingleFolder.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <ui/base/dialog/ILocationDialog.hpp>
 #include <ui/base/dialog/InputDialog.hpp>

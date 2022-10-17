@@ -24,7 +24,7 @@
 
 #include <core/base.hpp>
 
-#include <service/macros.hpp>
+#include <service/IService.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -54,8 +54,8 @@ public:
 
 private:
 
-    /// Create a configurationElement to build an object
-    static core::runtime::ConfigurationElement::sptr buildObjectConfig();
+    /// Create a configuration to build an object
+    static service::IService::config_t buildObjectConfig();
 };
 
 } // namespace sight::service::ut

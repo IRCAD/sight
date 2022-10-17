@@ -25,7 +25,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/Series.hpp>
 #include <data/SeriesSet.hpp>

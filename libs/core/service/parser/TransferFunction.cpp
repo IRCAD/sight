@@ -22,10 +22,6 @@
 
 #include "service/parser/TransferFunction.hpp"
 
-#include "service/macros.hpp"
-
-#include <core/runtime/Convert.hpp>
-
 #include <data/Color.hpp>
 #include <data/TransferFunction.hpp>
 
@@ -46,7 +42,7 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
     data::TransferFunction::sptr tf = data::TransferFunction::dynamicCast(_obj);
     SIGHT_ASSERT("TransferFunction not instanced", tf);
 
-    const ConfigType config = core::runtime::Convert::toPropertyTree(m_cfg).get_child("object");
+    const ConfigType config = m_cfg.get_child("object");
     if(config.count("colors") != 0U)
     {
         const ConfigType colorCfg = config.get_child("colors");

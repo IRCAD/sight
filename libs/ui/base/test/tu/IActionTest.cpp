@@ -22,8 +22,6 @@
 
 #include "IActionTest.hpp"
 
-#include <core/runtime/Convert.hpp>
-
 #include <ui/base/IAction.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>

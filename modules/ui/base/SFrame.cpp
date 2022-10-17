@@ -41,7 +41,6 @@ SFrame::~SFrame() noexcept =
 
 void SFrame::configuring()
 {
-    SIGHT_ASSERT("<service> tag is required.", m_configuration->getName() == "service");
     this->initialize();
 }
 

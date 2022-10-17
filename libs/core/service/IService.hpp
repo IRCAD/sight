@@ -39,9 +39,6 @@
 #include <data/mt/shared_ptr.hpp>
 #include <data/ptr.hpp>
 
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/helper.hpp>
-
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
 
@@ -111,7 +108,8 @@ public:
     SIGHT_DECLARE_SERVICE(IService, core::tools::Object);
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
-    using ConfigType = boost::property_tree::ptree;
+    using config_t   = boost::property_tree::ptree;
+    using ConfigType = config_t; // For backwards compatibility
 
     using IdType       = std::string;
     using KeyType      = std::string;
@@ -281,15 +279,8 @@ public:
     //@{
 
     /**
-     * @brief Affect the configuration, using a generic XML like structure.
-     * @param[in] _cfgElement a structure which represents the xml configuration
-     * @post m_configurationState == UNCONFIGURED
-     */
-    SERVICE_API void setConfiguration(const core::runtime::ConfigurationElement::sptr _cfgElement);
-
-    /**
      * @brief Set the configuration.
-     * @param[in] _configuration whole configuration of the service.
+     * @param[in] _configuration whole configuration of the service, as given by the AppManager.
      * @post m_configurationState == UNCONFIGURED
      */
     SERVICE_API void setConfiguration(const Config& _configuration);
@@ -392,10 +383,9 @@ public:
     //@{
 
     /**
-     * @brief Return the configuration, in an xml format read using runtime library
-     * @return m_configuration, a structure which represents the service configuration
+     * @brief Return the service configuration
      */
-    SERVICE_API core::runtime::ConfigurationElement::sptr getConfiguration() const;
+    SERVICE_API ConfigType getConfiguration() const;
 
     /**
      * @brief Return the configuration, in an boost property tree
@@ -824,12 +814,6 @@ protected:
     //@}
 
     /**
-     * @brief Configuration element used to configure service internal state using a generic XML like structure
-     * TODO Make this const, we are not supposed to edit that !
-     */
-    core::runtime::ConfigurationElement::sptr m_configuration;
-
-    /**
      * @name Slot API
      */
 
@@ -949,6 +933,8 @@ private:
         const std::string& objKey
     ) const;
 
+    /// Configuration of the service
+    ConfigType m_configuration;
     /**
      * @brief associated inputs of the service ordered by key
      */

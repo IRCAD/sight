@@ -37,7 +37,7 @@
 #include <filesystem>
 #include <core/base.hpp>
 #include <service/macros.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include "SShowAbout.hpp"
 

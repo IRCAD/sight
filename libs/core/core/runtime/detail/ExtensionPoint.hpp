@@ -24,9 +24,9 @@
 
 #include "core/config.hpp"
 #include "core/runtime/detail/Extension.hpp"
+#include "core/runtime/detail/Runtime.hpp"
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/ModuleElement.hpp"
-#include "core/runtime/Runtime.hpp"
 
 #include <core/base.hpp>
 
@@ -134,7 +134,7 @@ public:
     std::vector<std::shared_ptr<core::runtime::Extension> > getAllExtensions() const
     {
         std::vector<std::shared_ptr<core::runtime::Extension> > container;
-        Runtime& runtime = Runtime::get();
+        const auto& runtime = detail::Runtime::get();
 
         std::ranges::copy_if(
             runtime.getExtensions(),

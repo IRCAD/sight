@@ -26,9 +26,7 @@
 
 #include <core/LazyInstantiator.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/helper.hpp>
-#include <core/runtime/profile/Profile.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <data/Exception.hpp>
 

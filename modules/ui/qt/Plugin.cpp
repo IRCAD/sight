@@ -23,7 +23,7 @@
 #include "modules/ui/qt/Plugin.hpp"
 
 #include <core/base.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 #include <core/runtime/profile/Profile.hpp>
 
 #include <service/macros.hpp>

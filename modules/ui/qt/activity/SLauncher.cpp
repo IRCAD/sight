@@ -28,24 +28,14 @@
 #include <activity/IBuilder.hpp>
 #include <activity/IValidator.hpp>
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/Convert.hpp>
-#include <core/runtime/Module.hpp>
-#include <core/runtime/operations.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <data/Activity.hpp>
-#include <data/Composite.hpp>
-#include <data/String.hpp>
-#include <data/Vector.hpp>
 
 #include <service/AppConfigManager.hpp>
 #include <service/extension/AppConfig.hpp>
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>

@@ -23,7 +23,6 @@
 #include "QmlEngine.hpp"
 
 #include <core/LazyInstantiator.hpp>
-#include <core/runtime/Runtime.hpp>
 #include <core/spyLog.hpp>
 #include <core/tools/Os.hpp>
 

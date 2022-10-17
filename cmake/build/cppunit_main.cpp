@@ -28,8 +28,7 @@
 #endif
 
 #include <core/log/SpyLogger.hpp>
-#include <core/runtime/operations.hpp>
-#include <core/runtime/profile/Profile.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <cppunit/BriefTestProgressListener.h>
 #include <cppunit/CompilerOutputter.h>

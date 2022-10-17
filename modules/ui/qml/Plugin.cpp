@@ -23,7 +23,7 @@
 #include "Plugin.hpp"
 
 #include <core/base.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>

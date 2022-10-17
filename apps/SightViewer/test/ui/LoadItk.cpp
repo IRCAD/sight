@@ -21,7 +21,7 @@
 
 #include "LoadItk.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <utestData/Data.hpp>
 
@@ -41,7 +41,7 @@ void LoadItk::test()
     const std::filesystem::path snapshotPath = sight::ui::test::Tester::getImageOutputPath() / imageName;
     std::filesystem::remove(snapshotPath);
 
-    const std::filesystem::path cwd = core::runtime::Runtime::get().getWorkingPath();
+    const std::filesystem::path cwd = core::runtime::getWorkingPath();
     const std::filesystem::path referencePath(utestData::Data::dir() / "sight/ui/SightViewer" / imageName);
 
     start(

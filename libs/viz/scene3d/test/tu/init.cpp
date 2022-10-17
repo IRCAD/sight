@@ -19,7 +19,7 @@
  *
  ***********************************************************************/
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/runtime.hpp>
 
 namespace sight::viz::scene3d::ut
 {

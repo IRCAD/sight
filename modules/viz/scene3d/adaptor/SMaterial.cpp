@@ -27,7 +27,6 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/Convert.hpp>
 
 #include <data/Composite.hpp>
 #include <data/helper/Field.hpp>
@@ -176,7 +175,7 @@ void SMaterial::starting()
         this->createTextureAdaptor();
     }
 
-    const auto configTree = core::runtime::Convert::toPropertyTree(this->getConfiguration());
+    const auto configTree = this->getConfiguration();
 
     if(configTree.find("config") != configTree.not_found())
     {

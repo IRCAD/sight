@@ -23,6 +23,7 @@
 
 #include "data/Exception.hpp"
 
+#include <core/runtime/runtime.hpp>
 #include <core/service/base.hpp>
 
 #include <data/Camera.hpp>

@@ -28,6 +28,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/helper.hpp>
 
 namespace sight::ui::base
 {

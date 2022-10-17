@@ -21,8 +21,6 @@
 
 #include "AxialNegato.hpp"
 
-#include <core/runtime/operations.hpp>
-
 #include <utestData/Data.hpp>
 
 #include <QAction>

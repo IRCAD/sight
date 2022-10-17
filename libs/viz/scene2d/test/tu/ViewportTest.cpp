@@ -22,8 +22,6 @@
 
 #include "ViewportTest.hpp"
 
-#include <core/runtime/Convert.hpp>
-
 #include <service/base.hpp>
 
 #include <viz/scene2d/data/parser/Viewport.hpp>
@@ -63,11 +61,8 @@ void ViewportTest::testParser()
                      "</object>";
     boost::property_tree::read_xml(config_string, config);
 
-    // Create object configuration
-    const auto cfg = core::runtime::Convert::fromPropertyTree(config);
-
     auto parser = sight::service::add<data::parser::Viewport>("sight::viz::scene2d::data::parser::Viewport");
-    parser->setObjectConfig(cfg);
+    parser->setObjectConfig(config);
 
     auto viewport = sight::viz::scene2d::data::Viewport::New();
     parser->createConfig(viewport);

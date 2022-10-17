@@ -25,6 +25,7 @@
 #include "service/config.hpp"
 #include "service/extension/AppConfig.hpp"
 
+#include <core/runtime/Convert.hpp>
 #include <core/tools/Object.hpp>
 
 #include <data/Composite.hpp>
@@ -40,6 +41,8 @@ class SERVICE_CLASS_API IAppConfigManager : public core::tools::Object
 {
 public:
 
+    using config_t = boost::property_tree::ptree;
+
     SIGHT_DECLARE_CLASS(IAppConfigManager, core::tools::Object);
 
     /// Destructor. Do nothing.
@@ -53,6 +56,9 @@ public:
 
     /// Set config param
     void setConfig(core::runtime::ConfigurationElement::csptr cfgElem);
+
+    /// Set config param
+    void setConfig(const config_t& cfg);
 
     /**
      * @brief Set configuration
@@ -141,6 +147,13 @@ inline bool IAppConfigManager::isDestroyed() const
 inline void IAppConfigManager::setConfig(core::runtime::ConfigurationElement::csptr cfgElem)
 {
     m_cfgElem = cfgElem;
+}
+
+//------------------------------------------------------------------------------
+
+inline void IAppConfigManager::setConfig(const config_t& cfg)
+{
+    m_cfgElem = core::runtime::Convert::fromPropertyTree(cfg);
 }
 
 //------------------------------------------------------------------------------

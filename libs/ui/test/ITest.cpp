@@ -23,7 +23,8 @@
 
 #include "Tester.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
+#include <core/runtime/runtime.hpp>
 
 namespace sight::ui::test
 {
@@ -33,8 +34,7 @@ namespace sight::ui::test
 void ITest::setUp()
 {
     sight::core::runtime::init();
-    const auto& runtime              = sight::core::runtime::Runtime::get();
-    const std::filesystem::path cwd  = runtime.getWorkingPath();
+    const std::filesystem::path cwd  = sight::core::runtime::getWorkingPath();
     const std::filesystem::path path = cwd / getProfilePath();
     m_profile = sight::core::runtime::io::ProfileReader::createProfile(path);
     m_profile->start();

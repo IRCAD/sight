@@ -21,6 +21,7 @@
 
 #include "SAction.hpp"
 
+#include <core/runtime/helper.hpp>
 namespace sight::module::ui::base
 {
 

@@ -28,7 +28,7 @@
 #include <core/com/Slots.hxx>
 #include <core/location/SingleFile.hpp>
 #include <core/location/SingleFolder.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/Object.hpp>
 

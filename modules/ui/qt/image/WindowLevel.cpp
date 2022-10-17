@@ -24,7 +24,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>

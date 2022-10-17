@@ -22,8 +22,6 @@
 
 #include "ViewTest.hpp"
 
-#include <core/runtime/Convert.hpp>
-
 #include <ui/base/registry/View.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>

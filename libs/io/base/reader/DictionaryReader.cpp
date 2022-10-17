@@ -60,7 +60,7 @@ static std::stringstream spiritDebugStream;
 #include <data/StructureTraits.hpp>
 #include <data/StructureTraitsHelper.hpp>
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include "io/base/reader/DictionaryReader.hpp"
 #include "io/base/reader/registry/macros.hpp"

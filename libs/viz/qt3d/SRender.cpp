@@ -26,7 +26,7 @@
 #include "viz/qt3d/IAdaptor.hpp"
 #include "viz/qt3d/registry/Adaptor.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <service/helper/Config.hpp>
 #include <service/macros.hpp>

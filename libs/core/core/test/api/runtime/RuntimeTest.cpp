@@ -25,10 +25,10 @@
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/helper.hpp>
 #include <core/runtime/Module.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 #include <core/runtime/Plugin.hpp>
 #include <core/runtime/profile/Profile.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <filesystem>
 
@@ -85,10 +85,10 @@ void RuntimeTest::testModule()
     CPPUNIT_ASSERT_EQUAL(false, module->hasParameter("test"));
     CPPUNIT_ASSERT_EQUAL(std::string(), module->getParameterValue("test"));
 
-    auto* runtime          = core::runtime::Runtime::getDefault();
-    const auto libLocation = runtime->getWorkingPath() / MODULE_LIB_PREFIX;
+    const auto workingPath = core::runtime::getWorkingPath();
+    const auto libLocation = workingPath / MODULE_LIB_PREFIX;
     CPPUNIT_ASSERT_EQUAL(libLocation, module->getLibraryLocation());
-    const auto rcLocation = runtime->getWorkingPath() / MODULE_RC_PREFIX;
+    const auto rcLocation = workingPath / MODULE_RC_PREFIX;
     CPPUNIT_ASSERT_EQUAL(rcLocation / "module_utest", module->getResourcesLocation());
 
     CPPUNIT_ASSERT_EQUAL(std::string("sight::module::utest::Plugin"), module->getClass());
@@ -106,7 +106,7 @@ void RuntimeTest::testModule()
 
 void RuntimeTest::testOperations()
 {
-    const auto location = core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_RC_PREFIX;
+    const auto location = core::runtime::getWorkingPath() / MODULE_RC_PREFIX;
 
     // module location prototype
     auto path = core::runtime::getModuleResourcePath(std::string("sight::module::utest"));

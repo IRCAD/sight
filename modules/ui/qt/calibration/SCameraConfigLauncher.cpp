@@ -23,7 +23,7 @@
 #include "modules/ui/qt/calibration/SCameraConfigLauncher.hpp"
 
 #include <core/com/Signal.hxx>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/CalibrationInfo.hpp>
 #include <data/Camera.hpp>

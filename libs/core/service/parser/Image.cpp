@@ -22,9 +22,6 @@
 
 #include "service/parser/Image.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/Convert.hpp>
-
 #include <data/Image.hpp>
 #include <data/tools/Color.hpp>
 
@@ -38,7 +35,7 @@ void Image::createConfig(core::tools::Object::sptr _obj)
     const auto image = data::Image::dynamicCast(_obj);
     SIGHT_ASSERT("Image does not exist.", image);
 
-    const auto config = core::runtime::Convert::toPropertyTree(m_cfg).get_child("object");
+    const auto config = m_cfg.get_child("object");
     if(config.count("color") != 0U)
     {
         const auto colorStr = config.get<std::string>("color");

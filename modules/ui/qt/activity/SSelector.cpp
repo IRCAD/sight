@@ -32,7 +32,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/Activity.hpp>
 #include <data/Composite.hpp>

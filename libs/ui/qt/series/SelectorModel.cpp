@@ -22,7 +22,7 @@
 
 #include "ui/qt/series/SelectorModel.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 #include <core/tools/fwID.hpp>
 
 #include <data/Image.hpp>

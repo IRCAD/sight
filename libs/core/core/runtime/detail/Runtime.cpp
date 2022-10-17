@@ -31,6 +31,7 @@
 #include "core/runtime/IExecutable.hpp"
 #include "core/runtime/IPlugin.hpp"
 #include "core/runtime/Profile.hpp"
+#include "core/runtime/runtime.hpp"
 
 #include <core/tools/Os.hpp>
 
@@ -241,21 +242,21 @@ void Runtime::unregisterExtension(std::shared_ptr<detail::Extension> extension)
 
 //------------------------------------------------------------------------------
 
-Runtime::ExtensionContainer Runtime::getExtensions()
+Runtime::ExtensionContainer Runtime::getExtensions() const
 {
     return m_extensions;
 }
 
 //------------------------------------------------------------------------------
 
-Runtime::ExtensionIterator Runtime::extensionsBegin()
+Runtime::ExtensionIterator Runtime::extensionsBegin() const
 {
     return m_extensions.begin();
 }
 
 //------------------------------------------------------------------------------
 
-Runtime::ExtensionIterator Runtime::extensionsEnd()
+Runtime::ExtensionIterator Runtime::extensionsEnd() const
 {
     return m_extensions.end();
 }
@@ -294,8 +295,8 @@ std::shared_ptr<core::runtime::Module> Runtime::findModule(const std::string& id
 
     const std::string id = filterID(identifier);
 
-    std::shared_ptr<Module> resModule;
-    for(const std::shared_ptr<Module>& module : m_modules)
+    std::shared_ptr<core::runtime::Module> resModule;
+    for(const auto& module : m_modules)
     {
         if(module->getIdentifier() == id)
         {
@@ -309,14 +310,14 @@ std::shared_ptr<core::runtime::Module> Runtime::findModule(const std::string& id
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Module> Runtime::findEnabledModule(const std::string& identifier) const
+std::shared_ptr<core::runtime::Module> Runtime::findEnabledModule(const std::string& identifier) const
 {
     SIGHT_ASSERT("Module identifier should not be empty", !identifier.empty());
 
     const std::string id = filterID(identifier);
 
-    std::shared_ptr<Module> resModule;
-    for(const std::shared_ptr<Module>& module : m_modules)
+    std::shared_ptr<core::runtime::Module> resModule;
+    for(const auto& module : m_modules)
     {
         if(module->getIdentifier() == id && module->isEnabled())
         {
@@ -330,21 +331,15 @@ std::shared_ptr<Module> Runtime::findEnabledModule(const std::string& identifier
 
 //------------------------------------------------------------------------------
 
-Runtime* Runtime::getDefault()
+Runtime& Runtime::get()
 {
     if(m_instance == nullptr)
     {
         m_instance = std::make_shared<Runtime>();
     }
 
-    return m_instance.get();
-}
-
-//------------------------------------------------------------------------------
-
-Runtime& Runtime::get()
-{
-    return *Runtime::getDefault();
+    auto* runtime = m_instance.get();
+    return *runtime;
 }
 
 //------------------------------------------------------------------------------
@@ -367,9 +362,9 @@ std::shared_ptr<core::runtime::Extension> Runtime::findExtension(const std::stri
 
 //------------------------------------------------------------------------------
 
-core::runtime::Runtime::ModuleContainer Runtime::getModules()
+core::runtime::detail::Runtime::ModuleContainer Runtime::getModules() const
 {
-    core::runtime::Runtime::ModuleContainer modules;
+    ModuleContainer modules;
     std::copy(m_modules.begin(), m_modules.end(), std::inserter(modules, modules.begin()));
     return modules;
 }

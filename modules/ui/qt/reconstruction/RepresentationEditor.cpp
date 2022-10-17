@@ -23,7 +23,7 @@
 #include "modules/ui/qt/reconstruction/RepresentationEditor.hpp"
 
 #include <core/com/Signal.hxx>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/Mesh.hpp>
 

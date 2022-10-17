@@ -25,8 +25,7 @@
 #include "activity/IActivityValidator.hpp"
 #include "activity/IValidator.hpp"
 
-#include <core/runtime/Module.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/runtime.hpp>
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 

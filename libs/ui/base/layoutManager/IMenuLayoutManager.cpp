@@ -22,7 +22,7 @@
 
 #include "ui/base/layoutManager/IMenuLayoutManager.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
 

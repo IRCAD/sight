@@ -73,8 +73,8 @@ Extension::Validity Extension::validate()
     }
 
     // Retrieves the extension point.
-    detail::Runtime* runtime(detail::Runtime::getDefault());
-    std::shared_ptr<detail::ExtensionPoint> point(runtime->findExtensionPoint(getPoint()));
+    const auto& runtime = detail::Runtime::get();
+    std::shared_ptr<detail::ExtensionPoint> point(runtime.findExtensionPoint(getPoint()));
 
     // Checks that the point exists.
     if(!point)

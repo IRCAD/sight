@@ -26,9 +26,9 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/Convert.hpp>
-#include <core/runtime/helper.hpp>
 #include <core/runtime/Module.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/path.hpp>
+#include <core/runtime/runtime.hpp>
 #include <core/tools/fwID.hpp>
 
 #include <data/Activity.hpp>

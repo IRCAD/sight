@@ -29,8 +29,7 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/Convert.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
+#include <core/runtime/helper.hpp>
 #include <core/thread/Worker.hpp>
 
 #include <functional>
@@ -56,8 +55,7 @@ const core::com::Slots::SlotKeyType IService::s_SWAPKEY_SLOT = "swapKey";
 
 //-----------------------------------------------------------------------------
 
-IService::IService() :
-    m_configuration(new core::runtime::EConfigurationElement("EmptyConfigurationElement"))
+IService::IService()
 {
     newSignal<StartedSignalType>(s_STARTED_SIG);
     newSignal<UpdatedSignalType>(s_UPDATED_SIG);
@@ -418,21 +416,11 @@ void displayPt(boost::property_tree::ptree& pt, std::string indent = "")
 
 //-----------------------------------------------------------------------------
 
-void IService::setConfiguration(const core::runtime::ConfigurationElement::sptr _cfgElement)
-{
-    SIGHT_ASSERT("Invalid ConfigurationElement", _cfgElement);
-    m_configuration      = _cfgElement;
-    m_configurationState = UNCONFIGURED;
-}
-
-//-----------------------------------------------------------------------------
-
 void IService::setConfiguration(const Config& _configuration)
 {
-    SIGHT_ASSERT("Invalid ConfigurationElement", !_configuration.m_config.empty());
+    SIGHT_ASSERT("Invalid configuration", !_configuration.m_config.empty());
 
-    // TODO: Remove this ugly const_cast
-    m_configuration      = core::runtime::Convert::fromPropertyTree(_configuration.m_config);
+    m_configuration      = _configuration.m_config;
     m_configurationState = UNCONFIGURED;
 
     m_serviceConfig.m_uid               = _configuration.m_uid;
@@ -455,32 +443,25 @@ void IService::setConfiguration(const Config& _configuration)
 
 void IService::setConfiguration(const ConfigType& ptree)
 {
-    core::runtime::ConfigurationElement::sptr ce;
-
     ConfigType serviceConfig;
     serviceConfig.add_child("service", ptree);
 
-    ce = core::runtime::Convert::fromPropertyTree(serviceConfig);
-
-    SIGHT_ASSERT("Invalid ConfigurationElement", ce);
-
-    this->setConfiguration(ce);
+    m_configuration      = serviceConfig;
+    m_configurationState = UNCONFIGURED;
 }
 
 //-----------------------------------------------------------------------------
 
-core::runtime::ConfigurationElement::sptr IService::getConfiguration() const
+IService::ConfigType IService::getConfiguration() const
 {
-    return m_configuration;
+    return this->getConfigTree();
 }
 
 //-----------------------------------------------------------------------------
 
 IService::ConfigType IService::getConfigTree() const
 {
-    const auto configTree = core::runtime::Convert::toPropertyTree(this->getConfiguration());
-
-    auto srvConfig = configTree.get_child_optional("service");
+    auto srvConfig = m_configuration.get_child_optional("service");
     if(srvConfig.is_initialized())
     {
         return srvConfig.get();
@@ -525,18 +506,9 @@ void IService::configure()
 
 //-----------------------------------------------------------------------------
 
-void IService::configure(const ConfigType& ptree)
+void IService::configure(const ConfigType& serviceConfig)
 {
-    core::runtime::ConfigurationElement::sptr ce;
-
-    ConfigType serviceConfig;
-    serviceConfig.add_child("service", ptree);
-
-    ce = core::runtime::Convert::fromPropertyTree(serviceConfig);
-
-    SIGHT_ASSERT("Invalid ConfigurationElement", ce);
-
-    this->setConfiguration(ce);
+    this->setConfiguration(serviceConfig);
     this->configure();
 }
 

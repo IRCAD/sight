@@ -22,7 +22,7 @@
 
 #include "modules/ui/qt/reconstruction/SOrganMaterialEditor.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>

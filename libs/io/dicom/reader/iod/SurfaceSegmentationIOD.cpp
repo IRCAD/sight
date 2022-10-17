@@ -28,7 +28,7 @@
 #include "io/dicom/reader/ie/Study.hpp"
 #include "io/dicom/reader/ie/Surface.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/Boolean.hpp>
 #include <data/Mesh.hpp>

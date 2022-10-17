@@ -24,7 +24,7 @@
 
 #include "AppManager.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <service/AppManager.hpp>
 

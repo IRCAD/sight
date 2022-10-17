@@ -26,8 +26,9 @@
 #include <windows.h>
 #endif
 
+#include <core/runtime/runtime.hpp>
+
 #include <core/crypto/PasswordKeeper.hpp>
-#include <core/runtime/operations.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
 

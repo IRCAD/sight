@@ -23,7 +23,7 @@
 #include "io/base/service/IReader.hpp"
 
 #include <core/com/Slots.hxx>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <service/macros.hpp>
 

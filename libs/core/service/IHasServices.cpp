@@ -24,7 +24,7 @@
 
 #include "service/IService.hpp"
 
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <service/registry/ObjectService.hpp>
 

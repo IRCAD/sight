@@ -28,7 +28,8 @@
 #include "core/runtime/detail/io/Validator.hpp"
 #include "core/runtime/detail/Module.hpp"
 #include "core/runtime/Extension.hpp"
-#include "core/runtime/operations.hpp"
+#include "core/runtime/path.hpp"
+#include "core/runtime/runtime.hpp"
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -154,7 +155,7 @@ std::shared_ptr<Module> ModuleDescriptorReader::createModule(const std::filesyst
 
         if(!completeLocation.is_absolute())
         {
-            completeLocation = core::runtime::Runtime::getDefault()->getWorkingPath() / location;
+            completeLocation = core::runtime::getWorkingPath() / location;
         }
 
         module = processPlugin(rootNode, completeLocation);
@@ -374,7 +375,7 @@ std::shared_ptr<detail::Module> ModuleDescriptorReader::processPlugin(
 
     SIGHT_ASSERT("module identifier is empty", !moduleIdentifier.empty());
 
-    if(core::runtime::Runtime::getDefault()->findModule(moduleIdentifier))
+    if(core::runtime::findModule(moduleIdentifier))
     {
         return module;
     }

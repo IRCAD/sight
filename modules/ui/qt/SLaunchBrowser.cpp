@@ -60,11 +60,8 @@ void SLaunchBrowser::configuring()
 {
     this->sight::ui::base::IAction::initialize();
 
-    const auto urlConfig = m_configuration->find("url");
-    if(!urlConfig.empty())
-    {
-        m_url = urlConfig.at(0)->getValue();
-    }
+    const auto& config = this->getConfiguration();
+    m_url = config.get<std::string>("url", m_url);
 }
 
 //------------------------------------------------------------------------------

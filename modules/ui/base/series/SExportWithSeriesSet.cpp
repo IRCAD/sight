@@ -63,13 +63,9 @@ void SExportWithSeriesSet::info(std::ostream& _sstream)
 void SExportWithSeriesSet::configuring()
 {
     this->sight::ui::base::IAction::initialize();
-    auto vectConfig = m_configuration->find("IOSelectorSrvConfig");
-    if(!vectConfig.empty())
-    {
-        auto selectorConfig = vectConfig.at(0);
-        SIGHT_ASSERT("Missing 'name' attribute", selectorConfig->hasAttribute("name"));
-        m_ioSelectorSrvConfig = selectorConfig->getAttributeValue("name");
-    }
+
+    const auto& config = this->getConfiguration();
+    m_ioSelectorSrvConfig = config.get<std::string>("IOSelectorSrvConfig.<xmlattr>.name", m_ioSelectorSrvConfig);
 }
 
 //------------------------------------------------------------------------------

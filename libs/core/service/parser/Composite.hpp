@@ -24,7 +24,6 @@
 
 #include "service/config.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
 
@@ -77,9 +76,6 @@ protected:
     SERVICE_API void updating() override;
 
 private:
-
-    /// To verify some conditions in xml file
-    static bool refObjectValidator(core::runtime::ConfigurationElement::sptr _cfgElement);
 
     std::vector<service::IAppConfigManager::sptr> m_ctmContainer;
 };

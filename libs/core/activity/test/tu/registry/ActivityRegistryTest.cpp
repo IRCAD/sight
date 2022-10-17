@@ -24,9 +24,8 @@
 
 #include <activity/extension/Activity.hpp>
 
-#include <core/runtime/Extension.hpp>
-#include <core/runtime/Module.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>

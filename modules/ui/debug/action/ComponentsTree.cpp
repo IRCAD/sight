@@ -25,7 +25,7 @@
 #include <core/base.hpp>
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/Module.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <service/macros.hpp>
 
@@ -52,9 +52,7 @@ void ComponentsTree::updating()
     m_treeContainer->clearSelection();
     m_treeContainer->clear();
 
-    core::runtime::Runtime* defaultRuntime = core::runtime::Runtime::getDefault();
-
-    for(const auto& module : defaultRuntime->getModules())
+    for(const auto& module : core::runtime::getModules())
     {
         const std::string moduleName = module->getIdentifier();
         const bool isModuleEnabled   = module->isEnabled();

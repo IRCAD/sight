@@ -23,8 +23,7 @@
 #include "service/extension/Config.hpp"
 
 #include <core/runtime/Convert.hpp>
-#include <core/runtime/helper.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/runtime.hpp>
 
 namespace sight::service::extension
 {
@@ -39,11 +38,6 @@ Config::sptr Config::getDefault()
 {
     return s_currentServiceConfig;
 }
-
-//-----------------------------------------------------------------------------
-
-Config::~Config()
-= default;
 
 //-----------------------------------------------------------------------------
 
@@ -116,11 +110,6 @@ void Config::addServiceConfigInfo
     info->config    = config;
     m_reg[configId] = info;
 }
-
-//-----------------------------------------------------------------------------
-
-Config::Config()
-= default;
 
 //-----------------------------------------------------------------------------
 

@@ -44,8 +44,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(Object, service::IXMLParser);
 
-    SERVICE_API Object();
-    SERVICE_API ~Object() override;
+    SERVICE_API Object()           = default;
+    SERVICE_API ~Object() override = default;
 
     SERVICE_API void createConfig(core::tools::Object::sptr _obj) override;
     SERVICE_API void startConfig() override;
@@ -55,7 +55,6 @@ public:
 
 protected:
 
-    static bool refObjectValidator(core::runtime::ConfigurationElement::csptr _cfgElement);
     void updating() override;
 
     std::vector<service::IAppConfigManager::sptr> m_ctmContainer;

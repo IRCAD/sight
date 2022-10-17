@@ -22,8 +22,8 @@
 
 #include "PreferencesTest.hpp"
 
-#include <core/runtime/operations.hpp>
 #include <core/runtime/Profile.hpp>
+#include <core/runtime/runtime.hpp>
 #include <core/tools/Os.hpp>
 #include <core/tools/UUID.hpp>
 

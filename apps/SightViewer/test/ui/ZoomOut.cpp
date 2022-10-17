@@ -21,8 +21,6 @@
 
 #include "ZoomOut.hpp"
 
-#include <core/runtime/operations.hpp>
-
 #include <utestData/Data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::ZoomOut);

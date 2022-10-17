@@ -22,7 +22,7 @@
 
 #include "viz/qt3d/techniques/Lighting.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <QGraphicsApiFilter>
 #include <QRasterMode>

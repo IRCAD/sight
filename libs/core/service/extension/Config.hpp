@@ -83,7 +83,7 @@ public:
     SERVICE_API static Config::sptr getDefault();
 
     /// Destructor
-    SERVICE_API ~Config() override;
+    SERVICE_API ~Config() override = default;
 
     /**
      * @brief Parses module information to retrieve service declaration.
@@ -147,7 +147,7 @@ protected:
     Registry m_reg;
 
     /// Constructor
-    SERVICE_API Config();
+    SERVICE_API Config() = default;
 
     const static std::string CONFIG_EXT_POINT;
 

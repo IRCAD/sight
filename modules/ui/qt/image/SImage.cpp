@@ -22,7 +22,7 @@
 
 #include "SImage.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <service/macros.hpp>
 

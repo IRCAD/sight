@@ -24,7 +24,8 @@
 
 #include "TestServices.hpp"
 
-#include <core/runtime/Convert.hpp>
+#include <core/runtime/path.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>
@@ -64,9 +65,7 @@ void ConfigParserTest::setUp()
     std::filesystem::path location = core::runtime::getResourceFilePath("tu_exec_service");
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
-    auto& runtime = core::runtime::Runtime::get();
-    runtime.addModules(location);
-
+    core::runtime::addModules(location);
     core::runtime::loadModule("sight::module::service");
 }
 
@@ -86,7 +85,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
     const std::string serviceUUID2 = "myTestService2";
 
     // Create object configuration
-    core::runtime::ConfigurationElement::sptr config = buildObjectConfig();
+    const auto config = buildObjectConfig();
 
     // Create the object and its services from the configuration
     service::AppConfigManager::sptr configManager = service::AppConfigManager::New();
@@ -187,13 +186,10 @@ void ConfigParserTest::testTransferFunctionParser()
                      "</object>";
     boost::property_tree::read_xml(config_string, config);
 
-    // Create object configuration
-    const auto cfg = core::runtime::Convert::fromPropertyTree(config);
-
     auto parser = sight::service::add<sight::service::parser::TransferFunction>(
         "sight::service::parser::TransferFunction"
     );
-    parser->setObjectConfig(cfg);
+    parser->setObjectConfig(config);
 
     auto tf = sight::data::TransferFunction::New();
     parser->createConfig(tf);
@@ -228,7 +224,7 @@ void ConfigParserTest::testTransferFunctionParser()
 
 //------------------------------------------------------------------------------
 
-core::runtime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
+service::IService::config_t ConfigParserTest::buildObjectConfig()
 {
     service::IService::ConfigType config;
 
@@ -271,7 +267,7 @@ core::runtime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
     service::IService::ConfigType serviceCfg;
     serviceCfg.add_child("config", config);
 
-    return core::runtime::Convert::fromPropertyTree(serviceCfg);
+    return serviceCfg;
 }
 
 //------------------------------------------------------------------------------

@@ -27,12 +27,12 @@
 #include "service/helper/Config.hpp"
 #include "service/op/Get.hpp"
 #include "core/runtime/Convert.hpp"
-#include "service/registry/Proxy.hpp"
-#include "service/extension/Config.hpp"
-#include "service/extension/Factory.hpp"
-#include "service/registry/ObjectService.hpp"
+#include "core/runtime/runtime.hpp"
+#include <service/registry/Proxy.hpp>
+#include <service/extension/Config.hpp>
+#include <service/extension/Factory.hpp>
+#include <service/registry/ObjectService.hpp>
 
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
 #define FW_PROFILING_DISABLED
@@ -40,9 +40,6 @@
 
 #include <data/Composite.hpp>
 #include <data/Object.hpp>
-
-#include <core/runtime/Module.hpp>
-#include <core/runtime/operations.hpp>
 
 #include <boost/foreach.hpp>
 #include <boost/thread/futures/wait_for_all.hpp>
@@ -587,7 +584,7 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
 
                 service::IService::sptr srv = srvFactory->create(srvImpl);
                 auto objectParser           = service::IXMLParser::dynamicCast(srv);
-                objectParser->setObjectConfig(elem);
+                objectParser->setObjectConfig(core::runtime::Convert::toPropertyTree(elem));
                 objectParser->createConfig(obj);
 
                 m_createdObjects[id.first] = std::make_pair(obj, objectParser);

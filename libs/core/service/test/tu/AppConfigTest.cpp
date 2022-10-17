@@ -31,10 +31,8 @@
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/runtime/Convert.hpp>
-#include <core/runtime/Module.hpp>
-#include <core/runtime/operations.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/path.hpp>
+#include <core/runtime/runtime.hpp>
 #include <core/TimeStamp.hpp>
 
 #include <data/Boolean.hpp>
@@ -68,12 +66,11 @@ void AppConfigTest::setUp()
 {
     // Set up context before running a test.
     core::runtime::init();
-    core::runtime::Runtime* runtime = core::runtime::Runtime::getDefault();
 
     std::filesystem::path location = core::runtime::getResourceFilePath("tu_exec_service");
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
-    runtime->addModules(location);
+    core::runtime::addModules(location);
     core::runtime::loadModule("sight::module::service");
     core::runtime::loadModule("AppConfigTest");
 
@@ -1324,22 +1321,24 @@ void AppConfigTest::parameterReplaceTest()
     auto srv2          = service::IService::dynamicCast(gn_srv2);
     auto adaptedConfig = srv2->getConfiguration();
 
-    using ConfigType = core::runtime::ConfigurationElement::sptr;
-    const std::vector<ConfigType> paramsCfg = adaptedConfig->find("parameter");
+    const auto params = adaptedConfig.equal_range("parameter");
+
+    std::vector<service::IService::config_t> paramsCfg;
+    std::for_each(params.first, params.second, [&paramsCfg](const auto& p){paramsCfg.push_back(p.second);});
+
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), paramsCfg.size());
 
     std::string replaceBy;
+    CPPUNIT_ASSERT_EQUAL(std::string("patient"), paramsCfg[0].get<std::string>("<xmlattr>.replace"));
+    CPPUNIT_ASSERT_EQUAL(std::string("name"), paramsCfg[0].get<std::string>("<xmlattr>.by"));
 
-    CPPUNIT_ASSERT_EQUAL(std::string("patient"), paramsCfg[0]->getAttributeValue("replace"));
-    CPPUNIT_ASSERT_EQUAL(std::string("name"), paramsCfg[0]->getAttributeValue("by"));
-
-    replaceBy = paramsCfg[1]->getAttributeValue("by");
+    replaceBy = paramsCfg[1].get<std::string>("<xmlattr>.by");
     CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_Channel No5"), replaceBy);
 
-    replaceBy = paramsCfg[2]->getAttributeValue("by");
+    replaceBy = paramsCfg[2].get<std::string>("<xmlattr>.by");
     CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_disneyChannel"), replaceBy);
 
-    replaceBy = paramsCfg[3]->getAttributeValue("by");
+    replaceBy = paramsCfg[3].get<std::string>("<xmlattr>.by");
     CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_view1"), replaceBy);
 
     core::tools::Object::sptr gn_sub_srv;

@@ -22,8 +22,6 @@
 
 #include "ServiceConfigTest.hpp"
 
-#include <core/runtime/Convert.hpp>
-
 #include <data/String.hpp>
 
 #include <service/extension/AppConfig.hpp>

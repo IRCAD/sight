@@ -22,8 +22,8 @@
 
 #include "modules/ui/qt/metrics/Distance.hpp"
 
-#include <core/base.hpp>
 #include <core/com/Signal.hxx>
+#include <core/runtime/path.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 

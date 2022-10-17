@@ -30,7 +30,7 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 #include <core/tools/fwID.hpp>
 
 #include <data/Boolean.hpp>

@@ -29,8 +29,6 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/Convert.hpp>
-#include <core/runtime/operations.hpp>
 
 #include <data/Activity.hpp>
 

@@ -32,7 +32,7 @@
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/vr/GridProxyGeometry.hpp"
 
-#include <core/runtime/Profile.hpp>
+#include <core/runtime/path.hpp>
 #include <core/spyLog.hpp>
 #include <core/tools/Os.hpp>
 #include <core/tools/System.hpp>

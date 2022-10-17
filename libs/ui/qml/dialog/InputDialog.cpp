@@ -22,7 +22,7 @@
 
 #include "ui/qml/dialog/InputDialog.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <ui/base/registry/macros.hpp>
 #include <ui/qml/QmlEngine.hpp>

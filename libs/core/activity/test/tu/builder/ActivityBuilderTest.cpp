@@ -25,9 +25,8 @@
 #include <activity/extension/Activity.hpp>
 #include <activity/IBuilder.hpp>
 
-#include <core/runtime/Extension.hpp>
-#include <core/runtime/Module.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <data/Activity.hpp>
 #include <data/Composite.hpp>

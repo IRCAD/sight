@@ -23,7 +23,7 @@
 #include "ui/base/layoutManager/IFrameLayoutManager.hpp"
 
 #include <core/base.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/Integer.hpp>
 #include <data/String.hpp>
