@@ -35,7 +35,7 @@ namespace sight::data
  * @brief   This class defines color object.
  */
 
-class DATA_CLASS_API Color : public Object
+class DATA_CLASS_API Color final : public Object
 {
 public:
 
@@ -44,7 +44,7 @@ public:
 
     SIGHT_DECLARE_CLASS(Color, Object, factory::New<Color>);
 
-    DATA_API static sptr New(ColorType red, ColorType green = 1.f, ColorType blue = 1.f, ColorType alpha = 1.f);
+    DATA_API static sptr New(ColorType red, ColorType green = 1.F, ColorType blue = 1.F, ColorType alpha = 1.F);
 
     /**
      * @brief Constructor
@@ -53,10 +53,7 @@ public:
     DATA_API Color(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Color();
-
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    DATA_API ~Color() noexcept override = default;
 
     /** Get/Set the array of color values (red, green, blue, alpha).
      *  @name ColorArray accessor
@@ -69,10 +66,10 @@ public:
     ///@{
     /// Set RGBA color
     DATA_API void setRGBA(
-        const ColorType red,
-        const ColorType green,
-        const ColorType blue,
-        const ColorType alpha = 1.0
+        ColorType red,
+        ColorType green,
+        ColorType blue,
+        ColorType alpha = 1.0
     );
 
     ///@brief set RGBA from hexadecimal format (\#ffffff)
@@ -105,13 +102,24 @@ public:
     DATA_API bool operator!=(const Color& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     //! RGBA of the image (in terms of points)
-    ColorArray m_vRGBA;
+    ColorArray m_vRGBA {};
 }; // end class Color
 
 //-----------------------------------------------------------------------------

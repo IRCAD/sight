@@ -33,56 +33,18 @@
 #include <core/spyLog.hpp>
 
 #include <algorithm>
+#include <ranges>
 #include <regex>
+#include <utility>
 #include <vector>
 
 namespace sight::core::runtime
 {
 
-namespace
-{
-
-//------------------------------------------------------------------------------
-
-/**
- * @brief   Functor that matches configuration element identifiers
- *          against the given identifier
- *
- *
- */
-struct ConfigurationElementIdentifierPredicate
-{
-    ConfigurationElementIdentifierPredicate(const std::string& identifier) :
-        m_identifier(identifier)
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    bool operator()(std::shared_ptr<ConfigurationElement> element)
-    {
-        return element->getAttributeValue("id") == m_identifier;
-    }
-
-    private:
-
-        std::string m_identifier;
-};
-
-}
-
 //------------------------------------------------------------------------- -----
 
-void init(const std::filesystem::path& directory)
+void init()
 {
-    if(!directory.empty())
-    {
-        FW_DEPRECATED_MSG(
-            "Specifying a directory for Sight installation is now deprecated, the path will be ignored",
-            "22.0"
-        );
-    }
-
     // Load default modules
     core::runtime::Runtime* runtime = core::runtime::Runtime::getDefault();
 
@@ -99,6 +61,14 @@ void init(const std::filesystem::path& directory)
     SIGHT_ASSERT("Couldn't load any module from path: " + location.string(), !runtime->getModules().empty());
 }
 
+//------------------------------------------------------------------------- -----
+
+void shutdown()
+{
+    auto profile = detail::profile::getCurrentProfile();
+    profile->stop();
+}
+
 //------------------------------------------------------------------------------
 
 ConfigurationElement::sptr findConfigurationElement(
@@ -108,11 +78,12 @@ ConfigurationElement::sptr findConfigurationElement(
 {
     ConfigurationElement::sptr resultConfig;
     const auto elements     = getAllConfigurationElementsForPoint(pointIdentifier);
-    const auto foundElement = std::find_if(
-        elements.begin(),
-        elements.end(),
-        ConfigurationElementIdentifierPredicate(identifier)
-    );
+    const auto foundElement = std::ranges::find_if(
+        elements,
+        [identifier](auto& element)
+        {
+            return element->getAttributeValue("id") == identifier;
+        });
     if(foundElement != elements.end())
     {
         resultConfig = *foundElement;
@@ -139,7 +110,7 @@ std::filesystem::path getModuleResourcePath(const std::string& moduleIdentifier)
     if(module == nullptr)
     {
         SIGHT_ERROR("Could not find module " + moduleIdentifier + "'");
-        return std::filesystem::path();
+        return {};
     }
 
     return module->getResourcesLocation();
@@ -158,7 +129,7 @@ std::filesystem::path getModuleResourceFilePath(
     if(module == nullptr)
     {
         SIGHT_ERROR("Could not find module '" + moduleIdentifier + "'");
-        return std::filesystem::path();
+        return {};
     }
 
     return getModuleResourcePath(module, path);
@@ -188,7 +159,7 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
         if(module == nullptr)
         {
             SIGHT_DEBUG("Could not find module '" + moduleFolder + "'");
-            return std::filesystem::path();
+            return {};
         }
 
         return getModuleResourcePath(module, pathWithoutModule);
@@ -196,7 +167,7 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
     catch(...)
     {
         SIGHT_ERROR("Error looking for module '" + moduleFolder + "'");
-        return std::filesystem::path();
+        return {};
     }
 }
 
@@ -227,7 +198,7 @@ std::filesystem::path getLibraryResourceFilePath(const std::filesystem::path& pa
     // The library resources are at the same location than modules
     // Find a repo that matches the library namespace
     const auto repositories = runtime.getRepositoriesPath();
-    for(auto repo : repositories)
+    for(const auto& repo : repositories)
     {
         std::filesystem::path lastPath = *(--repo.second.end());
         if(lastPath.string() == libNamespace)
@@ -304,13 +275,22 @@ std::shared_ptr<Module> loadModule(const std::string& identifier)
     if(module)
     {
         module->setEnable(true);
-        if(!module->isStarted())
-        {
-            module->start();
-        }
+        module->start();
     }
 
     return module;
+}
+
+//------------------------------------------------------------------------------
+
+void unloadModule(const std::string& identifier)
+{
+    auto module = std::dynamic_pointer_cast<detail::Module>(Runtime::get().findModule(identifier));
+
+    if(module)
+    {
+        module->stop();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -330,7 +310,7 @@ bool loadLibrary(const std::string& identifier)
 
     // Try to load from all known paths
     const auto repositories = runtime.getRepositoriesPath();
-    for(auto repo : repositories)
+    for(const auto& repo : repositories)
     {
         library->setSearchPath(repo.first);
         try

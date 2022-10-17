@@ -22,10 +22,7 @@
 
 #pragma once
 
-namespace sight::data
-{
-
-namespace timeline
+namespace sight::data::timeline
 {
 
 //-----------------------------------------------------------------------------
@@ -46,10 +43,8 @@ GenericObject<TYPE>::GenericObject(
 
 //-----------------------------------------------------------------------------
 
-template<typename TYPE>
-GenericObject<TYPE>::~GenericObject()
-{
-}
+template<typename TYPE> GenericObject<TYPE>::~GenericObject()
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -66,10 +61,15 @@ const TYPE& GenericObject<TYPE>::getElement(unsigned int index) const
 template<typename TYPE>
 void GenericObject<TYPE>::setElement(const ElementType& element, unsigned int index)
 {
+    static_assert(
+        std::is_trivially_copyable_v<TYPE>,
+        "TYPE must be TriviallyCopyable for GenericObject<TYPE>::setElement to be used."
+    );
     SIGHT_ASSERT("Index out of bounds", index < m_maxElementNum);
 
     // store floating point values
-    ElementType* dstElement = reinterpret_cast<TYPE*>(m_buffer + index * getElementSize());
+    auto* dstElement = reinterpret_cast<TYPE*>(m_buffer + index * getElementSize());
+    // undefined behavior if TYPE isn't TriviallyCopyable:
     memcpy(static_cast<void*>(dstElement), &element, getElementSize());
 
     // update presence mask
@@ -99,7 +99,7 @@ TYPE* GenericObject<TYPE>::addElement(unsigned int index)
     }
 
     // return pointer on the new element
-    ElementType* dstElement = reinterpret_cast<TYPE*>(m_buffer + index * getElementSize());
+    auto* dstElement = reinterpret_cast<TYPE*>(m_buffer + index * getElementSize());
 
     return dstElement;
 }
@@ -117,10 +117,8 @@ typename GenericObject<TYPE>::iterator GenericObject<TYPE>::getPresenceIterator(
 template<typename TYPE>
 GenericObject<TYPE>::iterator::iterator(const GenericObjectBase& object) :
     m_object(&object),
-    m_currentIndex(0)
+    m_maxElement(m_object->getMaxElementNum())
 {
-    m_maxElement = m_object->getMaxElementNum();
-
     while(m_currentIndex < m_maxElement && !m_object->isPresent(m_currentIndex))
     {
         m_currentIndex++;
@@ -143,12 +141,10 @@ void GenericObject<TYPE>::iterator::operator++()
 template<typename TYPE>
 const TYPE& GenericObject<TYPE>::iterator::operator*() const
 {
-    const GenericObject<ElementType>* object = static_cast<const GenericObject<ElementType>*>(m_object);
+    const auto* object = static_cast<const GenericObject<ElementType>*>(m_object);
     return object->getElement(m_currentIndex);
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace timeline
-
-} // namespace sight::data
+} // namespace sight::data::timeline

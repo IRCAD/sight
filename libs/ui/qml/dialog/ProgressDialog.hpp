@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@
 
 #include <string>
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 /**
@@ -59,7 +56,7 @@ public:
         const std::string& message = std::string(86, ' ')
     );
 
-    UI_QML_API virtual ~ProgressDialog();
+    UI_QML_API ~ProgressDialog() override;
 
     /// the operator to set the progress of the percentage
     UI_QML_API void operator()(float percent, std::string msg) override;
@@ -95,6 +92,4 @@ private:
     bool m_hasCallback {true};
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

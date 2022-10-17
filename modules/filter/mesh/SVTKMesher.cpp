@@ -25,6 +25,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
+#include <core/com/Slots.hxx>
 #include <core/tools/fwID.hpp>
 
 #include <data/ImageSeries.hpp>
@@ -48,19 +49,18 @@ namespace sight::module::filter::mesh
 {
 
 //-----------------------------------------------------------------------------
-
+static const sight::core::com::Slots::SlotKeyType s_UPDATE_THRESHOLD_SLOT = "updateThreshold";
 //-----------------------------------------------------------------------------
 
-SVTKMesher::SVTKMesher() noexcept :
-    m_reduction(0)
+SVTKMesher::SVTKMesher() noexcept
 {
+    newSlot(s_UPDATE_THRESHOLD_SLOT, &SVTKMesher::updateThreshold, this);
 }
 
 //-----------------------------------------------------------------------------
 
-SVTKMesher::~SVTKMesher() noexcept
-{
-}
+SVTKMesher::~SVTKMesher() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -80,14 +80,10 @@ void SVTKMesher::stopping()
 void SVTKMesher::configuring()
 {
     const service::IService::ConfigType& srvConfig = this->getConfigTree();
-
     SIGHT_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1);
-
     const service::IService::ConfigType& config = srvConfig.get_child("config");
-
-    SIGHT_ASSERT("You must have one <percentReduction/> element.", config.count("percentReduction") == 1);
-    const service::IService::ConfigType& reductionCfg = config.get_child("percentReduction");
-    m_reduction = reductionCfg.get_value<unsigned int>();
+    m_threshold = config.get<unsigned int>("<xmlattr>.threshold");
+    m_reduction = config.get<unsigned int>("<xmlattr>.percentReduction");
 }
 
 //-----------------------------------------------------------------------------
@@ -95,30 +91,19 @@ void SVTKMesher::configuring()
 void SVTKMesher::updating()
 {
     auto imageSeries = m_image.lock();
-    auto image       = imageSeries->getImage();
-
-    // If there is no image don't do anything, it will avoid a crash later...
-    if(!image)
-    {
-        SIGHT_WARN("The imageSeries has no image, the mesher will not be able to work.");
-        return;
-    }
-
-    // Protect the image...
-    data::mt::locked_ptr<const data::Image> image_lock(image);
 
     auto modelSeries = data::ModelSeries::New();
 
-    modelSeries->from_series(*imageSeries);
+    modelSeries->Series::deepCopy(imageSeries.get_shared());
 
     // vtk img
     auto vtkImage = vtkSmartPointer<vtkImageData>::New();
-    io::vtk::toVTKImage(image, vtkImage);
+    io::vtk::toVTKImage(imageSeries.get_shared(), vtkImage);
 
     // contour filter
     auto contourFilter = vtkSmartPointer<vtkDiscreteMarchingCubes>::New();
     contourFilter->SetInputData(vtkImage);
-    contourFilter->SetValue(0, 255);
+    contourFilter->SetValue(0, m_threshold);
     contourFilter->ComputeScalarsOn();
     contourFilter->ComputeNormalsOn();
     contourFilter->Update();
@@ -176,6 +161,14 @@ void SVTKMesher::updating()
     m_model = modelSeries;
 }
 
+//------------------------------------------------------------------------------
+
+void SVTKMesher::updateThreshold(int threshold)
+{
+    m_threshold = (threshold >= 0) ? static_cast<unsigned int>(threshold) : 0;
+    this->update();
+}
+
 //-----------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::filter::mesh

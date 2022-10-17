@@ -24,21 +24,15 @@
 
 #include "io/dicom/reader/ie/InformationEntity.hpp"
 
-#include <data/Equipment.hpp>
+#include <data/Series.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 /**
  * @brief Equipment Information Entity class
  */
-class IO_DICOM_CLASS_API Equipment : public io::dicom::reader::ie::InformationEntity<data::Equipment>
+class IO_DICOM_CLASS_API Equipment : public io::dicom::reader::ie::InformationEntity<data::Series>
 {
 public:
 
@@ -56,14 +50,14 @@ public:
         const CSPTR(data::DicomSeries)& dicomSeries,
         const SPTR(gdcm::Reader)& reader,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::Equipment::sptr& equipment,
+        const data::Series::sptr& series,
         const core::log::Logger::sptr& logger = nullptr,
         ProgressCallback progress             = nullptr,
         CancelRequestedCallback cancel        = nullptr
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Equipment();
+    IO_DICOM_API ~Equipment() override;
 
     /**
      * @brief Read General Equipment Module tags
@@ -72,8 +66,4 @@ public:
     IO_DICOM_API virtual void readGeneralEquipmentModule();
 };
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,10 +28,7 @@
 #include <data/Image.hpp>
 #include <data/Material.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Material
+namespace sight::io::session::detail::Material
 {
 
 constexpr static auto s_ShadingMode {"ShadingMode"};
@@ -46,14 +43,14 @@ constexpr static auto s_DiffuseTexture {"DiffuseTexture"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto material = Helper::safeCast<data::Material>(object);
+    const auto material = Helper::safe_cast<data::Material>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Material>(tree, 1);
@@ -72,15 +69,15 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Material::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto material = Helper::safeCast<data::Material>(object);
+    auto material = Helper::cast_or_create<data::Material>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Material>(tree, 0, 1);
@@ -110,6 +107,4 @@ inline static data::Material::sptr deserialize(
     return material;
 }
 
-} // namespace detail::Material
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Material

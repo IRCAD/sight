@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,15 +27,7 @@
 
 #include <string>
 
-namespace sight::core::memory
-{
-
-class GuiBaseObject;
-
-namespace policy
-{
-
-namespace factory
+namespace sight::core::memory::policy::factory
 {
 
 template<class CLASSNAME>
@@ -50,8 +42,4 @@ SPTR(CLASSNAME)  New()
     return policy;
 }
 
-} // namespace factory
-
-} // namespace policy
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::policy::factory

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,19 +42,18 @@ public:
     MODULE_APPXML_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_APPXML_API ~Plugin() noexcept;
+    MODULE_APPXML_API ~Plugin() noexcept override;
 
     /// Overrides start method. .
-    MODULE_APPXML_API void start();
+    MODULE_APPXML_API void start() override;
 
     /// Overrides stop method. Do nothing
-    MODULE_APPXML_API void stop() noexcept;
-
-    MODULE_APPXML_API void initialize();
-
-    MODULE_APPXML_API void uninitialize() noexcept;
+    MODULE_APPXML_API void stop() noexcept override;
 
 private:
+
+    /// Allows to postpone the launch of the application of the main worker
+    void run();
 
     std::string m_configurationName;
     std::string m_parametersName;

@@ -58,9 +58,8 @@ SCompositorSelector::SCompositorSelector() noexcept
 
 //------------------------------------------------------------------------------
 
-SCompositorSelector::~SCompositorSelector() noexcept
-{
-}
+SCompositorSelector::~SCompositorSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -75,7 +74,7 @@ void SCompositorSelector::starting()
     m_layersBox       = new QComboBox();
     m_compositorChain = new QListWidget();
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     layout->addWidget(m_layersBox);
     layout->addWidget(m_compositorChain);
 
@@ -134,7 +133,7 @@ void SCompositorSelector::onSelectedLayerItem(int index)
 
         // We need the ogre's viewport in order to add the compositors,
         // this is why we have to check the viewport's existence
-        if(layer->getViewport())
+        if(layer->getViewport() != nullptr)
         {
             // Fill the list widget
             this->updateCompositorList();
@@ -181,14 +180,14 @@ void SCompositorSelector::refreshRenderers()
     service::registry::ObjectService::ServiceVectorType renderers =
         service::OSR::getServices("sight::viz::scene3d::SRender");
 
-    for(auto srv : renderers)
+    for(const auto& srv : renderers)
     {
         auto render = sight::viz::scene3d::SRender::dynamicCast(srv);
 
         for(auto& layerMap : render->getLayers())
         {
-            const std::string id       = layerMap.first;
-            const std::string renderID = render->getID();
+            const std::string id = layerMap.first;
+            std::string renderID = render->getID();
             m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
             m_layers.push_back(layerMap.second);
 
@@ -228,7 +227,7 @@ void SCompositorSelector::updateCompositorList()
                 QString compositorName = compositor.get()->getName().c_str();
                 layer->addAvailableCompositor(compositorName.toStdString());
 
-                QListWidgetItem* newCompositor = new QListWidgetItem(compositorName, m_compositorChain);
+                auto* newCompositor = new QListWidgetItem(compositorName, m_compositorChain);
                 newCompositor->setFlags(newCompositor->flags() | Qt::ItemIsUserCheckable);
                 newCompositor->setCheckState(Qt::Unchecked);
             }

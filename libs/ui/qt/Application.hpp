@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,16 +38,15 @@ class UI_QT_CLASS_API Application : public ui::base::Application
 {
 public:
 
-    Application(ui::base::GuiBaseObject::Key)
+    Application(ui::base::GuiBaseObject::Key /*unused*/)
     {
     }
 
-    virtual ~Application()
-    {
-    }
+    ~Application() override
+    = default;
 
     /// Tells the application to exit with a returncode
-    UI_QT_API virtual void exit(int returncode = 0);
+    UI_QT_API void exit(int returncode = 0) override;
 };
 
 } // namespace sight::ui::qt

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,15 +26,11 @@
 
 #include <service/macros.hpp>
 
-#include <viz/scene2d/data/Coord.hpp>
 #include <viz/scene2d/IAdaptor.hpp>
 
 #include <QGraphicsItem>
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
@@ -69,7 +65,7 @@ public:
     SIGHT_DECLARE_SERVICE(SSquare, sight::viz::scene2d::IAdaptor);
 
     MODULE_VIZ_SCENE2D_API SSquare() noexcept;
-    MODULE_VIZ_SCENE2D_API virtual ~SSquare() noexcept;
+    MODULE_VIZ_SCENE2D_API ~SSquare() noexcept override;
 
 protected:
 
@@ -81,28 +77,26 @@ protected:
     MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
     MODULE_VIZ_SCENE2D_API void setColor(const std::string& _color);
-    MODULE_VIZ_SCENE2D_API bool coordViewIsInItem(const sight::viz::scene2d::data::Coord& coord, QGraphicsItem* item);
-    MODULE_VIZ_SCENE2D_API sight::viz::scene2d::data::Coord coordViewToCoordItem(
-        const sight::viz::scene2d::data::Coord& coord,
+    MODULE_VIZ_SCENE2D_API bool coordViewIsInItem(const sight::viz::scene2d::vec2d_t& coord, QGraphicsItem* item);
+    MODULE_VIZ_SCENE2D_API sight::viz::scene2d::vec2d_t coordViewToCoordItem(
+        const sight::viz::scene2d::vec2d_t& coord,
         QGraphicsItem* item
     );
 
 private:
 
-    sight::viz::scene2d::data::Coord m_coord;
+    sight::viz::scene2d::vec2d_t m_coord {};
     std::uint32_t m_size {0};
     QColor m_color;
     QGraphicsItemGroup* m_layer {nullptr};
     QGraphicsRectItem* m_rec {nullptr};
-    sight::viz::scene2d::data::Coord m_oldCoord;
+    sight::viz::scene2d::vec2d_t m_oldCoord {};
 
     bool m_pointIsCaptured {false};
     bool m_autoRefresh {true};
     bool m_interaction {true};
     static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    void setDoubleParameter(const double val, std::string key);
+    void setDoubleParameter(double val, std::string key);
 };
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

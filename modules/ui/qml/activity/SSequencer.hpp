@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,8 @@
 
 #include <activity/IActivitySequencer.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
+#include <data/ActivitySet.hpp>
 
 #include <ui/qml/IQmlEditor.hpp>
 
@@ -41,18 +42,18 @@ namespace sight::module::ui::qml::activity
  *
  * The order of the activities is given in the Qml file.
  *
- * ActivitySeries are created for each activity using the data produced by the previous activities. This activities are
- * stored in the current SeriesDB.
+ * Activity are created for each activity using the data produced by the previous activities. This activities are
+ * stored in the current ActivitySet.
  *
  * This service should be associated to the SView to display the current activity
  *
  * @section Signal Signal
- * - \b activityCreated(data::ActivitySeries::sptr) : This signal is emitted when an activity is created (using
+ * - \b activityCreated(data::Activity::sptr) : This signal is emitted when an activity is created (using
  *   next() or previous().
  * - \b dataRequired() : This signal is emitted when the activity can not be launch because it requires data.
  *
  * @section Slots Slots
- * - \b goTo(int) : Create the activity series at the given index
+ * - \b goTo(int) : Create the activity at the given index
  * - \b checkNext() : Check if the next activities can be enabled
  *
  * @section Config Configuration
@@ -77,14 +78,14 @@ namespace sight::module::ui::qml::activity
  * @subsection Cpp C++ Configuration
  *
  * Listen the creation of the service in your AppManager with the method "onServiceCreated(srv)" and then associate the
- * the seriesDB inout and register the service.
+ * the activity_set inout and register the service.
  *
  * @code{.cpp}
-     m_activitySequencer->setInOut(m_seriesDB, "seriesDB", true);
+     m_activitySequencer->setInOut(m_activity_set, "activitySet", true);
    @endcode
  *
  *  @subsubsection In-Out In-Out
- * - \b seriesDB [sight::data::SeriesDB]: used to store the ActivitySeries of the managed activities
+ * - \b activity_set [sight::data::ActivitySet]: used to store the Activity of the managed activities
  */
 class MODULE_UI_QML_CLASS_API SSequencer : public sight::ui::qml::IQmlEditor,
                                            public sight::activity::IActivitySequencer
@@ -107,8 +108,8 @@ public:
      * @name Signals API
      * @{
      */
-    typedef core::com::Signal<void (data::ActivitySeries::sptr)> ActivityCreatedSignalType;
-    typedef core::com::Signal<void (data::ActivitySeries::sptr)> DataRequiredSignalType;
+    typedef core::com::Signal<void (data::Activity::sptr)> ActivityCreatedSignalType;
+    typedef core::com::Signal<void (data::Activity::sptr)> DataRequiredSignalType;
 /**
  * @}
  */
@@ -136,15 +137,15 @@ protected:
     void stopping() override;
 
     /**
-     * @brief Analyse the series contained in the current seriesDB.
+     * @brief Analyse the activity contained in the current activity_set.
      *
-     * - if the series is not an activity or if it is an unknown activity, it is removed
+     * - if the activity is unknown, it is removed
      * - else, the activity data is stored in m_requirements
      * - the last activity is launched
      */
     void updating() override;
 
-    /// Connect the service to the SeriesDB signals
+    /// Connect the service to the ActivitySet signals
     KeyConnectionsMap getAutoConnections() const override;
 
 private:
@@ -152,10 +153,10 @@ private:
     /// Slot: Check if the next activities can be enabled
     void checkNext();
 
-    /// Slot: Create the next activity series, emit 'dataRequired' signal if the activity require additional data
+    /// Slot: Create the next activity, emit 'dataRequired' signal if the activity require additional data
     void next();
 
-    /// Slot: Create the previous activity series, emit 'dataRequired' signal if the activity require additional data
+    /// Slot: Create the previous activity, emit 'dataRequired' signal if the activity require additional data
     void previous();
 
     ActivityCreatedSignalType::sptr m_sigActivityCreated;
@@ -164,8 +165,8 @@ private:
     /// List of activity ids
     QStringList m_qActivityIds;
 
-    static constexpr std::string_view s_SERIESDB_INOUT = "seriesDB";
-    data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, "seriesDB", true};
+    static constexpr std::string_view s_ACTIVITY_SET_INOUT = "activitySet";
+    data::ptr<data::ActivitySet, data::Access::inout> m_activity_set {this, s_ACTIVITY_SET_INOUT, true};
 };
 
-} // uiActivitiesQml
+} // namespace sight::module::ui::qml::activity

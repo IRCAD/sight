@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@
 #include <ui/base/container/fwMenuBar.hpp>
 #include <ui/base/layoutManager/IMenuBarLayoutManager.hpp>
 
-namespace sight::ui::qt
-{
-
-namespace layoutManager
+namespace sight::ui::qt::layoutManager
 {
 
 /**
@@ -53,14 +50,14 @@ public:
 
     UI_QT_API MenuBarLayoutManager(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API virtual ~MenuBarLayoutManager();
+    UI_QT_API ~MenuBarLayoutManager() override;
 
     /**
      * @brief Instantiate menu with parent menuBar.
      * @pre LayoutManager must be initialized before.
      * @pre parent menuBar must be instanced.
      */
-    UI_QT_API void createLayout(ui::base::container::fwMenuBar::sptr parent) override;
+    UI_QT_API void createLayout(ui::base::container::fwMenuBar::sptr parent, const std::string& id) override;
 
     /**
      * @brief Destroy local menus.
@@ -83,6 +80,4 @@ protected:
     ui::qt::container::QtMenuBarContainer::sptr m_parent;
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::layoutManager

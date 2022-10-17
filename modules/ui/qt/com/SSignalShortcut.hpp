@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ public:
     MODULE_UI_QT_API SSignalShortcut() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SSignalShortcut() noexcept;
+    MODULE_UI_QT_API ~SSignalShortcut() noexcept override;
 
 protected:
 
@@ -107,7 +107,7 @@ private:
     std::string m_wid;
 
     /// Qt shortcut object
-    QShortcut* m_shortcutObject;
+    QShortcut* m_shortcutObject {nullptr};
 };
 
-}
+} // namespace sight::module::ui::qt::com

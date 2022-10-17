@@ -22,7 +22,6 @@
 
 #include "MeshTest.hpp"
 
-#include <core/tools/NumericRoundCast.hxx>
 #include <core/tools/random/Generator.hpp>
 #include <core/tools/System.hpp>
 
@@ -54,10 +53,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::vtk::ut::MeshTest);
 
-namespace sight::io::vtk
-{
-
-namespace ut
+namespace sight::io::vtk::ut
 {
 
 using core::tools::random::safeRand;
@@ -246,7 +242,7 @@ void MeshTest::testExportImportSyntheticMesh()
 
 void MeshTest::testPointCloud()
 {
-    const data::Mesh::size_t NB_POINTS = static_cast<data::Mesh::size_t>(100 + safeRand() % 1000);
+    const auto NB_POINTS = static_cast<data::Mesh::size_t>(100 + safeRand() % 1000);
 
     const data::Mesh::sptr mesh1 = data::Mesh::New();
 
@@ -256,10 +252,10 @@ void MeshTest::testPointCloud()
 
     for(data::Mesh::size_t i = 0 ; i < NB_POINTS ; ++i)
     {
-        data::Mesh::position_t point[3];
-        point[0] = (static_cast<float>(safeRand() % 1000) - 500.f) / 3.f;
-        point[1] = (static_cast<float>(safeRand() % 1000) - 500.f) / 3.f;
-        point[2] = (static_cast<float>(safeRand() % 1000) - 500.f) / 3.f;
+        std::array<data::Mesh::position_t, 3> point {};
+        point[0] = (static_cast<float>(safeRand() % 1000) - 500.F) / 3.F;
+        point[1] = (static_cast<float>(safeRand() % 1000) - 500.F) / 3.F;
+        point[2] = (static_cast<float>(safeRand() % 1000) - 500.F) / 3.F;
         mesh1->pushPoint(point);
         mesh1->pushCell(i);
     }
@@ -513,6 +509,4 @@ void MeshTest::testWriteStlFile()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::vtk
+} // namespace sight::io::vtk::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,13 +29,12 @@
 #include <QStyleOption>
 #include <QVBoxLayout>
 
-namespace sight::ui::qt
+#include <array>
+
+namespace sight::ui::qt::widget
 {
 
-namespace widget
-{
-
-static const char* branch_closed[] = {
+static std::array branch_closed {
     "8 17 2 1",
 /* colors */
     "- c #000000",
@@ -60,7 +59,7 @@ static const char* branch_closed[] = {
     "aaaaaaaa"
 };
 
-static const char* branch_open[] = {
+static std::array branch_open {
     "11 6 2 1",
 /* colors */
     "- c #000000",
@@ -75,15 +74,14 @@ static const char* branch_open[] = {
 };
 
 QfwToolBox::~QfwToolBox()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 QfwToolBox::QfwToolBox(QWidget* parent) :
-    QFrame(parent)
+    QFrame(parent),
+    layout(new QFormLayout(this))
 {
-    this->layout = new QFormLayout(this);
     this->layout->setMargin(0);
     layout->setFieldGrowthPolicy(QFormLayout::AllNonFixedFieldsGrow);
     layout->setHorizontalSpacing(0);
@@ -93,22 +91,38 @@ QfwToolBox::QfwToolBox(QWidget* parent) :
 
 //-----------------------------------------------------------------------------
 
-ui::qt::widget::Page* QfwToolBox::page(QWidget* widget) const
+template<typename TOOLBOX>
+auto QfwToolBox::page(TOOLBOX& toolbox, QWidget* widget)
 {
-    if(!widget)
+    using ReturnType = decltype(&*toolbox.pageList.begin());
+    if(widget == nullptr)
     {
-        return 0;
+        return ReturnType(nullptr);
     }
 
-    for(PageList::ConstIterator i = pageList.constBegin() ; i != pageList.constEnd() ; ++i)
+    for(auto i = toolbox.pageList.begin() ; i != toolbox.pageList.end() ; ++i)
     {
-        if((*i).widget == widget)
+        if(i->widget == widget)
         {
-            return (Page*) &(*i);
+            return &*i;
         }
     }
 
-    return 0;
+    return ReturnType(nullptr);
+}
+
+//------------------------------------------------------------------------------
+
+const ui::qt::widget::Page* QfwToolBox::page(QWidget* widget) const
+{
+    return page<>(*this, widget);
+}
+
+//------------------------------------------------------------------------------
+
+ui::qt::widget::Page* QfwToolBox::page(QWidget* widget)
+{
+    return page<>(*this, widget);
 }
 
 //-----------------------------------------------------------------------------
@@ -120,7 +134,7 @@ ui::qt::widget::Page* QfwToolBox::page(int index)
         return &pageList[index];
     }
 
-    return 0;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -132,7 +146,7 @@ const ui::qt::widget::Page* QfwToolBox::page(int index) const
         return &pageList.at(index);
     }
 
-    return 0;
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------
@@ -140,7 +154,7 @@ const ui::qt::widget::Page* QfwToolBox::page(int index) const
 void QfwToolBox::collapseItem(int index)
 {
     Page* page = this->page(index);
-    if(page)
+    if(page != nullptr)
     {
         page->sv->setVisible(false);
         page->button->setChecked(false);
@@ -152,7 +166,7 @@ void QfwToolBox::collapseItem(int index)
 void QfwToolBox::expandItem(int index)
 {
     Page* page = this->page(index);
-    if(page)
+    if(page != nullptr)
     {
         page->sv->setVisible(true);
         page->button->setChecked(true);
@@ -170,14 +184,14 @@ int QfwToolBox::addItem(QWidget* item, const QString& text)
 
 int QfwToolBox::insertItem(int index, QWidget* widget, const QString& text)
 {
-    if(!widget)
+    if(widget == nullptr)
     {
         return -1;
     }
 
     connect(widget, SIGNAL(destroyed(QObject*)), this, SLOT(widgetDestroyed(QObject*)));
 
-    Page c;
+    Page c {};
     c.widget = widget;
     c.button = new QPushButton(this);
     c.button->setObjectName("QfwToolBoxButton");
@@ -185,8 +199,8 @@ int QfwToolBox::insertItem(int index, QWidget* widget, const QString& text)
     c.button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     c.button->setFocusPolicy(Qt::NoFocus);
     c.button->setCheckable(true);
-    QPixmap pixOpen(branch_open);
-    QPixmap pixClose(branch_closed);
+    QPixmap pixOpen(branch_open.data());
+    QPixmap pixClose(branch_closed.data());
     QIcon bIcon;
     bIcon.addPixmap(pixClose, QIcon::Normal, QIcon::Off);
     bIcon.addPixmap(pixOpen, QIcon::Active, QIcon::On);
@@ -207,7 +221,7 @@ int QfwToolBox::insertItem(int index, QWidget* widget, const QString& text)
     connect(c.button, SIGNAL(toggled(bool)), this, SLOT(buttonToggled(bool)));
 
     c.sv = new QFrame(this);
-    QVBoxLayout* verticalLayout = new QVBoxLayout(c.sv);
+    auto* verticalLayout = new QVBoxLayout(c.sv);
     verticalLayout->setMargin(0);
     verticalLayout->addWidget(widget);
     c.sv->hide();
@@ -236,8 +250,8 @@ int QfwToolBox::insertItem(int index, QWidget* widget, const QString& text)
 
 void QfwToolBox::buttonToggled(bool checked)
 {
-    QPushButton* tb = qobject_cast<QPushButton*>(this->sender());
-    QWidget* item   = 0;
+    auto* tb      = qobject_cast<QPushButton*>(this->sender());
+    QWidget* item = nullptr;
     for(PageList::ConstIterator i = pageList.constBegin() ; i != pageList.constEnd() ; ++i)
     {
         if((*i).button == tb)
@@ -280,9 +294,9 @@ void QfwToolBox::relayout()
 
 void QfwToolBox::widgetDestroyed(QObject* object)
 {
-    QWidget* p = (QWidget*) object;
-    Page* c    = page(p);
-    if(!p || !c)
+    auto* p = dynamic_cast<QWidget*>(object);
+    Page* c = page(p);
+    if((p == nullptr) || (c == nullptr))
     {
         return;
     }
@@ -312,7 +326,7 @@ QWidget* QfwToolBox::widget(int index) const
 {
     if(index < 0 || index >= (int) this->pageList.size())
     {
-        return 0;
+        return nullptr;
     }
 
     return this->pageList.at(index).widget;
@@ -322,8 +336,8 @@ QWidget* QfwToolBox::widget(int index) const
 
 int QfwToolBox::indexOf(QWidget* widget) const
 {
-    Page* c = (widget ? this->page(widget) : 0);
-    return c ? this->pageList.indexOf(*c) : -1;
+    const Page* c = (widget != nullptr ? this->page(widget) : nullptr);
+    return c != nullptr ? this->pageList.indexOf(*c) : -1;
 }
 
 //-----------------------------------------------------------------------------
@@ -331,7 +345,7 @@ int QfwToolBox::indexOf(QWidget* widget) const
 void QfwToolBox::setItemEnabled(int index, bool enabled)
 {
     Page* c = this->page(index);
-    if(!c)
+    if(c == nullptr)
     {
         return;
     }
@@ -344,7 +358,7 @@ void QfwToolBox::setItemEnabled(int index, bool enabled)
 void QfwToolBox::setItemText(int index, const QString& text)
 {
     Page* c = this->page(index);
-    if(c)
+    if(c != nullptr)
     {
         c->setText(text);
     }
@@ -355,7 +369,7 @@ void QfwToolBox::setItemText(int index, const QString& text)
 void QfwToolBox::setItemToolTip(int index, const QString& toolTip)
 {
     Page* c = this->page(index);
-    if(c)
+    if(c != nullptr)
     {
         c->setToolTip(toolTip);
     }
@@ -366,7 +380,7 @@ void QfwToolBox::setItemToolTip(int index, const QString& toolTip)
 bool QfwToolBox::isItemEnabled(int index) const
 {
     const Page* c = this->page(index);
-    return c && c->button->isEnabled();
+    return (c != nullptr) && c->button->isEnabled();
 }
 
 //-----------------------------------------------------------------------------
@@ -374,7 +388,7 @@ bool QfwToolBox::isItemEnabled(int index) const
 QString QfwToolBox::itemText(int index) const
 {
     const Page* c = this->page(index);
-    return c ? c->text() : QString();
+    return c != nullptr ? c->text() : QString();
 }
 
 //-----------------------------------------------------------------------------
@@ -382,11 +396,9 @@ QString QfwToolBox::itemText(int index) const
 QString QfwToolBox::itemToolTip(int index) const
 {
     const Page* c = this->page(index);
-    return c ? c->toolTip() : QString();
+    return c != nullptr ? c->toolTip() : QString();
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace widget
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::widget

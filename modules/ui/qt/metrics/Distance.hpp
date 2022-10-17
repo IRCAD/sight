@@ -123,4 +123,4 @@ private:
     data::ptr<data::Image, data::Access::inout> m_image {this, "image"};
 };
 
-} // uiMeasurementQt
+} // namespace sight::module::ui::qt::metrics

@@ -58,10 +58,7 @@
 #include <QTreeWidgetItem>
 #include <QVBoxLayout>
 
-namespace sight::module::ui::qt
-{
-
-namespace model
+namespace sight::module::ui::qt::model
 {
 
 //------------------------------------------------------------------------------
@@ -107,10 +104,14 @@ void SModelSeriesList::configuring()
 void SModelSeriesList::starting()
 {
     this->create();
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
-    QVBoxLayout* layout       = new QVBoxLayout;
-    QHBoxLayout* layoutButton = new QHBoxLayout;
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
+    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    qtContainer->getQtContainer()->setObjectName(serviceID);
+
+    auto* layout       = new QVBoxLayout;
+    auto* layoutButton = new QHBoxLayout;
     layout->addLayout(layoutButton);
 
     m_tree = new QTreeWidget();
@@ -122,15 +123,18 @@ void SModelSeriesList::starting()
     {
         // check box "show"
         m_showCheckBox = new QCheckBox(tr("Hide all organs"));
+        m_showCheckBox->setObjectName(serviceID + "/" + m_showCheckBox->text());
         m_showCheckBox->setToolTip(tr("Show or hide all organs"));
         layoutButton->addWidget(m_showCheckBox, 0);
         QObject::connect(m_showCheckBox, &QCheckBox::stateChanged, this, &SModelSeriesList::onShowReconstructions);
 
         m_checkAllButton = new QPushButton(tr("Check all"));
+        m_checkAllButton->setObjectName(serviceID + "/" + m_checkAllButton->text());
         layoutButton->addWidget(m_checkAllButton, 0);
         QObject::connect(m_checkAllButton, &QPushButton::clicked, this, &SModelSeriesList::onCheckAllCheckBox);
 
         m_unCheckAllButton = new QPushButton(tr("UnCheck all"));
+        m_unCheckAllButton->setObjectName(serviceID + "/" + m_unCheckAllButton->text());
         layoutButton->addWidget(m_unCheckAllButton, 0);
         QObject::connect(m_unCheckAllButton, &QPushButton::clicked, this, &SModelSeriesList::onUnCheckAllCheckBox);
     }
@@ -138,6 +142,7 @@ void SModelSeriesList::starting()
     if(m_enableDelete)
     {
         m_deleteAllButton = new QPushButton(tr("Delete all"));
+        m_deleteAllButton->setObjectName(serviceID + "/" + m_deleteAllButton->text());
         layoutButton->addWidget(m_deleteAllButton, 0);
         QObject::connect(m_deleteAllButton, &QPushButton::clicked, this, &SModelSeriesList::onDeleteAllCheckBox);
     }
@@ -254,7 +259,7 @@ void SModelSeriesList::updateReconstructions()
     this->fillTree(modelSeries);
     if(hasReconstructions)
     {
-        if(m_showCheckBox)
+        if(m_showCheckBox != nullptr)
         {
             m_showCheckBox->blockSignals(true);
             const bool showAllRec = modelSeries->getField("ShowReconstructions", data::Boolean::New(true))->value();
@@ -268,7 +273,7 @@ void SModelSeriesList::updateReconstructions()
 
 void SModelSeriesList::fillTree(const data::mt::locked_ptr<data::ModelSeries>& _modelSeries)
 {
-    auto& reconstructions = _modelSeries->getReconstructionDB();
+    const auto& reconstructions = _modelSeries->getReconstructionDB();
 
     if(!m_tree->selectedItems().empty())
     {
@@ -298,7 +303,7 @@ void SModelSeriesList::fillTree(const data::mt::locked_ptr<data::ModelSeries>& _
             }
         }
 
-        QTreeWidgetItem* item = new QTreeWidgetItem(info);
+        auto* item = new QTreeWidgetItem(info);
         item->setCheckState(0, Qt::Unchecked);
         m_tree->addTopLevelItem(item);
         item->setData(0, Qt::UserRole, QString::fromStdString(reconstruction->getID()));
@@ -312,7 +317,7 @@ void SModelSeriesList::fillTree(const data::mt::locked_ptr<data::ModelSeries>& _
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::onCurrentItemChanged(QTreeWidgetItem* _current, QTreeWidgetItem*)
+void SModelSeriesList::onCurrentItemChanged(QTreeWidgetItem* _current, QTreeWidgetItem* /*unused*/)
 {
     SIGHT_ASSERT("Current selected item is null", _current);
     std::string id = _current->data(0, Qt::UserRole).toString().toStdString();
@@ -326,12 +331,12 @@ void SModelSeriesList::onCurrentItemChanged(QTreeWidgetItem* _current, QTreeWidg
 
 void SModelSeriesList::onCurrentItemChanged(QTreeWidgetItem* _current, int _column)
 {
-    this->onOrganChoiceVisibility(_current, _column);
+    sight::module::ui::qt::model::SModelSeriesList::onOrganChoiceVisibility(_current, _column);
 }
 
 //------------------------------------------------------------------------------
 
-void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem* _item, int)
+void SModelSeriesList::onOrganChoiceVisibility(QTreeWidgetItem* _item, int /*unused*/)
 {
     std::string id                 = _item->data(0, Qt::UserRole).toString().toStdString();
     data::Reconstruction::sptr rec = data::Reconstruction::dynamicCast(core::tools::fwID::getObject(id));
@@ -385,7 +390,7 @@ void SModelSeriesList::refreshVisibility()
 
 void SModelSeriesList::showReconstructions(bool _show)
 {
-    if(m_showCheckBox)
+    if(m_showCheckBox != nullptr)
     {
         m_showCheckBox->setCheckState(_show ? Qt::Unchecked : Qt::Checked);
     }
@@ -440,33 +445,33 @@ void SModelSeriesList::onCustomContextMenuRequested(const QPoint& _pos)
     QModelIndex index = m_tree->indexAt(_pos);
     if(index.isValid())
     {
-        QAction* const deleteAction = new QAction("Delete");
+        auto* const deleteAction = new QAction("Delete");
         QObject::connect(
             deleteAction,
             &QAction::triggered,
             this,
-            [ = ]()
-                {
-                    auto modelSeries = m_modelSeries.lock();
+            [ =, this]()
+            {
+                auto modelSeries = m_modelSeries.lock();
 
-                    data::ModelSeries::ReconstructionVectorType deletedReconstructions;
+                data::ModelSeries::ReconstructionVectorType deletedReconstructions;
 
-                    // Remove reconstruction.
-                    data::ModelSeries::ReconstructionVectorType reconstructions =
-                        modelSeries->getReconstructionDB();
-                    const data::ModelSeries::ReconstructionVectorType::iterator recIt =
-                        reconstructions.begin() + index.row();
-                    const data::Reconstruction::sptr reconstruction = *recIt;
-                    reconstructions.erase(recIt);
-                    modelSeries->setReconstructionDB(reconstructions);
+                // Remove reconstruction.
+                data::ModelSeries::ReconstructionVectorType reconstructions =
+                    modelSeries->getReconstructionDB();
+                const auto recIt =
+                    reconstructions.begin() + index.row();
+                const data::Reconstruction::sptr reconstruction = *recIt;
+                reconstructions.erase(recIt);
+                modelSeries->setReconstructionDB(reconstructions);
 
-                    // Send the signals.
-                    deletedReconstructions.push_back(reconstruction);
-                    auto sig = modelSeries->signal<data::ModelSeries::ReconstructionsRemovedSignalType>(
-                        data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG
-                    );
-                    sig->asyncEmit(deletedReconstructions);
-                });
+                // Send the signals.
+                deletedReconstructions.push_back(reconstruction);
+                auto sig = modelSeries->signal<data::ModelSeries::ReconstructionsRemovedSignalType>(
+                    data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG
+                );
+                sig->asyncEmit(deletedReconstructions);
+            });
 
         QMenu contextMenu;
         contextMenu.addAction(deleteAction);
@@ -476,6 +481,4 @@ void SModelSeriesList::onCustomContextMenuRequested(const QPoint& _pos)
 
 //------------------------------------------------------------------------------
 
-} // namespace model.
-
-} // namespace sight::module::ui::qt.
+} // namespace sight::module::ui::qt::model

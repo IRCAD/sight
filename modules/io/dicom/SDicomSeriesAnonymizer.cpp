@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <core/jobs/IJob.hpp>
 
 #include <data/DicomSeries.hpp>
-#include <data/helper/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <io/dicom/helper/DicomSeriesAnonymizer.hpp>
 
@@ -42,16 +42,14 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 //------------------------------------------------------------------------------
 
 SDicomSeriesAnonymizer::SDicomSeriesAnonymizer() noexcept :
-    m_cancelled(false)
+    m_sigJobCreated(newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL))
 {
-    m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesAnonymizer::~SDicomSeriesAnonymizer() noexcept
-{
-}
+SDicomSeriesAnonymizer::~SDicomSeriesAnonymizer() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -118,16 +116,15 @@ void SDicomSeriesAnonymizer::info(std::ostream& _sstream)
 
 void SDicomSeriesAnonymizer::anonymize(sight::data::Vector& _vector)
 {
-    const auto seriesDB = m_seriesDB.lock();
-
-    data::helper::SeriesDB sDBhelper(*seriesDB);
+    const auto series_set     = m_series_set.lock();
+    const auto scoped_emitter = series_set->scoped_emit();
 
     auto anonymizer = sight::io::dicom::helper::DicomSeriesAnonymizer::New();
     m_sigJobCreated->emit(anonymizer->getJob());
 
     std::vector<data::DicomSeries::sptr> anonymizedDicomSeriesVector;
 
-    for(const auto& value : _vector.getContainer())
+    for(const auto& value : _vector)
     {
         data::DicomSeries::sptr dicomSeries           = data::DicomSeries::dynamicCast(value);
         data::DicomSeries::sptr anonymizedDicomSeries = data::DicomSeries::New();
@@ -143,20 +140,17 @@ void SDicomSeriesAnonymizer::anonymize(sight::data::Vector& _vector)
 
     if(!m_cancelled)
     {
-        for(const auto& value : _vector.getContainer())
+        for(const auto& value : _vector)
         {
-            data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(value);
-            sDBhelper.remove(dicomSeries);
+            auto dicomSeries = data::DicomSeries::dynamicCast(value);
+            series_set->remove(dicomSeries);
         }
 
         for(const auto& anonymizedDicomSeries : anonymizedDicomSeriesVector)
         {
-            sDBhelper.add(anonymizedDicomSeries);
+            series_set->push_back(anonymizedDicomSeries);
         }
     }
-
-    // Notify SeriesDB
-    sDBhelper.notify();
 }
 
 //------------------------------------------------------------------------------

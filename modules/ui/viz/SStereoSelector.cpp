@@ -45,15 +45,13 @@ namespace sight::module::ui::viz
 
 //------------------------------------------------------------------------------
 
-SStereoSelector::SStereoSelector() noexcept
-{
-}
+SStereoSelector::SStereoSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SStereoSelector::~SStereoSelector() noexcept
-{
-}
+SStereoSelector::~SStereoSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -68,7 +66,7 @@ void SStereoSelector::starting()
     m_layersBox = new QComboBox();
     m_modeBox   = new QComboBox();
 
-    QHBoxLayout* layout = new QHBoxLayout();
+    auto* layout = new QHBoxLayout();
     layout->addWidget(m_layersBox);
     layout->addWidget(m_modeBox);
 
@@ -140,7 +138,7 @@ void SStereoSelector::refreshRenderers()
     service::registry::ObjectService::ServiceVectorType renderers =
         service::OSR::getServices("sight::viz::scene3d::SRender");
 
-    for(auto srv : renderers)
+    for(const auto& srv : renderers)
     {
         auto render = sight::viz::scene3d::SRender::dynamicCast(srv);
 

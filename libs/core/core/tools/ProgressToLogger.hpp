@@ -45,7 +45,7 @@ public:
      * @param[in] prefix  allow to add a prefix in the formated log message
      * @param[in] postfix  allow to add a postfix in the formated log message
      */
-    CORE_API ProgressToLogger(const std::string& prefix, const std::string& postfix = " %");
+    CORE_API ProgressToLogger(std::string prefix, std::string postfix = " %");
 
     /// default destructor, do nothing
     CORE_API virtual ~ProgressToLogger();
@@ -62,4 +62,4 @@ protected:
     std::string m_postfix;
 };
 
-}
+} // namespace sight::core::tools

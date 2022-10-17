@@ -48,8 +48,7 @@ const core::com::Slots::SlotKeyType SDistortion::s_CHANGE_STATE_SLOT = "changeSt
 static const core::com::Slots::SlotKeyType s_CALIBRATE_SLOT = "calibrate";
 
 //------------------------------------------------------------------------------
-SDistortion::SDistortion() noexcept :
-    m_isEnabled(false)
+SDistortion::SDistortion() noexcept
 {
     newSlot(s_CHANGE_STATE_SLOT, &SDistortion::changeState, this);
     newSlot(s_CALIBRATE_SLOT, &SDistortion::calibrate, this);
@@ -57,9 +56,8 @@ SDistortion::SDistortion() noexcept :
 
 //------------------------------------------------------------------------------
 
-SDistortion::~SDistortion() noexcept
-{
-}
+SDistortion::~SDistortion() noexcept =
+    default;
 
 // ----------------------------------------------------------------------------
 
@@ -110,9 +108,6 @@ void SDistortion::stopping()
 
 void SDistortion::updating()
 {
-    // Store bufferObject of output (if used).
-    core::memory::BufferObject::sptr hack = nullptr;
-
     const auto inputImage = m_image.lock();
     SIGHT_ASSERT("No '" << s_IMAGE_INPUT << "' found.", inputImage);
 
@@ -158,27 +153,20 @@ void SDistortion::updating()
                 reallocated = inputImage->getBuffer() != outputImage->getBuffer();
             }
 
-            // TODO: Get BufferObject of outputImage, to avoid assert when deleting internal data array of outputImage.
-            // This happens because m_output & m_input are locked during shallowCopy, and thus original bufferObject of
-            // m_output is still locked after shallowCopy.
-            hack = outputImage->getBufferObject();
             // Shallow copy the image is faster
             // We only have to take care about reallocating a new buffer when we perform the distortion
             outputImage->shallowCopy(inputImage.get_shared());
 
             if(reallocated)
             {
-                auto sig =
-                    outputImage->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+                auto sig = outputImage->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
                 {
                     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                     sig->asyncEmit();
                 }
             }
 
-            auto sig = outputImage->signal<data::Image::BufferModifiedSignalType>(
-                data::Image::s_BUFFER_MODIFIED_SIG
-            );
+            auto sig = outputImage->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
             {
                 core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
                 sig->asyncEmit();
@@ -204,6 +192,7 @@ void SDistortion::remap()
     FW_PROFILE_AVG("distort", 5);
 
     auto sig = inputImage->signal<data::Object::ModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
+
     // Blocking signals early allows to discard any event while we are updating
     core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
 
@@ -237,6 +226,7 @@ void SDistortion::remap()
     }
 
     const auto prevSize = outputImage->getSize();
+
     // Since we shallow copy the input image when no remap is done
     // We have to reallocate the output image if it still shares the buffer
     bool realloc = false;
@@ -258,8 +248,8 @@ void SDistortion::remap()
 
         const data::Image::Spacing spacing = {1., 1., 1.};
         outputImage->setSpacing(spacing);
-        outputImage->setWindowWidth(1);
-        outputImage->setWindowCenter(0);
+        outputImage->setWindowWidth({1});
+        outputImage->setWindowCenter({0});
     }
 
     const auto newSize = outputImage->getSize();
@@ -313,7 +303,7 @@ void SDistortion::remap()
     {
         auto sigModified = outputImage->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
         {
-            core::com::Connection::Blocker block(sigModified->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker anotherBlock(sigModified->getConnection(m_slotUpdate));
             sigModified->asyncEmit();
         }
     }
@@ -361,7 +351,7 @@ void SDistortion::calibrate()
         {
             for(int j = 0 ; j < size.width ; j++)
             {
-                pixel_locations_src.at<cv::Point2f>(i, j) = cv::Point2f(j, i);
+                pixel_locations_src.at<cv::Point2f>(i, j) = cv::Point2f(float(j), float(i));
             }
 
             cv::undistortPoints(
@@ -375,10 +365,10 @@ void SDistortion::calibrate()
         cv::Mat pixelLocations = cv::Mat(size, CV_32FC2);
 
         // Output from undistortPoints is normalized point coordinates
-        const float fx = static_cast<float>(intrinsics.at<double>(0, 0));
-        const float fy = static_cast<float>(intrinsics.at<double>(1, 1));
-        const float cx = static_cast<float>(intrinsics.at<double>(0, 2));
-        const float cy = static_cast<float>(intrinsics.at<double>(1, 2));
+        const auto fx = static_cast<float>(intrinsics.at<double>(0, 0));
+        const auto fy = static_cast<float>(intrinsics.at<double>(1, 1));
+        const auto cx = static_cast<float>(intrinsics.at<double>(0, 2));
+        const auto cy = static_cast<float>(intrinsics.at<double>(1, 2));
 
         for(int i = 0 ; i < size.height ; i++)
         {

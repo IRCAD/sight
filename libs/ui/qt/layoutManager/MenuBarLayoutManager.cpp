@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,42 +30,42 @@
 #include <QMenuBar>
 #include <QString>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qt::layoutManager::MenuBarLayoutManager,
     sight::ui::base::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY
 );
 
-namespace sight::ui::qt
-{
-
-namespace layoutManager
+namespace sight::ui::qt::layoutManager
 {
 
 //-----------------------------------------------------------------------------
 
-MenuBarLayoutManager::MenuBarLayoutManager(ui::base::GuiBaseObject::Key key)
+MenuBarLayoutManager::MenuBarLayoutManager(ui::base::GuiBaseObject::Key /*key*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 MenuBarLayoutManager::~MenuBarLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
-void MenuBarLayoutManager::createLayout(ui::base::container::fwMenuBar::sptr parent)
+void MenuBarLayoutManager::createLayout(ui::base::container::fwMenuBar::sptr parent, const std::string& id)
 {
     m_parent = ui::qt::container::QtMenuBarContainer::dynamicCast(parent);
     SIGHT_ASSERT("dynamicCast fwMenuBar to QtMenuBarContainer failed", m_parent);
 
-    QMenuBar* menuBar = m_parent->getQtMenuBar();
+    const QString qId = QString::fromStdString(id);
 
-    for(std::string name : m_menuNames)
+    QMenuBar* menuBar = m_parent->getQtMenuBar();
+    menuBar->setObjectName(qId);
+
+    for(const std::string& name : m_menuNames)
     {
         ui::qt::container::QtMenuContainer::sptr menu = ui::qt::container::QtMenuContainer::New();
         QMenu* qtMenu                                 = menuBar->addMenu(QString::fromStdString(name));
+        qtMenu->setObjectName(qId + '/' + name.c_str());
         menu->setQtMenu(qtMenu);
         m_menus.push_back(menu);
     }
@@ -104,6 +104,4 @@ void MenuBarLayoutManager::menuIsEnabled(ui::base::container::fwMenu::sptr fwMen
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::layoutManager

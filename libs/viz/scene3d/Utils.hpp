@@ -35,6 +35,7 @@
 #include <OGRE/OgreTexture.h>
 #include <OGRE/Overlay/OgreOverlaySystem.h>
 
+#include <optional>
 #include <string>
 
 namespace sight::viz::scene3d
@@ -46,21 +47,21 @@ namespace factory
 class R2VBRenderable;
 class Text;
 
-}
+} // namespace factory
 namespace vr
 {
 
 class GridProxyGeometryFactory;
 
-}
+} // namespace vr
 namespace compositor
 {
 
 class MaterialMgrListener;
 
-}
+} // namespace compositor
 
-}
+} // namespace sight::viz::scene3d
 
 namespace sight::viz::scene3d
 {
@@ -71,6 +72,11 @@ namespace sight::viz::scene3d
 class VIZ_SCENE3D_CLASS_API Utils
 {
 public:
+
+    /**
+     *  @brief Registers Ogre Plugins to load upon root creation.
+     */
+    VIZ_SCENE3D_API static void addPlugins(const std::vector<std::string>& plugins);
 
     /**
      * @brief Utils::addRessourcesPath
@@ -93,13 +99,6 @@ public:
     VIZ_SCENE3D_API static void destroyOgreRoot();
 
     /**
-     * @brief Convert an Sight image data into an ogre image
-     * @param imageFw The Sight Image to convert
-     * @return Ogre image
-     */
-    VIZ_SCENE3D_API static Ogre::Image convertToOgreImage(const data::Image::csptr imageFw);
-
-    /**
      * @brief Convert an Ogre texture into a Sight image data
      */
     VIZ_SCENE3D_API static void convertFromOgreTexture(
@@ -113,38 +112,22 @@ public:
      * @param imageFw The Sight Image
      * @return Pixel format of a data::Image
      */
-    VIZ_SCENE3D_API static Ogre::PixelFormat getPixelFormatOgre(data::Image::csptr imageFw);
+    VIZ_SCENE3D_API static Ogre::PixelFormat getPixelFormatOgre(const data::Image& imageFw);
 
     /**
      * @brief set the pixel format of an image from an Ogre pixel format
      * @param _image The Sight Image
      * @param _format Pixel format of Ogre
      */
-    VIZ_SCENE3D_API static std::pair<core::tools::Type, data::Image::PixelFormat> getPixelFormatFromOgre(
+    VIZ_SCENE3D_API static std::pair<core::Type, data::Image::PixelFormat> getPixelFormatFromOgre(
         Ogre::PixelFormat _format
     );
-
     /**
-     * @brief loadOgreTexture
-     * @param _image The Sight Image to convert
-     * @param _texture The target texture
-     * @param _texType Type of the texture (Ogre::TEX_TYPE_2D, Ogre::TEX_TYPE_3D, ...)
-     * @param _dynamic
+     * @brief get the texture window that should be used to shift the pixel values in the GLSL
+     * @param _format Pixel format
+     * @return The window that should be used to scale pixel values
      */
-    VIZ_SCENE3D_API static void loadOgreTexture(
-        const data::Image::csptr& _image,
-        Ogre::TexturePtr _texture,
-        Ogre::TextureType _texType,
-        bool _dynamic
-    );
-
-    /**
-     * @brief convertImageForNegato
-     * @param[out] _textureThe target texture
-     * @param[in] _image The Sight Image to convert
-     * @return
-     */
-    VIZ_SCENE3D_API static void convertImageForNegato(Ogre::Texture* _texture, const data::Image::sptr& _image);
+    VIZ_SCENE3D_API static Ogre::Vector2 getTextureWindow(core::Type _format);
 
     /**
      * @brief allocateTexture
@@ -199,6 +182,36 @@ public:
 
     /// Converts world coordinates to slices indexes of _image if possible, thrown an exception if not.
     VIZ_SCENE3D_API static Ogre::Vector3i worldToSlices(const data::Image& _image, const Ogre::Vector3& _world);
+
+    /**
+     * @brief Pick an object from a screen-space position.
+     * @param _x screen width position.
+     * @param _y screen height position.
+     * @param _queryMask Mask used to query entities with matching flags.
+     * @param _layer scene manager where to pick objects from.
+     * @return Object and intersection.
+     */
+    VIZ_SCENE3D_API static std::optional<std::pair<Ogre::MovableObject*, Ogre::Vector3> > pickObject(
+        int _x,
+        int _y,
+        std::uint32_t _queryMask,
+        Ogre::SceneManager& _layer
+    );
+
+    /**
+     * @brief Pick a voxel in a 3D image at a world-space position.
+     * @param _image source image.
+     * @param _position 3D world-space position.
+     * @param _origin image origin.
+     * @param _spacing image spacing.
+     * @return True if an object has been selected.
+     */
+    VIZ_SCENE3D_API static std::string pickImage(
+        const data::Image& _image,
+        const Ogre::Vector3& position,
+        const Ogre::Vector3& origin,
+        const Ogre::Vector3& spacing
+    );
 
 private:
 

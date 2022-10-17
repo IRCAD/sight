@@ -30,10 +30,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 /**
@@ -44,17 +41,14 @@ class TestConfigService : public service::IService
 public:
 
     SIGHT_DECLARE_SERVICE(TestConfigService, service::IService);
-    TestConfigService() noexcept :
-        m_isUpdated(false)
-    {
-    }
+    TestConfigService() noexcept =
+        default;
 
-    virtual ~TestConfigService() noexcept
-    {
-    }
+    ~TestConfigService() noexcept override =
+        default;
 
     /// return true if the service is updated with updating() method
-    bool getIsUpdated()
+    bool getIsUpdated() const
     {
         return m_isUpdated;
     }
@@ -92,7 +86,7 @@ protected:
         _sstream << "TestConfigService";
     }
 
-    bool m_isUpdated;
+    bool m_isUpdated {false};
 };
 
 /**
@@ -103,13 +97,11 @@ class STest1Image : public TestConfigService
 public:
 
     SIGHT_DECLARE_SERVICE(STest1Image, service::ut::TestConfigService);
-    STest1Image() noexcept
-    {
-    }
+    STest1Image() noexcept =
+        default;
 
-    ~STest1Image() noexcept override
-    {
-    }
+    ~STest1Image() noexcept override =
+        default;
 
     //------------------------------------------------------------------------------
 
@@ -139,6 +131,4 @@ public:
     data::ptr<data::Image, data::Access::in> m_input {this, "data", true, true};
 };
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

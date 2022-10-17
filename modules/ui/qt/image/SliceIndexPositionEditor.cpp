@@ -44,7 +44,6 @@
 
 #include <boost/algorithm/string/case_conv.hpp>
 #include <boost/algorithm/string/trim.hpp>
-#include <boost/lexical_cast.hpp>
 
 #include <QVBoxLayout>
 #include <QWidget>
@@ -71,9 +70,8 @@ SliceIndexPositionEditor::SliceIndexPositionEditor() noexcept
 
 //------------------------------------------------------------------------------
 
-SliceIndexPositionEditor::~SliceIndexPositionEditor() noexcept
-{
-}
+SliceIndexPositionEditor::~SliceIndexPositionEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -85,18 +83,23 @@ void SliceIndexPositionEditor::starting()
         this->getContainer()
     );
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
+    auto* layout = new QVBoxLayout();
 
     m_sliceSelectorPanel = new sight::ui::qt::SliceSelector();
     m_sliceSelectorPanel->setEnable(false);
+    m_sliceSelectorPanel->setObjectName(serviceID);
 
     sight::ui::qt::SliceSelector::ChangeIndexCallback changeIndexCallback;
-    changeIndexCallback = std::bind(&SliceIndexPositionEditor::sliceIndexNotification, this, std::placeholders::_1);
+    changeIndexCallback = [this](unsigned&& PH1, auto&& ...){sliceIndexNotification(std::forward<decltype(PH1)>(PH1));};
     m_sliceSelectorPanel->setChangeIndexCallback(changeIndexCallback);
 
     sight::ui::qt::SliceSelector::ChangeIndexCallback changeTypeCallback;
-    changeTypeCallback = std::bind(&SliceIndexPositionEditor::sliceTypeNotification, this, std::placeholders::_1);
+    changeTypeCallback = [this](auto&& PH1, auto&& ...){sliceTypeNotification(std::forward<decltype(PH1)>(PH1));};
     m_sliceSelectorPanel->setChangeTypeCallback(changeTypeCallback);
+    m_sliceSelectorPanel->setTypeSelection(m_orientation);
+
     layout->addWidget(m_sliceSelectorPanel);
     layout->setContentsMargins(0, 0, 0, 0);
 
@@ -214,7 +217,7 @@ void SliceIndexPositionEditor::updateSliceType(int from, int to)
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::info(std::ostream&)
+void SliceIndexPositionEditor::info(std::ostream& /*_sstream*/)
 {
 }
 
@@ -261,7 +264,7 @@ void SliceIndexPositionEditor::sliceIndexNotification(unsigned int index)
 
     imHelper::setSliceIndex(*image, m_orientation, index);
 
-    int idx[3] = {
+    std::array idx {
         static_cast<int>(imHelper::getSliceIndex(
                              *image,
                              imHelper::orientation_t::SAGITTAL
@@ -287,7 +290,7 @@ void SliceIndexPositionEditor::sliceIndexNotification(unsigned int index)
 
 void SliceIndexPositionEditor::sliceTypeNotification(int _type)
 {
-    orientation_t type = static_cast<orientation_t>(_type);
+    auto type = static_cast<orientation_t>(_type);
     SIGHT_ASSERT(
         "Bad slice type " << type,
         type == orientation_t::X_AXIS
@@ -330,4 +333,4 @@ service::IService::KeyConnectionsMap SliceIndexPositionEditor::getAutoConnection
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::qt::image

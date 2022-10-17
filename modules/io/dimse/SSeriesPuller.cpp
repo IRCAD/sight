@@ -26,7 +26,7 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/System.hpp>
 
-#include <data/helper/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <io/dimse/exceptions/Base.hpp>
 #include <io/dimse/helper/Series.hpp>
@@ -65,9 +65,8 @@ SSeriesPuller::SSeriesPuller() noexcept
 
 //------------------------------------------------------------------------------
 
-SSeriesPuller::~SSeriesPuller() noexcept
-{
-}
+SSeriesPuller::~SSeriesPuller() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -89,12 +88,12 @@ void SSeriesPuller::starting()
     m_requestWorker = core::thread::Worker::New();
 
     // Create the DICOM reader.
-    m_seriesDB = data::SeriesDB::New();
+    m_series_set = data::SeriesSet::New();
 
     m_dicomReader = this->registerService<sight::io::base::service::IReader>(m_dicomReaderImplementation);
     SIGHT_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
     m_dicomReader->setWorker(m_requestWorker);
-    m_dicomReader->setInOut(m_seriesDB, sight::io::base::service::s_DATA_KEY);
+    m_dicomReader->setInOut(m_series_set, sight::io::base::service::s_DATA_KEY);
     if(!m_readerConfig.empty())
     {
         core::runtime::ConfigurationElement::csptr readerConfig =
@@ -128,7 +127,7 @@ void SSeriesPuller::updating()
     }
     else
     {
-        m_requestWorker->post(std::bind(&SSeriesPuller::pullSeries, this));
+        m_requestWorker->post([this](auto&& ...){pullSeries();});
     }
 }
 
@@ -159,29 +158,30 @@ void SSeriesPuller::pullSeries()
 
     // Retrieve data.
     const auto selectedSeries = m_selectedSeries.lock();
-    const auto localEnd       = m_localSeries.end();
 
     // Find which selected series must be pulled.
     DicomSeriesContainerType pullSeriesVector;
     DicomSeriesContainerType selectedSeriesVector;
-    data::Vector::ConstIteratorType it          = selectedSeries->begin();
-    const data::Vector::ConstIteratorType itEnd = selectedSeries->end();
-    for( ; it != itEnd ; ++it)
+    for(const auto& object : *selectedSeries)
     {
         // Check that the series is a DICOM series.
-        data::DicomSeries::sptr series = data::DicomSeries::dynamicCast(*it);
+        const auto& series = data::DicomSeries::dynamicCast(object);
 
         // Check if the series must be pulled.
-        if(series && std::find(m_localSeries.begin(), m_localSeries.end(), series->getInstanceUID()) == localEnd)
+        if(series)
         {
-            // Add series in the pulling series map.
-            m_pullingDicomSeriesMap[series->getInstanceUID()] = series;
+            const auto& seriesInstanceUID = series->getSeriesInstanceUID();
+            if(m_localSeries.find(seriesInstanceUID) == m_localSeries.cend())
+            {
+                // Add series in the pulling series map.
+                m_pullingDicomSeriesMap[seriesInstanceUID] = series;
 
-            pullSeriesVector.push_back(series);
-            m_instanceCount += series->numInstances();
+                pullSeriesVector.push_back(series);
+                m_instanceCount += series->numInstances();
+            }
+
+            selectedSeriesVector.push_back(series);
         }
-
-        selectedSeriesVector.push_back(series);
     }
 
     // Pull series.
@@ -241,7 +241,7 @@ void SSeriesPuller::pullSeries()
                 );
 
                 // Start series retriever in a worker.
-                worker->post(std::bind(&sight::io::dimse::SeriesRetriever::start, seriesRetriever));
+                worker->post([seriesRetriever](auto&& ...){seriesRetriever->start();});
 
                 // Pull Selected Series.
                 seriesEnquirer->pullSeriesUsingMoveRetrieveMethod(
@@ -302,60 +302,56 @@ void SSeriesPuller::pullSeries()
 
 void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
 {
-    const auto destinationSeriesDB = m_destSeriesDB.lock();
+    const auto dest_series_set = m_destSeriesSet.lock();
 
-    // Read only series that are not in the series DB.
-    std::vector<std::string> alreadyLoadedSeries =
-        sight::io::dimse::helper::Series::toSeriesInstanceUIDContainer(destinationSeriesDB->getContainer());
+    // Read only series that are not in the series set.
 
     // Create temporary series helper.
-    data::helper::SeriesDB readerSeriesHelper(*m_seriesDB);
+    const auto scoped_emitter = m_series_set->scoped_emit();
 
-    for(const data::Series::sptr& series : _selectedSeries)
+    for(const auto& series : _selectedSeries)
     {
-        const std::string modality = series->getModality();
+        const std::string& modality = series->getModality();
         if(modality != "CT" && modality != "MR" && modality != "XA")
         {
-            this->notify(NotificationType::INFO, "Unable to read the modality '" + modality + "'");
+            notify(NotificationType::INFO, "Unable to read the modality '" + modality + "'");
             return;
         }
 
-        const std::string selectedSeriesUID = series->getInstanceUID();
+        const std::string& selectedSeriesUID = series->getSeriesInstanceUID();
 
         // Check if the series is loaded.
-        if(std::find(
-               alreadyLoadedSeries.begin(),
-               alreadyLoadedSeries.end(),
-               selectedSeriesUID
-           ) == alreadyLoadedSeries.end())
+        if(std::find_if(
+               dest_series_set->cbegin(),
+               dest_series_set->cend(),
+               [&selectedSeriesUID](const data::Series::sptr& already_loaded_series)
+            {
+                return already_loaded_series->getSeriesInstanceUID() == selectedSeriesUID;
+            }) == dest_series_set->cend())
         {
-            this->notify(NotificationType::INFO, "Reading series...");
+            notify(NotificationType::INFO, "Reading series...");
 
             // Clear temporary series.
-            readerSeriesHelper.clear();
+            m_series_set->clear();
 
-            std::filesystem::path path = core::tools::System::getTemporaryFolder() / "dicom/";
+            const auto& path = core::tools::System::getTemporaryFolder() / "dicom/";
             m_dicomReader->setFolder(path.string() + selectedSeriesUID + "/");
             m_dicomReader->update();
 
             // Merge series.
-            if(!m_dicomReader->hasFailed() && m_seriesDB->getContainer().size() > 0)
+            if(!m_dicomReader->hasFailed() && !m_series_set->empty())
             {
-                this->notify(NotificationType::SUCCESS, "Series read");
+                notify(NotificationType::SUCCESS, "Series read");
 
                 // Add the series to the local series vector.
-                if(std::find(m_localSeries.begin(), m_localSeries.end(), selectedSeriesUID) == m_localSeries.end())
-                {
-                    m_localSeries.push_back(selectedSeriesUID);
-                }
+                m_localSeries.insert(selectedSeriesUID);
 
-                data::helper::SeriesDB seriesHelper(*destinationSeriesDB);
-                seriesHelper.merge(m_seriesDB);
-                seriesHelper.notify();
+                const auto destination_notifier = dest_series_set->scoped_emit();
+                std::copy(m_series_set->cbegin(), m_series_set->cend(), sight::data::inserter(*dest_series_set));
             }
             else
             {
-                this->notify(NotificationType::FAILURE, "Failed to read series");
+                notify(NotificationType::FAILURE, "Failed to read series");
             }
         }
     }
@@ -363,19 +359,16 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
 
 //------------------------------------------------------------------------------
 
-void SSeriesPuller::removeSeries(data::SeriesDB::ContainerType _removedSeries)
+void SSeriesPuller::removeSeries(data::SeriesSet::container_type _removedSeries)
 {
     // Find which series to delete
     if(!m_localSeries.empty())
     {
         for(const auto& series : _removedSeries)
         {
-            const auto it = std::find(m_localSeries.begin(), m_localSeries.end(), series->getInstanceUID());
-            if(it != m_localSeries.end())
+            if(m_localSeries.erase(series->getSeriesInstanceUID()) > 0)
             {
-                m_localSeries.erase(it);
-
-                this->notify(NotificationType::INFO, "Local series deleted");
+                notify(NotificationType::INFO, "Local series deleted");
             }
         }
     }
@@ -412,7 +405,7 @@ void SSeriesPuller::storeInstanceCallback(
 service::IService::KeyConnectionsMap SSeriesPuller::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_SERIES_DB_INOUT, data::SeriesDB::s_REMOVED_SERIES_SIG, s_REMOVE_SERIES_SLOT);
+    connections.push(s_SERIES_SET_INOUT, data::SeriesSet::s_REMOVED_OBJECTS_SIG, s_REMOVE_SERIES_SLOT);
 
     return connections;
 }

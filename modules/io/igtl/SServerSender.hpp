@@ -67,7 +67,7 @@ public:
     MODULE_IO_IGTL_API SServerSender();
 
     /// Destructor
-    MODULE_IO_IGTL_API virtual ~SServerSender();
+    MODULE_IO_IGTL_API ~SServerSender() override;
 
 protected:
 
@@ -88,7 +88,7 @@ private:
      * @param[in] obj obj to send
      * @param[in] index index of the object in the group
      */
-    void sendObject(const data::Object::csptr& obj, const std::size_t index) override;
+    void sendObject(const data::Object::csptr& obj, std::size_t index) override;
 
     /// Server instance
     sight::io::igtl::Server::sptr m_server;

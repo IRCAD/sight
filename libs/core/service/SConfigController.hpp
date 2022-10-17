@@ -27,7 +27,6 @@
 #include "service/IController.hpp"
 
 #include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 
 namespace sight::service
@@ -70,7 +69,7 @@ public:
     SERVICE_API SConfigController() noexcept;
 
     /// Destructor. Does nothing.
-    SERVICE_API virtual ~SConfigController() noexcept;
+    SERVICE_API ~SConfigController() noexcept override;
 
 protected:
 
@@ -94,7 +93,7 @@ protected:
             <config>
                 <appConfig id="IdOfConfig" >
                     <parameters>
-                        <parameter replace="SERIESDB" by="medicalData" />
+                        <parameter replace="SERIES_SET" by="medicalData" />
                     </parameters>
                 </appConfig>
             </config>
@@ -113,4 +112,4 @@ private:
     service::helper::ConfigLauncher::uptr m_configLauncher;
 };
 
-} // fwServices
+} // namespace sight::service

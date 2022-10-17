@@ -23,10 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::data
-{
-
-namespace ut
+namespace sight::module::data::ut
 {
 
 /**
@@ -35,20 +32,18 @@ namespace ut
 class SGetSeriesTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(SGetSeriesTest);
-CPPUNIT_TEST(extractsSeriesFromSeriesDB);
-CPPUNIT_TEST(invalidSeriesDB);
+CPPUNIT_TEST(extractsSeriesFromSeriesSet);
+CPPUNIT_TEST(invalidSeriesSet);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void extractsSeriesFromSeriesDB();
-    void invalidSeriesDB();
+    static void extractsSeriesFromSeriesSet();
+    static void invalidSeriesSet();
 };
 
-} //namespace ut
-
-} //namespace sight::module::data
+} // namespace sight::module::data::ut

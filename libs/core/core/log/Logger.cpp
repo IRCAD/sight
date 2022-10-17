@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,14 +28,12 @@ namespace sight::core::log
 {
 
 Logger::Logger()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 Logger::~Logger()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 

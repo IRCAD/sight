@@ -32,23 +32,19 @@
 
 SIGHT_REGISTER_IO_WRITER(sight::io::base::writer::GzBufferImageWriter);
 
-namespace sight::io::base
-{
-
-namespace writer
+namespace sight::io::base::writer
 {
 
 //------------------------------------------------------------------------------
 
-GzBufferImageWriter::GzBufferImageWriter(io::base::writer::IObjectWriter::Key)
+GzBufferImageWriter::GzBufferImageWriter(io::base::writer::IObjectWriter::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 GzBufferImageWriter::~GzBufferImageWriter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -61,7 +57,7 @@ void GzBufferImageWriter::write()
     /// test if can open archive
     gzFile rawFile = gzopen(getFile().string().c_str(), "wb1");
     SIGHT_ASSERT("rawFile not instanced", rawFile);
-    if(rawFile == 0)
+    if(rawFile == nullptr)
     {
         std::string str = "GzBufferImageWriter::write unable to open ";
         str += getFile().string();
@@ -107,6 +103,4 @@ std::string GzBufferImageWriter::extension() const
 
 //------------------------------------------------------------------------------
 
-} // namespace writer
-
-} // namespace sight::io::base
+} // namespace sight::io::base::writer

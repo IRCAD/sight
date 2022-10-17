@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "service/AppConfigManager.hpp"
 
 #include "service/helper/Config.hpp"
@@ -57,9 +59,7 @@ static const core::com::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObject
 
 // ------------------------------------------------------------------------
 
-AppConfigManager::AppConfigManager() :
-    m_proxyID(0),
-    m_isUnitTest(false)
+AppConfigManager::AppConfigManager()
 {
     newSlot(s_ADD_OBJECTS_SLOT, &AppConfigManager::addObjects, this);
     newSlot(s_REMOVE_OBJECTS_SLOT, &AppConfigManager::removeObjects, this);
@@ -121,14 +121,7 @@ void AppConfigManager::startModule()
     if(!m_configId.empty() && !m_isUnitTest)
     {
         std::shared_ptr<core::runtime::Module> module = extension::AppConfig::getDefault()->getModule(m_configId);
-        SIGHT_INFO_IF(
-            "Module '" + module->getIdentifier() + "' (used for '" + m_configId + "') is already started !",
-            module->isStarted()
-        );
-        if(!module->isStarted())
-        {
-            module->start();
-        }
+        module->start();
     }
 }
 
@@ -148,7 +141,7 @@ void AppConfigManager::create()
     this->createObjects(m_cfgElem);
     this->createConnections();
     const auto configTree = core::runtime::Convert::toPropertyTree(m_cfgElem);
-    if(configTree.count("config"))
+    if(configTree.count("config") != 0U)
     {
         this->createServices(configTree.get_child("config"));
     }
@@ -301,7 +294,7 @@ data::Object::sptr AppConfigManager::findObject(const std::string& uid, std::str
 
 // ------------------------------------------------------------------------
 
-data::Object::sptr AppConfigManager::getNewObject(ConfigAttribute type, ConfigAttribute uid) const
+data::Object::sptr AppConfigManager::getNewObject(ConfigAttribute type, ConfigAttribute uid)
 {
     // Building object structure
     SPTR(core::runtime::Extension) ext = core::runtime::findExtension(type.first);
@@ -342,7 +335,7 @@ data::Object::sptr AppConfigManager::getNewObject(ConfigAttribute type, const st
 data::Object::sptr AppConfigManager::getObject(ConfigAttribute type, const std::string& uid) const
 {
     SIGHT_ASSERT(this->msgHead() + "Object with UID \"" + uid + "\" doesn't exist.", core::tools::fwID::exist(uid));
-    data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
+    auto obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
 
     SIGHT_ASSERT(this->msgHead() + "The UID '" + uid + "' does not reference any object.", obj);
 
@@ -351,7 +344,7 @@ data::Object::sptr AppConfigManager::getObject(ConfigAttribute type, const std::
         SIGHT_ASSERT(
             this->msgHead() + "Object with UID \"" + uid
             + "\" has a different type (\"" + obj->getClassname() + "\" != \"" + type.first + "\").",
-            type.first == obj->getClassname()
+            obj->isA(type.first)
         );
     }
 
@@ -384,6 +377,7 @@ void AppConfigManager::stopStartedServices()
 {
     std::vector<service::IService::SharedFutureType> futures;
 
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_REVERSE_FOREACH(service::IService::wptr w_srv, m_startedSrv)
     {
         SIGHT_ASSERT("Service expired.", !w_srv.expired());
@@ -393,13 +387,14 @@ void AppConfigManager::stopStartedServices()
         futures.emplace_back(srv->stop());
     }
     m_startedSrv.clear();
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
+    std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
 
 void AppConfigManager::destroyCreatedServices()
 {
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_REVERSE_FOREACH(service::IService::wptr w_srv, m_createdSrv)
     {
         const service::IService::sptr srv = w_srv.lock();
@@ -418,7 +413,7 @@ void AppConfigManager::destroyCreatedServices()
     m_createdSrv.clear();
     service::helper::Config::clearKeyProps();
 
-    std::for_each(m_createdWorkers.begin(), m_createdWorkers.end(), [](auto& x){core::thread::removeWorker(x);});
+    std::ranges::for_each(m_createdWorkers, [](auto& x){core::thread::removeWorker(x);});
     m_createdWorkers.clear();
 }
 
@@ -471,7 +466,7 @@ void AppConfigManager::processStartItems()
         }
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
+    std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -520,7 +515,7 @@ void AppConfigManager::processUpdateItems()
         }
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
+    std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -693,7 +688,7 @@ void AppConfigManager::createServices(const boost::property_tree::ptree& cfgElem
 service::IService::sptr AppConfigManager::createService(const service::IService::Config& srvConfig)
 {
     // Create and bind service
-    const service::IService::sptr srv = this->getNewService(srvConfig.m_uid, srvConfig.m_type);
+    service::IService::sptr srv = this->getNewService(srvConfig.m_uid, srvConfig.m_type);
     service::OSR::registerService(srv);
     m_createdSrv.push_back(srv);
 
@@ -975,9 +970,9 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
 
     for(const auto& itService : servicesCfg)
     {
-        auto srvCfg = itService;
+        const auto* srvCfg = itService;
         SIGHT_ASSERT("Config is null", srvCfg);
-        auto& uid = srvCfg->m_uid;
+        const auto& uid = srvCfg->m_uid;
 
         bool createService = true;
 
@@ -1296,7 +1291,7 @@ std::string AppConfigManager::getUIDListAsString(const std::vector<std::string>&
         msg += "', '" + *it;
     }
 
-    msg = uidList.size() == 1 ? msg + "' is " : msg + "' are ";
+    msg.append(uidList.size() == 1 ? "' is " : "' are ");
 
     return msg;
 }

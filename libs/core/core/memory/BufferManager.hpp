@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include "core/config.hpp"
 #include "core/memory/BufferInfo.hpp"
 #include "core/memory/FileHolder.hpp"
+
 #include <core/base.hpp>
 #include <core/BaseObject.hpp>
 #include <core/com/Signal.hpp>
@@ -38,24 +39,19 @@ namespace sight::core::thread
 
 class Worker;
 
-}
+} // namespace sight::core::thread
 
 namespace sight::core::memory
 {
 
 class IPolicy;
 
-namespace stream
-{
-
-namespace in
+namespace stream::in
 {
 
 class IFactory;
 
-}
-
-}
+} // namespace stream::in
 
 class BufferManager;
 
@@ -64,8 +60,7 @@ class Key
 friend SPTR(BufferManager) getDefault();
 
 Key()
-{
-}
+= default;
 };
 
 /**
@@ -96,7 +91,7 @@ public:
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     BufferManager();
-    virtual ~BufferManager();
+    ~BufferManager() override;
 
     typedef enum
     {
@@ -112,14 +107,14 @@ public:
 
     struct StreamInfo
     {
-        SizeType size;
+        SizeType size {};
         SPTR(std::istream) stream;
         /// path of the file containing the dumped buffer
         core::memory::FileHolder fsFile;
         /// format of the dumped file
-        core::memory::FileFormatType format;
+        core::memory::FileFormatType format {OTHER};
         /// true if stream has been set by the user
-        bool userStream;
+        bool userStream {};
     };
 
     /**
@@ -282,7 +277,7 @@ public:
     /**
      * @brief Returns stream info
      */
-    CORE_API std::shared_future<StreamInfo> getStreamInfo(const ConstBufferPtrType bufferPtr) const;
+    CORE_API std::shared_future<StreamInfo> getStreamInfo(ConstBufferPtrType bufferPtr) const;
 
     CORE_API std::shared_future<void> setIStreamFactory(
         BufferPtrType bufferPtr,
@@ -335,10 +330,10 @@ protected:
     virtual std::string toStringImpl() const;
     bool dumpBufferImpl(ConstBufferPtrType buffer);
     bool restoreBufferImpl(ConstBufferPtrType buffer);
-    bool writeBufferImpl(ConstBufferType buffer, SizeType size, std::filesystem::path& path);
-    bool readBufferImpl(BufferType buffer, SizeType size, std::filesystem::path& path);
+    static bool writeBufferImpl(ConstBufferType buffer, SizeType size, const std::filesystem::path& path);
+    static bool readBufferImpl(BufferType buffer, SizeType size, const std::filesystem::path& path);
     BufferInfoMapType getBufferInfosImpl() const;
-    StreamInfo getStreamInfoImpl(const ConstBufferPtrType bufferPtr) const;
+    StreamInfo getStreamInfoImpl(ConstBufferPtrType bufferPtr) const;
     void setIStreamFactoryImpl(
         BufferPtrType bufferPtr,
         const SPTR(core::memory::stream::in::IFactory)& factory,
@@ -365,7 +360,7 @@ protected:
 
     SPTR(core::memory::IPolicy) m_dumpPolicy;
 
-    LoadingModeType m_loadingMode;
+    LoadingModeType m_loadingMode {BufferManager::DIRECT};
 
     SPTR(core::thread::Worker) m_worker;
 
@@ -373,4 +368,4 @@ protected:
     mutable core::mt::ReadWriteMutex m_mutex;
 };
 
-} // namespace sight::core
+} // namespace sight::core::memory

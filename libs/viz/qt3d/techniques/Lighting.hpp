@@ -34,12 +34,9 @@ namespace Qt3DRender
 class QParameter;
 class QRasterMode;
 
-}
+} // namespace Qt3DRender
 
-namespace sight::viz::qt3d
-{
-
-namespace techniques
+namespace sight::viz::qt3d::techniques
 {
 
 /**
@@ -69,7 +66,7 @@ public:
     VIZ_QT3D_API Lighting();
 
     /// Destroys the technique.
-    VIZ_QT3D_API virtual ~Lighting();
+    VIZ_QT3D_API ~Lighting() override;
 
     /// @returns light position value.
     VIZ_QT3D_API QVector3D getLightPosition();
@@ -136,6 +133,4 @@ private:
     bool m_isCellsNormalsEnabled {false};
 };
 
-} // namespace techniques.
-
-} // namespace sight::viz::qt3d.
+} // namespace sight::viz::qt3d::techniques

@@ -74,7 +74,7 @@ This example shows the possibilities of SParameters:
             <!-- ******************************* Services ******************************* -->
 
             <service uid="parameters1Srv" type="sight::module::ui::qt::SParameters" >
-                <parameters>
+                <parameters scrollable="true">
                     <param type="bool"    name="Enable"    key="enable"    defaultValue="true" />
                     <param type="bool"    name="Boolean"   key="bool_1"    defaultValue="true" depends="enable" />
                     <param type="color"   name="Color"     key="color_1"   defaultValue="#a55376b9" depends="enable" />
@@ -91,7 +91,7 @@ This example shows the possibilities of SParameters:
             </service>
 
             <service uid="parameters2Srv" type="sight::module::ui::qt::SParameters" >
-                <parameters>
+                <parameters scrollable="true">
                     <param type="bool"    name="Enable"    key="enable"    defaultValue="true" />
                     <param type="bool"    name="Boolean"   key="bool_1"    defaultValue="false" depends="enable"  />
                     <param type="color"   name="Color"     key="color_1"   defaultValue="#25b18a" depends="enable"  />

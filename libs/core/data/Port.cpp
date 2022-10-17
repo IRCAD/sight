@@ -32,7 +32,7 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-Port::Port(data::Object::Key) :
+Port::Port(data::Object::Key /*unused*/) :
     m_identifier("IdNotDefined"),
     m_type("TypeNotDefined")
 {
@@ -40,44 +40,42 @@ Port::Port(data::Object::Key) :
 
 //------------------------------------------------------------------------------
 
-Port::~Port()
+void Port::shallowCopy(const Object::csptr& source)
 {
+    const auto& other = dynamicConstCast(source);
+
+    SIGHT_THROW_EXCEPTION_IF(
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
+        ),
+        !bool(other)
+    );
+
+    m_identifier = other->m_identifier;
+    m_type       = other->m_type;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Port::shallowCopy(const Object::csptr& _source)
+void Port::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Port::csptr other = Port::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     m_identifier = other->m_identifier;
     m_type       = other->m_type;
-}
 
-//------------------------------------------------------------------------------
-
-void Port::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
-{
-    Port::csptr other = Port::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
-        ),
-        !bool(other)
-    );
-    this->fieldDeepCopy(_source, cache);
-
-    m_identifier = other->m_identifier;
-    m_type       = other->m_type;
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -91,7 +89,7 @@ bool Port::operator==(const Port& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

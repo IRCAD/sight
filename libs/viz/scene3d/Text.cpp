@@ -44,18 +44,17 @@ class ResizeListener : public Ogre::Viewport::Listener
 {
 public:
 
-    ResizeListener(Text& _text) :
+    explicit ResizeListener(Text& _text) :
         m_text(_text)
     {
     }
 
-    virtual ~ResizeListener()
-    {
-    }
+    ~ResizeListener() override
+    = default;
 
     //------------------------------------------------------------------------------
 
-    virtual void viewportDimensionsChanged(Ogre::Viewport*)
+    void viewportDimensionsChanged(Ogre::Viewport* /*viewport*/) override
     {
         m_text.resize();
     }
@@ -77,17 +76,17 @@ Text* Text::New(
     Ogre::Camera* _cam
 )
 {
-    const auto& factoryName = viz::scene3d::factory::Text::FACTORY_TYPE_NAME;
-    Text* instance          = static_cast<viz::scene3d::Text*>(_sm->createMovableObject(_id, factoryName));
+    const auto& typeName = viz::scene3d::factory::Text::FACTORY_TYPE_NAME;
+    Text* instance       = static_cast<viz::scene3d::Text*>(_sm->createMovableObject(_id, typeName));
 
     instance->m_parentContainer = _parent;
     instance->m_camera          = _cam;
 
-    const std::uint32_t fontMapResolution = static_cast<std::uint32_t>(std::round(_fontResolution));
-    auto font                             = helper::Font::getFont(_fontSource, _fontSize, fontMapResolution);
+    const auto fontMapResolution = static_cast<std::uint32_t>(std::round(_fontResolution));
+    auto font                    = helper::Font::getFont(_fontSource, _fontSize, fontMapResolution);
     instance->setFont(font);
 
-    instance->m_overlayText->setDimensions(1.0f, 1.0f);
+    instance->m_overlayText->setDimensions(1.0F, 1.0F);
     instance->m_overlayText->setMetricsMode(Ogre::GMM_RELATIVE);
     instance->setDotsPerInch(_fontResolution);
 
@@ -105,17 +104,17 @@ Text* Text::New(
     const std::string& _id,
     Ogre::SceneManager* _sm,
     Ogre::OverlayContainer* _parent,
-    Ogre::FontPtr,
+    Ogre::FontPtr /*unused*/,
     Ogre::Camera* _cam
 )
 {
-    const auto& factoryName = viz::scene3d::factory::Text::FACTORY_TYPE_NAME;
-    Text* instance          = static_cast<viz::scene3d::Text*>(_sm->createMovableObject(_id, factoryName));
+    const auto& typeName = viz::scene3d::factory::Text::FACTORY_TYPE_NAME;
+    Text* instance       = static_cast<viz::scene3d::Text*>(_sm->createMovableObject(_id, typeName));
 
     instance->m_parentContainer = _parent;
     instance->m_camera          = _cam;
 
-    instance->m_overlayText->setDimensions(1.0f, 1.0f);
+    instance->m_overlayText->setDimensions(1.0F, 1.0F);
     instance->m_overlayText->setMetricsMode(Ogre::GMM_RELATIVE);
     instance->m_overlayText->setPosition(0.5, 0.5);
 
@@ -144,7 +143,7 @@ Text::~Text()
 
     Ogre::MaterialManager::getSingleton().remove(material);
 
-    if(m_listener)
+    if(m_listener != nullptr)
     {
         m_camera->getViewport()->removeListener(m_listener);
         delete m_listener;
@@ -168,7 +167,7 @@ void Text::setPosition(float _x, float _y)
     const float textHeight = this->getTextHeight();
     const auto vAlign      = m_overlayText->getVerticalAlignment();
     const float alignedY   = vAlign == Ogre::GVA_BOTTOM ? _y - textHeight
-                                                        : vAlign == Ogre::GVA_CENTER ? _y - textHeight * 0.5f : _y;
+                                                        : vAlign == Ogre::GVA_CENTER ? _y - textHeight * 0.5F : _y;
 
     m_overlayText->setPosition(_x, alignedY);
 }
@@ -177,7 +176,7 @@ void Text::setPosition(float _x, float _y)
 
 float Text::getTextHeight() const
 {
-    auto& caption = m_overlayText->getCaption();
+    const auto& caption = m_overlayText->getCaption();
 
 #ifdef WIN32
 #pragma warning(push)
@@ -195,7 +194,7 @@ float Text::getTextHeight() const
 
 void Text::setDotsPerInch(float _dpi)
 {
-    constexpr float pointsPerInch = 72.f;             // a standard DTP points is equal to 1/72th of an inch
+    constexpr float pointsPerInch = 72.F;             // a standard DTP points is equal to 1/72th of an inch
                                                       // (US).
     const float fontSize = m_font->getTrueTypeSize(); // in dots
 
@@ -205,7 +204,7 @@ void Text::setDotsPerInch(float _dpi)
 
     this->resize();
 
-    std::uint32_t fontRes = static_cast<std::uint32_t>(_dpi);
+    auto fontRes = static_cast<std::uint32_t>(_dpi);
     if(m_font->getTrueTypeResolution() != fontRes)
     {
         auto newFont = helper::Font::getFont(
@@ -288,12 +287,12 @@ const Ogre::AxisAlignedBox& Text::getBoundingBox() const
 
 Ogre::Real Text::getBoundingRadius() const
 {
-    return 0.f;
+    return 0.F;
 }
 
 //------------------------------------------------------------------------------
 
-void Text::_updateRenderQueue(Ogre::RenderQueue*)
+void Text::_updateRenderQueue(Ogre::RenderQueue* /*queue*/)
 {
     Ogre::Node* parentNode = this->getParentNode();
 
@@ -304,11 +303,11 @@ void Text::_updateRenderQueue(Ogre::RenderQueue*)
         const auto viewProjMx = m_camera->getProjectionMatrixWithRSDepth() * m_camera->getViewMatrix();
         const auto projPos    = viewProjMx * pos;
 
-        const Ogre::Vector2 screenPos(0.5f + projPos.x / 2.f, 0.5f - projPos.y / 2.f);
+        const Ogre::Vector2 screenPos(0.5F + projPos.x / 2.F, 0.5F - projPos.y / 2.F);
         this->setPosition(screenPos.x, screenPos.y);
 
         // Clipping test.
-        if(projPos.z < -1.f || projPos.z > 1.f)
+        if(projPos.z < -1.F || projPos.z > 1.F)
         {
             m_overlayText->hide();
         }
@@ -321,7 +320,7 @@ void Text::_updateRenderQueue(Ogre::RenderQueue*)
 
 //------------------------------------------------------------------------------
 
-void Text::visitRenderables(Ogre::Renderable::Visitor*, bool)
+void Text::visitRenderables(Ogre::Renderable::Visitor* /*visitor*/, bool /*debugRenderables*/)
 {
 }
 

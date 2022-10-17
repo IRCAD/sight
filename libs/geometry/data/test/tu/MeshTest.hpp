@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::geometry::data
-{
-
-namespace ut
+namespace sight::geometry::data::ut
 {
 
 /**
@@ -49,17 +46,15 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void colorizePointsTest();
-    void colorizeCellsTest();
-    void transformTest();
-    void isClosedTest();
-    void cellNormalTest();
-    void pointNormalTest();
+    static void colorizePointsTest();
+    static void colorizeCellsTest();
+    static void transformTest();
+    static void isClosedTest();
+    static void cellNormalTest();
+    static void pointNormalTest();
 };
 
-} //namespace ut
-
-} //namespace sight::geometry::data
+} // namespace sight::geometry::data::ut

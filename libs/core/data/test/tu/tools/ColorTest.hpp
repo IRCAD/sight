@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data::tools
-{
-
-namespace ut
+namespace sight::data::tools::ut
 {
 
 class ColorTest : public CPPUNIT_NS::TestFixture
@@ -41,12 +38,10 @@ private:
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void hexaStringToRGBA();
+    static void hexaStringToRGBA();
 };
 
-} //namespace ut
-
-} //namespace sight::data::tools
+} // namespace sight::data::tools::ut

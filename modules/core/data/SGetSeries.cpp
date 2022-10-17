@@ -35,7 +35,7 @@ void SGetSeries::configuring()
     for(auto itCfg = keyCfg.first ; itCfg != keyCfg.second ; ++itCfg)
     {
         const service::IService::ConfigType& attr = itCfg->second.get_child("<xmlattr>.index");
-        const size_t index                        = attr.get_value<size_t>();
+        const auto index                          = attr.get_value<size_t>();
         m_indexNumbers.push_back(index);
     }
 }
@@ -50,14 +50,13 @@ void SGetSeries::starting()
 
 void SGetSeries::updating()
 {
-    const auto seriesDB = m_seriesDB.lock();
-    if(seriesDB == nullptr)
+    const auto series_set = m_series_set.lock();
+    if(series_set == nullptr)
     {
         SIGHT_THROW_EXCEPTION(sight::data::Exception("Missing input database series"));
     }
 
-    auto series = seriesDB->getContainer();
-    if(series.empty())
+    if(series_set->empty())
     {
         SIGHT_THROW_EXCEPTION(sight::data::Exception("The database series is empty, nothing can be extracted."));
     }
@@ -65,7 +64,7 @@ void SGetSeries::updating()
     size_t i = 0;
     for(const auto& index : m_indexNumbers)
     {
-        m_series[i] = series[index];
+        m_series[i] = series_set->at(index);
         i++;
     }
 }

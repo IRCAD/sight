@@ -24,9 +24,7 @@
 
 #include "core/runtime/detail/EmptyPlugin.hpp"
 #include "core/runtime/detail/ExtensionPoint.hpp"
-#include "core/runtime/detail/profile/Initializer.hpp"
 #include "core/runtime/detail/profile/Profile.hpp"
-#include "core/runtime/detail/profile/Stopper.hpp"
 #include "core/runtime/detail/Runtime.hpp"
 #include "core/runtime/ExecutableFactory.hpp"
 #include "core/runtime/Extension.hpp"
@@ -40,10 +38,7 @@
 #include <exception>
 #include <memory>
 
-namespace sight::core::runtime
-{
-
-namespace detail
+namespace sight::core::runtime::detail
 {
 
 //------------------------------------------------------------------------------
@@ -61,12 +56,14 @@ SPTR(Module) Module::getLoadingModule()
 
 Module::Module(
     const std::filesystem::path& location,
-    const std::string& id,
-    const std::string& c
+    std::string id,
+    std::string c,
+    int priority
 ) :
     m_resourcesLocation(location.lexically_normal()),
-    m_identifier(id),
-    m_class(c)
+    m_identifier(std::move(id)),
+    m_class(std::move(c)),
+    m_priority(priority)
 {
     // Post-condition.
     SIGHT_ASSERT("Invalid module location.", m_resourcesLocation.is_absolute() == true);
@@ -132,7 +129,7 @@ void Module::addExtension(SPTR(Extension)extension)
 bool Module::hasExtension(const std::string& identifier) const
 {
     bool hasExtension = false;
-    for(const ExtensionContainer::value_type& extension : m_extensions)
+    for(const auto& extension : m_extensions)
     {
         if(extension->getIdentifier() == identifier)
         {
@@ -148,7 +145,7 @@ bool Module::hasExtension(const std::string& identifier) const
 
 void Module::setEnableExtension(const std::string& identifier, const bool enable)
 {
-    for(const ExtensionContainer::value_type& extension : m_extensions)
+    for(const auto& extension : m_extensions)
     {
         if(extension->getIdentifier() == identifier)
         {
@@ -258,7 +255,7 @@ void Module::addRequirement(const std::string& requirement)
 
 //------------------------------------------------------------------------------
 
-const std::string Module::getClass() const
+std::string Module::getClass() const
 {
     return m_class;
 }
@@ -272,7 +269,7 @@ const std::string& Module::getIdentifier() const
 
 //------------------------------------------------------------------------------
 
-const std::string Module::getLibraryName() const
+std::string Module::getLibraryName() const
 {
     return m_library ? m_library->getName().string() : "";
 }
@@ -303,7 +300,7 @@ SPTR(IPlugin) Module::getPlugin() const
 void Module::loadLibraries()
 {
     // Ensure the module is enabled.
-    if(m_enabled == false)
+    if(!m_enabled)
     {
         throw RuntimeException(getModuleStr(m_identifier) + ": module is not enabled.");
     }
@@ -315,7 +312,7 @@ void Module::loadLibraries()
     m_loadingModule = shared_from_this();
 
     // Loads the library
-    if(m_library && m_library->isLoaded() == false)
+    if(m_library && !m_library->isLoaded())
     {
         try
         {
@@ -341,7 +338,7 @@ void Module::loadLibraries()
     m_loadingModule.reset();
 
     // Post-condition
-    assert(m_loadingModule == 0);
+    assert(m_loadingModule == nullptr);
 }
 
 //------------------------------------------------------------------------------
@@ -354,7 +351,7 @@ void Module::loadRequirements()
         RequirementContainer::const_iterator iter;
         for(const RequirementContainer::value_type& requirement : m_requirements)
         {
-            auto module = runtime.findModule(requirement);
+            auto module = std::dynamic_pointer_cast<detail::Module>(runtime.findModule(requirement));
 
             // Ensure that a module has been retrieved.
             if(module == nullptr)
@@ -365,14 +362,11 @@ void Module::loadRequirements()
             // Enable the required module if necessary.
             if(!module->isEnabled())
             {
-                std::dynamic_pointer_cast<detail::Module>(module)->setEnable(true);
+                module->setEnable(true);
             }
 
-            // Starts the module (loads its libraries and requirements module).
-            if(!module->isStarted())
-            {
-                module->start();
-            }
+            // Starts the module if necessary (loads its libraries and requirements module).
+            module->start();
         }
     }
     catch(const std::exception& e)
@@ -389,28 +383,30 @@ void Module::loadRequirements()
 
 void Module::start()
 {
-    SIGHT_ASSERT("Module " + getModuleStr(m_identifier) + " already started.", !m_started);
-    if(m_enabled == false)
+    if(!m_started)
     {
-        throw RuntimeException(getModuleStr(m_identifier) + ": module is not enabled.");
-    }
+        if(!m_enabled)
+        {
+            throw RuntimeException(getModuleStr(m_identifier) + ": module is not enabled.");
+        }
 
-    if(m_plugin == nullptr)
-    {
-        loadRequirements();
-        loadLibraries();
-        try
+        if(m_plugin == nullptr)
         {
-            startPlugin();
+            loadRequirements();
+            loadLibraries();
+            try
+            {
+                startPlugin();
+            }
+            catch(std::exception& e)
+            {
+                throw RuntimeException(
+                          getModuleStr(m_identifier)
+                          + ": start plugin error (after load requirement) " + e.what()
+                );
+            }
+            SIGHT_INFO("Loaded module '" + m_identifier + "' successfully");
         }
-        catch(std::exception& e)
-        {
-            throw RuntimeException(
-                      getModuleStr(m_identifier)
-                      + ": start plugin error (after load requirement) " + e.what()
-            );
-        }
-        SIGHT_INFO("Loaded module '" + m_identifier + "' successfully");
     }
 }
 
@@ -445,7 +441,7 @@ void Module::startPlugin()
     }
 
     // Ensures that a plugin has been created.
-    if(plugin == 0)
+    if(plugin == nullptr)
     {
         throw RuntimeException(getModuleStr(m_identifier) + ": unable to create a plugin instance.");
     }
@@ -456,12 +452,10 @@ void Module::startPlugin()
         try
         {
             auto prof = std::dynamic_pointer_cast<detail::profile::Profile>(core::runtime::getCurrentProfile());
-            prof->add(std::make_shared<profile::Stopper>(this->getIdentifier()));
+            prof->addStopper(this->getIdentifier(), this->priority());
 
             m_plugin = plugin;
             m_plugin->start();
-
-            prof->add(std::make_shared<profile::Initializer>(this->getIdentifier()));
 
             m_started = true;
         }
@@ -476,69 +470,31 @@ void Module::startPlugin()
 
 void Module::stop()
 {
-    SIGHT_ASSERT("Module " + getModuleStr(m_identifier) + " not started.", m_started);
-    SIGHT_ASSERT(getModuleStr(m_identifier) + " : m_plugin not an instance.", m_plugin != nullptr);
-    SIGHT_ASSERT("Module " + getModuleStr(m_identifier) + " not uninitialized.", !m_initialized);
-
-    try
+    if(m_started)
     {
-        m_plugin->stop();
-        m_started = false;
-    }
-    catch(std::exception& e)
-    {
-        throw RuntimeException(getModuleStr(m_identifier) + ": stop plugin error : " + e.what());
-    }
+        SIGHT_ASSERT(getModuleStr(m_identifier) + " : m_plugin not an instance.", m_plugin != nullptr);
 
-    detail::Runtime& runtime = detail::Runtime::get();
-    runtime.unregisterModule(this->shared_from_this());
+        try
+        {
+            m_plugin->stop();
+            m_started = false;
+        }
+        catch(std::exception& e)
+        {
+            throw RuntimeException(getModuleStr(m_identifier) + ": stop plugin error : " + e.what());
+        }
 
-    //Unloads all libraries.
-//    LibraryContainer::iterator curEntry;
-//    LibraryContainer::iterator endEntry = m_libraries.end();
-//    for(curEntry = m_libraries.begin(); curEntry != endEntry; ++curEntry)
-//    {
-//        std::shared_ptr<dl::Library> library(*curEntry);
-//        if(library->isLoaded() == true )
-//        {
-//            library->unload();
-//        }
-//    }
-}
-
-//------------------------------------------------------------------------------
-void Module::initialize()
-{
-    SIGHT_ASSERT("Module '" + getModuleStr(m_identifier) + "' not started.", m_started);
-    SIGHT_ASSERT("Module '" + getModuleStr(m_identifier) + "' already initialized.", !m_initialized);
-    try
-    {
-        m_initialized = true;
-        m_plugin->initialize();
-    }
-    catch(std::exception& e)
-    {
-        throw RuntimeException(getModuleStr(m_identifier) + ": initialize plugin error : " + e.what());
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void Module::uninitialize()
-{
-    SIGHT_ASSERT(
-        "Module '" + getModuleStr(m_identifier) + "' has not been started.",
-        m_plugin != nullptr
-    );
-    SIGHT_ASSERT("Module '" + getModuleStr(m_identifier) + "' not initialized.", m_initialized);
-    try
-    {
-        m_plugin->uninitialize();
-        m_initialized = false;
-    }
-    catch(std::exception& e)
-    {
-        throw RuntimeException(getModuleStr(m_identifier) + ": initialize plugin error : " + e.what());
+        //Unloads all libraries.
+        //    LibraryContainer::iterator curEntry;
+        //    LibraryContainer::iterator endEntry = m_libraries.end();
+        //    for(curEntry = m_libraries.begin(); curEntry != endEntry; ++curEntry)
+        //    {
+        //        std::shared_ptr<dl::Library> library(*curEntry);
+        //        if(library->isLoaded() == true )
+        //        {
+        //            library->unload();
+        //        }
+        //    }
     }
 }
 
@@ -565,9 +521,9 @@ void Module::addParameter(const std::string& identifier, const std::string& valu
 
 //------------------------------------------------------------------------------
 
-const std::string Module::getParameterValue(const std::string& identifier) const
+std::string Module::getParameterValue(const std::string& identifier) const
 {
-    ParameterContainer::const_iterator found = m_parameters.find(identifier);
+    auto found = m_parameters.find(identifier);
 
     return (found != m_parameters.end()) ? found->second : std::string();
 }
@@ -583,7 +539,9 @@ bool Module::hasParameter(const std::string& identifier) const
 
 core::runtime::Module::ExtensionContainer core::runtime::detail::Module::getExtensions() const
 {
-    return m_extensions;
+    core::runtime::Module::ExtensionContainer container;
+    std::ranges::transform(m_extensions, std::inserter(container, container.begin()), [](const auto& e){return e;});
+    return container;
 }
 
 //------------------------------------------------------------------------------
@@ -595,12 +553,4 @@ std::string Module::getModuleStr(const std::string& identifier)
 
 //------------------------------------------------------------------------------
 
-void Module::operator=(const Module&)
-{
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

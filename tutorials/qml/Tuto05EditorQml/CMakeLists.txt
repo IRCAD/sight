@@ -1,4 +1,4 @@
-sight_add_target(Tuto05EditorQml TYPE APP START ON)
+sight_add_target(Tuto05EditorQml TYPE APP)
 
 find_package(Qt5 QUIET COMPONENTS Core Qml Quick REQUIRED)
 target_link_libraries(Tuto05EditorQml PUBLIC Qt5::Core Qt5::Quick Qt5::Qml)

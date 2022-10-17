@@ -46,8 +46,7 @@ namespace sight::module::filter::point
 const core::com::Slots::SlotKeyType SPointListRegistration::s_CHANGE_MODE = "changeMode";
 static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG       = "errorComputed";
 
-SPointListRegistration::SPointListRegistration() :
-    m_registrationMode(RIGID)
+SPointListRegistration::SPointListRegistration()
 {
     newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
     newSlot(s_CHANGE_MODE, &SPointListRegistration::changeMode, this);
@@ -56,8 +55,7 @@ SPointListRegistration::SPointListRegistration() :
 // ----------------------------------------------------------------------------
 
 SPointListRegistration::~SPointListRegistration()
-{
-}
+= default;
 
 // ----------------------------------------------------------------------------
 
@@ -110,7 +108,7 @@ void SPointListRegistration::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockType)
+void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockType /*timestamp*/)
 {
     const auto registeredPL = m_registeredPL.lock();
     SIGHT_ASSERT("No 'registeredPL' found", registeredPL);
@@ -132,11 +130,11 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         if(!firstPoint->getLabel().empty() && !firstPointReg->getLabel().empty())
         {
             // ... Then match them according to that label.
-            for(data::Point::sptr pointRef : referencePL->getPoints())
+            for(const data::Point::sptr& pointRef : referencePL->getPoints())
             {
                 const std::string labelRef = pointRef->getLabel();
 
-                for(data::Point::sptr pointReg : registeredPL->getPoints())
+                for(const data::Point::sptr& pointReg : registeredPL->getPoints())
                 {
                     const std::string labelReg = pointRef->getLabel();
 
@@ -205,18 +203,18 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
 
         for(vtkIdType i = 0 ; i < sourcePts->GetNumberOfPoints() ; ++i)
         {
-            double p1[3];
-            sourcePts->GetPoint(i, p1);
-            double p2[3];
-            targetPts->GetPoint(i, p2);
+            std::array<double, 3> p1 {};
+            sourcePts->GetPoint(i, p1.data());
+            std::array<double, 3> p2 {};
+            targetPts->GetPoint(i, p2.data());
 
             // to have homogeneous coordinates (x,y,z,w)
-            double p2H[4] = {1., 1., 1., 1.};
+            std::array p2H {1., 1., 1., 1.};
             std::copy(std::begin(p2), std::end(p2), std::begin(p2H));
 
             //p' = M*p
-            double newP[4];
-            m->MultiplyPoint(p2H, newP);
+            std::array<double, 4> newP {};
+            m->MultiplyPoint(p2H.data(), newP.data());
 
             errorValue += std::sqrt(
                 ((p1[0] - newP[0]) * (p1[0] - newP[0]))

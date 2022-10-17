@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "SSelector.hpp"
 
-#include "modules/ui/qt/series/Selector.hpp"
-
 #include <core/base.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
@@ -33,22 +31,18 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
-#include <data/helper/SeriesDB.hpp>
-#include <data/helper/Vector.hpp>
 #include <data/Series.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/series/Selector.hpp>
 
 #include <QVBoxLayout>
 
-namespace sight::module::ui::qt
-{
-
-namespace series
+namespace sight::module::ui::qt::series
 {
 
 //------------------------------------------------------------------------------
@@ -80,88 +74,14 @@ SSelector::SSelector()
 
 //------------------------------------------------------------------------------
 
-SSelector::~SSelector() noexcept
-{
-}
+SSelector::~SSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
 void SSelector::configuring()
 {
     this->sight::ui::base::IGuiContainer::initialize();
-
-    // Deprecated configuration.
-
-    std::vector<core::runtime::ConfigurationElement::sptr> selectionModeCfg =
-        m_configuration->find(s_SELECTION_MODE_CONFIG);
-    if(!selectionModeCfg.empty())
-    {
-        FW_DEPRECATED_MSG("'" << s_SELECTION_MODE_CONFIG << "' is deprecated, use it in a <config> tag.", "22.0");
-
-        const std::string& selectionMode = selectionModeCfg.front()->getValue();
-
-        if(!selectionMode.empty())
-        {
-            if(selectionMode == "single")
-            {
-                m_selectionMode = QAbstractItemView::SingleSelection;
-            }
-            else if(selectionMode == "extended")
-            {
-                m_selectionMode = QAbstractItemView::ExtendedSelection;
-            }
-            else
-            {
-                SIGHT_WARN("value " + selectionMode + " is not managed for <selectionMode>");
-            }
-        }
-    }
-
-    std::vector<core::runtime::ConfigurationElement::sptr> allowedRemoveCfg =
-        m_configuration->find(s_ALLOWED_REMOVE_CONFIG);
-    if(!allowedRemoveCfg.empty())
-    {
-        FW_DEPRECATED_MSG("'" << s_ALLOWED_REMOVE_CONFIG << "' is deprecated, use it in a <config> tag.", "22.0");
-
-        const std::string& allowedRemove = allowedRemoveCfg.front()->getValue();
-
-        if(allowedRemove == "true")
-        {
-            m_allowedRemove = true;
-        }
-        else if(allowedRemove == "false")
-        {
-            m_allowedRemove = false;
-        }
-        else
-        {
-            SIGHT_WARN("value " + allowedRemove + " is not managed for <allowedRemove>");
-        }
-    }
-
-    std::vector<core::runtime::ConfigurationElement::sptr> insertCfg =
-        m_configuration->find(s_INSERT_MODE_CONFIG);
-    if(!insertCfg.empty())
-    {
-        FW_DEPRECATED_MSG("'" << s_INSERT_MODE_CONFIG << "' is deprecated, use it in a <config> tag.", "22.0");
-
-        const std::string& insert = insertCfg.front()->getValue();
-
-        if(insert == "true")
-        {
-            m_insertMode = true;
-        }
-        else if(insert == "false")
-        {
-            m_insertMode = false;
-        }
-        else
-        {
-            SIGHT_WARN("value " + insert + " is not managed for <insertMode>");
-        }
-    }
-
-    // Better configuration.
 
     std::vector<core::runtime::ConfigurationElement::sptr> iconsCfg = m_configuration->find(s_ICONS_CONFIG);
     if(!iconsCfg.empty())
@@ -170,7 +90,7 @@ void SSelector::configuring()
 
         std::vector<core::runtime::ConfigurationElement::sptr> cfg = iconsCfg.front()->find(s_ICON_CONFIG);
 
-        for(core::runtime::ConfigurationElement::sptr elt : cfg)
+        for(const core::runtime::ConfigurationElement::sptr& elt : cfg)
         {
             const std::string series = elt->getAttributeValue("series");
             SIGHT_ASSERT("'series' attribute is missing", !series.empty());
@@ -199,7 +119,7 @@ void SSelector::configuring()
         const auto removeSerieIconCfg = configAttr->get_optional<std::string>(s_REMOVE_SERIE_ICON_CONFIG);
         if(removeSerieIconCfg)
         {
-            m_removeSerieIcon = core::runtime::getModuleResourceFilePath(removeSerieIconCfg.value());
+            m_removeSeriesIcon = core::runtime::getModuleResourceFilePath(removeSerieIconCfg.value());
         }
 
         const auto selectionMode = configAttr->get<std::string>(s_SELECTION_MODE_CONFIG, "extended");
@@ -213,10 +133,13 @@ void SSelector::configuring()
         }
         else
         {
-            SIGHT_WARN("value " + selectionMode + " is not managed for '" + s_SELECTION_MODE_CONFIG + "'");
+            SIGHT_WARN(
+                std::string("value ") + selectionMode + " is not managed for '"
+                + s_SELECTION_MODE_CONFIG + "'"
+            );
         }
 
-        m_allowedRemove = configAttr->get<bool>(s_ALLOWED_REMOVE_CONFIG, m_allowedRemove);
+        m_removeAllowed = configAttr->get<bool>(s_ALLOWED_REMOVE_CONFIG, m_removeAllowed);
         m_insertMode    = configAttr->get<bool>(s_INSERT_MODE_CONFIG, m_insertMode);
     }
 }
@@ -231,15 +154,15 @@ void SSelector::starting()
         this->getContainer()
     );
 
-    m_selectorWidget = new Selector();
+    m_selectorWidget = new sight::ui::qt::series::Selector();
     m_selectorWidget->setSeriesIcons(m_seriesIcons);
     m_selectorWidget->setSelectionMode(m_selectionMode);
-    m_selectorWidget->setAllowedRemove(m_allowedRemove);
+    m_selectorWidget->allowRemove(m_removeAllowed);
     m_selectorWidget->setInsertMode(m_insertMode);
     m_selectorWidget->setRemoveStudyIcon(m_removeStudyIcon);
-    m_selectorWidget->setRemoveSerieIcon(m_removeSerieIcon);
+    m_selectorWidget->setRemoveSeriesIcon(m_removeSeriesIcon);
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     layout->setContentsMargins(0, 0, 0, 0);
     layout->addWidget(m_selectorWidget);
     qtContainer->setLayout(layout);
@@ -247,7 +170,7 @@ void SSelector::starting()
     QObject::connect(
         m_selectorWidget,
         SIGNAL(
-            selectSeries(
+            seriesSelected(
                 QVector<data::Series::sptr>,
                 QVector<data::Series::sptr>
             )
@@ -271,7 +194,7 @@ void SSelector::starting()
         );
     }
 
-    if(m_allowedRemove)
+    if(m_removeAllowed)
     {
         QObject::connect(
             m_selectorWidget,
@@ -289,8 +212,8 @@ void SSelector::starting()
 service::IService::KeyConnectionsMap SSelector::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_SERIES_DB,data::SeriesDB::s_ADDED_SERIES_SIG,s_ADD_SERIES_SLOT);
-    connections.push(s_SERIES_DB,data::SeriesDB::s_REMOVED_SERIES_SIG,s_REMOVE_SERIES_SLOT);
+    connections.push(s_SERIES_SET,data::SeriesSet::s_ADDED_OBJECTS_SIG,s_ADD_SERIES_SLOT);
+    connections.push(s_SERIES_SET,data::SeriesSet::s_REMOVED_OBJECTS_SIG,s_REMOVE_SERIES_SLOT);
 
     return connections;
 }
@@ -299,11 +222,11 @@ service::IService::KeyConnectionsMap SSelector::getAutoConnections() const
 
 void SSelector::updating()
 {
-    const auto seriesDB = m_seriesDB.lock();
+    const auto series_set = m_series_set.lock();
 
     m_selectorWidget->clear();
 
-    for(data::Series::sptr series : seriesDB->getContainer())
+    for(const auto& series : *series_set)
     {
         m_selectorWidget->addSeries(series);
     }
@@ -324,19 +247,17 @@ void SSelector::onSelectedSeries(
 )
 {
     const auto selectionVector = m_selection.lock();
-    data::helper::Vector vectorHelper(selectionVector.get_shared());
+    const auto scoped_emitter  = selectionVector->scoped_emit();
 
-    for(data::Series::sptr series : _deselection)
+    for(const auto& series : _deselection)
     {
-        vectorHelper.remove(series);
+        selectionVector->remove(series);
     }
 
-    for(data::Series::sptr series : _selection)
+    for(const auto& series : _selection)
     {
-        vectorHelper.add(series);
+        selectionVector->push_back(series);
     }
-
-    vectorHelper.notify();
 }
 
 //------------------------------------------------------------------------------
@@ -348,7 +269,7 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
 
     const auto selectionVector = m_selection.lock();
 
-    if(m_selectorWidget->getItemType(_index) == SelectorModel::SERIES)
+    if(m_selectorWidget->getItemType(_index) == sight::ui::qt::series::SelectorModel::SERIES)
     {
         SIGHT_ASSERT("There must be only one object selected",selectionVector->size() == 1);
         data::Object::sptr obj    = selectionVector->front();
@@ -363,32 +284,26 @@ void SSelector::onDoubleClick(const QModelIndex& _index)
 
 void SSelector::onRemoveSeries(QVector<data::Series::sptr> _selection)
 {
-    const auto seriesDB = m_seriesDB.lock();
-    data::helper::SeriesDB seriesDBHelper(*seriesDB);
+    const auto series_set = m_series_set.lock();
 
-    // Remove duplicated series
-    std::set<data::Series::sptr> seriesSet;
-    std::copy(_selection.begin(),_selection.end(),std::inserter(seriesSet,seriesSet.begin()));
-
-    for(data::Series::sptr series : seriesSet)
-    {
-        seriesDBHelper.remove(series);
-    }
+    auto sig = series_set->signal<data::SeriesSet::removed_signal_t>(data::SeriesSet::s_REMOVED_OBJECTS_SIG);
+    core::com::Connection::Blocker block(sig->getConnection(m_slotRemoveSeries));
 
     {
-        auto sig = seriesDB->signal<data::SeriesDB::RemovedSeriesSignalType>(
-            data::SeriesDB::s_REMOVED_SERIES_SIG
-        );
-        core::com::Connection::Blocker block(sig->getConnection(m_slotRemoveSeries));
-        seriesDBHelper.notify();
+        const auto scoped_emitter = series_set->scoped_emit();
+
+        for(const auto& series : _selection)
+        {
+            series_set->remove(series);
+        }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SSelector::addSeries(data::SeriesDB::ContainerType _addedSeries)
+void SSelector::addSeries(data::SeriesSet::container_type _addedSeries)
 {
-    for(data::Series::sptr series : _addedSeries)
+    for(const auto& series : _addedSeries)
     {
         m_selectorWidget->addSeries(series);
     }
@@ -396,9 +311,9 @@ void SSelector::addSeries(data::SeriesDB::ContainerType _addedSeries)
 
 //------------------------------------------------------------------------------
 
-void SSelector::removeSeries(data::SeriesDB::ContainerType _removedSeries)
+void SSelector::removeSeries(data::SeriesSet::container_type _removedSeries)
 {
-    for(data::Series::sptr series : _removedSeries)
+    for(const auto& series : _removedSeries)
     {
         m_selectorWidget->removeSeries(series);
     }
@@ -406,6 +321,4 @@ void SSelector::removeSeries(data::SeriesDB::ContainerType _removedSeries)
 
 //------------------------------------------------------------------------------
 
-} // namespace series.
-
-} // namespace sight::module::ui::qt.
+} // namespace sight::module::ui::qt::series

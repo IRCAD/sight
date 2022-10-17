@@ -30,9 +30,9 @@
 
 #include <core/memory/BufferObject.hpp>
 #include <core/memory/IBuffered.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
-#include <data/iterator.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
 namespace sight::data
 {
@@ -58,8 +58,8 @@ namespace sight::data
  * memory.
  *
  * To resize the array, you must define the Type ([u]int[8|16|32|64], double, float) and the size of the buffer. You can
- * use setType(const core::tools::Type& type) and resize(const SizeType& size, bool reallocate) or directly call
- * resize(const SizeType& size, const core::tools::Type& type, bool reallocate).
+ * use setType(const core::Type& type) and resize(const SizeType& size, bool reallocate) or directly call
+ * resize(const SizeType& size, const core::Type& type, bool reallocate).
  *
  * @section Access Buffer access
  *
@@ -117,7 +117,7 @@ namespace sight::data
 /**
  * @code{.cpp}
     Array::sptr array = Array::New();
-    array->resize({1920, 1080}, core::tools::Type::s_INT16);
+    array->resize({1920, 1080}, core::Type::INT16);
     auto iter          = array->begin<std::int16_t>();
     const auto iterEnd = array->end<std::int16_t>();
 
@@ -148,8 +148,8 @@ namespace sight::data
    @endcode
  */
 /* *INDENT-ON* */
-class DATA_CLASS_API Array : public Object,
-                             public core::memory::IBuffered
+class DATA_CLASS_API Array final : public Object,
+                                   public core::memory::IBuffered
 {
 public:
 
@@ -176,9 +176,6 @@ public:
 
     DATA_API ~Array() override;
 
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
-
     /**
      * @brief Resizes and allocate (if needed) the array.
      *
@@ -198,7 +195,7 @@ public:
      *
      * @throw Exception
      */
-    DATA_API std::size_t resize(const SizeType& size, const core::tools::Type& type, bool reallocate = true);
+    DATA_API std::size_t resize(const SizeType& size, const core::Type& type, bool reallocate = true);
 
     /**
      * @brief Resizes and allocate (if needed) the array.
@@ -284,7 +281,7 @@ public:
      *
      * @param own New ownership value
      */
-    DATA_API void setIsBufferOwner(const bool own);
+    DATA_API void setIsBufferOwner(bool own);
 
     /**
      * @brief Getter for array's buffer ownership
@@ -298,7 +295,7 @@ public:
      *
      * @return Type of array
      */
-    DATA_API core::tools::Type getType() const;
+    DATA_API core::Type getType() const;
 
     /**
      * @brief Compute strides for given parameters
@@ -408,7 +405,7 @@ public:
         void* buf,
         bool takeOwnership,
         const Array::SizeType& size,
-        const core::tools::Type& type,
+        const core::Type& type,
         core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
     );
 
@@ -467,7 +464,7 @@ public:
      * Example :
      * @code{.cpp}
         Array::sptr array = Array::New();
-        array->resize({1920, 1080}, core::tools::Type::s_INT16);
+        array->resize({1920, 1080}, core::Type::INT16);
         auto iter          = array->begin<std::int16_t>();
         const auto iterEnd = array->end<std::int16_t>();
 
@@ -492,6 +489,20 @@ public:
     DATA_API bool operator==(const Array& other) const noexcept;
     DATA_API bool operator!=(const Array& other) const noexcept;
     /// @}
+
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
+
+    /// Defines deep copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 
 protected:
 
@@ -535,12 +546,12 @@ protected:
     /// Not implemented
     Array(const Array&);
 
-    const Array& operator=(const Array&);
+    Array& operator=(const Array&);
 
 private:
 
     OffsetType m_strides {0};
-    core::tools::Type m_type;
+    core::Type m_type;
     core::memory::BufferObject::sptr m_bufferObject;
     SizeType m_size;
     bool m_isBufferOwner {true};
@@ -591,7 +602,7 @@ template<typename T>
 inline const T& Array::at(const Array::IndexType& id) const
 {
     const bool isIndexInBounds =
-        std::equal(id.begin(), id.end(), m_size.begin(), std::less<IndexType::value_type>());
+        std::equal(id.begin(), id.end(), m_size.begin(), std::less<>());
     SIGHT_THROW_EXCEPTION_IF(Exception("Index out of bounds"), !isIndexInBounds);
     return *reinterpret_cast<T*>(this->getBufferPtr(id));
 }

@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::geometry::data
-{
-
-namespace ut
+namespace sight::geometry::data::ut
 {
 
 class PlaneFunctionsTest : public CPPUNIT_NS::TestFixture
@@ -49,20 +46,18 @@ private:
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void checkSetValues();
-    void checkGetPlane();
-    void checkDistance();
-    void checkNormal();
-    void checkIntersect();
-    void checkIsInHalfSpace();
-    void checkOffset();
-    void checkTransform();
-    void checkOperator();
+    static void checkSetValues();
+    static void checkGetPlane();
+    static void checkDistance();
+    static void checkNormal();
+    static void checkIntersect();
+    static void checkIsInHalfSpace();
+    static void checkOffset();
+    static void checkTransform();
+    static void checkOperator();
 };
 
-} //namespace ut
-
-} //namespace sight::geometry::data
+} // namespace sight::geometry::data::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,11 +28,11 @@ namespace sight::data::dicom
 {
 
 Image::Image(
-    unsigned short samplesPerPixel,
-    unsigned short bitsAllocated,
-    unsigned short bitsStored,
-    unsigned short highBit,
-    unsigned short pixelRepresentation,
+    std::uint16_t samplesPerPixel,
+    std::uint16_t bitsAllocated,
+    std::uint16_t bitsStored,
+    std::uint16_t highBit,
+    std::uint16_t pixelRepresentation,
     double rescaleSlope,
     double rescaleIntercept
 ) :
@@ -49,32 +49,31 @@ Image::Image(
 //-----------------------------------------------------------------------------
 
 Image::~Image()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
-core::tools::Type Image::findImageTypeFromMinMaxValues() const
+core::Type Image::findImageTypeFromMinMaxValues() const
 {
-    core::tools::Type result = core::tools::Type::s_UNSPECIFIED_TYPE;
+    core::Type result = core::Type::NONE;
 
     // Bool & Monochrome values
     if(m_bitsAllocated == 1 && m_pixelRepresentation == 0)
     {
-        result = core::tools::Type::s_INT8;
+        result = core::Type::INT8;
     }
     else
     {
         // Double
         if(m_rescaleSlope != (int) m_rescaleSlope || m_rescaleIntercept != (int) m_rescaleIntercept)
         {
-            result = core::tools::Type::s_DOUBLE;
+            result = core::Type::DOUBLE;
         }
         else
         {
-            const int64_t min =
+            const auto min =
                 static_cast<int64_t>(m_rescaleSlope * static_cast<double>(this->getPixelMin()) + m_rescaleIntercept);
-            const int64_t max =
+            const auto max =
                 static_cast<int64_t>(m_rescaleSlope * static_cast<double>(this->getPixelMax()) + m_rescaleIntercept);
 
             SIGHT_ASSERT("Min must be lower than max.", min <= max);
@@ -84,15 +83,15 @@ core::tools::Type Image::findImageTypeFromMinMaxValues() const
             {
                 if(max <= std::numeric_limits<uint8_t>::max())
                 {
-                    result = core::tools::Type::s_UINT8;
+                    result = core::Type::UINT8;
                 }
                 else if(max <= std::numeric_limits<uint16_t>::max())
                 {
-                    result = core::tools::Type::s_UINT16;
+                    result = core::Type::UINT16;
                 }
                 else if(max <= std::numeric_limits<uint32_t>::max())
                 {
-                    result = core::tools::Type::s_UINT32;
+                    result = core::Type::UINT32;
                 }
                 else
                 {
@@ -104,15 +103,15 @@ core::tools::Type Image::findImageTypeFromMinMaxValues() const
             {
                 if(max <= std::numeric_limits<int8_t>::max() && min >= std::numeric_limits<int8_t>::min())
                 {
-                    result = core::tools::Type::s_INT8;
+                    result = core::Type::INT8;
                 }
                 else if(max <= std::numeric_limits<int16_t>::max() && min >= std::numeric_limits<int16_t>::min())
                 {
-                    result = core::tools::Type::s_INT16;
+                    result = core::Type::INT16;
                 }
                 else if(max <= std::numeric_limits<int32_t>::max() && min >= std::numeric_limits<int32_t>::min())
                 {
-                    result = core::tools::Type::s_INT32;
+                    result = core::Type::INT32;
                 }
                 else
                 {
@@ -134,9 +133,10 @@ int64_t Image::getPixelMin() const
 
     if(m_pixelRepresentation == 1)
     {
-        return (int64_t) (~(((1ull << m_bitsStored) - 1) >> 1));
+        return (int64_t) (~(((1ULL << m_bitsStored) - 1) >> 1));
     }
-    else if(m_pixelRepresentation == 0)
+
+    if(m_pixelRepresentation == 0)
     {
         return 0;
     }
@@ -154,15 +154,16 @@ int64_t Image::getPixelMax() const
 
     if(m_pixelRepresentation == 1)
     {
-        return (int64_t) (((1ull << m_bitsStored) - 1) >> 1);
+        return (int64_t) (((1ULL << m_bitsStored) - 1) >> 1);
     }
-    else if(m_pixelRepresentation == 0)
+
+    if(m_pixelRepresentation == 0)
     {
-        return (int64_t) ((1ull << m_bitsStored) - 1);
+        return (int64_t) ((1ULL << m_bitsStored) - 1);
     }
 
     SIGHT_ASSERT("Unable to determine maximum value of pixel", 0);
     return 0;
 }
 
-} //fwDicomTools
+} // namespace sight::data::dicom

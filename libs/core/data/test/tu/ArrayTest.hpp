@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 class ArrayTest : public CPPUNIT_NS::TestFixture
@@ -49,20 +46,18 @@ private:
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void allocation();
-    void resize();
-    void reallocate();
-    void copy();
-    void dumpLockTest();
-    void bufferAccessTest();
-    void constArrayTest();
-    void emptyIteratorTest();
-    void equalityTest();
+    static void allocation();
+    static void resize();
+    static void reallocate();
+    static void copy();
+    static void dumpLockTest();
+    static void bufferAccessTest();
+    static void constArrayTest();
+    static void emptyIteratorTest();
+    static void equalityTest();
 };
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

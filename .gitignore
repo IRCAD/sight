@@ -33,3 +33,5 @@ CMakeSettings\.json
 sight-git
 # various logs
 *.log
+
+compile_commands.json

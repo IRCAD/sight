@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,10 +33,7 @@
 
 #include <filesystem>
 
-namespace sight::io::http
-{
-
-namespace ut
+namespace sight::io::http::ut
 {
 
 class ClientQtTest : public CPPUNIT_NS::TestFixture
@@ -50,9 +47,9 @@ public:
 
     // Interface
     // Set up the application and the threads
-    void setUp();
+    void setUp() override;
     // Clean up the application and the threads
-    void tearDown();
+    void tearDown() override;
 
     // Test functions
     // Simulates a GET request on Orthanc /instances route
@@ -72,6 +69,4 @@ private:
     QThread m_thread;
 };
 
-} // namespace ut
-
-} // namespace sight::io::http
+} // namespace sight::io::http::ut

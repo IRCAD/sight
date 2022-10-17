@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,19 +32,18 @@ namespace sight::module::data
 {
 
 /**
- * @brief This service manages a contained object (add/swap/remove) into a container object (composite, vector,
- * seriesDB).
+ * This service manages a contained object (add/swap/remove) into a container object (Composite, Vector, SeriesSet).
  *
  * It works on different objects:
  * - data::Composite: the object is added/swapped/removed from composite at the given key
  * - data::Vector: the object is added or removed from the container
- * - data::SeriesDB: the object is added or removed from the container
+ * - data::SeriesSet: the object is added or removed from the container
  * - data::Object: the object is added or removed from the field map at the given key
  *
  * @section Slots Slots
- * - \b add() : Adds the object into the target (vector, seriesDB, composite), if target is a Composite or a Field, it
+ * - \b add() : Adds the object into the target (Vector, SeriesSet, Composite), if target is a Composite or a Field, it
  *  is added at the key given by config.
- * - \b addCopy() : Adds a copy of the object into the target (vector, seriesDB, composite), if target is a Composite
+ * - \b addCopy() : Adds a copy of the object into the target (Vector, SeriesSet, Composite), if target is a Composite
  * or a Field, it is added at the key given by config.
  * - \b addOrSwap() : Adds the object if it is not present in the target, else if target is a composite or a Field, the
  * object is swapped.
@@ -73,7 +72,7 @@ namespace sight::module::data
    </service>
    @endcode
  *
- * For data::SeriesDB:
+ * For data::SeriesSet:
  * @code{.xml}
    <service type="sight::module::data::SManage">
       <inout key="object" uid="..." />
@@ -111,7 +110,7 @@ public:
     MODULE_DATA_API SManage() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_DATA_API virtual ~SManage() noexcept;
+    MODULE_DATA_API ~SManage() noexcept override;
 
     /**
      * @name Slots
@@ -186,4 +185,4 @@ private:
     sight::data::ptr<sight::data::Object, sight::data::Access::inout> m_container {this, "container"};
 };
 
-} // sight::module::data
+} // namespace sight::module::data

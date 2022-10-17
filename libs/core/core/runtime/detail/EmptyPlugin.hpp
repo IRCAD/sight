@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,7 @@
 #include "core/config.hpp"
 #include "core/runtime/Plugin.hpp"
 
-namespace sight::core::runtime
-{
-
-namespace detail
+namespace sight::core::runtime::detail
 {
 
 /**
@@ -47,9 +44,8 @@ public:
     /**
      * @brief   Destructor : does nothing.
      */
-    ~EmptyPlugin() noexcept override
-    {
-    }
+    ~EmptyPlugin() noexcept override =
+        default;
 
     // Overrides
     void start() override;
@@ -58,6 +54,4 @@ public:
     void stop() noexcept override;
 };
 
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

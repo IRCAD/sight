@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <service/op/Add.hpp>
 #include <service/registry/ObjectService.hpp>
 
-using namespace sight;
+namespace viz = sight::viz;
 
 namespace Tuto07SceneQt3DQml
 {
@@ -37,14 +37,12 @@ static const std::string s_MESH_ID = "mesh";
 //------------------------------------------------------------------------------
 
 AppManager::AppManager()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 AppManager::~AppManager()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -93,6 +91,9 @@ void AppManager::setScene(viz::qt3d::core::GenericScene* _scene)
 
 void AppManager::onOpenModel()
 {
+    namespace data    = sight::data;
+    namespace service = sight::service;
+
     const auto mesh = sight::data::Mesh::New();
     // Reads a mesh.
     const auto meshReader = service::add("sight::module::ui::base::io::SSelector");

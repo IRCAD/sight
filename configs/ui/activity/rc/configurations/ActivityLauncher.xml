@@ -7,7 +7,7 @@
 
     <service uid="activityLauncher" type="sight::service::SConfigController">
         <appConfig id="ActivityLauncher" />
-        <inout key="seriesDB" uid="mySeriesDB" />
+        <inout key="activitySet" uid="activitySet" />
         <parameter replace="WID_PARENT" by="activityView" />
         <parameter replace="ICON_PATH" by="${ICON_PATH}" />
         <parameter replace="SEQUENCER_CONFIG" by="sequencerServiceConfigName" />
@@ -21,7 +21,7 @@
         <desc>Description of the activity</desc>
         <icon>path/to</icon>
         <requirements>
-            <requirement name="seriesDB" type="sight::data::SeriesDB" minOccurs="0" maxOccurs="0" />
+            <requirement name="activitySet" type="sight::data::ActivitySet" minOccurs="0" maxOccurs="0" />
         </requirements>
         <appConfig id="ActivityLauncher">
             <parameters>
@@ -30,7 +30,7 @@
         </appConfig>
     </extension>
 
-    The ActivitySeries representing the activities launched by this config will be saved in the 'seriesDB' object, when
+    The Activity representing the activities launched by this config will be saved in the ActivitySet object, when
     they are loaded, the sequencer will jump to the last activity.
 
     The SEQUENCER_CONFIG represents the list of the activities to launch, like:
@@ -64,19 +64,19 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="ICON_PATH" />
-        <param name="seriesDB" />
+        <param name="activitySet" />
         <param name="SEQUENCER_CONFIG" />
         <param name="WIZARD_CONFIG" default="defaultWizardConfig" />
         <param name="SESSION_READER_CONFIG" default="DefaultSessionReaderConfig" />
         <param name="SESSION_WRITER_CONFIG" default="DefaultSessionWriterConfig" />
-        <param name="APPLICATION_ICON_PATH" default="module_ui_icons/sight_logo.svg" />
+        <param name="APPLICATION_ICON_PATH" default="sight::module::ui::icons/sight_logo.svg" />
     </parameters>
     <desc>Configuration to launch activities sequentially</desc>
     <config>
 
         <!-- ************************************ Begin Objects declaration **************************************** -->
 
-        <object uid="${seriesDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="${activitySet}" type="sight::data::ActivitySet" src="ref" />
 
         <!-- ************************************* Begin layouts declaration *************************************** -->
 
@@ -114,7 +114,7 @@
                 <view sid="activitySequencer" start="true" />
                 <view sid="openButton" start="true" />
                 <view sid="saveButton" start="true" />
-                <view sid="ircadIhuLogoView" start="true" />
+                <view sid="ircadLogoView" start="true" />
             </registry>
         </service>
 
@@ -141,26 +141,25 @@
             <height>70</height>
         </service>
 
-        <service uid="ircadIhuLogoView" type="sight::module::ui::qt::image::SImage">
-            <path>sight::module::ui::flaticons/IrcadIHU.svg</path>
+        <service uid="ircadLogoView" type="sight::module::ui::qt::image::SImage">
+            <path>sight::module::ui::flaticons/ircad.svg</path>
             <height>70</height>
         </service>
 
         <!-- ************************************* Begin reader/writer declaration ********************************* -->
 
         <service uid="SDBReader" type="sight::module::io::session::SReader" config="${SESSION_READER_CONFIG}">
-            <inout key="data" uid="${seriesDB}" />
+            <inout key="data" uid="${activitySet}" />
         </service>
 
         <service uid="SDBWriter" type="sight::module::io::session::SWriter" config="${SESSION_WRITER_CONFIG}">
-            <in key="data" uid="${seriesDB}" />
+            <in key="data" uid="${activitySet}" />
         </service>
 
         <!-- *************************************** Begin view declaration **************************************** -->
 
         <!-- Display the activity in the current view -->
         <service uid="dynamicView" type="sight::module::ui::qt::activity::SView">
-            <inout key="SERIESDB" uid="${seriesDB}" />
             <parameters>
                 <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                 <parameter replace="previousActivityChannel" by="previousActivityChannel" />
@@ -172,23 +171,23 @@
 
         <!-- Display the activity data selector -->
         <service uid="activityCreator" type="sight::module::ui::qt::activity::SWizard" config="${WIZARD_CONFIG}">
-            <inout key="seriesDB" uid="${seriesDB}" />
+            <inout key="activitySet" uid="${activitySet}" />
         </service>
 
         <!-- Launch the activity sequentially -->
         <service uid="activitySequencer" type="sight::module::ui::qt::activity::SSequencer" config="${SEQUENCER_CONFIG}">
-            <inout key="seriesDB" uid="${seriesDB}" autoConnect="true" />
+            <inout key="activitySet" uid="${activitySet}" autoConnect="true" />
         </service>
 
         <!-- ************************************ Begin connection declaration ************************************* -->
 
-        <!-- Connections to open a seriesDB when the open button is clicked -->
+        <!-- Connections to open a SeriesSet when the open button is clicked -->
         <connect>
             <signal>openButton/clicked</signal>
             <slot>SDBReader/update</slot>
         </connect>
 
-        <!-- Connections to save the seriesDB when the save button is clicked -->
+        <!-- Connections to save the SeriesSet when the save button is clicked -->
         <connect>
             <signal>saveButton/clicked</signal>
             <slot>SDBWriter/update</slot>
@@ -196,7 +195,7 @@
 
 
         <!-- connect to launch the activity when it is created/updated. -->
-        <connect channel="launch_activity_channel">
+        <connect channel="launchActivityChannel">
             <signal>activitySequencer/activityCreated</signal>
             <slot>dynamicView/show</slot>
             <slot>dynamicView/launchActivity</slot>
@@ -258,7 +257,7 @@
         <start uid="SDBReader" />
         <start uid="SDBWriter" />
 
-        <!-- Load the sub-activities contained in the seriesDB, or launch the first activity from the sequencer -->
+        <!-- Load the sub-activities contained in the SeriesSet, or launch the first activity from the sequencer -->
         <update uid="activitySequencer" />
 
     </config>

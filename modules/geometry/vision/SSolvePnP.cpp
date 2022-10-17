@@ -34,7 +34,7 @@ namespace sight::module::geometry::vision
 
 //-----------------------------------------------------------------------------
 
-void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
+void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType /*timestamp*/)
 {
     const auto camera = m_calibration.lock();
 
@@ -66,12 +66,13 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType)
 
     const std::size_t numberOfPoints = fwPoints2d->getPoints().size();
 
-    float shiftX = 0.f, shiftY = 0.f;
+    float shiftX = 0.F;
+    float shiftY = 0.F;
     // Shift back 2d points to compensate "shifted" camera in a 3dScene.
     if(m_shiftPoints)
     {
-        shiftX = static_cast<float>(camera->getWidth()) / 2.f - static_cast<float>(camera->getCx());
-        shiftY = static_cast<float>(camera->getHeight()) / 2.f - static_cast<float>(camera->getCy());
+        shiftX = static_cast<float>(camera->getWidth()) / 2.F - static_cast<float>(camera->getCx());
+        shiftY = static_cast<float>(camera->getHeight()) / 2.F - static_cast<float>(camera->getCy());
     }
 
     points2d.resize(numberOfPoints);

@@ -29,10 +29,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::crypto::ut::CryptoTest);
 
-namespace sight::core::crypto
-{
-
-namespace ut
+namespace sight::core::crypto::ut
 {
 
 // cspell: disable
@@ -141,6 +138,4 @@ void CryptoTest::base64Test()
 
 // cspell: enable
 
-} // namespace ut
-
-} // namespace sight::core::memory
+} // namespace sight::core::crypto::ut

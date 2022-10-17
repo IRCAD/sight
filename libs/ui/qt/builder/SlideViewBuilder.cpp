@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,28 +29,24 @@
 
 #include <QWidget>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::base::builder::SlideViewBuilder,
     sight::ui::base::builder::ISlideViewBuilder::REGISTRY_KEY
 )
 
-namespace sight::ui::base
-{
-
-namespace builder
+namespace sight::ui::base::builder
 {
 
 //-----------------------------------------------------------------------------
 
-SlideViewBuilder::SlideViewBuilder(ui::base::GuiBaseObject::Key)
+SlideViewBuilder::SlideViewBuilder(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 SlideViewBuilder::~SlideViewBuilder()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -106,7 +102,7 @@ void SlideViewBuilder::createContainer(ui::base::container::fwContainer::sptr pa
             break;
     }
 
-    ui::qt::widget::SlideBar* slideBar =
+    auto* slideBar =
         new ui::qt::widget::SlideBar(
             qtParent,
             hAlign,
@@ -146,6 +142,4 @@ void SlideViewBuilder::destroyContainer()
 
 //-----------------------------------------------------------------------------
 
-} // namespace builder.
-
-} // namespace sight::ui::base.
+} // namespace sight::ui::base::builder

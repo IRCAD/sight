@@ -22,15 +22,10 @@
 
 #include "EquipmentTest.hpp"
 
-#include <data/Equipment.hpp>
-
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::EquipmentTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -38,7 +33,7 @@ namespace ut
 void EquipmentTest::setUp()
 {
     // Set up context before running a test.
-    m_equipment = data::Equipment::New();
+    m_equipment = data::Series::New();
 }
 
 //------------------------------------------------------------------------------
@@ -53,9 +48,10 @@ void EquipmentTest::tearDown()
 
 void EquipmentTest::institutionNameTest()
 {
-    const std::string institutionName = "Ircad / IHU";
+    const std::string institutionName = "IRCAD";
     CPPUNIT_ASSERT(m_equipment);
     m_equipment->setInstitutionName(institutionName);
+
     CPPUNIT_ASSERT_EQUAL(institutionName, m_equipment->getInstitutionName());
 }
 
@@ -63,24 +59,22 @@ void EquipmentTest::institutionNameTest()
 
 void EquipmentTest::equalityTest()
 {
-    auto equipment1 = data::Equipment::New();
-    auto equipment2 = data::Equipment::New();
+    auto equipment1 = data::Series::New();
+    auto equipment2 = data::Series::New();
 
     CPPUNIT_ASSERT(*equipment1 == *equipment2);
 
-    equipment1->setInstitutionName("Ircad");
+    equipment1->setInstitutionName("IRCAD");
     CPPUNIT_ASSERT(*equipment1 != *equipment2);
     equipment2->setInstitutionName(equipment1->getInstitutionName());
     CPPUNIT_ASSERT(*equipment1 == *equipment2);
 
     // Test also deepcopy, just for fun
-    auto dicomSeries3 = data::Equipment::New();
+    auto dicomSeries3 = data::Series::New();
     dicomSeries3->deepCopy(equipment1);
     CPPUNIT_ASSERT(*equipment1 == *dicomSeries3);
 }
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

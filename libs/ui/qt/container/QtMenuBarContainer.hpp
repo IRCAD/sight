@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,10 +35,7 @@ QT_BEGIN_NAMESPACE
 class QMenuBar;
 QT_END_NAMESPACE
 
-namespace sight::ui::qt
-{
-
-namespace container
+namespace sight::ui::qt::container
 {
 
 /**
@@ -57,7 +54,7 @@ public:
 
     UI_QT_API QtMenuBarContainer(ui::base::GuiBaseObject::Key key) noexcept;
 
-    UI_QT_API virtual ~QtMenuBarContainer() noexcept;
+    UI_QT_API ~QtMenuBarContainer() noexcept override;
 
     UI_QT_API void clean() override;
     UI_QT_API void destroyContainer() override;
@@ -70,6 +67,4 @@ private:
     QPointer<QMenuBar> m_menuBar;
 };
 
-} // namespace container
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::container

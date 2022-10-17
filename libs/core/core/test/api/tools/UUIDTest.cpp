@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::tools::ut::UUIDTest);
 
-namespace sight::core::tools
-{
-
-namespace ut
+namespace sight::core::tools::ut
 {
 
 //-----------------------------------------------------------------------------
@@ -78,11 +75,10 @@ void UUIDTest::objectUUIDTest()
 
 void UUIDTest::conccurentAccessOnUUIDMapTest()
 {
-    const auto fn = std::bind(&UUIDTest::runUUIDCreation, this);
     std::vector<std::future<void> > futures;
     for(unsigned int i = 0 ; i < 10 ; ++i)
     {
-        futures.push_back(std::async(std::launch::async, fn));
+        futures.push_back(std::async(std::launch::async, runUUIDCreation));
     }
 
     for(auto& future : futures)
@@ -117,7 +113,7 @@ void UUIDTest::runUUIDCreation()
 
 void UUIDTest::conccurentAccessOnSameObjUUIDTest()
 {
-    const auto fn = std::bind(&UUIDTest::runAccessToObjectUUID, this);
+    const auto fn = [this](auto&& ...){runAccessToObjectUUID();};
     std::vector<std::future<void> > futures;
     for(unsigned int i = 0 ; i < 10 ; ++i)
     {
@@ -145,6 +141,4 @@ void UUIDTest::runAccessToObjectUUID()
 
 //-----------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::ut

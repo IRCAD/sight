@@ -49,7 +49,7 @@ public:
     {
     }
 
-    virtual ~PreferencesDisabled() = default;
+    ~PreferencesDisabled() override = default;
 };
 
 /// Subclass of PreferencesDisabled, thrown when trying to open an encrypted file with a wrong password
@@ -62,7 +62,7 @@ public:
     {
     }
 
-    virtual ~BadPassword() = default;
+    ~BadPassword() override = default;
 };
 
 /**
@@ -170,7 +170,7 @@ public:
     /// Returns the preference associated with the given key/path
     /// @param key the key/path of the preference.
     template<typename T>
-    inline T get(const std::string& key) const
+    [[nodiscard]] inline T get(const std::string& key) const
     {
         // Protect preferences for reading
         std::shared_lock guard(s_preferences_mutex);
@@ -184,7 +184,7 @@ public:
     /// Returns an optional preference associated with the given key/path.
     /// @param key the key/path of the preference.
     template<typename T>
-    inline boost::optional<T> get_optional(const std::string& key) const
+    [[nodiscard]] inline boost::optional<T> get_optional(const std::string& key) const
     {
         // Protect preferences for reading
         std::shared_lock guard(s_preferences_mutex);
@@ -200,7 +200,7 @@ public:
     /// @param key the key/path of the preference.
     /// @param default_value the default value used when the key/path is not found.
     template<typename T>
-    inline T get(const std::string& key, const T& default_value) const noexcept
+    [[nodiscard]] inline T get(const std::string& key, const T& default_value) const noexcept
     {
         try
         {
@@ -217,23 +217,41 @@ public:
         }
     }
 
+    //------------------------------------------------------------------------------
+
     /// Special "get" version mostly used in xml with a magic "%" delimiter. If there are no "%", it means we should
     /// return the key as a value, otherwise, we search in the preference
     /// @param key the key/path of the preference, that could be the preference if no delimiter are used.
     /// @param delimiter the magical delimiter.
     template<typename T>
-    inline T delimited_get(const std::string& key, const std::string& delimiter = s_DEFAULT_DELIMITER) const
+    [[nodiscard]] inline std::pair<std::string, T> parsed_get(
+        const std::string& key,
+        const std::string& delimiter = s_DEFAULT_DELIMITER
+    ) const
     {
         if(const auto& delimiter_start = key.find_first_of(delimiter); delimiter_start != std::string::npos)
         {
             if(const auto& delimiter_end = key.find_last_of(delimiter); delimiter_end != std::string::npos)
             {
                 const auto& real_key = key.substr(delimiter_start + 1, delimiter_end - (delimiter_start + 1));
-                return get<T>(real_key);
+                return {real_key, get<T>(real_key)};
             }
         }
 
-        return boost::lexical_cast<T>(key);
+        return {"", boost::lexical_cast<T>(key)};
+    }
+
+    /// Special "get" version mostly used in xml with a magic "%" delimiter. If there are no "%", it means we should
+    /// return the key as a value, otherwise, we search in the preference
+    /// @param key the key/path of the preference, that could be the preference if no delimiter are used.
+    /// @param delimiter the magical delimiter.
+    template<typename T>
+    [[nodiscard]] inline T delimited_get(
+        const std::string& key,
+        const std::string& delimiter = s_DEFAULT_DELIMITER
+    ) const
+    {
+        return this->parsed_get<T>(key, delimiter).second;
     }
 
     /// Special "get" version mostly used in xml with a magic "%" delimiter. If there are no "%", it means we should
@@ -243,7 +261,7 @@ public:
     /// @param default_value the default value used when the key/path is not found.
     /// @param delimiter the magical delimiter.
     template<typename T>
-    inline T delimited_get(
+    [[nodiscard]] inline T delimited_get(
         const std::string& key,
         const T& default_value,
         const std::string& delimiter = s_DEFAULT_DELIMITER
@@ -283,10 +301,10 @@ public:
     }
 
     /// Remove one value from the preferences
-    UI_BASE_API void erase(const std::string& key);
+    static UI_BASE_API void erase(const std::string& key);
 
     /// Remove all preferences
-    UI_BASE_API void clear();
+    static UI_BASE_API void clear();
 
     /// Enable / disable the preferences system. All functions will throw a PreferencesDisabled, if disabled
     UI_BASE_API static void set_enabled(bool enable);
@@ -296,11 +314,11 @@ public:
 
     /// Set the password policy
     /// @param policy @see sight::core::crypto::PasswordKeeper::PasswordPolicy
-    UI_BASE_API static void set_password_policy(const core::crypto::PasswordKeeper::PasswordPolicy policy);
+    UI_BASE_API static void set_password_policy(core::crypto::PasswordKeeper::PasswordPolicy policy);
 
     /// Set the encryption policy
     /// @param policy @see sight::core::crypto::PasswordKeeper::EncryptionPolicy
-    UI_BASE_API static void set_encryption_policy(const core::crypto::PasswordKeeper::EncryptionPolicy policy);
+    UI_BASE_API static void set_encryption_policy(core::crypto::PasswordKeeper::EncryptionPolicy policy);
 
 private:
 

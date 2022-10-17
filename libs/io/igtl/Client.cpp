@@ -24,10 +24,10 @@
 
 #include "io/igtl/Exception.hpp"
 
-#include <core/tools/Stringizer.hpp>
-
 #include <io/igtl/detail/DataConverter.hpp>
 #include <io/igtl/detail/MessageFactory.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 #include <mutex>
 
@@ -57,7 +57,7 @@ Client::Client(::igtl::ClientSocket::Pointer socket)
 
 Client::~Client()
 {
-    if(m_socket->GetConnected())
+    if(m_socket->GetConnected() != 0)
     {
         this->disconnect();
     }
@@ -85,16 +85,19 @@ void Client::throwExceptionIfFailed(const std::string& msg, bool result)
 
 void Client::connect(const std::string& addr, std::uint16_t port)
 {
-    int result                = -1;
-    const std::string portStr = boost::lexical_cast<std::string>(port);
+    int result         = -1;
+    const auto portStr = std::to_string(port);
 
     {
         std::lock_guard lock(s_connectLock);
-        ::igtl::ClientSocket* clientSocket = dynamic_cast< ::igtl::ClientSocket*>(m_socket.GetPointer());
+        auto* clientSocket = dynamic_cast< ::igtl::ClientSocket*>(m_socket.GetPointer());
         result = clientSocket->ConnectToServer(addr.c_str(), port);
     }
 
-    this->throwExceptionIfFailed("Cannot connect to the server at " + addr + " : " + portStr, result == -1);
+    this->throwExceptionIfFailed(
+        std::string("Cannot connect to the server at ") + addr + " : " + portStr,
+        result == -1
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -102,7 +105,11 @@ void Client::connect(const std::string& addr, std::uint16_t port)
 void Client::disconnect()
 {
     std::lock_guard lock(s_connectLock);
-    m_socket->CloseSocket();
+    // HACK: Use the patched version of closeSocket
+    sight::io::igtl::INetwork::closeSocket(m_socket->m_SocketDescriptor);
+    m_socket->m_SocketDescriptor = -1;
+    // Uncomment this when patch isn't needed anymore.
+    //m_socket->CloseSocket();
 }
 
 //------------------------------------------------------------------------------

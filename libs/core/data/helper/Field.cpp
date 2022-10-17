@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,18 +22,15 @@
 
 #include "data/helper/Field.hpp"
 
+#include <core/com/Signal.hxx>
+
 #include <data/Exception.hpp>
 #include <data/Object.hpp>
-
-#include <core/com/Signal.hxx>
 
 #include <algorithm>
 #include <functional>
 
-namespace sight::data
-{
-
-namespace helper
+namespace sight::data::helper
 {
 
 //-----------------------------------------------------------------------------
@@ -220,14 +217,12 @@ void Field::buildMessage(
         oldFields.begin(),
         oldFields.end(),
         std::back_inserter(oldFieldNames),
-        std::bind(&sight::data::Object::FieldMapType::value_type::first, std::placeholders::_1)
-    );
+        [](const auto& e){return e.first;});
     std::transform(
         newFields.begin(),
         newFields.end(),
         std::back_inserter(newFieldNames),
-        std::bind(&sight::data::Object::FieldMapType::value_type::first, std::placeholders::_1)
-    );
+        [](const auto& e){return e.first;});
 
     std::sort(oldFieldNames.begin(), oldFieldNames.end());
     std::sort(newFieldNames.begin(), newFieldNames.end());
@@ -277,6 +272,4 @@ void Field::buildMessage(
     }
 }
 
-} // namespace helper
-
-} // namespace sight::data
+} // namespace sight::data::helper

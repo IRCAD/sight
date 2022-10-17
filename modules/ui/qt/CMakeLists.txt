@@ -1,9 +1,4 @@
-sight_add_target(
-    module_ui_qt
-    TYPE MODULE
-    START ON
-    WARNINGS_AS_ERRORS OFF
-)
+sight_add_target(module_ui_qt TYPE MODULE)
 
 add_dependencies(module_ui_qt module_ui_base module_data)
 
@@ -33,10 +28,6 @@ target_link_libraries(
             Qt5::Widgets
             Qt5::QuickWidgets
 )
-
-find_package(glm QUIET REQUIRED)
-target_include_directories(module_ui_qt SYSTEM PUBLIC ${GLM_INCLUDE_DIRS})
-
 set_target_properties(module_ui_qt PROPERTIES AUTOMOC TRUE)
 
 if(MSVC)

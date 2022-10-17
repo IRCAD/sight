@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 #include <algorithm>
 #include <cmath>
 
-namespace sight::geometry::eigen
-{
-
-namespace ut
+namespace sight::geometry::eigen::ut
 {
 
 class EigenToolsTest : public CPPUNIT_NS::TestFixture
@@ -50,26 +47,24 @@ private:
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void f4sToEigen();
-    void eigenToF4s();
+    static void f4sToEigen();
+    static void eigenToF4s();
 
-    void float16ToEigen();
+    static void float16ToEigen();
 
-    void eigenMatToRvecTvec();
-    void f4sMatToRvecTvec();
+    static void eigenMatToRvecTvec();
+    static void f4sMatToRvecTvec();
 
     //------------------------------------------------------------------------------
 
     template<class T>
-    static const T random(const T& a, const T& b)
+    static T random(const T& a, const T& b)
     {
         return static_cast<T>(core::tools::random::safeRand()) / static_cast<T>(RAND_MAX) * (b - a) + a;
     }
 };
 
-} //namespace ut
-
-} //namespace sight::geometry::eigen
+} // namespace sight::geometry::eigen::ut

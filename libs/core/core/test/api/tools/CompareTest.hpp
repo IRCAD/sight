@@ -23,10 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::tools
-{
-
-namespace ut
+namespace sight::core::tools::ut
 {
 
 class CompareTest : public CPPUNIT_NS::TestFixture
@@ -40,26 +37,28 @@ CPPUNIT_TEST(infiniteTest);
 CPPUNIT_TEST(nanTest);
 CPPUNIT_TEST(pointerTest);
 CPPUNIT_TEST(mapTest);
+CPPUNIT_TEST(unorderedSetTest);
+CPPUNIT_TEST(pairTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void doubleContainerTest();
-    void floatContainerTest();
-    void mixedContainerTest();
+    static void doubleContainerTest();
+    static void floatContainerTest();
+    static void mixedContainerTest();
 
-    void sandboxTest();
-    void infiniteTest();
-    void nanTest();
+    static void sandboxTest();
+    static void infiniteTest();
+    static void nanTest();
 
-    void pointerTest();
-    void mapTest();
+    static void pointerTest();
+    static void mapTest();
+    static void unorderedSetTest();
+    static void pairTest();
 };
 
-} //namespace ut
-
-} //namespace sight::core::tools
+} // namespace sight::core::tools::ut

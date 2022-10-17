@@ -58,7 +58,7 @@ public:
     );
 
     VIZ_SCENE3D_API R2VBRenderable(const Ogre::String& name);
-    virtual VIZ_SCENE3D_API ~R2VBRenderable();
+    VIZ_SCENE3D_API ~R2VBRenderable() override;
 
     /// Set the maximum number of vertices in output, and adjust the size of the output buffer accordingly.
     /// It also updates the vertex declaration of the output buffer
@@ -73,19 +73,19 @@ public:
     VIZ_SCENE3D_API void _updateRenderQueue(Ogre::RenderQueue* _queue) override;
 
     /** @copydoc SimpleRenderable::getMovableType. */
-    VIZ_SCENE3D_API const Ogre::String& getMovableType(void) const override;
+    VIZ_SCENE3D_API const Ogre::String& getMovableType() const override;
 
     /** @copydoc SimpleRenderable::getRenderOperation. */
     VIZ_SCENE3D_API void getRenderOperation(Ogre::RenderOperation& _op) override;
 
     /// Delegate to the subentity.
-    VIZ_SCENE3D_API Ogre::Real getBoundingRadius(void) const override;
+    VIZ_SCENE3D_API Ogre::Real getBoundingRadius() const override;
 
     /// @copydoc Renderable::getSquaredViewDepth
     VIZ_SCENE3D_API Ogre::Real getSquaredViewDepth(const Ogre::Camera* _cam) const override;
 
     /// Return the parent mesh.
-    VIZ_SCENE3D_API virtual const Ogre::MeshPtr& getMesh(void) const;
+    VIZ_SCENE3D_API virtual const Ogre::MeshPtr& getMesh() const;
 
     /// Mark the output vertex buffer as dirty, the r2vb process will be run on next update
     VIZ_SCENE3D_API void setDirty();
@@ -103,20 +103,20 @@ public:
 protected:
 
     /// Source object of the r2vb process
-    Ogre::SubEntity* m_srcObject;
+    Ogre::SubEntity* m_srcObject {};
 
     /// Buffer used as output
     Ogre::RenderToVertexBufferSharedPtr m_r2vbBuffer;
 
     /// Tells if the r2vb must be run on next update - typically we want this to be done, at worst, only once per frame.
     /// Thus we use this flag, depending on the technique to enable the r2vb only on the first rendering pass.
-    bool m_dirty;
+    bool m_dirty {false};
 
     /// Primitive type used as input
-    data::Mesh::CellType m_inputPrimitiveType;
+    data::Mesh::CellType m_inputPrimitiveType {data::Mesh::CellType::TRIANGLE};
 
     /// Maximum number of vertices in output buffer
-    std::size_t m_maxOutputVertexCount;
+    std::size_t m_maxOutputVertexCount {0};
 };
 
 //-----------------------------------------------------------------------------

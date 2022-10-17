@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,8 +25,10 @@
 #define __FWCOM_SLOT_HPP__
 
 #include "core/com/SlotCall.hpp"
+#include "core/function.hpp"
 
 #include <functional>
+#include <utility>
 
 namespace sight::core::com
 {
@@ -68,24 +70,23 @@ public:
     template<typename FUNCTOR>
     Slot(FUNCTOR f) :
         Slot<R(A ...)>(),
-        m_func(f)
+        m_func(std::move(f))
     {
     }
 
-    virtual ~Slot()
-    {
-    }
+    ~Slot() override
+    = default;
 
     //------------------------------------------------------------------------------
 
-    virtual void run(A ... a) const
+    void run(A ... a) const override
     {
         m_func(a ...);
     }
 
     //------------------------------------------------------------------------------
 
-    virtual R call(A ... a) const
+    R call(A ... a) const override
     {
         return m_func(a ...);
     }
@@ -115,7 +116,15 @@ public:
 
 //-----------------------------------------------------------------------------
 
-template<typename F, typename ... Bindings>
+template<typename F, typename, typename ... Bindings>
 SPTR(Slot<typename core::com::util::convert_function_type<F>::type>) newSlot(F f, Bindings ... bindings);
+
+//-----------------------------------------------------------------------------
+
+// Prototype used for lambdas functions
+template<typename F, typename>
+SPTR(Slot<core::lambda_to_function_t<F> >) newSlot(F f);
+
+//-----------------------------------------------------------------------------
 
 } // namespace sight::core::com

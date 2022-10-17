@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "modules/io/dicomweb/config.hpp"
 
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <io/http/ClientQt.hpp>
 
@@ -52,12 +52,12 @@ namespace sight::module::io::dicomweb
  *
  * @code{.xml}
         <service type="sight::module::io::dicomweb::SQueryEditor">
-            <inout key="seriesDB" uid="..." />
+            <inout key="seriesSet" uid="..." />
             <server>%PACS_SERVER_HOSTNAME%:%PACS_SERVER_PORT%</server>
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b seriesDB [sight::data::SeriesDB]: SeriesDB on which the queried data will be pushed.
+ * - \b seriesSet [sight::data::SeriesSet]: SeriesSet on which the queried data will be pushed.
  * @subsection Configuration Configuration:
  * - \b server: server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:8042).
  * @note : hostname and port of this service can be a value or a nameKey from preference settings
@@ -77,7 +77,7 @@ public:
     MODULE_IO_DICOMWEB_API SQueryEditor() noexcept;
 
     /// Destructor
-    MODULE_IO_DICOMWEB_API virtual ~SQueryEditor() noexcept;
+    MODULE_IO_DICOMWEB_API ~SQueryEditor() noexcept override;
 
 protected:
 
@@ -107,13 +107,13 @@ private:
      * @brief Display an error message
      * @param[in] message Error message to display
      */
-    void displayErrorMessage(const std::string& message) const;
+    static void displayErrorMessage(const std::string& message);
 
     /**
-     * @brief Update the seriesDB with the series retrieved from the pacs
-     * @param[in] series Series which must be added to the SeriesDB
+     * @brief Update the SeriesSet with the series retrieved from the pacs
+     * @param[in] series Series which must be added to the SeriesSet
      */
-    void updateSeriesDB(data::SeriesDB::ContainerType series);
+    void updateSeriesSet(const data::SeriesSet::container_type& series);
 
     /// Patient Name Field
     QPointer<QLineEdit> m_patientNameLineEdit;
@@ -145,7 +145,7 @@ private:
     /// Server port
     int m_serverPort {4242};
 
-    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::inout> m_seriesDB {this, "seriesDB"};
+    sight::data::ptr<sight::data::SeriesSet, sight::data::Access::inout> m_series_set {this, "seriesSet"};
 };
 
 } // namespace sight::module::io::dicomweb

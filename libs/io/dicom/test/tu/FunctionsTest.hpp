@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2021 IRCAD France
+ * Copyright (C) 2004-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 class FunctionsTest : public CPPUNIT_NS::TestFixture
@@ -42,18 +39,16 @@ public:
     /**
      * @name Override
      * @{ */
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
     /**  @} */
 
     /**
      * @name Tests UID generation methods by checking length and content.
      * @{ */
-    void generatePatientIdTest();
-    void generateStudyInstanceUidTest();
+    static void generatePatientIdTest();
+    static void generateStudyInstanceUidTest();
     /**  @} */
 };
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

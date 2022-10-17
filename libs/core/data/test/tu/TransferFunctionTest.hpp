@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 class TransferFunctionTest : public CPPUNIT_NS::TestFixture
@@ -40,33 +37,33 @@ private:
     CPPUNIT_TEST(constructorTest);
     CPPUNIT_TEST(defaultTfTest);
     CPPUNIT_TEST(classicGetSetTest);
-    CPPUNIT_TEST(usingTfTest);
     CPPUNIT_TEST(setTFDataTest);
     CPPUNIT_TEST(shallowAndDeepCopyTest);
     CPPUNIT_TEST(linearColorTest);
     CPPUNIT_TEST(nearestColorTest);
+    CPPUNIT_TEST(mapValuesTest);
+    CPPUNIT_TEST(piecewiseFunctionTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void methode1();
-    void constructorTest();
-    void defaultTfTest();
-    void classicGetSetTest();
+    static void constructorTest();
+    static void defaultTfTest();
+    static void classicGetSetTest();
     void usingTfTest();
     void setTFDataTest();
-    void shallowAndDeepCopyTest();
+    static void shallowAndDeepCopyTest();
     void linearColorTest();
     void nearestColorTest();
+    static void mapValuesTest();
+    static void piecewiseFunctionTest();
 
-    data::TransferFunction::sptr createTFColor();
-    void checkTFColor(data::TransferFunction::sptr tf);
+    static data::TransferFunction::sptr createTFColor();
+    static void checkTFColor(data::TransferFunction::sptr tf);
 };
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

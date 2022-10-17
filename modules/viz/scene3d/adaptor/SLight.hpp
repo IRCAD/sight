@@ -39,7 +39,7 @@ namespace Ogre
 
 class Light;
 
-}
+} // namespace Ogre
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -224,10 +224,10 @@ private:
     bool m_switchedOn {true};
 
     /// Defines the angle in degrees defining the rotation of the light around x axis.
-    float m_thetaOffset {0.f};
+    float m_thetaOffset {0.F};
 
     /// Defines the angle in degrees defining the rotation of the light around y axis.
-    float m_phiOffset {0.f};
+    float m_phiOffset {0.F};
 
     /// Contains the node used to attach the light
     Ogre::SceneNode* m_lightNode {nullptr};
@@ -242,7 +242,7 @@ private:
     Ogre::ManualObject* m_lightPosition {nullptr};
 
     /// Defines the length of the visual feedback object.
-    float m_length {50.f};
+    float m_length {50.F};
 
     /// Contains objects used for the directional light visual feedback.
     std::pair<Ogre::ManualObject*, Ogre::ManualObject*> m_directionalFeedback {nullptr, nullptr};

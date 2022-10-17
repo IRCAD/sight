@@ -47,15 +47,13 @@ namespace sight::module::ui::viz
 
 //------------------------------------------------------------------------------
 
-STextureSelector::STextureSelector() noexcept
-{
-}
+STextureSelector::STextureSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-STextureSelector::~STextureSelector() noexcept
-{
-}
+STextureSelector::~STextureSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -63,19 +61,24 @@ void STextureSelector::starting()
 {
     this->create();
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer()
     );
+    qtContainer->getQtContainer()->setObjectName(serviceID);
 
     m_loadButton = new QPushButton(QString("Load texture"));
+    m_loadButton->setObjectName(serviceID + "/" + m_loadButton->text());
     m_loadButton->setToolTip(QString("Selected organ's texture"));
     m_loadButton->setMinimumSize(m_loadButton->sizeHint());
 
     m_deleteButton = new QPushButton(QString("Remove texture"));
+    m_deleteButton->setObjectName(serviceID + "/" + m_deleteButton->text());
     m_deleteButton->setToolTip(QString("Remove organ's texture"));
     m_deleteButton->setMinimumSize(m_deleteButton->sizeHint());
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     layout->addWidget(m_loadButton, 0);
     layout->addWidget(m_deleteButton, 0);
 

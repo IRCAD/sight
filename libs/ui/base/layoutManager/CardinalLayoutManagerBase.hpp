@@ -30,10 +30,7 @@
 #include <list>
 #include <map>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 /**
@@ -61,28 +58,16 @@ public:
     {
     public:
 
-        ViewInfo() :
-            m_align(CENTER),
-            m_minSize(std::make_pair(-1, -1)),
-            m_visible(true),
-            m_isResizable(true),
-            m_position(0),
-            m_layer(0),
-            m_row(0),
-            m_caption(std::make_pair(false, "")),
-            m_useScrollBar(false)
-        {
-        }
-
-        Align m_align;
-        std::pair<int, int> m_minSize;
-        bool m_visible;
-        bool m_isResizable;
-        int m_position;
-        int m_layer;
-        int m_row;
-        std::pair<bool, std::string> m_caption;
-        bool m_useScrollBar;
+        Align m_align {CENTER};
+        std::pair<int, int> m_minSize {-1, -1};
+        std::pair<int, int> m_maxSize {std::numeric_limits<int>::max(), std::numeric_limits<int>::max()};
+        bool m_visible {true};
+        bool m_isResizable {true};
+        int m_position {0};
+        int m_layer {0};
+        int m_row {0};
+        std::pair<bool, std::string> m_caption {false, ""};
+        bool m_useScrollBar {false};
         std::string m_toolTip;
 
         /// Background color. When given an empty string, a default background is used. To use another color, set an
@@ -94,7 +79,7 @@ public:
     UI_BASE_API CardinalLayoutManagerBase();
 
     /// Destructor. Does nothing.
-    UI_BASE_API virtual ~CardinalLayoutManagerBase();
+    UI_BASE_API ~CardinalLayoutManagerBase() override;
 
     /**
      * @brief Initializes cardinal layout manager. Must be called before the layout creation.
@@ -154,6 +139,4 @@ private:
     std::list<ViewInfo> m_views;
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

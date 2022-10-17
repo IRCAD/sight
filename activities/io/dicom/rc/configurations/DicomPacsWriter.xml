@@ -7,7 +7,7 @@
         <param name="PROGRESS_CHANNEL" />
     </parameters>
     <config>
-        <object uid="seriesDB" type="sight::data::SeriesDB" />
+        <object uid="seriesSet" type="sight::data::SeriesSet" />
         <object uid="selections" type="sight::data::Vector" />
         <object uid="pacsConfiguration" type="sight::io::dimse::data::PacsConfiguration" />
 
@@ -49,8 +49,8 @@
         <!-- ******************************* Actions ****************************************** -->
 
         <service uid="action_import" type="sight::module::ui::base::series::SDBMerger" >
-            <inout key="seriesDB" uid="seriesDB" />
-            <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader" />
+            <inout key="seriesSet" uid="seriesSet" />
+            <IOSelectorSrvConfig name="IOSelectorServiceConfigVRRenderExtDicomSeriesSetReader" />
         </service>
 
         <service uid="action_editPacsConfiguration" type="sight::module::ui::base::SConfigLauncher">
@@ -60,25 +60,17 @@
         </service>
 
         <!-- Dicom Anonymization -->
-        <service uid="action_anonymize" type="sight::module::ui::base::com::SSlotCaller" >
-            <slots>
-                <slot>anonymizeController/update</slot>
-            </slots>
-        </service>
+        <service uid="action_anonymize" type="sight::module::ui::base::SAction" />
 
         <!-- Push series -->
-        <service uid="action_pushSeriesToPacs" type="sight::module::ui::base::com::SSlotCaller" >
-            <slots>
-                <slot>pushSeriesController/update</slot>
-            </slots>
-        </service>
+        <service uid="action_pushSeriesToPacs" type="sight::module::ui::base::SAction" />
 
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="progressBarController" type="sight::module::io::dimse::SProgressBarController"  />
 
         <service uid="selector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
-            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="seriesSet" uid="seriesSet" />
             <inout key="selection" uid="selections" />
         </service>
 
@@ -106,7 +98,7 @@
         </service>
 
         <service uid="anonymizeController" type="sight::module::io::dicom::SDicomSeriesAnonymizer">
-            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="seriesSet" uid="seriesSet" />
             <inout key="selectedSeries" uid="selections" />
         </service>
 
@@ -132,6 +124,16 @@
 
         <connect channel="${PROGRESS_CHANNEL}">
             <signal>anonymizeController/jobCreated</signal>
+        </connect>
+
+        <connect>
+            <signal>action_anonymize/clicked</signal>
+            <slot>anonymizeController/update</slot>
+        </connect>
+
+        <connect>
+            <signal>action_pushSeriesToPacs/clicked</signal>
+            <slot>pushSeriesController/update</slot>
         </connect>
 
         <!-- START AND STOP SERVICES -->

@@ -52,9 +52,8 @@ STransformLandmark::STransformLandmark() noexcept
 
 // -----------------------------------------------------------------------------
 
-STransformLandmark::~STransformLandmark() noexcept
-{
-}
+STransformLandmark::~STransformLandmark() noexcept =
+    default;
 
 // -----------------------------------------------------------------------------
 
@@ -104,7 +103,7 @@ void STransformLandmark::updating()
         }
         catch(data::Exception& e)
         {
-            sight::ui::base::dialog::MessageDialog::showMessageDialog(
+            sight::ui::base::dialog::MessageDialog::show(
                 "Transform Landmarks",
                 "It is impossible to modify landmarks: "
                 + std::string(e.what()),
@@ -118,14 +117,12 @@ void STransformLandmark::updating()
 
 service::IService::KeyConnectionsMap STransformLandmark::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {{s_TRANSFORM_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT}};
 }
 
 // -----------------------------------------------------------------------------
 
-void STransformLandmark::updateSelectedPoint(std::string name, std::size_t index)
+void STransformLandmark::updateSelectedPoint(std::string /*name*/, std::size_t index)
 {
     m_landmarkSelected = true;
     m_index            = index;
@@ -153,4 +150,4 @@ void STransformLandmark::removePoint()
 
 // -----------------------------------------------------------------------------
 
-} // maths
+} // namespace sight::module::geometry::base

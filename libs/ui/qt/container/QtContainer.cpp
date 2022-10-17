@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,7 @@
 #include <QMetaObject>
 #include <QWidget>
 
-namespace sight::ui::qt
-{
-
-namespace container
+namespace sight::ui::qt::container
 {
 
 //-----------------------------------------------------------------------------
@@ -106,7 +103,7 @@ void QtContainer::destroyContainer()
 {
     SIGHT_ASSERT("The container must be initialized before invoking destroyContainer().", m_container);
 
-    if(m_container)
+    if(m_container != nullptr)
     {
         delete m_container;
         m_container.clear();
@@ -141,10 +138,10 @@ void QtContainer::setVisible(bool isVisible)
 {
     SIGHT_ASSERT("The container must be initialized before invoking setVisible().", m_container);
 
-    QWidget* parent   = m_container->parentWidget();
-    QDockWidget* dock = qobject_cast<QDockWidget*>(parent);
+    QWidget* parent = m_container->parentWidget();
+    auto* dock      = qobject_cast<QDockWidget*>(parent);
 
-    if(dock)
+    if(dock != nullptr)
     {
         dock->setVisible(isVisible);
     }
@@ -158,10 +155,10 @@ void QtContainer::setEnabled(bool isEnabled)
 {
     SIGHT_ASSERT("The container must be initialized before invoking setEnabled().", m_container);
 
-    QWidget* parent   = m_container->parentWidget();
-    QDockWidget* dock = qobject_cast<QDockWidget*>(parent);
+    QWidget* parent = m_container->parentWidget();
+    auto* dock      = qobject_cast<QDockWidget*>(parent);
 
-    if(dock)
+    if(dock != nullptr)
     {
         dock->setEnabled(isEnabled);
     }
@@ -171,6 +168,4 @@ void QtContainer::setEnabled(bool isEnabled)
 
 //-----------------------------------------------------------------------------
 
-} // namespace container
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::container

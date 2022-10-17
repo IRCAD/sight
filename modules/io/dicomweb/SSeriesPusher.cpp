@@ -49,16 +49,13 @@ static const service::IService::KeyType s_SERIES_IN = "selectedSeries";
 
 //------------------------------------------------------------------------------
 
-SSeriesPusher::SSeriesPusher() noexcept :
-    m_isPushing(false)
-{
-}
+SSeriesPusher::SSeriesPusher() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SSeriesPusher::~SSeriesPusher() noexcept
-{
-}
+SSeriesPusher::~SSeriesPusher() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -66,7 +63,7 @@ void SSeriesPusher::configuring()
 {
     service::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
-    if(configuration.count("server"))
+    if(configuration.count("server") != 0U)
     {
         const std::string serverInfo               = configuration.get("server", "");
         const std::string::size_type splitPosition = serverInfo.find(':');
@@ -157,21 +154,25 @@ void SSeriesPusher::pushSeries()
 
     const auto seriesVector = m_selectedSeries.lock();
 
-    const std::vector<data::DicomSeries::sptr> dataVector = seriesVector->getDataContainer<data::DicomSeries>();
-
     // Connect to PACS
-    const std::size_t seriesVectorSize = seriesVector->size();
-    std::size_t nbSeriesSuccess        = 0;
-    for(const auto& dicomSeries : dataVector)
+    std::size_t nbSeriesSuccess = 0;
+    for(const auto& series : *seriesVector)
     {
+        const auto& dicomSeries = data::DicomSeries::dynamicCast(series);
+
+        if(!dicomSeries)
+        {
+            continue;
+        }
+
         nbSeriesSuccess++;
 
         data::DicomSeries::DicomContainerType dicomContainer = dicomSeries->getDicomContainer();
         const std::size_t dicomContainerSize                 = dicomContainer.size();
 
-        std::size_t nbInstanceSuccess = 0;
         try
         {
+            std::size_t nbInstanceSuccess = 0;
             for(const auto& item : dicomContainer)
             {
                 const core::memory::BufferObject::sptr bufferObj = item.second;
@@ -179,7 +180,7 @@ void SSeriesPusher::pushSeries()
                 const char* buffer     = static_cast<char*>(lockerDest.getBuffer());
                 const std::size_t size = bufferObj->getSize();
 
-                const QByteArray fileBuffer = QByteArray::fromRawData(buffer, size);
+                const QByteArray fileBuffer = QByteArray::fromRawData(buffer, int(size));
 
                 /// Url PACS
                 const std::string pacsServer("http://" + m_serverHostname + ":" + std::to_string(m_serverPort));
@@ -197,9 +198,9 @@ void SSeriesPusher::pushSeries()
 
                 if(dicomContainerSize == nbInstanceSuccess)
                 {
-                    this->displayMessage(
+                    sight::module::io::dicomweb::SSeriesPusher::displayMessage(
                         "Upload successful: " + std::to_string(nbSeriesSuccess) + "/"
-                        + std::to_string(seriesVectorSize),
+                        + std::to_string(seriesVector->size()),
                         false
                     );
                 }
@@ -212,7 +213,7 @@ void SSeriesPusher::pushSeries()
             << "Please check your configuration: \n"
             << "Pacs host name: " << m_serverHostname << "\n"
             << "Pacs port: " << m_serverPort << "\n";
-            this->displayMessage(ss.str(), true);
+            sight::module::io::dicomweb::SSeriesPusher::displayMessage(ss.str(), true);
             SIGHT_WARN(exception.what());
         }
     }
@@ -223,7 +224,7 @@ void SSeriesPusher::pushSeries()
 
 //------------------------------------------------------------------------------
 
-void SSeriesPusher::displayMessage(const std::string& message, bool error) const
+void SSeriesPusher::displayMessage(const std::string& message, bool error)
 {
     SIGHT_WARN_IF("Error: " + message, error);
     sight::ui::base::dialog::MessageDialog messageBox;

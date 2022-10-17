@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,24 @@
 
 #include "io/igtl/Exception.hpp"
 
-#include <core/tools/Stringizer.hpp>
-
 #include <io/igtl/detail/DataConverter.hpp>
 #include <io/igtl/detail/MessageFactory.hpp>
+
+#include <cmath>
+
+#if defined(_WIN32)
+  #include <windows.h>
+  #include <winsock2.h>
+#else
+  #include <sys/types.h>
+  #include <sys/socket.h>
+  #include <netinet/in.h>
+  #include <netinet/tcp.h>
+  #include <arpa/inet.h>
+  #include <netdb.h>
+  #include <unistd.h>
+  #include <sys/time.h>
+#endif
 
 namespace sight::io::igtl
 {
@@ -35,7 +49,7 @@ namespace sight::io::igtl
 //------------------------------------------------------------------------------
 
 INetwork::INetwork() :
-    m_filteringByDeviceName(false),
+
     m_deviceNameOut("Sight")
 {
 }
@@ -43,8 +57,7 @@ INetwork::INetwork() :
 //------------------------------------------------------------------------------
 
 INetwork::~INetwork()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -100,9 +113,11 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
         if(msg.IsNotNull())
         {
             // get message timestamp
-            unsigned int sec, frac;
+            unsigned int sec  = 0;
+            unsigned int frac = 0;
             msg->GetTimeStamp(&sec, &frac);
-            double secD, fracD;
+            double secD  = NAN;
+            double fracD = NAN;
             secD  = static_cast<double>(sec);
             fracD = static_cast<double>(frac);
 
@@ -128,61 +143,79 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
     headerMsg->InitPack();
     const int sizeReceive = m_socket->Receive(headerMsg->GetPackPointer(), headerMsg->GetPackSize());
 
-    if(sizeReceive == -1 || sizeReceive == 0)
+    if(sizeReceive == -1)
     {
-        return ::igtl::MessageHeader::Pointer();
+        // Case 1: Timeout
+        throw sight::io::igtl::Exception("Network timeout");
     }
-    else
-    {
-        if(sizeReceive != 0 && sizeReceive != headerMsg->GetPackSize())
-        {
-            return ::igtl::MessageHeader::Pointer();
-        }
-        else if(headerMsg->Unpack() & ::igtl::MessageBase::UNPACK_HEADER)
-        {
-            const std::string deviceName = headerMsg->GetDeviceName();
 
-            if(m_filteringByDeviceName)
-            {
-                if(m_deviceNamesIn.find(deviceName) != m_deviceNamesIn.end())
-                {
-                    return headerMsg;
-                }
-                else
-                {
-                    return ::igtl::MessageHeader::Pointer();
-                }
-            }
-            else
+    if(sizeReceive == 0)
+    {
+        // Case 2: Error
+        throw sight::io::igtl::Exception("Network Error");
+    }
+
+    if(sizeReceive != headerMsg->GetPackSize())
+    {
+        // Case 3: mismatch of size
+        throw sight::io::igtl::Exception("Received size error");
+    }
+
+    if(headerMsg->Unpack() == ::igtl::MessageBase::UNPACK_HEADER)
+    {
+        const std::string deviceName = headerMsg->GetDeviceName();
+
+        if(m_filteringByDeviceName)
+        {
+            if(m_deviceNamesIn.find(deviceName) != m_deviceNamesIn.end())
             {
                 return headerMsg;
             }
+
+            return {};
         }
+
+        return headerMsg;
     }
 
-    return ::igtl::MessageHeader::Pointer();
+    return {};
 }
 
 //------------------------------------------------------------------------------
 
 ::igtl::MessageBase::Pointer INetwork::receiveBody(::igtl::MessageHeader::Pointer const headerMsg)
 {
-    int unpackResult;
-    int result;
+    int unpackResult = 0;
+    int result       = 0;
     ::igtl::MessageBase::Pointer msg;
+
+    if(headerMsg == nullptr)
+    {
+        throw sight::io::igtl::Exception("Invalid header message");
+    }
 
     msg = io::igtl::detail::MessageFactory::create(headerMsg->GetDeviceType());
     msg->SetMessageHeader(headerMsg);
     msg->AllocatePack();
     result = m_socket->Receive(msg->GetPackBodyPointer(), msg->GetPackBodySize());
 
-    if(result == -1)
+    if(result == -1) // Timeout
     {
-        return ::igtl::MessageBase::Pointer();
+        throw sight::io::igtl::Exception("Network timeout");
     }
 
-    unpackResult = msg->Unpack(1);
-    if(unpackResult & ::igtl::MessageHeader::UNPACK_BODY)
+    if(result == 0) // Error
+    {
+        throw sight::io::igtl::Exception("Network Error");
+    }
+
+    unpackResult = msg->Unpack();
+    if(unpackResult == ::igtl::MessageHeader::UNPACK_UNDEF)
+    {
+        throw sight::io::igtl::Exception("Network Error");
+    }
+
+    if(unpackResult == ::igtl::MessageHeader::UNPACK_BODY)
     {
         return msg;
     }
@@ -201,7 +234,7 @@ data::Object::sptr INetwork::receiveObject(std::string& deviceName, double& time
 
 void INetwork::addAuthorizedDevice(const std::string& deviceName)
 {
-    std::set<std::string>::iterator it = m_deviceNamesIn.find(deviceName);
+    auto it = m_deviceNamesIn.find(deviceName);
 
     if(it == m_deviceNamesIn.end())
     {
@@ -242,6 +275,101 @@ void INetwork::setDeviceNameOut(const std::string& deviceName)
 std::string INetwork::getDeviceNameOut() const
 {
     return m_deviceNameOut;
+}
+
+//------------------------------------------------------------------------------
+
+void INetwork::closeSocket(int socket_descriptor)
+{
+    // NOTE: Patched version of original CloseSocket() from igtlSocket.h, adding close() after shutdown() on Linux.
+    // This can be removed on recent version of IGTL (Debian version is pretty old).
+
+    if(socket_descriptor == -1)
+    {
+        return;
+    }
+
+#if defined(_WIN32)
+#define WSA_VERSION MAKEWORD(1, 1)
+    closesocket(socket_descriptor);
+#else
+    shutdown(socket_descriptor, 2);
+    close(socket_descriptor); // closing socket for latter reuse.
+#endif
+}
+
+//------------------------------------------------------------------------------
+
+int INetwork::createSocket()
+{
+#if defined(_WIN32)
+    // Declare variables
+    WSADATA wsaData;
+    //SOCKET ListenSocket;
+    //sockaddr_in service;
+
+    //---------------------------------------
+    // Initialize Winsock
+    int iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+    if(iResult != NO_ERROR)
+    {
+        std::cerr << "Error at WSAStartup" << std::endl;
+        return -1;
+    }
+#endif
+
+    int sock = socket(AF_INET, SOCK_STREAM, 0);
+    // Elimate windows 0.2 second delay sending (buffering) data.
+    int on = 1;
+    if(setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, reinterpret_cast<char*>(&on), sizeof(on)) != 0)
+    {
+#if defined(_WIN32)
+        closesocket(sock);
+#else
+        close(sock);
+#endif
+        return -1;
+    }
+
+    return sock;
+}
+
+//------------------------------------------------------------------------------
+
+int INetwork::listenSocket(int socket_descriptor)
+{
+    if(socket_descriptor < 0)
+    {
+        return -1;
+    }
+
+    return listen(socket_descriptor, 1);
+}
+
+//------------------------------------------------------------------------------
+
+int INetwork::bindSocket(int socket_descriptor, std::uint16_t port)
+{
+    struct sockaddr_in server {};
+
+    server.sin_family      = AF_INET;
+    server.sin_addr.s_addr = INADDR_ANY;
+    server.sin_port        = htons(port);
+    // Allow the socket to be bound to an address that is already in use
+#ifdef _WIN32
+    int opt = 1;
+    setsockopt(socket_descriptor, SOL_SOCKET, SO_REUSEADDR, (char*) &opt, sizeof(int));
+#else
+    int opt = 1;
+    setsockopt(socket_descriptor, SOL_SOCKET, SO_REUSEADDR, (void*) &opt, sizeof(int));
+#endif
+
+    if(bind(socket_descriptor, reinterpret_cast<sockaddr*>(&server), sizeof(server)) != 0)
+    {
+        return -1;
+    }
+
+    return 0;
 }
 
 //------------------------------------------------------------------------------

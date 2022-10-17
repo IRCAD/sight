@@ -43,8 +43,7 @@ public:
     CORE_API virtual void destroy(BufferType& buffer)                   = 0;
 
     CORE_API virtual ~BufferAllocationPolicy()
-    {
-    }
+    = default;
 };
 
 class CORE_CLASS_API BufferMallocPolicy : public BufferAllocationPolicy
@@ -54,12 +53,12 @@ public:
     CORE_API void allocate(
         BufferType& buffer,
         BufferAllocationPolicy::SizeType size
-    );
+    ) override;
     CORE_API void reallocate(
         BufferType& buffer,
         BufferAllocationPolicy::SizeType size
-    );
-    CORE_API void destroy(BufferType& buffer);
+    ) override;
+    CORE_API void destroy(BufferType& buffer) override;
 
     CORE_API static BufferAllocationPolicy::sptr New();
 };
@@ -71,12 +70,12 @@ public:
     CORE_API void allocate(
         BufferType& buffer,
         BufferAllocationPolicy::SizeType size
-    );
+    ) override;
     CORE_API void reallocate(
         BufferType& buffer,
         BufferAllocationPolicy::SizeType size
-    );
-    CORE_API void destroy(BufferType& buffer);
+    ) override;
+    CORE_API void destroy(BufferType& buffer) override;
 
     CORE_API static BufferAllocationPolicy::sptr New();
 };
@@ -88,14 +87,14 @@ public:
     CORE_API void allocate(
         BufferType& buffer,
         BufferAllocationPolicy::SizeType size
-    );
+    ) override;
     CORE_API void reallocate(
         BufferType& buffer,
         BufferAllocationPolicy::SizeType size
-    );
-    CORE_API void destroy(BufferType& buffer);
+    ) override;
+    CORE_API void destroy(BufferType& buffer) override;
 
     CORE_API static BufferAllocationPolicy::sptr New();
 };
 
-} // namespace sight::core
+} // namespace sight::core::memory

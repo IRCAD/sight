@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,10 +34,7 @@
 
 class QLabel;
 
-namespace sight::module::ui::qt
-{
-
-namespace viz
+namespace sight::module::ui::qt::viz
 {
 
 /**
@@ -70,7 +67,7 @@ public:
     MODULE_UI_QT_API SMatrixViewer() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SMatrixViewer() noexcept;
+    MODULE_UI_QT_API ~SMatrixViewer() noexcept override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -111,6 +108,4 @@ private:
     data::ptr<data::Matrix4, data::Access::in> m_matrix {this, s_MATRIX, true};
 };
 
-} //namespace viz
-
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::viz

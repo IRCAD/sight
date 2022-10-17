@@ -19,7 +19,7 @@
         <icon>sight::module::ui::icons/Pull.svg</icon>
         <requirements>
         </requirements>
-        <builder>::activity::builder::ActivitySeries</builder>
+        <builder>::activity::builder::Activity</builder>
         <appConfig id="DicomPacsReader">
         </appConfig>
         </extension>
@@ -31,7 +31,7 @@
         <icon>sight::module::ui::icons/Push.svg</icon>
         <requirements>
         </requirements>
-        <builder>::activity::builder::ActivitySeries</builder>
+        <builder>::activity::builder::Activity</builder>
         <appConfig id="DicomPacsWriter">
         </appConfig>
     </extension>
@@ -51,20 +51,20 @@
         <icon>sight::module::ui::icons/icon-DICOM-Filtering.svg</icon>
         <requirements>
         </requirements>
-        <builder>::activity::builder::ActivitySeries</builder>
+        <builder>::activity::builder::Activity</builder>
         <appConfig id="DicomFiltering">
         </appConfig>
     </extension>
 
     <extension implements="sight::service::extension::Config">
-        <id>IOSelectorServiceConfigVRRenderExtDicomSeriesDBReader</id>
+        <id>IOSelectorServiceConfigVRRenderExtDicomSeriesSetReader</id>
         <service>sight::module::ui::base::io::SSelector</service>
         <desc>IOSelectorService config for DICOM Filtering Activity</desc>
         <config>
             <type mode="reader" />
             <selection mode="include" />
-            <addSelection service="sight::module::io::dicom::SDicomSeriesDBReader" />
-            <config id="DicomReaderConfig" service="sight::module::io::dicom::SDicomSeriesDBReader" />
+            <addSelection service="sight::module::io::dicom::SDicomSeriesSetReader" />
+            <config id="DicomReaderConfig" service="sight::module::io::dicom::SDicomSeriesSetReader" />
         </config>
     </extension>
 

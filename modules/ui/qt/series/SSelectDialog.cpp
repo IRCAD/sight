@@ -53,46 +53,31 @@ void SSelectDialog::starting()
 
 void SSelectDialog::updating()
 {
-    const auto seriesDB = m_seriesDB.lock();
-    if(seriesDB == nullptr)
+    const auto series_set = m_series_set.lock();
+
+    SIGHT_THROW_IF("Missing input database series", !series_set);
+    SIGHT_THROW_IF("The series set is empty, nothing can be extracted.", series_set->empty());
+
+    // TODO: Prompt later to select the element to extract, now just take the first element
+    SIGHT_INFO(
+        "[SSelectDialog] Extracting the first element of the seriesBD, future development will prompt"
+        " the user to pick a series"
+    );
+
+    auto firstElement = series_set->front();
+
+    if(auto modelSeries = sight::data::ModelSeries::dynamicCast(firstElement); modelSeries)
     {
-        SIGHT_THROW_EXCEPTION(sight::data::Exception("Missing input database series"));
+        m_modelSeries = modelSeries;
+        auto sig = this->signal<data::Object::ModifiedSignalType>(s_MODEL_SELECTED_SIG);
+        sig->asyncEmit();
     }
-
-    auto series = seriesDB->getContainer();
-    if(series.empty())
+    else if(auto imageSeries = sight::data::ImageSeries::dynamicCast(firstElement); imageSeries)
     {
-        SIGHT_THROW_EXCEPTION(sight::data::Exception("The database series is empty, nothing can be extracted."));
-    }
-
-    if(!series.empty())
-    {
-        // TODO: Prompt later to select the element to extract, now just take the first element
-        SIGHT_INFO(
-            "[SSelectDialog] Extracting the first element of the seriesBD, future development will prompt"
-            " the user to pick a series"
-        );
-        auto firstElement = series[0];
-        auto modelSeries  = sight::data::ModelSeries::dynamicCast(firstElement);
-        if(modelSeries)
-        {
-            m_modelSeries = modelSeries;
-            auto sig = this->signal<data::Object::ModifiedSignalType>(s_MODEL_SELECTED_SIG);
-            sig->asyncEmit();
-        }
-        else
-        {
-            auto imageSeries = sight::data::ImageSeries::dynamicCast(firstElement);
-            if(imageSeries)
-            {
-                m_imageSeries = imageSeries;
-                auto image = imageSeries->getImage();
-
-                m_image = image;
-                auto sig = this->signal<data::Object::ModifiedSignalType>(s_IMAGE_SELECTED_SIG);
-                sig->asyncEmit();
-            }
-        }
+        m_imageSeries = imageSeries;
+        m_image       = imageSeries;
+        auto sig = this->signal<data::Object::ModifiedSignalType>(s_IMAGE_SELECTED_SIG);
+        sig->asyncEmit();
     }
 }
 

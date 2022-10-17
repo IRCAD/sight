@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
+
 #include <core/BaseObject.hpp>
 
 #include <string>
@@ -46,10 +47,10 @@ public:
     } LevelType;
 
     /// Constructor
-    CORE_API Log(LevelType level, const std::string& message);
+    CORE_API Log(LevelType level, std::string message);
 
     /// Destructor
-    CORE_API ~Log();
+    CORE_API ~Log() override;
 
     /// Set Log level
     void setLevel(LevelType level)
@@ -70,7 +71,7 @@ public:
     }
 
     // Get Log message
-    const std::string getMessage() const
+    std::string getMessage() const
     {
         return m_message;
     }

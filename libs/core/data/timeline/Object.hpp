@@ -29,10 +29,7 @@
 
 #include <data/Object.hpp>
 
-namespace sight::data
-{
-
-namespace timeline
+namespace sight::data::timeline
 {
 
 /**
@@ -53,7 +50,7 @@ public:
     DATA_API virtual void deepCopy(const Object& _source);
 
     /// Return timestamp
-    core::HiResClock::HiResClockType getTimestamp() const
+    [[nodiscard]] core::HiResClock::HiResClockType getTimestamp() const
     {
         return m_timestamp;
     }
@@ -70,6 +67,4 @@ protected:
     core::HiResClock::HiResClockType m_timestamp;
 };
 
-} // namespace timeline
-
-} // namespace sight::data
+} // namespace sight::data::timeline

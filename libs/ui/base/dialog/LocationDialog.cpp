@@ -22,10 +22,10 @@
 
 #include "ui/base/dialog/LocationDialog.hpp"
 
-namespace sight::ui::base
-{
+#include <core/thread/Worker.hpp>
+#include <core/thread/Worker.hxx>
 
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 //-----------------------------------------------------------------------------
@@ -35,26 +35,25 @@ LocationDialog::LocationDialog()
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
-            {
-                ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ILocationDialog::REGISTRY_KEY);
-                m_implementation                     = ui::base::dialog::ILocationDialog::dynamicCast(guiObj);
-            })
+        {
+            ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ILocationDialog::REGISTRY_KEY);
+            m_implementation                     = ui::base::dialog::ILocationDialog::dynamicCast(guiObj);
+        })
     ).wait();
 }
 
 //------------------------------------------------------------------------------
 
 LocationDialog::~LocationDialog()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 core::location::ILocation::sptr LocationDialog::show()
 {
-    typedef SPTR(core::location::ILocation) R;
+    using R = std::shared_ptr<core::location::ILocation>;
 
-    std::function<R()> func = std::bind(&ILocationDialog::show, m_implementation);
+    std::function<R()> func = [this](auto&& ...){return m_implementation->show();};
     std::shared_future<R> f = core::thread::getDefaultWorker()->postTask<R>(func);
 
     f.wait();
@@ -105,7 +104,7 @@ void LocationDialog::setDefaultLocation(core::location::ILocation::sptr loc)
 
 //-----------------------------------------------------------------------------
 
-const core::location::ILocation::sptr LocationDialog::getDefaultLocation()
+core::location::ILocation::sptr LocationDialog::getDefaultLocation()
 {
     return m_implementation->getDefaultLocation();
 }
@@ -126,6 +125,4 @@ std::string LocationDialog::getCurrentSelection() const
 
 //-----------------------------------------------------------------------------
 
-} //namespace dialog
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::dialog

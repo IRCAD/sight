@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,9 +40,8 @@ IRegisterer::IRegisterer() noexcept
 
 // ----------------------------------------------------------------------------
 
-IRegisterer::~IRegisterer() noexcept
-{
-}
+IRegisterer::~IRegisterer() noexcept =
+    default;
 
 // ----------------------------------------------------------------------------
 

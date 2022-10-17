@@ -32,39 +32,45 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-Double::Double(data::Object::Key) noexcept
+Double::Double(data::Object::Key /*unused*/) noexcept
 {
 }
 
 //------------------------------------------------------------------------------
-void Double::shallowCopy(const Object::csptr& _source)
+void Double::shallowCopy(const Object::csptr& source)
 {
-    Double::csptr other = Double::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
+
     m_value = other->m_value;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Double::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Double::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Double::csptr other = Double::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
+
     m_value = other->m_value;
+
+    BaseClass::deepCopy(other, cache);
 }
 
 } // namespace sight::data

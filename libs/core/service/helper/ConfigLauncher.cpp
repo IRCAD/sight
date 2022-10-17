@@ -30,10 +30,7 @@
 
 #include <service/macros.hpp>
 
-namespace sight::service
-{
-
-namespace helper
+namespace sight::service::helper
 {
 
 //------------------------------------------------------------------------------
@@ -43,16 +40,13 @@ const std::string ConfigLauncher::s_GENERIC_UID_KEY = "GENERIC_UID";
 
 //------------------------------------------------------------------------------
 
-ConfigLauncher::ConfigLauncher() :
-    m_configIsRunning(false)
-{
-}
+ConfigLauncher::ConfigLauncher()
+= default;
 
 //------------------------------------------------------------------------------
 
 ConfigLauncher::~ConfigLauncher()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -62,17 +56,16 @@ void ConfigLauncher::parseConfig(
 )
 {
     service::IService::ConfigType srvCfg;
-    const service::IService::ConfigType* curConfig = &_config;
 
     const service::IService::ConfigType& oldConfig = _config;
     SIGHT_ASSERT("There must be only one <appConfig/> element.", oldConfig.count("appConfig") == 1);
 
     const service::IService::ConfigType& appConfig = oldConfig.get_child("appConfig");
-    const std::string appCfgId                     = appConfig.get<std::string>("<xmlattr>.id");
+    const auto appCfgId                            = appConfig.get<std::string>("<xmlattr>.id");
 
     srvCfg.add("config.appConfig.<xmlattr>.id", appCfgId);
-    service::IService::ConfigType& newCfg = srvCfg.get_child("config.appConfig");
-    curConfig = &srvCfg;
+    service::IService::ConfigType& newCfg          = srvCfg.get_child("config.appConfig");
+    const service::IService::ConfigType* curConfig = &srvCfg;
 
     auto inouts = _service->getInOuts();
 
@@ -81,10 +74,10 @@ void ConfigLauncher::parseConfig(
     {
         service::IService::ConfigType parameterCfg;
 
-        const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
+        const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
         SIGHT_ASSERT("[" + appCfgId + "] Missing 'key' tag.", !key.empty());
 
-        const std::string uid = itCfg->second.get<std::string>("<xmlattr>.uid");
+        const auto uid = itCfg->second.get<std::string>("<xmlattr>.uid");
         SIGHT_ASSERT("[" + appCfgId + "] Missing 'uid' tag.", !uid.empty());
 
         parameterCfg.add("<xmlattr>.replace", key);
@@ -101,7 +94,7 @@ void ConfigLauncher::parseConfig(
             const auto it = inouts.find({key, std::nullopt});
             SIGHT_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
             auto obj = it->second.lock();
-            SIGHT_ASSERT("Object key '" + key + "' with uid '" + uid + "' does not exist.", obj);
+            SIGHT_ASSERT(std::string("Object key '") + key + "' with uid '" + uid + "' does not exist.", obj);
             parameterCfg.add("<xmlattr>.uid", obj->getID());
         }
 
@@ -113,11 +106,11 @@ void ConfigLauncher::parseConfig(
     {
         service::IService::ConfigType parameterCfg;
 
-        const std::string replace = itCfg->second.get<std::string>("<xmlattr>.replace");
+        const auto replace = itCfg->second.get<std::string>("<xmlattr>.replace");
         SIGHT_ASSERT("[" + appCfgId + "] Missing 'replace' tag.", !replace.empty());
         parameterCfg.add("<xmlattr>.replace", replace);
 
-        const std::string by = itCfg->second.get<std::string>("<xmlattr>.by");
+        const auto by = itCfg->second.get<std::string>("<xmlattr>.by");
         SIGHT_ASSERT("[" + appCfgId + "] Missing 'by' tag.", !by.empty());
         parameterCfg.add("<xmlattr>.by", by);
 
@@ -193,6 +186,4 @@ void ConfigLauncher::stopConfig()
 
 //------------------------------------------------------------------------------
 
-} // helper
-
-} // fwServices
+} // namespace sight::service::helper

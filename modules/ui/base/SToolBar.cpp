@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,15 +27,13 @@
 namespace sight::module::ui::base
 {
 
-SToolBar::SToolBar() noexcept
-{
-}
+SToolBar::SToolBar() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-SToolBar::~SToolBar() noexcept
-{
-}
+SToolBar::~SToolBar() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -66,8 +64,8 @@ void SToolBar::updating()
 
 //-----------------------------------------------------------------------------
 
-void SToolBar::info(std::ostream&)
+void SToolBar::info(std::ostream& /*_sstream*/)
 {
 }
 
-}
+} // namespace sight::module::ui::base

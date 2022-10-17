@@ -27,10 +27,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 class SeriesTest : public CPPUNIT_NS::TestFixture
@@ -44,17 +41,79 @@ CPPUNIT_TEST(attrInstanceUIDTest);
 CPPUNIT_TEST(attrModalityTest);
 CPPUNIT_TEST(attrDateTest);
 CPPUNIT_TEST(attrTimeTest);
-CPPUNIT_TEST(attrPerformingPhysiciansNameTest);
+CPPUNIT_TEST(attrPerformingPhysicianNameTest);
 CPPUNIT_TEST(attrDescriptionTest);
 CPPUNIT_TEST(equalityTest);
+
+CPPUNIT_TEST(sopClassUIDTest);
+CPPUNIT_TEST(sopClassNameTest);
+CPPUNIT_TEST(sopInstanceUIDTest);
+CPPUNIT_TEST(specificCharacterSetTest);
+CPPUNIT_TEST(encodingTest);
+CPPUNIT_TEST(seriesDateTest);
+CPPUNIT_TEST(seriesTimeTest);
+CPPUNIT_TEST(modalityTest);
+CPPUNIT_TEST(seriesDescriptionTest);
+CPPUNIT_TEST(performingPhysicianNameTest);
+CPPUNIT_TEST(anatomicalOrientationTypeTest);
+CPPUNIT_TEST(bodyPartExaminedTest);
+CPPUNIT_TEST(protocolNameTest);
+CPPUNIT_TEST(patientPositionTest);
+CPPUNIT_TEST(seriesInstanceUIDTest);
+CPPUNIT_TEST(seriesNumberTest);
+CPPUNIT_TEST(lateralityTest);
+CPPUNIT_TEST(performedProcedureStepStartDateTest);
+CPPUNIT_TEST(performedProcedureStepStartTimeTest);
+CPPUNIT_TEST(performedProcedureStepEndDateTest);
+CPPUNIT_TEST(performedProcedureStepEndTimeTest);
+CPPUNIT_TEST(performedProcedureStepIDTest);
+CPPUNIT_TEST(performedProcedureStepDescriptionTest);
+CPPUNIT_TEST(commentsOnThePerformedProcedureStepTest);
+CPPUNIT_TEST(institutionNameTest);
+CPPUNIT_TEST(patientNameTest);
+CPPUNIT_TEST(patientIDTest);
+CPPUNIT_TEST(patientBirthDateTest);
+CPPUNIT_TEST(patientSexTest);
+CPPUNIT_TEST(studyDateTest);
+CPPUNIT_TEST(studyTimeTest);
+CPPUNIT_TEST(referringPhysicianNameTest);
+CPPUNIT_TEST(studyDescriptionTest);
+CPPUNIT_TEST(studyInstanceUIDTest);
+CPPUNIT_TEST(studyIDTest);
+CPPUNIT_TEST(patientAgeTest);
+CPPUNIT_TEST(patientSizeTest);
+CPPUNIT_TEST(patientWeightTest);
+CPPUNIT_TEST(acquisitionDateTest);
+CPPUNIT_TEST(acquisitionTimeTest);
+CPPUNIT_TEST(acquisitionNumberTest);
+CPPUNIT_TEST(instanceNumberTest);
+CPPUNIT_TEST(contentTimeTest);
+CPPUNIT_TEST(contrastBolusAgentTest);
+CPPUNIT_TEST(contrastBolusRouteTest);
+CPPUNIT_TEST(contrastBolusVolumeTest);
+CPPUNIT_TEST(contrastBolusStartTimeTest);
+CPPUNIT_TEST(contrastBolusStopTimeTest);
+CPPUNIT_TEST(contrastBolusTotalDoseTest);
+CPPUNIT_TEST(contrastFlowRateTest);
+CPPUNIT_TEST(contrastFlowDurationTest);
+CPPUNIT_TEST(contrastBolusIngredientTest);
+CPPUNIT_TEST(contrastBolusIngredientConcentrationTest);
+CPPUNIT_TEST(rowsTest);
+CPPUNIT_TEST(columnsTest);
+CPPUNIT_TEST(windowCenterTest);
+CPPUNIT_TEST(windowWidthTest);
+CPPUNIT_TEST(imagePositionPatientTest);
+CPPUNIT_TEST(imageOrientationPatientTest);
+
+CPPUNIT_TEST(stringConversionTest);
 
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     void attrPatientTest();
     void attrStudyTest();
@@ -63,17 +122,77 @@ public:
     void attrModalityTest();
     void attrDateTest();
     void attrTimeTest();
-    void attrPerformingPhysiciansNameTest();
+    void attrPerformingPhysicianNameTest();
     void attrDescriptionTest();
-    void equalityTest();
+    static void equalityTest();
+
+    static void sopClassUIDTest();
+    static void sopClassNameTest();
+    static void sopInstanceUIDTest();
+    static void specificCharacterSetTest();
+    static void encodingTest();
+    static void seriesDateTest();
+    static void seriesTimeTest();
+    static void modalityTest();
+    static void seriesDescriptionTest();
+    static void performingPhysicianNameTest();
+    static void anatomicalOrientationTypeTest();
+    static void bodyPartExaminedTest();
+    static void protocolNameTest();
+    static void patientPositionTest();
+    static void seriesInstanceUIDTest();
+    static void seriesNumberTest();
+    static void lateralityTest();
+    static void performedProcedureStepStartDateTest();
+    static void performedProcedureStepStartTimeTest();
+    static void performedProcedureStepEndDateTest();
+    static void performedProcedureStepEndTimeTest();
+    static void performedProcedureStepIDTest();
+    static void performedProcedureStepDescriptionTest();
+    static void commentsOnThePerformedProcedureStepTest();
+    static void institutionNameTest();
+    static void patientNameTest();
+    static void patientIDTest();
+    static void patientBirthDateTest();
+    static void patientSexTest();
+    static void studyDateTest();
+    static void studyTimeTest();
+    static void referringPhysicianNameTest();
+    static void studyDescriptionTest();
+    static void studyInstanceUIDTest();
+    static void studyIDTest();
+    static void patientAgeTest();
+    static void patientSizeTest();
+    static void patientWeightTest();
+    static void acquisitionDateTest();
+    static void acquisitionTimeTest();
+    static void acquisitionNumberTest();
+    static void instanceNumberTest();
+    static void contentTimeTest();
+    static void contrastBolusAgentTest();
+    static void contrastBolusRouteTest();
+    static void contrastBolusVolumeTest();
+    static void contrastBolusStartTimeTest();
+    static void contrastBolusStopTimeTest();
+    static void contrastBolusTotalDoseTest();
+    static void contrastFlowRateTest();
+    static void contrastFlowDurationTest();
+    static void contrastBolusIngredientTest();
+    static void contrastBolusIngredientConcentrationTest();
+    static void rowsTest();
+    static void columnsTest();
+    static void windowCenterTest();
+    static void windowWidthTest();
+    static void imagePositionPatientTest();
+    static void imageOrientationPatientTest();
+
+    static void stringConversionTest();
 
 protected:
 
-    typedef std::vector<SPTR(data::Series)> SeriesVectorType;
+    typedef std::vector<std::shared_ptr<Series> > SeriesVectorType;
 
     SeriesVectorType m_series;
 };
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,13 +23,11 @@
 #pragma once
 
 #include <service/AppConfigManager.hpp>
+#include <service/base.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 /**
@@ -53,25 +51,25 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void addConfigTest();
-    void parametersConfigTest();
+    static void addConfigTest();
+    static void parametersConfigTest();
     void startStopTest();
     void autoConnectTest();
     void connectionTest();
     void optionalKeyTest();
     void keyGroupTest();
-    void concurentAccessToAppConfigTest();
+    static void concurentAccessToAppConfigTest();
     void parameterReplaceTest();
     void objectConfigTest();
 
 private:
 
-    core::runtime::ConfigurationElement::sptr buildConfig();
+    static service::IService::ConfigType buildConfig();
 
-    service::AppConfigManager::sptr launchAppConfigMgr(
+    static service::AppConfigManager::sptr launchAppConfigMgr(
         const std::string& name,
         bool autoPrefix = false
     );
@@ -79,6 +77,4 @@ private:
     service::AppConfigManager::sptr m_appConfigMgr;
 };
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

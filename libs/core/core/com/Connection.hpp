@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,8 +35,7 @@ struct CORE_CLASS_API Connection
     struct Blocker
     {
         Blocker()
-        {
-        }
+        = default;
 
         Blocker(Connection connection) :
             m_blocker(connection.getBlocker())
@@ -55,8 +54,7 @@ struct CORE_CLASS_API Connection
     };
 
     Connection()
-    {
-    }
+    = default;
 
     Connection(const SlotConnectionBase::sptr& connection) :
         m_connectionBase(connection)
@@ -74,7 +72,7 @@ struct CORE_CLASS_API Connection
     }
 
     /// Returns whether this Connection is expired or not.
-    bool expired() const
+    [[nodiscard]] bool expired() const
     {
         return m_connectionBase.expired();
     }

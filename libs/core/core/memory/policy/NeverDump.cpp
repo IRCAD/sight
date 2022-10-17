@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,10 @@
 
 #include "core/memory/policy/registry/macros.hpp"
 
-namespace sight::core::memory
+namespace sight::core::memory::policy
 {
 
-namespace policy
-{
-
-fwMemoryPolicyRegisterMacro(core::memory::policy::NeverDump);
+SIGHT_REGISTER_MEMORY_POLICY(core::memory::policy::NeverDump);
 
 //------------------------------------------------------------------------------
 
@@ -122,7 +119,7 @@ void NeverDump::refresh()
 std::string NeverDump::getParam(const std::string& name, bool* ok) const
 {
     SIGHT_NOT_USED(name);
-    if(ok)
+    if(ok != nullptr)
     {
         *ok = false;
     }
@@ -132,6 +129,4 @@ std::string NeverDump::getParam(const std::string& name, bool* ok) const
 
 //------------------------------------------------------------------------------
 
-} // namespace policy
-
-} //namespace sight::core::memory
+} // namespace sight::core::memory::policy

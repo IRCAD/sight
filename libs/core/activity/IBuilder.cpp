@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,12 +37,12 @@ data::Vector::sptr IBuilder::getType(
     SIGHT_ASSERT("currentSelection not instanced", currentSelection);
 
     data::Vector::sptr subSelection = data::Vector::New();
-    for(data::Vector::value_type obj : *currentSelection)
+    for(const data::Vector::value_type& obj : *currentSelection)
     {
         SIGHT_ASSERT("Object not instanced in selection", obj);
         if(obj->isA(type))
         {
-            subSelection->getContainer().push_back(obj);
+            subSelection->push_back(obj);
         }
     }
 

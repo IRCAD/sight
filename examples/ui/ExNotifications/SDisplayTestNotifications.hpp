@@ -89,7 +89,7 @@ private:
 
     /// Position of the notification relative to active window.
     ::dial::NotificationDialog::Position m_position {::dial::NotificationDialog::Position::DEFAULT};
-    /// Type of the notification.
+    /// UI Type of the notification.
     ::dial::NotificationDialog::Type m_type {::dial::NotificationDialog::Type::DEFAULT};
     /// Display notification at all position, default true.
     bool m_displayAll {false};

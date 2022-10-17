@@ -78,7 +78,7 @@ public:
     MODULE_UI_QT_API SDisplayCalibrationInfo() noexcept;
 
     /// Destructor. Does nothing.
-    MODULE_UI_QT_API virtual ~SDisplayCalibrationInfo() noexcept;
+    MODULE_UI_QT_API ~SDisplayCalibrationInfo() noexcept override;
 
 protected:
 
@@ -123,4 +123,4 @@ private:
     data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo2 {this, s_CALIBRATION_INFO_2, false, true};
 };
 
-} // uiCalibration
+} // namespace sight::module::ui::qt::calibration

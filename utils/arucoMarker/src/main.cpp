@@ -33,7 +33,9 @@ namespace po = boost::program_options;
 
 int main(int argc, char** argv)
 {
-    int id, size, borderBits;
+    int id         = 0;
+    int size       = 0;
+    int borderBits = 0;
     std::string file;
     try
     {
@@ -55,7 +57,7 @@ int main(int argc, char** argv)
         po::variables_map vm;
         po::store(po::command_line_parser(argc, argv).options(options).positional(pos).run(), vm);
 
-        if(vm.count("help"))
+        if(vm.count("help") != 0U)
         {
             std::cout << "usage: " << argv[0] << " makerID outfile.(jpg|png|tiff|...) sizeInPixels" << std::endl;
             std::cout << options << std::endl;

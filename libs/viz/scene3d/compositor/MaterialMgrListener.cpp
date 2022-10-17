@@ -31,25 +31,21 @@
 #include <OGRE/OgreHighLevelGpuProgramManager.h>
 #include <OGRE/OgreTechnique.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace compositor
+namespace sight::viz::scene3d::compositor
 {
 
 // ----------------------------------------------------------------------------
 
 MaterialMgrListener::~MaterialMgrListener()
-{
-}
+= default;
 
 // ----------------------------------------------------------------------------
 
 Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotFound(
-    unsigned short /*_schemeIndex*/,
+    std::uint16_t /*_schemeIndex*/,
     const Ogre::String& _schemeName,
     Ogre::Material* _originalMaterial,
-    unsigned short /*_lodIndex*/,
+    std::uint16_t /*_lodIndex*/,
     const Ogre::Renderable*
     /*_renderable*/
 )
@@ -95,7 +91,7 @@ Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotF
     // The R2VB material does not need to fill the OIT schemes, though Ogre get us here to know what to do
     // We simply return the main technique in this case
     const Ogre::Technique::Passes& defaultTechPasses = defaultTech->getPasses();
-    for(const auto pass : defaultTechPasses)
+    for(auto* const pass : defaultTechPasses)
     {
         if(Ogre::StringUtil::startsWith(pass->getGeometryProgramName(), "R2VB/"))
         {
@@ -109,7 +105,7 @@ Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotF
         newTech = viz::scene3d::helper::Technique::copyToMaterial(depthTech, _schemeName, _originalMaterial);
 
         const Ogre::Technique::Passes& passes = newTech->getPasses();
-        for(const auto pass : passes)
+        for(auto* const pass : passes)
         {
             pass->setCullingMode(Ogre::CULL_NONE);
             pass->setManualCullingMode(Ogre::MANUAL_CULL_NONE);
@@ -129,7 +125,7 @@ Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotF
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
         const Ogre::Technique::Passes& passes = newTech->getPasses();
-        for(const auto pass : passes)
+        for(auto* const pass : passes)
         {
             pass->setDepthCheckEnabled(true);
             pass->setCullingMode(Ogre::CULL_NONE);
@@ -151,7 +147,13 @@ Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotF
                 fpName,
                 algoName + "/peel"
             );
-            this->ensureFPCreated(newName, algoName, algoPassName, fpName, fpSourceName);
+            sight::viz::scene3d::compositor::MaterialMgrListener::ensureFPCreated(
+                newName,
+                algoName,
+                algoPassName,
+                fpName,
+                fpSourceName
+            );
             pass->setFragmentProgram(newName);
 
             auto numTexUnit                  = pass->getNumTextureUnitStates();
@@ -193,14 +195,20 @@ Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotF
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
         const Ogre::Technique::Passes& passes = newTech->getPasses();
-        for(const auto pass : passes)
+        for(auto* const pass : passes)
         {
             // replace fragment program and build it if needed
             const auto fpName       = pass->getFragmentProgramName();
             const auto fpSourceName = pass->getFragmentProgram()->getSourceFile();
             auto newName            =
                 viz::scene3d::helper::Shading::setTechniqueInProgramName(fpName, algoName + "/occlusionMap");
-            this->ensureFPCreated(newName, algoName, algoPassName, fpName, fpSourceName);
+            sight::viz::scene3d::compositor::MaterialMgrListener::ensureFPCreated(
+                newName,
+                algoName,
+                algoPassName,
+                fpName,
+                fpSourceName
+            );
             pass->setFragmentProgram(newName);
 
             pass->setCullingMode(Ogre::CULL_NONE);
@@ -214,7 +222,7 @@ Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotF
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
         const Ogre::Technique::Passes& passes = newTech->getPasses();
-        for(const auto pass : passes)
+        for(auto* const pass : passes)
         {
             // replace fragment program and build it if needed
             const auto fpName       = pass->getFragmentProgramName();
@@ -223,7 +231,13 @@ Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotF
                 fpName,
                 algoName + "/weightBlend"
             );
-            this->ensureFPCreated(newName, algoName, algoPassName, fpName, fpSourceName);
+            sight::viz::scene3d::compositor::MaterialMgrListener::ensureFPCreated(
+                newName,
+                algoName,
+                algoPassName,
+                fpName,
+                fpSourceName
+            );
             pass->setFragmentProgram(newName);
 
             pass->setDepthCheckEnabled(false);
@@ -263,7 +277,7 @@ Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotF
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
         const Ogre::Technique::Passes& passes = newTech->getPasses();
-        for(const auto pass : passes)
+        for(auto* const pass : passes)
         {
             // replace fragment program and build it if needed
             const auto fpName       = pass->getFragmentProgramName();
@@ -272,7 +286,13 @@ Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotF
                 fpName,
                 algoName + "/transmittanceBlend"
             );
-            this->ensureFPCreated(newName, algoName, algoPassName, fpName, fpSourceName);
+            sight::viz::scene3d::compositor::MaterialMgrListener::ensureFPCreated(
+                newName,
+                algoName,
+                algoPassName,
+                fpName,
+                fpSourceName
+            );
             pass->setFragmentProgram(newName);
 
             pass->setDepthCheckEnabled(false);
@@ -313,7 +333,7 @@ Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotF
         newTech = viz::scene3d::helper::Technique::copyToMaterial(depthTech, _schemeName, _originalMaterial);
 
         const Ogre::Technique::Passes& passes = newTech->getPasses();
-        for(const auto pass : passes)
+        for(auto* const pass : passes)
         {
             pass->setDepthCheckEnabled(false);
             pass->setCullingMode(Ogre::CULL_NONE);
@@ -329,7 +349,7 @@ Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotF
         newTech = viz::scene3d::helper::Technique::copyToMaterial(defaultTech, _schemeName, _originalMaterial);
 
         const Ogre::Technique::Passes& passes = newTech->getPasses();
-        for(const auto pass : passes)
+        for(auto* const pass : passes)
         {
             pass->setDepthCheckEnabled(false);
             pass->setCullingMode(Ogre::CULL_NONE);
@@ -344,7 +364,13 @@ Ogre::Technique* viz::scene3d::compositor::MaterialMgrListener::handleSchemeNotF
                 fpName,
                 algoName + "/peel"
             );
-            this->ensureFPCreated(newName, algoName, algoPassName, fpName, fpSourceName);
+            sight::viz::scene3d::compositor::MaterialMgrListener::ensureFPCreated(
+                newName,
+                algoName,
+                algoPassName,
+                fpName,
+                fpSourceName
+            );
             pass->setFragmentProgram(newName);
 
             std::string inputBuffer;
@@ -408,7 +434,7 @@ Ogre::GpuProgramPtr MaterialMgrListener::ensureFPCreated(
     viz::scene3d::helper::Shading::GpuProgramParametersType parameters;
 
     // Set specific shader according to the algo and the pass
-    if(_algoName == "DepthPeeling")
+    if(_algoName == "DepthPeeling" || _algoName == "CelShadingDepthPeeling")
     {
         parameters.push_back({"preprocessor_defines", "DEPTH_PEELING=1"});
     }
@@ -453,10 +479,6 @@ Ogre::GpuProgramPtr MaterialMgrListener::ensureFPCreated(
             parameters.push_back({"preprocessor_defines", "WBOIT=1"});
         }
     }
-    else if(_algoName == "CelShadingDepthPeeling")
-    {
-        parameters.push_back({"preprocessor_defines", "DEPTH_PEELING=1"});
-    }
     else
     {
         SIGHT_FATAL("Unreachable code");
@@ -473,6 +495,4 @@ Ogre::GpuProgramPtr MaterialMgrListener::ensureFPCreated(
 
 // ----------------------------------------------------------------------------
 
-} // namespace compositor
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::compositor

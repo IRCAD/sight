@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "SFrameWriter.hpp"
 
 #include <core/com/Signal.hpp>
@@ -51,29 +53,29 @@ static const core::com::Slots::SlotKeyType s_SAVE_FRAME           = "saveFrame";
 static const core::com::Slots::SlotKeyType s_START_RECORD         = "startRecord";
 static const core::com::Slots::SlotKeyType s_STOP_RECORD          = "stopRecord";
 static const core::com::Slots::SlotKeyType s_RECORD               = "record";
+static const core::com::Slots::SlotKeyType s_TOGGLE_RECORDING     = "toggleRecording";
 static const core::com::Slots::SlotKeyType s_WRITE                = "write";
 static const core::com::Slots::SlotKeyType s_SET_FORMAT_PARAMETER = "setFormatParameter";
 
 //------------------------------------------------------------------------------
 
 SFrameWriter::SFrameWriter() noexcept :
-    m_imageType(0),
-    m_isRecording(false),
+
     m_format(".tiff")
 {
     newSlot(s_SAVE_FRAME, &SFrameWriter::saveFrame, this);
     newSlot(s_START_RECORD, &SFrameWriter::startRecord, this);
     newSlot(s_STOP_RECORD, &SFrameWriter::stopRecord, this);
     newSlot(s_RECORD, &SFrameWriter::record, this);
+    newSlot(s_TOGGLE_RECORDING, &SFrameWriter::toggleRecording, this);
     newSlot(s_WRITE, &SFrameWriter::write, this);
     newSlot(s_SET_FORMAT_PARAMETER, &SFrameWriter::setFormatParameter, this);
 }
 
 //------------------------------------------------------------------------------
 
-SFrameWriter::~SFrameWriter() noexcept
-{
-}
+SFrameWriter::~SFrameWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -178,7 +180,7 @@ void SFrameWriter::write(core::HiResClock::HiResClockType timestamp)
 
             cv::Mat image(cv::Size(width, height), m_imageType, (void*) imageBuffer, cv::Mat::AUTO_STEP);
 
-            const std::size_t time = static_cast<std::size_t>(timestamp);
+            const auto time = static_cast<std::size_t>(timestamp);
             const std::string filename("img_" + std::to_string(time) + m_format);
             const std::filesystem::path path = this->getFolder() / filename;
 
@@ -228,26 +230,26 @@ void SFrameWriter::startRecord()
             frameTL
         );
 
-        if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->numComponents() == 3)
+        if(frameTL->getType() == core::Type::UINT8 && frameTL->numComponents() == 3)
         {
             m_imageType = CV_8UC3;
         }
-        else if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->numComponents() == 4)
+        else if(frameTL->getType() == core::Type::UINT8 && frameTL->numComponents() == 4)
         {
             m_imageType = CV_8UC4;
         }
-        else if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->numComponents() == 1)
+        else if(frameTL->getType() == core::Type::UINT8 && frameTL->numComponents() == 1)
         {
             m_imageType = CV_8UC1;
         }
-        else if(frameTL->getType() == core::tools::Type::s_UINT16 && frameTL->numComponents() == 1)
+        else if(frameTL->getType() == core::Type::UINT16 && frameTL->numComponents() == 1)
         {
             m_imageType = CV_16UC1;
         }
         else
         {
             SIGHT_ERROR(
-                "This type of frame : " + frameTL->getType().string() + " with "
+                "This type of frame : " + frameTL->getType().name() + " with "
                 + std::to_string(frameTL->numComponents()) + " is not supported"
             );
             return;
@@ -269,6 +271,20 @@ void SFrameWriter::startRecord()
 void SFrameWriter::stopRecord()
 {
     m_isRecording = false;
+}
+
+//------------------------------------------------------------------------------
+
+void SFrameWriter::toggleRecording()
+{
+    if(m_isRecording)
+    {
+        this->stopRecord();
+    }
+    else
+    {
+        this->startRecord();
+    }
 }
 
 //------------------------------------------------------------------------------

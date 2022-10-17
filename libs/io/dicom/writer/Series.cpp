@@ -39,24 +39,19 @@
 
 SIGHT_REGISTER_IO_WRITER(sight::io::dicom::writer::Series);
 
-namespace sight::io::dicom
-{
-
-namespace writer
+namespace sight::io::dicom::writer
 {
 
 //------------------------------------------------------------------------------
 
-Series::Series(io::base::writer::IObjectWriter::Key) :
-    m_fiducialsExportMode(SPATIAL_FIDUCIALS)
+Series::Series(io::base::writer::IObjectWriter::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 Series::~Series()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -78,17 +73,15 @@ void Series::write()
     if(sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::CTImageStorage)
        || sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MRImageStorage))
     {
-        data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
+        const auto imageSeries = data::ImageSeries::dynamicCast(series);
         SIGHT_ASSERT("sight::data::ImageSeries not instanced", imageSeries);
-        data::Image::csptr image = imageSeries->getImage();
-        SIGHT_ASSERT("sight::data::Image not instanced", image);
 
         // Write image
         io::dicom::writer::iod::CTMRImageIOD imageIOD(instance, this->getFolder() / "im");
         imageIOD.write(series);
 
-        data::PointList::sptr landmarks = data::helper::MedicalImage::getLandmarks(*image);
-        data::Vector::sptr distances    = data::helper::MedicalImage::getDistances(*image);
+        data::PointList::sptr landmarks = data::helper::MedicalImage::getLandmarks(*imageSeries);
+        data::Vector::sptr distances    = data::helper::MedicalImage::getDistances(*imageSeries);
 
         if((landmarks && !landmarks->getPoints().empty()) || (distances && !distances->empty()))
         {
@@ -118,21 +111,18 @@ void Series::write()
     }
 
     // Push instance into container
-    m_dicomInstanceMap[series->getInstanceUID()] = instance;
+    m_dicomInstanceMap[series->getSeriesInstanceUID()] = instance;
 }
 
 //------------------------------------------------------------------------------
 
-bool Series::hasDocumentSR(const data::ImageSeries::csptr& imageSeries) const
+bool Series::hasDocumentSR(const data::ImageSeries::csptr& imageSeries)
 {
-    data::Image::csptr image = imageSeries->getImage();
-    SIGHT_ASSERT("Image not instanced", image);
-
-    data::PointList::sptr pl = data::helper::MedicalImage::getLandmarks(*image);
-    const auto distances     = data::helper::MedicalImage::getDistances(*image);
+    data::PointList::sptr pl = data::helper::MedicalImage::getLandmarks(*imageSeries);
+    const auto distances     = data::helper::MedicalImage::getDistances(*imageSeries);
 
     // Check if image has landmark and distance
-    return (pl && pl->getPoints().size() > 0) || distances;
+    return (pl && !pl->getPoints().empty()) || distances;
 }
 
 //------------------------------------------------------------------------------
@@ -147,11 +137,9 @@ SPTR(io::dicom::container::DicomInstance) Series::getImageInstance()
 
 std::string Series::extension() const
 {
-    return std::string("");
+    return {""};
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer

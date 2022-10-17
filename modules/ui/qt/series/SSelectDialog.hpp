@@ -25,7 +25,7 @@
 
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <service/IController.hpp>
 
@@ -33,7 +33,7 @@ namespace sight::module::ui::qt::series
 {
 
 /**
- * @brief This service is used to select a series from a series DB and then extract it to the appropriate typed data.
+ * @brief This service is used to select a series from a series set and then extract it to the appropriate typed data.
  *
  * This service is a work in progress and will be updated in Sight 22.0 to pop-up a dialog to let the user select the
  * series.
@@ -48,14 +48,14 @@ namespace sight::module::ui::qt::series
  *
  * @code{.xml}
         <service uid="..." type="sight::module::ui::qt::series::SSelectDialog" >
-           <in key="seriesDB" uid="..."/>
+           <in key="seriesSet" uid="..."/>
            <out key="modelSeries" uid="..."/>
            <out key="imageSeries" uid="..."/>
            <out key="image" uid="..."/>
         </service>
        @endcode
  * @subsection Input Input
- * - \b seriesDB [sight::data::SeriesDB]: database series from which the series extracted.
+ * - \b seriesSet [sight::data::SeriesSet]: database series from which the series extracted.
  *
  * @subsection Output Output
  * - \b modelSeries [sight::data::ModelSeries]: output model series extracted from the database series.
@@ -96,7 +96,7 @@ protected:
 
 private:
 
-    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::in> m_seriesDB {this, "seriesDB"};
+    sight::data::ptr<sight::data::SeriesSet, sight::data::Access::in> m_series_set {this, "seriesSet"};
     sight::data::ptr<sight::data::ModelSeries, sight::data::Access::out> m_modelSeries {this, "modelSeries"};
     sight::data::ptr<sight::data::ImageSeries, sight::data::Access::out> m_imageSeries {this, "imageSeries"};
     sight::data::ptr<sight::data::Image, sight::data::Access::out> m_image {this, "image"};

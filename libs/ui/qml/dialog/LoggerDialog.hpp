@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 
 #include <vector>
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 //------------------------------------------------------------------------------
@@ -59,7 +56,7 @@ public:
     UI_QML_API LoggerDialog(ui::base::GuiBaseObject::Key key);
 
     /// Destructor
-    UI_QML_API virtual ~LoggerDialog();
+    UI_QML_API ~LoggerDialog() override;
 
     /**
      * @brief Set the dialog title.
@@ -119,12 +116,10 @@ private:
     QUrl m_shown;
 
     /// Setter to QProperty and emit signal
-    UI_QML_API void emitHidden(const QUrl&);
-    UI_QML_API void emitIcon(const QUrl&);
-    UI_QML_API void emitMessage(const QString&);
-    UI_QML_API void emitShown(const QUrl&);
+    UI_QML_API void emitHidden(const QUrl& /*hidden*/);
+    UI_QML_API void emitIcon(const QUrl& /*path*/);
+    UI_QML_API void emitMessage(const QString& /*message*/);
+    UI_QML_API void emitShown(const QUrl& /*shown*/);
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

@@ -27,17 +27,13 @@
 #include <data/Image.hpp>
 #include <data/TransferFunction.hpp>
 
+#include <viz/scene3d/Texture.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
-
-#include <glm/glm.hpp>
 
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreTexture.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace vr
+namespace sight::viz::scene3d::vr
 {
 
 /**
@@ -51,7 +47,7 @@ public:
     VIZ_SCENE3D_API SummedAreaTable(
         std::string _parentId,
         Ogre::SceneManager* _sceneManager,
-        float _sizeRatio = 0.25f
+        float _sizeRatio = 0.25F
     );
 
     /// Destructor, does nothing.
@@ -62,19 +58,19 @@ public:
 
     /// Computes the SAT using Hensley's recursive doubling algorithm.
     VIZ_SCENE3D_API void computeParallel(
-        Ogre::TexturePtr _imgTexture,
+        const Texture::sptr& _imgTexture,
         const viz::scene3d::TransferFunction::sptr& _gpuTf,
         float _sampleDistance
     );
 
     /// Returns the texture holding the SAT.
-    VIZ_SCENE3D_API Ogre::TexturePtr getTexture() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::TexturePtr getTexture() const;
 
     /// Returns the texture used as a ping-pong buffer during SAT computation allowing it to be repurposed.
-    VIZ_SCENE3D_API Ogre::TexturePtr getSpareTexture() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::TexturePtr getSpareTexture() const;
 
     /// Updates the current size of the image according to the passed texture and updates the SAT
-    VIZ_SCENE3D_API void updateSatFromTexture(Ogre::TexturePtr _imgTexture);
+    VIZ_SCENE3D_API void updateSatFromTexture(const Texture::sptr& _imgTexture);
 
     /// Updates the SAT size ratio and updates the SAT.
     VIZ_SCENE3D_API void updateSatFromRatio(float _sizeRatio);
@@ -96,9 +92,6 @@ private:
 
     /// Creates the buffers and initializes the SAT.
     void updateBuffers();
-
-    /// Returns the voxel colour after TF application.
-    glm::vec4 applyTf(data::TransferFunction::sptr _tf, int16_t imgValue);
 
     listeners_t m_listeners {};
 
@@ -124,20 +117,20 @@ private:
     Ogre::SceneManager* m_sceneManager;
 
     /// Camera used as a viewport for each slice of the SAT buffers.
-    Ogre::Camera* m_dummyCamera;
+    Ogre::Camera* m_dummyCamera {nullptr};
 
     /// The pass orientation, horizontal = 0, vertical = 1, z-wise = 2.
-    int m_passOrientation;
+    int m_passOrientation {};
 
     /// The index of the slice to which we currently render.
-    std::size_t m_sliceIndex;
+    std::size_t m_sliceIndex {};
 
     /// The read offset based on the number of reads per fragment shader (r) and the pass index (i) : m_readOffset =
     /// r^i.
-    int m_readOffset;
+    int m_readOffset {};
 
     /// The depth of the current slice.
-    float m_currentSliceDepth;
+    float m_currentSliceDepth {};
 
     /// Number of texture reads per pass. A higher number will result in fewer passes.
     /// /!\ This number must be the same as the one used in the fragment shader.
@@ -166,6 +159,4 @@ inline Ogre::TexturePtr SummedAreaTable::getSpareTexture() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace vr
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::vr

@@ -26,8 +26,9 @@
 
 #include "viz/scene3d/config.hpp"
 
-#include <data/Composite.hpp>
+#include <data/Object.hpp>
 
+#include <map>
 #include <vector>
 
 namespace Ogre
@@ -35,7 +36,7 @@ namespace Ogre
 
 class Viewport;
 
-}
+} // namespace Ogre
 
 namespace sight::viz::scene3d
 {
@@ -60,7 +61,7 @@ public:
     typedef std::vector<CompositorType> CompositorChainType;
 
     VIZ_SCENE3D_API ChainManager(Ogre::Viewport* viewport);
-    VIZ_SCENE3D_API virtual ~ChainManager();
+    VIZ_SCENE3D_API ~ChainManager() override;
 
     /// Inserts the new compositor in the compositor chain vector
     VIZ_SCENE3D_API void addAvailableCompositor(CompositorIdType _compositorName);
@@ -124,7 +125,7 @@ private:
     Ogre::Viewport* m_ogreViewport;
 
     /// Map allowing to keep the objects of the created adaptors alive
-    data::Composite::sptr m_adaptorsObjectsOwner;
+    std::map<std::string, data::Object::sptr> m_adaptorsObjectsOwner;
 };
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,18 +42,6 @@ public:
      * @brief Type used in logical typestamp.
      */
     typedef core::HiResClock::HiResClockType TimeStampType;
-
-    /**
-     * @name Constructor/Destructor
-     * @{ */
-
-    CORE_API TimeStamp()
-    {
-        this->m_modifiedTime = 0;
-        this->m_lifePeriod   = 0;
-    }
-
-    /**  @} */
 
     /**
      * @brief Update the timestamp to the current EPOCH time
@@ -132,12 +120,12 @@ private:
     /**
      * @brief TimeStamp value (milliseconds)
      */
-    TimeStampType m_modifiedTime;
+    TimeStampType m_modifiedTime {0};
 
     /**
      * @brief life period (milliseconds)
      */
-    TimeStampType m_lifePeriod;
+    TimeStampType m_lifePeriod {0};
 };
 
 } //namespace sight::core

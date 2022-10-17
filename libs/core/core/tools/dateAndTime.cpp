@@ -96,9 +96,9 @@ boost::posix_time::time_duration strToBoostTime(const std::string& timeStr)
         std::regex isNumber("[0-9]+");
         if(std::regex_match(timeStr, isNumber))
         {
-            std::uint16_t h = boost::lexical_cast<std::uint16_t>(timeStr.substr(0, 2));
-            std::uint16_t m = boost::lexical_cast<std::uint16_t>(timeStr.substr(2, 2));
-            std::uint16_t s = boost::lexical_cast<std::uint16_t>(timeStr.substr(4, 2));
+            auto h = boost::lexical_cast<std::uint16_t>(timeStr.substr(0, 2));
+            auto m = boost::lexical_cast<std::uint16_t>(timeStr.substr(2, 2));
+            auto s = boost::lexical_cast<std::uint16_t>(timeStr.substr(4, 2));
             td = hours(h) + minutes(m) + seconds(s);
         }
         else
@@ -118,7 +118,7 @@ boost::posix_time::time_duration strToBoostTime(const std::string& timeStr)
 
 boost::posix_time::ptime strToBoostDateAndTime(const std::string& dateStr, const std::string& timeStr)
 {
-    return boost::posix_time::ptime(strToBoostDate(dateStr), strToBoostTime(timeStr));
+    return {strToBoostDate(dateStr), strToBoostTime(timeStr)};
 }
 
 //------------------------------------------------------------------------------
@@ -146,4 +146,4 @@ std::string getCurrentTime()
     return nowStr.substr(0, 21);
 }
 
-} // namespace sight::core
+} // namespace sight::core::tools

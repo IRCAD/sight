@@ -27,10 +27,9 @@
 #include <data/Exception.hpp>
 #include <data/Object.hpp>
 
-namespace sight::viz::scene2d
-{
+#include <optional>
 
-namespace data
+namespace sight::viz::scene2d::data
 {
 
 /**
@@ -42,29 +41,32 @@ public:
 
     SIGHT_DECLARE_CLASS(Viewport, sight::data::Object, sight::data::factory::New<Viewport>);
 
-    /**
-     * @brief Constructor
-     */
-    Viewport(sight::data::Object::Key) :
-        m_x(200.f),
-        m_y(200.f),
-        m_width(400.f),
-        m_height(400.f)
+    Viewport() = default;
+    Viewport(sight::data::Object::Key /*unused*/)
     {
     }
 
-    /// Defines shallow copy
-    VIZ_SCENE2D_API void shallowCopy(const sight::data::Object::csptr& _source) override;
+    double x() const;
+    double y() const;
 
-    float getX() const;
-    void setX(float _x);
-    float getY() const;
-    void setY(float _y);
+    double x_or(double /*x*/) const;
+    double y_or(double /*y*/) const;
 
-    float getWidth() const;
-    void setWidth(float _width);
-    float getHeight() const;
-    void setHeight(float _height);
+    double width() const;
+    double height() const;
+
+    double width_or(double /*width*/) const;
+    double height_or(double /*height*/) const;
+
+    double left() const;
+    double top() const;
+    double right() const;
+    double bottom() const;
+
+    void setX(double _x);
+    void setY(double _y);
+    void setWidth(double _width);
+    void setHeight(double _height);
 
     /// Equality comparison operators
     /// @{
@@ -72,74 +74,140 @@ public:
     VIZ_SCENE2D_API bool operator!=(const Viewport& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    VIZ_SCENE2D_API void shallowCopy(const sight::data::Object::csptr& source) override;
 
     /// Defines deep copy
-    VIZ_SCENE2D_API void cachedDeepCopy(const sight::data::Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    VIZ_SCENE2D_API void deepCopy(
+        const sight::data::Object::csptr& source,
+        const std::unique_ptr<sight::data::Object::DeepCopyCacheType>& cache = std::make_unique<sight::data::Object::DeepCopyCacheType>()
+    )
+    override;
 
 private:
 
-    float m_x, m_y, m_width, m_height;
+    std::optional<double> m_x;
+    std::optional<double> m_y;
+    std::optional<double> m_width;
+    std::optional<double> m_height;
 };
 
 //------------------------------------------------------------------------------
 
-inline float Viewport::getX() const
+inline double Viewport::x() const
 {
-    return m_x;
+    return *m_x;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Viewport::setX(float _x)
+inline double Viewport::y() const
+{
+    return *m_y;
+}
+
+//------------------------------------------------------------------------------
+
+inline double Viewport::x_or(double x) const
+{
+    return m_x.value_or(x);
+}
+
+//------------------------------------------------------------------------------
+
+inline double Viewport::y_or(double y) const
+{
+    return m_y.value_or(y);
+}
+
+//-----------------------------------------------------------------------------
+
+inline double Viewport::width() const
+{
+    return *m_width;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double Viewport::height() const
+{
+    return *m_height;
+}
+
+//-----------------------------------------------------------------------------
+
+inline double Viewport::width_or(double width) const
+{
+    return m_width.value_or(width);
+}
+
+//-----------------------------------------------------------------------------
+
+inline double Viewport::height_or(double height) const
+{
+    return m_height.value_or(height);
+}
+
+//------------------------------------------------------------------------------
+
+inline double Viewport::left() const
+{
+    return *m_x;
+}
+
+//------------------------------------------------------------------------------
+
+inline double Viewport::top() const
+{
+    return *m_y;
+}
+
+//------------------------------------------------------------------------------
+
+inline double Viewport::right() const
+{
+    return *m_x + *m_width;
+}
+
+//-----------------------------------------------------------------------------
+inline double Viewport::bottom() const
+{
+    return *m_y + *m_height;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Viewport::setX(double _x)
 {
     m_x = _x;
 }
 
 //-----------------------------------------------------------------------------
 
-inline float Viewport::getY() const
-{
-    return m_y;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void Viewport::setY(float _y)
+inline void Viewport::setY(double _y)
 {
     m_y = _y;
 }
 
 //-----------------------------------------------------------------------------
 
-inline float Viewport::getWidth() const
-{
-    return m_width;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void Viewport::setWidth(float _width)
+inline void Viewport::setWidth(double _width)
 {
     m_width = _width;
 }
 
 //-----------------------------------------------------------------------------
 
-inline float Viewport::getHeight() const
-{
-    return m_height;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void Viewport::setHeight(float _height)
+inline void Viewport::setHeight(double _height)
 {
     m_height = _height;
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace data
-
-} // namespace sight::viz::scene2d
+} // namespace sight::viz::scene2d::data

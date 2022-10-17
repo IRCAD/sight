@@ -11,6 +11,7 @@
     </parameters>
     <config>
         <object uid="${image}" type="sight::data::Image" src="ref" />
+        <object uid="tf" type="sight::data::TransferFunction" />
         <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
         <object uid="snapshot" type="sight::data::Image" />
 
@@ -97,11 +98,7 @@
         </service>
 
         <!-- Save the snapshot image -->
-        <service uid="snapshotAct" type="sight::module::ui::base::com::SSlotCaller">
-            <slots>
-                <slot>imageWriterSrv/update</slot>
-            </slots>
-        </service>
+        <service uid="snapshotAct" type="sight::module::ui::base::SAction"/>
 
         <!-- Generic Scene Negato -->
         <!-- *************************** Begin generic scene *************************** -->
@@ -128,6 +125,7 @@
 
         <service uid="negatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
             <inout key="image" uid="${image}" />
+            <inout key="tf" uid="tf" />
             <config layer="defaultLayer" priority="0" orientation="${orientation}" />
         </service>
 
@@ -136,12 +134,13 @@
         </service>
 
         <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
-            <inout key="image" uid="${image}" />
+            <in key="image" uid="${image}" />
+            <in key="tf" uid="tf" />
             <config layer="defaultLayer" sliceIndex="${orientation}" filtering="none" />
         </service>
 
         <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
-            <inout key="image" uid="${image}" />
+            <in key="image" uid="${image}" />
             <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
 
@@ -182,6 +181,11 @@
             <signal>mainView/started</signal>
             <slot>negato_top_slider_view/show</slot>
             <slot>negato_bottom_slider_view/show</slot>
+        </connect>
+
+        <connect>
+            <signal>snapshotAct/clicked</signal>
+            <slot>imageWriterSrv/update</slot>
         </connect>
 
         <start uid="LockImageSrv" />

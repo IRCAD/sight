@@ -20,33 +20,27 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "core/memory/tools/MemoryMonitorTools.hpp"
 
 #ifdef _WIN32
-#define MEMORYTOOLIMPL Win32MemoryMonitorTools
+#define MEMORYTOOLIMPL Win32MemoryMonitorTools // NOLINT(cppcoreguidelines-macro-usage): It's a class name
 #include "core/memory/tools/Win32MemoryMonitorTools.hpp"
 #else
-#define MEMORYTOOLIMPL PosixMemoryMonitorTools
+#define MEMORYTOOLIMPL PosixMemoryMonitorTools // NOLINT(cppcoreguidelines-macro-usage): It's a class name
 #include "core/memory/tools/PosixMemoryMonitorTools.hpp"
 #endif
 
-namespace sight::core::memory
-{
-
-namespace tools
+namespace sight::core::memory::tools
 {
 
 //-----------------------------------------------------------------------------
 
 MemoryMonitorTools::MemoryMonitorTools()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
-
-MemoryMonitorTools::~MemoryMonitorTools()
-{
-}
 
 //-----------------------------------------------------------------------------
 
@@ -106,6 +100,4 @@ std::uint64_t MemoryMonitorTools::getUsedProcessMemory()
 
 //-----------------------------------------------------------------------------
 
-} // namespace tools
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::tools

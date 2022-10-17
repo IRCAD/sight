@@ -68,9 +68,8 @@ SLightSelector::SLightSelector() noexcept
 
 //------------------------------------------------------------------------------
 
-SLightSelector::~SLightSelector() noexcept
-{
-}
+SLightSelector::~SLightSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -85,29 +84,39 @@ void SLightSelector::starting()
 {
     this->create();
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer()
     );
+    qtContainer->getQtContainer()->setObjectName(serviceID);
 
-    m_layersBox       = new QComboBox();
-    m_lightsList      = new QListWidget();
-    m_addLightBtn     = new QPushButton("Add light");
-    m_removeLightBtn  = new QPushButton("Remove light");
+    m_layersBox = new QComboBox();
+    m_layersBox->setObjectName(serviceID + "/layersBox");
+    m_lightsList = new QListWidget();
+    m_lightsList->setObjectName(serviceID + "/lightsList");
+    m_addLightBtn = new QPushButton("Add light");
+    m_addLightBtn->setObjectName(serviceID + "/" + m_addLightBtn->text());
+    m_removeLightBtn = new QPushButton("Remove light");
+    m_removeLightBtn->setObjectName(serviceID + "/" + m_removeLightBtn->text());
     m_ambientColorBtn = new QPushButton("Scene ambient color");
+    m_ambientColorBtn->setObjectName(serviceID + "/" + m_ambientColorBtn->text());
 
-    QHBoxLayout* layoutButton = new QHBoxLayout;
+    auto* layoutButton = new QHBoxLayout;
     m_checkAllButton = new QPushButton(tr("Check all"));
+    m_checkAllButton->setObjectName(serviceID + "/" + m_checkAllButton->text());
     layoutButton->addWidget(m_checkAllButton, 0);
 
     m_unCheckAllButton = new QPushButton(tr("UnCheck all"));
+    m_unCheckAllButton->setObjectName(serviceID + "/" + m_unCheckAllButton->text());
     layoutButton->addWidget(m_unCheckAllButton, 0);
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     layout->addWidget(m_layersBox);
     layout->addLayout(layoutButton);
     layout->addWidget(m_lightsList);
 
-    QHBoxLayout* addRemoveLayout = new QHBoxLayout();
+    auto* addRemoveLayout = new QHBoxLayout();
     addRemoveLayout->addWidget(m_addLightBtn);
     addRemoveLayout->addWidget(m_removeLightBtn);
     m_removeLightBtn->setEnabled(false);
@@ -165,9 +174,9 @@ void SLightSelector::onSelectedLayerItem(int _index)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem*)
+void SLightSelector::onSelectedLightItem(QListWidgetItem* _item, QListWidgetItem* /*unused*/)
 {
-    if(_item)
+    if(_item != nullptr)
     {
         m_currentLight = this->retrieveLightAdaptor(_item->text().toStdString());
 
@@ -190,14 +199,14 @@ void SLightSelector::onCheckedLightItem(QListWidgetItem* _item)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onAddLight(bool)
+void SLightSelector::onAddLight(bool /*unused*/)
 {
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer()
     );
     QWidget* const container = qtContainer->getQtContainer();
 
-    module::ui::viz::NewLightDialog* lightDialog = new module::ui::viz::NewLightDialog(container);
+    auto* lightDialog = new module::ui::viz::NewLightDialog(container);
 
     if(lightDialog->exec() == QDialog::Accepted)
     {
@@ -221,13 +230,13 @@ void SLightSelector::onAddLight(bool)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onRemoveLight(bool)
+void SLightSelector::onRemoveLight(bool /*unused*/)
 {
     if(m_currentLight)
     {
         Layer::sptr currentLayer = m_currentLayer.lock();
 
-        const std::vector<Light>::iterator position =
+        const auto position =
             std::find_if(
                 m_managedLightAdaptors.begin(),
                 m_managedLightAdaptors.end(),
@@ -266,7 +275,7 @@ void SLightSelector::onRemoveLight(bool)
 
 //------------------------------------------------------------------------------
 
-void SLightSelector::onEditAmbientColor(bool)
+void SLightSelector::onEditAmbientColor(bool /*unused*/)
 {
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer()
@@ -310,14 +319,14 @@ void SLightSelector::refreshLayers()
         service::OSR::getServices("sight::viz::scene3d::SRender");
 
     // Fills layer combo box with all enabled layers of each render services
-    for(auto srv : renderers)
+    for(const auto& srv : renderers)
     {
         auto render = sight::viz::scene3d::SRender::dynamicCast(srv);
 
         for(auto& layerMap : render->getLayers())
         {
-            const std::string id       = layerMap.first;
-            const std::string renderID = render->getID();
+            const std::string id = layerMap.first;
+            std::string renderID = render->getID();
             m_layersBox->addItem(QString::fromStdString(renderID + " : " + id));
             m_layers.push_back(layerMap.second);
 
@@ -344,13 +353,13 @@ void SLightSelector::updateLightsList()
 {
     m_lightsList->clear();
 
-    for(auto lightAdaptor : m_lightAdaptors)
+    for(const auto& lightAdaptor : m_lightAdaptors)
     {
         QString lightName         = lightAdaptor->getName().c_str();
         Qt::CheckState lightState = lightAdaptor->isSwitchedOn() ? Qt::Checked
                                                                  : Qt::Unchecked;
 
-        QListWidgetItem* nextLight = new QListWidgetItem(lightName, m_lightsList);
+        auto* nextLight = new QListWidgetItem(lightName, m_lightsList);
         nextLight->setFlags(nextLight->flags() | Qt::ItemIsUserCheckable);
         nextLight->setCheckState(lightState);
     }
@@ -389,7 +398,7 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         service::registry::ObjectService::ServiceVectorType materialServices =
             service::OSR::getServices("sight::module::viz::scene3d::adaptor::SMaterial");
 
-        for(auto srv : materialServices)
+        for(const auto& srv : materialServices)
         {
             auto materialAdaptor = sight::viz::scene3d::IAdaptor::dynamicCast(srv);
 
@@ -437,7 +446,7 @@ void SLightSelector::onCheckAllBoxes(bool _visible)
 {
     for(int i = 0 ; i < m_lightsList->count() ; ++i)
     {
-        auto item = m_lightsList->item(i);
+        auto* item = m_lightsList->item(i);
         item->setCheckState(_visible ? Qt::Checked : Qt::Unchecked);
     }
 }
@@ -445,18 +454,18 @@ void SLightSelector::onCheckAllBoxes(bool _visible)
 //------------------------------------------------------------------------------
 
 NewLightDialog::NewLightDialog(QWidget* _parent) :
-    QDialog(_parent)
+    QDialog(_parent),
+    m_lightNameEdit(new QLineEdit(this))
 {
-    m_lightNameLbl  = new QLabel("Name :", this);
-    m_lightNameEdit = new QLineEdit(this);
+    m_lightNameLbl = new QLabel("Name :", this);
 
     m_okBtn = new QPushButton("Ok", this);
 
-    QHBoxLayout* lightNameLayout = new QHBoxLayout();
+    auto* lightNameLayout = new QHBoxLayout();
     lightNameLayout->addWidget(m_lightNameLbl);
     lightNameLayout->addWidget(m_lightNameEdit);
 
-    QVBoxLayout* newLightLayout = new QVBoxLayout();
+    auto* newLightLayout = new QVBoxLayout();
     newLightLayout->addLayout(lightNameLayout);
     newLightLayout->addWidget(m_okBtn);
 
@@ -476,7 +485,7 @@ NewLightDialog::~NewLightDialog()
 
 //------------------------------------------------------------------------------
 
-void NewLightDialog::onOkBtn(bool)
+void NewLightDialog::onOkBtn(bool /*unused*/)
 {
     if(!m_lightNameEdit->text().isEmpty())
     {

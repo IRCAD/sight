@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,28 +34,24 @@
 #include <QMainWindow>
 #include <QToolBar>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::base::builder::ToolBarBuilder,
     sight::ui::base::builder::IToolBarBuilder::REGISTRY_KEY
 );
 
-namespace sight::ui::base
-{
-
-namespace builder
+namespace sight::ui::base::builder
 {
 
 //-----------------------------------------------------------------------------
 
-ToolBarBuilder::ToolBarBuilder(ui::base::GuiBaseObject::Key)
+ToolBarBuilder::ToolBarBuilder(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 ToolBarBuilder::~ToolBarBuilder()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -63,31 +59,31 @@ void ToolBarBuilder::createToolBar(ui::base::container::fwContainer::sptr parent
 {
     m_parent = ui::qt::container::QtContainer::dynamicCast(parent);
     SIGHT_ASSERT("The parent container is not a QtContainer", m_parent);
-    QMainWindow* window = qobject_cast<QMainWindow*>(m_parent->getQtContainer());
+    auto* window = qobject_cast<QMainWindow*>(m_parent->getQtContainer());
 
-    QToolBar* toolBar = new QToolBar(QObject::tr("ToolBar"));
+    auto* toolBar = new QToolBar(QObject::tr("ToolBar"));
     toolBar->setIconSize(QSize(m_toolBitmapSize.first, m_toolBitmapSize.second));
     toolBar->setFloatable(false);
 
     if(!m_backgroundColor.empty())
     {
-        std::uint8_t rgba[4];
+        std::array<std::uint8_t, 4> rgba {};
         data::tools::Color::hexaStringToRGBA(m_backgroundColor, rgba);
         std::stringstream ss;
-        ss << "QToolBar { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
-        << static_cast<short>(rgba[1]) << ','
-        << static_cast<short>(rgba[2]) << ','
-        << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
+        ss << "QToolBar { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
+        << static_cast<std::int16_t>(rgba[1]) << ','
+        << static_cast<std::int16_t>(rgba[2]) << ','
+        << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
         const QString style = QString::fromStdString(ss.str());
         toolBar->setStyleSheet(qApp->styleSheet() + style);
     }
 
     ui::qt::container::QtToolBarContainer::sptr toolBarContainer = ui::qt::container::QtToolBarContainer::New();
-    if(window)
+    if(window != nullptr)
     {
         bool visible = window->isVisible();
 
-        Qt::ToolBarArea area;
+        Qt::ToolBarArea area {Qt::NoToolBarArea};
         switch(m_alignment)
         {
             case TOP:
@@ -102,7 +98,7 @@ void ToolBarBuilder::createToolBar(ui::base::container::fwContainer::sptr parent
                 area = Qt::RightToolBarArea;
                 break;
 
-            case LEFT:
+            default: // LEFT
                 area = Qt::LeftToolBarArea;
                 break;
         }
@@ -116,7 +112,8 @@ void ToolBarBuilder::createToolBar(ui::base::container::fwContainer::sptr parent
     {
         QWidget* widget = m_parent->getQtContainer();
         SIGHT_ASSERT("Parent container must have a layout", widget->layout());
-        QBoxLayout* layout = qobject_cast<QBoxLayout*>(widget->layout());
+        auto* layout = qobject_cast<QBoxLayout*>(widget->layout());
+
         switch(m_alignment)
         {
             case TOP:
@@ -141,6 +138,7 @@ void ToolBarBuilder::createToolBar(ui::base::container::fwContainer::sptr parent
         }
 
         SIGHT_ASSERT("Parent container layout must have be a QVBoxLayout", layout);
+        layout->setSpacing(0);
         layout->insertWidget(0, toolBar, 0);
     }
 
@@ -154,9 +152,9 @@ void ToolBarBuilder::destroyToolBar()
 {
     SIGHT_ASSERT("The ToolBar is not initialized", m_toolBar);
     SIGHT_ASSERT("The parent's container is not a QtContainer", m_parent);
-    QMainWindow* window = qobject_cast<QMainWindow*>(m_parent->getQtContainer());
+    auto* window = qobject_cast<QMainWindow*>(m_parent->getQtContainer());
 
-    if(window)
+    if(window != nullptr)
     {
         ui::qt::container::QtToolBarContainer::sptr qtToolBar =
             ui::qt::container::QtToolBarContainer::dynamicCast(m_toolBar);
@@ -169,6 +167,4 @@ void ToolBarBuilder::destroyToolBar()
 
 //-----------------------------------------------------------------------------
 
-} // namespace builder
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::builder

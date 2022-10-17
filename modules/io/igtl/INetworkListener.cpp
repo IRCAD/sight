@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,17 +34,16 @@ const core::com::Signals::SignalKeyType INetworkListener::s_DISCONNECTED_SIGNAL 
 
 //-----------------------------------------------------------------------------
 
-INetworkListener::INetworkListener()
+INetworkListener::INetworkListener() :
+    m_sigConnected(newSignal<ConnectedSignalType>(s_CONNECTED_SIGNAL)),
+    m_sigDisconnected(newSignal<DisconnectSignalType>(s_DISCONNECTED_SIGNAL))
 {
-    m_sigConnected    = newSignal<ConnectedSignalType>(s_CONNECTED_SIGNAL);
-    m_sigDisconnected = newSignal<DisconnectSignalType>(s_DISCONNECTED_SIGNAL);
 }
 
 //-----------------------------------------------------------------------------
 
 INetworkListener::~INetworkListener()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 

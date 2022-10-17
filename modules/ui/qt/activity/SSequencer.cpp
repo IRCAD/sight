@@ -38,18 +38,16 @@
 #include <QQuickItem>
 #include <QVBoxLayout>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 //------------------------------------------------------------------------------
 
 const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated";
 const core::com::Signals::SignalKeyType s_DATA_REQUIRED_SIG    = "dataRequired";
-const core::com::Signals::SignalKeyType s_ENABLED_PREVIOUS_SIG = "enabledPrevious";
-const core::com::Signals::SignalKeyType s_ENABLED_NEXT_SIG     = "enabledNext";
+const core::com::Signals::SignalKeyType s_HAS_PREVIOUS_SIG     = "hasPrevious";
+const core::com::Signals::SignalKeyType s_HAS_NEXT_SIG         = "hasNext";
+const core::com::Signals::SignalKeyType s_NEXT_ENABLED_SIG     = "nextEnabled";
 
 const core::com::Slots::SlotKeyType s_GO_TO_SLOT      = "goTo";
 const core::com::Slots::SlotKeyType s_CHECK_NEXT_SLOT = "checkNext";
@@ -68,12 +66,13 @@ static const std::string s_ELEVATION_CONFIG        = "elevation";
 
 //------------------------------------------------------------------------------
 
-SSequencer::SSequencer() noexcept
+SSequencer::SSequencer() noexcept :
+    m_sigActivityCreated(newSignal<ActivityCreatedSignalType>(s_ACTIVITY_CREATED_SIG)),
+    m_sigDataRequired(newSignal<DataRequiredSignalType>(s_DATA_REQUIRED_SIG)),
+    m_sigHasPrevious(newSignal<BoolSignalType>(s_HAS_PREVIOUS_SIG)),
+    m_sigHasNext(newSignal<BoolSignalType>(s_HAS_NEXT_SIG)),
+    m_sigNextEnabled(newSignal<BoolSignalType>(s_NEXT_ENABLED_SIG))
 {
-    m_sigActivityCreated = newSignal<ActivityCreatedSignalType>(s_ACTIVITY_CREATED_SIG);
-    m_sigDataRequired    = newSignal<DataRequiredSignalType>(s_DATA_REQUIRED_SIG);
-    m_sigEnabledPrevious = newSignal<EnabledPreviousSignalType>(s_ENABLED_PREVIOUS_SIG);
-    m_sigEnabledNext     = newSignal<EnabledNextSignalType>(s_ENABLED_NEXT_SIG);
     newSlot(s_GO_TO_SLOT, &SSequencer::goTo, this);
     newSlot(s_CHECK_NEXT_SLOT, &SSequencer::checkNext, this);
     newSlot(s_NEXT_SLOT, &SSequencer::next, this);
@@ -83,9 +82,8 @@ SSequencer::SSequencer() noexcept
 
 //------------------------------------------------------------------------------
 
-SSequencer::~SSequencer() noexcept
-{
-}
+SSequencer::~SSequencer() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -122,7 +120,7 @@ void SSequencer::starting()
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QVBoxLayout* mainLayout = new QVBoxLayout();
+    auto* mainLayout = new QVBoxLayout();
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
     m_widget = new QQuickWidget();
@@ -131,13 +129,13 @@ void SSequencer::starting()
     const auto path =
         core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "ActivitySequencer.qml");
     QWidget* parent = qtContainer->getQtContainer();
-    auto engine     = m_widget->engine();
+    auto* engine    = m_widget->engine();
     m_widget->setResizeMode(QQuickWidget::SizeRootObjectToView);
 
     QColor clear;
     if(m_clear.empty())
     {
-        clear = parent->palette().color(QPalette::Background);
+        clear = parent->palette().color(QPalette::Window);
 
         // styleSheet override QPalette
         // we assume that styleSheet is the dark style
@@ -247,10 +245,10 @@ void SSequencer::stopping()
 void SSequencer::updating()
 {
     {
-        auto seriesDB = m_seriesDB.lock();
-        SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
+        auto activity_set = m_activity_set.lock();
+        SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
-        m_currentActivity = this->parseActivities(*seriesDB);
+        m_currentActivity = this->parseActivities(*activity_set);
     }
     if(m_currentActivity >= 0)
     {
@@ -259,7 +257,7 @@ void SSequencer::updating()
             this->enableActivity(i);
         }
 
-        // launch the last series
+        // launch the last activity
         this->goTo(m_currentActivity);
     }
     else
@@ -280,8 +278,8 @@ void SSequencer::goTo(int index)
         return;
     }
 
-    auto seriesDB = m_seriesDB.lock();
-    SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
+    auto activity_set = m_activity_set.lock();
+    SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
     // Clear activities if go backward.
     if(m_clearActivities && m_currentActivity > index)
@@ -300,28 +298,28 @@ void SSequencer::goTo(int index)
         }
 
         // Disable all next activities (including current)
-        for(std::size_t i = index + 1 ; i < seriesDB->size() ; ++i)
+        for(int i = index + 1, end = int(activity_set->size()) ; i < end ; ++i)
         {
             this->disableActivity(i);
         }
 
         // Remove all last activities.
-        this->removeLastActivities(*seriesDB, index);
+        this->removeLastActivities(*activity_set, std::size_t(index));
     }
     // Store data otherwise.
     else if(m_currentActivity >= 0)
     {
-        this->storeActivityData(*seriesDB, m_currentActivity);
+        this->storeActivityData(*activity_set, std::size_t(m_currentActivity));
     }
 
-    const std::size_t newIdx = static_cast<std::size_t>(index);
+    const auto newIdx = static_cast<std::size_t>(index);
 
-    data::ActivitySeries::sptr activity = this->getActivity(*seriesDB, newIdx, m_slotUpdate);
+    data::Activity::sptr activity = this->getActivity(*activity_set, newIdx, m_slotUpdate);
 
     bool ok = true;
     std::string errorMsg;
 
-    std::tie(ok, errorMsg) = this->validateActivity(activity);
+    std::tie(ok, errorMsg) = sight::module::ui::qt::activity::SSequencer::validateActivity(activity);
     if(ok)
     {
         m_sigActivityCreated->asyncEmit(activity);
@@ -342,28 +340,34 @@ void SSequencer::goTo(int index)
 
 void SSequencer::checkNext()
 {
-    auto seriesDB = m_seriesDB.lock();
-    SIGHT_ASSERT("Missing '" << s_SERIESDB_INOUT << "' seriesDB", seriesDB);
+    auto activity_set = m_activity_set.lock();
+    SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
 
     // Store current activity data before checking the next one,
     // new data can be added in the current activity during the process.
     if(m_currentActivity >= 0)
     {
-        this->storeActivityData(*seriesDB, m_currentActivity);
+        this->storeActivityData(*activity_set, std::size_t(m_currentActivity));
     }
 
-    const std::size_t nextIdx = static_cast<std::size_t>(m_currentActivity + 1);
+    const auto nextIdx = static_cast<std::size_t>(m_currentActivity) + 1;
     if(nextIdx < m_activityIds.size())
     {
-        data::ActivitySeries::sptr nextActivity = this->getActivity(*seriesDB, nextIdx, m_slotUpdate);
+        data::Activity::sptr nextActivity = this->getActivity(*activity_set, nextIdx, m_slotUpdate);
 
         bool ok = true;
         std::string errorMsg;
 
-        std::tie(ok, errorMsg) = this->validateActivity(nextActivity);
+        std::tie(ok, errorMsg) = sight::module::ui::qt::activity::SSequencer::validateActivity(nextActivity);
         if(ok)
         {
             this->enableActivity(m_currentActivity + 1);
+            m_sigNextEnabled->asyncEmit(true);
+        }
+        else
+        {
+            m_sigNextEnabled->asyncEmit(false);
+            SIGHT_DEBUG(errorMsg);
         }
     }
 }
@@ -387,10 +391,10 @@ void SSequencer::previous()
 void SSequencer::sendInfo() const
 {
     const bool previousEnabled = (m_currentActivity > 0);
-    m_sigEnabledPrevious->asyncEmit(previousEnabled);
+    m_sigHasPrevious->asyncEmit(previousEnabled);
 
     const bool nextEnabled = (m_currentActivity < static_cast<int>(m_activityIds.size()) - 1);
-    m_sigEnabledNext->asyncEmit(nextEnabled);
+    m_sigHasNext->asyncEmit(nextEnabled);
 }
 
 //------------------------------------------------------------------------------
@@ -414,14 +418,12 @@ void SSequencer::disableActivity(int index)
 service::IService::KeyConnectionsMap SSequencer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_SERIESDB_INOUT, data::SeriesDB::s_ADDED_SERIES_SIG, s_UPDATE_SLOT);
-    connections.push(s_SERIESDB_INOUT, data::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_MODIFIED_SIG, s_UPDATE_SLOT);
 
     return connections;
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace activity
-
-} // namespace activity
+} // namespace sight::module::ui::qt::activity

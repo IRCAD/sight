@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,12 +28,12 @@
 
 #include <service/IController.hpp>
 
-namespace thread
+namespace sight::core::thread
 {
 
 class Timer;
 
-}
+} // namespace sight::core::thread
 
 namespace Tuto05MultithreadConsoleCpp
 {
@@ -65,7 +65,7 @@ public:
     TUTO05MULTITHREADCONSOLECPP_API SIncrementArray() noexcept;
 
     /// Destroys the service.
-    TUTO05MULTITHREADCONSOLECPP_API virtual ~SIncrementArray() noexcept;
+    TUTO05MULTITHREADCONSOLECPP_API ~SIncrementArray() noexcept override;
 
 protected:
 
@@ -90,7 +90,7 @@ private:
     SPTR(sight::core::thread::Timer) m_timer;
 
     /// Defines the periode of the timer.
-    unsigned int m_periodInMillisec;
+    unsigned int m_periodInMillisec {500};
 
     sight::data::ptr<sight::data::Array, sight::data::Access::inout> m_array {this, "array"};
 };

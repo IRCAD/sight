@@ -24,39 +24,33 @@
 
 #include "activity/validator/registry/macros.hpp"
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 #include <data/Composite.hpp>
 #include <data/Vector.hpp>
 
-namespace sight::activity
+namespace sight::activity::validator
 {
 
-namespace validator
-{
-
-fwActivitiesValidatorRegisterMacro(sight::activity::validator::DefaultActivity);
+SIGHT_REGISTER_ACTIVITY_VALIDATOR(sight::activity::validator::DefaultActivity);
 
 //-----------------------------------------------------------------------------
 
-DefaultActivity::DefaultActivity(activity::IValidator::Key)
+DefaultActivity::DefaultActivity(activity::IValidator::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 DefaultActivity::~DefaultActivity()
+= default;
+
+//-----------------------------------------------------------------------------
+
+IValidator::ValidationType DefaultActivity::validate(const data::Activity::csptr& activity) const
 {
+    return IActivityValidator::checkRequirements(activity);
 }
 
 //-----------------------------------------------------------------------------
 
-IValidator::ValidationType DefaultActivity::validate(const data::ActivitySeries::csptr& activitySeries) const
-{
-    return IActivityValidator::checkRequirements(activitySeries);
-}
-
-//-----------------------------------------------------------------------------
-
-} // namespace validator
-
-} // namespace sight::activity
+} // namespace sight::activity::validator

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,17 +35,12 @@
 
 #include <set>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 class ProgressDialog;
 
-}
-
-}
+} // namespace sight::ui::base::dialog
 
 namespace sight::module::ui::base
 {
@@ -73,7 +68,7 @@ public:
     /**
      * @brief Destructor. Do nothing.
      */
-    MODULE_UI_BASE_API virtual ~SJobBar() noexcept;
+    MODULE_UI_BASE_API ~SJobBar() noexcept override;
 
 protected:
 

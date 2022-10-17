@@ -28,10 +28,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::DoubleTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -52,8 +49,9 @@ void DoubleTest::tearDown()
 
 void DoubleTest::methode1()
 {
-    constexpr double VALUES[]     = {-3.14159265358979323851, 0.0, 2.04, 10, std::numeric_limits<double>::infinity()};
-    constexpr double NAN_VALUES[] = {
+    constexpr std::array VALUES =
+    {-3.14159265358979323851, 0.0, 2.04, 10., std::numeric_limits<double>::infinity()};
+    constexpr std::array NAN_VALUES = {
         std::numeric_limits<double>::quiet_NaN(),
         std::numeric_limits<double>::signaling_NaN()
     };
@@ -104,6 +102,4 @@ void DoubleTest::methode1()
     }
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

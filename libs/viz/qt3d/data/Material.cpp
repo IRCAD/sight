@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,45 +29,41 @@
 #include <QEffect>
 #include <QParameter>
 
-namespace sight::viz::qt3d
-{
-
-namespace data
+namespace sight::viz::qt3d::data
 {
 
 Material::Material(Qt3DCore::QNode* _parent) :
     QMaterial(_parent)
 {
-    Qt3DRender::QEffect* const effect = new Qt3DRender::QEffect;
+    auto* const effect = new Qt3DRender::QEffect;
     this->setEffect(effect);
 
     /// Initializes parameters with default values.
-    m_ambientColor = new Qt3DRender::QParameter(QStringLiteral("u_f3AmbientCol"), QVector3D(0.05f, 0.05f, 0.05f));
+    m_ambientColor = new Qt3DRender::QParameter(QStringLiteral("u_f3AmbientCol"), QVector3D(0.05F, 0.05F, 0.05F));
     this->effect()->addParameter(m_ambientColor);
-    m_ambientColorCopy = new Qt3DRender::QParameter(QStringLiteral("u_f3AmbientCol"), QVector3D(0.05f, 0.05f, 0.05f));
+    m_ambientColorCopy = new Qt3DRender::QParameter(QStringLiteral("u_f3AmbientCol"), QVector3D(0.05F, 0.05F, 0.05F));
     this->effect()->addParameter(m_ambientColorCopy);
 
     m_diffuseColor = new Qt3DRender::QParameter(QStringLiteral("u_f3DiffuseCol"), QColor("white"));
     this->effect()->addParameter(m_diffuseColor);
 
-    m_specularColor = new Qt3DRender::QParameter(QStringLiteral("u_f3SpecularCol"), QVector3D(0.2f, 0.2f, 0.2f));
+    m_specularColor = new Qt3DRender::QParameter(QStringLiteral("u_f3SpecularCol"), QVector3D(0.2F, 0.2F, 0.2F));
     this->effect()->addParameter(m_specularColor);
 
-    m_shininess = new Qt3DRender::QParameter(QStringLiteral("u_fShininess"), 25.0f);
+    m_shininess = new Qt3DRender::QParameter(QStringLiteral("u_fShininess"), 25.0F);
     this->effect()->addParameter(m_shininess);
 
     /// Adds lighting technique and sets default light position/intensity. Default shading mode is phong.
-    viz::qt3d::techniques::Lighting* const phongTechnique = new viz::qt3d::techniques::Lighting();
-    phongTechnique->setLightPosition(QVector3D(-100.0f, -100.0f, -100.0f));
-    phongTechnique->setLightIntensity(QVector3D(1.0f, 1.0f, 1.0f));
+    auto* const phongTechnique = new viz::qt3d::techniques::Lighting();
+    phongTechnique->setLightPosition(QVector3D(-100.0F, -100.0F, -100.0F));
+    phongTechnique->setLightIntensity(QVector3D(1.0F, 1.0F, 1.0F));
     this->addTechnique(phongTechnique);
 }
 
 //------------------------------------------------------------------------------
 
 Material::~Material()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -159,7 +155,7 @@ void Material::removeParameter(Qt3DRender::QParameter* _parameter)
 void Material::updateOptionsMode(int _optionsMode)
 {
     viz::qt3d::techniques::Lighting* const tech =
-        (viz::qt3d::techniques::Lighting*) this->effect()->techniques()[0];
+        dynamic_cast<viz::qt3d::techniques::Lighting*>(this->effect()->techniques()[0]);
 
     if(_optionsMode == 1)
     {
@@ -182,7 +178,7 @@ void Material::updateOptionsMode(int _optionsMode)
 void Material::updatePolygonMode(int _polygonMode)
 {
     viz::qt3d::techniques::Lighting* const tech =
-        (viz::qt3d::techniques::Lighting*) this->effect()->techniques()[0];
+        dynamic_cast<viz::qt3d::techniques::Lighting*>(this->effect()->techniques()[0]);
     tech->updateRasterMode(_polygonMode);
 }
 
@@ -191,7 +187,7 @@ void Material::updatePolygonMode(int _polygonMode)
 void Material::updateShadingMode(int _shadingMode)
 {
     viz::qt3d::techniques::Lighting* const tech =
-        (viz::qt3d::techniques::Lighting*) this->effect()->techniques()[0];
+        dynamic_cast<viz::qt3d::techniques::Lighting*>(this->effect()->techniques()[0]);
     tech->setLightingMode(static_cast<viz::qt3d::techniques::Lighting::LightingMode>(_shadingMode));
 }
 
@@ -211,12 +207,10 @@ void Material::updateRGBAMode(sight::data::Material::sptr _sightMaterial)
                          static_cast<int>(sightDiffuse->blue() * 255), static_cast<int>(sightDiffuse->alpha() * 255));
     this->setDiffuse(diffuse);
 
-    const QVector3D specular(.2f, .2f, .2f);
+    const QVector3D specular(.2F, .2F, .2F);
     this->setSpecular(specular);
 
     this->setShininess(25);
 }
 
-} // namespace data.
-
-} //namespace sight::viz::qt3d.
+} // namespace sight::viz::qt3d::data

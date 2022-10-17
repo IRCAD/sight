@@ -37,7 +37,7 @@ namespace sight::data
  * coherency checks between the markers, so you could have one marker with one point, another one with four points,
  * etc...
  */
-class DATA_CLASS_API MarkerMap : public Object
+class DATA_CLASS_API MarkerMap final : public Object
 {
 public:
 
@@ -55,10 +55,7 @@ public:
     /**
      * @brief Destructor
      */
-    DATA_API ~MarkerMap() override;
-
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    DATA_API ~MarkerMap() noexcept override = default;
 
     /// Returns a marker given its identifier, null_ptr if not found
     DATA_API const MarkerType* getMarker(const KeyType& _id) const;
@@ -84,10 +81,19 @@ public:
     DATA_API bool operator!=(const MarkerMap& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 
 private:
 

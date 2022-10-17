@@ -54,12 +54,12 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
-        <inout key="image" uid="..." />
+        <in key="image" uid="..." />
         <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="2" />
     </service>
    @endcode
  *
- * @subsection In-Out In-Out:
+ * @subsection Input Input:
  * - \b image [sight::data::Image]: image containing the distance field.
  *
  * @subsection Configuration Configuration:
@@ -101,10 +101,22 @@ public:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_API void mouseMoveEvent(MouseButton, Modifier _mod, int _x, int _y, int, int) override;
+    MODULE_VIZ_SCENE3D_API void mouseMoveEvent(
+        MouseButton /*_button*/,
+        Modifier _mod,
+        int _x,
+        int _y,
+        int /*_dx*/,
+        int /*_dy*/
+    ) override;
 
     /// Resets m_pickedData.
-    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton, Modifier _mod, int, int) override;
+    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(
+        MouseButton /*_button*/,
+        Modifier _mod,
+        int /*_x*/,
+        int /*_y*/
+    ) override;
 
 protected:
 
@@ -146,14 +158,14 @@ private:
     struct DistanceData
     {
         data::PointList::sptr m_pointList;
-        Ogre::SceneNode* m_node1;
-        Ogre::ManualObject* m_sphere1;
-        Ogre::SceneNode* m_node2;
-        Ogre::ManualObject* m_sphere2;
-        Ogre::ManualObject* m_line;
-        Ogre::ManualObject* m_dashedLine;
-        Ogre::SceneNode* m_labelNode;
-        sight::viz::scene3d::Text* m_label;
+        Ogre::SceneNode* m_node1 {};
+        Ogre::ManualObject* m_sphere1 {};
+        Ogre::SceneNode* m_node2 {};
+        Ogre::ManualObject* m_sphere2 {};
+        Ogre::ManualObject* m_line {};
+        Ogre::ManualObject* m_dashedLine {};
+        Ogre::SceneNode* m_labelNode {};
+        sight::viz::scene3d::Text* m_label {};
     };
 
     /// Stores picking informations.
@@ -181,7 +193,7 @@ private:
      * @param _thickness Thickness of dash.
      */
     static void generateDashedLine(
-        Ogre::ManualObject* const _object,
+        Ogre::ManualObject* _object,
         const Ogre::Vector3& _begin,
         const Ogre::Vector3& _end,
         float _thickness
@@ -191,13 +203,13 @@ private:
      * @brief Gets the formated string used to display the length of a distance.
      * @return The formated string.
      */
-    static std::string getLength(const Ogre::Vector3&, const Ogre::Vector3&);
+    static std::string getLength(const Ogre::Vector3& /*_begin*/, const Ogre::Vector3& /*_end*/);
 
     /**
      * @brief Gets the normalized camera direction vector.
      * @return A vector representing the camera direction
      */
-    static Ogre::Vector3 getCamDirection(const Ogre::Camera* const);
+    static Ogre::Vector3 getCamDirection(const Ogre::Camera* /*_cam*/);
 
     /// Retrieves distances from the image and adds them to the scene.
     void addDistances();
@@ -228,7 +240,7 @@ private:
      * @param _begin New begin position.
      * @param _end New end position
      */
-    void updateDistance(const DistanceData* const _data, Ogre::Vector3 _begin, Ogre::Vector3 _end);
+    void updateDistance(const DistanceData* _data, Ogre::Vector3 _begin, Ogre::Vector3 _end);
 
     /**
      * @brief Destroys a distance from its ID and remove it from m_distances.
@@ -237,7 +249,7 @@ private:
     void destroyDistance(core::tools::fwID::IDType _id);
 
     /// Defines the radius of distances spheres.
-    float m_distanceSphereRadius {3.5f};
+    float m_distanceSphereRadius {3.5F};
 
     /// Defines the TrueType font source file.
     std::string m_fontSource {"DejaVuSans.ttf"};
@@ -281,8 +293,8 @@ private:
     /// Stores all generatesd distances.
     DistanceMap m_distances;
 
-    static constexpr std::string_view s_IMAGE_INOUT = "image";
-    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT};
+    static constexpr std::string_view s_IMAGE_IN = "image";
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_IN};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

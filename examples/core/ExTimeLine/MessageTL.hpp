@@ -27,6 +27,8 @@
 #include <data/timeline/GenericObject.hpp>
 #include <data/timeline/GenericObject.hxx>
 
+#include <array>
+
 namespace ExTimeLine
 {
 
@@ -38,8 +40,8 @@ struct MsgData
     /// Defines the identifier of the sender.
     unsigned int uidSender;
 
-    /// Stores the message as a C string.
-    char szMsg[MAX_MSG_SIZE];
+    /// Stores the message as a std::array.
+    std::array<char, MAX_MSG_SIZE> szMsg;
 };
 
 /**

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,45 +23,39 @@
 #pragma once
 
 #include <core/base.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 
 #include <service/macros.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 /**
- * @brief   Test ProcessObject building from a ConfigurationElement and composite message.
- * @see     ICompositeParser
- * @see     CompositeEditor
+ * @brief   Test the build of objects from XML configurations.
  */
 class ConfigParserTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(ConfigParserTest);
 CPPUNIT_TEST(testObjectCreationWithConfig);
 CPPUNIT_TEST(testImageParser);
+CPPUNIT_TEST(testTransferFunctionParser);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     /// test object with services creation from a configuration
-    void testObjectCreationWithConfig();
-    void testImageParser();
+    static void testObjectCreationWithConfig();
+    static void testImageParser();
+    static void testTransferFunctionParser();
 
 private:
 
     /// Create a configurationElement to build an object
-    core::runtime::ConfigurationElement::sptr buildObjectConfig();
+    static core::runtime::ConfigurationElement::sptr buildObjectConfig();
 };
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

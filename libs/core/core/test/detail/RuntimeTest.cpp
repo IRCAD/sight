@@ -24,7 +24,6 @@
 
 #include <core/runtime/detail/dl/Posix.hpp>
 #include <core/runtime/detail/dl/Win32.hpp>
-#include <core/runtime/detail/ExtensionPoint.hpp>
 #include <core/runtime/detail/Module.hpp>
 #include <core/runtime/detail/Runtime.hpp>
 #include <core/runtime/operations.hpp>
@@ -35,20 +34,13 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::runtime::detail::ut::RuntimeTest);
 
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace ut
+namespace sight::core::runtime::detail::ut
 {
 
 //------------------------------------------------------------------------------
 
 RuntimeTest::RuntimeTest()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -80,7 +72,7 @@ void RuntimeTest::testPosix()
     const auto path = nativeLibrary->getFullPath();
     CPPUNIT_ASSERT_EQUAL(
         (core::runtime::Runtime::getDefault()->getWorkingPath() / MODULE_LIB_PREFIX
-         / std::filesystem::path("libsight_module_utest.so." VERSION)).string(),
+         / std::filesystem::path("libsight_module_utest.so")).string(),
         path.string()
     );
 }
@@ -114,8 +106,8 @@ void RuntimeTest::testRuntime()
     // Initialize the runtime
     core::runtime::init();
 
-    core::runtime::detail::Runtime& runtime = core::runtime::detail::Runtime::get();
-    const auto moduleStr                    = "sight::module::utest";
+    const core::runtime::detail::Runtime& runtime = core::runtime::detail::Runtime::get();
+    const auto* const moduleStr                   = "sight::module::utest";
     // Test module utest
     CPPUNIT_ASSERT(runtime.findModule(moduleStr));
     auto bundle = std::dynamic_pointer_cast<core::runtime::detail::Module>(runtime.findModule(moduleStr));
@@ -131,8 +123,4 @@ void RuntimeTest::testRuntime()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace detail
-
-} // namespace fwRuntime
+} // namespace sight::core::runtime::detail::ut

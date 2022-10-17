@@ -48,13 +48,13 @@ public:
      * @param _height height of the render window.
      */
     MODULE_VIZ_SCENE3DQT_API OffScreenWindowInteractor(
-        sight::viz::scene3d::IWindowInteractor::OffscreenMgrKey,
+        sight::viz::scene3d::IWindowInteractor::OffscreenMgrKey /*unused*/,
         unsigned int _width,
         unsigned int _height
     );
 
     /// Destroys the render window.
-    MODULE_VIZ_SCENE3DQT_API virtual ~OffScreenWindowInteractor() final;
+    MODULE_VIZ_SCENE3DQT_API ~OffScreenWindowInteractor() final;
 
     /// Renders immediately the frame in the render window.
     MODULE_VIZ_SCENE3DQT_API void renderNow() override;
@@ -63,7 +63,9 @@ public:
     MODULE_VIZ_SCENE3DQT_API void requestRender() override;
 
     /// Creates the render window in the global OpenGL context, @see module::viz::scene3dQt::OpenGLContext.
-    MODULE_VIZ_SCENE3DQT_API void createContainer(ui::base::container::fwContainer::sptr, bool) override;
+    MODULE_VIZ_SCENE3DQT_API void createContainer(ui::base::container::fwContainer::sptr /*_parent*/,
+                                                  bool /*fullscreen*/,
+                                                  const std::string& /*id*/) override;
 
     /// Does nothing.
     MODULE_VIZ_SCENE3DQT_API void connectToContainer() override;

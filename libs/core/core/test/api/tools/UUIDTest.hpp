@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::tools
-{
-
-namespace ut
+namespace sight::core::tools::ut
 {
 
 class UUIDTest : public CPPUNIT_NS::TestFixture
@@ -43,23 +40,21 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void objectUUIDTest();
+    static void objectUUIDTest();
 
-    void conccurentAccessOnUUIDMapTest();
+    static void conccurentAccessOnUUIDMapTest();
     void conccurentAccessOnSameObjUUIDTest();
 
 private:
 
-    void runUUIDCreation();
+    static void runUUIDCreation();
     void runAccessToObjectUUID();
 
     core::tools::Object::sptr m_object;
     std::string m_uuid;
 };
 
-} // namespace ut
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::ut

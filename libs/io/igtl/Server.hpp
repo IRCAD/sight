@@ -25,6 +25,8 @@
 #include "io/igtl/Client.hpp"
 #include "io/igtl/config.hpp"
 #include "io/igtl/INetwork.hpp"
+// Patched header.
+#include "io/igtl/patch/igtlSocket.h"
 
 #include <core/Exception.hpp>
 #include <core/mt/types.hpp>
@@ -34,6 +36,7 @@
 #include <list>
 #include <string>
 #include <vector>
+#include <optional>
 
 namespace sight::io::igtl
 {
@@ -56,7 +59,7 @@ public:
     /**
      * @brief destructor
      */
-    IO_IGTL_API ~Server();
+    IO_IGTL_API ~Server() override;
 
     /**
      * @brief method to start the server on a port
@@ -140,7 +143,18 @@ public:
      */
     IO_IGTL_API void setMessageDeviceName(const std::string& deviceName);
 
+    /// Sets the receive timeout in ms.
+    inline void setReceiveTimeout(std::optional<unsigned int> _timeout);
+
+    /// Gets the current receive timeout.
+    inline std::optional<int> getReceiveTimeout() const;
+
 private:
+
+    /// Patched version of igtlServer::CreateServer.
+    int createServer(std::uint16_t port);
+
+    static void removeClient(Client::sptr _client);
 
     /// server socket
     ::igtl::ServerSocket::Pointer m_serverSocket;
@@ -149,19 +163,36 @@ private:
     mutable core::mt::Mutex m_mutex;
 
     /// state of server
-    bool m_isStarted;
+    bool m_isStarted {false};
 
     /// vector of clients
     std::vector<Client::sptr> m_clients;
 
     /// Server port
-    std::uint16_t m_port;
+    std::uint16_t m_port {0};
 
     /// integer constant for success
     static const int s_SUCCESS = 0;
 
     /// device name in the sended message
     std::string m_deviceNameOut;
+
+    /// Optional timeout for receiving message from clients
+    std::optional<unsigned int> m_receiveTimeout;
 };
 
-} // namespace sight::io
+//------------------------------------------------------------------------------
+
+inline void Server::setReceiveTimeout(std::optional<unsigned int> _timeout)
+{
+    m_receiveTimeout = _timeout;
+}
+
+//------------------------------------------------------------------------------
+
+inline std::optional<int> Server::getReceiveTimeout() const
+{
+    return m_receiveTimeout;
+}
+
+} // namespace sight::io::igtl

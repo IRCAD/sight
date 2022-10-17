@@ -15,7 +15,7 @@
         <icon>sight::module::ui::icons/Pull.svg</icon>
         <requirements>
         </requirements>
-        <builder>::activity::builder::ActivitySeries</builder>
+        <builder>::activity::builder::Activity</builder>
         <appConfig id="activity_io_dicomweb">
         </appConfig>
     </extension>
@@ -35,7 +35,7 @@
         <icon>sight::module::ui::icons/Push.svg</icon>
         <requirements>
         </requirements>
-        <builder>::activity::builder::ActivitySeries</builder>
+        <builder>::activity::builder::Activity</builder>
         <appConfig id="DicomWebWriterActivity">
         </appConfig>
     </extension>

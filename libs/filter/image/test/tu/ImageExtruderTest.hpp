@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,17 +22,14 @@
 
 #pragma once
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 class ImageExtruderTest : public CPPUNIT_NS::TestFixture
@@ -54,19 +51,17 @@ public:
 
 private:
 
-    const core::tools::Type m_type {"int8"};
+    const core::Type m_type {core::Type::INT8};
 
     const data::Image::PixelFormat m_format {data::Image::PixelFormat::GRAY_SCALE};
 
     const data::Image::Size m_size {8, 16, 24};
 
-    const data::Image::Origin m_origin {0.f, 0.f, 0.f};
+    const data::Image::Origin m_origin {0.F, 0.F, 0.F};
 
-    const data::Image::Spacing m_spacing {1.f, 1.f, 1.f};
+    const data::Image::Spacing m_spacing {1.F, 1.F, 1.F};
 
     data::Image::sptr m_image;
 };
 
-} // namespace ut.
-
-} // namespace sight::filter::image.
+} // namespace sight::filter::image::ut

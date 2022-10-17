@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,10 +27,7 @@
 #include <data/Resection.hpp>
 #include <data/ResectionDB.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::ResectionDB
+namespace sight::io::session::detail::ResectionDB
 {
 
 constexpr static auto s_SafeResection {"SafeResection"};
@@ -42,14 +39,14 @@ constexpr static auto s_IsVisible {"IsVisible"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto resectionDB = Helper::safeCast<data::ResectionDB>(object);
+    const auto resectionDB = Helper::safe_cast<data::ResectionDB>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::ResectionDB>(tree, 1);
@@ -67,15 +64,15 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::ResectionDB::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto resectionDB = Helper::safeCast<data::ResectionDB>(object);
+    auto resectionDB = Helper::cast_or_create<data::ResectionDB>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::ResectionDB>(tree, 0, 1);
@@ -100,6 +97,4 @@ inline static data::ResectionDB::sptr deserialize(
     return resectionDB;
 }
 
-} // namespace detail::ResectionDB
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::ResectionDB

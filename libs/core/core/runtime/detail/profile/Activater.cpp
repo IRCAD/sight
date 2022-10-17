@@ -29,19 +29,15 @@
 
 #include <boost/algorithm/string/replace.hpp>
 
-namespace sight::core::runtime
-{
+#include <utility>
 
-namespace detail
-{
-
-namespace profile
+namespace sight::core::runtime::detail::profile
 {
 
 //------------------------------------------------------------------------------
 
-Activater::Activater(const std::string& identifier, const std::string&) :
-    m_identifier(identifier)
+Activater::Activater(std::string identifier, const std::string& /*unused*/) :
+    m_identifier(std::move(identifier))
 {
 }
 
@@ -77,52 +73,46 @@ void Activater::apply()
     {
         const auto identifier = boost::algorithm::replace_first_copy(m_identifier, "sight_", "");
         module = std::dynamic_pointer_cast<detail::Module>(Runtime::get().findModule(identifier));
-        SIGHT_FATAL_IF("Unable to activate Module " + identifier + ". Not found.", module == 0);
+        SIGHT_FATAL_IF("Unable to activate Module " + identifier + ". Not found.", module == nullptr);
     }
 
-    SIGHT_FATAL_IF("Unable to activate Module " + m_identifier + ". Not found.", module == 0);
+    SIGHT_FATAL_IF("Unable to activate Module " + m_identifier + ". Not found.", module == nullptr);
     // TEMP_FB: useless now since all modules are now enabled by default
     module->setEnable(true);
 
     // Management of parameter configuration
-    for(ParameterContainer::const_iterator i = m_parameters.begin() ;
-        i != m_parameters.end() ;
-        ++i)
+    for(auto& m_parameter : m_parameters)
     {
-        module->addParameter(i->first, i->second);
+        module->addParameter(m_parameter.first, m_parameter.second);
     }
 
     // Disable extension point for this module
-    for(DisableExtensionPointContainer::const_iterator id = m_disableExtensionPoints.begin() ;
-        id != m_disableExtensionPoints.end() ;
-        ++id)
+    for(auto& m_disableExtensionPoint : m_disableExtensionPoints)
     {
-        if(module->hasExtensionPoint(*id))
+        if(module->hasExtensionPoint(m_disableExtensionPoint))
         {
-            module->setEnableExtensionPoint(*id, false);
+            module->setEnableExtensionPoint(m_disableExtensionPoint, false);
         }
         else
         {
             SIGHT_ERROR(
-                "Unable to disable Extension Point " << *id << " defined in the Module " << m_identifier
+                "Unable to disable Extension Point " << m_disableExtensionPoint << " defined in the Module " << m_identifier
                 << ". Not found."
             );
         }
     }
 
     // Disable extension for this module
-    for(DisableExtensionContainer::const_iterator id = m_disableExtensions.begin() ;
-        id != m_disableExtensions.end() ;
-        ++id)
+    for(auto& m_disableExtension : m_disableExtensions)
     {
-        if(module->hasExtension(*id))
+        if(module->hasExtension(m_disableExtension))
         {
-            module->setEnableExtension(*id, false);
+            module->setEnableExtension(m_disableExtension, false);
         }
         else
         {
             SIGHT_ERROR(
-                "Unable to disable Extension " << *id << " defined in the Module " << m_identifier
+                "Unable to disable Extension " << m_disableExtension << " defined in the Module " << m_identifier
                 << ". Not found."
             );
         }
@@ -131,8 +121,4 @@ void Activater::apply()
 
 //------------------------------------------------------------------------------
 
-} // namespace profile
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail::profile

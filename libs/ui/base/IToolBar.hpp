@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,10 +47,10 @@ public:
     UI_BASE_API void actionServiceStarting(std::string actionSrvSID);
 
     /// Method called when the action service is activated
-    UI_BASE_API void actionServiceSetActive(std::string actionSrvSID, bool isActive);
+    UI_BASE_API void actionServiceSetChecked(std::string actionSrvSID, bool isChecked);
 
     /// Method called when the action service is executable
-    UI_BASE_API void actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable);
+    UI_BASE_API void actionServiceSetEnabled(std::string actionSrvSID, bool isEnabled);
 
     /// Method called when the action service is visible
     UI_BASE_API void actionServiceSetVisible(std::string actionSrvSID, bool isVisible);
@@ -59,7 +59,7 @@ protected:
 
     UI_BASE_API IToolBar();
 
-    UI_BASE_API virtual ~IToolBar();
+    UI_BASE_API ~IToolBar() override;
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
@@ -131,7 +131,7 @@ private:
     ConfigurationType m_layoutConfig;
 
     /// Flag to hide or disable the actions if the service is stopped
-    bool m_hideActions;
+    bool m_hideActions {false};
 };
 
 } // namespace sight::ui::base

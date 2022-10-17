@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <filesystem>
 
-namespace sight::io::dimse
-{
-
-namespace ut
+namespace sight::io::dimse::ut
 {
 
 class SeriesEnquirerTest : public CPPUNIT_NS::TestFixture
@@ -50,8 +47,8 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // Interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     // Test functions
     void initializeConnection();
@@ -76,15 +73,13 @@ protected:
     std::string m_pacsApplicationTitle;
 
     /// Pacs application port
-    unsigned short m_pacsApplicationPort;
+    std::uint16_t m_pacsApplicationPort {};
 
     /// Move application title
     std::string m_moveApplicationTitle;
 
     /// Move application port
-    unsigned short m_moveApplicationPort;
+    std::uint16_t m_moveApplicationPort {};
 };
 
-} // namespace ut
-
-} // namespace sight::io::dimse
+} // namespace sight::io::dimse::ut

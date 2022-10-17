@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-PlyMeshWriter::PlyMeshWriter(io::base::writer::IObjectWriter::Key) :
+PlyMeshWriter::PlyMeshWriter(io::base::writer::IObjectWriter::Key /*unused*/) :
     m_job(core::jobs::Observer::New("PLY Mesh writer"))
 {
 }
@@ -50,14 +50,13 @@ PlyMeshWriter::PlyMeshWriter(io::base::writer::IObjectWriter::Key) :
 //------------------------------------------------------------------------------
 
 PlyMeshWriter::~PlyMeshWriter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 void PlyMeshWriter::write()
 {
-    using namespace sight::io::vtk::helper;
+    using helper::vtkLambdaCommand;
 
     SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
@@ -78,9 +77,9 @@ void PlyMeshWriter::write()
 
     progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
     progressCallback->SetCallback(
-        [&](vtkObject* caller, long unsigned int, void*)
+        [&](vtkObject* caller, std::uint64_t, void*)
         {
-            const auto filter = static_cast<vtkPLYWriter*>(caller);
+            auto* const filter = static_cast<vtkPLYWriter*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);

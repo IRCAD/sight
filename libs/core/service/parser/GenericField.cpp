@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,14 +26,11 @@
 
 #include <data/Boolean.hpp>
 #include <data/Float.hpp>
-#include <data/GenericField.hpp>
+#include <data/GenericFieldBase.hpp>
 #include <data/Integer.hpp>
 #include <data/String.hpp>
 
-namespace sight::service
-{
-
-namespace parser
+namespace sight::service::parser
 {
 
 //------------------------------------------------------------------------------
@@ -47,9 +44,6 @@ void GenericField::updating()
 
 void GenericField::createConfig(core::tools::Object::sptr _obj)
 {
-    data::GenericFieldBase::sptr field = data::GenericFieldBase::dynamicCast(_obj);
-    SIGHT_ASSERT("GenericField not instanced", field);
-
     core::runtime::ConfigurationElementContainer configs = m_cfg->findAllConfigurationElement("value");
     SIGHT_ASSERT("GenericField config must contain at most one tag <value>...</value>", configs.size() <= 1);
 
@@ -57,12 +51,13 @@ void GenericField::createConfig(core::tools::Object::sptr _obj)
     {
         core::runtime::ConfigurationElement::sptr config = *configs.begin();
         std::string input                                = config->getValue();
+
+        const auto field = data::GenericFieldBase::dynamicCast(_obj);
+        SIGHT_ASSERT("GenericField not instanced", field);
         field->fromString(input);
     }
 }
 
 //------------------------------------------------------------------------------
 
-} //namespace parser
-
-} //namespace sight::service
+} // namespace sight::service::parser

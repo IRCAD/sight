@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,20 +22,21 @@
 
 #include "core/log/Log.hpp"
 
+#include <utility>
+
 namespace sight::core::log
 {
 
-Log::Log(LevelType level, const std::string& message) :
+Log::Log(LevelType level, std::string message) :
     m_level(level),
-    m_message(message)
+    m_message(std::move(message))
 {
 }
 
 //-----------------------------------------------------------------------------
 
 Log::~Log()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 

@@ -44,8 +44,7 @@ Aggregator::sptr Aggregator::New(const std::string& name)
 //------------------------------------------------------------------------------
 
 Aggregator::Aggregator()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -72,14 +71,14 @@ IJob::SharedFuture Aggregator::runImpl()
     }
 
     auto future = std::async(
-        [ = ]() mutable
+        [ =, this]() mutable
         {
             std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
 
             this->finish();
 
             // forwards exceptions that might have been thrown
-            for(SharedFuture f : futures)
+            for(const SharedFuture& f : futures)
             {
                 f.get();
             }
@@ -112,7 +111,7 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
         m_jobInfo[iJob.get()] = JobInfo(*iJob);
         auto& jobInfo = m_jobInfo[iJob.get()];
 
-        this->setTotalWorkUnitsUpgradeLock(m_totalWorkUnits + (jobInfo.totalWork ? normValue : 0), lock);
+        this->setTotalWorkUnitsUpgradeLock(m_totalWorkUnits + (jobInfo.totalWork != 0U ? normValue : 0), lock);
         lock.lock();
         // doneWork call after setTotalWorkUnitsUpgradeLock, because
         // doneWork value can be thresholded by setTotalWorkUnitsUpgradeLock
@@ -127,7 +126,7 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
 
         // TODO : add a way to disconnect on aggregator destruction
         iJob->addDoneWorkHook(
-            [ =, &jobInfo](IJob& subJob, std::uint64_t)
+            [ =, &jobInfo, this](IJob& subJob, std::uint64_t)
             {
                 core::mt::ReadToWriteLock sublock(m_mutex);
 
@@ -144,7 +143,7 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
             });
 
         iJob->addTotalWorkUnitsHook(
-            [ = ](IJob& subJob, std::uint64_t oldTotalWorkUnits)
+            [ =, this](IJob& subJob, std::uint64_t oldTotalWorkUnits)
             {
                 core::mt::ReadToWriteLock sublock(m_mutex);
 
@@ -153,11 +152,11 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
 
                 if(oldTotalWorkUnits != newTotalWorkUnits)
                 {
-                    if(oldTotalWorkUnits && 0 == newTotalWorkUnits)
+                    if((oldTotalWorkUnits != 0U) && 0 == newTotalWorkUnits)
                     {
                         workUnits -= normValue;
                     }
-                    else if(0 == oldTotalWorkUnits && newTotalWorkUnits)
+                    else if(0 == oldTotalWorkUnits && (newTotalWorkUnits != 0U))
                     {
                         workUnits += normValue;
                     }
@@ -173,9 +172,9 @@ void Aggregator::add(const core::jobs::IJob::sptr& iJob, double weight)
             });
 
         auto iJobName = iJob->getName();
-        iJobName = iJobName.empty() ? "" : "[" + iJobName + "] ";
+        iJobName = iJobName.empty() ? "" : std::string("[") + iJobName + "] ";
         iJob->addLogHook(
-            [ = ](IJob& /* job */, const std::string& message)
+            [ =, this](IJob& /* job */, const std::string& message)
             {
                 this->log(iJobName + message);
             });

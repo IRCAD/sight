@@ -40,7 +40,7 @@ const core::com::Signals::SignalKeyType PlaneList::s_VISIBILITY_MODIFIED_SIG = "
 
 //------------------------------------------------------------------------------
 
-PlaneList::PlaneList(data::Object::Key)
+PlaneList::PlaneList(data::Object::Key /*unused*/)
 {
     newSignal<PlaneAddedSignalType>(s_PLANE_ADDED_SIG);
     newSignal<PlaneRemovedSignalType>(s_PLANE_REMOVED_SIG);
@@ -49,47 +49,44 @@ PlaneList::PlaneList(data::Object::Key)
 
 //------------------------------------------------------------------------------
 
-PlaneList::~PlaneList()
+void PlaneList::shallowCopy(const Object::csptr& source)
 {
-}
+    const auto& other = dynamicConstCast(source);
 
-//------------------------------------------------------------------------------
-
-void PlaneList::shallowCopy(const Object::csptr& _source)
-{
-    PlaneList::csptr other = PlaneList::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !other
     );
-    this->fieldShallowCopy(_source);
 
     this->m_vPlanes = other->m_vPlanes;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void PlaneList::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void PlaneList::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    PlaneList::csptr other = PlaneList::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !other
     );
-    this->fieldDeepCopy(_source, cache);
 
     this->m_vPlanes.clear();
-    for(const data::Plane::sptr& plane : other->m_vPlanes)
+    for(const auto& plane : other->m_vPlanes)
     {
-        Plane::sptr newPlane = data::Object::copy(plane, cache);
-        this->m_vPlanes.push_back(newPlane);
+        this->m_vPlanes.push_back(data::Object::copy(plane, cache));
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -102,7 +99,7 @@ bool PlaneList::operator==(const PlaneList& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

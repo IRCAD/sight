@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "filter/dicom/splitter/TagValueSplitter.hpp"
 
 #include "filter/dicom/exceptions/FilterFailure.hpp"
@@ -32,12 +34,9 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::TagValueSplitter);
+SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::splitter::TagValueSplitter);
 
-namespace sight::filter::dicom
-{
-
-namespace splitter
+namespace sight::filter::dicom::splitter
 {
 
 const std::string TagValueSplitter::s_FILTER_NAME        = "Tag value splitter";
@@ -46,17 +45,15 @@ const std::string TagValueSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-TagValueSplitter::TagValueSplitter(filter::dicom::IFilter::Key) :
-    ISplitter()
+TagValueSplitter::TagValueSplitter(filter::dicom::IFilter::Key /*unused*/) :
+    m_tag(DCM_UndefinedTagKey)
 {
-    m_tag = DCM_UndefinedTagKey;
 }
 
 //-----------------------------------------------------------------------------
 
 TagValueSplitter::~TagValueSplitter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -94,14 +91,13 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
 
     DicomSeriesContainerType result;
 
-    typedef std::vector<core::memory::BufferObject::sptr> InstanceContainerType;
-    typedef std::map<std::string, InstanceContainerType> InstanceGroupContainer;
+    using InstanceContainerType  = std::vector<core::memory::BufferObject::sptr>;
+    using InstanceGroupContainer = std::map<std::string, InstanceContainerType>;
 
     // Create a container to store the groups of instances
     InstanceGroupContainer groupContainer;
 
     OFCondition status;
-    DcmDataset* dataset;
     OFString data;
 
     for(const auto& item : series->getDicomContainer())
@@ -128,11 +124,11 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
         fileFormat.loadAllDataIntoMemory();
         fileFormat.transferEnd();
 
-        dataset = fileFormat.getDataset();
+        DcmDataset* dataset = fileFormat.getDataset();
 
         // Get the value of the instance
         dataset->findAndGetOFStringArray(m_tag, data);
-        const std::string value = data.c_str();
+        const std::string value = data.c_str(); // NOLINT(readability-redundant-string-cstr)
 
         // Add the instance to the group
         groupContainer[value].push_back(bufferObj);
@@ -170,6 +166,4 @@ TagValueSplitter::DicomSeriesContainerType TagValueSplitter::apply(
     return result;
 }
 
-} // namespace splitter
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::splitter

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ public:
     /// Constructor. Do nothing.
     UI_BASE_API ICursor();
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~ICursor();
+    UI_BASE_API ~ICursor() override;
 
     typedef std::string FactoryRegistryKeyType;
     UI_BASE_API static const FactoryRegistryKeyType REGISTRY_KEY;

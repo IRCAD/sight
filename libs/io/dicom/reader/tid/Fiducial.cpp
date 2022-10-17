@@ -33,13 +33,7 @@
 #include <data/PointList.hpp>
 #include <data/String.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace tid
+namespace sight::io::dicom::reader::tid
 {
 
 //------------------------------------------------------------------------------
@@ -58,8 +52,7 @@ Fiducial::Fiducial(
 //------------------------------------------------------------------------------
 
 Fiducial::~Fiducial()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -68,8 +61,10 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
     if(node->getCodedAttribute() == io::dicom::container::DicomCodedAttribute("122340", "DCM", "Fiducial feature")
        && !node->getSubNodeContainer().empty())
     {
-        std::string label = "";
-        double x, y, z;
+        std::string label;
+        double x           = 0;
+        double y           = 0;
+        double z           = 0;
         bool foundLandmark = false;
         for(const SPTR(io::dicom::container::sr::DicomSRNode) & subNode : node->getSubNodeContainer())
         {
@@ -109,7 +104,7 @@ void Fiducial::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& node)
                             const int frameNumber = imageNode->getFrameNumber();
                             z = io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(
                                 m_object,
-                                frameNumber
+                                std::size_t(frameNumber)
                             );
                             foundLandmark = true;
                         }
@@ -162,8 +157,4 @@ void Fiducial::addLandmark(double x, double y, double z, const std::string& labe
 
 //------------------------------------------------------------------------------
 
-} // namespace tid
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::tid

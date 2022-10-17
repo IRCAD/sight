@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ namespace interactor
 
 class IInteractor;
 
-}
+} // namespace interactor
 
 namespace registry
 {
@@ -49,11 +49,9 @@ namespace registry
 typedef std::string KeyType;
 
 typedef core::FactoryRegistry<SPTR(viz::scene3d::IWindowInteractor)(), KeyType> Type;
-typedef core::FactoryRegistry<SPTR(viz::scene3d::IWindowInteractor)(std::pair<unsigned int,
-                                                                              unsigned int>),
+typedef core::FactoryRegistry<SPTR(viz::scene3d::IWindowInteractor)(std::pair<unsigned int, unsigned int>),
                               KeyType> OffscreenMgrType;
-typedef core::FactoryRegistry<SPTR(viz::scene3d::interactor::IInteractor)(),
-                              KeyType> InteractorFactoryType;
+typedef core::FactoryRegistry<SPTR(viz::scene3d::interactor::IInteractor)(), KeyType> InteractorFactoryType;
 typedef core::FactoryRegistry<SPTR(viz::scene3d::ICamera)(), KeyType> CameraFactoryType;
 typedef core::FactoryRegistry<SPTR(viz::scene3d::ILight)(), KeyType> LightFactoryType;
 

@@ -24,7 +24,7 @@
 
 #include "modules/io/dicomweb/config.hpp"
 
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
 #include <io/base/service/IReader.hpp>
@@ -39,7 +39,7 @@ namespace sight::data
 
 class DicomSeries;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::dicomweb
 {
@@ -56,15 +56,15 @@ namespace sight::module::io::dicomweb
  * @code{.xml}
         <service type="sight::module::io::dicomweb::SSeriesPuller">
             <in key="selectedSeries" uid="..." />
-            <inout key="seriesDB" uid="..." />
-            <config dicomReader="sight::module::io::dicom::SSeriesDBReader" readerConfig="config" />
+            <inout key="seriesSet" uid="..." />
+            <config dicomReader="sight::module::io::dicom::SSeriesSetReader" readerConfig="config" />
             <server>%SERVER_HOSTNAME%:%SERVER_PORT%</server>
        </service>
    @endcode
  * @subsection Input Input:
  * - \b selectedSeries [sight::data::Vector]: List of DICOM series to pull from the PACS..
  * @subsection In-Out In-Out:
- * - \b seriesDB [sight::data::SeriesDB]: SeriesDB where to put the retrieved dicom series.
+ * - \b seriesSet [sight::data::SeriesSet]: SeriesSet where to put the retrieved dicom series.
  * @subsection Configuration Configuration:
  * - \b readerConfig Optional configuration for the DICOM Reader.
  * - \b server : server URL. Need hostname and port in this format addr:port (default value is 127.0.0.1:4242).
@@ -77,7 +77,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(SSeriesPuller, sight::service::IController);
 
-    typedef data::SeriesDB::ContainerType DicomSeriesContainerType;
+    typedef data::SeriesSet::container_type DicomSeriesContainerType;
     typedef std::vector<std::string> InstanceUIDContainerType;
     typedef std::map<std::string, unsigned int> InstanceCountMapType;
     typedef std::map<std::string, WPTR(data::DicomSeries)> DicomSeriesMapType;
@@ -90,7 +90,7 @@ public:
     /**
      * @brief Destructor
      */
-    MODULE_IO_DICOMWEB_API virtual ~SSeriesPuller() noexcept;
+    MODULE_IO_DICOMWEB_API ~SSeriesPuller() noexcept override;
 
 protected:
 
@@ -121,7 +121,7 @@ private:
      * @brief Display an error message.
      * @param[in] message Error message to display
      */
-    void displayErrorMessage(const std::string& message) const;
+    static void displayErrorMessage(const std::string& message);
 
     /// Http Qt Client
     sight::io::http::ClientQt m_clientQt;
@@ -135,20 +135,20 @@ private:
     /// DicomWeb Reader
     std::string m_dicomReaderType;
 
-    /// Temporary SeriesDB
-    data::SeriesDB::sptr m_tempSeriesDB;
+    /// Temporary SeriesSet
+    data::SeriesSet::sptr m_tmp_series_set;
 
     /// Local Series
     InstanceUIDContainerType m_localSeries;
 
     /// Is pulling is set to true when we are pulling series
-    bool m_isPulling;
+    bool m_isPulling {false};
 
     /// Index of the series being downloaded
-    unsigned int m_seriesIndex;
+    unsigned int m_seriesIndex {0};
 
     /// Total number of instances that must be downloaded
-    std::size_t m_instanceCount;
+    std::size_t m_instanceCount {};
 
     /// Map of Dicom series being pulled
     DicomSeriesMapType m_pullingDicomSeriesMap;
@@ -169,7 +169,7 @@ private:
     std::filesystem::path m_path;
 
     sight::data::ptr<sight::data::Vector, sight::data::Access::in> m_selectedSeries {this, "selectedSeries"};
-    sight::data::ptr<sight::data::SeriesDB, sight::data::Access::inout> m_seriesDB {this, "seriesDB"};
+    sight::data::ptr<sight::data::SeriesSet, sight::data::Access::inout> m_series_set {this, "seriesSet"};
 };
 
 } // namespace sight::module::io::dicomweb

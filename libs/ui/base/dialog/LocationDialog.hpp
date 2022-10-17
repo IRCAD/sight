@@ -27,16 +27,13 @@
 
 #include <core/base.hpp>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 /**
  * @brief   Defines the generic file/folder selector dialog for IHM.
  *
- * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
+ * Use the Delegate design pattern. The specific implementation selection is ensured by SIGHT_REGISTER_GUI.
  * The specific implementation are in fwGuiWX and fwGuiQT libraries.
  */
 class UI_BASE_CLASS_API LocationDialog : public ILocationDialog
@@ -48,7 +45,7 @@ public:
     /// Will instantiate the concrete implementation
     UI_BASE_API LocationDialog();
 
-    UI_BASE_API virtual ~LocationDialog();
+    UI_BASE_API ~LocationDialog() override;
 
     /**
      * @brief Display the dialog
@@ -81,7 +78,7 @@ public:
     UI_BASE_API void setDefaultLocation(core::location::ILocation::sptr loc) override;
 
     /// Gets the default location for the dialog (from preferences or specified by user)
-    UI_BASE_API const core::location::ILocation::sptr getDefaultLocation() override;
+    UI_BASE_API core::location::ILocation::sptr getDefaultLocation() override;
 
     /// Save the specified default location for the dialog in preferences (if available)
     UI_BASE_API void saveDefaultLocation(core::location::ILocation::sptr loc) override;
@@ -94,6 +91,4 @@ protected:
     ui::base::dialog::ILocationDialog::sptr m_implementation;
 };
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

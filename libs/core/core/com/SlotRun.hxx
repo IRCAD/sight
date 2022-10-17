@@ -44,7 +44,7 @@ namespace sight::core::com
 template<typename ... A>
 inline std::function<void()> SlotRun<void(A ...)>::bindRun(A ... args) const
 {
-    return std::bind((void (SelfType::*)(A ...) const) & SelfType::run, this, args ...);
+    return [ =, this]{run(args ...);};
 }
 
 //-----------------------------------------------------------------------------

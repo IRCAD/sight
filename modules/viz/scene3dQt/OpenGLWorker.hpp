@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ public:
     ~OpenGLWorker() final;
 
     /// Schedules a new task for the thread pool.
-    virtual void pushTask(sight::viz::scene3d::IGraphicsWorker::TaskType _task);
+    void pushTask(sight::viz::scene3d::IGraphicsWorker::TaskType _task) override;
 
 private:
 

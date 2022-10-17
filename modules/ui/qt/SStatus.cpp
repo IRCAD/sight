@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "SStatus.hpp"
 
 #include <core/base.hpp>
@@ -56,11 +58,7 @@ const core::com::Slots::SlotKeyType SStatus::s_TOGGLE_NTH_GREEN_RED_SLOT = "togg
 
 //-----------------------------------------------------------------------------
 
-SStatus::SStatus() noexcept :
-    m_count(1),
-    m_isCircular(false),
-    m_width(20),
-    m_height(20)
+SStatus::SStatus() noexcept
 {
     newSlot(s_CHANGE_TO_GREEN_SLOT, &SStatus::changeToGreen, this);
     newSlot(s_CHANGE_TO_RED_SLOT, &SStatus::changeToRed, this);
@@ -74,9 +72,8 @@ SStatus::SStatus() noexcept :
 
 //------------------------------------------------------------------------------
 
-SStatus::~SStatus() noexcept
-{
-}
+SStatus::~SStatus() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -84,8 +81,8 @@ void SStatus::starting()
 {
     this->create();
 
-    auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
-    QBoxLayout* layout;
+    auto qtContainer   = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    QBoxLayout* layout = nullptr;
     if(m_layout == "horizontal")
     {
         layout = new QHBoxLayout();
@@ -95,9 +92,12 @@ void SStatus::starting()
         layout = new QVBoxLayout();
     }
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     for(std::size_t i = 0 ; i < m_count ; ++i)
     {
         QPointer<QLabel> indicator = new QLabel();
+        indicator->setObjectName(serviceID + "/" + QString::number(i));
         indicator->setFixedWidth(static_cast<int>(m_width));
         indicator->setFixedHeight(static_cast<int>(m_height));
         m_indicator.push_back(indicator);
@@ -170,10 +170,11 @@ void SStatus::configuring()
 
             const auto labelStatusConfig = configLabels.get().equal_range("labelStatus");
             // Fill the labelStatus vector
+            // NOLINTNEXTLINE(bugprone-branch-clone)
             BOOST_FOREACH(const service::IService::ConfigType::value_type& v, labelStatusConfig)
             {
-                const std::string label = v.second.get<std::string>("");
-                QPointer<QLabel> qLab   = new QLabel();
+                const auto label      = v.second.get<std::string>("");
+                QPointer<QLabel> qLab = new QLabel();
                 qLab->setText(QString::fromStdString(label));
 
                 m_labelStatus.push_back(qLab);
@@ -211,7 +212,7 @@ void SStatus::updating()
 
 //------------------------------------------------------------------------------
 
-void SStatus::info(std::ostream& _sstream)
+void SStatus::info(std::ostream& /*_sstream*/)
 {
 }
 
@@ -219,14 +220,14 @@ void SStatus::info(std::ostream& _sstream)
 
 void SStatus::changeToGreen()
 {
-    for(QVector<QPointer<QLabel> >::Iterator it = m_indicator.begin() ; it != m_indicator.end() ; ++it)
+    for(auto& it : m_indicator)
     {
-        (*it)->setStyleSheet(
+        it->setStyleSheet(
             "background-color: green; border-radius: " + QString(
                 m_isCircular ? "10px;" : "0"
             ) + ";"
         );
-        (*it)->setToolTip(QString::fromStdString(m_greenTooltip));
+        it->setToolTip(QString::fromStdString(m_greenTooltip));
     }
 }
 
@@ -234,13 +235,13 @@ void SStatus::changeToGreen()
 
 void SStatus::changeToRed()
 {
-    for(QVector<QPointer<QLabel> >::Iterator it = m_indicator.begin() ; it != m_indicator.end() ; ++it)
+    for(auto& it : m_indicator)
     {
-        (*it)->setStyleSheet(
+        it->setStyleSheet(
             "background-color: red; border-radius: " + QString(m_isCircular ? "10px;" : "0")
             + ";"
         );
-        (*it)->setToolTip(QString::fromStdString(m_redTooltip));
+        it->setToolTip(QString::fromStdString(m_redTooltip));
     }
 }
 
@@ -248,14 +249,14 @@ void SStatus::changeToRed()
 
 void SStatus::changeToOrange()
 {
-    for(QVector<QPointer<QLabel> >::Iterator it = m_indicator.begin() ; it != m_indicator.end() ; ++it)
+    for(auto& it : m_indicator)
     {
-        (*it)->setStyleSheet(
+        it->setStyleSheet(
             "background-color: orange; border-radius: " + QString(
                 m_isCircular ? "10px;" : "0"
             ) + ";"
         );
-        (*it)->setToolTip(QString::fromStdString(m_orangeTooltip));
+        it->setToolTip(QString::fromStdString(m_orangeTooltip));
     }
 }
 
@@ -263,13 +264,13 @@ void SStatus::changeToOrange()
 
 void SStatus::toggleGreenRed(const bool green)
 {
-    for(QVector<QPointer<QLabel> >::Iterator it = m_indicator.begin() ; it != m_indicator.end() ; ++it)
+    for(auto& it : m_indicator)
     {
-        (*it)->setStyleSheet(
+        it->setStyleSheet(
             "background-color:" + QString(green ? "green" : "red") + "; border-radius: "
             + QString(m_isCircular ? "10px;" : "0") + ";"
         );
-        (*it)->setToolTip(green ? QString::fromStdString(m_greenTooltip) : QString::fromStdString(m_redTooltip));
+        it->setToolTip(green ? QString::fromStdString(m_greenTooltip) : QString::fromStdString(m_redTooltip));
     }
 }
 
@@ -279,10 +280,10 @@ void SStatus::changeNthToGreen(const int index)
 {
     SIGHT_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
-        index < 0 || index >= m_count
+        index < 0 || index >= int(m_count)
     );
 
-    if(index >= 0 && index < m_count)
+    if(index >= 0 && index < int(m_count))
     {
         m_indicator.at(index)->setStyleSheet(
             "background-color: green; border-radius: "
@@ -298,10 +299,10 @@ void SStatus::changeNthToRed(const int index)
 {
     SIGHT_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
-        index < 0 || index >= m_count
+        index < 0 || index >= int(m_count)
     );
 
-    if(index >= 0 && index < m_count)
+    if(index >= 0 && index < int(m_count))
     {
         m_indicator.at(index)->setStyleSheet(
             "background-color: red; border-radius: "
@@ -317,10 +318,10 @@ void SStatus::changeNthToOrange(const int index)
 {
     SIGHT_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
-        index < 0 || index >= m_count
+        index < 0 || index >= int(m_count)
     );
 
-    if(index >= 0 && index < m_count)
+    if(index >= 0 && index < int(m_count))
     {
         m_indicator.at(index)->setStyleSheet(
             "background-color: orange; border-radius: "
@@ -336,10 +337,10 @@ void SStatus::toggleNthGreenRed(const int index, const bool green)
 {
     SIGHT_INFO_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
-        index < 0 || index >= m_count
+        index < 0 || index >= int(m_count)
     );
 
-    if(index >= 0 && index < m_count)
+    if(index >= 0 && index < int(m_count))
     {
         m_indicator.at(index)->setStyleSheet(
             "background-color:" + QString(green ? "green" : "red")

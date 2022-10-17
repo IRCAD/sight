@@ -30,10 +30,7 @@
 
 #include <string>
 
-namespace sight::ui::qt
-{
-
-namespace dialog
+namespace sight::ui::qt::dialog
 {
 
 /**
@@ -56,7 +53,7 @@ public:
 
     UI_QT_API InputDialog(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API virtual ~InputDialog();
+    UI_QT_API ~InputDialog() override;
 
     /// Set the title of the message box
     UI_QT_API void setTitle(const std::string& title) override;
@@ -88,6 +85,4 @@ protected:
     base::dialog::IInputDialog::EchoMode m_echoMode {base::dialog::IInputDialog::EchoMode::DEFAULT};
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::dialog

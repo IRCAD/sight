@@ -28,15 +28,14 @@
 
 #include <ui/base/registry/macros.hpp>
 
-#include <boost/lambda/lambda.hpp>
-
 #include <QApplication>
-#include <QDesktopWidget>
+#include <QGuiApplication>
 #include <QIcon>
 #include <QLayout>
 #include <QMainWindow>
+#include <QScreen>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qt::FrameLayoutManager,
     sight::ui::base::layoutManager::IFrameLayoutManager::REGISTRY_KEY
 );
@@ -46,15 +45,14 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
-FrameLayoutManager::FrameLayoutManager(ui::base::GuiBaseObject::Key key)
+FrameLayoutManager::FrameLayoutManager(ui::base::GuiBaseObject::Key /*key*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 FrameLayoutManager::~FrameLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -62,10 +60,11 @@ void FrameLayoutManager::createFrame()
 {
     FrameInfo frameInfo = this->getFrameInfo();
 
-    ui::qt::QtMainFrame* mainframe = new ui::qt::QtMainFrame();
+    auto* mainframe = new ui::qt::QtMainFrame();
     m_qtWindow = mainframe;
+    m_qtWindow->setObjectName(QString::fromStdString(frameInfo.m_name));
 
-    ui::qt::QtMainFrame::CloseCallback fct = std::bind(&ui::qt::FrameLayoutManager::onCloseFrame, this);
+    ui::qt::QtMainFrame::CloseCallback fct = [this](auto&& ...){onCloseFrame();};
     mainframe->setCloseCallback(fct);
 
     m_qtWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
@@ -98,10 +97,11 @@ void FrameLayoutManager::createFrame()
     int posX = frameInfo.m_position.first;
     int posY = frameInfo.m_position.second;
     QPoint pos(posX, posY);
-    if(!this->isOnScreen(pos))
+    const QScreen* screen = QGuiApplication::screenAt(pos);
+    if(screen == nullptr)
     {
         QRect frame_rect(0, 0, sizeX, sizeY);
-        frame_rect.moveCenter(QDesktopWidget().screenGeometry().center());
+        frame_rect.moveCenter(QGuiApplication::primaryScreen()->geometry().center());
         pos = frame_rect.topLeft();
     }
 
@@ -109,7 +109,7 @@ void FrameLayoutManager::createFrame()
 
     this->setState(frameInfo.m_state);
 
-    QWidget* qwidget = new QWidget(m_qtWindow);
+    auto* qwidget = new QWidget(m_qtWindow);
     m_qtWindow->setCentralWidget(qwidget);
 
     QObject::connect(m_qtWindow, SIGNAL(destroyed(QObject*)), this, SLOT(onCloseFrame()));
@@ -194,19 +194,6 @@ ui::base::layoutManager::IFrameLayoutManager::FrameState FrameLayoutManager::get
     }
 
     return state;
-}
-
-//-----------------------------------------------------------------------------
-
-bool FrameLayoutManager::isOnScreen(const QPoint& pos)
-{
-    bool isVisible = false;
-    for(int i = 0 ; i < QDesktopWidget().screenCount() && !isVisible ; ++i)
-    {
-        isVisible = QDesktopWidget().screenGeometry(i).contains(pos, false);
-    }
-
-    return isVisible;
 }
 
 //-----------------------------------------------------------------------------

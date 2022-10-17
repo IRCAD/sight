@@ -31,23 +31,18 @@
 
 #include <boost/range/adaptor/reversed.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace com
+namespace sight::module::ui::base::com
 {
 
 //-----------------------------------------------------------------------------
 
-SStarter::SStarter() noexcept
-{
-}
+SStarter::SStarter() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-SStarter::~SStarter() noexcept
-{
-}
+SStarter::~SStarter() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -62,7 +57,7 @@ void SStarter::stopping()
 {
     std::vector<service::IService::SharedFutureType> futures;
 
-    for(VectPairIDActionType::value_type serviceUid : boost::adaptors::reverse(m_uuidServices))
+    for(const VectPairIDActionType::value_type& serviceUid : boost::adaptors::reverse(m_uuidServices))
     {
         bool srv_exists = core::tools::fwID::exist(serviceUid.first);
         if(srv_exists && (m_idStartedSrvSet.find(serviceUid.first) != m_idStartedSrvSet.end()))
@@ -75,7 +70,7 @@ void SStarter::stopping()
         }
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
+    std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 
     this->actionServiceStopping();
 }
@@ -91,10 +86,10 @@ void SStarter::info(std::ostream& _sstream)
 
 void SStarter::updating()
 {
-    for(std::size_t i = 0 ; i < m_uuidServices.size() ; i++)
+    for(auto& m_uuidService : m_uuidServices)
     {
-        ActionType action = m_uuidServices.at(i).second;
-        IDSrvType uid     = m_uuidServices.at(i).first;
+        ActionType action = m_uuidService.second;
+        IDSrvType uid     = m_uuidService.first;
         bool srv_exists   = core::tools::fwID::exist(uid);
 
         // Manage special action
@@ -214,7 +209,7 @@ void SStarter::updating()
                 sight::ui::base::dialog::IMessageDialog::WARNING
             );
 
-            SIGHT_INFO("Do nothing for Service " << m_uuidServices.at(i).first);
+            SIGHT_INFO("Do nothing for Service " << m_uuidService.first);
         }
     }
 }
@@ -225,12 +220,12 @@ void SStarter::configuring()
 {
     this->initialize();
 
-    for(ConfigurationType actionCfg : m_configuration->getElements())
+    for(const ConfigurationType& actionCfg : m_configuration->getElements())
     {
         SIGHT_INFO("SStarter " << actionCfg->getName());
 
         std::string actionType = actionCfg->getName();
-        ActionType action;
+        ActionType action {ActionType::DO_NOTHING};
         if(actionType == "start")
         {
             action = START;
@@ -274,6 +269,4 @@ void SStarter::configuring()
 
 //-----------------------------------------------------------------------------
 
-} // namespace com
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::com

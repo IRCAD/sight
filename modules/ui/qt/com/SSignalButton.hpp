@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,10 +33,7 @@
 
 #include <filesystem>
 
-namespace sight::module::ui::qt
-{
-
-namespace com
+namespace sight::module::ui::qt::com
 {
 
 /**
@@ -52,7 +49,7 @@ namespace com
  * - \b setChecked(bool): allows to check/uncheck the button.
  * - \b check(): allows to check the button.
  * - \b uncheck(): allows to uncheck the button.
- * - \b setIsExecutable(bool): sets the button executability.
+ * - \b setEnabled(bool): sets the button executability.
  * - \b setExecutable(): sets the button executable.
  * - \b setInexecutable(): sets the button inexecutable.
  * - \b setVisible(bool):s ets the button visibility.
@@ -100,7 +97,7 @@ public:
     MODULE_UI_QT_API SSignalButton() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_QT_API virtual ~SSignalButton() noexcept;
+    MODULE_UI_QT_API ~SSignalButton() noexcept override;
 
 protected:
 
@@ -120,7 +117,7 @@ private Q_SLOTS:
 
     void onClicked();
 
-    void onToggled(bool);
+    void onToggled(bool /*toggled*/);
 
 private:
 
@@ -134,7 +131,7 @@ private:
     void uncheck();
 
     /// SLOT: sets the button executability.
-    void setIsExecutable(bool _isExecutable);
+    void setEnabled(bool _isEnabled);
 
     /// SLOT: sets the button executable.
     void setExecutable();
@@ -163,10 +160,10 @@ private:
     QPointer<QPushButton> m_button {nullptr};
 
     /// Defines the button's text.
-    std::string m_text {""};
+    std::string m_text;
 
     /// Defines the button's text when it is checked.
-    std::string m_text2 {""};
+    std::string m_text2;
 
     /// Defines the path of the button's icon.
     std::filesystem::path m_icon;
@@ -190,9 +187,7 @@ private:
     unsigned m_iconHeight {0};
 
     /// Defines the button tooltip.
-    std::string m_toolTip {""};
+    std::string m_toolTip;
 };
 
-} // namespace com.
-
-} // namespace sight::module::ui::base.
+} // namespace sight::module::ui::qt::com

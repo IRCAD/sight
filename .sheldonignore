@@ -1,1 +1,4 @@
-/libs/io/zip/minizip/
+/3rd-party
+/libs/io/igtl/patch/
+/libs/io/itk/patched_itk_compiler_detection.h
+/libs/io/itk/compilers/

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,15 +32,12 @@ namespace registry
 
 class ObjectService;
 
-}
+} // namespace registry
 class IService;
 
-}
+} // namespace sight::service
 
-namespace sight::data
-{
-
-namespace mt
+namespace sight::data::mt
 {
 
 template<class DATATYPE>
@@ -95,12 +92,12 @@ public:
     }
 
     /// Default constructors, destructor and assignment operators
-    shared_ptr()                             = default;
-    shared_ptr(const shared_ptr&)            = default;
-    shared_ptr(shared_ptr&&)                 = default;
+    shared_ptr()                  = default;
+    shared_ptr(const shared_ptr&) = default;
+    shared_ptr(shared_ptr&&) noexcept = default;
     shared_ptr& operator=(const shared_ptr&) = default;
-    shared_ptr& operator=(shared_ptr&&)      = default;
-    ~shared_ptr()                            = default;
+    shared_ptr& operator=(shared_ptr&&) noexcept = default;
+    ~shared_ptr() = default;
 
     /// Returns the locked_ptr from the shared pointer
     [[nodiscard]] locked_ptr<DATATYPE> lock() const noexcept;
@@ -120,7 +117,7 @@ protected:
 
     /// Convenience getter shared_ptr
     /// @todo remove me when IService and ObjectService will be ready to use lock()
-    inline std::shared_ptr<DATATYPE> get_shared() const noexcept
+    [[nodiscard]] inline std::shared_ptr<DATATYPE> get_shared() const noexcept
     {
         return m_data;
     }
@@ -139,6 +136,4 @@ inline locked_ptr<DATATYPE> shared_ptr<DATATYPE>::lock() const noexcept
     return locked_ptr<DATATYPE>(m_data);
 }
 
-} // namespace mt
-
-} // namespace sight::data
+} // namespace sight::data::mt

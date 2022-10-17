@@ -23,17 +23,13 @@
 #include "utestData/generator/Image.hpp"
 
 #include <core/data/helper/MedicalImage.hpp>
-#include <core/tools/NumericRoundCast.hxx>
 #include <core/tools/random/Generator.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <ctime>
 #include <random>
 
-namespace sight::utestData
-{
-
-namespace generator
+namespace sight::utestData::generator
 {
 
 using core::tools::random::safeRand;
@@ -67,49 +63,49 @@ inline static void randomizeIterable(I& iterable, std::uint32_t seed = 0)
     auto lock       = iterable.dump_lock();
     const auto type = iterable.getType();
 
-    if(type == core::tools::Type::s_UNSPECIFIED_TYPE || type == core::tools::Type::s_UINT8)
+    if(type == core::Type::NONE || type == core::Type::UINT8)
     {
         randomize<std::uint8_t, std::uint16_t>(iterable, seed);
     }
-    else if(type == core::tools::Type::s_UINT16)
+    else if(type == core::Type::UINT16)
     {
         randomize<std::uint16_t>(iterable, seed);
     }
-    else if(type == core::tools::Type::s_UINT32)
+    else if(type == core::Type::UINT32)
     {
         randomize<std::uint32_t>(iterable, seed);
     }
-    else if(type == core::tools::Type::s_UINT64)
+    else if(type == core::Type::UINT64)
     {
         randomize<std::uint64_t>(iterable, seed);
     }
-    else if(type == core::tools::Type::s_INT8)
+    else if(type == core::Type::INT8)
     {
         randomize<std::int8_t, std::int16_t>(iterable, seed);
     }
-    else if(type == core::tools::Type::s_INT16)
+    else if(type == core::Type::INT16)
     {
         randomize<std::int16_t>(iterable, seed);
     }
-    else if(type == core::tools::Type::s_INT32)
+    else if(type == core::Type::INT32)
     {
         randomize<std::int32_t>(iterable, seed);
     }
-    else if(type == core::tools::Type::s_INT64)
+    else if(type == core::Type::INT64)
     {
         randomize<std::int64_t>(iterable, seed);
     }
-    else if(type == core::tools::Type::s_FLOAT)
+    else if(type == core::Type::FLOAT)
     {
         randomize<float>(iterable, seed);
     }
-    else if(type == core::tools::Type::s_DOUBLE)
+    else if(type == core::Type::DOUBLE)
     {
         randomize<double>(iterable, seed);
     }
     else
     {
-        SIGHT_THROW("Unknowntype: " << type);
+        SIGHT_THROW("Unknown type ");
     }
 }
 
@@ -120,7 +116,7 @@ void Image::generateImage(
     data::Image::Size size,
     data::Image::Spacing spacing,
     data::Image::Origin origin,
-    core::tools::Type type,
+    core::Type type,
     data::Image::PixelFormat format
 )
 {
@@ -131,13 +127,13 @@ void Image::generateImage(
     auto lock = image->dump_lock();
     std::fill(image->begin(), image->end(), 0);
 
-    sight::data::helper::MedicalImage::checkTransferFunctionPool(image);
+    sight::data::helper::MedicalImage::updateDefaultTransferFunction(*image);
     sight::data::helper::MedicalImage::checkImageSliceIndex(image);
 }
 
 //------------------------------------------------------------------------------
 
-void Image::generateRandomImage(data::Image::sptr image, core::tools::Type type, std::uint32_t seed)
+void Image::generateRandomImage(data::Image::sptr image, core::Type type, std::uint32_t seed)
 {
     constexpr int SIZE        = 50;
     constexpr int DOUBLE_SIZE = SIZE * 2;
@@ -163,10 +159,10 @@ void Image::generateRandomImage(data::Image::sptr image, core::tools::Type type,
 
     randomizeImage(image, seed);
 
-    image->setWindowWidth((safeRand() % DOUBLE_SIZE) / double(SIZE / 10.) + 1);
-    image->setWindowCenter((safeRand() % DOUBLE_SIZE - SIZE) / double(SIZE / 10.));
+    image->setWindowWidth({(safeRand() % DOUBLE_SIZE) / double(SIZE / 10.) + 1});
+    image->setWindowCenter({(safeRand() % DOUBLE_SIZE - SIZE) / double(SIZE / 10.)});
 
-    sight::data::helper::MedicalImage::checkTransferFunctionPool(image);
+    sight::data::helper::MedicalImage::updateDefaultTransferFunction(*image);
     sight::data::helper::MedicalImage::checkImageSliceIndex(image);
 }
 
@@ -186,19 +182,4 @@ void Image::randomizeArray(data::Array::sptr array, std::uint32_t seed)
 
 //------------------------------------------------------------------------------
 
-data::Array::sptr Image::createRandomizedArray(const std::string& type, data::Array::SizeType sizes, std::uint32_t seed)
-{
-    data::Array::sptr array = data::Array::New();
-
-    array->resize(sizes, core::tools::Type::create(type), true);
-
-    Image::randomizeArray(array, seed);
-
-    return array;
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace generator
-
-} // namespace sight::utestData
+} // namespace sight::utestData::generator

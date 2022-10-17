@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #ifdef _MSC_VER
 #pragma warning(disable : 4996) // warning for sprintf() in Boost.log
 #endif // _MSC_VER
@@ -53,10 +55,7 @@
 #include <csignal>
 #include <filesystem>
 
-namespace sight::core
-{
-
-namespace log
+namespace sight::core::log
 {
 
 namespace trivial     = boost::log::trivial;
@@ -71,7 +70,7 @@ BOOST_LOG_GLOBAL_LOGGER_DEFAULT(lg, boost::log::sources::severity_logger_mt<triv
 
 //-----------------------------------------------------------------------------
 
-inline static auto console_stream_format()
+inline static auto consoleStreamFormat()
 {
     return expressions::stream << "["
            << expressions::attr<unsigned int>("LineID") << "]["
@@ -82,7 +81,7 @@ inline static auto console_stream_format()
 
 //------------------------------------------------------------------------------
 
-inline static auto file_stream_format()
+inline static auto fileStreamFormat()
 {
     return expressions::stream << "["
            << expressions::format_date_time<ptime>("TimeStamp", "%d.%m.%Y %H:%M:%S.%f") << "]["
@@ -106,7 +105,7 @@ public:
     SpyLoggerImpl& operator=(SpyLoggerImpl&&)      = delete;
 
     // Constructor
-    inline SpyLoggerImpl(SpyLogger* const logger) noexcept :
+    inline explicit SpyLoggerImpl(SpyLogger* const logger) noexcept :
         m_logger(logger)
     {
     }
@@ -114,11 +113,11 @@ public:
     // Destructor
     inline ~SpyLoggerImpl()
     {
-        remove_sink();
+        removeSink();
     }
 
     // Returns the next log file name
-    inline std::filesystem::path next_log_archive(const std::filesystem::path& log_archive)
+    inline std::filesystem::path nextLogArchive(const std::filesystem::path& log_archive)
     {
         // Get the original log archive name and the current index
         if(m_original_log_archive.empty() && log_archive.empty())
@@ -153,7 +152,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline void remove_sink()
+    inline void removeSink()
     {
         if(m_remote_sink)
         {
@@ -178,7 +177,7 @@ public:
     }
 
     // Launch the remote logger, either in raw mode or in encrypted mode
-    inline void start_logger(
+    inline void startLogger(
         const std::filesystem::path& log_archive,
         LevelType level,
         const core::crypto::secure_string& password = core::crypto::secure_string(),
@@ -186,7 +185,7 @@ public:
 )
     {
         // If the logger is started, stop it by closing the input stream
-        remove_sink();
+        removeSink();
 
         // Find the logger binary
         static const auto logger_path =
@@ -198,7 +197,7 @@ public:
             }();
 
         // Build the log archive name
-        const auto& new_log_archive = next_log_archive(log_archive);
+        const auto& new_log_archive = nextLogArchive(log_archive);
 
         // To avoid the logger to restart after changing the global password
         m_raw = (password.empty() && !ask_password);
@@ -220,19 +219,19 @@ public:
         // Use raw mode if no password is provided or asked
         if(m_raw)
         {
-            args.push_back("-r");
+            args.emplace_back("-r");
         }
         else
         {
             if(!password.empty())
             {
-                args.push_back("-p");
-                args.push_back(core::crypto::to_base64(password).c_str());
+                args.emplace_back("-p");
+                args.emplace_back(core::crypto::to_base64(password).c_str());
             }
 
             if(ask_password)
             {
-                args.push_back("-a");
+                args.emplace_back("-a");
             }
         }
 
@@ -300,7 +299,7 @@ public:
         // Setup boost log sink
         m_remote_sink = boost::log::add_console_log(
             *m_remote_in,
-            keywords::format = (file_stream_format()),
+            keywords::format = (fileStreamFormat()),
             keywords::filter = expressions::attr<trivial::severity_level>("Severity")
                                >= static_cast<trivial::severity_level>(level),
             keywords::auto_flush = true
@@ -355,7 +354,7 @@ void SpyLogger::add_console_log(std::ostream& os, LevelType level)
 {
     boost::log::add_console_log(
         os,
-        keywords::format = (console_stream_format()),
+        keywords::format = (consoleStreamFormat()),
         keywords::filter = expressions::attr<trivial::severity_level>("Severity")
                            >= static_cast<trivial::severity_level>(level),
         keywords::auto_flush = true
@@ -374,7 +373,7 @@ void SpyLogger::add_file_log(const std::filesystem::path& log_file, LevelType le
         // ...or at midnight
         keywords::time_based_rotation = boost::log::sinks::file::rotation_at_time_point(0, 0, 0),
         // log record format
-        keywords::format = (file_stream_format()),
+        keywords::format = (fileStreamFormat()),
         keywords::filter = expressions::attr<trivial::severity_level>("Severity")
                            >= static_cast<trivial::severity_level>(level),
         keywords::auto_flush = true
@@ -390,7 +389,7 @@ void SpyLogger::start_encrypted_logger(
     bool ask_password
 )
 {
-    m_pimpl->start_logger(log_archive, level, password, ask_password);
+    m_pimpl->startLogger(log_archive, level, password, ask_password);
 }
 
 //-----------------------------------------------------------------------------
@@ -400,7 +399,7 @@ void SpyLogger::start_logger(
     LevelType level
 )
 {
-    m_pimpl->start_logger(log_archive, level);
+    m_pimpl->startLogger(log_archive, level); // NOLINT(clang-analyzer-optin.cplusplus.VirtualCall)
 }
 
 //------------------------------------------------------------------------------
@@ -440,7 +439,7 @@ void SpyLogger::change_log_password(const core::crypto::secure_string& password)
 
 //-----------------------------------------------------------------------------
 
-#define FILE_LINE(msg) \
+#define FILE_LINE(msg) /* NOLINT(cppcoreguidelines-macro-usage) */ \
     "[" << (file != nullptr ? file : __FILE__) \
     << ":" << (line >= 0 ? line : __LINE__) << "] " \
     << (msg)
@@ -488,6 +487,4 @@ void SpyLogger::fatal(const std::string& mes, const char* file, int line)
     BOOST_LOG_SEV(lg::get(), trivial::fatal) << FILE_LINE(mes);
 }
 
-} // namespace log
-
-} // namespace sight::core
+} // namespace sight::core::log

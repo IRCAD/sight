@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,10 +36,7 @@
 #include <map>
 #include <vector>
 
-namespace sight::io::igtl::detail
-{
-
-namespace archiver
+namespace sight::io::igtl::detail::archiver
 {
 
 typedef SPTR(std::vector<char>)  BufferSPtr;
@@ -56,10 +53,10 @@ public:
     typedef SPTR(MemoryReadArchive) sptr;
 
     /// constructor
-    IO_IGTL_API MemoryReadArchive(const char* buffer, const std::size_t size);
+    IO_IGTL_API MemoryReadArchive(const char* buffer, std::size_t size);
 
     /// destructor
-    IO_IGTL_API ~MemoryReadArchive();
+    IO_IGTL_API ~MemoryReadArchive() override;
 
     /**
      * @brief Returns input stream for the file in current archive (zip).
@@ -76,14 +73,14 @@ public:
      *
      * @return the archive path
      */
-    IO_IGTL_API const std::filesystem::path getArchivePath() const override;
+    [[nodiscard]] IO_IGTL_API std::filesystem::path getArchivePath() const override;
 
     /**
      * @brief clone the instance
      *
      * @return cloned instance
      */
-    IReadArchive::sptr clone() const override
+    [[nodiscard]] IReadArchive::sptr clone() const override
     {
         return SPTR(MemoryReadArchive)(new MemoryReadArchive(m_BUFFER, m_SIZE));
     }
@@ -95,7 +92,7 @@ private:
      *
      * @param[in] buffer buffer data to fill
      */
-    void readEntry(BufferSPtr buffer);
+    void readEntry(BufferSPtr content);
 
 private:
 
@@ -115,6 +112,4 @@ private:
     static const int s_BUFFER_READ_SIZE = 20000;
 };
 
-} // namespace archiver
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::archiver

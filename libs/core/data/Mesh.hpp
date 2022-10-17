@@ -34,6 +34,8 @@
 #include <boost/range/combine.hpp>
 #include <boost/range/iterator_range_core.hpp>
 
+#include <array>
+
 namespace sight::data
 {
 
@@ -243,8 +245,8 @@ namespace sight::data
     }
  * @endcode
  */
-class DATA_CLASS_API Mesh : public Object,
-                            public core::memory::IBuffered
+class DATA_CLASS_API Mesh final : public Object,
+                                  public core::memory::IBuffered
 {
 public:
 
@@ -304,10 +306,7 @@ public:
     DATA_API Mesh(Object::Key key);
 
     /// Destructor
-    DATA_API ~Mesh() override;
-
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    DATA_API ~Mesh() noexcept override = default;
 
     /**
      * @brief Allocate Mesh memory
@@ -318,9 +317,7 @@ public:
      *
      * @param nbPts number of points to allocate
      * @param nbCells number of cells to allocate
-     * @param cellType type of cell to allocate, it defines the number of points by cell to allocate. If you want to
-     *        mix different types of cells in the same mesh, you should use
-     *        resize(std::size_t nbPts, std::size_t nbCells, std::size_t nbCellsData, Attribute arrayMask)
+     * @param cellType type of cell to allocate, it defines the number of points by cell to allocate.
      * @param arrayMask Mesh attribute: additional Arrays to allocate
      *        (ex: Attribute::POINT_COLORS | Attribute::POINT_NORMALS)
      *
@@ -342,9 +339,7 @@ public:
      * parameters.
      * @param nbPts number of points to allocate
      * @param nbCells number of cells to allocate
-     * @param cellType type of cell to allocate, it defines the number of points by cell to allocate. If you want to
-     *        use different types of cells in the same mesh, use
-     *        resize(std::size_t nbPts, std::size_t nbCells, std::size_t nbCellsData, Attribute arrayMask)
+     * @param cellType type of cell to allocate, it defines the number of points by cell to allocate.
      * @param arrayMask Mesh attribute: additional Arrays to allocate
      *        (ex: Attribute::POINT_COLORS | Attribute::POINT_NORMALS)
      *
@@ -435,7 +430,7 @@ public:
      *
      * @throw Exception if the allocation failed
      */
-    DATA_API point_t pushPoint(const position_t p[3]);
+    DATA_API point_t pushPoint(const std::array<position_t, 3>& p);
     DATA_API point_t pushPoint(position_t x, position_t y, position_t z);
     /// @}
     /**
@@ -465,7 +460,7 @@ public:
      * @param p point coordinates
      * @throw Raise Exception if the id is out of bounds
      */
-    DATA_API void setPoint(point_t id, const Mesh::position_t p[3]);
+    DATA_API void setPoint(point_t id, const std::array<position_t, 3>& p);
 
     /**
      * @brief Set a point coordinates.
@@ -608,10 +603,21 @@ public:
     DATA_API bool operator!=(const Mesh& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     /// Add a lock on the mesh in the given vector to prevent from dumping the buffer on the disk
     /// This is needed for IBuffered interface implementation
@@ -639,6 +645,7 @@ private:
         TEX_COORDS,
         _SIZE
     };
+
     enum class CellAttribute : std::uint8_t
     {
         INDEX = 0,

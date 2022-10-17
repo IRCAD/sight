@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,7 @@
 #include "io/igtl/detail/converter/IConverter.hpp"
 #include "io/igtl/detail/exception/Conversion.hpp"
 
-namespace sight::io::igtl::detail
-{
-
-namespace converter
+namespace sight::io::igtl::detail::converter
 {
 
 /**
@@ -44,21 +41,21 @@ public:
     IO_IGTL_API PointListConverter();
 
     /// Destructor
-    IO_IGTL_API ~PointListConverter();
+    IO_IGTL_API ~PointListConverter() override;
 
     /**
      * @brief convert a igtl::PositionMessage to a data::Line
      *
      * @return an data::Image converted from an ::igtl::ImageMessage
      */
-    IO_IGTL_API data::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
+    [[nodiscard]] IO_IGTL_API data::Object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const override;
 
     /**
      * @brief convert a data::Line to an igtl::PositionMessage
      *
      * @return an  ::igtl::ImageMessage converted from an data::Image
      */
-    IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const override;
 
     /**
      * @brief create a new LineConverter smart pointer
@@ -72,14 +69,14 @@ public:
      *
      * @return the igtlType supported for conversion
      */
-    IO_IGTL_API std::string const& getIgtlType() const;
+    [[nodiscard]] IO_IGTL_API std::string const& getIgtlType() const override;
 
     /**
      * @brief get the fwData object type supported for conversion
      *
      * @return the fwData Object type supported for conversion
      */
-    IO_IGTL_API std::string const& getFwDataObjectType() const;
+    [[nodiscard]] IO_IGTL_API std::string const& getFwDataObjectType() const override;
 
 private:
 
@@ -90,6 +87,4 @@ private:
     static std::string const s_FWDATA_OBJECT_TYPE;
 };
 
-} // namespace converter
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::converter

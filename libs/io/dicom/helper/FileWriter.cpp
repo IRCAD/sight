@@ -27,10 +27,7 @@
 #include <gdcmFileMetaInformation.h>
 #include <gdcmWriter.h>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 //------------------------------------------------------------------------------
@@ -59,6 +56,4 @@ void FileWriter::write(
 
 //------------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

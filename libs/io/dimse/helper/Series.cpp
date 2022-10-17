@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "io/dimse/helper/Series.hpp"
 
 #include "io/dimse/exceptions/TagMissing.hpp"
@@ -27,18 +29,12 @@
 #include <core/spyLog.hpp>
 
 #include <data/DicomSeries.hpp>
-#include <data/Equipment.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
-#include <data/Patient.hpp>
-#include <data/Study.hpp>
 
 #include <boost/foreach.hpp>
 
-namespace sight::io::dimse
-{
-
-namespace helper
+namespace sight::io::dimse::helper
 {
 
 //------------------------------------------------------------------------------
@@ -58,138 +54,217 @@ Series::DicomSeriesContainer Series::toFwMedData(OFList<QRResponse*> _responses)
 {
     DicomSeriesContainer seriesContainer;
 
-    OFListIterator(QRResponse*) it;
-    OFCondition result;
-
     // Every while loop run will get all image for a specific study
-    for(it = _responses.begin() ; it != _responses.end() ; ++it)
+    for(auto* _response : _responses)
     {
         // Be sure we are not in the last response which does not have a dataset
-        if((*it)->m_dataset != NULL)
+        if(_response->m_dataset != nullptr)
         {
             OFString data;
 
             // Create series and get informations.
-            sight::data::DicomSeries::sptr series  = sight::data::DicomSeries::New();
-            sight::data::Patient::sptr patient     = series->getPatient();
-            sight::data::Study::sptr study         = series->getStudy();
-            sight::data::Equipment::sptr equipment = series->getEquipment();
+            sight::data::DicomSeries::sptr series = sight::data::DicomSeries::New();
 
             // Series
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_Modality, data);
-            series->setModality(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_Modality, data).good() && !data.empty())
+            {
+                series->setModality(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, data);
-            series->setInstanceUID(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, data).good() && !data.empty())
+            {
+                series->setSeriesInstanceUID(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesNumber, data);
-            series->setNumber(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_SeriesNumber, data).good() && !data.empty())
+            {
+                series->setSeriesNumber(std::stoi(data.c_str()));
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_Laterality, data);
-            series->setLaterality(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_Laterality, data).good() && !data.empty())
+            {
+                series->setLaterality(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesDate, data);
-            series->setDate(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_SeriesDate, data).good() && !data.empty())
+            {
+                series->setSeriesDate(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesTime, data);
-            series->setTime(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_SeriesTime, data).good() && !data.empty())
+            {
+                series->setSeriesTime(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformingPhysicianName, data);
-            sight::data::DicomValuesType performingPhysiciansName;
-            performingPhysiciansName.push_back(data.c_str());
-            series->setPerformingPhysiciansName(performingPhysiciansName);
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_PerformingPhysicianName, data).good() && !data.empty())
+            {
+                series->setPerformingPhysicianName(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_ProtocolName, data);
-            series->setProtocolName(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_ProtocolName, data).good() && !data.empty())
+            {
+                series->setProtocolName(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesDescription, data);
-            series->setDescription(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_SeriesDescription, data).good() && !data.empty())
+            {
+                series->setSeriesDescription(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_BodyPartExamined, data);
-            series->setBodyPartExamined(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_BodyPartExamined, data).good() && !data.empty())
+            {
+                series->setBodyPartExamined(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientPosition, data);
-            series->setPatientPosition(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_PatientPosition, data).good() && !data.empty())
+            {
+                series->setPatientPosition(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_AnatomicalOrientationType, data);
-            series->setAnatomicalOrientationType(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(
+                   DCM_AnatomicalOrientationType,
+                   data
+            ).good() && !data.empty())
+            {
+                series->setAnatomicalOrientationType(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepID, data);
-            series->setPerformedProcedureStepID(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(
+                   DCM_PerformedProcedureStepID,
+                   data
+            ).good() && !data.empty())
+            {
+                series->setPerformedProcedureStepID(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepStartDate, data);
-            series->setPerformedProcedureStepStartDate(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(
+                   DCM_PerformedProcedureStepStartDate,
+                   data
+            ).good() && !data.empty())
+            {
+                series->setPerformedProcedureStepStartDate(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepStartTime, data);
-            series->setPerformedProcedureStepStartTime(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(
+                   DCM_PerformedProcedureStepStartTime,
+                   data
+            ).good() && !data.empty())
+            {
+                series->setPerformedProcedureStepStartTime(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepEndDate, data);
-            series->setPerformedProcedureStepEndDate(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(
+                   DCM_PerformedProcedureStepEndDate,
+                   data
+            ).good() && !data.empty())
+            {
+                series->setPerformedProcedureStepEndDate(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepEndTime, data);
-            series->setPerformedProcedureStepEndTime(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(
+                   DCM_PerformedProcedureStepEndTime,
+                   data
+            ).good() && !data.empty())
+            {
+                series->setPerformedProcedureStepEndTime(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PerformedProcedureStepDescription, data);
-            series->setPerformedProcedureStepDescription(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(
+                   DCM_PerformedProcedureStepDescription,
+                   data
+            ).good() && !data.empty())
+            {
+                series->setPerformedProcedureStepDescription(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_CommentsOnThePerformedProcedureStep, data);
-            series->setPerformedProcedureComments(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(
+                   DCM_CommentsOnThePerformedProcedureStep,
+                   data
+            ).good() && !data.empty())
+            {
+                series->setCommentsOnThePerformedProcedureStep(data.c_str());
+            }
 
             // Study
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyInstanceUID, data);
-            study->setInstanceUID(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_StudyInstanceUID, data).good() && !data.empty())
+            {
+                series->setStudyInstanceUID(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyID, data);
-            study->setStudyID(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_StudyID, data).good() && !data.empty())
+            {
+                series->setStudyID(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyDate, data);
-            study->setDate(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_StudyDate, data).good() && !data.empty())
+            {
+                series->setStudyDate(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyTime, data);
-            study->setTime(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_StudyTime, data).good() && !data.empty())
+            {
+                series->setStudyTime(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_ReferringPhysicianName, data);
-            study->setReferringPhysicianName(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_ReferringPhysicianName, data).good() && !data.empty())
+            {
+                series->setReferringPhysicianName(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_ConsultingPhysicianName, data);
-            study->setConsultingPhysicianName(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_StudyDescription, data).good() && !data.empty())
+            {
+                series->setStudyDescription(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_StudyDescription, data);
-            study->setDescription(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_PatientAge, data).good() && !data.empty())
+            {
+                series->setPatientAge(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientAge, data);
-            study->setPatientAge(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_PatientSize, data).good() && !data.empty())
+            {
+                series->setPatientSize(std::stod(data.c_str()));
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientSize, data);
-            study->setPatientSize(data.c_str());
-
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientWeight, data);
-            study->setPatientWeight(data.c_str());
-
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientBodyMassIndex, data);
-            study->setPatientBodyMassIndex(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_PatientWeight, data).good() && !data.empty())
+            {
+                series->setPatientWeight(std::stod(data.c_str()));
+            }
 
             // Patient
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientName, data);
-            patient->setName(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_PatientName, data).good() && !data.empty())
+            {
+                series->setPatientName(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientID, data);
-            patient->setPatientId(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_PatientID, data).good() && !data.empty())
+            {
+                series->setPatientID(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientBirthDate, data);
-            patient->setBirthdate(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_PatientBirthDate, data).good() && !data.empty())
+            {
+                series->setPatientBirthDate(data.c_str());
+            }
 
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_PatientSex, data);
-            patient->setSex(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_PatientSex, data).good() && !data.empty())
+            {
+                series->setPatientSex(data.c_str());
+            }
 
             // Equipment
-            (*it)->m_dataset->findAndGetOFStringArray(DCM_InstitutionName, data);
-            equipment->setInstitutionName(data.c_str());
+            if(_response->m_dataset->findAndGetOFStringArray(DCM_InstitutionName, data).good() && !data.empty())
+            {
+                series->setInstitutionName(data.c_str());
+            }
 
             // Number of instances
-            long int nb_instances;
-            (*it)->m_dataset->findAndGetLongInt(DCM_NumberOfSeriesRelatedInstances, nb_instances);
-            series->setNumberOfInstances(nb_instances);
+            // NOLINTNEXTLINE(google-runtime-int)
+            long nb_instances = 0;
+            if(_response->m_dataset->findAndGetLongInt(DCM_NumberOfSeriesRelatedInstances, nb_instances).good())
+            {
+                series->setNumberOfInstances(std::size_t(nb_instances));
+            }
 
             // Add series to container
             seriesContainer.push_back(series);
@@ -207,7 +282,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesCon
 
     for(const auto& s : _series)
     {
-        result.push_back(s->getInstanceUID());
+        result.push_back(s->getSeriesInstanceUID());
     }
 
     return result;
@@ -220,18 +295,17 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList<QRRespo
     InstanceUIDContainer instanceUIDContainer;
 
     OFListIterator(QRResponse*) it;
-    DcmDataset dataset;
-    OFCondition result;
+
     // Every while loop run will get all image for a specific study
-    for(it = _responses.begin() ; it != _responses.end() ; ++it)
+    for(auto* _response : _responses)
     {
         // Be sure we are not in the last response which does not have a dataset
-        if((*it)->m_dataset != NULL)
+        if(_response->m_dataset != nullptr)
         {
             OFString seriesInstanceUID;
-            result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID);
             // Only try to get study if we actually have study instance uid, otherwise skip it
-            if(result.good())
+            if(const auto result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID);
+               result.good())
             {
                 instanceUIDContainer.push_back(seriesInstanceUID.c_str());
             }
@@ -247,6 +321,4 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList<QRRespo
     return instanceUIDContainer;
 }
 
-} //helper
-
-} //fwPacsIO
+} // namespace sight::io::dimse::helper

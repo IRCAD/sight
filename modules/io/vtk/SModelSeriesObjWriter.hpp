@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,14 +36,14 @@ namespace sight::data
 
 class Mesh;
 
-}
+} // namespace sight::data
 
 namespace sight::core::jobs
 {
 
 class IJob;
 
-}
+} // namespace sight::core::jobs
 
 namespace sight::module::io::vtk
 {
@@ -82,9 +82,8 @@ public:
      */
     MODULE_IO_VTK_API SModelSeriesObjWriter() noexcept;
 
-    ~SModelSeriesObjWriter() noexcept
-    {
-    }
+    ~SModelSeriesObjWriter() noexcept override =
+        default;
 
     SIGHT_DECLARE_SERVICE(SModelSeriesObjWriter, sight::io::base::service::IWriter);
 

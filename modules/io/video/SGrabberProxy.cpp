@@ -26,7 +26,7 @@
 #include <core/com/Slots.hxx>
 
 #include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 #include <data/FrameTL.hpp>
 
 #include <service/extension/Config.hpp>
@@ -52,6 +52,14 @@ const core::com::Slots::SlotKeyType s_MODIFY_DURATION = "modifyDuration";
 const core::com::Slots::SlotKeyType s_FWD_START_CAMERA_SLOT = "forwardStartCamera";
 const core::com::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera";
 
+const core::com::Slots::SlotKeyType s_FWD_NOTIFY_SLOT = "forwardNotify";
+
+const core::com::Slots::SlotKeyType s_FWD_SET_BOOL_PARAMETER_SLOT        = "forwardSetBoolParameter";
+const core::com::Slots::SlotKeyType s_FWD_SET_DOUBLE_PARAMETER_SLOT      = "forwardSetDoubleParameter";
+const core::com::Slots::SlotKeyType s_FWD_SET_INT_PARAMETER_SLOT         = "forwardSetIntParameter";
+const core::com::Slots::SlotKeyType s_FWD_SET_ENUM_PARAMETER_SLOT        = "forwardSetEnumParameter";
+const core::com::Slots::SlotKeyType s_FWD_SET_ENUM_VALUES_PARAMETER_SLOT = "forwardSetEnumValuesParameter";
+
 const core::com::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
 
 using sight::io::base::service::IGrabber;
@@ -67,13 +75,20 @@ SGrabberProxy::SGrabberProxy() noexcept
     newSlot(s_FWD_START_CAMERA_SLOT, &SGrabberProxy::fwdStartCamera, this);
     newSlot(s_FWD_STOP_CAMERA_SLOT, &SGrabberProxy::fwdStopCamera, this);
     newSlot(s_FWD_PRESENT_FRAME_SLOT, &SGrabberProxy::fwdPresentFrame, this);
+
+    newSlot(s_FWD_NOTIFY_SLOT, &SGrabberProxy::fwdNotify, this);
+
+    newSlot(s_FWD_SET_BOOL_PARAMETER_SLOT, &SGrabberProxy::fwdSetBoolParameter, this);
+    newSlot(s_FWD_SET_DOUBLE_PARAMETER_SLOT, &SGrabberProxy::fwdSetDoubleParameter, this);
+    newSlot(s_FWD_SET_INT_PARAMETER_SLOT, &SGrabberProxy::fwdSetIntParameter, this);
+    newSlot(s_FWD_SET_ENUM_PARAMETER_SLOT, &SGrabberProxy::fwdSetEnumParameter, this);
+    newSlot(s_FWD_SET_ENUM_VALUES_PARAMETER_SLOT, &SGrabberProxy::fwdSetEnumValuesParameter, this);
 }
 
 //-----------------------------------------------------------------------------
 
-SGrabberProxy::~SGrabberProxy() noexcept
-{
-}
+SGrabberProxy::~SGrabberProxy() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -129,7 +144,7 @@ void SGrabberProxy::configuring()
         const auto selectionCfg = subConfig.equal_range("addSelection");
         for(auto itSelection = selectionCfg.first ; itSelection != selectionCfg.second ; ++itSelection)
         {
-            const std::string service = itSelection->second.get<std::string>("<xmlattr>.service");
+            const auto service = itSelection->second.get<std::string>("<xmlattr>.service");
             m_selectedServices.insert(service);
             SIGHT_DEBUG("add selection => " + service);
 
@@ -137,17 +152,21 @@ void SGrabberProxy::configuring()
             // Check if service is not empty.
             SIGHT_ASSERT("add selection with config but service is missing", !service.empty());
             m_serviceToConfig[service].push_back(configId);
-            SIGHT_DEBUG("add config '" + configId + "' for service '" + service + "'");
+            SIGHT_DEBUG(
+                std::string("add config '") + configId + "' for service '" + service + "'"
+            );
         }
 
         const auto configCfg = subConfig.equal_range("config");
         for(auto itCfg = configCfg.first ; itCfg != configCfg.second ; ++itCfg)
         {
-            const std::string service  = itCfg->second.get<std::string>("<xmlattr>.service");
-            const std::string configId = itCfg->second.get<std::string>("<xmlattr>.id");
+            const auto service  = itCfg->second.get<std::string>("<xmlattr>.service");
+            const auto configId = itCfg->second.get<std::string>("<xmlattr>.id");
 
             m_serviceToConfig[service].push_back(configId);
-            SIGHT_DEBUG("add config '" + configId + "' for service '" + service + "'");
+            SIGHT_DEBUG(
+                std::string("add config '") + configId + "' for service '" + service + "'"
+            );
         }
 
         m_guiTitle = subConfig.get<std::string>("gui.<xmlattr>.title", m_guiTitle);
@@ -197,14 +216,14 @@ void SGrabberProxy::startCamera()
                 }
                 else
                 {
-                    auto cameraSeries = std::dynamic_pointer_cast<const data::CameraSeries>(cameraInput.get_shared());
-                    if(cameraSeries)
+                    auto camera_set = std::dynamic_pointer_cast<const data::CameraSet>(cameraInput.get_shared());
+                    if(camera_set)
                     {
-                        numCamerasInSeries = cameraSeries->numCameras();
+                        numCamerasInSeries = camera_set->size();
                         SIGHT_ASSERT("Camera Series is empty", numCamerasInSeries);
 
                         // Assume same source on all cameras
-                        sourceType = cameraSeries->getCamera(0)->getCameraSource();
+                        sourceType = camera_set->get_camera(0)->getCameraSource();
                     }
                 }
             }
@@ -238,7 +257,7 @@ void SGrabberProxy::startCamera()
                     {
                         service::IService::ConfigType parameterCfg;
 
-                        const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
+                        const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
                         SIGHT_DEBUG("Evaluating if key '" + key + "' is suitable...");
                         const auto obj = this->getInOut<data::Object>(key).lock();
                         SIGHT_ASSERT("Object key '" + key + "' not found", obj);
@@ -334,7 +353,7 @@ void SGrabberProxy::startCamera()
                     {
                         // Find all configurations for the given grabber.
                         selectableConfigs = srvConfigFactory->getAllConfigForService(extension, true);
-                        selectableConfigs.push_back(""); // Add the empty config (default grabber).
+                        selectableConfigs.emplace_back(""); // Add the empty config (default grabber).
 
                         // Remove configs from the grabber's list.
                         if(configsIt != m_serviceToConfig.end())
@@ -372,7 +391,7 @@ void SGrabberProxy::startCamera()
                 }
 
                 std::string selectedDesc;
-                if(descriptions.size() == 0)
+                if(descriptions.empty())
                 {
                     const std::string msg = "No video grabber implementation found.\n";
                     sight::ui::base::dialog::MessageDialog::show(
@@ -382,7 +401,8 @@ void SGrabberProxy::startCamera()
                     );
                     return;
                 }
-                else if(descriptions.size() == 1)
+
+                if(descriptions.size() == 1)
                 {
                     /// Select the only remaining description.
                     selectedDesc = descriptions[0];
@@ -425,18 +445,18 @@ void SGrabberProxy::startCamera()
                 }
                 else
                 {
-                    auto cameraSeries = data::CameraSeries::dynamicConstCast(cameraInput.get_shared());
-                    if(cameraSeries)
+                    auto camera_set = data::CameraSet::dynamicConstCast(cameraInput.get_shared());
+                    if(camera_set)
                     {
                         #ifdef DEBUG
-                        const std::size_t numCameras = cameraSeries->numCameras();
+                        const std::size_t numCameras = camera_set->size();
                         SIGHT_ASSERT(
                             "Not enough cameras in series to emulate the grabber",
                             srvCount < numCameras
                         );
                         #endif
 
-                        srv->setInput(cameraSeries->getCamera(srvCount), s_CAMERA_INPUT);
+                        srv->setInput(camera_set->get_camera(srvCount), s_CAMERA_INPUT);
                     }
                 }
 
@@ -445,7 +465,7 @@ void SGrabberProxy::startCamera()
                 auto inoutsCfg           = proxyConfig.equal_range("inout");
                 for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
                 {
-                    const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
+                    const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
                     SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
 
                     auto frameTL = this->getInOut<data::FrameTL>(key).lock();
@@ -487,6 +507,34 @@ void SGrabberProxy::startCamera()
                 m_connections.connect(srv, IGrabber::s_CAMERA_STARTED_SIG, this->getSptr(), s_FWD_START_CAMERA_SLOT);
                 m_connections.connect(srv, IGrabber::s_CAMERA_STOPPED_SIG, this->getSptr(), s_FWD_STOP_CAMERA_SLOT);
                 m_connections.connect(srv, IGrabber::s_FRAME_PRESENTED_SIG, this->getSptr(), s_FWD_PRESENT_FRAME_SLOT);
+
+                m_connections.connect(srv, IService::s_NOTIFIED_SIG, this->getSptr(), s_FWD_NOTIFY_SLOT);
+
+                m_connections.connect(
+                    srv,
+                    IGrabber::s_BOOL_CHANGED_SIG,
+                    this->getSptr(),
+                    s_FWD_SET_BOOL_PARAMETER_SLOT
+                );
+                m_connections.connect(
+                    srv,
+                    IGrabber::s_DOUBLE_CHANGED_SIG,
+                    this->getSptr(),
+                    s_FWD_SET_DOUBLE_PARAMETER_SLOT
+                );
+                m_connections.connect(srv, IGrabber::s_INT_CHANGED_SIG, this->getSptr(), s_FWD_SET_INT_PARAMETER_SLOT);
+                m_connections.connect(
+                    srv,
+                    IGrabber::s_ENUM_CHANGED_SIG,
+                    this->getSptr(),
+                    s_FWD_SET_ENUM_PARAMETER_SLOT
+                );
+                m_connections.connect(
+                    srv,
+                    IGrabber::s_ENUM_VALUES_CHANGED_SIG,
+                    this->getSptr(),
+                    s_FWD_SET_ENUM_VALUES_PARAMETER_SLOT
+                );
 
                 ++srvCount;
             }
@@ -590,6 +638,84 @@ void SGrabberProxy::setStep(int step, std::string key)
     }
 }
 
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::setBoolParameter(bool value, std::string key)
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->setBoolParameter(value, key);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::setDoubleParameter(double value, std::string key)
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->setDoubleParameter(value, key);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::setIntParameter(int value, std::string key)
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->setIntParameter(value, key);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::setEnumParameter(std::string value, std::string key)
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->setEnumParameter(value, key);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::setEnumValuesParameter(std::string value, std::string key)
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->setEnumValuesParameter(value, key);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::requestSettings()
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->requestSettings();
+        }
+    }
+}
+
 //-----------------------------------------------------------------------------
 
 void SGrabberProxy::reconfigure()
@@ -652,5 +778,51 @@ void SGrabberProxy::fwdPresentFrame()
 }
 
 //-----------------------------------------------------------------------------
+
+void SGrabberProxy::fwdNotify(IService::NotificationType type, const std::string message)
+{
+    auto sig = this->signal<IService::notification_signal_type>(IService::s_NOTIFIED_SIG);
+    sig->asyncEmit(type, message);
+}
+
+//-----------------------------------------------------------------------------
+
+void SGrabberProxy::fwdSetBoolParameter(bool value, std::string key)
+{
+    auto sig = this->signal<IGrabber::BoolChangedSignalType>(IGrabber::s_BOOL_CHANGED_SIG);
+    sig->asyncEmit(value, key);
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::fwdSetDoubleParameter(double value, std::string key)
+{
+    auto sig = this->signal<IGrabber::DoubleChangedSignalType>(IGrabber::s_DOUBLE_CHANGED_SIG);
+    sig->asyncEmit(value, key);
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::fwdSetIntParameter(int value, std::string key)
+{
+    auto sig = this->signal<IGrabber::IntChangedSignalType>(IGrabber::s_INT_CHANGED_SIG);
+    sig->asyncEmit(value, key);
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::fwdSetEnumParameter(std::string value, std::string key)
+{
+    auto sig = this->signal<IGrabber::EnumChangedSignalType>(IGrabber::s_ENUM_CHANGED_SIG);
+    sig->asyncEmit(value, key);
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::fwdSetEnumValuesParameter(std::string value, std::string key)
+{
+    auto sig = this->signal<IGrabber::EnumValuesChangedSignalType>(IGrabber::s_ENUM_VALUES_CHANGED_SIG);
+    sig->asyncEmit(value, key);
+}
 
 } // namespace sight::module::io::video

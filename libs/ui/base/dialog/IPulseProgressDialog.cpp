@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,24 +22,19 @@
 
 #include "ui/base/dialog/IPulseProgressDialog.hpp"
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 const IPulseProgressDialog::FactoryRegistryKeyType IPulseProgressDialog::REGISTRY_KEY =
     "::ui::base::dialog::PulseProgressDialog";
 
 IPulseProgressDialog::IPulseProgressDialog()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IPulseProgressDialog::~IPulseProgressDialog()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -57,6 +52,4 @@ void IPulseProgressDialog::setFrequence(MilliSecond frequence)
 
 //-----------------------------------------------------------------------------
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

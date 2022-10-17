@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,12 +23,10 @@
 #pragma once
 
 #include "core/config.hpp"
+
 #include <core/Exception.hpp>
 
-namespace sight::core::com
-{
-
-namespace exception
+namespace sight::core::com::exception
 {
 
 /// No worker exception.
@@ -37,6 +35,4 @@ struct NoWorker : core::Exception
     CORE_API NoWorker(const std::string& err);
 };
 
-} // namespace exception
-
-} // namespace sight::core::com
+} // namespace sight::core::com::exception

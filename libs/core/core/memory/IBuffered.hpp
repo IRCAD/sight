@@ -50,4 +50,4 @@ protected:
     CORE_API virtual void dump_lock_impl(std::vector<core::memory::BufferObject::Lock>& locks) const = 0;
 };
 
-}
+} // namespace sight::core::memory

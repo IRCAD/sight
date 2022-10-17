@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,7 +73,7 @@ public:
     /**
      * @brief Destructor.
      */
-    MODULE_UI_QT_API ~SIntrinsicEdition();
+    MODULE_UI_QT_API ~SIntrinsicEdition() override;
 
     /**
      * @brief Configuring method : This method is used to configure the service.
@@ -109,13 +109,13 @@ private:
 
     void readCalibration();
 
-    std::array<double, 4> m_intrinsic;
-    std::array<double, 5> m_distParameters;
+    std::array<double, 4> m_intrinsic {};
+    std::array<double, 5> m_distParameters {};
 
-    double m_skew;
-    std::array<double, 2> m_resolution;
+    double m_skew {};
+    std::array<double, 2> m_resolution {};
 
-    std::array<double, 12> m_calibration;
+    std::array<double, 12> m_calibration {};
 
     SUpdateIntrinsicDialog* m_dialog;
 

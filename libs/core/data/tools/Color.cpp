@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ namespace sight::data::tools
 
 //------------------------------------------------------------------------------
 
-void Color::hexaStringToRGBA(const std::string& _hexaColor, std::uint8_t _rgba[4])
+void Color::hexaStringToRGBA(const std::string& _hexaColor, std::array<std::uint8_t, 4>& _rgba)
 {
     SIGHT_THROW_IF(
         "Color string should start with '#' and followed by 6 or 8 "
@@ -42,10 +42,13 @@ void Color::hexaStringToRGBA(const std::string& _hexaColor, std::uint8_t _rgba[4
         || (_hexaColor.length() != 7 && _hexaColor.length() != 9)
     );
 
-    std::string redString = _hexaColor.substr(1, 2);
+    std::string redString   = _hexaColor.substr(1, 2);
     std::string greenString = _hexaColor.substr(3, 2);
-    std::string blueString = _hexaColor.substr(5, 2);
-    int r, g, b, a = 255;
+    std::string blueString  = _hexaColor.substr(5, 2);
+    int r                   = 0;
+    int g                   = 0;
+    int b                   = 0;
+    int a                   = 255;
 
     std::istringstream iss;
     iss.str(redString);

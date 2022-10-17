@@ -35,15 +35,13 @@ namespace sight::module::ui::base::metrics
 
 //------------------------------------------------------------------------------
 
-SAddDistance::SAddDistance() noexcept
-{
-}
+SAddDistance::SAddDistance() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SAddDistance::~SAddDistance() noexcept
-{
-}
+SAddDistance::~SAddDistance() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -83,14 +81,14 @@ void SAddDistance::updating()
             pt2->getCoord().end(),
             image->getSpacing().begin(),
             pt2->getCoord().begin(),
-            std::multiplies<double>()
+            std::multiplies<>()
         );
         std::transform(
             pt2->getCoord().begin(),
             pt2->getCoord().end(),
             image->getOrigin().begin(),
             pt2->getCoord().begin(),
-            std::plus<double>()
+            std::plus<>()
         );
 
         const data::PointList::sptr pl = data::PointList::New();
@@ -105,7 +103,7 @@ void SAddDistance::updating()
             data::helper::MedicalImage::setDistances(*image, vectDist);
         }
 
-        vectDist->getContainer().push_back(pl);
+        vectDist->push_back(pl);
 
         const auto sig =
             image->signal<data::Image::DistanceAddedSignalType>(data::Image::s_DISTANCE_ADDED_SIG);

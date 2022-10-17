@@ -36,26 +36,23 @@ namespace sight::core::jobs
 class Observer;
 class IJob;
 
-}
+} // namespace sight::core::jobs
 
 namespace sight::data
 {
 
 class DicomSeries;
 
-}
+} // namespace sight::data
 
 namespace sight::io::zip
 {
 
 class IWriteArchive;
 
-}
+} // namespace sight::io::zip
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 class DicomAnonymizer;
@@ -123,7 +120,7 @@ protected:
     void processWrite();
 
     /// Write count
-    int m_writeCount;
+    int m_writeCount {0};
 
     /// Job observer
     SPTR(core::jobs::Observer) m_job;
@@ -138,6 +135,4 @@ protected:
     std::string m_subPath;
 };
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

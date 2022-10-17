@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 
 #include <filesystem>
 
-namespace sight::module::ui::base
-{
-
-namespace io
+namespace sight::module::ui::base::io
 {
 
 /**
@@ -65,7 +62,7 @@ public:
     /// @}
 
     MODULE_UI_BASE_API SFolderSelector() noexcept;
-    MODULE_UI_BASE_API virtual ~SFolderSelector() noexcept;
+    MODULE_UI_BASE_API ~SFolderSelector() noexcept override;
 
 protected:
 
@@ -87,6 +84,4 @@ private:
     std::string m_dialogTitle;
 };
 
-} // namespace io
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::io

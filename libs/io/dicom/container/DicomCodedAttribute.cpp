@@ -22,24 +22,23 @@
 
 #include "io/dicom/container/DicomCodedAttribute.hpp"
 
-namespace sight::io::dicom
-{
+#include <utility>
 
-namespace container
+namespace sight::io::dicom::container
 {
 
 //------------------------------------------------------------------------------
 
 DicomCodedAttribute::DicomCodedAttribute(
-    const std::string& codeValue,
-    const std::string& codingSchemeDesignator,
-    const std::string& codeMeaning,
-    const std::string& codingSchemeVersion
+    std::string codeValue,
+    std::string codingSchemeDesignator,
+    std::string codeMeaning,
+    std::string codingSchemeVersion
 ) :
-    m_codeValue(codeValue),
-    m_codingSchemeDesignator(codingSchemeDesignator),
-    m_codeMeaning(codeMeaning),
-    m_codingSchemeVersion(codingSchemeVersion)
+    m_codeValue(std::move(codeValue)),
+    m_codingSchemeDesignator(std::move(codingSchemeDesignator)),
+    m_codeMeaning(std::move(codeMeaning)),
+    m_codingSchemeVersion(std::move(codingSchemeVersion))
 {
 }
 
@@ -67,16 +66,14 @@ bool DicomCodedAttribute::operator==(const DicomCodedAttribute& other) const
 
 gdcm::SegmentHelper::BasicCodedEntry DicomCodedAttribute::toGDCMFormat() const
 {
-    return gdcm::SegmentHelper::BasicCodedEntry(
+    return {
         m_codeValue.c_str(),
         m_codingSchemeDesignator.c_str(),
         m_codingSchemeVersion.c_str(),
         m_codeMeaning.c_str()
-    );
+    };
 }
 
 //------------------------------------------------------------------------------
 
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container

@@ -6,7 +6,7 @@
 
 #include "TransferFunction.inc.glsl"
 
-uniform vec2 u_f2TFWindow;
+uniform vec3 u_f3TFWindow;
 
 uniform ivec3 u_brickSize;
 
@@ -41,7 +41,7 @@ void main()
                 // We only want to check if the voxel is not empty meaning its extinction coefficient is zero.
                 // Therefore there is NO NEED TO CALCULATE THE EXTINCTION COEFFICIENT here since it is equal to zero
                 // if and only if the opacity is equal to zero.
-                float voxelOpacity = sampleTransferFunction(intensity, u_s1TFTexture, u_f2TFWindow).a; // const
+                float voxelOpacity = sampleTransferFunction(intensity, u_s1TFTexture, u_f3TFWindow).a; // const
 
                 brickMax = brickMax || voxelOpacity != 0;
             }

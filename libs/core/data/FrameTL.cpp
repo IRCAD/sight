@@ -27,8 +27,6 @@
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
-#include <boost/pool/pool.hpp>
-
 SIGHT_REGISTER_DATA(sight::data::FrameTL);
 
 namespace sight::data
@@ -37,11 +35,7 @@ namespace sight::data
 //------------------------------------------------------------------------------
 
 FrameTL::FrameTL(data::Object::Key key) :
-    GenericTL<uint8_t>(key),
-    m_width(0),
-    m_height(0),
-    m_numberOfComponents(3),
-    m_type()
+    GenericTL<uint8_t>(key)
 {
     // Default to 100 frames since images used to eat a lot of memory...
     this->setMaximumSize(100);
@@ -49,34 +43,37 @@ FrameTL::FrameTL(data::Object::Key key) :
 
 //------------------------------------------------------------------------------
 
-FrameTL::~FrameTL()
+void FrameTL::shallowCopy(const Object::csptr& /*unused*/)
 {
+    SIGHT_FATAL("shallowCopy not implemented for : " + this->getClassname());
 }
 
 //------------------------------------------------------------------------------
 
-void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
+void FrameTL::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    FrameTL::csptr other = FrameTL::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source);
 
     this->clearTimeline();
 
     this->initPoolSize(other->m_width, other->m_height, other->m_type, other->m_pixelFormat);
 
-    for(TimelineType::value_type elt : other->m_timeline)
+    for(const TimelineType::value_type& elt : other->m_timeline)
     {
         SPTR(data::timeline::Buffer) tlObj = this->createBuffer(elt.first);
         tlObj->deepCopy(*elt.second);
         m_timeline.insert(TimelineType::value_type(elt.first, tlObj));
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -84,7 +81,7 @@ void FrameTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
 void FrameTL::initPoolSize(
     std::size_t width,
     std::size_t height,
-    const core::tools::Type& type,
+    const core::Type& type,
     const PixelFormat format,
     unsigned int maxElementNum
 )
@@ -113,7 +110,7 @@ void FrameTL::initPoolSize(
             m_numberOfComponents = 1;
     }
 
-    std::size_t size = width * height * m_numberOfComponents * type.sizeOf();
+    std::size_t size = width * height * m_numberOfComponents * type.size();
 
     SIGHT_ASSERT("width or height or numberOfComponents is null", size != 0);
 
@@ -123,7 +120,7 @@ void FrameTL::initPoolSize(
 
 //------------------------------------------------------------------------------
 
-void FrameTL::initPoolSize(unsigned int)
+void FrameTL::initPoolSize(unsigned int /*maxElementNum*/)
 {
     SIGHT_ERROR("This function should not be called");
 }
@@ -142,7 +139,7 @@ bool FrameTL::operator==(const FrameTL& other) const noexcept
     }
 
     // Super class last
-    return GenericTL<uint8_t>::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

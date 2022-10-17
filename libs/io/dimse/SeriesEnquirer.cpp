@@ -40,8 +40,14 @@
 
 /**
  * Do not mark `JPEGLS`, `JPIP` as incorrect.
- * cspell:ignore JPEGLS JPIP
+ * cspell:ignore JPEGLS JPIP NOLINT
  */
+
+#ifdef HAVE_STL_LIST
+#define DCMTK_EMPLACE_BACK emplace_back
+#else
+#define DCMTK_EMPLACE_BACK push_back
+#endif
 
 namespace sight::io::dimse
 {
@@ -50,23 +56,20 @@ const core::com::Slots::SlotKeyType SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT = "
 
 //------------------------------------------------------------------------------
 
-SeriesEnquirer::SeriesEnquirer() :
-    m_progressCallback(ProgressCallbackSlotType::sptr())
-{
-}
+SeriesEnquirer::SeriesEnquirer()
+= default;
 
 //------------------------------------------------------------------------------
 
 SeriesEnquirer::~SeriesEnquirer()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 void SeriesEnquirer::initialize(
     const std::string& _applicationTitle,
     const std::string& _peerHostName,
-    unsigned short _peerPort,
+    std::uint16_t _peerPort,
     const std::string& _peerApplicationTitle,
     const std::string& _moveApplicationTitle,
     ProgressCallbackSlotType::sptr _progressCallback
@@ -103,41 +106,41 @@ void SeriesEnquirer::initialize(
 
     // Use presentation context for C-FIND/C-MOVE in study root, propose all uncompressed transfer syntaxes.
     OFList<OFString> transferSyntaxes;
-    transferSyntaxes.push_back(UID_LittleEndianImplicitTransferSyntax);
-    transferSyntaxes.push_back(UID_LittleEndianExplicitTransferSyntax);
-    transferSyntaxes.push_back(UID_BigEndianExplicitTransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess1TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess2_4TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess3_5TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess6_8TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess7_9TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess10_12TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess11_13TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess14TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess15TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess16_18TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess17_19TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess20_22TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess21_23TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess24_26TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess25_27TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess28TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess29TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGProcess14SV1TransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGLSLosslessTransferSyntax);
-    transferSyntaxes.push_back(UID_JPEGLSLossyTransferSyntax);
-    transferSyntaxes.push_back(UID_RLELosslessTransferSyntax);
-    transferSyntaxes.push_back(UID_DeflatedExplicitVRLittleEndianTransferSyntax);
-    transferSyntaxes.push_back(UID_JPEG2000LosslessOnlyTransferSyntax);
-    transferSyntaxes.push_back(UID_JPEG2000TransferSyntax);
-    transferSyntaxes.push_back(UID_MPEG2MainProfileAtMainLevelTransferSyntax);
-    transferSyntaxes.push_back(UID_MPEG2MainProfileAtHighLevelTransferSyntax);
-    transferSyntaxes.push_back(UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax);
-    transferSyntaxes.push_back(UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax);
-    transferSyntaxes.push_back(UID_JPIPReferencedTransferSyntax);
-    transferSyntaxes.push_back(UID_JPIPReferencedDeflateTransferSyntax);
-    transferSyntaxes.push_back(UID_RFC2557MIMEEncapsulationTransferSyntax);
-    transferSyntaxes.push_back(UID_XMLEncodingTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_LittleEndianImplicitTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_LittleEndianExplicitTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_BigEndianExplicitTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess1TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess2_4TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess3_5TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess6_8TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess7_9TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess10_12TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess11_13TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess14TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess15TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess16_18TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess17_19TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess20_22TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess21_23TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess24_26TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess25_27TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess28TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess29TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGProcess14SV1TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGLSLosslessTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEGLSLossyTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_RLELosslessTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_DeflatedExplicitVRLittleEndianTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEG2000LosslessOnlyTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEG2000TransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_MPEG2MainProfileAtMainLevelTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_MPEG2MainProfileAtHighLevelTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEG2000Part2MulticomponentImageCompressionLosslessOnlyTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPEG2000Part2MulticomponentImageCompressionTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPIPReferencedTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_JPIPReferencedDeflateTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_RFC2557MIMEEncapsulationTransferSyntax);
+    transferSyntaxes.DCMTK_EMPLACE_BACK(UID_XMLEncodingTransferSyntax);
 
     // Add Verification SOP Class presentation context.
     this->addPresentationContext(UID_VerificationSOPClass, transferSyntaxes);
@@ -290,9 +293,9 @@ OFCondition SeriesEnquirer::sendStoreRequest(const std::filesystem::path& _path)
         SIGHT_WARN("There is no uncompressed presentation context for Study Root GET");
     }
 
-    Uint16 rspStatusCode;
+    Uint16 rspStatusCode = 0;
     SIGHT_INFO("Send C-STORE request")
-    OFCondition result = this->sendSTORERequest(presID, OFString(_path.string().c_str()), 0, rspStatusCode);
+    OFCondition result = this->sendSTORERequest(presID, OFString(_path.string().c_str()), nullptr, rspStatusCode);
     return result;
 }
 
@@ -308,10 +311,10 @@ OFCondition SeriesEnquirer::sendStoreRequest(const CSPTR(DcmDataset)& _dataset)
         SIGHT_WARN("There is no uncompressed presentation context for Study Root GET");
     }
 
-    Uint16 rspStatusCode;
+    Uint16 rspStatusCode = 0;
 
     // const_cast required to use bad DCMTK sendSTORERequest API
-    DcmDataset* datasetPtr = const_cast<DcmDataset*>(_dataset.get());
+    auto* datasetPtr = const_cast<DcmDataset*>(_dataset.get()); // NOLINT(cppcoreguidelines-pro-type-const-cast)
     SIGHT_INFO("Send C-STORE request")
     OFCondition result = this->sendSTORERequest(presID, OFString(""), datasetPtr, rspStatusCode);
     return result;
@@ -751,8 +754,8 @@ std::string SeriesEnquirer::findSOPInstanceUID(const std::string& _seriesInstanc
 
     OFList<QRResponse*> responses = this->sendFindRequest(dataset);
     OFListIterator(QRResponse*) it = responses.begin();
-    std::string sopInstanceUID = "";
-    if(it != responses.end() && (*it)->m_dataset)
+    std::string sopInstanceUID;
+    if(it != responses.end() && ((*it)->m_dataset != nullptr))
     {
         OFString sop;
         (*it)->m_dataset->findAndGetOFStringArray(DCM_SOPInstanceUID, sop);
@@ -779,7 +782,7 @@ void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer _ins
     DcmDataset dataset;
     OFCondition result;
 
-    for(std::string seriesInstanceUID : _instanceUIDContainer)
+    for(const std::string& seriesInstanceUID : _instanceUIDContainer)
     {
         dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
         dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID.c_str());
@@ -793,7 +796,7 @@ void SeriesEnquirer::pullSeriesUsingMoveRetrieveMethod(InstanceUIDContainer _ins
         else
         {
             const std::string msg = "Unable to send a C-MOVE request to the server. "
-                                    "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) + ") : "
+                                    "(Series instance UID =" + std::string(seriesInstanceUID) + ") : "
                                     + std::string(result.text());
             throw io::dimse::exceptions::RequestFailure(msg);
         }
@@ -810,7 +813,7 @@ void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _inst
     DcmDataset dataset;
     OFCondition result;
 
-    for(std::string seriesInstanceUID : _instanceUIDContainer)
+    for(const std::string& seriesInstanceUID : _instanceUIDContainer)
     {
         dataset.putAndInsertOFStringArray(DCM_QueryRetrieveLevel, "SERIES");
         dataset.putAndInsertOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID.c_str());
@@ -824,7 +827,7 @@ void SeriesEnquirer::pullSeriesUsingGetRetrieveMethod(InstanceUIDContainer _inst
         else
         {
             const std::string msg = "Unable to send a C-GET request to the server. "
-                                    "(Series instance UID =" + std::string(seriesInstanceUID.c_str()) + ") : "
+                                    "(Series instance UID =" + std::string(seriesInstanceUID) + ") : "
                                     + std::string(result.text());
             throw io::dimse::exceptions::RequestFailure(msg);
         }
@@ -858,7 +861,7 @@ void SeriesEnquirer::pullInstanceUsingMoveRetrieveMethod(
     else
     {
         const std::string msg = "Unable to send a C-MOVE request to the server. "
-                                "(Series instance UID =" + std::string(_seriesInstanceUID.c_str()) + ") : "
+                                "(Series instance UID =" + std::string(_seriesInstanceUID) + ") : "
                                 + std::string(result.text());
         throw io::dimse::exceptions::RequestFailure(msg);
     }
@@ -891,7 +894,7 @@ void SeriesEnquirer::pullInstanceUsingGetRetrieveMethod(
     else
     {
         const std::string msg = "Unable to send a C-GET request to the server. "
-                                "(Series instance UID =" + std::string(_seriesInstanceUID.c_str()) + ") : "
+                                "(Series instance UID =" + std::string(_seriesInstanceUID) + ") : "
                                 + std::string(result.text());
         throw io::dimse::exceptions::RequestFailure(msg);
     }
@@ -984,15 +987,16 @@ OFCondition SeriesEnquirer::handleMOVEResponse(
 //------------------------------------------------------------------------------
 
 OFCondition SeriesEnquirer::handleSTORERequest(
-    const T_ASC_PresentationContextID,
+    const T_ASC_PresentationContextID /*presID*/,
     DcmDataset* _incomingObject,
-    OFBool&,
+    OFBool& /*continueCGETSession*/,
     Uint16&
+    /*cStoreReturnStatus*/
 )
 {
     OFCondition result;
 
-    if(_incomingObject != NULL)
+    if(_incomingObject != nullptr)
     {
         // Find the series UID.
         OFString seriesID;
@@ -1041,7 +1045,7 @@ OFCondition SeriesEnquirer::handleSTORERequest(
 
 Uint8 SeriesEnquirer::findUncompressedPC(const OFString& sopClass)
 {
-    Uint8 pc;
+    Uint8 pc = 0;
     pc = this->findPresentationContextID(sopClass, UID_LittleEndianExplicitTransferSyntax);
     if(pc == 0)
     {

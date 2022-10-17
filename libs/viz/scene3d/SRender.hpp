@@ -26,7 +26,6 @@
 #include "viz/scene3d/IWindowInteractor.hpp"
 #include "viz/scene3d/Layer.hpp"
 #include "viz/scene3d/overlay/ViewportListener.hpp"
-#include "viz/scene3d/picker/IPicker.hpp"
 #include "viz/scene3d/Utils.hpp"
 
 #include <data/Image.hpp>
@@ -307,7 +306,7 @@ std::vector<SPTR(T)> SRender::getAdaptors() const
     auto servicesVector = service::OSR::getServices("sight::viz::scene3d::IAdaptor");
     std::vector<SPTR(T)> resultVector;
 
-    for(auto& sceneAdaptor : servicesVector)
+    for(const auto& sceneAdaptor : servicesVector)
     {
         SPTR(T) adaptor = T::dynamicCast(sceneAdaptor);
         if(adaptor)
@@ -331,4 +330,4 @@ inline SRender::RenderMode SRender::getRenderMode() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::viz
+} // namespace sight::viz::scene3d

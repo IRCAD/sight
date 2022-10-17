@@ -27,7 +27,6 @@
 
 #include <core/base.hpp>
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Composite.hpp>
 #include <data/helper/MedicalImage.hpp>
@@ -42,6 +41,7 @@
 #include <itkJPEGImageIOFactory.h>
 #include <itkNumericSeriesFileNames.h>
 
+#include <cmath>
 #include <filesystem>
 
 SIGHT_REGISTER_IO_WRITER(sight::io::itk::JpgImageWriter);
@@ -51,15 +51,14 @@ namespace sight::io::itk
 
 //------------------------------------------------------------------------------
 
-JpgImageWriter::JpgImageWriter(io::base::writer::IObjectWriter::Key key)
+JpgImageWriter::JpgImageWriter(io::base::writer::IObjectWriter::Key /*key*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 JpgImageWriter::~JpgImageWriter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -83,7 +82,7 @@ struct JpgITKSaverFunctor
     template<class PIXELTYPE>
     void operator()(const Parameter& param)
     {
-        SIGHT_DEBUG("itk::ImageSeriesWriter with PIXELTYPE " << core::tools::Type::create<PIXELTYPE>().string());
+        SIGHT_DEBUG("itk::ImageSeriesWriter with PIXELTYPE " << core::Type::get<PIXELTYPE>().name());
 
         data::Image::csptr image = param.m_dataImage;
 
@@ -92,9 +91,9 @@ struct JpgITKSaverFunctor
         assert(imageIOWrite.IsNotNull());
 
         // create writer
-        typedef ::itk::Image<PIXELTYPE, 3> itkImageType;
-        typedef ::itk::Image<unsigned char, 2> Image2DType;
-        typedef typename ::itk::ImageSeriesWriter<itkImageType, Image2DType> WriterType;
+        using itkImageType = ::itk::Image<PIXELTYPE, 3>;
+        using Image2DType  = ::itk::Image<unsigned char, 2>;
+        using WriterType   = typename ::itk::ImageSeriesWriter<itkImageType, Image2DType>;
         typename WriterType::Pointer writer = WriterType::New();
 
         // set observation (*2*)
@@ -105,40 +104,33 @@ struct JpgITKSaverFunctor
         // create itk Image
         typename itkImageType::Pointer itkImage = io::itk::moveToItk<itkImageType>(image);
 
-        typedef ::itk::IntensityWindowingImageFilter<itkImageType, itkImageType> RescaleFilterType;
+        using RescaleFilterType = ::itk::IntensityWindowingImageFilter<itkImageType, itkImageType>;
         typename RescaleFilterType::Pointer rescaleFilter = RescaleFilterType::New();
 
-        double min, max;
-        data::Composite::sptr poolTF;
-        poolTF = data::helper::MedicalImage::getTransferFunction(*image);
+        double min = NAN;
+        double max = NAN;
+        auto tf    = data::helper::MedicalImage::getTransferFunction(*image);
 
-        if(poolTF)
+        if(tf)
         {
-            data::Composite::iterator iter = poolTF->find(data::TransferFunction::s_DEFAULT_TF_NAME);
-            if(iter != poolTF->end())
-            {
-                data::TransferFunction::sptr tf;
-                tf  = data::TransferFunction::dynamicCast(iter->second);
-                min = tf->getWLMinMax().first;
-                max = tf->getWLMinMax().second;
-            }
+            std::tie(min, max) = tf->windowMinMax();
         }
         else
         {
             data::helper::MedicalImage::getMinMax(image, min, max);
         }
 
-        rescaleFilter->SetWindowMinimum(min);
-        rescaleFilter->SetWindowMaximum(max);
-        rescaleFilter->SetOutputMinimum(0);
-        rescaleFilter->SetOutputMaximum(255);
+        rescaleFilter->SetWindowMinimum(PIXELTYPE(min));
+        rescaleFilter->SetWindowMaximum(PIXELTYPE(max));
+        rescaleFilter->SetOutputMinimum(PIXELTYPE(0));
+        rescaleFilter->SetOutputMaximum(std::numeric_limits<PIXELTYPE>::max());
         rescaleFilter->InPlaceOff();
         rescaleFilter->SetInput(itkImage);
         rescaleFilter->Update();
 
         writer->SetInput(rescaleFilter->GetOutput());
 
-        typedef ::itk::NumericSeriesFileNames NameGeneratorType;
+        using NameGeneratorType = ::itk::NumericSeriesFileNames;
 
         NameGeneratorType::Pointer nameGenerator = NameGeneratorType::New();
 

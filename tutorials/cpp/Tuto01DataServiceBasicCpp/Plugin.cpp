@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,8 @@
 #include <service/op/Add.hpp>
 #include <service/registry/ObjectService.hpp>
 
-using namespace sight;
+namespace data    = sight::data;
+namespace service = sight::service;
 
 namespace Tuto01DataServiceBasicCpp
 {
@@ -36,19 +37,12 @@ SIGHT_REGISTER_PLUGIN("Tuto01DataServiceBasicCpp::Plugin");
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
 void Plugin::start()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::initialize()
 {
     // Objects declaration.
     m_image = data::Image::New();
@@ -93,15 +87,9 @@ void Plugin::initialize()
     m_renderSrv->update();
 }
 
-//--------------------------------------renderConfig----------------------------------------
-
-void Plugin::stop() noexcept
-{
-}
-
 //------------------------------------------------------------------------------
 
-void Plugin::uninitialize()
+void Plugin::stop() noexcept
 {
     // stop the services
     m_renderSrv->stop();
@@ -112,6 +100,11 @@ void Plugin::uninitialize()
     service::OSR::unregisterService(m_readerSrv);
     service::OSR::unregisterService(m_frameSrv);
     service::OSR::unregisterService(m_renderSrv);
+
+    m_readerSrv.reset();
+    m_frameSrv.reset();
+    m_renderSrv.reset();
+
     m_image.reset();
 }
 

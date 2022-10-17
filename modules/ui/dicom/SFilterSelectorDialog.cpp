@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,6 @@
 #include <core/com/Signals.hpp>
 
 #include <data/Composite.hpp>
-#include <data/helper/Composite.hpp>
 #include <data/String.hpp>
 
 #include <filter/dicom/IFilter.hpp>
@@ -41,16 +40,13 @@ namespace sight::module::ui::dicom
 
 //------------------------------------------------------------------------------
 
-SFilterSelectorDialog::SFilterSelectorDialog() :
-    m_filtersAreExcluded(true)
-{
-}
+SFilterSelectorDialog::SFilterSelectorDialog()
+= default;
 
 //------------------------------------------------------------------------------
 
-SFilterSelectorDialog::~SFilterSelectorDialog() noexcept
-{
-}
+SFilterSelectorDialog::~SFilterSelectorDialog() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -63,7 +59,7 @@ void SFilterSelectorDialog::configuring()
     //  <addSelection filter="sight::filter::dicom::composite::CTImageStorageDefaultComposite" />
     //  <addSelection filter="sight::filter::dicom::composite::CTImageStorageDefaultComposite" />
 
-    core::runtime::ConfigurationElementContainer::Iterator iter = this->m_configuration->begin();
+    auto iter = this->m_configuration->begin();
     for( ; iter != this->m_configuration->end() ; ++iter)
     {
         SIGHT_INFO("SFilterSelectorDialog " + (*iter)->getName());
@@ -111,7 +107,7 @@ void SFilterSelectorDialog::updating()
 {
     // Retrieve available filters
     std::vector<filter::dicom::IFilter::sptr> registredFilters;
-    for(std::string key : filter::dicom::registry::get()->getFactoryKeys())
+    for(const std::string& key : filter::dicom::registry::get()->getFactoryKeys())
     {
         filter::dicom::IFilter::sptr filter = filter::dicom::factory::New(key);
         registredFilters.push_back(filter);
@@ -121,7 +117,7 @@ void SFilterSelectorDialog::updating()
     std::map<std::string, filter::dicom::IFilter::sptr> availableFiltersMap;
     std::vector<std::string> availableFilterNames;
 
-    for(filter::dicom::IFilter::sptr filter : registredFilters)
+    for(const filter::dicom::IFilter::sptr& filter : registredFilters)
     {
         const bool filterIsSelectedByUser = std::find(
             m_selectedFilters.begin(),

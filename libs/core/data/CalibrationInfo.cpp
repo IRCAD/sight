@@ -48,13 +48,12 @@ using constPointListContainerType = std::list<PointList::csptr>;
 
 //------------------------------------------------------------------------------
 
-CalibrationInfo::CalibrationInfo(data::Object::Key)
+CalibrationInfo::CalibrationInfo(data::Object::Key /*unused*/) :
+    m_sigAddedRecord(AddedRecordSignalType::New()),
+    m_sigRemovedRecord(RemovedRecordSignalType::New()),
+    m_sigResetRecord(ResetRecordSignalType::New()),
+    m_sigGetRecord(GetRecordSignalType::New())
 {
-    m_sigAddedRecord   = AddedRecordSignalType::New();
-    m_sigRemovedRecord = RemovedRecordSignalType::New();
-    m_sigResetRecord   = ResetRecordSignalType::New();
-    m_sigGetRecord     = GetRecordSignalType::New();
-
     core::com::HasSignals::m_signals(s_ADDED_RECORD_SIG, m_sigAddedRecord);
     core::com::HasSignals::m_signals(s_REMOVED_RECORD_SIG, m_sigRemovedRecord);
     core::com::HasSignals::m_signals(s_RESET_RECORD_SIG, m_sigResetRecord);
@@ -63,48 +62,42 @@ CalibrationInfo::CalibrationInfo(data::Object::Key)
 
 //------------------------------------------------------------------------------
 
-CalibrationInfo::~CalibrationInfo()
+void CalibrationInfo::shallowCopy(const Object::csptr& source)
 {
-}
+    const auto& other = dynamicConstCast(source);
 
-//------------------------------------------------------------------------------
-
-void CalibrationInfo::shallowCopy(const data::Object::csptr& _source)
-{
-    CalibrationInfo::csptr other = CalibrationInfo::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-
-    this->fieldShallowCopy(other);
 
     m_imageContainer     = other->m_imageContainer;
     m_pointListContainer = other->m_pointListContainer;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void CalibrationInfo::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
+void CalibrationInfo::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    CalibrationInfo::csptr other = CalibrationInfo::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-
-    this->fieldDeepCopy(other);
 
     this->resetRecords();
     SIGHT_ASSERT("Lists have not the same size", other->m_pointListContainer.size() == other->m_imageContainer.size());
 
-    ImageContainerType::const_iterator imgIter = other->m_imageContainer.begin();
+    auto imgIter = other->m_imageContainer.begin();
     for(const data::PointList::sptr& pl : other->m_pointListContainer)
     {
         data::Image::sptr otherImg    = data::Object::copy(*imgIter, cache);
@@ -113,6 +106,8 @@ void CalibrationInfo::cachedDeepCopy(const data::Object::csptr& _source, DeepCop
 
         ++imgIter;
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -129,8 +124,8 @@ void CalibrationInfo::removeRecord(std::size_t idx)
 {
     SIGHT_ASSERT("index out of bound ", idx < m_pointListContainer.size());
 
-    PointListContainerType::iterator plIt = m_pointListContainer.begin();
-    ImageContainerType::iterator imgIt    = m_imageContainer.begin();
+    auto plIt  = m_pointListContainer.begin();
+    auto imgIt = m_imageContainer.begin();
 
     std::advance(plIt, static_cast<PointListContainerType::iterator::difference_type>(idx));
     std::advance(imgIt, static_cast<ImageContainerType::iterator::difference_type>(idx));
@@ -202,7 +197,7 @@ data::PointList::csptr CalibrationInfo::getPointList(const data::Image::csptr& i
     {
     }
 
-    PointListContainerType::const_iterator plIt = m_pointListContainer.begin();
+    auto plIt = m_pointListContainer.begin();
     std::advance(plIt, static_cast<PointListContainerType::const_iterator::difference_type>(dist));
 
     if(it != m_imageContainer.end())
@@ -227,7 +222,7 @@ data::Image::csptr CalibrationInfo::getImage(const data::PointList::csptr& pl) c
     {
     }
 
-    ImageContainerType::const_iterator imgIt = m_imageContainer.begin();
+    auto imgIt = m_imageContainer.begin();
     std::advance(imgIt, static_cast<ImageContainerType::const_iterator::difference_type>(dist));
 
     if(it != m_pointListContainer.end())
@@ -244,7 +239,7 @@ data::Image::sptr CalibrationInfo::getImage(std::size_t idx)
 {
     SIGHT_ASSERT("index out of bound ", idx < m_imageContainer.size());
 
-    ImageContainerType::const_iterator imgIt = m_imageContainer.begin();
+    auto imgIt = m_imageContainer.begin();
 
     std::advance(imgIt, static_cast<ImageContainerType::const_iterator::difference_type>(idx));
 
@@ -257,7 +252,7 @@ data::Image::csptr CalibrationInfo::getImage(std::size_t idx) const
 {
     SIGHT_ASSERT("index out of bound ", idx < m_imageContainer.size());
 
-    ImageContainerType::const_iterator imgIt = m_imageContainer.begin();
+    auto imgIt = m_imageContainer.begin();
 
     std::advance(imgIt, static_cast<ImageContainerType::const_iterator::difference_type>(idx));
 
@@ -275,7 +270,7 @@ bool CalibrationInfo::operator==(const CalibrationInfo& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

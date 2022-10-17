@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2021 IRCAD France
+ * Copyright (C) 2004-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,7 @@
 
 #include <ui/qt/util/FuncSlot.hpp>
 
-namespace sight::ui::qt
-{
-
-namespace util
+namespace sight::ui::qt::util
 {
 
 //------------------------------------------------------------------------------
@@ -46,6 +43,4 @@ void FuncSlot::trigger()
     m_func();
 }
 
-} // namespace util
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::util

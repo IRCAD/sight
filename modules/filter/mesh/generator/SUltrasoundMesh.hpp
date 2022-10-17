@@ -37,12 +37,9 @@ namespace sight::data
 
 class Mesh;
 
-}
+} // namespace sight::data
 
-namespace sight::module::filter::mesh
-{
-
-namespace generator
+namespace sight::module::filter::mesh::generator
 {
 
 /**
@@ -135,10 +132,10 @@ private:
     void setBoolParameter(bool _val, std::string _key);
 
     /// Defines the resolution in X.
-    std::size_t m_resolutionX {25u};
+    std::size_t m_resolutionX {25U};
 
     /// Defines the resolution in Y.
-    std::size_t m_resolutionY {25u};
+    std::size_t m_resolutionY {25U};
 
     /// Defines the depth of the US plane.
     int m_depth {132};
@@ -163,6 +160,4 @@ private:
     sight::data::ptr<sight::data::Mesh, sight::data::Access::inout> m_mesh {this, s_MESH_INOUT};
 };
 
-} // namespace generator.
-
-} // namespace sight::module::filter::mesh.
+} // namespace sight::module::filter::mesh::generator

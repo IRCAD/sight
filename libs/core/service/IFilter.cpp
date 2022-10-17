@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,17 +33,16 @@ const core::com::Signals::SignalKeyType IFilter::s_COMPUTED_SIG = "computed";
 
 //-----------------------------------------------------------------------------
 
-IFilter::IFilter()
+IFilter::IFilter() :
+    m_sigComputed(newSignal<ComputedSignalType>(s_COMPUTED_SIG))
 {
-    m_sigComputed = newSignal<ComputedSignalType>(s_COMPUTED_SIG);
 }
 
 //-----------------------------------------------------------------------------
 
 IFilter::~IFilter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::service

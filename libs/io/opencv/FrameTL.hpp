@@ -62,7 +62,7 @@ public:
      * The resulting cv::Mat does not allocate a new buffer and points to the data::FrameTL::BufferType.
      * The returned cvMat is const because the input buffer is const as well.
      */
-    IO_OPENCV_API static const cv::Mat moveToCv(
+    IO_OPENCV_API static cv::Mat moveToCv(
         const data::FrameTL::csptr& _timeline,
         const data::FrameTL::BufferType::ElementType* _buffer
     );

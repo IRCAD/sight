@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 #include <string>
 #include <vector>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 /**
@@ -57,7 +54,7 @@ public:
     UI_BASE_API ILoggerDialog();
 
     /// Destructor
-    UI_BASE_API virtual ~ILoggerDialog();
+    UI_BASE_API ~ILoggerDialog() override;
 
     /**
      * @brief Set the dialog title.
@@ -83,6 +80,4 @@ public:
     UI_BASE_API virtual bool show() = 0;
 };
 
-} //namespace dialog
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::dialog

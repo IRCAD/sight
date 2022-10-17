@@ -55,9 +55,8 @@ SCalibrationInfoReader::SCalibrationInfoReader() noexcept
 
 //------------------------------------------------------------------------------
 
-SCalibrationInfoReader::~SCalibrationInfoReader() noexcept
-{
-}
+SCalibrationInfoReader::~SCalibrationInfoReader() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -185,7 +184,7 @@ void SCalibrationInfoReader::updating()
 
                 messageBox.addButton(ui::base::dialog::IMessageDialog::YES_NO);
 
-                if(messageBox.show() & sight::ui::base::dialog::IMessageDialog::YES)
+                if((messageBox.show() & sight::ui::base::dialog::IMessageDialog::YES) != 0)
                 {
                     filenameDetectionMap.clear();
                     m_readFailed = true;
@@ -246,9 +245,9 @@ void SCalibrationInfoReader::updateChessboardSize()
         {
             m_scale = *saved;
 
-            if(m_scale > 1.f)
+            if(m_scale > 1.F)
             {
-                m_scale = 1.f;
+                m_scale = 1.F;
                 SIGHT_ERROR("It is pointless to upscale the image for chessboard detection.");
             }
         }

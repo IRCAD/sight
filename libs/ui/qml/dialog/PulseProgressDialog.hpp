@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,7 @@
 
 #include <string>
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 /**
@@ -55,7 +52,7 @@ public:
 
     UI_QML_API PulseProgressDialog(ui::base::GuiBaseObject::Key key);
 
-    UI_QML_API virtual ~PulseProgressDialog();
+    UI_QML_API ~PulseProgressDialog() override;
 
     /// override
     UI_QML_API void setTitle(const std::string& title) override;
@@ -81,6 +78,4 @@ private:
     bool eventFilter(QObject* watched, QEvent* event) override;
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

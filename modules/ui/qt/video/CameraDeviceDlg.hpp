@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,8 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include "SCamera.hpp"
+
 #include <core/macros.hpp>
 
 #include <QCameraInfo>
@@ -38,12 +40,9 @@ namespace sight::data
 
 class Camera;
 
-}
+} // namespace sight::data
 
-namespace sight::module::ui::qt
-{
-
-namespace video
+namespace sight::module::ui::qt::video
 {
 
 /**
@@ -56,12 +55,18 @@ Q_OBJECT;
 public:
 
     /// constructor
-    MODULE_UI_QT_API CameraDeviceDlg();
+    MODULE_UI_QT_API CameraDeviceDlg(std::string xmlResolution = "");
 
     /// destructor
-    MODULE_UI_QT_API ~CameraDeviceDlg();
+    MODULE_UI_QT_API ~CameraDeviceDlg() override = default;
 
-    MODULE_UI_QT_API bool getSelectedCamera(SPTR(data::Camera) & camera);
+    MODULE_UI_QT_API bool getSelectedCamera(SPTR(data::Camera) & camera, std::string& resolutionXMLOption);
+    // Filter the list of supported resolution to extract the lowest, highest and medium resolution in relation to
+    // `resolutionType`
+    MODULE_UI_QT_API QSize getResolution(
+        const std::string& resolutionXMLOption,
+        const QList<QSize>& supportedResolutions
+    );
 
 private Q_SLOTS:
 
@@ -73,6 +78,4 @@ private:
     QListWidget* m_camSettings;
 };
 
-} // video
-
-} // sight::module::ui::qt
+} // namespace sight::module::ui::qt::video

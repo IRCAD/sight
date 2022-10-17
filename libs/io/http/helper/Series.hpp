@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,7 @@
 
 #include "io/http/config.hpp"
 
-#include <data/SeriesDB.hpp>
-#include <data/Vector.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <QJsonObject>
 
@@ -34,7 +33,7 @@ namespace sight::data
 
 class DicomSeries;
 
-}
+} // namespace sight::data
 
 namespace sight::data
 {
@@ -42,12 +41,9 @@ namespace sight::data
 class ImageSeries;
 class ModelSeries;
 
-}
+} // namespace sight::data
 
-namespace sight::io::http
-{
-
-namespace helper
+namespace sight::io::http::helper
 {
 
 /**
@@ -57,7 +53,7 @@ class IO_HTTP_CLASS_API Series
 {
 public:
 
-    typedef data::SeriesDB::ContainerType DicomSeriesContainer;
+    typedef data::SeriesSet::container_type DicomSeriesContainer;
     typedef std::vector<std::string> InstanceUIDContainer;
     typedef std::map<std::string, unsigned int> InstanceCountMap;
 
@@ -74,6 +70,4 @@ public:
     IO_HTTP_API static InstanceUIDContainer toSeriesInstanceUIDContainer(DicomSeriesContainer series);
 };
 
-} //helper
-
-} //fwNetworkIO
+} // namespace sight::io::http::helper

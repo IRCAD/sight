@@ -40,14 +40,10 @@ const core::com::Signals::SignalKeyType Material::s_REMOVED_TEXTURE_SIG = "remov
 
 //------------------------------------------------------------------------------
 
-Material::Material(data::Object::Key) :
-    m_shadingMode(PHONG),
-    m_representationMode(SURFACE),
-    m_optionsMode(STANDARD),
-    m_ambient(Color::New(0.05f, 0.05f, 0.05f, 1.f)),
-    m_diffuse(Color::New()),
-    m_diffuseTextureFiltering(NEAREST),
-    m_diffuseTextureWrapping(REPEAT)
+Material::Material(data::Object::Key /*unused*/) :
+
+    m_ambient(Color::New(0.05F, 0.05F, 0.05F, 1.F)),
+    m_diffuse(Color::New())
 {
     newSignal<AddedTextureSignalType>(s_ADDED_TEXTURE_SIG);
     newSignal<RemovedTextureSignalType>(s_REMOVED_TEXTURE_SIG);
@@ -55,23 +51,17 @@ Material::Material(data::Object::Key) :
 
 //------------------------------------------------------------------------------
 
-Material::~Material()
+void Material::shallowCopy(const Object::csptr& source)
 {
-}
+    const auto& other = dynamicConstCast(source);
 
-//------------------------------------------------------------------------------
-
-void Material::shallowCopy(const Object::csptr& _source)
-{
-    Material::csptr other = Material::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     m_ambient        = other->m_ambient;
     m_diffuse        = other->m_diffuse;
@@ -82,21 +72,23 @@ void Material::shallowCopy(const Object::csptr& _source)
     m_optionsMode             = other->m_optionsMode;
     m_diffuseTextureFiltering = other->m_diffuseTextureFiltering;
     m_diffuseTextureWrapping  = other->m_diffuseTextureWrapping;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Material::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Material::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Material::csptr other = Material::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
 
     m_ambient        = data::Object::copy(other->m_ambient, cache);
     m_diffuse        = data::Object::copy(other->m_diffuse, cache);
@@ -107,6 +99,8 @@ void Material::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& c
     m_optionsMode             = other->m_optionsMode;
     m_diffuseTextureFiltering = other->m_diffuseTextureFiltering;
     m_diffuseTextureWrapping  = other->m_diffuseTextureWrapping;
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -176,7 +170,7 @@ bool Material::operator==(const Material& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,18 +39,6 @@ class VIZ_SCENE2D_CLASS_API IAdaptor : public service::IService
 {
 public:
 
-    /// Point2D coordinate <X, Y>
-    typedef std::pair<double, double> Point2DType;
-
-    /// <width, height>
-    typedef std::pair<float, float> ViewSizeRatio;
-
-    /// <width, height>
-    typedef std::pair<float, float> ViewportSizeRatio;
-
-    /// <width, height>
-    typedef std::pair<float, float> Scene2DRatio;
-
     SIGHT_DECLARE_SERVICE(IAdaptor, service::IService);
 
     /// Set the zValue.
@@ -72,7 +60,7 @@ protected:
     VIZ_SCENE2D_API IAdaptor() noexcept;
 
     /// Basic destructor, do nothing.
-    VIZ_SCENE2D_API virtual ~IAdaptor() noexcept;
+    VIZ_SCENE2D_API ~IAdaptor() noexcept override;
 
     /**
      * @brief Parse the xml configuration for Axis, z value and opacity
@@ -89,33 +77,17 @@ protected:
 
     /// Get a pair of doubles (a point), two axis, and convert the pair of doubles values from adaptor
     /// coordinates to scene coordinates
-    VIZ_SCENE2D_API Point2DType mapAdaptorToScene(
-        const Point2DType& _xy,
-        const scene2d::data::Axis::sptr& _xAxis,
-        const scene2d::data::Axis::sptr& _yAxis
-    ) const;
+    VIZ_SCENE2D_API vec2d_t mapAdaptorToScene(const vec2d_t& _xy) const;
 
     /// Get a pair of doubles (a point), two axis, and convert the pair of doubles values from scene
     /// coordinates to adaptor coordinates
-    VIZ_SCENE2D_API Point2DType mapSceneToAdaptor(
-        const Point2DType& _xy,
-        const scene2d::data::Axis::sptr& _xAxis,
-        const scene2d::data::Axis::sptr& _yAxis
-    ) const;
+    VIZ_SCENE2D_API vec2d_t mapSceneToAdaptor(const vec2d_t& _xy) const;
 
     /// Return the ratio between view's initial size and its current size
-    VIZ_SCENE2D_API ViewSizeRatio getViewSizeRatio() const;
+    VIZ_SCENE2D_API double getViewSizeRatio() const;
 
-    /// Return the ratio between viewport's initial size and its current size
-    VIZ_SCENE2D_API ViewportSizeRatio getViewportSizeRatio() const;
-
-    /// Initialize the source values used for computing view's size ratio.
-    VIZ_SCENE2D_API void initializeViewSize();
-
-    /// Initialize the source values used for computing viewport's size ratio.
-    VIZ_SCENE2D_API void initializeViewportSize();
-
-    VIZ_SCENE2D_API Scene2DRatio getRatio() const;
+    /// Converts a point in pixel units into a viewport coordinates
+    VIZ_SCENE2D_API vec2d_t viewToViewport(const scene2d::data::Viewport& viewport) const;
 
     /// The x Axis.
     scene2d::data::Axis::sptr m_xAxis;
@@ -125,19 +97,10 @@ protected:
 
     /// The adaptor zValue (depth within the scene).
     /// The adaptor with the highest zValue is displayed on top of all adaptors.
-    float m_zValue;
+    float m_zValue {0.F};
 
     /// Opacity of the adaptor. Default value set to 1 (opaque).
-    float m_opacity;
-
-    /// Initial size of the widget (view). The goal of keeping a reference on the initial size is to
-    /// avoid unwanted scaling onto some objects (such as transfer function points, histogram cursor,
-    /// etc) when a resize event is caught.
-    ViewSizeRatio m_viewInitialSize;
-
-    /// Initial size of the viewport. The goal of keeping a reference on the initial size of the
-    /// viewport is the same as preceding.
-    ViewportSizeRatio m_viewportInitialSize;
+    float m_opacity {1.F};
 };
 
 //------------------------------------------------------------------------------

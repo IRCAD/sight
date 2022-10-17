@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,10 +34,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::AppConfigParametersTest);
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 //------------------------------------------------------------------------------
@@ -88,11 +85,10 @@ void AppConfigParametersTest::appConfigParametersTest()
 
 void AppConfigParametersTest::concurentAccessToAppConfigParametersTest()
 {
-    const auto fn = std::bind(&AppConfigParametersTest::appConfigParametersTest, this);
     std::vector<std::future<void> > futures;
     for(unsigned int i = 0 ; i < 20 ; ++i)
     {
-        futures.push_back(std::async(std::launch::async, fn));
+        futures.push_back(std::async(std::launch::async, appConfigParametersTest));
     }
 
     for(auto& future : futures)
@@ -105,6 +101,4 @@ void AppConfigParametersTest::concurentAccessToAppConfigParametersTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

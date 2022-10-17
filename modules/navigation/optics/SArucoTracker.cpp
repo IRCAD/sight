@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "SArucoTracker.hpp"
 
 #include <core/com/Signal.hxx>
@@ -30,8 +32,10 @@
 #include <io/opencv/Image.hpp>
 
 #include <boost/foreach.hpp>
+#include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 
+#include <opencv2/calib3d.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/opencv.hpp>
 
@@ -52,11 +56,8 @@ const core::com::Slots::SlotKeyType SArucoTracker::s_SET_BOOL_PARAMETER_SLOT   =
 //-----------------------------------------------------------------------------
 
 SArucoTracker::SArucoTracker() noexcept :
-    m_isInitialized(false),
-    m_debugMarkers(false)
+    m_sigDetectionDone(newSignal<DetectionDoneSignalType>(s_DETECTION_DONE_SIG))
 {
-    m_sigDetectionDone = newSignal<DetectionDoneSignalType>(s_DETECTION_DONE_SIG);
-
     newSignal<MarkerDetectedSignalType>(s_MARKER_DETECTED_SIG);
 
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SArucoTracker::setDoubleParameter, this);
@@ -85,9 +86,8 @@ SArucoTracker::SArucoTracker() noexcept :
 
 //-----------------------------------------------------------------------------
 
-SArucoTracker::~SArucoTracker() noexcept
-{
-}
+SArucoTracker::~SArucoTracker() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -111,10 +111,11 @@ void SArucoTracker::configuring()
 
     const auto& trackCfg = config.get_child("track");
 
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_FOREACH(const auto& elt, trackCfg.equal_range("marker"))
     {
-        const auto& cfg                = elt.second;
-        const std::string markersIDStr = cfg.get<std::string>("<xmlattr>.id");
+        const auto& cfg         = elt.second;
+        const auto markersIDStr = cfg.get<std::string>("<xmlattr>.id");
         boost::tokenizer<> tok(markersIDStr);
         MarkerIDType markersID;
         for(const auto& it : tok)
@@ -188,7 +189,8 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
         // Check number of components of image.
         const auto nbOfComponents = inImage.channels();
 
-        cv::Mat grey, bgr;
+        cv::Mat grey;
+        cv::Mat bgr;
 
         if(nbOfComponents == 4) // RGBA or BGRA.
         {
@@ -217,16 +219,17 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
         std::vector<std::vector<cv::Point2f> > detectedMarkers;
         std::vector<int> detectedMarkersIds;
 
+        cv::Mat undistortGrey;
+        cv::undistort(grey, undistortGrey, m_cameraParams.intrinsic, m_cameraParams.distorsion);
+
         // Ok, let's detect
         cv::aruco::detectMarkers(
-            grey,
+            undistortGrey,
             m_dictionary,
             detectedMarkers,
             detectedMarkersIds,
             m_detectorParams,
-            cv::noArray(),
-            m_cameraParams.intrinsic,
-            m_cameraParams.distorsion
+            cv::noArray()
         );
 
         //Note: This draws all detected markers

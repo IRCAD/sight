@@ -65,8 +65,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(SProducer, sight::service::IService);
 
-    EXTIMELINE_API SProducer() noexcept          = default;
-    EXTIMELINE_API virtual ~SProducer() noexcept = default;
+    EXTIMELINE_API SProducer() noexcept           = default;
+    EXTIMELINE_API ~SProducer() noexcept override = default;
 
 protected:
 

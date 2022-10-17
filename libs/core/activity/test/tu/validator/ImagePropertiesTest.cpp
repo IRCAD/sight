@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/Module.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 #include <data/Composite.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
@@ -42,10 +42,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::activity::ut::ImagePropertiesTest);
 
-namespace sight::activity
-{
-
-namespace ut
+namespace sight::activity::ut
 {
 
 //------------------------------------------------------------------------------
@@ -76,12 +73,12 @@ void ImagePropertiesTest::propertiesTest()
     {
         data::Image::sptr img1 = data::Image::New();
         data::Image::sptr img2 = data::Image::New();
-        utestData::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
-        utestData::generator::Image::generateRandomImage(img2, core::tools::Type::create<std::uint8_t>());
+        utestData::generator::Image::generateRandomImage(img1, core::Type::UINT8);
+        utestData::generator::Image::generateRandomImage(img2, core::Type::UINT8);
 
         data::Vector::sptr vector = data::Vector::New();
-        vector->getContainer().push_back(img1);
-        vector->getContainer().push_back(img2);
+        vector->push_back(img1);
+        vector->push_back(img2);
 
         activity::IValidator::ValidationType validation;
 
@@ -100,7 +97,7 @@ void ImagePropertiesTest::propertiesTest()
         data::Image::sptr img1 = data::Image::New();
         data::Image::sptr img2 = data::Image::New();
 
-        utestData::generator::Image::generateRandomImage(img1, core::tools::Type::create<std::uint8_t>());
+        utestData::generator::Image::generateRandomImage(img1, core::Type::UINT8);
 
         utestData::generator::Image::generateImage(
             img2,
@@ -112,8 +109,8 @@ void ImagePropertiesTest::propertiesTest()
         );
 
         data::Vector::sptr vector = data::Vector::New();
-        vector->getContainer().push_back(img1);
-        vector->getContainer().push_back(img2);
+        vector->push_back(img1);
+        vector->push_back(img2);
 
         activity::IValidator::ValidationType validation;
 
@@ -131,6 +128,4 @@ void ImagePropertiesTest::propertiesTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::activity
+} // namespace sight::activity::ut

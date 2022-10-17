@@ -32,10 +32,7 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-namespace sight::ui::base
-{
-
-namespace registry
+namespace sight::ui::base::registry
 {
 
 /**
@@ -57,10 +54,10 @@ public:
     typedef std::vector<ui::base::IMenuItemCallback::sptr> CallbacksType;
 
     /// Constructor.
-    UI_BASE_API ToolBar(const std::string& sid);
+    UI_BASE_API ToolBar(std::string sid);
 
     /// Destructor. Do nothing
-    UI_BASE_API virtual ~ToolBar();
+    UI_BASE_API ~ToolBar() override;
 
     /// Return the parent container
     UI_BASE_API virtual ui::base::container::fwToolBar::sptr getParent();
@@ -133,8 +130,8 @@ public:
      * If a menuItem has attribute start="false", the associated action won't be started and the menuItem will be
      * disabled.
      * If a menuItem has attribute start="true", two possibilities: \n
-     *  - the associated action has attribute executable="false" then the menuItem will be disabled.\n
-     *  - the associated action has attribute executable="true" then the menuItem will be enabled.\n
+     *  - the associated action has attribute enabled="false" then the menuItem will be disabled.\n
+     *  - the associated action has attribute enabled="true" then the menuItem will be enabled.\n
      *
      * @warning If the action is present in a toolbar and a menu it must be started only one time.
      * @see ui::base::registry::Menu for more information on interaction between menubar and toolbar.
@@ -217,6 +214,4 @@ protected:
     CallbacksType m_callbacks;
 };
 
-} // namespace registry
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::registry

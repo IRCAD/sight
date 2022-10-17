@@ -36,15 +36,13 @@ static const std::string s_PARENT_CONFIG = "parent";
 
 //------------------------------------------------------------------------------
 
-STransform::STransform() noexcept
-{
-}
+STransform::STransform() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-STransform::~STransform() noexcept
-{
-}
+STransform::~STransform() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 

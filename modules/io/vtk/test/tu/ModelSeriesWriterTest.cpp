@@ -22,39 +22,34 @@
 
 #include "ModelSeriesWriterTest.hpp"
 
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/System.hpp>
 
+#include <data/ActivitySet.hpp>
 #include <data/Array.hpp>
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <service/base.hpp>
 
-#include <utestData/generator/SeriesDB.hpp>
-
-#include <boost/functional/hash.hpp>
+#include <utestData/generator/SeriesSet.hpp>
 
 #include <filesystem>
-#include <set>
 #include <string>
 #include <vector>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::ModelSeriesWriterTest);
 
-namespace sight::module::io::vtk
+namespace sight::module::io::vtk::ut
 {
 
-namespace ut
-{
+namespace fs            = std::filesystem;
+using FileContainerType = std::vector<std::string>;
 
-namespace fs = std::filesystem;
-typedef std::vector<std::string> FileContainerType;
-
-using namespace sight::data::iterator;
+namespace point = sight::data::iterator::point;
+namespace cell  = sight::data::iterator::cell;
 
 //------------------------------------------------------------------------------
 
@@ -74,7 +69,7 @@ void ModelSeriesWriterTest::tearDown()
 
 void runModelSeriesSrv(
     const std::string& impl,
-    const SPTR(core::runtime::EConfigurationElement)& cfg,
+    const boost::property_tree::ptree& cfg,
     const SPTR(data::Object)& obj
 )
 {
@@ -101,27 +96,22 @@ void runModelSeriesSrv(
 
 //------------------------------------------------------------------------------
 
-core::runtime::EConfigurationElement::sptr getIOCfgFromFolder(const fs::path& file)
+boost::property_tree::ptree getIOCfgFromFolder(const fs::path& file)
 {
-    core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New("service");
-    core::runtime::EConfigurationElement::sptr cfg    = core::runtime::EConfigurationElement::New("folder");
-    cfg->setValue(file.string());
-    srvCfg->addConfigurationElement(cfg);
+    service::IService::ConfigType srvCfg;
+    srvCfg.add("folder", file.string());
 
     return srvCfg;
 }
 
 //------------------------------------------------------------------------------
 
-core::runtime::EConfigurationElement::sptr getIOCfgFromFiles(const FileContainerType& files)
+boost::property_tree::ptree getIOCfgFromFiles(const FileContainerType& files)
 {
-    core::runtime::EConfigurationElement::sptr srvCfg = core::runtime::EConfigurationElement::New("service");
-
-    for(std::string file : files)
+    service::IService::ConfigType srvCfg;
+    for(const auto& file : files)
     {
-        core::runtime::EConfigurationElement::sptr cfg = core::runtime::EConfigurationElement::New("file");
-        cfg->setValue(file);
-        srvCfg->addConfigurationElement(cfg);
+        srvCfg.add("file", file);
     }
 
     return srvCfg;
@@ -131,7 +121,7 @@ core::runtime::EConfigurationElement::sptr getIOCfgFromFiles(const FileContainer
 
 void ModelSeriesWriterTest::testWriteMeshes()
 {
-    data::ModelSeries::sptr modelSeries = utestData::generator::SeriesDB::createModelSeries(5);
+    data::ModelSeries::sptr modelSeries = utestData::generator::SeriesSet::createModelSeries(5);
 
     const std::vector<std::string> allExtensions = {"vtk", "vtp", "obj", "ply", "stl"};
 
@@ -149,7 +139,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
         fs::create_directories(dir);
     }
 
-    for(auto ext : allExtensions)
+    for(const auto& ext : allExtensions)
     {
         // Create subfolers per extensions ("/vtk", "/vtp", ...)
         if(fs::exists(dir / ext))
@@ -164,10 +154,8 @@ void ModelSeriesWriterTest::testWriteMeshes()
             fs::create_directories(dir / ext);
         }
 
-        auto cfg    = getIOCfgFromFolder(dir / ext);
-        auto extCfg = core::runtime::EConfigurationElement::New("extension");
-        extCfg->setValue(ext);
-        cfg->addConfigurationElement(extCfg);
+        auto cfg = getIOCfgFromFolder(dir / ext);
+        cfg.add("extension", ext);
 
         runModelSeriesSrv(
             "sight::module::io::vtk::SModelSeriesWriter",
@@ -193,27 +181,26 @@ void ModelSeriesWriterTest::testWriteMeshes()
             files.size()
         );
 
-        data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
+        auto series_set = data::SeriesSet::New();
 
         runModelSeriesSrv(
-            "sight::module::io::vtk::SSeriesDBReader",
+            "sight::module::io::vtk::SSeriesSetReader",
             getIOCfgFromFiles(files),
-            seriesDB
+            series_set
         );
 
-        const data::SeriesDB::ContainerType& series = seriesDB->getContainer();
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("SeriesDB Size", (std::size_t) 1, series.size());
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("SeriesSet Size", (std::size_t) 1, series_set->size());
 
-        data::ModelSeries::sptr readSeries = data::ModelSeries::dynamicCast(series[0]);
+        data::ModelSeries::sptr readSeries = data::ModelSeries::dynamicCast(series_set->at(0));
         CPPUNIT_ASSERT_MESSAGE("A ModelSeries was expected", readSeries);
 
-        typedef data::ModelSeries::ReconstructionVectorType RecVecType;
+        using RecVecType = data::ModelSeries::ReconstructionVectorType;
         const RecVecType& readRecs = readSeries->getReconstructionDB();
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Number of reconstructions", files.size(), readRecs.size());
 
-        const RecVecType& refRecs         = modelSeries->getReconstructionDB();
-        RecVecType::const_iterator itRef  = refRecs.begin();
-        RecVecType::const_iterator itRead = readRecs.begin();
+        const RecVecType& refRecs = modelSeries->getReconstructionDB();
+        auto itRef                = refRecs.begin();
+        auto itRead               = readRecs.begin();
 
         for( ; itRef != refRecs.end() ; ++itRef, ++itRead)
         {
@@ -290,7 +277,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
 void ModelSeriesWriterTest::testWriteReconstructions()
 {
-    data::ModelSeries::sptr modelSeries = utestData::generator::SeriesDB::createModelSeries(5);
+    data::ModelSeries::sptr modelSeries = utestData::generator::SeriesSet::createModelSeries(5);
 
     const fs::path dir = core::tools::System::getTemporaryFolder() / "modelSeriesObj";
 
@@ -312,8 +299,6 @@ void ModelSeriesWriterTest::testWriteReconstructions()
         modelSeries
     );
 
-    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-
     FileContainerType files;
     for(fs::directory_iterator it(dir) ; it != fs::directory_iterator() ; ++it)
     {
@@ -326,6 +311,4 @@ void ModelSeriesWriterTest::testWriteReconstructions()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::io::vtk
+} // namespace sight::module::io::vtk::ut

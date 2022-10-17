@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 
 #include <QColor>
 
-namespace sight::module::ui::viz
-{
-
-namespace helper
+namespace sight::module::ui::viz::helper
 {
 
 class MODULE_UI_VIZ_CLASS_API Utils
@@ -43,16 +40,30 @@ public:
      * @param _ogreColor the Ogre color to convert.
      * @return the converted QColor.
      */
-    MODULE_UI_VIZ_API static QColor convertOgreColorToQColor(const Ogre::ColourValue& _ogreColor);
+    static constexpr QColor convertOgreColorToQColor(const Ogre::ColourValue& _ogreColor)
+    {
+        const int r = static_cast<int>(_ogreColor.r * 255);
+        const int g = static_cast<int>(_ogreColor.g * 255);
+        const int b = static_cast<int>(_ogreColor.b * 255);
+        const int a = static_cast<int>(_ogreColor.a * 255);
+
+        return {r, g, b, a};
+    }
 
     /**
      * @brief convertQColorToOgreColor
      * @param _qColor the Qt color to convert.
      * @return the converted Ogre color.
      */
-    MODULE_UI_VIZ_API static Ogre::ColourValue convertQColorToOgreColor(const QColor& _qColor);
+    static inline Ogre::ColourValue convertQColorToOgreColor(const QColor& _qColor)
+    {
+        const float r = static_cast<float>(_qColor.red()) / 255.F;
+        const float g = static_cast<float>(_qColor.green()) / 255.F;
+        const float b = static_cast<float>(_qColor.blue()) / 255.F;
+        const float a = static_cast<float>(_qColor.alpha()) / 255.F;
+
+        return Ogre::ColourValue(r, g, b, a);
+    }
 };
 
-} // namespace helper
-
-} // namespace sight::module::ui::viz
+} // namespace sight::module::ui::viz::helper

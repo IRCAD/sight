@@ -26,10 +26,7 @@
 
 #include <data/String.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::String
+namespace sight::io::session::detail::String
 {
 
 constexpr static auto s_Value {"Value"};
@@ -37,14 +34,14 @@ constexpr static auto s_Value {"Value"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& = ""
+    std::map<std::string, data::Object::csptr>& /*unused*/,
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto string = Helper::safeCast<data::String>(object);
+    const auto string = Helper::safe_cast<data::String>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::String>(tree, 1);
@@ -55,15 +52,15 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::String::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>&,
+    const std::map<std::string, data::Object::sptr>& /*unused*/,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto string = Helper::safeCast<data::String>(object);
+    auto string = Helper::cast_or_create<data::String>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::String>(tree, 0, 1);
@@ -74,6 +71,4 @@ inline static data::String::sptr deserialize(
     return string;
 }
 
-}
-
-}
+} // namespace sight::io::session::detail::String

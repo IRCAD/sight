@@ -36,13 +36,7 @@
 
 #include <gdcmUIDGenerator.h>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 //------------------------------------------------------------------------------
@@ -63,8 +57,7 @@ SpatialFiducials::SpatialFiducials(
 //------------------------------------------------------------------------------
 
 SpatialFiducials::~SpatialFiducials()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -119,7 +112,7 @@ void SpatialFiducials::writeSpatialFiducialsModule()
         gdcm::DataSet& referencedImageItemDataset = referencedImageItem.GetNestedDataSet();
 
         // Referenced Frame Number - Type 1C
-        int frameNumber = index + 1;
+        int frameNumber = int(index) + 1;
         io::dicom::helper::DicomDataWriter::setTagValues<int, 0x0008, 0x1160>(
             &frameNumber,
             1,
@@ -195,11 +188,9 @@ void SpatialFiducials::writeLandmarks(gdcm::SmartPointer<gdcm::SequenceOfItems> 
             gdcm::DataSet& graphicDataItemDataset = graphicDataItem.GetNestedDataSet();
 
             // Graphic Data - Type 1
-            float coordinates[2];
-            coordinates[0] = static_cast<float>(point->getCoord()[0]);
-            coordinates[1] = static_cast<float>(point->getCoord()[1]);
+            std::array coordinates {static_cast<float>(point->getCoord()[0]), static_cast<float>(point->getCoord()[1])};
             io::dicom::helper::DicomDataWriter::setTagValues<float, 0x0070, 0x0022>(
-                coordinates,
+                coordinates.data(),
                 2,
                 graphicDataItemDataset
             );
@@ -260,7 +251,7 @@ void SpatialFiducials::writeCommonInstanceReferenceModule()
     );
 
     // Add all referenced image
-    for(unsigned int index = 0 ; index < m_instance->getSOPInstanceUIDContainer().size() ; ++index)
+    for(auto& index : m_instance->getSOPInstanceUIDContainer())
     {
         gdcm::Item referencedInstanceItem;
         referencedInstanceItem.SetVLToUndefined();
@@ -274,7 +265,7 @@ void SpatialFiducials::writeCommonInstanceReferenceModule()
 
         // Referenced SOP Instance UID - Type 1
         io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1155>(
-            m_instance->getSOPInstanceUIDContainer()[index],
+            index,
             referencedInstanceItemDataset
         );
 
@@ -350,7 +341,7 @@ void SpatialFiducials::addReferencedImage(
 
     // Referenced SOP Instance UID - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x1155>(
-        m_instance->getSOPInstanceUIDContainer()[frameNumber - 1],
+        m_instance->getSOPInstanceUIDContainer()[std::size_t(frameNumber - 1)],
         referencedImageItemDataset
     );
 
@@ -360,8 +351,4 @@ void SpatialFiducials::addReferencedImage(
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 /**
@@ -44,17 +41,15 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     /// Test register/unregister methods
-    void testRegistration();
+    static void testRegistration();
     /// Test connection with data
-    void testConnection();
+    static void testConnection();
     /// Test registering optional inputs
-    void testOptionalInputs();
+    static void testOptionalInputs();
 };
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

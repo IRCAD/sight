@@ -25,20 +25,19 @@
 #include <core/tools/random/Generator.hpp>
 
 #include <data/Array.hpp>
+#include <data/helper/Histogram.hpp>
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 
 #include <utestData/generator/Image.hpp>
 
+#include <cmath>
 #include <cstdint>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::tools::ut::MedicalImageHelpersTest);
 namespace medImHelper = sight::data::helper::MedicalImage;
-namespace sight::data::tools
-{
-
-namespace ut
+namespace sight::data::tools::ut
 {
 
 using core::tools::random::safeRand;
@@ -98,8 +97,6 @@ struct typeToPixelFormat<std::array<double, 3> >
 
 sight::data::Image::sptr generateImage()
 {
-    typedef std::uint8_t Type;
-
     data::Image::sptr image = data::Image::New();
 
     const data::Image::Size size       = {256, 150, 100};
@@ -110,7 +107,7 @@ sight::data::Image::sptr generateImage()
         size,
         spacing,
         origin,
-        core::tools::Type::create<Type>(),
+        core::Type::UINT8,
         data::Image::PixelFormat::GRAY_SCALE
     );
 
@@ -137,7 +134,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
 {
     {
         // Test on 3D image of type 'int16'
-        typedef std::int16_t Type;
+        using Type = std::int16_t;
 
         const Type MIN   = 45;
         const Type MAX   = 345;
@@ -153,7 +150,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
             size,
             spacing,
             origin,
-            core::tools::Type::create<Type>(),
+            core::Type::get<Type>(),
             data::Image::PixelFormat::GRAY_SCALE
         );
 
@@ -164,10 +161,11 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
         for( ; itr != itrEnd ; ++itr)
         {
-            *itr = MIN + static_cast<Type>(safeRand() % static_cast<int>(RANGE));
+            *itr = static_cast<Type>(MIN + (safeRand() % RANGE));
         }
 
-        Type resMin, resMax;
+        Type resMin = 0;
+        Type resMax = 0;
 
         image->at<Type>(156) = MIN;
         image->at<Type>(245) = MAX;
@@ -179,9 +177,9 @@ void MedicalImageHelpersTest::getMinMaxTest()
 
     {
         // Test on 3D image of type 'float'
-        typedef float Type;
-        const Type MIN   = -12.3f;
-        const Type MAX   = 18.2f;
+        using Type = float;
+        const Type MIN   = -12.3F;
+        const Type MAX   = 18.2F;
         const Type RANGE = MAX - MIN;
 
         data::Image::sptr image = data::Image::New();
@@ -194,7 +192,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
             size,
             spacing,
             origin,
-            core::tools::Type::create<Type>(),
+            core::Type::get<Type>(),
             data::Image::PixelFormat::GRAY_SCALE
         );
 
@@ -208,30 +206,21 @@ void MedicalImageHelpersTest::getMinMaxTest()
             *itr = MIN + static_cast<Type>(safeRand() % static_cast<int>(RANGE));
         }
 
-        Type resMin, resMax;
+        Type resMin = NAN;
+        Type resMax = NAN;
 
         image->at<Type>(16)  = MIN;
         image->at<Type>(286) = MAX;
 
         medImHelper::getMinMax(image, resMin, resMax);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-            "min values are not equal",
-            static_cast<double>(MIN),
-            static_cast<double>(resMin),
-            0.00001
-        );
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-            "max values are not equal",
-            static_cast<double>(MAX),
-            static_cast<double>(resMax),
-            0.00001
-        );
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("min values are not equal", MIN, resMin);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("max values are not equal", MAX, resMax);
     }
 
     {
         // test of 2D image of type 'uint8'
 
-        typedef std::uint8_t Type;
+        using Type = std::uint8_t;
 
         const Type MIN   = 3;
         const Type MAX   = 245;
@@ -247,7 +236,7 @@ void MedicalImageHelpersTest::getMinMaxTest()
             size,
             spacing,
             origin,
-            core::tools::Type::create<Type>(),
+            core::Type::get<Type>(),
             data::Image::PixelFormat::GRAY_SCALE
         );
 
@@ -261,7 +250,8 @@ void MedicalImageHelpersTest::getMinMaxTest()
             *itr = MIN + static_cast<Type>(safeRand() % static_cast<int>(RANGE));
         }
 
-        Type resMin, resMax;
+        Type resMin = 0;
+        Type resMax = 0;
 
         image->at<Type>(5)    = MIN;
         image->at<Type>(2155) = MAX;
@@ -283,7 +273,7 @@ data::Image::sptr createImageFromPixelBuffer()
     // Create a new image
     auto image             = data::Image::New();
     data::Image::Size size = {IMG_DIMENSIONS, IMG_DIMENSIONS, IMG_DIMENSIONS};
-    image->resize(size, core::tools::Type::create<SubPixel>(), typeToPixelFormat<P>::value);
+    image->resize(size, core::Type::get<SubPixel>(), typeToPixelFormat<P>::value);
     image->setSpacing({1., 1., 1.});
     image->setOrigin({0., 0., 0.});
 
@@ -305,12 +295,12 @@ void getPixelTestHelper(const P& pixelValue)
     const auto size                    = image->getSize();
 
     // Pick some random coordinates and store the given pixel there
-    std::size_t coords[3];
-    std::generate_n(coords, 3, [&](){return static_cast<std::size_t>(safeRand()) % size[0];});
-    const auto dumpLock = image->dump_lock();
-    auto imageBufferPtr = image->getBuffer();
-    SubPixel* pixelPtr  = static_cast<SubPixel*>(imageBufferPtr)
-                          + ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * N_COMPONENTS);
+    std::array<std::size_t, 3> coords {};
+    std::generate(coords.begin(), coords.end(), [&](){return static_cast<std::size_t>(safeRand()) % size[0];});
+    const auto dumpLock  = image->dump_lock();
+    auto* imageBufferPtr = image->getBuffer();
+    SubPixel* pixelPtr   = static_cast<SubPixel*>(imageBufferPtr)
+                           + ((coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]) * N_COMPONENTS);
     std::copy(pixelValue.begin(), pixelValue.end(), pixelPtr);
 
     // Test that the helper returned pixel value is correct
@@ -319,12 +309,7 @@ void getPixelTestHelper(const P& pixelValue)
     {
         for(std::uint8_t i = 0 ; i != image->numComponents() ; ++i)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                "Pixel values are not equal",
-                static_cast<double>(pixelValue[i]),
-                static_cast<double>(value[i]),
-                0.00001
-            );
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelValue[i], value[i]);
         }
     }
     else
@@ -353,8 +338,8 @@ void MedicalImageHelpersTest::getPixelTest()
         getPixelTestHelper(pRGB);
     }
     {
-        std::array<float, 1> pGray = {5423.2f};
-        std::array<float, 3> pRGB  = {42.0f, 1487.4f, 0.1445f};
+        std::array<float, 1> pGray = {5423.2F};
+        std::array<float, 3> pRGB  = {42.0F, 1487.4F, 0.1445F};
         getPixelTestHelper(pGray);
         getPixelTestHelper(pRGB);
     }
@@ -376,8 +361,8 @@ void setPixelTestHelper(P& pixelValue)
     const auto size = image->getSize();
 
     // Pick some random coordinates and store the given pixel there
-    std::size_t coords[3];
-    std::generate_n(coords, 3, [&](){return static_cast<std::size_t>(safeRand()) % size[0];});
+    std::array<std::size_t, 3> coords {};
+    std::generate(coords.begin(), coords.end(), [&](){return static_cast<std::size_t>(safeRand()) % size[0];});
     const std::size_t pixelIndex = (coords[0] + coords[1] * size[0] + coords[2] * size[1] * size[0]);
     const auto dumpLock          = image->dump_lock();
     image->setPixel(pixelIndex, reinterpret_cast<uint8_t*>(pixelValue.data()));
@@ -389,12 +374,7 @@ void setPixelTestHelper(P& pixelValue)
     {
         for(std::uint8_t i = 0 ; i != image->numComponents() ; ++i)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                "Pixel values are not equal",
-                static_cast<double>(pixelValue[i]),
-                static_cast<double>(value[i]),
-                0.00001
-            );
+            CPPUNIT_ASSERT_EQUAL_MESSAGE("Pixel values are not equal", pixelValue[i], value[i]);
         }
     }
     else
@@ -423,8 +403,8 @@ void MedicalImageHelpersTest::setPixelTest()
         setPixelTestHelper(pRGB);
     }
     {
-        std::array<float, 1> pGray = {5423.2f};
-        std::array<float, 3> pRGB  = {42.0f, 1487.4f, 0.1445f};
+        std::array<float, 1> pGray = {5423.2F};
+        std::array<float, 3> pRGB  = {42.0F, 1487.4F, 0.1445F};
         setPixelTestHelper(pGray);
         setPixelTestHelper(pRGB);
     }
@@ -454,7 +434,7 @@ void data::tools::ut::MedicalImageHelpersTest::isBufNull()
         CPPUNIT_ASSERT_EQUAL(true, isNull);
 
         {
-            std::array<float, 3> pixelValue = {42.0f, 1487.4f, 0.1445f};
+            std::array<float, 3> pixelValue = {42.0F, 1487.4F, 0.1445F};
             image->setPixel(0, reinterpret_cast<uint8_t*>(pixelValue.data()));
 
             isNull = medImHelper::isBufNull(pixBuf, 3);
@@ -499,11 +479,11 @@ void MedicalImageHelpersTest::testLandmarks()
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), points.size());
 
-    const auto point = points[0];
+    const auto& point = points[0];
 
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(p->getCoord()[i], point->getCoord()[i], std::numeric_limits<double>::epsilon());
+        CPPUNIT_ASSERT_EQUAL(p->getCoord()[i], point->getCoord()[i]);
     }
 }
 
@@ -614,7 +594,7 @@ void MedicalImageHelpersTest::testDistances()
     pointList->getPoints().push_back(data::Point::New(0., 1., 2.));
     pointList->getPoints().push_back(data::Point::New(10., 11., 12.));
 
-    distances->getContainer().push_back(pointList);
+    distances->push_back(pointList);
 
     medImHelper::setDistances(*image, distances);
 
@@ -671,7 +651,7 @@ void MedicalImageHelpersTest::testTransferFunction()
 
     // set transfer function composite
 
-    data::Composite::sptr tfPool = data::Composite::New();
+    data::TransferFunction::sptr tfPool = data::TransferFunction::New();
 
     medImHelper::setTransferFunction(*image, tfPool);
 
@@ -683,6 +663,98 @@ void MedicalImageHelpersTest::testTransferFunction()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
+void MedicalImageHelpersTest::computeHistogram()
+{
+    using ImageType = std::int16_t;
+    const std::size_t sizeX     = 50;
+    const std::size_t sizeY     = 50;
+    const std::size_t sizeZ     = 50;
+    const std::size_t imageSize = sizeX * sizeY * sizeZ;
 
-} // namespace sight::data::tools
+    // Configure data hierarchy
+    data::Image::sptr image = data::Image::New();
+
+    // Create image.
+    image->resize({sizeX, sizeY, sizeZ}, core::Type::INT16, data::Image::GRAY_SCALE);
+
+    const auto dumpLock = image->dump_lock();
+
+    std::size_t count = 0;
+    for(auto& itr : image->range<ImageType>())
+    {
+        if(count < imageSize / 4)
+        {
+            itr = -1000;
+        }
+        else if(count < imageSize / 2)
+        {
+            itr = 1;
+        }
+        else if(count < 3 * imageSize / 4)
+        {
+            itr = 500;
+        }
+        else if(count < imageSize)
+        {
+            itr = 3000;
+        }
+
+        ++count;
+    }
+
+    data::helper::Histogram histogram(image);
+    histogram.compute();
+    auto values = histogram.sample(1);
+
+    CPPUNIT_ASSERT_EQUAL((std::size_t) (3000 - (-1000) + 1), values.size());
+    CPPUNIT_ASSERT_EQUAL(-1000., histogram.min());
+    CPPUNIT_ASSERT_EQUAL(3000., histogram.max());
+
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 4., values[0], 0.000001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 4., values[1001], 0.000001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 4., values[1500], 0.000001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 4., values[4000], 0.000001);
+
+    values = histogram.sample(1001);
+
+    CPPUNIT_ASSERT_EQUAL((std::size_t) 4, values.size());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 4., values[0], 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 2., values[1], 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[2], 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 4., values[3], 0.0001);
+
+    count = 0;
+    for(auto& itr : image->range<ImageType>())
+    {
+        if(count < imageSize / 4)
+        {
+            itr = -200;
+        }
+        else if(count < imageSize / 2)
+        {
+            itr = 80;
+        }
+        else if(count < 3 * imageSize / 4)
+        {
+            itr = 90;
+        }
+        else if(count < imageSize)
+        {
+            itr = 99;
+        }
+
+        ++count;
+    }
+
+    histogram.compute();
+    values = histogram.sample(100);
+
+    CPPUNIT_ASSERT_EQUAL((std::size_t) 3, values.size());
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1. / 4., values[0], 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., values[1], 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(3. / 4., values[2], 0.0001);
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace sight::data::tools::ut

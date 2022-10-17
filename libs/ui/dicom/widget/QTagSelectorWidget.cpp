@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,19 +29,18 @@
 #include <QHBoxLayout>
 #include <QVBoxLayout>
 
-namespace sight::ui::dicom
-{
-
-namespace widget
+namespace sight::ui::dicom::widget
 {
 
 //-----------------------------------------------------------------------------
 
 QTagSelectorWidget::QTagSelectorWidget(QWidget* parent) :
-    QWidget(parent)
+    QWidget(parent),
+    m_groupSpinBox(new ui::dicom::widget::QHexSpinBox()),
+    m_elementSpinBox(new ui::dicom::widget::QHexSpinBox())
 {
     // Create main layout
-    QVBoxLayout* mainLayout = new QVBoxLayout();
+    auto* mainLayout = new QVBoxLayout();
     this->setLayout(mainLayout);
     mainLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
@@ -50,16 +49,13 @@ QTagSelectorWidget::QTagSelectorWidget(QWidget* parent) :
     mainLayout->addWidget(m_tagNameLabel);
 
     // Create bottom widget
-    QWidget* bottomWidget = new QWidget();
+    auto* bottomWidget = new QWidget();
     mainLayout->addWidget(bottomWidget);
-    QHBoxLayout* bottomLayout = new QHBoxLayout();
+    auto* bottomLayout = new QHBoxLayout();
     bottomWidget->setLayout(bottomLayout);
     bottomLayout->setContentsMargins(QMargins(0, 0, 0, 0));
 
     // Spin box
-    m_groupSpinBox   = new ui::dicom::widget::QHexSpinBox();
-    m_elementSpinBox = new ui::dicom::widget::QHexSpinBox();
-
     bottomLayout->addWidget(new QLabel("<b>Group :</b>"));
     bottomLayout->addWidget(m_groupSpinBox, 1);
     bottomLayout->addWidget(new QLabel("<b>Element :</b>"));
@@ -84,9 +80,9 @@ QTagSelectorWidget::~QTagSelectorWidget()
 
 //-----------------------------------------------------------------------------
 
-void QTagSelectorWidget::updateTagName(int value)
+void QTagSelectorWidget::updateTagName(int /*value*/)
 {
-    DcmTag tag(m_groupSpinBox->value(), m_elementSpinBox->value());
+    DcmTag tag(Uint16(m_groupSpinBox->value()), Uint16(m_elementSpinBox->value()));
     std::string text = "<b>Tag name :</b> " + std::string(tag.getTagName());
     m_tagNameLabel->setText(text.c_str());
 }
@@ -104,9 +100,7 @@ void QTagSelectorWidget::setTagValue(const DcmTagKey& tag)
 
 DcmTagKey QTagSelectorWidget::getTag()
 {
-    return DcmTagKey(m_groupSpinBox->value(), m_elementSpinBox->value());
+    return {Uint16(m_groupSpinBox->value()), Uint16(m_elementSpinBox->value())};
 }
 
-} // namespace widget
-
-} // namespace sight::ui::dicom
+} // namespace sight::ui::dicom::widget

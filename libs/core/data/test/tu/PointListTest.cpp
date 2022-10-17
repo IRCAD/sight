@@ -28,10 +28,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::PointListTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -56,7 +53,7 @@ void PointListTest::copyTest()
     data::PointList::sptr pl2 = data::PointList::New();
     data::PointList::sptr pl3 = data::PointList::New();
 
-    data::Point::sptr point1 = data::Point::New(1.0f, 2.0f, 3.0f);
+    data::Point::sptr point1 = data::Point::New(1.0F, 2.0F, 3.0F);
 
     pl1->pushBack(point1);
 
@@ -70,21 +67,21 @@ void PointListTest::copyTest()
 void PointListTest::getterTest()
 {
     data::PointList::sptr pl1 = data::PointList::New();
-    data::Point::sptr point1  = data::Point::New(1.0f, 2.0f, 3.0f);
+    data::Point::sptr point1  = data::Point::New(1.0F, 2.0F, 3.0F);
 
     pl1->pushBack(point1);
 
     data::Point::sptr point2 = pl1->getPoints()[0];
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[0], point2->getCoord()[0], 10e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[1], point2->getCoord()[1], 10e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[2], point2->getCoord()[2], 10e-6);
+    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[0], point2->getCoord()[0]);
+    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[1], point2->getCoord()[1]);
+    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[2], point2->getCoord()[2]);
 
     data::PointList::PointListContainer& container = pl1->getPoints();
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[0], container[0]->getCoord()[0], 10e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[1], container[0]->getCoord()[1], 10e-6);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(point1->getCoord()[2], container[0]->getCoord()[2], 10e-6);
+    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[0], container[0]->getCoord()[0]);
+    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[1], container[0]->getCoord()[1]);
+    CPPUNIT_ASSERT_EQUAL(point1->getCoord()[2], container[0]->getCoord()[2]);
 }
 
 //------------------------------------------------------------------------------
@@ -92,8 +89,8 @@ void PointListTest::getterTest()
 void PointListTest::setterTest()
 {
     data::PointList::sptr pl1 = data::PointList::New();
-    data::Point::sptr point1  = data::Point::New(1.0f, 2.0f, 3.0f);
-    data::Point::sptr point2  = data::Point::New(4.0f, 5.0f, 6.0f);
+    data::Point::sptr point1  = data::Point::New(1.0F, 2.0F, 3.0F);
+    data::Point::sptr point2  = data::Point::New(4.0F, 5.0F, 6.0F);
 
     std::vector<data::Point::sptr> vec;
     vec.push_back(point1);
@@ -107,7 +104,7 @@ void PointListTest::setterTest()
     {
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(vec[p]->getCoord()[i], container[p]->getCoord()[i], 10e-6);
+            CPPUNIT_ASSERT_EQUAL(vec[p]->getCoord()[i], container[p]->getCoord()[i]);
         }
     }
 }
@@ -117,8 +114,8 @@ void PointListTest::setterTest()
 void PointListTest::pushTest()
 {
     data::PointList::sptr pl1 = data::PointList::New();
-    data::Point::sptr point1  = data::Point::New(1.0f, 2.0f, 3.0f);
-    data::Point::sptr point2  = data::Point::New(4.0f, 5.0f, 6.0f);
+    data::Point::sptr point1  = data::Point::New(1.0F, 2.0F, 3.0F);
+    data::Point::sptr point2  = data::Point::New(4.0F, 5.0F, 6.0F);
 
     std::vector<data::Point::sptr> vec;
     vec.push_back(point1);
@@ -133,7 +130,7 @@ void PointListTest::pushTest()
     {
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(vec[p]->getCoord()[i], container[p]->getCoord()[i], 10e-6);
+            CPPUNIT_ASSERT_EQUAL(vec[p]->getCoord()[i], container[p]->getCoord()[i]);
         }
     }
 }
@@ -150,13 +147,13 @@ void PointListTest::removeTest()
         // Build a list
         for(std::size_t i = 0 ; i < nbPoints ; ++i)
         {
-            const auto p = data::Point::New(.0f, .0f, .0f);
+            const auto p = data::Point::New(.0F, .0F, .0F);
             pl->pushBack(p);
         }
 
         // remove the first
         std::size_t size = nbPoints;
-        while(pl->getPoints().size())
+        while(!pl->getPoints().empty())
         {
             pl->remove(0);
             CPPUNIT_ASSERT_EQUAL(--size, pl->getPoints().size());
@@ -170,13 +167,13 @@ void PointListTest::removeTest()
         // Build a list
         for(std::size_t i = 0 ; i < nbPoints ; ++i)
         {
-            const auto p = data::Point::New(.0f, .0f, .0f);
+            const auto p = data::Point::New(.0F, .0F, .0F);
             pl->pushBack(p);
         }
 
         // remove the last
         std::size_t size = nbPoints;
-        while(pl->getPoints().size())
+        while(!pl->getPoints().empty())
         {
             const std::size_t index = pl->getPoints().size() - 1;
             pl->remove(index);
@@ -191,12 +188,12 @@ void PointListTest::removeTest()
         // Build a list
         for(std::size_t i = 0 ; i < nbPoints ; ++i)
         {
-            const auto p = data::Point::New(static_cast<float>(i), .0f, .0f);
+            const auto p = data::Point::New(static_cast<float>(i), .0F, .0F);
             pl->pushBack(p);
         }
 
         std::size_t size = nbPoints;
-        while(pl->getPoints().size())
+        while(!pl->getPoints().empty())
         {
             const std::size_t index = size / 2;
             const auto ref          = pl->getPoints()[index];
@@ -217,22 +214,20 @@ void PointListTest::clearTest()
     const std::size_t nbPoints = 42;
     data::PointList::sptr pl   = data::PointList::New();
 
-    CPPUNIT_ASSERT(pl->getPoints().size() == 0);
+    CPPUNIT_ASSERT(pl->getPoints().empty());
     pl->clear();
-    CPPUNIT_ASSERT(pl->getPoints().size() == 0);
+    CPPUNIT_ASSERT(pl->getPoints().empty());
 
     // Build a list
     for(std::size_t i = 0 ; i < nbPoints ; i++)
     {
-        const auto p = data::Point::New(.0f, .0f, .0f);
+        const auto p = data::Point::New(.0F, .0F, .0F);
         pl->pushBack(p);
     }
 
     CPPUNIT_ASSERT(pl->getPoints().size() == nbPoints);
     pl->clear();
-    CPPUNIT_ASSERT(pl->getPoints().size() == 0);
+    CPPUNIT_ASSERT(pl->getPoints().empty());
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

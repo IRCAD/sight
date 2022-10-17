@@ -23,7 +23,6 @@
 #include "Resampler.hpp"
 
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <io/itk/helper/Transform.hpp>
 #include <io/itk/itk.hpp>
@@ -55,7 +54,7 @@ struct Resampling
     template<class PIXELTYPE>
     void operator()(Parameters& params)
     {
-        typedef typename itk::Image<PIXELTYPE, 3> ImageType;
+        using ImageType = typename itk::Image<PIXELTYPE, 3>;
         const typename ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(params.i_image);
 
         typename itk::ResampleImageFilter<ImageType, ImageType>::Pointer resampler =
@@ -147,7 +146,7 @@ void Resampler::resample(
     params.i_trf        = transf.GetPointer();
     params.i_parameters = parameters;
 
-    const core::tools::Type type = _inImage->getType();
+    const core::Type type = _inImage->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, Resampling>::invoke(type, params);
 }
 
@@ -184,15 +183,15 @@ data::Image::sptr Resampler::resample(
     inputBB->SetMinimum(min);
     inputBB->SetMaximum(max);
 
-    const auto inputCorners = inputBB->GetCorners();
+    const auto inputCorners = inputBB->ComputeCorners();
     const itk::Matrix<double, 4, 4> matrix(io::itk::helper::Transform::convertToITK(_trf).GetInverse());
 
     // Apply transform matrix to all bounding box corners.
     typename VectorContainerType::Pointer outputCorners = VectorContainerType::New();
-    outputCorners->Reserve(inputCorners->Size());
+    outputCorners->Reserve(inputCorners.size());
     std::transform(
-        inputCorners->begin(),
-        inputCorners->end(),
+        inputCorners.begin(),
+        inputCorners.end(),
         outputCorners->begin(),
         [&matrix](const PointType& _in)
         {

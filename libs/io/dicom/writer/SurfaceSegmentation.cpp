@@ -32,25 +32,20 @@
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
-#include <data/Patient.hpp>
 #include <data/PointList.hpp>
 #include <data/Series.hpp>
-#include <data/Study.hpp>
 #include <data/Vector.hpp>
 
 #include <io/base/writer/registry/macros.hpp>
 
 SIGHT_REGISTER_IO_WRITER(sight::io::dicom::writer::SurfaceSegmentation);
 
-namespace sight::io::dicom
-{
-
-namespace writer
+namespace sight::io::dicom::writer
 {
 
 //------------------------------------------------------------------------------
 
-SurfaceSegmentation::SurfaceSegmentation(io::base::writer::IObjectWriter::Key key) :
+SurfaceSegmentation::SurfaceSegmentation(io::base::writer::IObjectWriter::Key /*key*/) :
     m_logger(core::log::Logger::New()),
     m_writerJob(core::jobs::Observer::New("Writing DICOM file"))
 {
@@ -59,8 +54,7 @@ SurfaceSegmentation::SurfaceSegmentation(io::base::writer::IObjectWriter::Key ke
 //------------------------------------------------------------------------------
 
 SurfaceSegmentation::~SurfaceSegmentation()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -80,49 +74,48 @@ void SurfaceSegmentation::write()
     }
 
     // Verify matching Patient's names
-    const std::string& modelPatientName = srcModelSeries->getPatient()->getName();
-    const std::string& imagePatientName = associatedDicomSeries->getPatient()->getName();
+    const std::string& modelPatientName = srcModelSeries->getPatientName();
+    const std::string& imagePatientName = associatedDicomSeries->getPatientName();
     if(modelPatientName != imagePatientName)
     {
         m_logger->warning(
-            "The patient's name of the model (\"" + modelPatientName + "\") "
-                                                                       "does not match the patient's name of the image (\"" + imagePatientName + "\")."
+            "The patient's name of the model (\"" + modelPatientName
+            + "\"  does not match the patient's name of the image (\"" + imagePatientName + "\" ."
         );
     }
 
     // Verify matching Patient ID
-    const std::string& modelPatientID = srcModelSeries->getPatient()->getPatientId();
-    const std::string& imagePatientID = associatedDicomSeries->getPatient()->getPatientId();
+    const std::string& modelPatientID = srcModelSeries->getPatientID();
+    const std::string& imagePatientID = associatedDicomSeries->getPatientID();
     if(modelPatientID != imagePatientID)
     {
         m_logger->warning(
-            "The patient ID of the model (\"" + modelPatientID + "\") "
-                                                                 "does not match the patient ID of the image (\"" + imagePatientID + "\")."
+            "The patient ID of the model (\"" + modelPatientID
+            + "\"  does not match the patient ID of the image (\"" + imagePatientID + "\" ."
         );
     }
 
     // Verify matching Study Instance UID
-    const std::string& modelStudyInstanceUID = srcModelSeries->getStudy()->getInstanceUID();
-    const std::string& imageStudyInstanceUID = associatedDicomSeries->getStudy()->getInstanceUID();
+    const std::string& modelStudyInstanceUID = srcModelSeries->getStudyInstanceUID();
+    const std::string& imageStudyInstanceUID = associatedDicomSeries->getStudyInstanceUID();
     if(modelStudyInstanceUID != imageStudyInstanceUID)
     {
         m_logger->warning(
-            "The study instance UID of the model (\"" + modelStudyInstanceUID + "\") "
-                                                                                "does not match the study instance UID of the image (\"" + imageStudyInstanceUID + "\")."
+            "The study instance UID of the model (\"" + modelStudyInstanceUID
+            + "\"  does not match the study instance UID of the image (\"" + imageStudyInstanceUID + "\" ."
         );
     }
 
     // Complete Model Series with information from associated Image Series
     const data::ModelSeries::sptr modelSeries = data::ModelSeries::New();
     modelSeries->shallowCopy(srcModelSeries);
-    // Copy Study and Patient
-    auto study = data::Study::New();
-    study->deepCopy(associatedDicomSeries->getStudy());
-    auto patient = data::Patient::New();
-    patient->deepCopy(associatedDicomSeries->getPatient());
 
-    modelSeries->setPatient(patient);
-    modelSeries->setStudy(study);
+    // Copy Study and Patient
+    /// @todo verify this is required since we already have the same patient ID and same study uid, which means we
+    /// certainly already have the same data...
+    modelSeries->copyPatientModule(associatedDicomSeries);
+    modelSeries->copyGeneralStudyModule(associatedDicomSeries);
+    modelSeries->copyPatientStudyModule(associatedDicomSeries);
 
     SPTR(io::dicom::container::DicomInstance) associatedDicomInstance =
         std::make_shared<io::dicom::container::DicomInstance>(associatedDicomSeries, m_logger);
@@ -156,7 +149,7 @@ void SurfaceSegmentation::write()
 
 std::string SurfaceSegmentation::extension() const
 {
-    return std::string("");
+    return {""};
 }
 
 //------------------------------------------------------------------------------
@@ -175,6 +168,4 @@ SPTR(core::log::Logger) SurfaceSegmentation::getLogger() const
 
 //------------------------------------------------------------------------------
 
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer

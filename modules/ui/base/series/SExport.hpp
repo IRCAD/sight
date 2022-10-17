@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,112 +24,56 @@
 
 #include "modules/ui/base/config.hpp"
 
-#include <core/com/Slots.hpp>
-
 #include <data/Series.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
-#include <ui/base/IAction.hpp>
+#include <ui/base/IExport.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace series
+namespace sight::module::ui::base::series
 {
 
 /**
- * @brief   This action allows to export the series specified in config to the SeriesDB.
+ * @brief   This action allows to export the series specified in config to the SeriesSet.
  * The export is performed when updating the service.
  *
- * @note This action is not executable if the series already exists in the SeriesDB.
+ * @note This action is not executable if the series already exists in the SeriesSet.
  *
  * @section Slots Slots
- * - \b checkAddedSeries(data::SeriesDB::ContainerType): make the action executable if the added series matches
+ * - \b checkAddedObjects(data::SeriesSet::container_type): make the action executable if the added series matches
  * the series we want to export.
- * - \b checkAddedSeries(data::SeriesDB::ContainerType): make the action inexecutable if the added series matches
+ * - \b checkRemovedObjects(data::SeriesSet::container_type): make the action inexecutable if the added series matches
  * the series we want to export.
 
  * @section XML XML Configuration
  *
  * @code{.xml}
         <service type="sight::module::ui::base::series::SExport" autoConnect="true">
-            <inout key="series" uid="..." />
-            <inout key="seriesDB" uid="..." />
+            <inout key="data" uid="..." />
+            <inout key="container" uid="..." />
        </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b series [sight::data::Series]: Source series to export.
- * - \b seriesDB [sight::data::SeriesDB]: Target series database where the series should be exported.
+ * - \b data [sight::data::Series]: Source series to export.
+ * - \b container [sight::data::SeriesSet]: Target series database where the series should be exported.
  */
-class MODULE_UI_BASE_CLASS_API SExport : public sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SExport : public sight::ui::base::IExport<data::SeriesSet>
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SExport, sight::ui::base::IAction);
+    SIGHT_DECLARE_SERVICE(SExport, sight::ui::base::IExport<data::SeriesSet>);
 
     /// Constructor
-    MODULE_UI_BASE_API SExport();
+    constexpr SExport() = default;
 
     /// Destructor
-    MODULE_UI_BASE_API virtual ~SExport() noexcept;
-
-    /**
-     * @brief Returns proposals to connect service slots to associated object signals,
-     * this method is used for obj/srv auto connection.
-     *
-     * Connect data::SeriesDB::s_ADDED_SERIES_SIG to this::s_CHECK_ADDED_SERIES_SLOT.
-     * Connect data::SeriesDB::s_REMOVED_SERIES_SIG to this::s_CHECK_REMOVED_SERIES_SLOT.
-     */
-    MODULE_UI_BASE_API KeyConnectionsMap getAutoConnections() const override;
+    inline ~SExport() noexcept override = default;
 
 protected:
 
-    /// This method is used to configure the service parameters
-    void configuring() override;
-
-    /// Starts service. If series associated with m_seriesId exists in SeriesDB, this action is not executable.
-    void starting() override;
-
-    /// Stops service. Does nothing.
-    void stopping() override;
-
-    /// Adds the series specified by m_seriesId in the SeriesDB.
+    /// Adds the series specified by m_seriesId in the SeriesSet.
     void updating() override;
 
     void info(std::ostream& _sstream) override;
-
-private:
-
-    /**
-     * @name Slots
-     * @{
-     */
-    static const core::com::Slots::SlotKeyType s_CHECK_ADDED_SERIES_SLOT;
-    static const core::com::Slots::SlotKeyType s_CHECK_REMOVED_SERIES_SLOT;
-
-    /// Slot: check if specified series is added and set action not executable
-    void checkAddedSeries(data::SeriesDB::ContainerType addedSeries);
-
-    /// Slot: check if specified series is removed and set action executable
-    void checkRemovedSeries(data::SeriesDB::ContainerType removedSeries);
-
-    /**
-     * @}
-     */
-
-    /// Returns current series given by its fwID m_seriesId.
-    data::Series::sptr getSeries();
-
-    /// fwID of the series to add in SeriesDB
-    /// @deprecated appXml
-    std::string m_seriesId;
-
-    static constexpr std::string_view s_SERIESDB = "seriesDB";
-
-    data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, s_SERIESDB};
-    data::ptr<data::Series, data::Access::inout> m_series {this, "series"};
 };
 
-} // namespace series
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::series

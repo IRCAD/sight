@@ -33,10 +33,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CompositeTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -58,73 +55,50 @@ void CompositeTest::tearDown()
 void CompositeTest::methode1()
 {
     const std::int64_t value = 404;
-    typedef data::Composite::value_type pair_type;
-    const pair_type PAIRS[] = {
+    using pair_type = data::Composite::value_type;
+    const std::array<pair_type, 5> PAIRS = {
         std::make_pair("Composite", data::Composite::New()),
         std::make_pair("boolean true", data::Boolean::New(true)),
         std::make_pair("boolean false", data::Boolean::New(false)),
-        std::make_pair("float", data::Float::New(3.14f)),
+        std::make_pair("float", data::Float::New(3.14F)),
         std::make_pair("integer", data::Integer::New(value))
     };
 
-    data::Composite::ContainerType stdmap;
+    data::Composite::container_type stdmap;
 
     data::Composite::sptr composite = data::Composite::New();
 
-    CPPUNIT_ASSERT(composite->size() == 0);
+    CPPUNIT_ASSERT(composite->empty());
 
-    for(pair_type p : PAIRS)
+    for(const pair_type& p : PAIRS)
     {
-        composite->getContainer()[p.first] = p.second;
+        (*composite)[p.first] = p.second;
     }
 
     stdmap.insert(composite->begin(), composite->end());
 
     CPPUNIT_ASSERT(composite->size() == stdmap.size());
 
-    for(pair_type p : *composite)
+    for(const pair_type& p : *composite)
     {
-        CPPUNIT_ASSERT(composite->getContainer()[p.first] == (*composite)[p.first]);
         CPPUNIT_ASSERT(stdmap[p.first] == (*composite)[p.first]);
     }
 
     CPPUNIT_ASSERT_EQUAL(true, data::Boolean::dynamicCast((*composite)["boolean true"])->value());
     CPPUNIT_ASSERT_EQUAL(false, data::Boolean::dynamicCast((*composite)["boolean false"])->value());
-    CPPUNIT_ASSERT_EQUAL(3.14f, data::Float::dynamicCast((*composite)["float"])->value());
+    CPPUNIT_ASSERT_EQUAL(3.14F, data::Float::dynamicCast((*composite)["float"])->value());
     CPPUNIT_ASSERT_EQUAL(value, data::Integer::dynamicCast((*composite)["integer"])->value());
 
     // test values
     const std::string STR  = "string value";
     data::Object::sptr obj = data::Float::New();
 
-    composite->getContainer()[STR] = obj;
+    (*composite)[STR] = obj;
 
     CPPUNIT_ASSERT(composite->begin() != composite->end());
 
     CPPUNIT_ASSERT(composite->find(STR) != composite->end());
-    CPPUNIT_ASSERT_EQUAL(composite->getContainer()[STR], obj);
+    CPPUNIT_ASSERT_EQUAL((*composite)[STR], obj);
 }
 
-//------------------------------------------------------------------------------
-
-void CompositeTest::setGetContainerTest()
-{
-    std::map<std::string, data::String::sptr> myStdMap;
-    const std::string key1 = "string value 1";
-    const std::string key2 = "string value 2";
-    myStdMap[key1] = data::String::New("lolo");
-    myStdMap[key2] = data::String::New("lulu");
-
-    data::Composite::sptr myDataMap = data::Composite::New();
-    myDataMap->setDataContainer(myStdMap);
-    CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(2), myDataMap->size());
-
-    std::map<std::string, data::String::sptr> myStdMap2;
-    myStdMap2 = myDataMap->getDataContainer<data::String>();
-    CPPUNIT_ASSERT(myStdMap2[key1] == myStdMap[key1]);
-    CPPUNIT_ASSERT(myStdMap2[key2] == myStdMap[key2]);
-}
-
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

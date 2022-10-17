@@ -24,9 +24,10 @@
 
 #include "core/memory/exception/BadCast.hpp"
 
-#include <boost/spirit/include/phoenix_operator.hpp>
+#include <boost/phoenix/operator.hpp>
 #include <boost/spirit/include/qi.hpp>
 
+#include <array>
 #include <sstream>
 
 namespace sight::core::memory
@@ -48,15 +49,12 @@ const std::uint64_t ByteSize::GiB = 1LL << 30;
 const std::uint64_t ByteSize::TiB = 1LL << 40;
 const std::uint64_t ByteSize::PiB = 1LL << 50;
 
-ByteSize::ByteSize() :
-    m_size(0)
-{
-}
+ByteSize::ByteSize()
+= default;
 
 //------------------------------------------------------------------------------
 
-ByteSize::ByteSize(SizeType size, UnitType unit) :
-    m_size(0)
+ByteSize::ByteSize(SizeType size, UnitType unit)
 {
     SIGHT_ASSERT(
         "Bad Unit",
@@ -68,8 +66,7 @@ ByteSize::ByteSize(SizeType size, UnitType unit) :
 
 //------------------------------------------------------------------------------
 
-ByteSize::ByteSize(double size, UnitType unit) :
-    m_size(0)
+ByteSize::ByteSize(double size, UnitType unit)
 {
     SIGHT_ASSERT(
         "Bad Unit",
@@ -197,14 +194,11 @@ std::string ByteSize::unitToString(ByteSize::UnitType unit)
 
         case TiB:
             return "TiB";
-    }
 
-    SIGHT_ASSERT(
-        "Bad Unit",
-        (unit == Bytes) || (unit == KB) || (unit == MB) || (unit == GB) || (unit == TB) || (unit == PB)
-        || (unit == KiB) || (unit == MiB) || (unit == GiB) || (unit == TiB) || (unit == PiB)
-    );
-    return "?";
+        default:
+            SIGHT_ASSERT("Bad Unit", false);
+            return "?";
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -292,7 +286,7 @@ bool ByteSize::parseSize(const std::string& s, SizeType& size)
 
 //------------------------------------------------------------------------------
 
-std::string ByteSize::getSizeAsString(UnitType unit)
+std::string ByteSize::getSizeAsString(UnitType unit) const
 {
     SIGHT_ASSERT(
         "Bad Unit",
@@ -318,28 +312,29 @@ std::string ByteSize::getSizeAsString(UnitType unit)
 
 //------------------------------------------------------------------------------
 
-std::string ByteSize::getHumanReadableSize(StandardType standard)
+std::string ByteSize::getHumanReadableSize(StandardType standard) const
 {
-    static UnitType si[]                = {Bytes, KB, MB, GB, TB, PB};
-    static UnitType iec[]               = {Bytes, KiB, MiB, GiB, TiB, PiB};
-    const std::size_t sizeOfStandardSet = 5;
+    static const std::array si {Bytes, KB, MB, GB, TB, PB};
+    static const std::array iec {Bytes, KiB, MiB, GiB, TiB, PiB};
+    static_assert(si.size() == iec.size());
+    const std::size_t sizeOfStandardSet = si.size();
 
-    UnitType* unitSet = iec;
+    const auto* unitSet = &iec;
     if(standard == SI)
     {
-        unitSet = si;
+        unitSet = &si;
     }
 
-    std::size_t i;
+    std::size_t i = 0;
     for(i = 1 ; i < sizeOfStandardSet ; ++i)
     {
-        if(m_size < unitSet[i])
+        if(m_size < (*unitSet)[i])
         {
             break;
         }
     }
 
-    return getSizeAsString(unitSet[i - 1]);
+    return getSizeAsString((*unitSet)[i - 1]);
 }
 
 //------------------------------------------------------------------------------

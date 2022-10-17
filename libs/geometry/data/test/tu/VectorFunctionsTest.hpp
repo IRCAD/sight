@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::geometry::data
-{
-
-namespace ut
+namespace sight::geometry::data::ut
 {
 
 class VectorFunctionsTest : public CPPUNIT_NS::TestFixture
@@ -48,17 +45,15 @@ protected:
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void checkDot();
-    void checkCross();
-    void checkNormalize();
-    void checkNegate();
-    void checkVecLength();
-    void checkOperators();
+    static void checkDot();
+    static void checkCross();
+    static void checkNormalize();
+    static void checkNegate();
+    static void checkVecLength();
+    static void checkOperators();
 };
 
-} //namespace ut
-
-} //namespace sight::geometry::data
+} // namespace sight::geometry::data::ut

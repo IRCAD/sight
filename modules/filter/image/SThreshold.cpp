@@ -24,7 +24,6 @@
 
 #include <core/com/Signal.hxx>
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
@@ -34,16 +33,13 @@ namespace sight::module::filter::image
 
 //-----------------------------------------------------------------------------
 
-SThreshold::SThreshold() noexcept :
-    m_threshold(50.0)
-{
-}
+SThreshold::SThreshold() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-SThreshold::~SThreshold() noexcept
-{
-}
+SThreshold::~SThreshold() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -87,7 +83,7 @@ struct ThresholdFilter
 {
     struct Parameter
     {
-        double thresholdValue;      ///< threshold value.
+        double thresholdValue {};   ///< threshold value.
         data::Image::csptr imageIn; ///< image source
         data::Image::sptr imageOut; ///< image target: contains the result of the filter
     };
@@ -99,9 +95,9 @@ struct ThresholdFilter
     template<class PIXELTYPE>
     void operator()(Parameter& param)
     {
-        const PIXELTYPE thresholdValue = static_cast<PIXELTYPE>(param.thresholdValue);
-        data::Image::csptr imageIn     = param.imageIn;
-        data::Image::sptr imageOut     = param.imageOut;
+        const auto thresholdValue  = static_cast<PIXELTYPE>(param.thresholdValue);
+        data::Image::csptr imageIn = param.imageIn;
+        data::Image::sptr imageOut = param.imageOut;
         SIGHT_ASSERT("Sorry, image must be 3D", imageIn->numDimensions() == 3);
 
         imageOut->copyInformation(imageIn); // Copy image size, type... without copying the buffer
@@ -142,15 +138,15 @@ void SThreshold::updating()
     // Get source/target image
     if(imageSeriesSrc)
     {
-        param.imageIn = imageSeriesSrc->getImage();
+        param.imageIn = imageSeriesSrc;
         data::ImageSeries::sptr imageSeriesDest = data::ImageSeries::copy(imageSeriesSrc);
         // define the input image series as the reference
         imageSeriesDest->setDicomReference(imageSeriesSrc->getDicomReference());
 
         // create the output image
         data::Image::sptr imageOut = data::Image::New();
-        imageSeriesDest->setImage(imageOut);
-        param.imageOut = imageOut;
+        imageSeriesDest->Image::shallowCopy(imageOut);
+        param.imageOut = imageSeriesDest;
         output         = imageSeriesDest;
     }
     else if(imageSrc)
@@ -169,17 +165,17 @@ void SThreshold::updating()
     param.thresholdValue = m_threshold;
 
     // get image type
-    core::tools::Type type = param.imageIn->getType();
+    core::Type type = param.imageIn->getType();
 
     /* The dispatcher allows to apply the filter on any type of image.
      * It invokes the template functor ThresholdFilter using the image type.
      * - template parameters:
      *   - core::tools::SupportedDispatcherTypes defined all the supported type of the functor, here all the type
-     *     supported by core::tools::Type(std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
+     *     supported by core::Type(std::int8_t, std::uint8_t, std::int16_t, std::uint16_t, std::int32_t,
      *     std::uint32_t, std::int64_t, std::uint64_t, float, double)
      *   - ThresholdFilter: functor struct or class
      * - parameters:
-     *   - type: core::tools::Type of the image
+     *   - type: core::Type of the image
      *   - param: struct containing the functor parameters (here the input and output images and the threshold value)
      */
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,9 +37,9 @@
 namespace sight::data
 {
 
-class SeriesDB;
+class SeriesSet;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::dicom
 {

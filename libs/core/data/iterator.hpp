@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -18,6 +18,8 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+
+// cspell:ignore NOLINT
 
 #pragma once
 
@@ -46,7 +48,7 @@ namespace sight::data
  * Example:
  * @code{.cpp}
     data::Image::sptr img = data::Image::New();
-    img->resize(1920, 1080, 0, core::tools::Type::s_UINT8, data::Image::PixelFormat::RGBA);
+    img->resize(1920, 1080, 0, core::Type::UINT8, data::Image::PixelFormat::RGBA);
     auto iter    = img->begin<RGBA>();
     const auto iterEnd = img->end<RGBA>();
 
@@ -84,14 +86,14 @@ public:
     array_iterator() = default;
     constexpr array_iterator(pointer begin);
     array_iterator(const array_iterator<T>& other) = default;
-    array_iterator(array_iterator<T>&& other)      = default;
-    ~array_iterator()                              = default;
+    array_iterator(array_iterator<T>&& other) noexcept = default;
+    ~array_iterator() = default;
 
     template<bool isConst = std::is_const_v<T>, typename = typename std::enable_if_t<isConst> >
     constexpr array_iterator(const array_iterator<std::remove_const_t<T> >& other);
 
     array_iterator& operator=(const array_iterator& other) = default;
-    array_iterator& operator=(array_iterator&& other)      = default;
+    array_iterator& operator=(array_iterator&& other) noexcept = default;
 
     /// Comparison operators
     constexpr bool operator==(const array_iterator& other) const noexcept;
@@ -99,11 +101,11 @@ public:
 
     /// Increment/Decrement operators
     array_iterator& operator++();
-    array_iterator operator++(int);
+    const array_iterator operator++(int); // NOLINT(readability-const-return-type)
     constexpr array_iterator operator+(difference_type index) const;
     array_iterator& operator+=(difference_type index);
     array_iterator& operator--();
-    array_iterator operator--(int);
+    const array_iterator operator--(int); // NOLINT(readability-const-return-type)
     constexpr array_iterator operator-(difference_type index) const;
     array_iterator& operator-=(difference_type index);
 

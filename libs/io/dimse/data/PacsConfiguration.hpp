@@ -27,10 +27,7 @@
 #include <data/factory/new.hpp>
 #include <data/Object.hpp>
 
-namespace sight::io::dimse
-{
-
-namespace data
+namespace sight::io::dimse::data
 {
 
 /**
@@ -49,13 +46,7 @@ public:
     IO_DIMSE_API PacsConfiguration(sight::data::Object::Key key);
 
     /// Destructor
-    IO_DIMSE_API virtual ~PacsConfiguration();
-
-    /// Defines shallow copy
-    IO_DIMSE_API void shallowCopy(const sight::data::Object::csptr& _source) override;
-
-    /// Defines deep copy
-    IO_DIMSE_API void cachedDeepCopy(const sight::data::Object::csptr& _source, DeepCopyCacheType& cache) override;
+    IO_DIMSE_API ~PacsConfiguration() noexcept override = default;
 
     /**
      * @brief Retrieve Method
@@ -124,14 +115,14 @@ public:
     /**
      * @brief Pacs port
      * @{ */
-    const unsigned short& getPacsApplicationPort() const
+    const std::uint16_t& getPacsApplicationPort() const
     {
         return m_pacsApplicationPort;
     }
 
     //------------------------------------------------------------------------------
 
-    void setPacsApplicationPort(const unsigned short& pacsApplicationPort)
+    void setPacsApplicationPort(const std::uint16_t& pacsApplicationPort)
     {
         m_pacsApplicationPort = pacsApplicationPort;
     }
@@ -158,14 +149,14 @@ public:
     /**
      * @brief Move application port
      * @{ */
-    unsigned short getMoveApplicationPort() const
+    std::uint16_t getMoveApplicationPort() const
     {
         return m_moveApplicationPort;
     }
 
     //------------------------------------------------------------------------------
 
-    void setMoveApplicationPort(unsigned short moveApplicationPort)
+    void setMoveApplicationPort(std::uint16_t moveApplicationPort)
     {
         m_moveApplicationPort = moveApplicationPort;
     }
@@ -193,6 +184,11 @@ public:
 
 protected:
 
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    IO_DIMSE_API void shallowCopy(const sight::data::Object::csptr& source) override;
+
     /// Local application title
     std::string m_localApplicationTitle;
 
@@ -203,18 +199,16 @@ protected:
     std::string m_pacsApplicationTitle;
 
     /// Pacs application port
-    unsigned short m_pacsApplicationPort;
+    std::uint16_t m_pacsApplicationPort {0};
 
     /// Move application title
     std::string m_moveApplicationTitle;
 
     /// Move application port
-    unsigned short m_moveApplicationPort;
+    std::uint16_t m_moveApplicationPort {0};
 
     /// Retrieve method
-    RETRIEVE_METHOD m_retrieveMethod;
+    RETRIEVE_METHOD m_retrieveMethod {MOVE_RETRIEVE_METHOD};
 };
 
-} //namespace data
-
-} //namespace sight::io::dimse
+} // namespace sight::io::dimse::data

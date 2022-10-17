@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,19 +33,13 @@ namespace sight::module::service
 struct Plugin : public core::runtime::Plugin
 {
     /// Destructor. Do nothing.
-    ~Plugin() noexcept;
+    ~Plugin() noexcept override;
 
     /// Overrides start method. Service declarations (services declared in fwServices libraries ).
-    void start();
-
-    /// Overrides initialize method
-    void initialize();
-
-    /// Overrides uninitialize method
-    void uninitialize();
+    void start() override;
 
     /// Overrides stop method. Do nothing
-    void stop() noexcept;
+    void stop() noexcept override;
 };
 
 } // namespace sight::module::service

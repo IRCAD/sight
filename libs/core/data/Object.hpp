@@ -39,6 +39,14 @@
 namespace sight::data
 {
 
+namespace mt
+{
+
+template<typename T>
+class locked_ptr;
+
+} // namespace mt
+
 /**
  * @brief   Base class for each data object.
  *
@@ -178,43 +186,41 @@ public:
      */
     DATA_API void removeField(const FieldNameType& name);
 
-    /**
-     * @brief A shallow copy of fields (objects in m_children)
-     * @param[in] source source of the copy.
-     */
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
     DATA_API virtual void shallowCopy(const Object::csptr& source);
 
-    /**
-     * @brief Make a deep copy from the source
-     * Calling this method may invalidate any DumpLock, RescursiveLock or helper
-     * on the object. Prefer using Object::copy instead.
-     */
-    DATA_API void deepCopy(const Object::csptr& source);
+    /// Defines deep copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API virtual void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    );
 
     /**
      * @brief return a copy of the source. if source is a null pointer, return a null pointer.
      * @{
      */
-    DATA_API static Object::sptr copy(const Object::csptr& source);
+    DATA_API static Object::sptr copy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    );
+
     template<typename DATA_TYPE>
-    static SPTR(DATA_TYPE) copy(const CSPTR(DATA_TYPE) & source);
+    static SPTR(DATA_TYPE) copy(
+        const CSPTR(DATA_TYPE) & source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    );
+
     template<typename DATA_TYPE>
-    static SPTR(DATA_TYPE) copy(const SPTR(DATA_TYPE) & source);
+    static SPTR(DATA_TYPE) copy(
+        const SPTR(DATA_TYPE) & source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    );
     /** @} */
-
-    /**
-     * @brief A shallow copy of fields (objects in m_children)
-     * @param[in] source source of the copy.
-     */
-    DATA_API void fieldShallowCopy(const Object::csptr& source);
-
-    /**
-     * @brief A deep copy of fields (objects in m_children)
-     * @param[in] source source of the copy.
-     */
-    DATA_API void fieldDeepCopy(const Object::csptr& source);
-
-    //-----------------------------------------------------------------------------
 
     /// Returns the object's mutex.
     inline core::mt::ReadWriteMutex& getMutex() const
@@ -222,7 +228,7 @@ public:
         return m_mutex;
     }
 
-    DATA_API virtual ~Object();
+    DATA_API ~Object() noexcept override = default;
 
     /// Equality comparison operators
     /// @{
@@ -230,52 +236,50 @@ public:
     DATA_API bool operator!=(const Object& other) const noexcept;
     /// @}
 
+    /// Accessors
+    /// @{
+    inline std::string getDescription() const noexcept;
+    inline void setDescription(const std::string& description) noexcept;
+    /// @}
+
+    /// Returns a timestamp to know when the object was last modified
+    inline std::uint64_t lastModified() const noexcept;
+
 protected:
 
     DATA_API Object();
 
-    /**
-     * @brief Internal-use methods to implement Object's deepCopy
-     * @{
-     */
-    DATA_API static Object::sptr copy(const Object::csptr& source, DeepCopyCacheType& cache);
-    DATA_API void fieldDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache);
-    DATA_API virtual void cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache) = 0;
-    template<typename DATA_TYPE>
-    static SPTR(DATA_TYPE) copy(const CSPTR(DATA_TYPE) & source, DeepCopyCacheType & cache);
-    template<typename DATA_TYPE>
-    static SPTR(DATA_TYPE) copy(const SPTR(DATA_TYPE) & source, DeepCopyCacheType & cache);
-    /** @} */
+    /// Description allows to distinguish between different instances of the same class
+    std::string m_description;
 
     /// Fields
     FieldMapType m_fields;
 
     /// Mutex to protect object access.
     mutable core::mt::ReadWriteMutex m_mutex;
+
+    /// Timestamp that can be incremented each time the object is modified
+    std::uint64_t m_lastModified {0};
+
+private:
+
+    template<class T>
+    friend class sight::data::mt::locked_ptr;
+
+    /// Increments the last modified timestamp
+    DATA_API inline void setModified() noexcept;
 };
 
 template<typename DATA_TYPE>
-SPTR(DATA_TYPE) Object::copy(const CSPTR(DATA_TYPE) & source, DeepCopyCacheType & cache)
+SPTR(DATA_TYPE) Object::copy(const CSPTR(DATA_TYPE) & source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
     return DATA_TYPE::dynamicCast(Object::copy(Object::csptr(source), cache));
 }
 
 template<typename DATA_TYPE>
-SPTR(DATA_TYPE) Object::copy(const SPTR(DATA_TYPE) & source, DeepCopyCacheType & cache)
+SPTR(DATA_TYPE) Object::copy(const SPTR(DATA_TYPE) & source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
     return DATA_TYPE::dynamicCast(Object::copy(Object::csptr(source), cache));
-}
-
-template<typename DATA_TYPE>
-SPTR(DATA_TYPE) Object::copy(const CSPTR(DATA_TYPE) & source)
-{
-    return DATA_TYPE::dynamicCast(Object::copy(Object::csptr(source)));
-}
-
-template<typename DATA_TYPE>
-SPTR(DATA_TYPE) Object::copy(const SPTR(DATA_TYPE) & source)
-{
-    return DATA_TYPE::dynamicCast(Object::copy(Object::csptr(source)));
 }
 
 //-----------------------------------------------------------------------------
@@ -314,5 +318,35 @@ SPTR(DATA_TYPE) Object::setDefaultField(const FieldNameType& name, SPTR(DATA_TYP
 
     return result;
 }
+
+//------------------------------------------------------------------------------
+
+inline std::string Object::getDescription() const noexcept
+{
+    return m_description;
+}
+
+//------------------------------------------------------------------------------
+
+inline void Object::setDescription(const std::string& description) noexcept
+{
+    m_description = description;
+}
+
+//-----------------------------------------------------------------------------
+
+inline std::uint64_t Object::lastModified() const noexcept
+{
+    return m_lastModified;
+}
+
+//-----------------------------------------------------------------------------
+
+inline void Object::setModified() noexcept
+{
+    ++m_lastModified;
+}
+
+//-----------------------------------------------------------------------------
 
 } // namespace sight::data

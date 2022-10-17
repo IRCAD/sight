@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,20 +34,20 @@ struct Plugin : public core::runtime::Plugin
     /**
      * @brief Destructor
      */
-    ~Plugin() noexcept;
+    ~Plugin() noexcept override;
 
     /**
      * @brief Start method.
      * @exception core::runtime::RuntimeException.
      * This method is used by runtime in order to initialize the module.
      */
-    void start();
+    void start() override;
 
     /**
      * @brief Stop method.
      * This method is used by runtime in order to close the module.
      */
-    void stop() noexcept;
+    void stop() noexcept override;
 };
 
 } // namespace sight::module::geometry::vision

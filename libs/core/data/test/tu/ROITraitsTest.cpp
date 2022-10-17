@@ -28,10 +28,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ROITraitsTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -76,6 +73,4 @@ void ROITraitsTest::creation()
     roiTraits2->setMaskOpNode(opNode);
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

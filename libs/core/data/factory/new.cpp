@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <regex>
 
-namespace sight::data
-{
-
-namespace factory
+namespace sight::data::factory
 {
 
 //------------------------------------------------------------------------------
@@ -53,7 +50,7 @@ data::Object::sptr New(const data::registry::KeyType& _classname)
         static const std::regex reg("(\\w*)::(?:(core|filter|geometry|io|navigation|ui|viz)::)?(\\w*)::.*");
         if(std::regex_match(classname, match, reg) && match.size() >= 3)
         {
-            const std::string libname = match[1].str() + '_' + (match[2].length() ? (match[2].str() + "_") : "")
+            const std::string libname = match[1].str() + '_' + (match[2].length() != 0 ? (match[2].str() + "_") : "")
                                         + match[3].str();
             SIGHT_DEBUG("libname: " + libname);
             const bool loaded = core::runtime::loadLibrary(libname);
@@ -74,6 +71,4 @@ data::Object::sptr New(const data::registry::KeyType& _classname)
     return data;
 }
 
-} // namespace factory
-
-} // namespace sight::data
+} // namespace sight::data::factory

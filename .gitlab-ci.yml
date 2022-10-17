@@ -2,6 +2,7 @@ stages:
   - lint
   - prebuild
   - build
+  - deploy-test
   - deploy
 
 include:
@@ -14,6 +15,8 @@ include:
 
 lint:sheldon:
   extends: .lint
+  variables:
+    ENABLE_CLANG_TIDY: "ON"
 
 .linux_build:
   extends: .linux_before
@@ -23,6 +26,7 @@ lint:sheldon:
     SIGHT_BUILD_DOC: "OFF"
     SIGHT_BUILD_PACKAGES: "OFF"
     SIGHT_BUILD_SDK: "OFF"
+    SIGHT_ENABLE_REALSENSE: "OFF"
   script:
     # Reset the modified time of all files to improve ccache performance
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
@@ -38,21 +42,27 @@ lint:sheldon:
       -DSIGHT_ARCH=sandybridge
       -DSIGHT_BUILD_TESTS=ON
       -DSIGHT_BUILD_DOC=${SIGHT_BUILD_DOC}
-      -DSIGHT_ENABLE_PCH=OFF
+      -DSIGHT_ENABLE_PCH=ON
       -DSIGHT_DEPS_ROOT_DIRECTORY=/cache/.sight-deps
       -DSIGHT_ENABLE_OPENVSLAM=ON
-      -DSIGHT_ENABLE_REALSENSE=ON
+      -DSIGHT_ENABLE_REALSENSE=${SIGHT_ENABLE_REALSENSE}
       -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
       -DSIGHT_ENABLE_GDB=ON
     # Touch all generated files to improve CCache performance
     - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
     # Build
-    - ninja
+    - ninja | tee output.log
+    # Generate metrics information
+    - nb_warnings=$(grep -c "warning:" output.log)
+    - nb_deprecated=$(grep -ce "-Wdeprecated-declarations" output.log)
+    - echo -e "Cpp_Warnings $nb_warnings\nCpp_Deprecated_declaration $nb_deprecated" >metrics.txt
     # Print CCache statistics (Cache hit rate should have raised)
     - ccache -s
     # Clone sight-data.
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b ${EXTRA_BRANCH}
     - export FWTEST_DATA_DIR=$CI_PROJECT_DIR/.build/sight-data
+    - export IMAGE_OUTPUT_PATH=$CI_PROJECT_DIR/.build/testImages
+    - mkdir -p $IMAGE_OUTPUT_PATH
     # Launch tests
     - ctest --timeout 480 --output-on-failure -O ctest.log -j4 --output-junit junit.xml
     # Build documentation if needed
@@ -64,6 +74,7 @@ lint:sheldon:
       if [ "${SIGHT_BUILD_PACKAGES}" == "ON" ]; then
         ninja SightViewer_package
         rm -rf ${CI_PROJECT_DIR}/.install
+
         ninja SightCalibrator_package
         rm -rf ${CI_PROJECT_DIR}/.install
       fi
@@ -86,11 +97,47 @@ lint:sheldon:
       - .build/packages/*.tar.zst
       - .build/coverage
       - .build/bin/*.core
+      - .build/testImages
     reports:
       junit: .build/junit.xml
+      metrics: .build/metrics.txt
 
-build:linux-21.10-debug-gcc:
+.linux_deploy_test:
+  extends: .linux_before
+  dependencies: []
+  stage: deploy-test
+  variables:
+    SIGHT_TEST_PACKAGES: "OFF"
+    SIGHT_TEST_SDK: "OFF"
+  script:
+    - cd .build
+    - >
+      if [ "${SIGHT_TEST_PACKAGES}" == "ON" ]; then
+        tar -xf packages/SightViewer-*.tar.zst
+        echo Testing SightViewer:
+        timeout 5s xvfb-run -a SightViewer-*/bin/sightviewer || [ $? -eq 124 ]
+
+        tar -xf packages/SightCalibrator-*.tar.zst
+        echo Testing SightCalibrator:
+        timeout 5s xvfb-run -a SightCalibrator-*/bin/sightcalibrator || [ $? -eq 124 ]
+      fi
+    - >
+      if [ "${SIGHT_TEST_SDK}" == "ON" ]; then
+        tar -xf packages/sight-*.tar.zst
+        PACKAGE_NAME=$(cmake -DGET_ARCHIVE_FOLDER=ON -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -P "${CI_PROJECT_DIR}/cmake/build/download_deps.cmake" 2>&1)
+        for program in sight-*/bin/{ex*,tuto*,sightviewer,sightcalibrator,dicomxplorer}; do
+            echo Testing $(basename $program):
+            LD_LIBRARY_PATH=/cache/.sight-deps/$PACKAGE_NAME/lib timeout 5s xvfb-run -a $program || [ $? -eq 124 ]
+        done
+        for program in sight-*/bin/{arucomarker,dicomanonymizer,networkproxy}; do
+            echo Testing $(basename $program):
+            $program --help
+        done
+      fi
+
+build:linux-22.04-debug-gcc:
   extends: .linux_build
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_BUILD_SDK: "ON"
@@ -98,8 +145,9 @@ build:linux-21.10-debug-gcc:
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
 
-build:linux-21.10-release-gcc:
+build:linux-22.04-release-gcc:
   extends: .linux_build
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   variables:
     BUILD_TYPE: "Release"
     SIGHT_BUILD_SDK: "ON"
@@ -108,16 +156,19 @@ build:linux-21.10-release-gcc:
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
 
-build:linux-21.10-RelWithDebInfo-clang:
+build:linux-22.04-RelWithDebInfo-clang:
   extends: .linux_build
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   variables:
     BUILD_TYPE: "RelWithDebInfo"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
+    SIGHT_ENABLE_CLANG_TIDY: "ON"
     CC: "/usr/lib/ccache/clang"
     CXX: "/usr/lib/ccache/clang++"
 
-build:linux-21.10-coverage-gcc:
+build:linux-22.04-coverage-gcc:
   extends: .linux_build
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   variables:
     BUILD_TYPE: "RelWithDebInfo"
     SIGHT_BUILD_DOC: "ON"
@@ -125,16 +176,21 @@ build:linux-21.10-coverage-gcc:
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
-  coverage: /^lines:\s+(\d+\.*\d*\%).*$/
-  artifacts:
-    <<: *linux_build_artifacts
-    reports:
-      cobertura: .build/coverage/cobertura-coverage.xml
+
+deploy-test:linux-debug:
+  extends: .linux_deploy_test
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
+  dependencies:
+    - build:linux-22.04-debug-gcc
+  variables:
+    SIGHT_TEST_SDK: "ON"
 
 deploy:linux-debug:
   extends: .linux_deploy
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   dependencies:
-    - build:linux-21.10-debug-gcc
+    - build:linux-22.04-debug-gcc
+    - deploy-test:linux-debug
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -145,17 +201,30 @@ deploy:linux-debug:
 
 deploy_manual:linux-debug:
   extends: .linux_deploy
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   dependencies:
-    - build:linux-21.10-debug-gcc
+    - build:linux-22.04-debug-gcc
+    - deploy-test:linux-debug
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
   when: manual
 
+deploy-test:linux-release:
+  extends: .linux_deploy_test
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
+  dependencies:
+    - build:linux-22.04-release-gcc
+  variables:
+    SIGHT_TEST_PACKAGES: "ON"
+    SIGHT_TEST_SDK: "ON"
+
 deploy:linux-release:
   extends: .linux_deploy
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   dependencies:
-    - build:linux-21.10-release-gcc
+    - build:linux-22.04-release-gcc
+    - deploy-test:linux-release
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -166,8 +235,10 @@ deploy:linux-release:
 
 deploy_manual:linux-release:
   extends: .linux_deploy
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   dependencies:
-    - build:linux-21.10-release-gcc
+    - build:linux-22.04-release-gcc
+    - deploy-test:linux-release
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -175,8 +246,10 @@ deploy_manual:linux-release:
 
 deploy:apps-linux-release:
   extends: .linux_deploy
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   dependencies:
-    - build:linux-21.10-release-gcc
+    - build:linux-22.04-release-gcc
+    - deploy-test:linux-release
   variables:
     APPS: "SightViewer,SightCalibrator"
     URL: "IRCAD%20-%20Open/"
@@ -187,8 +260,10 @@ deploy:apps-linux-release:
 
 deploy_manual:apps-linux-release:
   extends: .linux_deploy
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   dependencies:
-    - build:linux-21.10-release-gcc
+    - build:linux-22.04-release-gcc
+    - deploy-test:linux-release
   variables:
     APPS: "SightViewer,SightCalibrator"
     URL: "IRCAD%20-%20Open/"
@@ -214,18 +289,38 @@ deploy_manual:apps-linux-release:
     # Clone sight-data.
     - git clone --depth 1 https://gitlab-ci-token:${CI_JOB_TOKEN}@git.ircad.fr/Sight/sight-data.git -b ${EXTRA_BRANCH}
     - $env:FWTEST_DATA_DIR="${env:CI_PROJECT_DIR}/build/sight-data"
+    - $env:IMAGE_OUTPUT_PATH="${env:CI_PROJECT_DIR}/build/testImages"
+    - md "${env:IMAGE_OUTPUT_PATH}"
+    - $env:DISABLE_ABORT_DIALOG="1"
     # Launch tests
     - ctest --timeout 480 --output-on-failure -O ctest.log -j6 --output-junit junit.xml
     - |
       if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
         ninja SightViewer_package
         Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse
+
         ninja SightCalibrator_package
         Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse
       }
     - |
       if ("${SIGHT_BUILD_SDK}" -eq "ON") {
         ninja install
+        # Check if the package is relocatable
+         Try {
+          if (Select-String -Pattern "[A-Z]:[\/\\]\w+" -Path "${env:CI_PROJECT_DIR}/install/lib/cmake/sight/*.cmake") {
+            echo "The package is not relocatable, some absolute paths are present"
+            exit 1
+          }
+          else
+          {
+            echo "The package is relocatable, no absolute path found."
+          }
+        }
+        Catch {
+          echo "Error when looking for absolute paths, see output below."
+          echo $Error[0]
+          exit 1
+        }
         ninja package
       }
   artifacts:
@@ -236,8 +331,74 @@ deploy_manual:apps-linux-release:
       - build/fwTest.log
       - build/packages/*.exe
       - build/packages/sight-*.zip
+      - build/testImages
     reports:
       junit: build/junit.xml
+
+.windows_deploy_test:
+  dependencies: []
+  stage: deploy-test
+  variables:
+    SIGHT_TEST_PACKAGES: "OFF"
+    SIGHT_TEST_SDK: "OFF"
+    CACHE: "D:\\gitlab-cache"
+  script:
+    - $PACKAGE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake" '2>&1'
+    - cd build
+    - |
+      if("${SIGHT_TEST_PACKAGES}" -eq "ON"){
+        Start-Process -Wait .\packages\SightViewer-*.exe /S,/D=${pwd}\SightViewer
+        $process = Start-Process -PassThru -NoNewWindow SightViewer\bin\sightviewer.bat --no-abort-dialog,--clog
+        $process | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
+        ForEach($p in Get-CimInstance Win32_Process | Where-Object {$_.ParentProcessId -eq $process.Id}){
+          (Get-Process -Id $p.ProcessId).CloseMainWindow() | out-null
+          $process | Wait-Process
+        }
+        if($process.ExitCode -ne 0){
+          Write-Error "SightViewer crashed." -ErrorAction Stop
+        }
+
+        Start-Process -Wait .\packages\SightCalibrator-*.exe /S,/D=${pwd}\SightCalibrator
+        $process = Start-Process -PassThru -NoNewWindow SightCalibrator\bin\sightcalibrator.bat --no-abort-dialog,--clog
+        $process | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
+        ForEach($p in Get-CimInstance Win32_Process | Where-Object {$_.ParentProcessId -eq $process.Id}){
+          (Get-Process -Id $p.ProcessId).CloseMainWindow() | out-null
+          $process | Wait-Process
+        }
+        if($process.ExitCode -ne 0){
+          Write-Error "SightCalibrator crashed." -ErrorAction Stop
+        }
+      }
+    - |
+      if("${SIGHT_TEST_SDK}" -eq "ON"){
+        Expand-Archive packages/sight-*.zip
+        cd sight-*/*/bin
+        $env:PATH += ";$CACHE\$PACKAGE_NAME\installed\x64-windows\bin"
+        ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sightviewer.bat,sightcalibrator.bat,dicomxplorer.bat){
+          $programName = Split-Path -Leaf $program
+          Write-Host Testing $programName
+          $process = Start-Process -PassThru -NoNewWindow $program --no-abort-dialog,--clog
+          $process | Wait-Process -Timeout 5 -ErrorAction SilentlyContinue
+          ForEach($p in Get-CimInstance Win32_Process | Where-Object {$_.ParentProcessId -eq $process.Id}){
+              (Get-Process -Id $p.ProcessId).CloseMainWindow() | out-null
+              $process | Wait-Process -Timeout 5
+              if(!$process.HasExited){
+                (Get-Process -Id $p.ProcessId).Kill()
+                $process | Wait-Process
+              }
+          }
+          if(!($process.ExitCode -in -1,0)){
+              Write-Error "$programName crashed." -ErrorAction Stop
+          }
+        }
+        ForEach($program in Get-ChildItem arucomarker.exe,dicomanonymizer.exe){
+          $programName = Split-Path -Leaf $program
+          Write-Host Testing $programName
+          Start-Process -NoNewWindow -Wait $program --help
+        }
+      }
+  tags:
+    - windows
 
 build:windows-debug:
   extends: .windows_build
@@ -252,10 +413,18 @@ build:windows-release:
     SIGHT_BUILD_PACKAGES: "ON"
     SIGHT_BUILD_SDK: "ON"
 
+deploy-test:window-debug:
+  extends: .windows_deploy_test
+  dependencies:
+    - build:windows-debug
+  variables:
+    SIGHT_TEST_SDK: "ON"
+
 deploy:windows-debug:
   extends: .windows_deploy
   dependencies:
     - build:windows-debug
+    - deploy-test:window-debug
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -268,15 +437,25 @@ deploy_manual:windows-debug:
   extends: .windows_deploy
   dependencies:
     - build:windows-debug
+    - deploy-test:window-debug
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
   when: manual
 
+deploy-test:windows-release:
+  extends: .windows_deploy_test
+  dependencies:
+    - build:windows-release
+  variables:
+    SIGHT_TEST_PACKAGES: "ON"
+    SIGHT_TEST_SDK: "ON"
+
 deploy:windows-release:
   extends: .windows_deploy
   dependencies:
     - build:windows-release
+    - deploy-test:windows-release
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -289,6 +468,7 @@ deploy_manual:windows-release:
   extends: .windows_deploy
   dependencies:
     - build:windows-release
+    - deploy-test:windows-release
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -298,6 +478,7 @@ deploy:apps-windows-release:
   extends: .windows_deploy
   dependencies:
     - build:windows-release
+    - deploy-test:windows-release
   variables:
     APPS: "SightViewer,SightCalibrator"
     URL: "IRCAD%20-%20Open/"
@@ -310,16 +491,17 @@ deploy_manual:apps-windows-release:
   extends: .windows_deploy
   dependencies:
     - build:windows-release
+    - deploy-test:windows-release
   variables:
     APPS: "SightViewer,SightCalibrator"
     URL: "IRCAD%20-%20Open/"
   when: manual
 
 deploy:pages:
-  image: "${SIGHT_CI_UBUNTU21_10}:dev"
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
   stage: deploy
   dependencies:
-    - build:linux-21.10-coverage-gcc
+    - build:linux-22.04-coverage-gcc
   script:
     - mv .build/Documentation/Doxygen/html/ public/
     - mv .build/coverage/ public/coverage

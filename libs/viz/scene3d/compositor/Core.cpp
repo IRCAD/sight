@@ -32,10 +32,7 @@
 #include <OGRE/OgreCompositorManager.h>
 #include <OGRE/OgreHardwareOcclusionQuery.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace compositor
+namespace sight::viz::scene3d::compositor
 {
 
 //----------------------------------------------------------------------------
@@ -54,19 +51,8 @@ const std::string Core::FINAL_CHAIN_COMPOSITOR = "FinalChainCompositor";
 // ----------------------------------------------------------------------------
 
 Core::Core(Ogre::Viewport* viewport) :
-    //m_transparencyTechniqueMaxDepth(8),
-    m_transparencyTechnique(DEFAULT),
+
     m_coreCompositorName("Default"),
-    m_compositorInstance(nullptr),
-    //m_useOcclusionQuery(false),
-    //m_doOcclusionQuery(false),
-    //m_OITQuery(nullptr),
-    //m_activeQuery(nullptr),
-    //m_currNumPass(0),
-    //m_isPing(false),
-    //m_isPong(false),
-    m_cellShadingName(""),
-    m_numPass(8),
     m_viewport(viewport)
 {
 }
@@ -74,8 +60,7 @@ Core::Core(Ogre::Viewport* viewport) :
 //-----------------------------------------------------------------------------
 
 Core::~Core()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -86,7 +71,7 @@ transparencyTechnique Core::getTransparencyTechnique()
 
 //-----------------------------------------------------------------------------
 
-int Core::getTransparencyDepth()
+int Core::getTransparencyDepth() const
 {
     return m_numPass;
 }
@@ -187,11 +172,11 @@ void Core::setupTransparency()
     // Check if compositor is already existing
     Ogre::CompositorChain* compChain = Ogre::CompositorManager::getSingleton().getCompositorChain(m_viewport);
 
-    auto& compInstances = compChain->getCompositorInstances();
+    const auto& compInstances = compChain->getCompositorInstances();
 
     m_compositorInstance = nullptr;
 
-    for(auto targetComp : compInstances)
+    for(auto* targetComp : compInstances)
     {
         if(targetComp->getCompositor()->getName() == m_coreCompositorName)
         {
@@ -260,7 +245,7 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
     // Ping pong peel and blend
     for(int i = 0 ; i < depth ; i++)
     {
-        std::string pingPong = (i % 2) ? "ing" : "ong";
+        std::string pingPong = (i % 2) != 0 ? "ing" : "ong";
 
         // Peel buffer
         {
@@ -286,7 +271,7 @@ void Core::setTransparencyDepthOfDepthPeeling(int depth)
             {
                 Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetPeel->createPass();
                 dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dpCompPassRenderScene->setLastRenderQueue(s_SURFACE_RQ_GROUP_ID);
+                dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
             }
         }
 
@@ -337,7 +322,7 @@ void Core::setTransparencyDepthOfDualDepthPeeling(int depth)
     // Ping pong peel and blend
     for(int i = 0 ; i < depth ; i++)
     {
-        std::string pingPong = (i % 2) ? "ing" : "ong";
+        std::string pingPong = (i % 2) != 0 ? "ing" : "ong";
 
         // Peel buffer
         {
@@ -351,7 +336,7 @@ void Core::setTransparencyDepthOfDualDepthPeeling(int depth)
             {
                 Ogre::CompositionPass* dpCompPassClear = dpCompTargetPeel->createPass();
                 dpCompPassClear->setType(Ogre::CompositionPass::PT_CLEAR);
-                dpCompPassClear->setClearColour(Ogre::ColourValue(-1.f, 0.f, 0.f, 0.f));
+                dpCompPassClear->setClearColour(Ogre::ColourValue(-1.F, 0.F, 0.F, 0.F));
             }
 
             // Material scheme
@@ -364,7 +349,7 @@ void Core::setTransparencyDepthOfDualDepthPeeling(int depth)
             {
                 Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetPeel->createPass();
                 dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dpCompPassRenderScene->setLastRenderQueue(s_SURFACE_RQ_GROUP_ID);
+                dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
             }
         }
 
@@ -412,7 +397,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
     // Ping pong peel and blend
     for(int i = 0 ; i < (depth / 2) * 2 ; i++)
     {
-        std::string pingPong = (i % 2) ? "ing" : "ong";
+        std::string pingPong = (i % 2) != 0 ? "ing" : "ong";
 
         // Peel buffer
         {
@@ -438,7 +423,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
             {
                 Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetPeel->createPass();
                 dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                dpCompPassRenderScene->setLastRenderQueue(s_SURFACE_RQ_GROUP_ID);
+                dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
             }
         }
 
@@ -472,7 +457,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         {
             Ogre::CompositionPass* dpCompPassClear = dpCompTargetOcclusion->createPass();
             dpCompPassClear->setType(Ogre::CompositionPass::PT_CLEAR);
-            dpCompPassClear->setClearColour(Ogre::ColourValue(1.f, 1.f, 1.f, 1.f));
+            dpCompPassClear->setClearColour(Ogre::ColourValue(1.F, 1.F, 1.F, 1.F));
         }
 
         // Material scheme
@@ -485,7 +470,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         {
             Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetOcclusion->createPass();
             dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dpCompPassRenderScene->setLastRenderQueue(s_SURFACE_RQ_GROUP_ID);
+            dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
         }
     }
 
@@ -514,7 +499,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         {
             Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetWeightBlend->createPass();
             dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dpCompPassRenderScene->setLastRenderQueue(s_SURFACE_RQ_GROUP_ID);
+            dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
         }
     }
 
@@ -530,7 +515,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         {
             Ogre::CompositionPass* dpCompPassClear = dpCompTargetTransmittance->createPass();
             dpCompPassClear->setType(Ogre::CompositionPass::PT_CLEAR);
-            dpCompPassClear->setClearColour(Ogre::ColourValue(1.f, 1.f, 1.f, 1.f));
+            dpCompPassClear->setClearColour(Ogre::ColourValue(1.F, 1.F, 1.F, 1.F));
         }
 
         // Material scheme
@@ -543,7 +528,7 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
         {
             Ogre::CompositionPass* dpCompPassRenderScene = dpCompTargetTransmittance->createPass();
             dpCompPassRenderScene->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-            dpCompPassRenderScene->setLastRenderQueue(s_SURFACE_RQ_GROUP_ID);
+            dpCompPassRenderScene->setLastRenderQueue(rq::s_SURFACE_ID);
         }
     }
 
@@ -740,6 +725,4 @@ void Core::setTransparencyDepthOfHybridTransparency(int depth)
 
 //-----------------------------------------------------------------------------
 
-} // namespace compositor
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::compositor

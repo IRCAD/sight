@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,21 +29,11 @@ namespace sight::data
 
 class Image;
 
-}
+} // namespace sight::data
 
-namespace sight::io::itk
-{
-
-namespace ut
-{
-
-namespace helper
+namespace sight::io::itk::ut::helper
 {
 
 void roundSpacing(SPTR(data::Image) image);
 
-} //namespace helper
-
-} //namespace ut
-
-} //namespace sight::io::itk
+} // namespace sight::io::itk::ut::helper

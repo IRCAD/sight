@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@ namespace sight::core::crypto
 /// @returns decrypted message
 CORE_API std::string decrypt(const std::string& message, const secure_string& password);
 CORE_API secure_string decrypt(const secure_string& message, const secure_string& password);
-CORE_API secure_string decrypt(const char* const message, const secure_string& password);
+CORE_API secure_string decrypt(const char* message, const secure_string& password);
 
 /// Encrypt a message using AES256 algorithm
 /// @param message clear message
@@ -41,6 +41,6 @@ CORE_API secure_string decrypt(const char* const message, const secure_string& p
 /// @returns encrypted message
 CORE_API std::string encrypt(const std::string& message, const secure_string& password);
 CORE_API secure_string encrypt(const secure_string& message, const secure_string& password);
-CORE_API secure_string encrypt(const char* const message, const secure_string& password);
+CORE_API secure_string encrypt(const char* message, const secure_string& password);
 
 } // namespace sight::core::crypto

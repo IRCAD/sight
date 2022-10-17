@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,10 +33,7 @@
 
 #include <filesystem>
 
-namespace sight::io::session
-{
-
-namespace detail
+namespace sight::io::session::detail
 {
 
 /// Class to define a location that holds what is needed to deserialize a session.
@@ -56,7 +53,7 @@ public:
     SessionDeserializer() noexcept = default;
 
     /// Default destructor
-    ~SessionDeserializer() noexcept = default;
+    ~SessionDeserializer() noexcept override = default;
 
     /// Deserialize a data::Object from archive
     /// @param archivePath archive file path
@@ -64,10 +61,10 @@ public:
     /// @param password password to use for optional decryption. Empty password means no decryption
     /// @param encryptionPolicy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
     sight::data::Object::sptr deserialize(
-        const std::filesystem::path& archivePath,
-        const io::zip::Archive::ArchiveFormat archiveFormat                   = io::zip::Archive::ArchiveFormat::DEFAULT,
-        const core::crypto::secure_string& password                           = "",
-        const core::crypto::PasswordKeeper::EncryptionPolicy encryptionPolicy = core::crypto::PasswordKeeper::EncryptionPolicy::DEFAULT
+        const std::filesystem::path& archive_path,
+        io::zip::Archive::ArchiveFormat archiveFormat                   = io::zip::Archive::ArchiveFormat::DEFAULT,
+        const core::crypto::secure_string& password                     = "",
+        core::crypto::PasswordKeeper::EncryptionPolicy encryptionPolicy = core::crypto::PasswordKeeper::EncryptionPolicy::DEFAULT
     ) const;
 
     /// Set a deserialization function for an object
@@ -100,10 +97,8 @@ private:
         zip::ArchiveReader& archive,
         const boost::property_tree::ptree& tree,
         const core::crypto::secure_string& password,
-        const core::crypto::PasswordKeeper::EncryptionPolicy encryptionPolicy
+        core::crypto::PasswordKeeper::EncryptionPolicy encryptionPolicy
     ) const;
 };
 
-} // namespace detail
-
-} // namespace sight::io::session
+} // namespace sight::io::session::detail

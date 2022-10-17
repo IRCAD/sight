@@ -28,13 +28,7 @@
 
 #include <dlfcn.h>
 
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace dl
+namespace sight::core::runtime::detail::dl
 {
 
 /**
@@ -58,7 +52,7 @@ struct Posix : public Native
     /**
      * @see core::runtime::dl::Native#isLoaded
      */
-    bool isLoaded() const noexcept override;
+    [[nodiscard]] bool isLoaded() const noexcept override;
 
     /**
      * @brief       Retrieves the address of a symbol specified by its name.
@@ -67,7 +61,7 @@ struct Posix : public Native
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    void* getSymbol(const std::string& name) const override;
+    [[nodiscard]] void* getSymbol(const std::string& name) const override;
 
     /**
      * @see core::runtime::dl::Native#load
@@ -84,13 +78,9 @@ struct Posix : public Native
         /**
          * @brief   The handle of the loaded module.
          */
-        void* m_handle;
+        void* m_handle {nullptr};
 };
 
-} // namespace dl
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail::dl
 
 #endif // #ifdef __unix__

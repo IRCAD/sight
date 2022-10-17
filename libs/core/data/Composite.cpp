@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,98 +19,66 @@
  *
  ***********************************************************************/
 
-#include "data/Composite.hpp"
+#include "Composite.hpp"
 
-#include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-
-#include <algorithm>
 
 SIGHT_REGISTER_DATA(sight::data::Composite);
 
 namespace sight::data
 {
 
-const core::com::Signals::SignalKeyType Composite::s_ADDED_OBJECTS_SIG   = "addedObjects";
-const core::com::Signals::SignalKeyType Composite::s_CHANGED_OBJECTS_SIG = "changedObjects";
-const core::com::Signals::SignalKeyType Composite::s_REMOVED_OBJECTS_SIG = "removedObjects";
-
-//------------------------------------------------------------------------------
-
-Composite::Composite(data::Object::Key)
-{
-    newSignal<AddedObjectsSignalType>(s_ADDED_OBJECTS_SIG);
-    newSignal<ChangedObjectsSignalType>(s_CHANGED_OBJECTS_SIG);
-    newSignal<RemovedObjectsSignalType>(s_REMOVED_OBJECTS_SIG);
-}
-
-//------------------------------------------------------------------------------
-
-Composite::~Composite()
+Composite::Composite(Object::Key key) :
+    IContainer<Composite::container_type>(key)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Composite::shallowCopy(const Object::csptr& _source)
+void Composite::shallowCopy(const Object::csptr& source)
 {
-    Composite::csptr other = Composite::dynamicConstCast(_source);
+    const auto& other = Composite::dynamicCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
         ),
-        !bool(other)
+        !other
     );
-    this->fieldShallowCopy(_source);
-    m_container.clear();
 
-    m_container = other->m_container;
-}
-
-//------------------------------------------------------------------------------
-
-void Composite::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
-{
-    Composite::csptr other = Composite::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
-        ),
-        !bool(other)
-    );
-    this->fieldDeepCopy(_source, cache);
-
-    m_container.clear();
-
-    for(const ValueType& elem : *other)
-    {
-        m_container.insert(ValueType(elem.first, data::Object::copy(elem.second, cache)));
-    }
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool Composite::operator==(const Composite& other) const noexcept
 {
-    if(!core::tools::is_equal(m_container, other.m_container))
-    {
-        return false;
-    }
-
-    // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool Composite::operator!=(const Composite& other) const noexcept
 {
-    return !(*this == other);
+    return BaseClass::operator!=(other);
+}
+
+//------------------------------------------------------------------------------
+
+void Composite::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
+{
+    const auto& other = Composite::dynamicCast(source);
+
+    SIGHT_THROW_EXCEPTION_IF(
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
+        ),
+        !other
+    );
+
+    BaseClass::deepCopy(other, cache);
 }
 
 } // namespace sight::data

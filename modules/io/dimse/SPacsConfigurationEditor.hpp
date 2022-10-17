@@ -76,7 +76,7 @@ public:
     MODULE_IO_DIMSE_API SPacsConfigurationEditor() noexcept;
 
     /// Destroyes the service.
-    MODULE_IO_DIMSE_API virtual ~SPacsConfigurationEditor() noexcept;
+    MODULE_IO_DIMSE_API ~SPacsConfigurationEditor() noexcept override;
 
 protected:
 
@@ -105,7 +105,7 @@ private:
      * @param _title title of the dialog.
      * @param _message message of the dialog.
      */
-    void showDialog(const std::string _title, const std::string _message);
+    static void showDialog(const std::string _title, const std::string _message);
 
     /// Contains the AET of the SCU (client name) editor.
     QPointer<QLineEdit> m_SCUAppEntityTitleEdit;

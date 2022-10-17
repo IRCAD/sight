@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "viz/scene2d/config.hpp"
 #include "viz/scene2d/data/Axis.hpp"
-#include "viz/scene2d/data/Coord.hpp"
 #include "viz/scene2d/data/Event.hpp"
 #include "viz/scene2d/data/Viewport.hpp"
+#include "viz/scene2d/vec2d.hpp"
 
 #include <core/com/helper/SigSlotConnection.hpp>
 
@@ -59,7 +59,6 @@ class IAdaptor;
    <service uid="GENERIC_UID_Scene2D" type="sight::viz::scene2d::SRender" >
        <scene>
            <scene x="-1100" y="-1.1" width="2500" height="1.2" background="#FFFFFF" />
-           <viewport x="-500" y="-1.1" width="500" height="1.2" />
            <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
            <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
            <axis id="axeHistogramY" origin="0.0" scale="-0.000005" scaleType="LINEAR" />
@@ -81,12 +80,6 @@ class IAdaptor;
  *     when scaling an rectangle (See https://doc.qt.io/qt-5/qt.html#AspectRatioMode-enum).
  *   - \b background (optional, default: #000000): the background color of the rendering screen.
  *        The color value must be defined as a hexadecimal value (ex : \#ffffff for white).
- * - \<viewport id="view1" x="-500" y="-1.1" width="500" height="1.2" /\> : Set a viewport coordinates
- *   - \b id: set the viewport id
- *   - \b x: set the x coordinate of the top left viewport corner
- *   - \b y: set the y coordinate of the top left viewport corner
- *   - \b width: set the width of the viewport
- *   - \b height: set the height of the viewport
  * - \<axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" /\> : Set an axis specifications
  *   - \b id: set the axis id
  *   - \b origin: set the axis origin
@@ -116,7 +109,7 @@ public:
     VIZ_SCENE2D_API SRender() noexcept;
 
     /// Basic destructor, do nothing.
-    VIZ_SCENE2D_API virtual ~SRender() noexcept;
+    VIZ_SCENE2D_API ~SRender() noexcept override;
 
     /// Get the scene.
     VIZ_SCENE2D_API QGraphicsScene* getScene() const;
@@ -124,17 +117,21 @@ public:
     /// Get the view.
     VIZ_SCENE2D_API Scene2DGraphicsView* getView() const;
 
-    /// Get the viewport.
-    VIZ_SCENE2D_API scene2d::data::Viewport::sptr getViewport() const;
-
     /// Get the axis.
     VIZ_SCENE2D_API scene2d::data::Axis::sptr getAxis(const std::string& id) const;
 
     /// If the event hasn't been accepted yet, call the adaptor processInteraction function.
     VIZ_SCENE2D_API void dispatchInteraction(scene2d::data::Event& _event);
 
-    /// Returns the viewport coordinate point mapped to scene coordinates.
-    VIZ_SCENE2D_API scene2d::data::Coord mapToScene(const scene2d::data::Coord& coord) const;
+    /// Returns true if given coordinates are contained in the view of the scene
+    VIZ_SCENE2D_API bool contains(const scene2d::vec2d_t& coord) const;
+
+    /** @brief Compute the viewport coordinates mapped to scene coordinates.
+     * @param coord input viewport coordinates
+     * @param clip clip the returned coordinates to the size of the scene
+     * @return scene coordinates
+     */
+    VIZ_SCENE2D_API scene2d::vec2d_t mapToScene(const scene2d::vec2d_t& coord, bool clip = false) const;
 
     /// Returns what happens to scene's aspect ratio on view resize events
     VIZ_SCENE2D_API Qt::AspectRatioMode getAspectRatioMode() const;
@@ -174,9 +171,6 @@ private:
     /// Get the axis configuration specifications
     void configureAxis(ConfigurationType _conf);
 
-    /// Get the viewport configuration specifications, create a new viewport.
-    void configureViewport(ConfigurationType _conf);
-
     /// Get the scene configuration specifications and set them to m_sceneStart and m_sceneWidth.
     void configureScene(ConfigurationType _conf);
 
@@ -191,27 +185,25 @@ private:
     ConfigurationType m_sceneConfiguration;
 
     /// Coordinates of the scene top left corner.
-    scene2d::data::Coord m_sceneStart;
+    scene2d::vec2d_t m_sceneStart;
 
     /// Width and height of the scene.
-    scene2d::data::Coord m_sceneWidth;
+    scene2d::vec2d_t m_sceneWidth;
 
     /// The scene.
-    QGraphicsScene* m_scene;
+    QGraphicsScene* m_scene {nullptr};
 
     /// The view.
-    Scene2DGraphicsView* m_view;
-
-    scene2d::data::Viewport::sptr m_viewport;
+    Scene2DGraphicsView* m_view {nullptr};
 
     /// If antialiasing is requested (deactivated by default because of a potential lack of performance)
-    bool m_antialiasing;
+    bool m_antialiasing {false};
 
     /// Background color of the scene.
     std::string m_background;
 
     /// How the scene should behave on view resize events
-    Qt::AspectRatioMode m_aspectRatioMode;
+    Qt::AspectRatioMode m_aspectRatioMode {Qt::IgnoreAspectRatio};
 };
 
 } // namespace sight::viz::scene2d

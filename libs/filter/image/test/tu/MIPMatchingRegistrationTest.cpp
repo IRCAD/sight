@@ -25,7 +25,6 @@
 #include "helper.hpp"
 
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Matrix4.hpp>
@@ -49,10 +48,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::MIPMatchingRegistrationTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -79,16 +75,15 @@ void MIPMatchingRegistrationTest::identityTest()
     params.fixed     = fixed;
     params.moving    = moving;
     params.transform = data::Matrix4::New();
-    core::tools::Type type = moving->getType();
+    core::Type type = moving->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
 
     for(std::size_t i = 0 ; i != 3 ; ++i)
     {
-        CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Translation value is not equal to '0' ",
             0.,
-            params.transform->getCoefficient(i, 3),
-            1e-8
+            params.transform->getCoefficient(i, 3)
         );
     }
 }
@@ -111,7 +106,7 @@ void MIPMatchingRegistrationTest::translateTransformTest()
     params.fixed     = fixed;
     params.moving    = moving;
     params.transform = data::Matrix4::New();
-    core::tools::Type type = moving->getType();
+    core::Type type = moving->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
@@ -144,8 +139,8 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     transform->setCoefficient(1, 3, vTrans[1]);
     transform->setCoefficient(2, 3, vTrans[2]);
     sight::filter::image::Resampler::resample(moving, fixed, transform);
-    auto fixedOrigin  = std::array<double, 3> {{20., 10., 35.}},
-         movingOrigin = moving->getOrigin();
+    auto fixedOrigin  = std::array<double, 3> {{20., 10., 35.}};
+    auto movingOrigin = moving->getOrigin();
     fixed->setOrigin(fixedOrigin);
     std::array<float, 3> expected {
         {
@@ -158,11 +153,11 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     auto itkFixed = io::itk::moveToItk<ImageType>(fixed);
 
     // Resample the image to get a different spacing
-    ImageType::SizeType newSize;
+    ImageType::SizeType newSize {};
     ImageType::SpacingType newSpacing(2.);
     for(uint8_t i = 0 ; i != 3 ; ++i)
     {
-        newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * moving->getSize()[i]);
+        newSize[i] = static_cast<unsigned int>(movingSpacing[i] / newSpacing[i] * double(moving->getSize()[i]));
     }
 
     auto resample = itk::ResampleImageFilter<ImageType, ImageType>::New();
@@ -171,14 +166,14 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     resample->SetOutputSpacing(newSpacing);
     resample->SetOutputOrigin(itkFixed->GetOrigin());
     resample->Update();
-    auto resampled         = resample->GetOutput();
+    auto* resampled        = resample->GetOutput();
     auto resampledF4sFixed = io::itk::moveFromItk<ImageType>(resampled, true);
 
     filter::image::RegistrationDispatch::Parameters params;
     params.fixed     = resampledF4sFixed;
     params.moving    = moving;
     params.transform = data::Matrix4::New();
-    core::tools::Type type = moving->getType();
+    core::Type type = moving->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, RegistrationDispatch>::invoke(type, params);
     for(std::size_t i = 0 ; i < 3 ; ++i)
     {
@@ -191,6 +186,4 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     }
 }
 
-} // ut
-
-} // itkRegistrationOp
+} // namespace sight::filter::image::ut

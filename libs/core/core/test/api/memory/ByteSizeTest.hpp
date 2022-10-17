@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,27 +24,24 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::memory
-{
-
-namespace ut
+namespace sight::core::memory::ut
 {
 
 class ByteSizeTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(ByteSizeTest);
 CPPUNIT_TEST(byteSizeTest);
+CPPUNIT_TEST(invalidSizeTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void byteSizeTest();
+    static void byteSizeTest();
+    static void invalidSizeTest();
 };
 
-} // namespace ut
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::ut

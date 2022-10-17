@@ -26,10 +26,7 @@
 
 #include <activity/IObjectValidator.hpp>
 
-namespace sight::module::activity::validator
-{
-
-namespace ModelSeries
+namespace sight::module::activity::validator::ModelSeries
 {
 
 /**
@@ -51,7 +48,7 @@ public:
     MODULE_ACTIVITY_API ContainOneTool(sight::activity::IValidator::Key key);
 
     /// Destructor. Do nothing.
-    MODULE_ACTIVITY_API virtual ~ContainOneTool();
+    MODULE_ACTIVITY_API ~ContainOneTool() override;
 
     /**
      * @brief Checks that the ModelSeries contains one only one Tool.
@@ -61,6 +58,4 @@ public:
     MODULE_ACTIVITY_API IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject) const override;
 };
 
-} // namespace ModelSeries
-
-} // namespace sight::module::activity::validator
+} // namespace sight::module::activity::validator::ModelSeries

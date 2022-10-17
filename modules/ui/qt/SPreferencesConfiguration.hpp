@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ namespace sight::data
 
 class String;
 
-}
+} // namespace sight::data
 
 namespace sight::module::ui::qt
 {
@@ -164,7 +164,7 @@ private:
 
     struct PreferenceElt
     {
-        PreferenceType m_type;
+        PreferenceType m_type {PreferenceType::TEXT};
         QPointer<QLineEdit> m_lineEdit;
         QPointer<QCheckBox> m_checkBox;
         QPointer<QComboBox> m_comboBox;
@@ -176,9 +176,9 @@ private:
         std::pair<double, double> m_dMinMax {-1000000.0, 1000000.0};
     };
 
-    void onSelectDir(QPointer<QLineEdit> _lineEdit);
+    static void onSelectDir(QPointer<QLineEdit> _lineEdit);
 
-    void onSelectFile(QPointer<QLineEdit> _lineEdit);
+    static void onSelectFile(QPointer<QLineEdit> _lineEdit);
 
     ParametersModifiedSignalType::sptr m_sigParametersModified;
 

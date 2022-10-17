@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,14 +30,15 @@
 
 #include <filesystem>
 #include <fstream>
+#include <utility>
 
 namespace sight::io::zip
 {
 
 //-----------------------------------------------------------------------------
 
-WriteDirArchive::WriteDirArchive(const std::filesystem::path& archive) :
-    m_archive(archive)
+WriteDirArchive::WriteDirArchive(std::filesystem::path archive) :
+    m_archive(std::move(archive))
 {
     if(!std::filesystem::exists(m_archive))
     {
@@ -48,8 +49,7 @@ WriteDirArchive::WriteDirArchive(const std::filesystem::path& archive) :
 //-----------------------------------------------------------------------------
 
 WriteDirArchive::~WriteDirArchive()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -109,9 +109,9 @@ bool WriteDirArchive::createDir(const std::filesystem::path& path)
 
 //-----------------------------------------------------------------------------
 
-const std::filesystem::path WriteDirArchive::getArchivePath() const
+std::filesystem::path WriteDirArchive::getArchivePath() const
 {
     return m_archive;
 }
 
-} // namespace sight::io
+} // namespace sight::io::zip

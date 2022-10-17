@@ -57,7 +57,7 @@ public:
     /**
      * @brief   Destructor. Do nothing.
      */
-    UI_BASE_API virtual ~GuiRegistry();
+    UI_BASE_API ~GuiRegistry() override;
 
     //-----------------------------------------------------------------------------
 
@@ -214,15 +214,15 @@ public:
 
     /**
      * @brief Method called when the action service is activated or not.
-     * Call parent service actionServiceSetActive() method
+     * Call parent service actionServiceSetChecked() method
      */
-    UI_BASE_API static void actionServiceSetActive(std::string actionSid, bool isActive);
+    UI_BASE_API static void actionServiceSetChecked(std::string actionSid, bool isChecked);
 
     /**
      * @brief Method called when the action service is executable or not.
-     * Call parent service actionServiceSetExecutable() method
+     * Call parent service actionServiceSetEnabled() method
      */
-    UI_BASE_API static void actionServiceSetExecutable(std::string actionSid, bool isExecutable);
+    UI_BASE_API static void actionServiceSetEnabled(std::string actionSid, bool isEnabled);
 
     /**
      * @brief Method called when the action service is visible or not.

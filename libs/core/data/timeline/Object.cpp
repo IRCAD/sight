@@ -22,10 +22,7 @@
 
 #include "data/timeline/Object.hpp"
 
-namespace sight::data
-{
-
-namespace timeline
+namespace sight::data::timeline
 {
 
 //-----------------------------------------------------------------------------
@@ -38,8 +35,7 @@ Object::Object(core::HiResClock::HiResClockType timestamp) :
 //-----------------------------------------------------------------------------
 
 Object::~Object()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -52,12 +48,7 @@ void Object::deepCopy(const Object& _source)
 
 bool Object::operator==(const Object& other) const noexcept
 {
-    if(m_timestamp != other.m_timestamp)
-    {
-        return false;
-    }
-
-    return true;
+    return m_timestamp == other.m_timestamp;
 }
 
 //------------------------------------------------------------------------------
@@ -67,6 +58,4 @@ bool Object::operator!=(const Object& other) const noexcept
     return !(*this == other);
 }
 
-} // namespace timeline
-
-} // namespace sight::data
+} // namespace sight::data::timeline

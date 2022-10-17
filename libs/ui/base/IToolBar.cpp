@@ -35,16 +35,13 @@
 namespace sight::ui::base
 {
 
-IToolBar::IToolBar() :
-    m_hideActions(false)
-{
-}
+IToolBar::IToolBar()
+= default;
 
 //-----------------------------------------------------------------------------
 
 IToolBar::~IToolBar()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -99,11 +96,13 @@ void IToolBar::create()
     SIGHT_ASSERT("Parent toolBar is unknown.", toolBar);
     m_layoutManager->setCallbacks(callbacks);
 
+    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
+
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {
-            m_layoutManager->createLayout(toolBar);
+            m_layoutManager->createLayout(toolBar, serviceID);
         })
     ).wait();
 
@@ -174,18 +173,18 @@ void IToolBar::actionServiceStarting(std::string actionSrvSID)
         std::function<void()>(
             [&]
         {
-            m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->getIsExecutable());
-            const bool isInverted = actionSrv->isInverted();
-            const bool isActive   = actionSrv->getIsActive();
-            m_layoutManager->menuItemSetChecked(menuItem, isInverted ? !isActive : isActive);
-            m_layoutManager->menuItemSetVisible(menuItem, actionSrv->isVisible());
+            m_layoutManager->menuItemSetEnabled(menuItem, actionSrv->enabled());
+            const bool inverted  = actionSrv->inverted();
+            const bool isChecked = actionSrv->checked();
+            m_layoutManager->menuItemSetChecked(menuItem, inverted ? !isChecked : isChecked);
+            m_layoutManager->menuItemSetVisible(menuItem, actionSrv->visible());
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void IToolBar::actionServiceSetActive(std::string actionSrvSID, bool isActive)
+void IToolBar::actionServiceSetChecked(std::string actionSrvSID, bool isChecked)
 {
     ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(
         actionSrvSID,
@@ -199,15 +198,15 @@ void IToolBar::actionServiceSetActive(std::string actionSrvSID, bool isActive)
         std::function<void()>(
             [&]
         {
-            const bool isInverted = actionSrv->isInverted();
-            m_layoutManager->menuItemSetChecked(menuItem, isInverted ? !isActive : isActive);
+            const bool inverted = actionSrv->inverted();
+            m_layoutManager->menuItemSetChecked(menuItem, inverted ? !isChecked : isChecked);
         })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void IToolBar::actionServiceSetExecutable(std::string actionSrvSID, bool isExecutable)
+void IToolBar::actionServiceSetEnabled(std::string actionSrvSID, bool isEnabled)
 {
     ui::base::container::fwMenuItem::sptr menuItem = m_registry->getFwMenuItem(
         actionSrvSID,
@@ -218,7 +217,7 @@ void IToolBar::actionServiceSetExecutable(std::string actionSrvSID, bool isExecu
         std::function<void()>(
             [&]
         {
-            m_layoutManager->menuItemSetEnabled(menuItem, isExecutable);
+            m_layoutManager->menuItemSetEnabled(menuItem, isEnabled);
         })
     ).wait();
 }
@@ -264,4 +263,4 @@ void IToolBar::initializeLayoutManager(ConfigurationType layoutConfig)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::ui
+} // namespace sight::ui::base

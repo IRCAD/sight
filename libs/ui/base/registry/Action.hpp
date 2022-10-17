@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,7 @@
 #include "ui/base/config.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-namespace sight::ui::base
-{
-
-namespace registry
+namespace sight::ui::base::registry
 {
 
 /**
@@ -48,10 +45,10 @@ public:
     }
 
     /// Constructor.
-    UI_BASE_API Action(const std::string& sid);
+    UI_BASE_API Action(std::string sid);
 
     /// Destructor. Do nothing
-    UI_BASE_API virtual ~Action();
+    UI_BASE_API ~Action() override;
 
     /// Method called when the action service is stopping
     UI_BASE_API void actionServiceStopping();
@@ -60,10 +57,10 @@ public:
     UI_BASE_API void actionServiceStarting();
 
     /// Method called when the action service is activated or not
-    UI_BASE_API void actionServiceSetActive(bool isActive);
+    UI_BASE_API void actionServiceSetChecked(bool isChecked);
 
-    /// Method called when the action service is executable or not
-    UI_BASE_API void actionServiceSetExecutable(bool isExecutable);
+    /// Method called when the action service is enabled or not
+    UI_BASE_API void actionServiceSetEnabled(bool isEnabled);
 
     /// Method called when the action service is visible or not
     UI_BASE_API void actionServiceSetVisible(bool isVisible);
@@ -74,6 +71,4 @@ protected:
     std::string m_sid;
 };
 
-} // namespace registry
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::registry

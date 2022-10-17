@@ -35,7 +35,7 @@ namespace sight::data
 
 class Material;
 
-}
+} // namespace sight::data
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -108,7 +108,7 @@ private:
      * @brief Attaches a node in the scene graph.
      * @param _node node to attach.
      */
-    void attachNode(Ogre::MovableObject* _node);
+    void attachNode(Ogre::MovableObject* object);
 
     /**
      * @brief Draws a line.
@@ -132,7 +132,7 @@ private:
     Ogre::ManualObject* m_line {nullptr};
 
     /// Defines the length of the line (in mm).
-    float m_length {50.f};
+    float m_length {50.F};
 
     /// Defines the color of the line.
     Ogre::ColourValue m_color;
@@ -141,7 +141,7 @@ private:
     bool m_dashed {false};
 
     /// Defines the length of one dash.
-    float m_dashLength {2.5f};
+    float m_dashLength {2.5F};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,10 +41,9 @@ namespace sight::ui::qml
 
 //-----------------------------------------------------------------------------
 
-QmlEngine::QmlEngine()
+QmlEngine::QmlEngine() :
+    m_engine(new QQmlApplicationEngine())
 {
-    m_engine = new QQmlApplicationEngine();
-
 #ifdef WIN32
     // To get Qml initialized properly, we need to find its plugins
     // This is difficult to do, especially because the location of the deps is different whether
@@ -70,8 +69,7 @@ QmlEngine::QmlEngine()
 //-----------------------------------------------------------------------------
 
 QmlEngine::~QmlEngine()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -146,4 +144,4 @@ QQmlContext* QmlEngine::getRootContext()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::ui
+} // namespace sight::ui::qml

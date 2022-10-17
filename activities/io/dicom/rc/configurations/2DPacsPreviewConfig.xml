@@ -8,6 +8,7 @@
     <config>
         <object uid="${objectID}" type="sight::data::DicomSeries" src="ref" />
         <object uid="image" type="sight::data::Image" />
+        <object uid="tf" type="sight::data::TransferFunction" />
         <object uid="${PACS_CONFIGURATION}" type="sight::io::dimse::data::PacsConfiguration" src="ref" />
         <service uid="mainview" type="sight::module::ui::base::SView">
             <gui>
@@ -36,12 +37,14 @@
         </service>
 
         <service uid="pNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
-            <inout key="image" uid="image" />
+            <in key="image" uid="image" />
+            <in key="tf" uid="tf" />
             <config layer="defaultLayer" sliceIndex="axial" filtering="anisotropic" />
         </service>
 
         <service uid="pNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
             <inout key="image" uid="image" />
+            <inout key="tf" uid="tf" />
             <config layer="defaultLayer" priority="0" orientation="axial" />
         </service>
 
@@ -55,7 +58,7 @@
             <in key="pacsConfig" uid="${PACS_CONFIGURATION}" />
             <inout key="series" uid="${objectID}" />
             <inout key="image" uid="image" />
-            <config dicomReader="sight::module::io::dicom::SSeriesDBReader" />
+            <config dicomReader="sight::module::io::dicom::SSeriesSetReader" />
         </service>
 
         <start uid="mainview" />

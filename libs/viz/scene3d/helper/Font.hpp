@@ -30,10 +30,7 @@
 
 #include <string>
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
+namespace sight::viz::scene3d::helper
 {
 
 /**
@@ -52,8 +49,8 @@ public:
      */
     static VIZ_SCENE3D_API Ogre::FontPtr getFont(
         const std::string& _trueTypeFileName,
-        const std::size_t _size,
-        const std::uint32_t _trueTypeResolution = 220
+        std::size_t _size,
+        std::uint32_t _trueTypeResolution = 220
     );
 
     /// Creates or retrieves the material used to render the specified font.
@@ -65,6 +62,4 @@ private:
     static VIZ_SCENE3D_API Ogre::TexturePtr getFontMap(const std::string& _fontName);
 };
 
-} // namespace helper
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper

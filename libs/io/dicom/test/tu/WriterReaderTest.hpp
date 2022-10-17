@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,44 +22,36 @@
 
 #pragma once
 
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <service/macros.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 class WriterReaderTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(WriterReaderTest);
 CPPUNIT_TEST(writeReadImageSeriesTest);
-//FIXME: This test create wrong (random) Dicom Images that may cause the test to crash.
-//    CPPUNIT_TEST( writeReadSeriesDBTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void writeReadImageSeriesTest();
-    void writeReadSeriesDBTest();
+    static void writeReadImageSeriesTest();
 
 private:
 
     /**
-     * Create a series DB containing an ImageSeries with landmarks and distance
+     * Create a series set containing an ImageSeries with landmarks and distance
      * and a ModelSeries with one reconstruction.
      */
-    data::SeriesDB::sptr createSeriesDB();
+    static data::SeriesSet::sptr createSeriesSet();
 };
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

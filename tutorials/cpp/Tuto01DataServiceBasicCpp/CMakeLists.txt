@@ -1,9 +1,4 @@
-sight_add_target(
-    Tuto01DataServiceBasicCpp
-    TYPE APP
-    START ON
-    WARNINGS_AS_ERRORS ON
-)
+sight_add_target(Tuto01DataServiceBasicCpp TYPE APP WARNINGS_AS_ERRORS ON)
 
 add_dependencies(
     Tuto01DataServiceBasicCpp

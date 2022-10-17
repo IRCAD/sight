@@ -42,7 +42,7 @@ viz::scene3d::R2VBRenderable* viz::scene3d::R2VBRenderable::New(
 )
 {
     const auto& factoryName = viz::scene3d::factory::R2VBRenderable::FACTORY_TYPE_NAME;
-    auto instance           = static_cast<viz::scene3d::R2VBRenderable*>
+    auto* instance          = static_cast<viz::scene3d::R2VBRenderable*>
                               (_sceneManager->createMovableObject(_name, factoryName));
 
     instance->m_inputPrimitiveType = _primitiveType;
@@ -59,10 +59,7 @@ viz::scene3d::R2VBRenderable* viz::scene3d::R2VBRenderable::New(
 //-----------------------------------------------------------------------------
 
 viz::scene3d::R2VBRenderable::R2VBRenderable(const Ogre::String& _name) :
-    SimpleRenderable(_name),
-    m_dirty(false),
-    m_inputPrimitiveType(data::Mesh::CellType::TRIANGLE),
-    m_maxOutputVertexCount(0)
+    SimpleRenderable(_name)
 {
 }
 
@@ -116,7 +113,7 @@ void viz::scene3d::R2VBRenderable::setOutputSettings(
 
     if(_hasTexCoord)
     {
-        ofst += vtxDecl->addElement(0, ofst, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES).getSize();
+        vtxDecl->addElement(0, ofst, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES).getSize();
     }
 
     // Set bounds.
@@ -127,7 +124,7 @@ void viz::scene3d::R2VBRenderable::setOutputSettings(
 
 //-----------------------------------------------------------------------------
 
-const Ogre::String& R2VBRenderable::getMovableType(void) const
+const Ogre::String& R2VBRenderable::getMovableType() const
 {
     return factory::R2VBRenderable::FACTORY_TYPE_NAME;
 }

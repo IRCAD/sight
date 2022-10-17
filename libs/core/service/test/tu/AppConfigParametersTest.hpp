@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 /**
@@ -43,13 +40,11 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void appConfigParametersTest();
-    void concurentAccessToAppConfigParametersTest();
+    static void appConfigParametersTest();
+    static void concurentAccessToAppConfigParametersTest();
 };
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

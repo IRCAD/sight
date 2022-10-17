@@ -69,7 +69,7 @@ public:
     MODULE_FILTER_IMAGE_API SFlip();
 
     /// Destructor, does nothing.
-    MODULE_FILTER_IMAGE_API ~SFlip();
+    MODULE_FILTER_IMAGE_API ~SFlip() override;
 
 protected:
 

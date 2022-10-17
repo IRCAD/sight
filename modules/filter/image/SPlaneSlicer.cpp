@@ -37,6 +37,7 @@
 #include <vtkImageReslice.h>
 
 #include <algorithm>
+#include <cmath>
 
 namespace sight::module::filter::image
 {
@@ -47,7 +48,7 @@ static const core::com::Slots::SlotKeyType s_UPDATE_DEFAULT_VALUE_SLOT = "update
 //------------------------------------------------------------------------------
 
 SPlaneSlicer::SPlaneSlicer() noexcept :
-    m_orientation(data::helper::MedicalImage::orientation_t::Z_AXIS),
+
     m_reslicer(vtkSmartPointer<vtkImageReslice>::New())
 {
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SPlaneSlicer::updateorientation_t, this);
@@ -56,9 +57,8 @@ SPlaneSlicer::SPlaneSlicer() noexcept :
 
 //------------------------------------------------------------------------------
 
-SPlaneSlicer::~SPlaneSlicer() noexcept
-{
-}
+SPlaneSlicer::~SPlaneSlicer() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -147,16 +147,14 @@ void SPlaneSlicer::configuring()
 
 service::IService::KeyConnectionsMap SPlaneSlicer::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-
-    connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_DEFAULT_VALUE_SLOT);
-    connections.push(s_EXTENT_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_EXTENT_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
-    connections.push(s_AXES_IN, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
+    return {
+        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_DEFAULT_VALUE_SLOT},
+        {s_EXTENT_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_EXTENT_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT},
+        {s_AXES_IN, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT}
+    };
 }
 
 //------------------------------------------------------------------------------
@@ -259,7 +257,7 @@ void SPlaneSlicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) c
     const auto image = m_extent.lock();
     SIGHT_ASSERT("Cannot find " << s_EXTENT_IN, image);
 
-    std::int64_t idx;
+    std::int64_t idx = 0;
     switch(m_orientation)
     {
         case data::helper::MedicalImage::orientation_t::X_AXIS:
@@ -287,7 +285,7 @@ void SPlaneSlicer::applySliceTranslation(vtkSmartPointer<vtkMatrix4x4> vtkMat) c
     const auto& spacing = image->getSpacing();
     const auto& origin  = image->getOrigin();
 
-    const std::uint8_t axis = static_cast<std::uint8_t>(m_orientation);
+    const auto axis = static_cast<std::uint8_t>(m_orientation);
 
     const double trans = spacing[axis] * static_cast<double>(idx) + origin[axis];
 
@@ -321,7 +319,8 @@ void SPlaneSlicer::updateDefaultValue()
     const auto image = m_image.lock();
     SIGHT_ASSERT("No " << s_IMAGE_IN << " found.", image);
 
-    double min, max;
+    double min = NAN;
+    double max = NAN;
     data::helper::MedicalImage::getMinMax(image.get_shared(), min, max);
 
     m_reslicer->SetBackgroundLevel(min);

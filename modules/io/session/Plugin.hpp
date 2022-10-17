@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@ class Plugin : public core::runtime::Plugin
 public:
 
     //! @brief Destructor.
-    ~Plugin() noexcept;
+    ~Plugin() noexcept override;
 
     /**
      * @brief Start method.
@@ -40,14 +40,14 @@ public:
      *
      * @exception core::runtime::RuntimeException
      */
-    void start();
+    void start() override;
 
     /**
      * @brief Stop method.
      *
      * This method is used by runtime in order to close the module.
      */
-    void stop() noexcept;
+    void stop() noexcept override;
 };
 
 } // namespace sight::module::io::session

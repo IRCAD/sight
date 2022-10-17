@@ -1,4 +1,4 @@
-sight_add_target(service TYPE LIBRARY PCH pchData)
+sight_add_target(service TYPE LIBRARY)
 
 target_link_libraries(service PUBLIC activity core data)
 

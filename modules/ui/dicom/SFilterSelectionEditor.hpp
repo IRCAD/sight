@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <core/base.hpp>
 
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
 #include <filter/dicom/IFilter.hpp>
@@ -59,7 +59,7 @@ namespace sight::module::ui::dicom
  * @subsection Input Input:
  * - \b selection [sight::data::Vector]: selection.
  * @subsection In-Out In-Out:
- * - \b target [sight::data::SeriesDB]: seriesDB where to put the selection.
+ * - \b target [sight::data::SeriesSet]: SeriesSet where to put the selection.
  */
 
 class MODULE_UI_DICOM_CLASS_API SFilterSelectionEditor : public QObject,
@@ -81,7 +81,7 @@ public:
     /**
      * @brief Destructor
      */
-    MODULE_UI_DICOM_API virtual ~SFilterSelectionEditor() noexcept;
+    MODULE_UI_DICOM_API ~SFilterSelectionEditor() noexcept override;
 
 private Q_SLOTS:
 
@@ -110,7 +110,7 @@ private Q_SLOTS:
     MODULE_UI_DICOM_API void showContextMenuForSelectedFilter(const QPoint& pos);
 
     /// Slot used to display a warning when ignore errors checkbox is checked
-    MODULE_UI_DICOM_API void onForceChecked(int state);
+    static MODULE_UI_DICOM_API void onForceChecked(int state);
 
 protected:
 
@@ -180,10 +180,10 @@ protected:
     /// Map used to store filters and their keys
     FilterMapType m_filtersMap;
 
-    /// Destination SeriesDB ID
-    std::string m_destinationSeriesDBID;
+    /// Destination SeriesSet ID
+    std::string m_dest_series_setID;
 
-    data::ptr<data::SeriesDB, sight::data::Access::inout> m_destinationSeriesDB {this, "target"};
+    data::ptr<data::SeriesSet, sight::data::Access::inout> m_dest_series_set {this, "target"};
     data::ptr<data::Vector, sight::data::Access::in> m_selectedDicomSeries {this, "selection"};
 };
 

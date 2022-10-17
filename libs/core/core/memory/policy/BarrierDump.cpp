@@ -26,20 +26,16 @@
 #include "core/memory/exception/BadCast.hpp"
 #include "core/memory/policy/registry/macros.hpp"
 
-namespace sight::core::memory
+namespace sight::core::memory::policy
 {
 
-namespace policy
-{
-
-fwMemoryPolicyRegisterMacro(core::memory::policy::BarrierDump);
+SIGHT_REGISTER_MEMORY_POLICY(core::memory::policy::BarrierDump);
 
 //------------------------------------------------------------------------------
 
 BarrierDump::BarrierDump() :
-    m_totalAllocated(0),
-    m_totalDumped(0),
-    m_barrier(1024 * 1024 * 500)
+
+    m_barrier(1024LL * 1024 * 500)
 {
 }
 
@@ -47,7 +43,7 @@ BarrierDump::BarrierDump() :
 
 void BarrierDump::allocationRequest(
     BufferInfo& info,
-    core::memory::BufferManager::ConstBufferPtrType,
+    core::memory::BufferManager::ConstBufferPtrType /*buffer*/,
     BufferInfo::SizeType size
 )
 {
@@ -67,7 +63,7 @@ void BarrierDump::allocationRequest(
 
 void BarrierDump::setRequest(
     BufferInfo& info,
-    core::memory::BufferManager::ConstBufferPtrType,
+    core::memory::BufferManager::ConstBufferPtrType /*buffer*/,
     BufferInfo::SizeType size
 )
 {
@@ -87,7 +83,7 @@ void BarrierDump::setRequest(
 
 void BarrierDump::reallocateRequest(
     BufferInfo& info,
-    core::memory::BufferManager::ConstBufferPtrType,
+    core::memory::BufferManager::ConstBufferPtrType /*buffer*/,
     BufferInfo::SizeType newSize
 )
 {
@@ -105,7 +101,7 @@ void BarrierDump::reallocateRequest(
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::destroyRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType)
+void BarrierDump::destroyRequest(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType /*buffer*/)
 {
     if(!info.loaded)
     {
@@ -119,27 +115,27 @@ void BarrierDump::destroyRequest(BufferInfo& info, core::memory::BufferManager::
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::lockRequest(BufferInfo&, core::memory::BufferManager::ConstBufferPtrType)
+void BarrierDump::lockRequest(BufferInfo& /*info*/, core::memory::BufferManager::ConstBufferPtrType /*buffer*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::unlockRequest(BufferInfo&, core::memory::BufferManager::ConstBufferPtrType)
+void BarrierDump::unlockRequest(BufferInfo& /*info*/, core::memory::BufferManager::ConstBufferPtrType /*buffer*/)
 {
     this->apply();
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::dumpSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType)
+void BarrierDump::dumpSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType /*buffer*/)
 {
     m_totalDumped += info.size;
 }
 
 //------------------------------------------------------------------------------
 
-void BarrierDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType)
+void BarrierDump::restoreSuccess(BufferInfo& info, core::memory::BufferManager::ConstBufferPtrType /*buffer*/)
 {
     SIGHT_ASSERT("Memory dump inconsistency", m_totalDumped >= info.size);
     m_totalDumped -= info.size;
@@ -172,11 +168,9 @@ std::size_t BarrierDump::dump(std::size_t nbOfBytes)
     {
         const core::memory::BufferManager::BufferInfoMapType bufferInfos = manager->getBufferInfos().get();
 
-        typedef std::pair<
-                core::memory::BufferManager::BufferInfoMapType::key_type,
-                core::memory::BufferManager::BufferInfoMapType::mapped_type
-        > BufferInfosPairType;
-        typedef std::vector<BufferInfosPairType> BufferVectorType;
+        using BufferInfosPairType = std::pair<core::memory::BufferManager::BufferInfoMapType::key_type,
+                                              core::memory::BufferManager::BufferInfoMapType::mapped_type>;
+        using BufferVectorType = std::vector<BufferInfosPairType>;
 
         BufferVectorType buffers;
 
@@ -271,7 +265,7 @@ std::string BarrierDump::getParam(const std::string& name, bool* ok) const
         isOk  = true;
     }
 
-    if(ok)
+    if(ok != nullptr)
     {
         *ok = isOk;
     }
@@ -281,6 +275,4 @@ std::string BarrierDump::getParam(const std::string& name, bool* ok) const
 
 //------------------------------------------------------------------------------
 
-} // namespace policy
-
-} //namespace sight::core::memory
+} // namespace sight::core::memory::policy

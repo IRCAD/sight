@@ -24,7 +24,6 @@
 
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/runtime/helper.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/TimeStamp.hpp>
@@ -45,10 +44,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::ServiceTest);
 
 //------------------------------------------------------------------------------
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 //------------------------------------------------------------------------------
@@ -66,7 +62,7 @@ void ServiceTest::tearDown()
     // unregister the services that have not been unregistered because a test failed.
 
     auto services = service::OSR::getServices<service::IService>();
-    for(auto srv : services)
+    for(const auto& srv : services)
     {
         if(srv->isStarted())
         {
@@ -327,12 +323,9 @@ void ServiceTest::testStartStopUpdateExceptions()
 
 struct TestServiceSignals : public core::com::HasSlots
 {
-    typedef std::shared_ptr<TestServiceSignals> sptr;
+    using sptr = std::shared_ptr<TestServiceSignals>;
 
-    TestServiceSignals() :
-        m_started(false),
-        m_updated(false),
-        m_stopped(false)
+    TestServiceSignals()
     {
         newSlot("start", &TestServiceSignals::start, this);
         newSlot("update", &TestServiceSignals::update, this);
@@ -342,7 +335,7 @@ struct TestServiceSignals : public core::com::HasSlots
         m_slots.setWorker(m_worker);
     }
 
-    virtual ~TestServiceSignals();
+    ~TestServiceSignals() override;
 
     //------------------------------------------------------------------------------
 
@@ -366,9 +359,9 @@ struct TestServiceSignals : public core::com::HasSlots
     }
 
     core::thread::Worker::sptr m_worker;
-    bool m_started;
-    bool m_updated;
-    bool m_stopped;
+    bool m_started {false};
+    bool m_updated {false};
+    bool m_stopped {false};
 };
 
 //------------------------------------------------------------------------------
@@ -644,6 +637,4 @@ void ServiceTest::testWithInAndOut()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

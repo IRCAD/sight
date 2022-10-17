@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,6 +30,7 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+#include <cmath>
 #include <sstream>
 
 namespace sight::module::ui::qt::calibration
@@ -38,44 +39,41 @@ namespace sight::module::ui::qt::calibration
 //-----------------------------------------------------------------------------
 
 SUpdateIntrinsicDialog::SUpdateIntrinsicDialog() :
-    QDialog(),
-    m_ratio(0.)
+
+    m_width(new QLineEdit()),
+    m_height(new QLineEdit()),
+    m_cx(new QLabel()),
+    m_cy(new QLabel()),
+    m_fx(new QLabel()),
+    m_fy(new QLabel()),
+    m_k1(new QLabel()),
+    m_k2(new QLabel()),
+    m_p1(new QLabel()),
+    m_p2(new QLabel()),
+    m_k3(new QLabel()),
+    m_skew(new QLabel())
 {
     //Design of the QDialog
-    QHBoxLayout* validateButtonLayout;
-    QHBoxLayout* computeButtonLayout;
-    QHBoxLayout* resolutionLayout;
-    QVBoxLayout* mainLayout;
-    QGridLayout* parametersLayout;
-    QPushButton* validateButton;
-    QPushButton* cancelButton;
-    QPushButton* computeButton;
-    QPushButton* resetButton;
+    QHBoxLayout* validateButtonLayout = nullptr;
+    QHBoxLayout* computeButtonLayout  = nullptr;
+    QHBoxLayout* resolutionLayout     = nullptr;
+    QVBoxLayout* mainLayout           = nullptr;
+    QGridLayout* parametersLayout     = nullptr;
+    QPushButton* validateButton       = nullptr;
+    QPushButton* cancelButton         = nullptr;
+    QPushButton* computeButton        = nullptr;
+    QPushButton* resetButton          = nullptr;
 
     parametersLayout = new QGridLayout;
     resolutionLayout = new QHBoxLayout;
 
-    m_width  = new QLineEdit();
-    m_height = new QLineEdit();
-
-    QLabel* wLabel = new QLabel("Width :");
-    QLabel* hLabel = new QLabel("Height :");
+    auto* wLabel = new QLabel("Width :");
+    auto* hLabel = new QLabel("Height :");
 
     resolutionLayout->addWidget(wLabel);
     resolutionLayout->addWidget(m_width);
     resolutionLayout->addWidget(hLabel);
     resolutionLayout->addWidget(m_height);
-
-    m_cx   = new QLabel();
-    m_cy   = new QLabel();
-    m_fx   = new QLabel();
-    m_fy   = new QLabel();
-    m_k1   = new QLabel();
-    m_k2   = new QLabel();
-    m_p1   = new QLabel();
-    m_p2   = new QLabel();
-    m_k3   = new QLabel();
-    m_skew = new QLabel();
 
     parametersLayout->addWidget(m_skew, 0, 2);
 
@@ -124,8 +122,7 @@ SUpdateIntrinsicDialog::SUpdateIntrinsicDialog() :
 //-----------------------------------------------------------------------------
 
 SUpdateIntrinsicDialog::~SUpdateIntrinsicDialog()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -174,7 +171,14 @@ void SUpdateIntrinsicDialog::onPushCompute()
 
     double alpha = m_originCalibration[1] / height;
 
-    double fx_new, fy_new, cx_new, cy_new, k1_new, k2_new, p1_new, p2_new;
+    double fx_new = NAN;
+    double fy_new = NAN;
+    double cx_new = NAN;
+    double cy_new = NAN;
+    double k1_new = NAN;
+    double k2_new = NAN;
+    double p1_new = NAN;
+    double p2_new = NAN;
 
     //    fx_new = fx_old / alpha
     //    fy_new = fy_old / alpha

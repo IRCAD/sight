@@ -27,13 +27,12 @@
 
 #include <utest/Exception.hpp>
 
+#include <array>
+
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::RawBufferTLTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -60,12 +59,12 @@ void RawBufferTLTest::pushTest()
     core::HiResClock::HiResClockType time1 = core::HiResClock::getTimeInMilliSec();
     core::HiResClock::HiResClockType time2 = time1 + 42;
 
-    float values1[3] = {1.0f, 5.2f, 7.5f};
-    float values2[3] = {8.0f, 9.0f, 66.f};
+    std::array values1 = {1.0F, 5.2F, 7.5F};
+    std::array values2 = {8.0F, 9.0F, 66.F};
     SPTR(data::timeline::RawBuffer) data1 = timeline->createBuffer(time1);
-    std::copy(values1, values1 + 3, data1->getBuffer<float>());
+    std::copy(values1.begin(), values1.end(), data1->getBuffer<float>());
     SPTR(data::timeline::RawBuffer) data2 = timeline->createBuffer(time2);
-    std::copy(values2, values2 + 3, data2->getBuffer<float>());
+    std::copy(values2.begin(), values2.end(), data2->getBuffer<float>());
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
@@ -81,20 +80,20 @@ void RawBufferTLTest::pushTest()
         std::dynamic_pointer_cast<const data::timeline::RawBuffer>(dataPushed1Bis);
     CPPUNIT_ASSERT(buff);
     CPPUNIT_ASSERT_EQUAL(buff, timeline->getClosestBuffer(time1 + 1.5));
-    float* buffData = buff->getBuffer<float>();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, buffData[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.2, buffData[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(7.5, buffData[2], 0.00001);
+    auto* buffData = buff->getBuffer<float>();
+    CPPUNIT_ASSERT_EQUAL(1.0F, buffData[0]);
+    CPPUNIT_ASSERT_EQUAL(5.2F, buffData[1]);
+    CPPUNIT_ASSERT_EQUAL(7.5F, buffData[2]);
 
     CSPTR(data::timeline::Object) dataPushed2Bis = timeline->getNewerObject();
     CPPUNIT_ASSERT(data2 == dataPushed2Bis);
 
     core::HiResClock::HiResClockType time2Pushed = timeline->getNewerTimestamp();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(time2, time2Pushed, 0.00001);
+    CPPUNIT_ASSERT_EQUAL(time2, time2Pushed);
 
     timeline->clearTimeline();
     CSPTR(data::timeline::Object) nullObj = timeline->getNewerObject();
-    CPPUNIT_ASSERT(nullObj == NULL);
+    CPPUNIT_ASSERT(nullObj == nullptr);
 }
 
 //------------------------------------------------------------------------------
@@ -104,16 +103,16 @@ void RawBufferTLTest::getObjectTest()
     data::RawBufferTL::sptr timeline = data::RawBufferTL::New();
     timeline->initPoolSize(3 * sizeof(float));
 
-    float values[3] = {1.0f, 5.2f, 7.5f};
+    std::array values = {1.0F, 5.2F, 7.5F};
 
     SPTR(data::timeline::RawBuffer) data1 = timeline->createBuffer(1);
-    std::copy(values, values + 3, data1->getBuffer<float>());
+    std::copy(values.begin(), values.end(), data1->getBuffer<float>());
     SPTR(data::timeline::RawBuffer) data2 = timeline->createBuffer(2);
-    std::copy(values, values + 3, data2->getBuffer<float>());
+    std::copy(values.begin(), values.end(), data2->getBuffer<float>());
     SPTR(data::timeline::RawBuffer) data3 = timeline->createBuffer(3);
-    std::copy(values, values + 3, data3->getBuffer<float>());
+    std::copy(values.begin(), values.end(), data3->getBuffer<float>());
     SPTR(data::timeline::RawBuffer) data4 = timeline->createBuffer(4);
-    std::copy(values, values + 3, data4->getBuffer<float>());
+    std::copy(values.begin(), values.end(), data4->getBuffer<float>());
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
@@ -157,7 +156,7 @@ void RawBufferTLTest::getObjectTest()
     CPPUNIT_ASSERT(data4 == obj);
 
     obj = timeline->getClosestObject(0.1, data::TimeLine::PAST);
-    CPPUNIT_ASSERT(NULL == obj);
+    CPPUNIT_ASSERT(nullptr == obj);
     obj = timeline->getClosestObject(0.1, data::TimeLine::FUTURE);
     CPPUNIT_ASSERT(data1 == obj);
 
@@ -194,7 +193,7 @@ void RawBufferTLTest::getObjectTest()
     obj = timeline->getClosestObject(4.1, data::TimeLine::PAST);
     CPPUNIT_ASSERT(data4 == obj);
     obj = timeline->getClosestObject(4.1, data::TimeLine::FUTURE);
-    CPPUNIT_ASSERT(NULL == obj);
+    CPPUNIT_ASSERT(nullptr == obj);
 }
 
 //------------------------------------------------------------------------------
@@ -204,16 +203,16 @@ void RawBufferTLTest::setObjectTest()
     data::RawBufferTL::sptr timeline = data::RawBufferTL::New();
     timeline->initPoolSize(3 * sizeof(float));
 
-    float values[3] = {1.0f, 5.2f, 7.5f};
+    std::array values = {1.0F, 5.2F, 7.5F};
 
     SPTR(data::timeline::RawBuffer) data1 = timeline->createBuffer(1);
-    std::copy(values, values + 3, data1->getBuffer<float>());
+    std::copy(values.begin(), values.end(), data1->getBuffer<float>());
     SPTR(data::timeline::RawBuffer) data2 = timeline->createBuffer(2);
-    std::copy(values, values + 3, data2->getBuffer<float>());
+    std::copy(values.begin(), values.end(), data2->getBuffer<float>());
     SPTR(data::timeline::RawBuffer) data3 = timeline->createBuffer(3);
-    std::copy(values, values + 3, data3->getBuffer<float>());
+    std::copy(values.begin(), values.end(), data3->getBuffer<float>());
     SPTR(data::timeline::RawBuffer) data4 = timeline->createBuffer(4);
-    std::copy(values, values + 3, data4->getBuffer<float>());
+    std::copy(values.begin(), values.end(), data4->getBuffer<float>());
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
@@ -251,16 +250,16 @@ void RawBufferTLTest::modifyTimeTest()
     data::RawBufferTL::sptr timeline = data::RawBufferTL::New();
     timeline->initPoolSize(3 * sizeof(float));
 
-    float values[3] = {2.0f, 1.2f, 6.5f};
+    std::array values = {2.0F, 1.2F, 6.5F};
 
     SPTR(data::timeline::RawBuffer) data1 = timeline->createBuffer(1);
-    std::copy(values, values + 3, data1->getBuffer<float>());
+    std::copy(values.begin(), values.end(), data1->getBuffer<float>());
     SPTR(data::timeline::RawBuffer) data2 = timeline->createBuffer(2);
-    std::copy(values, values + 3, data2->getBuffer<float>());
+    std::copy(values.begin(), values.end(), data2->getBuffer<float>());
     SPTR(data::timeline::RawBuffer) data3 = timeline->createBuffer(3);
-    std::copy(values, values + 3, data3->getBuffer<float>());
+    std::copy(values.begin(), values.end(), data3->getBuffer<float>());
     SPTR(data::timeline::RawBuffer) data4 = timeline->createBuffer(4);
-    std::copy(values, values + 3, data4->getBuffer<float>());
+    std::copy(values.begin(), values.end(), data4->getBuffer<float>());
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
@@ -309,12 +308,12 @@ void RawBufferTLTest::copyTest()
     core::HiResClock::HiResClockType time1 = core::HiResClock::getTimeInMilliSec();
     core::HiResClock::HiResClockType time2 = time1 + 42;
 
-    float values1[3] = {1.0f, 5.2f, 7.5f};
-    float values2[3] = {8.0f, 9.0f, 66.f};
+    std::array values1 = {1.0F, 5.2F, 7.5F};
+    std::array values2 = {8.0F, 9.0F, 66.F};
     SPTR(data::timeline::RawBuffer) data1 = timeline->createBuffer(time1);
-    std::copy(values1, values1 + 3, data1->getBuffer<float>());
+    std::copy(values1.begin(), values1.end(), data1->getBuffer<float>());
     SPTR(data::timeline::RawBuffer) data2 = timeline->createBuffer(time2);
-    std::copy(values2, values2 + 3, data2->getBuffer<float>());
+    std::copy(values2.begin(), values2.end(), data2->getBuffer<float>());
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
@@ -333,10 +332,10 @@ void RawBufferTLTest::copyTest()
         std::dynamic_pointer_cast<const data::timeline::RawBuffer>(deepDataPushed1);
     CPPUNIT_ASSERT(buff1);
     CPPUNIT_ASSERT_EQUAL(buff1, deepTimeline->getBuffer(time1));
-    float* buffData1 = buff1->getBuffer<float>();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, buffData1[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(5.2, buffData1[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(7.5, buffData1[2], 0.00001);
+    auto* buffData1 = buff1->getBuffer<float>();
+    CPPUNIT_ASSERT_EQUAL(1.0F, buffData1[0]);
+    CPPUNIT_ASSERT_EQUAL(5.2F, buffData1[1]);
+    CPPUNIT_ASSERT_EQUAL(7.5F, buffData1[2]);
 
     CSPTR(data::timeline::Object) deepDataPushed2 = deepTimeline->getObject(time2);
     CPPUNIT_ASSERT(deepDataPushed2);
@@ -344,12 +343,10 @@ void RawBufferTLTest::copyTest()
     CSPTR(data::timeline::RawBuffer) buff2 =
         std::dynamic_pointer_cast<const data::timeline::RawBuffer>(deepDataPushed2);
     CPPUNIT_ASSERT(buff2);
-    float* buffData2 = buff2->getBuffer<float>();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(8.0, buffData2[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(9.0, buffData2[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(66., buffData2[2], 0.00001);
+    auto* buffData2 = buff2->getBuffer<float>();
+    CPPUNIT_ASSERT_EQUAL(8.0F, buffData2[0]);
+    CPPUNIT_ASSERT_EQUAL(9.0F, buffData2[1]);
+    CPPUNIT_ASSERT_EQUAL(66.F, buffData2[2]);
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

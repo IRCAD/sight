@@ -26,21 +26,16 @@
 #include <filter/dicom/helper/Filter.hpp>
 #include <filter/dicom/IFilter.hpp>
 
-#include <io/dicom/reader/SeriesDB.hpp>
+#include <io/dicom/reader/SeriesSet.hpp>
 
 #include <utestData/Data.hpp>
-
-#include <boost/lexical_cast.hpp>
 
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::dicom::ut::ImagePositionPatientSplitterTest);
 
-namespace sight::filter::dicom
-{
-
-namespace ut
+namespace sight::filter::dicom::ut
 {
 
 //------------------------------------------------------------------------------
@@ -61,7 +56,7 @@ void ImagePositionPatientSplitterTest::tearDown()
 
 void ImagePositionPatientSplitterTest::simpleApplication()
 {
-    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
+    auto series_set = data::SeriesSet::New();
 
     const std::string filename       = "08-CT-PACS";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -72,14 +67,14 @@ void ImagePositionPatientSplitterTest::simpleApplication()
     );
 
     // Read DicomSeries
-    io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
-    reader->setObject(seriesDB);
+    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    reader->setObject(series_set);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
+    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*series_set)[0]);
     CPPUNIT_ASSERT(dicomSeries);
     std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
@@ -108,7 +103,7 @@ void ImagePositionPatientSplitterTest::simpleApplication()
 
 void ImagePositionPatientSplitterTest::negativeSpacingApplication()
 {
-    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
+    auto series_set = data::SeriesSet::New();
     // cspell: ignore SCRAT
     const std::string filename       = "04-CT-DICOM_SCRAT_CORRUPTED/46140000";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -118,17 +113,17 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     );
 
     // Read DicomSeries
-    io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
-    reader->setObject(seriesDB);
+    auto reader = io::dicom::reader::SeriesSet::New();
+    reader->setObject(series_set);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
 
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
     // There is two series in this dicom
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(seriesDB->at(0));
+    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(series_set->at(0));
     CPPUNIT_ASSERT(dicomSeries);
 
     // On Unix, the correct series with 304 elements is placed first and the one with 196 elements is at last position,
@@ -137,7 +132,7 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
     // The test is written to assume the one of 304 elements is taken.
     if(dicomSeries->numInstances() != 304)
     {
-        dicomSeries = data::DicomSeries::dynamicCast(seriesDB->at(1));
+        dicomSeries = data::DicomSeries::dynamicCast(series_set->at(1));
         CPPUNIT_ASSERT(dicomSeries);
     }
 
@@ -163,6 +158,4 @@ void ImagePositionPatientSplitterTest::negativeSpacingApplication()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::ut

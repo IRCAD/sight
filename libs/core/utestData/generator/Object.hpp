@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,6 @@
 #include <data/Plane.hpp>
 #include <data/Point.hpp>
 #include <data/Port.hpp>
-#include <data/ProcessObject.hpp>
 #include <data/ReconstructionTraits.hpp>
 #include <data/Resection.hpp>
 #include <data/ResectionDB.hpp>
@@ -43,10 +42,7 @@
 #include <data/StructureTraitsDictionary.hpp>
 #include <data/TransferFunction.hpp>
 
-namespace sight::utestData
-{
-
-namespace generator
+namespace sight::utestData::generator
 {
 
 /**
@@ -92,9 +88,6 @@ public:
     /// Creates a Material with ambient and diffuse color.
     UTESTDATA_API static data::Material::sptr createMaterial();
 
-    /// Creates a ProcessObject with 3 inputs and 1 output
-    UTESTDATA_API static data::ProcessObject::sptr createProcessObject();
-
     /// Creates a ResectionDB containing one Resection.
     UTESTDATA_API static data::ResectionDB::sptr generateResectionDB();
 
@@ -108,6 +101,4 @@ public:
     UTESTDATA_API static data::Plane::sptr generatePlane();
 };
 
-} // namespace generator
-
-} // namespace sight::utestData
+} // namespace sight::utestData::generator

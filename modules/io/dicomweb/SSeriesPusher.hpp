@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ namespace sight::data
 
 class Series;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::dicomweb
 {
@@ -80,7 +80,7 @@ public:
     /**
      * @brief Destructor
      */
-    MODULE_IO_DICOMWEB_API virtual ~SSeriesPusher() noexcept;
+    MODULE_IO_DICOMWEB_API ~SSeriesPusher() noexcept override;
 
 protected:
 
@@ -106,13 +106,13 @@ private:
      * @param[in] message Message to display
      * @param[in] error True if the message is an error messsage
      */
-    void displayMessage(const std::string& message, bool error) const;
+    static void displayMessage(const std::string& message, bool error);
 
     /// Http Qt Client
     sight::io::http::ClientQt m_clientQt;
 
     /// Set to true when pushing series
-    bool m_isPushing;
+    bool m_isPushing {false};
 
     /// Server hostname preference key
     std::string m_serverHostnameKey;

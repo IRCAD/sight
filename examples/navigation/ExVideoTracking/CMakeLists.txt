@@ -15,6 +15,7 @@ add_dependencies(
     module_io_video
     module_sync
     module_navigation_optics
+    config_io_video
 )
 
 # Allow dark theme via module_ui_qt

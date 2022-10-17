@@ -47,13 +47,7 @@
 
 #include <sstream>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace tid
+namespace sight::io::dicom::writer::tid
 {
 
 //------------------------------------------------------------------------------
@@ -70,8 +64,7 @@ MeasurementReport::MeasurementReport(
 //------------------------------------------------------------------------------
 
 MeasurementReport::~MeasurementReport()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -178,8 +171,4 @@ SPTR(io::dicom::container::sr::DicomSRNode) MeasurementReport::createRootNode(bo
 
 //------------------------------------------------------------------------------
 
-} // namespace tid
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::tid

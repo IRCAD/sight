@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,33 +24,29 @@
 
 #include <core/com/Slots.hxx>
 
-#include <service/macros.hpp>
-
-#include <regex>
-
-namespace sight::module::ui::base
-{
-
-namespace com
+namespace sight::module::ui::base::com
 {
 
 //-----------------------------------------------------------------------------
 
 SBooleanSlotCaller::SBooleanSlotCaller() noexcept
 {
+    SIGHT_WARN(
+        "'SBooleanSlotCaller' is deprecated and will be removed in Sight 23.0,"
+        " please use 'SAction' with regular signal/slots connections instead."
+    );
 }
 
 //-----------------------------------------------------------------------------
 
-SBooleanSlotCaller::~SBooleanSlotCaller() noexcept
-{
-}
+SBooleanSlotCaller::~SBooleanSlotCaller() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
 void SBooleanSlotCaller::updating()
 {
-    for(SlotInfoType info : m_slotInfos)
+    for(const SlotInfoType& info : m_slotInfos)
     {
         HasSlotIDType HasSlotId               = info.first;
         core::com::Slots::SlotKeyType slotKey = info.second;
@@ -63,13 +59,11 @@ void SBooleanSlotCaller::updating()
 
             core::com::SlotBase::sptr slot = hasSlots->slot(slotKey);
 
-            slot->asyncRun(this->getIsActive());
+            slot->asyncRun(this->checked());
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace com
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::com

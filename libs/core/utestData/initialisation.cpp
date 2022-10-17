@@ -33,33 +33,35 @@ struct LogInitialization
 {
     LogInitialization()
     {
-        core::log::SpyLogger& logger = core::log::SpyLogger::get();
-
         std::string logFile = "fwTest.log";
 
         FILE* pFile = fopen(logFile.c_str(), "w");
-        if(pFile == NULL)
+        if(pFile == nullptr)
         {
             std::error_code err;
             std::filesystem::path sysTmp = std::filesystem::temp_directory_path(err);
             if(err.value() != 0)
             {
                 // replace log file appender by stream appender: default dir and temp dir unreachable
-                logger.add_console_log();
+                core::log::SpyLogger::add_console_log();
             }
             else
             {
                 // creates SLM.log in temp directory: default dir unreachable
                 sysTmp  = sysTmp / logFile;
                 logFile = sysTmp.string();
-                logger.add_file_log(logFile);
+                core::log::SpyLogger::add_file_log(logFile);
             }
         }
         else
         {
             // creates SLM.log in default logFile directory
-            fclose(pFile);
-            logger.add_file_log(logFile);
+            if(fclose(pFile) != 0)
+            {
+                perror("fclose");
+            }
+
+            core::log::SpyLogger::add_file_log(logFile);
         }
     }
 };

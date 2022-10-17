@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,14 +27,12 @@
 
 #include <core/base.hpp>
 
-#include <data/ActivitySeries.hpp>
-
 namespace sight::data
 {
 
 class Object;
 
-}
+} // namespace sight::data
 
 namespace sight::activity
 {
@@ -52,9 +50,10 @@ public:
     SIGHT_DECLARE_CLASS(IObjectValidator, activity::IValidator);
 
     /// Does nothing.
-    ACTIVITY_API virtual ValidationType validate(
-        const activity::extension::ActivityInfo&,
+    ACTIVITY_API ValidationType validate(
+        const activity::extension::ActivityInfo& /*activityInfo*/,
         const CSPTR(data::Vector)&
+        /*currentSelection*/
     ) const override
     {
         ValidationType validation;

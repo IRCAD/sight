@@ -25,15 +25,12 @@
 #include "ui/base/config.hpp"
 #include "ui/base/dialog/ISelectorDialog.hpp"
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 /**
  * @brief   SelectorDialog allows the choice of an element among several (_selections)
- * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
+ * Use the Delegate design pattern. The specific implementation selection is ensured by SIGHT_REGISTER_GUI.
  * The specific implementation are in fwGuiWX and fwGuiQT libraries
  */
 class UI_BASE_CLASS_API SelectorDialog : public ISelectorDialog
@@ -95,6 +92,4 @@ protected:
     ui::base::dialog::ISelectorDialog::sptr m_implementation;
 };
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

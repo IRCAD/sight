@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,13 +32,13 @@ struct Plugin : public core::runtime::Plugin
     /**
      * @brief   destructor
      */
-    ~Plugin() noexcept;
+    ~Plugin() noexcept override;
 
     // Overrides
-    void start();
+    void start() override;
 
     // Overrides
-    void stop() noexcept;
+    void stop() noexcept override;
 };
 
 } // namespace sight::module::io::dicomweb

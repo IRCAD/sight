@@ -31,10 +31,7 @@
 #include <OGRE/OgreTechnique.h>
 #include <OGRE/OgreTexture.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace compositor
+namespace sight::viz::scene3d::compositor
 {
 
 //-----------------------------------------------------------------------------
@@ -51,7 +48,16 @@ void SaoListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& 
             Ogre::CompositorManager::getSingletonPtr()->getCompositorChain(m_viewport);
 
         Ogre::CompositorInstance* saoCompositor = compChain->getCompositor("SAO");
-        Ogre::TexturePtr mip0, mip1, mip2, mip3, mip4, mip5, mip6, mip7, mip8, rt0;
+        Ogre::TexturePtr mip0;
+        Ogre::TexturePtr mip1;
+        Ogre::TexturePtr mip2;
+        Ogre::TexturePtr mip3;
+        Ogre::TexturePtr mip4;
+        Ogre::TexturePtr mip5;
+        Ogre::TexturePtr mip6;
+        Ogre::TexturePtr mip7;
+        Ogre::TexturePtr mip8;
+        Ogre::TexturePtr rt0;
 
         mip0 = saoCompositor->getTextureInstance("mip0", 0);
         mip1 = saoCompositor->getTextureInstance("mip1", 0);
@@ -97,10 +103,10 @@ void SaoListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& 
 
         const Ogre::Matrix4& proj = m_viewport->getCamera()->getProjectionMatrix();
 
-        const Ogre::Vector4 projInfo(-2.f / (static_cast<float>(mip0.get()->getWidth()) * proj[0][0]),
-                                     -2.f / (static_cast<float>(mip0.get()->getHeight()) * proj[1][1]),
-                                     (1.f - proj[0][2]) / proj[0][0],
-                                     (1.f + proj[1][2]) / proj[1][1]);
+        const Ogre::Vector4 projInfo(-2.F / (static_cast<float>(mip0.get()->getWidth()) * proj[0][0]),
+                                     -2.F / (static_cast<float>(mip0.get()->getHeight()) * proj[1][1]),
+                                     (1.F - proj[0][2]) / proj[0][0],
+                                     (1.F + proj[1][2]) / proj[1][1]);
         fragmentParams->setNamedConstant("eu_projInfo", projInfo);
     }
 
@@ -134,6 +140,4 @@ void SaoListener::notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& 
 
 //-----------------------------------------------------------------------------
 
-} // namespace compositor
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::compositor

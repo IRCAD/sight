@@ -54,7 +54,7 @@
         #define DEBUG_BREAK() __debugbreak()
     #else
         #include <csignal>
-        #define DEBUG_BREAK() std::raise(SIGTRAP)
+        #define DEBUG_BREAK() do{std::ignore = std::raise(SIGTRAP); std::abort();}while(0)
     #endif
 
     #define SPYLOG_ABORT() DEBUG_BREAK()
@@ -62,15 +62,11 @@
     #define SPYLOG_ABORT() std::abort()
 #endif
 
-#include <boost/preprocessor/comparison/greater_equal.hpp>
-#include <boost/preprocessor/control/expr_iif.hpp>
-
 #include <cassert>
 #include <cstring>
 #include <sstream>
 
 # include <core/log/SpyLogger.hpp>
-# include <core/log/ScopedMessage.hpp>
 
 // -----------------------------------------------------------------------------
 constexpr static const char* strip_source_path(const char* const path)
@@ -102,17 +98,20 @@ constexpr static const char* strip_source_path(const char* const path)
             // If the path is shorter than the sight source directory, we return the path
             return path;
         }
-        else if((path_c == '/' || path_c == '\\') && source_c != '/' && source_c != '\\')
+
+        if((path_c == '/' || path_c == '\\') && source_c != '/' && source_c != '\\')
         {
             // If current path character is a path deliminator and the current source character is not, we return path
             return path;
         }
-        else if(path_c != '/' && path_c != '\\' && (source_c == '/' || source_c == '\\'))
+
+        if(path_c != '/' && path_c != '\\' && (source_c == '/' || source_c == '\\'))
         {
             // If path character is not a path deliminator and the current source character is one, we return path
             return path;
         }
-        else if(path_c != '/' && path_c != '\\' && source_c != '/' && source_c != '\\' && path_c != source_c)
+
+        if(path_c != '/' && path_c != '\\' && source_c != '/' && source_c != '\\' && path_c != source_c)
         {
             // If path character is not a path deliminator and the current source character is also not, we return path
             // if they are different
@@ -212,28 +211,11 @@ constexpr static const char* strip_source_path(const char* const path)
 #  define _SPYLOG_SPYLOGGER_ \
     sight::core::log::SpyLogger::get()
 
-// Empty function to trigger deprecation warnings
-[[deprecated("OSIGHT_* macros removed in Sight 22.0, use SIGHT_* macros instead.")]]
-void OSIGHT_DEPRECATED();
-
-// Empty function to trigger deprecation warnings
-[[deprecated("Trace log level removed in Sight 22.0, use higher log levels instead.")]]
-void SIGHT_TRACE_DEPRECATED();
-
 // -----------------------------------------------------------------------------
 
 /**
  * @endcond
  */
-
-/** @{ */
-/** Trace message macros.  */
-# define SIGHT_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message); SIGHT_TRACE_DEPRECATED()
-# define OSIGHT_TRACE(message) SL_TRACE(_SPYLOG_SPYLOGGER_, message); SIGHT_TRACE_DEPRECATED()
-/** Conditional trace message macros.  */
-# define SIGHT_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond); SIGHT_TRACE_DEPRECATED()
-# define OSIGHT_TRACE_IF(message, cond) SL_TRACE_IF(_SPYLOG_SPYLOGGER_, message, cond); SIGHT_TRACE_DEPRECATED()
-/**  @} */
 
 /** @{ */
 /** Debug message macros.  */
@@ -309,26 +291,6 @@ void SIGHT_TRACE_DEPRECATED();
 #  define SIGHT_PRETTY_FUNC() __FUNCSIG__
 # else
 #  define SIGHT_PRETTY_FUNC() __func__
-# endif
-
-/**
- * @brief Trace contextual function signature.
- *
- * Generate a log trace message with the (contextual) function signature.
- */
-# ifndef SPYLOG_TIMER
-#  define SIGHT_TRACE_FUNC() SIGHT_TRACE(SIGHT_PRETTY_FUNC())
-# else
-
-# define SIGHT_TRACE_FUNC() __FWCORE_EXPR_BLOCK( \
-        core::log::ScopedMessage __spylog__scoped__msg__( \
-            __FILE__, \
-            __LINE__, \
-            SIGHT_PRETTY_FUNC() \
-        ); \
-        __spylog__scoped__msg__.use(); \
-)
-
 # endif
 /**  @} */
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "SCompositorParameterEditor.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/SRender.hpp>
-
 #include <core/com/Slots.hxx>
 
 #include <data/Boolean.hpp>
@@ -36,6 +33,9 @@
 
 #include <ui/base/GuiRegistry.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/SRender.hpp>
 
 #include <modules/ui/viz/helper/ParameterEditor.hpp>
 
@@ -54,9 +54,8 @@ SCompositorParameterEditor::SCompositorParameterEditor() noexcept
 
 //------------------------------------------------------------------------------
 
-SCompositorParameterEditor::~SCompositorParameterEditor() noexcept
-{
-}
+SCompositorParameterEditor::~SCompositorParameterEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -144,7 +143,7 @@ void SCompositorParameterEditor::updateCompositor(
         auto qtContainer   = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
         QWidget* container = qtContainer->getQtContainer();
 
-        QWidget* p2 = new QWidget(container);
+        auto* p2 = new QWidget(container);
         m_editorInfo.editorPanel = sight::ui::qt::container::QtContainer::New();
         m_editorInfo.editorPanel->setQtContainer(p2);
 

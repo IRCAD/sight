@@ -29,10 +29,7 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/locale/encoding.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 const Encoding::DefinedTermToCharsetMapType Encoding::s_DEFINED_TERM_TO_CHARSET = {
@@ -145,41 +142,40 @@ std::string Encoding::convertString(
     {
         return convertStringWithoutCodeExtensions(source, definedCharsetTerm, logger);
     }
+
     // Several charsets with code extension techniques are used
+
+    // If the attribute Specific Character Set (0008,0005) has more than one value
+    // and value 1 is empty, it is assumed that value 1 is ISO 2022 IR 6.
+    if(definedTermList[0].empty())
+    {
+        definedTermList[0] = "ISO 2022 IR 6";
+    }
+
+    // Check for characters ESC delimiter
+    std::vector<std::string> sequenceList;
+    boost::split(sequenceList, source, boost::is_any_of("\033"));
+
+    std::string result;
+
+    // Add the first part
+    if(source[0] != '\033')
+    {
+        result += convertStringWithoutCodeExtensions(sequenceList[0], definedTermList[0], logger);
+    }
     else
     {
-        // If the attribute Specific Character Set (0008,0005) has more than one value
-        // and value 1 is empty, it is assumed that value 1 is ISO 2022 IR 6.
-        if(definedTermList[0].empty())
-        {
-            definedTermList[0] = "ISO 2022 IR 6";
-        }
-
-        // Check for characters ESC delimiter
-        std::vector<std::string> sequenceList;
-        boost::split(sequenceList, source, boost::is_any_of("\033"));
-
-        std::string result;
-
-        // Add the first part
-        if(source[0] != '\033')
-        {
-            result += convertStringWithoutCodeExtensions(sequenceList[0], definedTermList[0], logger);
-        }
-        else
-        {
-            result += Encoding::convertSequenceWithCodeExtensions(sequenceList[0], definedTermList, logger);
-        }
-
-        // Convert remaining sequences according to specific charsets
-        std::vector<std::string>::iterator it = ++sequenceList.begin();
-        for( ; it != sequenceList.end() ; ++it)
-        {
-            result += convertSequenceWithCodeExtensions(*it, definedTermList, logger);
-        }
-
-        return result;
+        result += Encoding::convertSequenceWithCodeExtensions(sequenceList[0], definedTermList, logger);
     }
+
+    // Convert remaining sequences according to specific charsets
+    auto it = ++sequenceList.begin();
+    for( ; it != sequenceList.end() ; ++it)
+    {
+        result += convertSequenceWithCodeExtensions(*it, definedTermList, logger);
+    }
+
+    return result;
 }
 
 //------------------------------------------------------------------------------
@@ -228,10 +224,8 @@ std::string Encoding::convertStringWithoutCodeExtensions(
     {
         return source;
     }
-    else
-    {
-        return boost::locale::conv::to_utf<char>(source, charset);
-    }
+
+    return boost::locale::conv::to_utf<char>(source, charset);
 }
 
 //------------------------------------------------------------------------------
@@ -269,7 +263,7 @@ std::string Encoding::convertSequenceWithCodeExtensions(
     const char c1 = sequence[0];
     const char c2 = sequence[1];
 
-    unsigned short escapeSize = 2;
+    std::uint16_t escapeSize = 2;
 
     EscapeSequenceType escapeSequence                   = std::make_pair(c1, c2);
     DefinedTermAndCharsetPairType definedTermAndCharset = std::make_pair("", "");
@@ -320,14 +314,10 @@ std::string Encoding::convertSequenceWithCodeExtensions(
     {
         return sequence.substr(escapeSize);
     }
-    else
-    {
-        return boost::locale::conv::to_utf<char>(sequence.substr(escapeSize), definedTermAndCharset.second);
-    }
+
+    return boost::locale::conv::to_utf<char>(sequence.substr(escapeSize), definedTermAndCharset.second);
 }
 
 //------------------------------------------------------------------------------
 
-} //namespace helper
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

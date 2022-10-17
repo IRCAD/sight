@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,19 +35,13 @@ namespace sight::module::utest
 struct MODULE_UTEST_CLASS_API Plugin : public core::runtime::Plugin
 {
     /// Destructor. Do nothing.
-    MODULE_UTEST_API ~Plugin() noexcept;
+    MODULE_UTEST_API ~Plugin() noexcept override;
 
     /// Overrides start method. Service declarations (services declared in fwServices libraries ).
-    MODULE_UTEST_API void start();
-
-    /// Overrides initialize method
-    MODULE_UTEST_API void initialize();
-
-    /// Overrides uninitialize method
-    MODULE_UTEST_API void uninitialize();
+    MODULE_UTEST_API void start() override;
 
     /// Overrides stop method. Do nothing
-    MODULE_UTEST_API void stop() noexcept;
+    MODULE_UTEST_API void stop() noexcept override;
 };
 
-} // namespace sight::module::service
+} // namespace sight::module::utest

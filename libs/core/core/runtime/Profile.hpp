@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
+
 #include <core/base.hpp>
 
 #include <filesystem>
@@ -56,12 +57,6 @@ public:
 
     ///  Stops the profile.
     CORE_API virtual void stop() = 0;
-
-    /// Setup the profile
-    CORE_API virtual void setup() = 0;
-
-    /// Cleanup the profile
-    CORE_API virtual void cleanup() = 0;
 
     /// Run the profile.
     CORE_API virtual int run() = 0;
@@ -159,17 +154,9 @@ private:
     std::string m_sVersion;           ///< profile app version
 
     ParamsContainer m_params;
-    int m_argc;
-    char** m_argv;
+    int m_argc {0};
+    char** m_argv {nullptr};
 };
-
-/**
- * @brief       Set current profile.
- * @deprecated  This should not be called outside this library and will become part of private API as of 22.0
- * @param       prof profile
- */
-[[deprecated("To be removed in Sight 22.0, profile is set by runtime internally.")]]
-CORE_API void setCurrentProfile(core::runtime::Profile::sptr prof);
 
 /**
  * @brief       Get current profile.

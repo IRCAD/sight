@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 
 #include <data/DicomSeries.hpp>
 
-namespace sight::filter::dicom
-{
-
-namespace modifier
+namespace sight::filter::dicom::modifier
 {
 
 /**
@@ -43,7 +40,7 @@ public:
     SIGHT_DECLARE_CLASS(IModifier, filter::dicom::IFilter);
 
     /// Destructor
-    FILTER_DICOM_API virtual ~IModifier();
+    FILTER_DICOM_API ~IModifier() override;
 
     /// Return filter type
     FILTER_DICOM_API FilterType getFilterType() const override;
@@ -54,6 +51,4 @@ protected:
     FILTER_DICOM_API IModifier();
 };
 
-} // namespace modifier
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::modifier

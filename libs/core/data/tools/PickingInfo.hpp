@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,7 @@
 
 #include <core/HiResClock.hpp>
 
+#include <array>
 #include <cstdint>
 
 namespace sight::data::tools
@@ -56,7 +57,7 @@ struct  PickingInfo
     };
 
     /// Position clicked in world coordinates
-    double m_worldPos[3];
+    std::array<double, 3> m_worldPos {};
     /// Id of the cell
     int m_cellId = -1;
     /// Id of the closest point
@@ -68,9 +69,9 @@ struct  PickingInfo
     /// Key event
     char m_keyPressed = 0;
 
-    core::HiResClock::HiResClockType m_timestamp;
+    core::HiResClock::HiResClockType m_timestamp {};
 
     DATA_API PickingInfo();
 };
 
-}
+} // namespace sight::data::tools

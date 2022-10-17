@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <filesystem>
 
-namespace sight::io::base
-{
-
-namespace ut
+namespace sight::io::base::ut
 {
 
 /**
@@ -48,8 +45,8 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     void test_1();
     void test_2();
@@ -59,13 +56,11 @@ public:
 
 protected:
 
-    void generateDictionaryFileWithMissingSemiColon(std::filesystem::path dictionaryFile);
-    void generateDictionaryFileWithWrongCategory(std::filesystem::path dictionaryFile);
-    void generateDictionaryFileWithWrongClass(std::filesystem::path dictionaryFile);
-    void generateDictionaryFile(std::filesystem::path dictionaryFile);
+    static void generateDictionaryFileWithMissingSemiColon(std::filesystem::path dictionaryFile);
+    static void generateDictionaryFileWithWrongCategory(std::filesystem::path dictionaryFile);
+    static void generateDictionaryFileWithWrongClass(std::filesystem::path dictionaryFile);
+    static void generateDictionaryFile(std::filesystem::path dictionaryFile);
     std::filesystem::path m_tmpDictionaryFilePath;
 };
 
-} //namespace ut
-
-} //namespace sight::io::base
+} // namespace sight::io::base::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,6 @@
 
 #include <core/base.hpp>
 
-#include <boost/lambda/lambda.hpp>
-
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QLineEdit>
@@ -40,24 +38,23 @@ namespace sight::ui::qt
 //------------------------------------------------------------------------------
 
 SliceSelector::SliceSelector(QWidget* const parent) noexcept :
-    QWidget(parent)
+    QWidget(parent),
+    m_sliceType(new QComboBox(this)),
+    m_sliceIndex(new QSlider(Qt::Horizontal, this)),
+    m_pSliceIndexText(new QLineEdit(this))
 {
-    m_fctChangeIndexCallback = std::bind(&ui::qt::SliceSelector::printIndex, this, std::placeholders::_1);
-    m_fctChangeTypeCallback  = std::bind(&ui::qt::SliceSelector::printType, this, std::placeholders::_1);
+    m_fctChangeIndexCallback = [this](auto&& PH1, auto&& ...){printIndex(std::forward<decltype(PH1)>(PH1));};
+    m_fctChangeTypeCallback  = [this](auto&& PH1, auto&& ...){printType(std::forward<decltype(PH1)>(PH1));};
 
-    m_sliceType = new QComboBox(this);
     /// Slice type names as a qt string array.
     QStringList sliceTypesArray;
     sliceTypesArray << tr("Sagittal") << tr("Frontal") << tr("Axial");
     m_sliceType->addItems(sliceTypesArray);
 
-    m_sliceIndex = new QSlider(Qt::Horizontal, this);
-
-    m_pSliceIndexText = new QLineEdit(this);
     m_pSliceIndexText->setReadOnly(true);
     m_pSliceIndexText->setMaximumWidth(80);
 
-    QHBoxLayout* layout = new QHBoxLayout(this);
+    auto* layout = new QHBoxLayout(this);
     layout->addWidget(m_sliceType, 0);
     layout->addWidget(m_sliceIndex, 1);
     layout->addWidget(m_pSliceIndexText, 0);
@@ -130,13 +127,13 @@ void SliceSelector::setChangeTypeCallback(ChangeTypeCallback fct)
 
 //------------------------------------------------------------------------------
 
-void SliceSelector::printIndex(int)
+void SliceSelector::printIndex(int /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SliceSelector::printType(int)
+void SliceSelector::printType(int /*unused*/)
 {
 }
 
@@ -158,4 +155,4 @@ void SliceSelector::onSliceTypeChange(int index)
 
 //------------------------------------------------------------------------------
 
-} // fwGuiQt
+} // namespace sight::ui::qt

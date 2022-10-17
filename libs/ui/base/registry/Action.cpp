@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,24 +30,20 @@
 
 #include <utility>
 
-namespace sight::ui::base
-{
-
-namespace registry
+namespace sight::ui::base::registry
 {
 
 //-----------------------------------------------------------------------------
 
-Action::Action(const std::string& sid) :
-    m_sid(sid)
+Action::Action(std::string sid) :
+    m_sid(std::move(sid))
 {
 }
 
 //-----------------------------------------------------------------------------
 
 Action::~Action()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -65,16 +61,16 @@ void Action::actionServiceStarting()
 
 //-----------------------------------------------------------------------------
 
-void Action::actionServiceSetActive(bool isActive)
+void Action::actionServiceSetChecked(bool isChecked)
 {
-    ui::base::GuiRegistry::actionServiceSetActive(m_sid, isActive);
+    ui::base::GuiRegistry::actionServiceSetChecked(m_sid, isChecked);
 }
 
 //-----------------------------------------------------------------------------
 
-void Action::actionServiceSetExecutable(bool isExecutable)
+void Action::actionServiceSetEnabled(bool isEnabled)
 {
-    ui::base::GuiRegistry::actionServiceSetExecutable(m_sid, isExecutable);
+    ui::base::GuiRegistry::actionServiceSetEnabled(m_sid, isEnabled);
 }
 
 //-----------------------------------------------------------------------------
@@ -86,6 +82,4 @@ void Action::actionServiceSetVisible(bool isVisible)
 
 //-----------------------------------------------------------------------------
 
-} // namespace registry
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::registry

@@ -26,7 +26,7 @@
 
 #include <activity/extension/Activity.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 #include <data/Composite.hpp>
 
 #include <QEvent>
@@ -34,10 +34,7 @@
 #include <QTabWidget>
 #include <QTreeWidget>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 /**
@@ -94,10 +91,10 @@ public:
      * @brief Creates the tabbed widget.
      * @param _parent the parent of this widget.
      */
-    MODULE_UI_QT_API DataView(QWidget* _parent = 0);
+    MODULE_UI_QT_API DataView(QWidget* _parent = nullptr);
 
     /// Destroys the tabbed widget.
-    MODULE_UI_QT_API virtual ~DataView();
+    MODULE_UI_QT_API ~DataView() override;
 
     /**
      * @brief Creates all tabs from an activity information.
@@ -110,10 +107,10 @@ public:
     MODULE_UI_QT_API void fillInformation(const sight::activity::extension::ActivityInfo& _info);
 
     /**
-     * @brief Creates all tabs from an activity series.
-     * @param _actSeries the series containing activities.
+     * @brief Creates all tabs from an activity.
+     * @param _activity the activity.
      */
-    MODULE_UI_QT_API void fillInformation(const data::ActivitySeries::sptr& _actSeries);
+    MODULE_UI_QT_API void fillInformation(const data::Activity::sptr& _activity);
 
     /**
      * @brief Checks if all the required data are selected and fill activity data composite.
@@ -123,11 +120,11 @@ public:
      * accessible from the object paths.
      *
      * @return True if data are correct, else false and errorMsg contains detailled error.
-     * @param _actSeries activitySeries to fill with the selected data.
+     * @param _activity activity to fill with the selected data.
      * @param[out] _errorMsg it will contain the error information if the data are not correct.
      */
     MODULE_UI_QT_API bool checkAndComputeData(
-        const data::ActivitySeries::sptr& _actSeries,
+        const data::Activity::sptr& _activity,
         std::string& _errorMsg
     );
 
@@ -149,7 +146,7 @@ public:
     }
 
     /**
-     * @brief Sets the IO selector configuration used to import data from a series DB.
+     * @brief Sets the IO selector configuration used to import data from a series set.
      * @param _ioSelectorSrvConfig the service configuration used for the IO selector.
      */
     inline void setSDBIOSelectorConfig(const std::string& _ioSelectorSrvConfig)
@@ -182,7 +179,7 @@ private:
     /// Imports an object required for the selected tab.
     void importObject();
 
-    /// Imports a SeriesDB and then extract the object required for the selected tab.
+    /// Imports a SeriesSet and then extract the object required for the selected tab.
     void importObjectFromSDB();
 
     /// Creates a new object for the selected tab (just use data::factory::New(type)).
@@ -196,7 +193,7 @@ private:
      * @param _ioSelectorSrvConfig the IO selector configuration.
      * @return the object read by the selector.
      */
-    data::Object::sptr readObject(const std::string& _classname, const std::string& _ioSelectorSrvConfig);
+    static data::Object::sptr readObject(const std::string& _classname, const std::string& _ioSelectorSrvConfig);
 
     /// Removes the selected object in the current tree.
     void removeSelectedObjects();
@@ -223,10 +220,10 @@ private:
     /// Defines the IO selector config.
     std::string m_ioSelectorSrvConfig;
 
-    /// Dewfines the IO selector config to import data from a SeriesDB.
+    /// Dewfines the IO selector config to import data from a SeriesSet.
     std::string m_sdbIoSelectorSrvConfig;
 
-    /// Stores references on the imported object before to add them in the activity series.
+    /// Stores references on the imported object before to add them in the activity.
     ImportedObjectType m_importedObject;
 
     /// Stores the tree widget of each tab.
@@ -236,6 +233,4 @@ private:
     ObjectIconMapType m_objectIcons;
 };
 
-} // namespace activity
-
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::activity

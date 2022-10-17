@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,42 +27,26 @@
 
 SIGHT_REGISTER_DATA(sight::io::dimse::data::PacsConfiguration);
 
-namespace sight::io::dimse
+namespace sight::io::dimse::data
 {
 
-namespace data
-{
-
-PacsConfiguration::PacsConfiguration(sight::data::Object::Key key) :
-    m_localApplicationTitle(""),
-    m_pacsHostName(""),
-    m_pacsApplicationTitle(""),
-    m_pacsApplicationPort(0),
-    m_moveApplicationTitle(""),
-    m_moveApplicationPort(0),
-    m_retrieveMethod(MOVE_RETRIEVE_METHOD)
+PacsConfiguration::PacsConfiguration(sight::data::Object::Key /*key*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-PacsConfiguration::~PacsConfiguration()
+void PacsConfiguration::shallowCopy(const sight::data::Object::csptr& source)
 {
-}
+    const auto& other = dynamicConstCast(source);
 
-//------------------------------------------------------------------------------
-
-void PacsConfiguration::shallowCopy(const Object::csptr& _source)
-{
-    PacsConfiguration::csptr other = PacsConfiguration::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
         sight::data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     m_localApplicationTitle = other->m_localApplicationTitle;
     m_pacsHostName          = other->m_pacsHostName;
@@ -71,33 +55,10 @@ void PacsConfiguration::shallowCopy(const Object::csptr& _source)
     m_moveApplicationTitle  = other->m_moveApplicationTitle;
     m_moveApplicationPort   = other->m_moveApplicationPort;
     m_retrieveMethod        = other->m_retrieveMethod;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void PacsConfiguration::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
-{
-    PacsConfiguration::csptr other = PacsConfiguration::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF(
-        sight::data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
-        ),
-        !bool(other)
-    );
-    this->fieldDeepCopy(_source, cache);
-
-    m_localApplicationTitle = other->m_localApplicationTitle;
-    m_pacsHostName          = other->m_pacsHostName;
-    m_pacsApplicationTitle  = other->m_pacsApplicationTitle;
-    m_pacsApplicationPort   = other->m_pacsApplicationPort;
-    m_moveApplicationTitle  = other->m_moveApplicationTitle;
-    m_moveApplicationPort   = other->m_moveApplicationPort;
-    m_retrieveMethod        = other->m_retrieveMethod;
-}
-
-//------------------------------------------------------------------------------
-
-} //namespace data
-
-} //namespace sight::io::dimse
+} // namespace sight::io::dimse::data

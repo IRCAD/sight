@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,11 @@
 
 #pragma once
 
-#include <core/runtime/EConfigurationElement.hpp>
+#include <service/base.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 /**
@@ -46,18 +43,16 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void serviceConfigTest();
-    void concurentAccessToServiceConfigTest();
-    void getAllConfigsTest();
+    static void serviceConfigTest();
+    static void concurentAccessToServiceConfigTest();
+    static void getAllConfigsTest();
 
 private:
 
-    core::runtime::ConfigurationElement::sptr buildConfig();
+    static service::IService::ConfigType buildConfig();
 };
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

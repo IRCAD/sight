@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,18 +34,16 @@ namespace sight::module::memory
 {
 
 SDumpPolicy::SDumpPolicy()
-{
-}
+= default;
 
 SDumpPolicy::~SDumpPolicy()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 void SDumpPolicy::configuring()
 {
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
+    using ConfigurationType = core::runtime::ConfigurationElement::sptr;
     std::vector<ConfigurationType> config = m_configuration->find("config");
 
     if(!config.empty())
@@ -86,10 +84,9 @@ void SDumpPolicy::starting()
 
         if(policy)
         {
-            bool success;
             for(const ParametersType::value_type& param : m_policyParams)
             {
-                success = policy->setParam(param.first, param.second);
+                const bool success = policy->setParam(param.first, param.second);
                 SIGHT_ERROR_IF(
                     "[" << m_policy << "] Unable to set '"
                     << param.first << "' parameter to " << param.second,

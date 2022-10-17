@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,23 +29,18 @@
 
 #include <QHBoxLayout>
 
-namespace sight::module::ui::debug
-{
-
-namespace action
+namespace sight::module::ui::debug::action
 {
 
 //------------------------------------------------------------------------------
 
-ClassFactoryRegistryInfo::ClassFactoryRegistryInfo() noexcept
-{
-}
+ClassFactoryRegistryInfo::ClassFactoryRegistryInfo() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-ClassFactoryRegistryInfo::~ClassFactoryRegistryInfo() noexcept
-{
-}
+ClassFactoryRegistryInfo::~ClassFactoryRegistryInfo() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -54,13 +49,13 @@ void ClassFactoryRegistryInfo::updating()
     m_tree->clearSelection();
     m_tree->clear();
 
-    typedef service::extension::Factory ServiceRegistry;
+    using ServiceRegistry = service::extension::Factory;
     const ServiceRegistry::KeyVectorType& factoryKeys = ServiceRegistry::getDefault()->getFactoryKeys();
 
-    for(ServiceRegistry::KeyVectorType::value_type key : factoryKeys)
+    for(const ServiceRegistry::KeyVectorType::value_type& key : factoryKeys)
     {
-        const auto objImpl       = ServiceRegistry::getDefault()->getServiceObjects(key);
-        QTreeWidgetItem* srvItem = new QTreeWidgetItem();
+        const auto objImpl = ServiceRegistry::getDefault()->getServiceObjects(key);
+        auto* srvItem      = new QTreeWidgetItem();
         srvItem->setText(0, QString::fromStdString(key));
         srvItem->setText(1, QString::fromStdString(objImpl[0]));
         m_tree->addTopLevelItem(srvItem);
@@ -87,7 +82,7 @@ void ClassFactoryRegistryInfo::starting()
     m_dialog->setWindowTitle("ServiceFactoryRegistry");
     m_dialog->setMinimumSize(800, 600);
 
-    QHBoxLayout* sizer = new QHBoxLayout();
+    auto* sizer = new QHBoxLayout();
     m_tree = new QTreeWidget(m_dialog);
     QStringList headerList = (QStringList() << "Service" << "Object");
     m_tree->setColumnCount(2);
@@ -114,6 +109,4 @@ void ClassFactoryRegistryInfo::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace action
-
-} // namespace sight::module::ui::debug
+} // namespace sight::module::ui::debug::action

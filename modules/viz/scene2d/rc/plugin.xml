@@ -4,13 +4,8 @@
     <extension implements="sight::service::extension::Factory">
          <type>sight::viz::scene2d::IAdaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SAxis</service>
+         <object key="viewport">sight::viz::scene2d::data::Viewport</object>
          <desc>Render an axis on the scene2d.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::SCurvedHistogram</service>
-         <desc>IAdaptor implementation for histogram data.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
@@ -22,19 +17,9 @@
     <extension implements="sight::service::extension::Factory">
          <type>sight::viz::scene2d::IAdaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SHistogram</service>
-         <desc>IAdaptor implementation for histogram data.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::SHistogramCursor</service>
-         <desc>IAdaptor implementation to show a cursor on histogram pointed by mouse.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::SHistogramValue</service>
-         <desc>Defines an adaptor to show the histogram values clicked by mouse.</desc>
+         <object key="viewport">sight::viz::scene2d::data::Viewport</object>
+         <object key="image">sight::data::Image</object>
+         <desc>Displays the histogram of an image.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
@@ -44,10 +29,8 @@
     </extension>
     <extension implements="sight::service::extension::Factory">
          <type>sight::viz::scene2d::IAdaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::SMultipleTF</service>
+         <service>sight::module::viz::scene2d::adaptor::STransferFunction</service>
          <object key="viewport">sight::viz::scene2d::data::Viewport</object>
-         <object key="currentTF">sight::data::TransferFunction</object>
-         <object key="tfPool">sight::data::Composite</object>
          <object key="tf">sight::data::TransferFunction</object>
          <desc>Defines an adaptor to display a composite of TF and interact with them.</desc>
     </extension>
@@ -67,20 +50,8 @@
 
     <extension implements="sight::service::extension::Factory">
          <type>sight::viz::scene2d::IAdaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::SScaleValues</service>
-         <desc>SScaleValues adaptor. Display values and units on the axis.</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SSquare</service>
          <desc>Create a square on the scene2D</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::viz::scene2d::IAdaptor</type>
-         <service>sight::module::viz::scene2d::adaptor::STransferFunction</service>
-         <desc>IAdaptor implementation to display a transfer function.</desc>
     </extension>
 
     <extension implements="sight::service::extension::Factory">
@@ -99,11 +70,5 @@
          <type>sight::viz::scene2d::IAdaptor</type>
          <service>sight::module::viz::scene2d::adaptor::SViewportUpdater</service>
          <desc>Adaptor implementation that manages the camera on the view (by updating the viewport object).</desc>
-    </extension>
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::service::IController</type>
-         <service>sight::module::viz::scene2d::processing::SComputeHistogram</service>
-         <desc>The SComputeHistogram service computes the histogram of the image.</desc>
     </extension>
 </plugin>

@@ -34,11 +34,9 @@
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
 #include <data/Matrix4.hpp>
-#include <data/Patient.hpp>
 #include <data/Series.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 #include <data/String.hpp>
-#include <data/Study.hpp>
 #include <data/Vector.hpp>
 
 #include <io/base/service/ioTypes.hpp>
@@ -65,10 +63,7 @@
 #include <algorithm>
 #include <iomanip>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 const int DataView::s_UID_ROLE = Qt::UserRole + 1;
@@ -86,8 +81,7 @@ DataView::DataView(QWidget* _parent) :
 //-----------------------------------------------------------------------------
 
 DataView::~DataView()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -105,9 +99,9 @@ bool DataView::eventFilter(QObject* _obj, QEvent* _event)
     // get dropped data in tree widget
     if(_event->type() == QEvent::Drop)
     {
-        QDropEvent* dropEvent = static_cast<QDropEvent*>(_event);
+        auto* dropEvent = static_cast<QDropEvent*>(_event);
 
-        std::size_t index               = static_cast<std::size_t>(this->currentIndex());
+        auto index                      = static_cast<std::size_t>(this->currentIndex());
         ActivityRequirement requirement = m_activityInfo.requirements[index];
         QPointer<QTreeWidget> tree      = m_treeWidgets[index];
 
@@ -123,7 +117,8 @@ bool DataView::eventFilter(QObject* _obj, QEvent* _event)
         // Get the dropped item
         while(!stream.atEnd())
         {
-            int row, col;
+            int row = 0;
+            int col = 0;
 
             QMap<int, QVariant> roleDataMap;
 
@@ -134,6 +129,8 @@ bool DataView::eventFilter(QObject* _obj, QEvent* _event)
                 item = new QTreeWidgetItem();
                 itemList.push_back(item);
             }
+
+            SIGHT_ASSERT("item is null", item != nullptr);
 
             QList<int> keys = roleDataMap.keys();
             for(int key : keys)
@@ -175,9 +172,10 @@ bool DataView::eventFilter(QObject* _obj, QEvent* _event)
 
         return true;
     }
-    else if(_event->type() == QEvent::KeyPress)
+
+    if(_event->type() == QEvent::KeyPress)
     {
-        QKeyEvent* keyEvent = static_cast<QKeyEvent*>(_event);
+        auto* keyEvent = static_cast<QKeyEvent*>(_event);
         if(keyEvent->key() == Qt::Key_Delete)
         {
             this->removeSelectedObjects();
@@ -197,28 +195,28 @@ void DataView::fillInformation(const ActivityInfo& _info)
     this->clear();
 
     const ActivityInfo::RequirementsType& reqVect = m_activityInfo.requirements;
-    for(const auto req : reqVect)
+    for(const auto& req : reqVect)
     {
-        QVBoxLayout* const layout = new QVBoxLayout();
-        QWidget* const widget     = new QWidget();
+        auto* const layout = new QVBoxLayout();
+        auto* const widget = new QWidget();
         widget->setLayout(layout);
 
-        QHBoxLayout* const infoLayout = new QHBoxLayout();
+        auto* const infoLayout = new QHBoxLayout();
         layout->addLayout(infoLayout);
 
-        QVBoxLayout* const typeLayout = new QVBoxLayout();
-        QVBoxLayout* const txtLayout  = new QVBoxLayout();
+        auto* const typeLayout = new QVBoxLayout();
+        auto* const txtLayout  = new QVBoxLayout();
         infoLayout->addLayout(typeLayout);
         infoLayout->addSpacerItem(new QSpacerItem(20, 0));
         infoLayout->addLayout(txtLayout, 1);
 
-        ObjectIconMapType::iterator iter = m_objectIcons.find(req.type);
+        auto iter = m_objectIcons.find(req.type);
         if(iter != m_objectIcons.end())
         {
             const QString filename = QString::fromStdString(iter->second);
 
             this->addTab(widget, QIcon(filename), QString::fromStdString(req.name));
-            QLabel* const icon = new QLabel();
+            auto* const icon = new QLabel();
             icon->setAlignment(Qt::AlignHCenter);
             QPixmap pixmap(filename);
             icon->setPixmap(pixmap.scaled(100, 100, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
@@ -229,21 +227,21 @@ void DataView::fillInformation(const ActivityInfo& _info)
             this->addTab(widget, QString::fromStdString(req.name));
         }
 
-        QLabel* const type = new QLabel(QString("<small>%1</small>").arg(QString::fromStdString(req.type)));
+        auto* const type = new QLabel(QString("<small>%1</small>").arg(QString::fromStdString(req.type)));
         type->setAlignment(Qt::AlignHCenter);
         typeLayout->addWidget(type);
 
-        QLabel* const name = new QLabel(QString("<h2>%1</h2>").arg(QString::fromStdString(req.name)));
+        auto* const name = new QLabel(QString("<h2>%1</h2>").arg(QString::fromStdString(req.name)));
         name->setStyleSheet("QLabel { font: bold; }");
         txtLayout->addWidget(name);
 
-        QLabel* const description = new QLabel(QString::fromStdString(req.description));
+        auto* const description = new QLabel(QString::fromStdString(req.description));
         description->setStyleSheet("QLabel { font: italic; }");
         txtLayout->addWidget(description);
 
         txtLayout->addStretch();
 
-        QLabel* const nb = new QLabel();
+        auto* const nb = new QLabel();
         nb->setStyleSheet("QLabel { font: bold; }");
         layout->addWidget(nb);
 
@@ -276,34 +274,34 @@ void DataView::fillInformation(const ActivityInfo& _info)
         QStringList headers;
         headers << "" << "Description";
 
-        QHBoxLayout* const treeLayout   = new QHBoxLayout();
-        QVBoxLayout* const buttonLayout = new QVBoxLayout();
+        auto* const treeLayout   = new QHBoxLayout();
+        auto* const buttonLayout = new QVBoxLayout();
         if(req.type == "sight::data::String" || req.type == "sight::data::Boolean"
            || req.type == "sight::data::Integer" || req.type == "sight::data::Float"
            || req.type == "sight::data::Matrix4")
         {
-            QPushButton* const buttonNew = new QPushButton("New");
+            auto* const buttonNew = new QPushButton("New");
             buttonNew->setToolTip("Create a new empty object");
             buttonLayout->addWidget(buttonNew);
             QObject::connect(buttonNew, &QPushButton::clicked, this, &DataView::createNewObject);
         }
 
-        QPushButton* const buttonAdd    = new QPushButton("Load");
-        QPushButton* const buttonRemove = new QPushButton("Remove");
-        QPushButton* const buttonClear  = new QPushButton("Clear");
+        auto* const buttonAdd    = new QPushButton("Load");
+        auto* const buttonRemove = new QPushButton("Remove");
+        auto* const buttonClear  = new QPushButton("Clear");
         buttonLayout->addWidget(buttonAdd);
         buttonAdd->setToolTip(QString("Load an object of type '%1'.").arg(QString::fromStdString(req.type)));
 
-        // If the type is a Series, we add a button to import the data from a SeriesDB,
+        // If the type is a Series, we add a button to import the data from a SeriesSet,
         // we also improve the tree header by adding more informations.
         data::Object::sptr newObject = data::factory::New(req.type);
         if(newObject && data::Series::dynamicCast(newObject))
         {
-            QPushButton* const buttonAddFromSDB = new QPushButton("Import");
+            auto* const buttonAddFromSDB = new QPushButton("Import");
             buttonLayout->addWidget(buttonAddFromSDB);
             buttonAddFromSDB->setToolTip(
                 QString(
-                    "Import a SeriesDB and extract the N first objects of type '%1', with "
+                    "Import a SeriesSet and extract the N first objects of type '%1', with "
                     "N the maximum number of required objects."
                 ).
                 arg(QString::fromStdString(req.type))
@@ -361,14 +359,14 @@ void DataView::fillInformation(const ActivityInfo& _info)
 
 //-----------------------------------------------------------------------------
 
-void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries)
+void DataView::fillInformation(const data::Activity::sptr& _activity)
 {
     ActivityInfo info = sight::activity::extension::Activity::getDefault()->getInfo(
-        _activitySeries->getActivityConfigId()
+        _activity->getActivityConfigId()
     );
     m_activityInfo = info;
 
-    data::Composite::sptr activitySeriesData = _activitySeries->getData();
+    data::Composite::sptr activityData = _activity->getData();
 
     this->fillInformation(info);
 
@@ -376,7 +374,7 @@ void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries
     {
         ActivityRequirement req = m_activityInfo.requirements[i];
 
-        data::Object::sptr obj = activitySeriesData->at<data::Object>(req.name);
+        auto obj = activityData->get(req.name);
         if(obj)
         {
             if((req.minOccurs == 0 && req.maxOccurs == 0)
@@ -392,7 +390,7 @@ void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries
                     data::Vector::sptr vector = data::Vector::dynamicCast(obj);
                     if(vector)
                     {
-                        for(auto subObj : vector->getContainer())
+                        for(const auto& subObj : *vector)
                         {
                             this->addObjectItem(i, subObj);
                         }
@@ -407,7 +405,7 @@ void DataView::fillInformation(const data::ActivitySeries::sptr& _activitySeries
                     data::Composite::sptr composite = data::Composite::dynamicCast(obj);
                     if(composite)
                     {
-                        for(auto subObj : composite->getContainer())
+                        for(const auto& subObj : *composite)
                         {
                             this->addObjectItem(i, subObj.second);
                         }
@@ -452,7 +450,6 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
             }
             else
             {
-                ok         = false;
                 _errorMsg += "\n - The parameter '" + req.name + "' must be a '" + req.type + "'.";
             }
         }
@@ -464,24 +461,21 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
             }
             else
             {
-                ok         = false;
                 _errorMsg += "\n - The parameter '" + req.name + "' is required but is not defined.";
             }
         }
     }
     else // optional object or several objects
     {
-        unsigned int nbObj = static_cast<unsigned int>(tree->topLevelItemCount());
+        auto nbObj = static_cast<unsigned int>(tree->topLevelItemCount());
 
         if(nbObj < req.minOccurs)
         {
-            ok         = false;
             _errorMsg += "\n - The parameter '" + req.name + "' must contain at least "
                          + std::to_string(req.minOccurs) + " elements.";
         }
         else if(nbObj > req.maxOccurs)
         {
-            ok         = false;
             _errorMsg += "\n - The parameter '" + req.name + "' must contain at most "
                          + std::to_string(req.maxOccurs) + " elements.";
         }
@@ -500,7 +494,7 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
                     data::Object::sptr obj = data::Object::dynamicCast(core::tools::fwID::getObject(uid));
                     if(obj && obj->isA(req.type))
                     {
-                        vector->getContainer().push_back(obj);
+                        vector->push_back(obj);
                     }
                     else
                     {
@@ -565,9 +559,9 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
 
 //-----------------------------------------------------------------------------
 
-bool DataView::checkAndComputeData(const data::ActivitySeries::sptr& actSeries, std::string& errorMsg)
+bool DataView::checkAndComputeData(const data::Activity::sptr& activity, std::string& errorMsg)
 {
-    data::Composite::sptr composite = actSeries->getData();
+    data::Composite::sptr composite = activity->getData();
 
     bool ok = true;
     errorMsg += "The required data are not correct:";
@@ -589,7 +583,7 @@ bool DataView::checkAndComputeData(const data::ActivitySeries::sptr& actSeries, 
         }
     }
 
-    for(std::string validatotImpl : m_activityInfo.validatorsImpl)
+    for(const std::string& validatotImpl : m_activityInfo.validatorsImpl)
     {
         /// Process activity validator
         auto validator         = sight::activity::validator::factory::New(validatotImpl);
@@ -597,7 +591,7 @@ bool DataView::checkAndComputeData(const data::ActivitySeries::sptr& actSeries, 
 
         SIGHT_ASSERT("Validator '" + validatotImpl + "' instantiation failed", activityValidator);
 
-        sight::activity::IValidator::ValidationType validation = activityValidator->validate(actSeries);
+        sight::activity::IValidator::ValidationType validation = activityValidator->validate(activity);
         if(!validation.first)
         {
             ok        = false;
@@ -612,16 +606,16 @@ bool DataView::checkAndComputeData(const data::ActivitySeries::sptr& actSeries, 
 
 void DataView::removeSelectedObjects()
 {
-    std::size_t tabIndex          = static_cast<std::size_t>(this->currentIndex());
+    auto tabIndex                 = static_cast<std::size_t>(this->currentIndex());
     QPointer<QTreeWidget> tree    = m_treeWidgets[tabIndex];
     QList<QTreeWidgetItem*> items = tree->selectedItems();
     for(QTreeWidgetItem* item : items)
     {
-        if(item)
+        if(item != nullptr)
         {
             int itemIndex                 = tree->indexOfTopLevelItem(item);
             QTreeWidgetItem* itemToRemove = tree->takeTopLevelItem(itemIndex);
-            if(itemToRemove)
+            if(itemToRemove != nullptr)
             {
                 delete itemToRemove;
                 this->update();
@@ -634,7 +628,7 @@ void DataView::removeSelectedObjects()
 
 void DataView::clearTree()
 {
-    std::size_t tabIndex       = static_cast<std::size_t>(this->currentIndex());
+    auto tabIndex              = static_cast<std::size_t>(this->currentIndex());
     QPointer<QTreeWidget> tree = m_treeWidgets[tabIndex];
     tree->clear();
 }
@@ -643,7 +637,7 @@ void DataView::clearTree()
 
 void DataView::createNewObject()
 {
-    std::size_t index = static_cast<std::size_t>(this->currentIndex());
+    auto index = static_cast<std::size_t>(this->currentIndex());
 
     ActivityRequirement req = m_activityInfo.requirements[index];
 
@@ -651,7 +645,7 @@ void DataView::createNewObject()
 
     QPointer<QTreeWidget> tree = m_treeWidgets[index];
 
-    unsigned int nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
+    auto nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
 
     if(nbItems >= req.maxOccurs)
     {
@@ -671,7 +665,7 @@ void DataView::createNewObject()
 
 void DataView::importObject()
 {
-    const std::size_t index = static_cast<std::size_t>(this->currentIndex());
+    const auto index = static_cast<std::size_t>(this->currentIndex());
 
     ActivityRequirement req = m_activityInfo.requirements[index];
 
@@ -679,7 +673,7 @@ void DataView::importObject()
 
     QPointer<QTreeWidget> tree = m_treeWidgets[index];
 
-    const unsigned int nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
+    const auto nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
 
     if(nbItems >= req.maxOccurs)
     {
@@ -689,7 +683,7 @@ void DataView::importObject()
         return;
     }
 
-    auto obj = this->readObject(type, m_ioSelectorSrvConfig);
+    auto obj = sight::module::ui::qt::activity::DataView::readObject(type, m_ioSelectorSrvConfig);
     if(obj)
     {
         m_importedObject.push_back(obj);
@@ -702,7 +696,7 @@ void DataView::importObject()
 
 void DataView::importObjectFromSDB()
 {
-    const std::size_t index = static_cast<std::size_t>(this->currentIndex());
+    const auto index = static_cast<std::size_t>(this->currentIndex());
 
     ActivityRequirement req = m_activityInfo.requirements[index];
 
@@ -710,13 +704,13 @@ void DataView::importObjectFromSDB()
 
     QPointer<QTreeWidget> tree = m_treeWidgets[index];
 
-    const unsigned int nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
+    const auto nbItems = static_cast<unsigned int>(tree->topLevelItemCount());
 
     if(nbItems >= req.maxOccurs)
     {
         const QString message("Can't load more '" + QString::fromStdString(type)
                               + "', please remove one to load another.");
-        QMessageBox::warning(this, "Import from SeriesDB", message);
+        QMessageBox::warning(this, "Import from SeriesSet", message);
         return;
     }
 
@@ -725,13 +719,17 @@ void DataView::importObjectFromSDB()
     {
         SIGHT_ERROR_IF("Imported object must inherit from 'Series'.", !data::Series::dynamicCast(newObject));
 
-        // We use the SeriesDB reader and then extract the object of this type.
-        auto obj      = this->readObject("sight::data::SeriesDB", m_sdbIoSelectorSrvConfig);
-        auto seriesDB = data::SeriesDB::dynamicCast(obj);
-        if(seriesDB)
+        // We use the SeriesSet reader and then extract the object of this type.
+        auto obj = sight::module::ui::qt::activity::DataView::readObject(
+            "sight::data::SeriesSet",
+            m_sdbIoSelectorSrvConfig
+        );
+
+        auto series_set = data::SeriesSet::dynamicCast(obj);
+        if(series_set)
         {
             unsigned int nbImportedObj = 0;
-            for(const data::Series::sptr& series : *seriesDB)
+            for(const data::Series::sptr& series : *series_set)
             {
                 if(series->isA(type))
                 {
@@ -811,7 +809,7 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
 {
     QPointer<QTreeWidget> tree = m_treeWidgets[_index];
 
-    QTreeWidgetItem* const newItem = new QTreeWidgetItem();
+    auto* const newItem = new QTreeWidgetItem();
     newItem->setFlags(newItem->flags() & ~Qt::ItemIsDropEnabled);
     newItem->setData(int(ColumnCommunType::ID), s_UID_ROLE, QVariant(QString::fromStdString(_obj->getID())));
 
@@ -823,9 +821,9 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
     const data::Matrix4::csptr trf     = data::Matrix4::dynamicCast(_obj);
     if(series)
     {
-        newItem->setText(int(ColumnSeriesType::NAME), QString::fromStdString(series->getPatient()->getName()));
-        newItem->setText(int(ColumnSeriesType::SEX), QString::fromStdString(series->getPatient()->getSex()));
-        std::string birthdate = series->getPatient()->getBirthdate();
+        newItem->setText(int(ColumnSeriesType::NAME), QString::fromStdString(series->getPatientName()));
+        newItem->setText(int(ColumnSeriesType::SEX), QString::fromStdString(series->getPatientSex()));
+        std::string birthdate = series->getPatientBirthDate();
         if(!birthdate.empty() && birthdate != "unknown")
         {
             birthdate.insert(4, "-");
@@ -835,13 +833,13 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
         newItem->setText(int(ColumnSeriesType::BIRTHDATE), QString::fromStdString(birthdate));
 
         newItem->setText(int(ColumnSeriesType::MODALITY), QString::fromStdString(series->getModality()));
-        newItem->setText(int(ColumnSeriesType::MODALITY_DESC), QString::fromStdString(series->getDescription()));
+        newItem->setText(int(ColumnSeriesType::MODALITY_DESC), QString::fromStdString(series->getSeriesDescription()));
 
         newItem->setText(
             int(ColumnSeriesType::STUDY_DESC),
-            QString::fromStdString(series->getStudy()->getDescription())
+            QString::fromStdString(series->getStudyDescription())
         );
-        std::string date = series->getDate();
+        std::string date = series->getSeriesDate();
         if(!date.empty())
         {
             date.insert(4, "/");
@@ -850,7 +848,7 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
 
         newItem->setText(int(ColumnSeriesType::DATE), QString::fromStdString(date));
 
-        std::string time = series->getTime();
+        std::string time = series->getSeriesTime();
         if(!time.empty())
         {
             time.insert(2, ":");
@@ -859,7 +857,7 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
 
         newItem->setText(int(ColumnSeriesType::TIME), QString::fromStdString(time.substr(0, 8)));
 
-        std::string patientAge = series->getStudy()->getPatientAge();
+        std::string patientAge = series->getPatientAge();
         if(!patientAge.empty())
         {
             patientAge.insert(3, " ");
@@ -887,71 +885,71 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
                         patientPosition.begin(),
                         patientPosition.end(),
                         [&](unsigned char _c)
-                        {
-                            return _c == ' ';
-                        });
+                    {
+                        return _c == ' ';
+                    });
                 patientPosition.erase(forward, patientPosition.end());
-                if(patientPosition.compare("HFP") == 0)
+                if(patientPosition == "HFP")
                 {
                     patientPosition = "Head First-Prone";
                 }
-                else if(patientPosition.compare("HFS") == 0)
+                else if(patientPosition == "HFS")
                 {
                     patientPosition = "Head First-Supine";
                 }
-                else if(patientPosition.compare("HFDR") == 0)
+                else if(patientPosition == "HFDR")
                 {
                     patientPosition = "Head First-Decubitus Right";
                 }
-                else if(patientPosition.compare("HFDL") == 0)
+                else if(patientPosition == "HFDL")
                 {
                     patientPosition = "Head First-Decubitus Left";
                 }
-                else if(patientPosition.compare("FFDR") == 0)
+                else if(patientPosition == "FFDR")
                 {
                     patientPosition = "Feet First-Decubitus Right";
                 }
-                else if(patientPosition.compare("FFDL") == 0)
+                else if(patientPosition == "FFDL")
                 {
                     patientPosition = "Feet First-Decubitus Left";
                 }
-                else if(patientPosition.compare("FFP") == 0)
+                else if(patientPosition == "FFP")
                 {
                     patientPosition = "Feet First-Prone";
                 }
-                else if(patientPosition.compare("FFS") == 0)
+                else if(patientPosition == "FFS")
                 {
                     patientPosition = "Feet First-Supine";
                 }
-                else if(patientPosition.compare("LFP") == 0)
+                else if(patientPosition == "LFP")
                 {
                     patientPosition = "Left First-Prone";
                 }
-                else if(patientPosition.compare("LFS") == 0)
+                else if(patientPosition == "LFS")
                 {
                     patientPosition = "Left First-Supine";
                 }
-                else if(patientPosition.compare("RFP") == 0)
+                else if(patientPosition == "RFP")
                 {
                     patientPosition = "Right First-Prone";
                 }
-                else if(patientPosition.compare("RFS") == 0)
+                else if(patientPosition == "RFS")
                 {
                     patientPosition = "Right First-Supine";
                 }
-                else if(patientPosition.compare("AFDR") == 0)
+                else if(patientPosition == "AFDR")
                 {
                     patientPosition = "Anterior First-Decubitus Right";
                 }
-                else if(patientPosition.compare("AFDL") == 0)
+                else if(patientPosition == "AFDL")
                 {
                     patientPosition = "Anterior First-Decubitus Left";
                 }
-                else if(patientPosition.compare("PFDR") == 0)
+                else if(patientPosition == "PFDR")
                 {
                     patientPosition = "Posterior First-Decubitus Right";
                 }
-                else if(patientPosition.compare("PFDL") == 0)
+                else if(patientPosition == "PFDL")
                 {
                     patientPosition = "Posterior First-Decubitus Left";
                 }
@@ -963,7 +961,7 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
             );
             newItem->setText(
                 int(ColumnImageSeriesType::CONTRAST_AGENT),
-                QString::fromStdString(imageSeries->getContrastAgent())
+                QString::fromStdString(imageSeries->getContrastBolusAgent())
             );
             std::string acquisitionTime = imageSeries->getAcquisitionTime();
             if(!acquisitionTime.empty())
@@ -976,7 +974,7 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
                 int(ColumnImageSeriesType::ACQUISITION_TIME),
                 QString::fromStdString(acquisitionTime.substr(0, 8))
             );
-            std::string contrastTime = imageSeries->getContrastStartTime();
+            std::string contrastTime = imageSeries->getContrastBolusStartTime();
             if(!contrastTime.empty())
             {
                 contrastTime.insert(2, ":");
@@ -1023,7 +1021,7 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
     }
 
     // set icon
-    ObjectIconMapType::iterator iter = m_objectIcons.find(_obj->getClassname());
+    auto iter = m_objectIcons.find(_obj->getClassname());
     if(iter != m_objectIcons.end())
     {
         newItem->setIcon(int(ColumnCommunType::ID), QIcon(QString::fromStdString(iter->second)));
@@ -1038,9 +1036,9 @@ void DataView::addObjectItem(std::size_t _index, const data::Object::csptr& _obj
 
 //-----------------------------------------------------------------------------
 
-void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
+void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
 {
-    if(_item)
+    if(_item != nullptr)
     {
         std::string uid = _item->data(int(ColumnCommunType::ID), s_UID_ROLE).toString().toStdString();
         if(!uid.empty())
@@ -1076,7 +1074,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
                         this,
                         "Edition",
                         "Enter the Integer value:",
-                        intObj->value(),
+                        int(intObj->value()),
                         std::numeric_limits<int>::min(),
                         std::numeric_limits<int>::max(),
                         1,
@@ -1180,6 +1178,4 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int)
 
 //-----------------------------------------------------------------------------
 
-} // namespace activity
-
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::activity

@@ -39,10 +39,7 @@
 #include <filesystem>
 #include <functional>
 
-namespace sight::core::runtime
-{
-
-namespace detail
+namespace sight::core::runtime::detail
 {
 
 #ifdef WIN32
@@ -59,15 +56,34 @@ std::shared_ptr<Runtime> Runtime::m_instance;
 
 Runtime::Runtime()
 {
-    // The lib location is 'SIGHT_DIR/lib/sight_core.dll'
-    m_workingPath = boost::dll::this_line_location().parent_path().parent_path().string();
+    // Here we try to find the location of the root of a Sight install
+
+    // In most cases, we can rely on finding sight_core library and then go upward in the filesystem tree
+    // The lib location looks like 'SIGHT_DIR/lib/<arch>/libsight_core.*', where arch is optional
+    const std::string corePath = boost::dll::this_line_location().generic_string();
+    const std::string libPrefix("/" MODULE_LIB_PREFIX "/");
+    auto it = std::search(corePath.rbegin(), corePath.rend(), libPrefix.rbegin(), libPrefix.rend());
+
+    if(it == corePath.rend())
+    {
+        // But if we link statically, for instance linking with sight_core as an object library, then
+        // boost::dll::this_line_location() will return the location of the current executable
+        // In this case, we know that have to locate the bin directory instead of the library directory
+        const std::string binPrefix("/" MODULE_BIN_PREFIX "/");
+        it = std::search(corePath.rbegin(), corePath.rend(), binPrefix.rbegin(), binPrefix.rend());
+        SIGHT_FATAL_IF("Failed to locate Sight runtime. We tried to guess it from: " + corePath, it == corePath.rend());
+    }
+
+    const auto dist = std::distance(it, corePath.rend());
+    const std::filesystem::path libPath(corePath.begin(), corePath.begin() + dist - 1);
+    m_workingPath = libPath.parent_path().make_preferred();
+    SIGHT_INFO("Located Sight runtime in folder: " + m_workingPath.string());
 }
 
 //------------------------------------------------------------------------------
 
 Runtime::~Runtime()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -78,18 +94,15 @@ void Runtime::addModule(std::shared_ptr<Module> module)
     std::for_each(
         module->extensionsBegin(),
         module->extensionsEnd(),
-        std::bind(&Runtime::addExtension, this, std::placeholders::_1)
-    );
+        [this](auto e){addExtension(e);});
     std::for_each(
         module->extensionPointsBegin(),
         module->extensionPointsEnd(),
-        std::bind(&Runtime::addExtensionPoint, this, std::placeholders::_1)
-    );
+        [this](auto&& PH1, auto&& ...){addExtensionPoint(std::forward<decltype(PH1)>(PH1));});
     std::for_each(
         module->executableFactoriesBegin(),
         module->executableFactoriesEnd(),
-        std::bind(&Runtime::addExecutableFactory, this, std::placeholders::_1)
-    );
+        [this](auto&& PH1, auto&& ...){addExecutableFactory(std::forward<decltype(PH1)>(PH1));});
 }
 
 //------------------------------------------------------------------------------
@@ -99,18 +112,15 @@ void Runtime::unregisterModule(std::shared_ptr<Module> module)
     std::for_each(
         module->executableFactoriesBegin(),
         module->executableFactoriesEnd(),
-        std::bind(&Runtime::unregisterExecutableFactory, this, std::placeholders::_1)
-    );
+        [this](auto&& PH1, auto&& ...){unregisterExecutableFactory(std::forward<decltype(PH1)>(PH1));});
     std::for_each(
         module->extensionPointsBegin(),
         module->extensionPointsEnd(),
-        std::bind(&Runtime::unregisterExtensionPoint, this, std::placeholders::_1)
-    );
+        [this](auto&& PH1, auto&& ...){unregisterExtensionPoint(std::forward<decltype(PH1)>(PH1));});
     std::for_each(
         module->extensionsBegin(),
         module->extensionsEnd(),
-        std::bind(&Runtime::unregisterExtension, this, std::placeholders::_1)
-    );
+        [this](auto&& PH1, auto&& ...){unregisterExtension(std::forward<decltype(PH1)>(PH1));});
     m_modules.erase(module);
 }
 
@@ -130,17 +140,22 @@ void Runtime::addModules(const std::filesystem::path& repository)
     try
     {
         const auto modules = core::runtime::detail::io::ModuleDescriptorReader::createModules(repository);
-        std::for_each(modules.begin(), modules.end(), std::bind(&Runtime::addModule, this, std::placeholders::_1));
+        std::for_each(
+            modules.begin(),
+            modules.end(),
+            [this](auto&& PH1, auto&& ...)
+            {
+                addModule(std::forward<decltype(PH1)>(PH1));
+            });
         const auto libRepoStr = std::regex_replace(
             repository.lexically_normal().string(),
             s_MATCH_MODULE_PATH,
             MODULE_LIB_PREFIX
         );
-        m_repositories.push_back(
-            std::make_pair(
-                std::filesystem::weakly_canonical(std::filesystem::path(libRepoStr)),
-                repository
-            )
+        m_repositories.emplace_back(
+            std::filesystem::weakly_canonical(std::filesystem::path(libRepoStr)),
+            repository
+
         );
     }
     catch(const std::exception& exception)
@@ -170,7 +185,7 @@ void Runtime::unregisterExecutableFactory(std::shared_ptr<ExecutableFactory> fac
 {
     // Ensures no registered factory has the same identifier.
     const std::string type(factory->getType());
-    SIGHT_WARN_IF("ExecutableFactory Type " + type + " not found.", this->findExecutableFactory(type) == 0);
+    SIGHT_WARN_IF("ExecutableFactory Type " + type + " not found.", this->findExecutableFactory(type) == nullptr);
 
     // Removes the executable factory.
     m_executableFactories.erase(factory);
@@ -196,11 +211,11 @@ std::shared_ptr<ExecutableFactory> Runtime::findExecutableFactory(const std::str
 
 //------------------------------------------------------------------------------
 
-void Runtime::addExtension(std::shared_ptr<Extension> extension)
+void Runtime::addExtension(std::shared_ptr<detail::Extension> extension)
 {
     // Asserts no registered extension has the same identifier.
     const std::string identifier(filterID(extension->getIdentifier()));
-    if(!identifier.empty() && this->findExtension(identifier) != 0)
+    if(!identifier.empty() && this->findExtension(identifier) != nullptr)
     {
         throw RuntimeException(identifier + ": identifier already used by a registered extension.");
     }
@@ -211,13 +226,13 @@ void Runtime::addExtension(std::shared_ptr<Extension> extension)
 
 //------------------------------------------------------------------------------
 
-void Runtime::unregisterExtension(std::shared_ptr<Extension> extension)
+void Runtime::unregisterExtension(std::shared_ptr<detail::Extension> extension)
 {
     // Asserts no registered extension has the same identifier.
     const std::string identifier(filterID(extension->getIdentifier()));
     SIGHT_WARN_IF(
         "Extension " + identifier + " not found.",
-        !identifier.empty() && this->findExtension(identifier) == 0
+        !identifier.empty() && this->findExtension(identifier) == nullptr
     );
 
     // Removes the extension.
@@ -266,7 +281,7 @@ void Runtime::unregisterExtensionPoint(std::shared_ptr<ExtensionPoint> point)
 {
     // Asserts no registered extension point has the same identifier.
     const std::string identifier(filterID(point->getIdentifier()));
-    SIGHT_WARN_IF("ExtensionPoint " + identifier + " not found.", this->findExtensionPoint(identifier) == 0);
+    SIGHT_WARN_IF("ExtensionPoint " + identifier + " not found.", this->findExtensionPoint(identifier) == nullptr);
 
     m_extensionPoints.erase(point);
 }
@@ -317,7 +332,7 @@ std::shared_ptr<Module> Runtime::findEnabledModule(const std::string& identifier
 
 Runtime* Runtime::getDefault()
 {
-    if(m_instance.get() == nullptr)
+    if(m_instance == nullptr)
     {
         m_instance = std::make_shared<Runtime>();
     }
@@ -334,10 +349,10 @@ Runtime& Runtime::get()
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Extension> Runtime::findExtension(const std::string& identifier) const
+std::shared_ptr<core::runtime::Extension> Runtime::findExtension(const std::string& identifier) const
 {
     const std::string id = filterID(identifier);
-    std::shared_ptr<Extension> resExtension;
+    std::shared_ptr<core::runtime::Extension> resExtension;
     for(const ExtensionContainer::value_type& extension : m_extensions)
     {
         if(extension->getIdentifier() == id && extension->isEnabled())
@@ -393,7 +408,7 @@ std::shared_ptr<ExtensionPoint> Runtime::findExtensionPoint(const std::string& i
 
 //------------------------------------------------------------------------------
 
-IExecutable* Runtime::createExecutableInstance(const std::string& type)
+IExecutable* Runtime::createExecutableInstance(const std::string& type) const
 {
     std::shared_ptr<ExecutableFactory> factory;
 
@@ -416,7 +431,7 @@ IExecutable* Runtime::createExecutableInstance(const std::string& type)
 IExecutable* Runtime::createExecutableInstance(
     const std::string& type,
     ConfigurationElement::sptr configurationElement
-)
+) const
 {
     std::shared_ptr<ExecutableFactory> factory;
 
@@ -459,6 +474,4 @@ IExecutable* Runtime::createExecutableInstance(
 
 //------------------------------------------------------------------------------
 
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

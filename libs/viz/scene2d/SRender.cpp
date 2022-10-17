@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,25 +43,22 @@
 #include <QGraphicsRectItem>
 #include <QVBoxLayout>
 
+#include <cmath>
+
 namespace sight::viz::scene2d
 {
 
 SRender::SRender() noexcept :
     m_sceneStart(-100., -100.),
     m_sceneWidth(200., 200.),
-    m_scene(nullptr),
-    m_view(nullptr),
-    m_antialiasing(false),
-    m_background("#000000"),
-    m_aspectRatioMode(Qt::IgnoreAspectRatio)
+    m_background("#000000")
 {
 }
 
 //-----------------------------------------------------------------------------
 
-SRender::~SRender() noexcept
-{
-}
+SRender::~SRender() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -75,13 +72,6 @@ QGraphicsScene* SRender::getScene() const
 Scene2DGraphicsView* SRender::getView() const
 {
     return m_view;
-}
-
-//-----------------------------------------------------------------------------
-
-scene2d::data::Viewport::sptr SRender::getViewport() const
-{
-    return m_viewport;
 }
 
 //-----------------------------------------------------------------------------
@@ -131,7 +121,7 @@ void SRender::dispatchInteraction(scene2d::data::Event& _event)
             });
 
         // Process interaction on all adaptors until one has accepted the event.
-        for(viz::scene2d::IAdaptor::sptr adaptor : orderedAdaptors)
+        for(const viz::scene2d::IAdaptor::sptr& adaptor : orderedAdaptors)
         {
             adaptor->processInteraction(_event);
             if(_event.isAccepted())
@@ -144,12 +134,36 @@ void SRender::dispatchInteraction(scene2d::data::Event& _event)
 
 //-----------------------------------------------------------------------------
 
-scene2d::data::Coord SRender::mapToScene(const scene2d::data::Coord& coord) const
+bool SRender::contains(const scene2d::vec2d_t& coord) const
 {
     /// Returns the viewport coordinate point mapped to scene coordinates.
-    const QPoint qp(static_cast<int>(coord.getX()), static_cast<int>(coord.getY()));
-    const QPointF qps = m_view->mapToScene(qp);
-    return scene2d::data::Coord(qps.x(), qps.y());
+    const QPoint qp(static_cast<int>(coord.x), static_cast<int>(coord.y));
+    QPointF qps = m_view->mapToScene(qp);
+
+    QRectF rect = m_view->sceneRect();
+
+    return rect.contains(qps);
+}
+
+//-----------------------------------------------------------------------------
+
+scene2d::vec2d_t SRender::mapToScene(const scene2d::vec2d_t& coord, bool clip) const
+{
+    /// Returns the viewport coordinate point mapped to scene coordinates.
+    const QPoint qp(static_cast<int>(coord.x), static_cast<int>(coord.y));
+    QPointF qps = m_view->mapToScene(qp);
+    if(clip)
+    {
+        QRectF rect = m_view->sceneRect();
+        if(!rect.contains(qps))
+        {
+            // Keep the item inside the scene rect.
+            qps.setX(qMin(rect.right(), qMax(qps.x(), rect.left())));
+            qps.setY(qMin(rect.bottom(), qMax(qps.y(), rect.top())));
+        }
+    }
+
+    return {qps.x(), qps.y()};
 }
 
 //-----------------------------------------------------------------------------
@@ -168,10 +182,6 @@ void SRender::configuring()
         if((*iter)->getName() == "axis")
         {
             this->configureAxis(*iter);
-        }
-        else if((*iter)->getName() == "viewport")
-        {
-            this->configureViewport(*iter);
         }
         else if((*iter)->getName() == "scene")
         {
@@ -217,27 +227,30 @@ void SRender::stopping()
 
 void SRender::startContext()
 {
-    SPTR(ui::qt::container::QtContainer) qtContainer =
-        ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    auto qtContainer = ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
     // Convert the background color
-    std::uint8_t color[4];
+    std::array<std::uint8_t, 4> color {};
     sight::data::tools::Color::hexaStringToRGBA(m_background, color);
 
-    m_scene = new QGraphicsScene(m_sceneStart.getX(), m_sceneStart.getY(), m_sceneWidth.getX(), m_sceneWidth.getY());
+    m_scene = new QGraphicsScene(m_sceneStart.x, m_sceneStart.y, m_sceneWidth.x, m_sceneWidth.y);
     m_scene->setBackgroundBrush(QBrush(QColor(color[0], color[1], color[2], color[3])));
     m_scene->setFocus(Qt::MouseFocusReason);
 
     m_view = new Scene2DGraphicsView(m_scene, qtContainer->getQtContainer());
-    m_view->setViewport(m_viewport);
     m_view->setSceneRender(viz::scene2d::SRender::dynamicCast(this->getSptr()));
     m_view->setRenderHint(QPainter::Antialiasing, m_antialiasing);
 
-    QVBoxLayout* layout = new QVBoxLayout;
+    auto* layout = new QVBoxLayout;
     layout->addWidget(m_view);
     qtContainer->setLayout(layout);
 
-    m_view->updateFromViewport();
+    viz::scene2d::data::Viewport initViewport;
+    initViewport.setX(m_sceneStart.x);
+    initViewport.setY(m_sceneStart.y);
+    initViewport.setWidth(m_sceneWidth.x);
+    initViewport.setHeight(m_sceneWidth.y);
+    m_view->updateFromViewport(initViewport);
 }
 
 //-----------------------------------------------------------------------------
@@ -275,25 +288,6 @@ void SRender::configureAxis(ConfigurationType _conf)
 
 //-----------------------------------------------------------------------------
 
-void SRender::configureViewport(ConfigurationType _conf)
-{
-    SIGHT_ASSERT("\"viewport\" tag required", _conf->getName() == "viewport");
-
-    const std::string id     = _conf->getAttributeValue("id");
-    const std::string x      = _conf->getAttributeValue("x");
-    const std::string y      = _conf->getAttributeValue("y");
-    const std::string width  = _conf->getAttributeValue("width");
-    const std::string height = _conf->getAttributeValue("height");
-
-    m_viewport = scene2d::data::Viewport::New();
-    m_viewport->setX(std::stof(x));
-    m_viewport->setY(std::stof(y));
-    m_viewport->setWidth(std::stof(width));
-    m_viewport->setHeight(std::stof(height));
-}
-
-//-----------------------------------------------------------------------------
-
 void SRender::configureScene(ConfigurationType _conf)
 {
     SIGHT_ASSERT("\"scene\" tag required", _conf->getName() == "scene");
@@ -303,10 +297,10 @@ void SRender::configureScene(ConfigurationType _conf)
     const std::string width  = _conf->getAttributeValue("width");
     const std::string height = _conf->getAttributeValue("height");
 
-    m_sceneStart.setX(std::stof(x));
-    m_sceneStart.setY(std::stof(y));
-    m_sceneWidth.setX(std::stof(width));
-    m_sceneWidth.setY(std::stof(height));
+    m_sceneStart.x = std::stof(x);
+    m_sceneStart.y = std::stof(y);
+    m_sceneWidth.x = std::stof(width);
+    m_sceneWidth.y = std::stof(height);
 
     if(_conf->hasAttribute("antialiasing"))
     {
@@ -363,7 +357,10 @@ void SRender::configureAdaptor(ConfigurationType _conf)
 void SRender::updateSceneSize(float ratioPercent)
 {
     QRectF rec = m_scene->itemsBoundingRect();
-    qreal x, y, w, h;
+    qreal x    = NAN;
+    qreal y    = NAN;
+    qreal w    = NAN;
+    qreal h    = NAN;
     rec.getRect(&x, &y, &w, &h);
 
     if(ratioPercent != 0)
@@ -377,10 +374,10 @@ void SRender::updateSceneSize(float ratioPercent)
         rec.setRect(x, y, w, h);
     }
 
-    m_sceneStart.setX(x);
-    m_sceneStart.setY(y);
-    m_sceneWidth.setX(w);
-    m_sceneWidth.setY(h);
+    m_sceneStart.x = x;
+    m_sceneStart.y = y;
+    m_sceneWidth.x = w;
+    m_sceneWidth.y = h;
 
     m_scene->setSceneRect(rec);
 }

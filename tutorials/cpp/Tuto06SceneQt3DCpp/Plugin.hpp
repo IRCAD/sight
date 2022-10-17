@@ -55,12 +55,6 @@ private:
     /// Does nothing.
     void stop() noexcept override;
 
-    /// Creates a window with a Qt3D rendering scene.
-    void initialize() override;
-
-    /// Destroys and reset the AppManager.
-    void uninitialize() noexcept override;
-
     /// Contains the AppManager used to instantiate services.
     std::unique_ptr<sight::service::AppManager> m_appManager;
 };

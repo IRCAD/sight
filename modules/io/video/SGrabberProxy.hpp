@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,7 +35,7 @@ namespace sight::data
 
 class Camera;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::video
 {
@@ -48,16 +48,16 @@ namespace sight::module::io::video
  * implementation available, a dialog proposes the user to make a choice.
  *
  * @section Signals Signals
- * - \b positionModified(std::int64_t) : Emitted when the position in the video is modified during playing.
- * - \b durationModified(std::int64_t) : Emitted when the duration of the video is modified.
+ * - \b positionModified(std::int64_t): Emitted when the position in the video is modified during playing.
+ * - \b durationModified(std::int64_t): Emitted when the duration of the video is modified.
  *
  * @section Slots Slots
- * - \b startCamera() : Start playing the camera or the video.
- * - \b stopCamera() : Stop playing the camera or the video.
- * - \b pauseCamera() : Pause the video, it has no effect when playing a camera.
- * - \b loopVideo() : Toggle the loop of the playing.
- * - \b setPositionVideo(int) : Force the current time in the video.
- * - \b reconfigure() : Allows to erase the implementation choice, so that the selection routine is ran again, thus,
+ * - \b startCamera(): Start playing the camera or the video.
+ * - \b stopCamera(): Stop playing the camera or the video.
+ * - \b pauseCamera(): Pause the video, it has no effect when playing a camera.
+ * - \b loopVideo(): Toggle the loop of the playing.
+ * - \b setPositionVideo(int): Force the current time in the video.
+ * - \b reconfigure(): Allows to erase the implementation choice, so that the selection routine is ran again, thus,
  * potentially the selection dialog is shown.
  * - \b nextImage(): display the next image in step by step mode. Does nothing if not supported by the selected grabber.
  * - \b previousImage(): display the previous image in step by step mode. Does nothing if not supported by the
@@ -110,7 +110,7 @@ public:
     MODULE_IO_VIDEO_API SGrabberProxy() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_IO_VIDEO_API virtual ~SGrabberProxy() noexcept;
+    MODULE_IO_VIDEO_API ~SGrabberProxy() noexcept override;
 
     /**
      * @name Slots API
@@ -124,16 +124,16 @@ public:
 protected:
 
     /// Does nothing.
-    MODULE_IO_VIDEO_API virtual void starting() final;
+    MODULE_IO_VIDEO_API void starting() final;
 
     /// Stop the underlying grabber, destroy it, and empty the input FrameTl.
-    MODULE_IO_VIDEO_API virtual void stopping() final;
+    MODULE_IO_VIDEO_API void stopping() final;
 
     /// Does nothing.
-    MODULE_IO_VIDEO_API virtual void updating() final;
+    MODULE_IO_VIDEO_API void updating() final;
 
     /// Parses the XML configuration of the service.
-    MODULE_IO_VIDEO_API virtual void configuring() final;
+    MODULE_IO_VIDEO_API void configuring() final;
 
     /**
      * @name Slots methods
@@ -141,19 +141,19 @@ protected:
      * @{
      */
     /// Initialize and start camera (restart camera if is already started).
-    MODULE_IO_VIDEO_API virtual void startCamera() final;
+    MODULE_IO_VIDEO_API void startCamera() final;
 
     /// Stop camera.
-    MODULE_IO_VIDEO_API virtual void stopCamera() final;
+    MODULE_IO_VIDEO_API void stopCamera() final;
 
     /// Pause camera.
-    MODULE_IO_VIDEO_API virtual void pauseCamera() final;
+    MODULE_IO_VIDEO_API void pauseCamera() final;
 
     /// Enable/disable loop in video.
-    MODULE_IO_VIDEO_API virtual void toggleLoopMode() final;
+    MODULE_IO_VIDEO_API void toggleLoopMode() final;
 
     /// Set the new position in the video.
-    MODULE_IO_VIDEO_API virtual void setPosition(std::int64_t position) final;
+    MODULE_IO_VIDEO_API void setPosition(std::int64_t position) final;
 
     /// Get the previous image in frame by frame mode.
     MODULE_IO_VIDEO_API void previousImage() override;
@@ -163,6 +163,24 @@ protected:
 
     /// Set step used on readPrevious/readNext slots.
     MODULE_IO_VIDEO_API void setStep(int step, std::string key) override;
+
+    /// Sets an internal bool value.
+    MODULE_IO_VIDEO_API void setBoolParameter(bool, std::string) final;
+
+    /// Sets an internal double value.
+    MODULE_IO_VIDEO_API void setDoubleParameter(double, std::string) final;
+
+    /// Sets an internal int value.
+    MODULE_IO_VIDEO_API void setIntParameter(int, std::string) final;
+
+    /// Sets an internal enum value.
+    MODULE_IO_VIDEO_API void setEnumParameter(std::string, std::string) final;
+
+    /// Sets internal enum values.
+    MODULE_IO_VIDEO_API void setEnumValuesParameter(std::string, std::string) final;
+
+    /// SLOT: Requests the grabber internal settings.
+    MODULE_IO_VIDEO_API void requestSettings() final;
 /** @} */
 
 private:
@@ -187,7 +205,7 @@ private:
     void modifyPosition(int64_t position);
 
     /// Duration of the video has changed.
-    void modifyDuration(int64_t position);
+    void modifyDuration(int64_t duration);
 
     /// The playback has started in the sub-service.
     void fwdStartCamera();
@@ -197,6 +215,24 @@ private:
 
     /// A frame is presented in the sub-service.
     void fwdPresentFrame();
+
+    /// A named bool parameter has been emitted in the sub-service.
+    void fwdSetBoolParameter(bool value, std::string key);
+
+    /// A named double parameter has been emitted in the sub-service.
+    void fwdSetDoubleParameter(double value, std::string key);
+
+    /// A named int parameter has been emitted in the sub-service.
+    void fwdSetIntParameter(int value, std::string key);
+
+    /// A named enum parameter has been emitted in the sub-service.
+    void fwdSetEnumParameter(std::string value, std::string key);
+
+    /// A named enum values parameter has been emitted in the sub-service.
+    void fwdSetEnumValuesParameter(std::string value, std::string key);
+
+    // Forwards notifications
+    void fwdNotify(IService::NotificationType, const std::string message);
     /** @} */
 
     /// Camera type (RGB, RGBD,...)
@@ -226,7 +262,7 @@ private:
     /// Configure if selected services are excluded (true) or included (false).
     bool m_exclude {true};
 
-    /// Camera can be either a data::Camera or a data::CameraSeries depending on the implementation
+    /// Camera can be either a data::Camera or a data::CameraSet depending on the implementation
     data::ptr<data::Object, data::Access::in> m_camera {this, s_CAMERA_INPUT};
 };
 

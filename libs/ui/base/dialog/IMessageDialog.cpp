@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,22 +22,15 @@
 
 #include "ui/base/dialog/IMessageDialog.hpp"
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 const IMessageDialog::FactoryRegistryKeyType IMessageDialog::REGISTRY_KEY = "::ui::base::dialog::MessageDialog";
 
 IMessageDialog::IMessageDialog()
-{
-}
+= default;
 
 IMessageDialog::~IMessageDialog()
-{
-}
+= default;
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

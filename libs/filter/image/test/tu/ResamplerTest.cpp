@@ -32,10 +32,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::ResamplerTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -59,7 +56,7 @@ void ResamplerTest::identityTest()
     // TODO: make it work with an anisotropic spacing.
     const data::Image::Spacing SPACING = {{0.5, 0.5, 0.5}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::tools::Type TYPE       = core::tools::Type::s_INT16;
+    const core::Type TYPE              = core::Type::INT16;
 
     data::Image::sptr imageIn = data::Image::New();
 
@@ -96,7 +93,7 @@ void ResamplerTest::identityTest()
 
                 // The image shouldn't change.
                 std::string msg = std::to_string(valueIn) + " " + std::to_string(valueOut);
-                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg.c_str(), valueIn, valueOut);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg, valueIn, valueOut);
             }
         }
     }
@@ -110,7 +107,7 @@ void ResamplerTest::translateTest()
     const data::Image::Size SIZE       = {{16, 16, 16}};
     const data::Image::Spacing SPACING = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::tools::Type TYPE       = core::tools::Type::s_UINT8;
+    const core::Type TYPE              = core::Type::UINT8;
 
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
@@ -178,14 +175,14 @@ void ResamplerTest::rotateTest()
     const data::Image::Size SIZE       = {{64, 64, 64}};
     const data::Image::Spacing SPACING = {{1., 1., 1.}};
     const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-    const core::tools::Type TYPE       = core::tools::Type::s_FLOAT;
+    const core::Type TYPE              = core::Type::FLOAT;
 
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
 
     utestData::generator::Image::generateImage(imageIn, SIZE, SPACING, ORIGIN, TYPE, data::Image::GRAY_SCALE);
 
-    const float value = 1.f;
+    const float value = 1.F;
 
     const auto dumpLock = imageIn->dump_lock();
 
@@ -208,7 +205,7 @@ void ResamplerTest::rotateTest()
     rotMat->setCoefficient(2, 2, 0);
 
     // 32 mm translation along the X axis.
-    rotMat->setCoefficient(0, 3, SIZE[0] / 2.);
+    rotMat->setCoefficient(0, 3, double(SIZE[0]) / 2.);
 
     filter::image::Resampler::resample(
         data::Image::csptr(imageIn),
@@ -231,12 +228,12 @@ void ResamplerTest::rotateTest()
                 if(i == 0)
                 {
                     // The negative Z face must be 'white'.
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg.c_str(), 1.f, valueOut);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg, 1.F, valueOut);
                 }
                 else
                 {
                     // Everything else should be 'black'.
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg.c_str(), 0.f, valueOut);
+                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg, 0.F, valueOut);
                 }
             }
         }
@@ -245,6 +242,4 @@ void ResamplerTest::rotateTest()
 
 //------------------------------------------------------------------------------
 
-} // ut
-
-} // itkRegistrationOp
+} // namespace sight::filter::image::ut

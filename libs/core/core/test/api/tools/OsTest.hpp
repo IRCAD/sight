@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,28 +24,29 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::tools
-{
-
-namespace ut
+namespace sight::core::tools::ut
 {
 
 class Os : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(Os);
 CPPUNIT_TEST(getSharedLibraryPath);
+CPPUNIT_TEST(getUserConfigDirTest);
+CPPUNIT_TEST(getUserDataDirTest);
+CPPUNIT_TEST(getUserCacheDirTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
     // interface
-    void setUp();
-    void tearDown();
-    void getSharedLibraryPath();
+    void setUp() override;
+    void tearDown() override;
+    static void getSharedLibraryPath();
+    static void getUserConfigDirTest();
+    static void getUserDataDirTest();
+    static void getUserCacheDirTest();
 
     void idTest();
 };
 
-} // namespace ut
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::ut

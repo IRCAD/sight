@@ -23,14 +23,12 @@
 #include "ObjectTest.hpp"
 
 #include <data/Float.hpp>
+#include <data/mt/locked_ptr.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ObjectTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -111,6 +109,28 @@ void ObjectTest::fieldTest()
     CPPUNIT_ASSERT(defaultField != fieldObj2);
 }
 
-} //namespace ut
+//------------------------------------------------------------------------------
 
-} //namespace sight::data
+void ObjectTest::lastModifyTest()
+{
+    data::Object::sptr object = data::Float::New();
+
+    CPPUNIT_ASSERT_EQUAL(std::uint64_t(0), object->lastModified());
+
+    {
+        data::mt::locked_ptr lock(object);
+        CPPUNIT_ASSERT_EQUAL(std::uint64_t(1), object->lastModified());
+    }
+
+    for(std::uint32_t i = 0 ; i < 199 ; ++i)
+    {
+        data::mt::locked_ptr lock(object);
+        CPPUNIT_ASSERT_EQUAL(std::uint64_t(i + 2), object->lastModified());
+    }
+
+    CPPUNIT_ASSERT_EQUAL(std::uint64_t(200), object->lastModified());
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace sight::data::ut

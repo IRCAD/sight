@@ -26,9 +26,9 @@
 
 #include <core/tools/Failed.hpp>
 
-#include <data/helper/TransferFunction.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <ui/base/IEditor.hpp>
 
@@ -43,17 +43,12 @@ class QMenu;
 class QSlider;
 class QToolButton;
 
-namespace sight::ui::qt
-{
-
-namespace widget
+namespace sight::ui::qt::widget
 {
 
 class QRangeSlider;
 
-}
-
-}
+} // namespace sight::ui::qt::widget
 
 namespace sight::module::ui::qt::image
 {
@@ -98,7 +93,7 @@ public:
     MODULE_UI_QT_API WindowLevel() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_QT_API virtual ~WindowLevel() noexcept;
+    MODULE_UI_QT_API ~WindowLevel() noexcept override;
 
 protected:
 
@@ -113,9 +108,6 @@ protected:
 
     /// Destroys the layout.
     void stopping() final;
-
-    /// Selects the current tf.
-    void swapping(std::string_view) final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -133,7 +125,7 @@ protected:
     MODULE_UI_QT_API void info(std::ostream& _sstream) final;
 
     /// Slot: Updates the slider position
-    MODULE_UI_QT_API virtual void updateTF();
+    MODULE_UI_QT_API void updateTF();
 
 protected Q_SLOTS:
 
@@ -149,9 +141,9 @@ protected Q_SLOTS:
 
 protected:
 
-    typedef data::TransferFunction::TFValuePairType WindowLevelMinMaxType;
+    typedef data::TransferFunction::min_max_t WindowLevelMinMaxType;
 
-    double toWindowLevel(double _val);
+    double toWindowLevel(double _val) const;
 
     double fromWindowLevel(double _val);
 
@@ -165,7 +157,7 @@ protected:
 
     WindowLevelMinMaxType getImageWindowMinMax();
 
-    bool getWidgetDoubleValue(QLineEdit* widget, double& val);
+    static bool getWidgetDoubleValue(QLineEdit* widget, double& val);
 
     void setWidgetDynamicRange(double min, double max);
 
@@ -180,21 +172,19 @@ private:
 
     QPointer<sight::ui::qt::widget::QRangeSlider> m_rangeSlider;
 
-    double m_widgetDynamicRangeMin;
-    double m_widgetDynamicRangeWidth;
-    bool m_autoWindowing;
-    bool m_enableSquareTF;
+    double m_widgetDynamicRangeMin {-1024};
+    double m_widgetDynamicRangeWidth {4000};
+    bool m_autoWindowing {false};
+    bool m_enableSquareTF {true};
 
     /// Store previous TF, used in onToggleTF() to restore this TF when switching to the square TF
     data::TransferFunction::sptr m_previousTF;
 
-    data::helper::TransferFunction m_helperTF;
-
     static constexpr std::string_view s_IMAGE = "image";
     static constexpr std::string_view s_TF    = "tf";
 
-    data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE};
-    data::ptr<data::TransferFunction, data::Access::inout> m_tf {this, s_TF, false, true};
+    data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE, true};
+    data::ptr<data::TransferFunction, data::Access::inout> m_tf {this, s_TF, true};
 };
 
-} // uiImageQt
+} // namespace sight::module::ui::qt::image

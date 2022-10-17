@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
+
 #include <core/base.hpp>
 #include <core/mt/types.hpp>
 
@@ -105,8 +106,7 @@ protected:
      * @brief   Constructor : does nothing.
      */
     fwID()
-    {
-    } // cannot be instantiated
+    = default; // cannot be instantiated
 
 private:
 
@@ -132,9 +132,10 @@ private:
      * @brief Add newID in the dictionary (newID must not exist in fwID).
      * @note This method is NOT thread-safe
      */
-    void addIDInDictionary(IDType newID);
+    void addIDInDictionary(IDType newID) const;
 
-    IDType m_id;
+    /// The ID associated with the object. It is mutable, as it may be modified with a call to getID(GENERATE).
+    mutable IDType m_id;
 
     typedef std::unordered_map<IDType, WPTR(core::tools::Object)> Dictionary;
     typedef std::unordered_map<std::string, std::uint32_t> CategorizedCounter;
@@ -152,4 +153,4 @@ private:
     mutable core::mt::ReadWriteMutex m_idMutex;
 };
 
-} // namespace sight::core
+} // namespace sight::core::tools

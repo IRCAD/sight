@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace sight::module::navigation::openvslam
 /**
  * @brief   This class is started when the modules are loaded.
  */
-class MODULE_NAVIGATION_OPENVSLAM_CLASS_API Plugin : public core::runtime::Plugin
+class MODULE_NAVIGATION_OPENVSLAM_CLASS_API Plugin final : public core::runtime::Plugin
 {
 public:
 
@@ -48,4 +48,4 @@ public:
     MODULE_NAVIGATION_OPENVSLAM_API void stop() noexcept final;
 };
 
-} // namespace orbSlamTracker
+} // namespace sight::module::navigation::openvslam

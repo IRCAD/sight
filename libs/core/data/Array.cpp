@@ -51,7 +51,7 @@ inline static std::size_t computeSize(
                 size.begin(),
                 size.end(),
                 static_cast<std::size_t>(1),
-                std::multiplies<data::Array::SizeType::value_type>()
+                std::multiplies<>()
             );
     }
 
@@ -77,7 +77,7 @@ data::Array::OffsetType Array::computeStrides(SizeType size, std::size_t sizeOfT
 
 //------------------------------------------------------------------------------
 
-Array::Array(data::Object::Key) :
+Array::Array(data::Object::Key /*unused*/) :
     m_bufferObject(core::memory::BufferObject::New())
 {
 }
@@ -104,69 +104,73 @@ void Array::swap(Array::sptr _source)
 
 //------------------------------------------------------------------------------
 
-void Array::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Array::shallowCopy(const Object::csptr& /*unused*/)
 {
-    Array::csptr other = Array::dynamicConstCast(_source);
+    SIGHT_FATAL("shallowCopy not implemented for : " + this->getClassname());
+}
+
+//------------------------------------------------------------------------------
+
+void Array::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
+{
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
-
-    this->clear();
 
     if(!other->m_bufferObject->isEmpty())
     {
-        core::memory::BufferObject::Lock lockerDest(m_bufferObject);
-        this->resize(other->m_size, other->m_type);
-        char* buffDest = static_cast<char*>(lockerDest.getBuffer());
-        core::memory::BufferObject::Lock lockerSource(other->m_bufferObject);
-        char* buffSrc = static_cast<char*>(lockerSource.getBuffer());
-        std::copy(buffSrc, buffSrc + other->getSizeInBytes(), buffDest);
+        resize(other->m_size, other->m_type, true);
+        std::memcpy(m_bufferObject->getBuffer(), other->m_bufferObject->getBuffer(), other->getSizeInBytes());
     }
     else
     {
+        this->clear();
+
         m_strides = other->m_strides;
         m_type    = other->m_type;
         m_size    = other->m_size;
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
 
 std::size_t Array::resize(
     const SizeType& size,
-    const core::tools::Type& type,
+    const core::Type& type,
     bool reallocate
 )
 {
-    const std::size_t bufSize = computeSize(type.sizeOf(), size);
+    const std::size_t bufSize = computeSize(type.size(), size);
 
-    if(reallocate && (m_isBufferOwner || m_bufferObject->isEmpty()))
+    if(reallocate && bufSize != m_bufferObject->getSize())
     {
         if(m_bufferObject->isEmpty())
         {
+            m_isBufferOwner = true;
             m_bufferObject->allocate(bufSize);
         }
-        else
+        else if(m_isBufferOwner)
         {
             m_bufferObject->reallocate(bufSize);
         }
-
-        m_isBufferOwner = true;
-    }
-    else if(reallocate && !m_isBufferOwner)
-    {
-        SIGHT_THROW_EXCEPTION_MSG(
-            data::Exception,
-            "Tried to reallocate a not-owned Buffer."
-        );
+        else
+        {
+            SIGHT_THROW_EXCEPTION_MSG(
+                data::Exception,
+                "Tried to reallocate a not-owned Buffer."
+            );
+        }
     }
 
-    m_strides = computeStrides(size, type.sizeOf());
+    m_strides = computeStrides(size, type.size());
     m_type    = type;
     m_size    = size;
 
@@ -177,8 +181,6 @@ std::size_t Array::resize(
 
 std::size_t Array::resize(const SizeType& size, bool reallocate)
 {
-    SIGHT_ASSERT("Type should have been set by a previous resize() call", !m_type.isOfType<void>());
-
     return this->resize(size, m_type, reallocate);
 }
 
@@ -194,7 +196,7 @@ void Array::clear()
         }
 
         m_strides.clear();
-        m_type = core::tools::Type();
+        m_type = core::Type::NONE;
         m_size.clear();
     }
 }
@@ -210,7 +212,7 @@ bool Array::empty() const
 
 std::size_t Array::getElementSizeInBytes() const
 {
-    return m_type.sizeOf();
+    return m_type.size();
 }
 
 //------------------------------------------------------------------------------
@@ -224,7 +226,7 @@ std::size_t Array::numElements() const
 
 std::size_t Array::getSizeInBytes() const
 {
-    return computeSize(m_type.sizeOf(), m_size);
+    return computeSize(m_type.size(), m_size);
 }
 
 //------------------------------------------------------------------------------
@@ -264,7 +266,7 @@ bool Array::getIsBufferOwner() const
 
 //------------------------------------------------------------------------------
 
-core::tools::Type Array::getType() const
+core::Type Array::getType() const
 {
     return m_type;
 }
@@ -288,7 +290,7 @@ std::size_t Array::getBufferOffset(const data::Array::IndexType& id) const
         id.end(),
         m_strides.begin(),
         offsets.begin(),
-        std::multiplies<OffsetType::value_type>()
+        std::multiplies<>()
     );
 
     const std::size_t offset = std::accumulate(offsets.begin(), offsets.end(), static_cast<std::size_t>(0));
@@ -348,7 +350,7 @@ void Array::setBuffer(
     void* buf,
     bool takeOwnership,
     const data::Array::SizeType& size,
-    const core::tools::Type& type,
+    const core::Type& type,
     core::memory::BufferAllocationPolicy::sptr policy
 )
 {
@@ -385,7 +387,7 @@ void Array::dump_lock_impl(std::vector<core::memory::BufferObject::Lock>& locks)
 
 Array::iterator<char> Array::begin()
 {
-    return iterator<char>(static_cast<char*>(getBuffer()));
+    return {static_cast<char*>(getBuffer())};
 }
 
 //------------------------------------------------------------------------------
@@ -401,7 +403,7 @@ Array::iterator<char> Array::end()
 
 Array::const_iterator<char> Array::begin() const
 {
-    return const_iterator<char>(static_cast<const char*>(getBuffer()));
+    return {static_cast<const char*>(getBuffer())};
 }
 
 //------------------------------------------------------------------------------
@@ -426,7 +428,7 @@ bool Array::operator==(const Array& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

@@ -47,7 +47,7 @@ class DATA_CLASS_API GenericField : public GenericFieldBase
 {
 public:
 
-    SIGHT_DECLARE_CLASS(GenericField<T>, data::Object);
+    SIGHT_DECLARE_CLASS(GenericField<T>, GenericFieldBase);
 
     typedef T ValueType;
 
@@ -82,12 +82,12 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool operator==(const GenericFieldBase& other) const noexcept override
+    inline bool operator==(const GenericField& other) const noexcept
     {
         try
         {
             // Try to cast in the same type
-            const GenericField<T>& other_field = dynamic_cast<const GenericField<T>&>(other);
+            const auto& other_field = dynamic_cast<const GenericField<T>&>(other);
 
             // If the type is a floating point type
             if constexpr(std::is_floating_point_v<T>)
@@ -104,7 +104,9 @@ public:
             }
 
             // Do not forget to call superclass == operator
-            return Object::operator==(other);
+            // BaseClass have a pure virtual == operator, so we call the base class from BaseClass
+            using base = typename BaseClass::BaseClass;
+            return base::operator==(other);
         }
         catch([[maybe_unused]] const std::bad_cast& exp)
         {
@@ -116,12 +118,12 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool operator<(const GenericFieldBase& other) const noexcept override
+    inline bool operator<(const GenericField& other) const noexcept
     {
         try
         {
             // Try to cast in the same type
-            const GenericField<T>& other_field = dynamic_cast<const GenericField<T>&>(other);
+            const auto& other_field = dynamic_cast<const GenericField<T>&>(other);
 
             // If the type is a floating point type
             if constexpr(std::is_floating_point_v<T>)
@@ -149,12 +151,12 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool operator>(const GenericFieldBase& other) const noexcept override
+    inline bool operator>(const GenericField& other) const noexcept
     {
         try
         {
             // Try to cast in the same type
-            const GenericField<T>& other_field = dynamic_cast<const GenericField<T>&>(other);
+            const auto& other_field = dynamic_cast<const GenericField<T>&>(other);
 
             // If the type is a floating point type
             if constexpr(std::is_floating_point_v<T>)
@@ -182,21 +184,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    inline bool operator!=(const GenericFieldBase& other) const noexcept override
-    {
-        return !(*this == other);
-    }
-
-    //------------------------------------------------------------------------------
-
-    inline bool operator<=(const GenericFieldBase& other) const noexcept override
+    inline bool operator<=(const GenericField& other) const noexcept
     {
         return !(*this > other);
     }
 
     //------------------------------------------------------------------------------
 
-    inline bool operator>=(const GenericFieldBase& other) const noexcept override
+    inline bool operator>=(const GenericField& other) const noexcept
     {
         return !(*this < other);
     }
@@ -218,9 +213,9 @@ public:
 protected:
 
     template<typename GT>
-    static typename GT::sptr GenericFieldFactory(const typename GT::ValueType value);
+    static typename GT::sptr GenericFieldFactory(typename GT::ValueType value);
 
-    static sptr GenericFieldFactory(const T value);
+    static sptr GenericFieldFactory(T value);
 
     /**
      * @brief Constructor.
@@ -234,9 +229,8 @@ protected:
     /**
      * @brief Destructor.
      */
-    virtual ~GenericField() noexcept
-    {
-    }
+    ~GenericField() noexcept override =
+        default;
 
     //------------------------------------------------------------------------------
 

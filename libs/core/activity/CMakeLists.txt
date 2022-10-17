@@ -1,4 +1,4 @@
-sight_add_target(activity TYPE LIBRARY PCH pchData)
+sight_add_target(activity TYPE LIBRARY)
 
 target_link_libraries(activity PUBLIC core data)
 

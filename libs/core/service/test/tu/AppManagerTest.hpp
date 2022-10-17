@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,11 @@
 
 #pragma once
 
-#include <core/runtime/EConfigurationElement.hpp>
-
 #include <service/AppManager.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 /**
@@ -53,8 +48,8 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     void managerCreationTest();
     void managerWithObjectTest();
@@ -62,7 +57,7 @@ public:
     void managerWithServiceConnectionTest();
     void managerWithOutputCreationTest();
     void managerWithGroupTest();
-    void managerWithInputsTest();
+    static void managerWithInputsTest();
 
 private:
 
@@ -75,15 +70,12 @@ public:
 
     friend class AppManagerTest;
     AppManagerForTest()
-    {
-    }
+    = default;
 
-    ~AppManagerForTest()
+    ~AppManagerForTest() override
     {
         this->destroy();
     }
 };
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

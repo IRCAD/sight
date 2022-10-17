@@ -84,7 +84,7 @@ protected:
 private:
 
     /// Threshold value used in filter
-    double m_threshold;
+    double m_threshold {50.0};
 
     static constexpr std::string_view s_IMAGE_IN  = "source";
     static constexpr std::string_view s_IMAGE_OUT = "target";

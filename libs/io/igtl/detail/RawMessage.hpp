@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,6 +29,13 @@
 #include <string>
 #include <vector>
 
+// FIXME
+#ifndef WIN32
+    #define OVERRIDE_ON_LINUX override
+#else
+    #define OVERRIDE_ON_LINUX
+#endif
+
 namespace sight::io::igtl::detail
 {
 
@@ -52,7 +59,7 @@ public:
     IO_IGTL_API RawMessage(std::string const& bodyType);
 
     /// Destructor
-    IO_IGTL_API ~RawMessage();
+    IO_IGTL_API ~RawMessage() override;
 
     /**
      * @brief append a string to raw data
@@ -88,13 +95,13 @@ public:
 private:
 
     /// Override
-    int GetBodyPackSize();
+    int GetBodyPackSize() OVERRIDE_ON_LINUX; // FIXME
 
     /// Override
-    int PackBody();
+    int PackBody() OVERRIDE_ON_LINUX; // FIXME
 
     /// Override
-    int UnpackBody();
+    int UnpackBody() OVERRIDE_ON_LINUX; // FIXME
 
 private:
 

@@ -29,10 +29,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::vision::ut::ProjectionTest);
 
-namespace sight::filter::vision
-{
-
-namespace ut
+namespace sight::filter::vision::ut
 {
 
 //------------------------------------------------------------------------------
@@ -63,10 +60,13 @@ void ProjectionTest::projectionTest()
         const double fx          = 565.53;
         const double fy          = 563.25;
 
-        double x, y, z;
+        double x = NAN;
+        double y = NAN;
+        double z = NAN;
         filter::vision::Projection::projectPixel(pX, pY, static_cast<double>(depth), cx, cy, fx, fy, x, y, z);
-        std::size_t pX2, pY2;
-        bool success = filter::vision::Projection::projectPoint(x, y, z, cx, cy, fx, fy, width, height, pX2, pY2);
+        std::size_t pX2 = 0;
+        std::size_t pY2 = 0;
+        bool success    = filter::vision::Projection::projectPoint(x, y, z, cx, cy, fx, fy, width, height, pX2, pY2);
 
         CPPUNIT_ASSERT(success);
         CPPUNIT_ASSERT_EQUAL(pX, pX2);
@@ -89,10 +89,13 @@ void ProjectionTest::projectionTest()
         const double fx          = 565.53;
         const double fy          = 563.25;
 
-        std::size_t pX, pY;
-        bool success = filter::vision::Projection::projectPoint(x, y, z, cx, cy, fx, fy, width, height, pX, pY);
+        std::size_t pX = 0;
+        std::size_t pY = 0;
+        bool success   = filter::vision::Projection::projectPoint(x, y, z, cx, cy, fx, fy, width, height, pX, pY);
         CPPUNIT_ASSERT(success);
-        double x2, y2, z2;
+        double x2 = NAN;
+        double y2 = NAN;
+        double z2 = NAN;
         filter::vision::Projection::projectPixel(pX, pY, z, cx, cy, fx, fy, x2, y2, z2);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(x, x2, 0.1);
         CPPUNIT_ASSERT_DOUBLES_EQUAL(y, y2, 0.1);
@@ -102,6 +105,4 @@ void ProjectionTest::projectionTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace registrationOp
+} // namespace sight::filter::vision::ut

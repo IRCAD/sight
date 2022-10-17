@@ -24,13 +24,9 @@
 
 #include "io/dicom/helper/DicomDataWriter.hxx"
 
-namespace sight::io::dicom
-{
+#include <utility>
 
-namespace container
-{
-
-namespace sr
+namespace sight::io::dicom::container::sr
 {
 
 //------------------------------------------------------------------------------
@@ -38,18 +34,17 @@ namespace sr
 DicomSRUIDRefNode::DicomSRUIDRefNode(
     const DicomCodedAttribute& codedAttribute,
     const std::string& relationship,
-    const std::string uidValue
+    std::string uidValue
 ) :
     io::dicom::container::sr::DicomSRNode(codedAttribute, "UIDREF", relationship),
-    m_uidValue(uidValue)
+    m_uidValue(std::move(uidValue))
 {
 }
 
 //------------------------------------------------------------------------------
 
 DicomSRUIDRefNode::~DicomSRUIDRefNode()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -71,8 +66,4 @@ void DicomSRUIDRefNode::print(std::ostream& os) const
 
 //------------------------------------------------------------------------------
 
-} //namespace sr
-
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container::sr

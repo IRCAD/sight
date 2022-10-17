@@ -27,15 +27,7 @@
 
 #include <data/Image.hpp>
 
-#include <boost/numeric/ublas/matrix.hpp>
-
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 /**
@@ -66,7 +58,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Image();
+    IO_DICOM_API ~Image() override;
 
     /**
      * @brief Read Image Plane Module tags
@@ -94,10 +86,6 @@ public:
 
 protected:
 
-    typedef boost::numeric::ublas::matrix<double, boost::numeric::ublas::row_major,
-                                          std::vector<double> > MatrixType;
-    typedef boost::numeric::ublas::vector<double> VectorType;
-
     /**
      * @brief Read image buffer
      * @param[in] dimensions Image dimensions
@@ -109,10 +97,10 @@ protected:
      */
     char* readImageBuffer(
         const std::vector<unsigned int>& dimensions,
-        const core::tools::Type imageType,
-        const unsigned short bitsAllocated,
-        const unsigned short newBitsAllocated,
-        const bool performRescale
+        core::Type imageType,
+        std::uint16_t bitsAllocated,
+        std::uint16_t newBitsAllocated,
+        bool performRescale
     );
 
     /**
@@ -124,21 +112,11 @@ protected:
     char* correctImageOrientation(
         char* buffer,
         std::vector<unsigned int>& dimensions,
-        unsigned short bitsAllocated
+        std::uint16_t bitsAllocated
     );
 
-    /**
-     * @brief Compute the inverse of matrix
-     * @param[in] matrix Matrix that must be inverted
-     */
-    MatrixType computeInverseMatrix(MatrixType matrix);
-
     /// Enable buffer rotation
-    bool m_enableBufferRotation;
+    bool m_enableBufferRotation {true};
 };
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

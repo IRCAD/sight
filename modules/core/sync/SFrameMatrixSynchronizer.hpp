@@ -197,16 +197,16 @@ private:
     std::uint8_t m_updateMask {SYNC_REQUESTED};
 
     /// Tolerance to take into account matrix
-    core::HiResClock::HiResClockType m_tolerance;
+    core::HiResClock::HiResClockType m_tolerance {500.};
 
     /// Check if output images are initialized
-    bool m_imagesInitialized;
+    bool m_imagesInitialized {false};
 
-    static constexpr std::size_t s_MAX_MATRICES_TL                        = 4;
-    static constexpr std::string_view s_FRAMETL_INPUT                     = "frameTL";
-    static constexpr std::string_view s_IMAGE_INOUT                       = "image";
-    static constexpr std::string_view s_MATRIXTL_INPUT                    = "matrixTL";
-    static constexpr std::string_view s_MATRICES_INOUT[s_MAX_MATRICES_TL] = {
+    static constexpr std::size_t s_MAX_MATRICES_TL                                    = 4;
+    static constexpr std::string_view s_FRAMETL_INPUT                                 = "frameTL";
+    static constexpr std::string_view s_IMAGE_INOUT                                   = "image";
+    static constexpr std::string_view s_MATRIXTL_INPUT                                = "matrixTL";
+    static constexpr std::array<std::string_view, s_MAX_MATRICES_TL> s_MATRICES_INOUT = {
         "matrices0", "matrices1", "matrices2", "matrices3"
     };
 
@@ -232,10 +232,10 @@ private:
     std::vector<std::vector<int> > m_sendMatricesStatus;
 
     /// Time step used for the update
-    unsigned int m_timeStep;
+    unsigned int m_timeStep {33};
 
     /// Total number of matrices in output (used to know if all the matrices are synchronized)
-    std::size_t m_totalOutputMatrices;
+    std::size_t m_totalOutputMatrices {};
 
     /// Delay in milliseconds between frames and matrices
     int m_delay {0};

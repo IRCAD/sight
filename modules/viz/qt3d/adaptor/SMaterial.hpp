@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ public:
     MODULE_VIZ_QT3D_API SMaterial() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_QT3D_API virtual ~SMaterial() noexcept;
+    MODULE_VIZ_QT3D_API ~SMaterial() noexcept override;
 
     /// Updates associated material.
     MODULE_VIZ_QT3D_API void setMaterial(sight::viz::qt3d::data::Material* _material);

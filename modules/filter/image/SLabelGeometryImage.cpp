@@ -24,7 +24,6 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/String.hpp>
@@ -48,8 +47,7 @@ SLabelGeometryImage::SLabelGeometryImage()
 //-----------------------------------------------------------------------------
 
 SLabelGeometryImage::~SLabelGeometryImage()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -61,18 +59,18 @@ void SLabelGeometryImage::configuring()
         SIGHT_ASSERT("pointList is needed in output key", m_configuration->findConfigurationElement("out"));
         std::vector<core::runtime::ConfigurationElement::sptr> clusterVect = clusters->find("cluster");
 
-        SIGHT_ASSERT("Clusters must have cluster tag.", clusterVect.size() > 0);
+        SIGHT_ASSERT("Clusters must have cluster tag.", !clusterVect.empty());
 
-        for(std::size_t i = 0 ; i < clusterVect.size() ; ++i)
+        for(auto& i : clusterVect)
         {
-            std::string clusterStr = clusterVect[i]->getValue();
+            std::string clusterStr = i->getValue();
             std::vector<std::size_t> clusterLabels;
             const boost::char_separator<char> separator(",");
             const boost::tokenizer<boost::char_separator<char> > tok {clusterStr, separator};
 
             for(const auto& t : tok)
             {
-                clusterLabels.push_back(std::stoi(t));
+                clusterLabels.push_back(std::stoul(t));
             }
 
             m_lPointListLabels.push_back(clusterLabels);
@@ -124,13 +122,13 @@ void SLabelGeometryImage::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SLabelGeometryImage::updateSelectedPointList(std::string value, std::string key)
+void SLabelGeometryImage::updateSelectedPointList(std::string value, std::string /*key*/)
 {
     SIGHT_ASSERT(
         "value: " << value << "should end by a number between 0 and 9",
         value.back() >= '0' && value.back() <= '9'
     );
-    int indexPlane = std::stoi(value);
+    std::size_t indexPlane = std::stoul(value);
     // if the XML enum is between 1 and n, instead of 0 and n-1
     if(indexPlane > 0)
     {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,25 +34,15 @@
 
 #include <io/base/writer/GenericObjectWriter.hpp>
 
-namespace fwDicomData
-{
-
-class DicomSeries;
-
-}
-
 namespace sight::core::jobs
 {
 
 class Aggregator;
 class Observer;
 
-}
+} // namespace sight::core::jobs
 
-namespace sight::io::dicom
-{
-
-namespace writer
+namespace sight::io::dicom::writer
 {
 
 /**
@@ -74,7 +64,7 @@ public:
     IO_DICOM_API SurfaceSegmentation(io::base::writer::IObjectWriter::Key key);
 
     /// Destructor
-    IO_DICOM_API ~SurfaceSegmentation();
+    IO_DICOM_API ~SurfaceSegmentation() override;
 
     /// Load and start appropriate writing tools.
     IO_DICOM_API void write() override;
@@ -97,6 +87,4 @@ private:
     SPTR(core::jobs::Observer) m_writerJob;
 };
 
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer

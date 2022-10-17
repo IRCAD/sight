@@ -27,15 +27,12 @@
 
 #include <core/base.hpp>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 /**
  * @brief   Defines the generic progress dialog for IHM.
- * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
+ * Use the Delegate design pattern. The specific implementation selection is ensured by SIGHT_REGISTER_GUI.
  * The specific implementation are in fwGuiWX and fwGuiQT libraries
  */
 class UI_BASE_CLASS_API ProgressDialog : public IProgressDialog
@@ -46,7 +43,7 @@ public:
 
     /// will instantiate the concrete implementation
     UI_BASE_API ProgressDialog(const std::string& title = std::string(), const std::string& msg = std::string());
-    UI_BASE_API ~ProgressDialog();
+    UI_BASE_API ~ProgressDialog() override;
 
     ///set the title for the dialog
     UI_BASE_API void setTitle(const std::string& title) override;
@@ -68,6 +65,4 @@ protected:
     ui::base::dialog::IProgressDialog::sptr m_implementation;
 };
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

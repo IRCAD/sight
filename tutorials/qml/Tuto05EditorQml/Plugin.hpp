@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,17 +40,13 @@ public:
     TUTO05EDITORQML_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    TUTO05EDITORQML_API ~Plugin() noexcept;
+    TUTO05EDITORQML_API ~Plugin() noexcept override;
 
     /// Overrides start method. .
-    TUTO05EDITORQML_API void start();
+    TUTO05EDITORQML_API void start() override;
 
     /// Overrides stop method. Do nothing
-    TUTO05EDITORQML_API void stop() noexcept;
-
-    TUTO05EDITORQML_API void initialize();
-
-    TUTO05EDITORQML_API void uninitialize() noexcept;
+    TUTO05EDITORQML_API void stop() noexcept override;
 };
 
 } // namespace Tuto05EditorQml

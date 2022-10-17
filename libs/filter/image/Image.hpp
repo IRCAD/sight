@@ -25,7 +25,7 @@
 #include "filter/image/config.hpp"
 
 #include <core/base.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/Image.hpp>
 
@@ -46,8 +46,8 @@ FILTER_IMAGE_API void applyRoi(data::Image::sptr image, data::Image::sptr roi);
  */
 FILTER_IMAGE_API bool isRoiApplied(
     data::Image::sptr image,
-    data::Image::sptr imgRoiApplied,
-    data::Image::sptr roi
+    data::Image::sptr roi,
+    data::Image::sptr imgRoiApplied
 );
 
 /**
@@ -58,8 +58,8 @@ void mergeMask(const data::Image::sptr& imgDest, const data::Image::csptr& mask,
 {
     typedef IMG_DEST_TYPE ImgDestType;
     typedef MASK_TYPE MaskType;
-    SIGHT_ASSERT("Image dest has not correct type", imgDest->getType().isOfType<ImgDestType>());
-    SIGHT_ASSERT("Image mask has not correct type", mask->getType().isOfType<MaskType>());
+    SIGHT_ASSERT("Image dest has not correct type", imgDest->getType() == core::Type::get<ImgDestType>());
+    SIGHT_ASSERT("Image mask has not correct type", mask->getType() == core::Type::get<MaskType>());
 
     SIGHT_ASSERT("Images have not the same size", imgDest->getSize() == mask->getSize());
     SIGHT_ASSERT(

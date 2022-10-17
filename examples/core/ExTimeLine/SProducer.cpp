@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,19 +45,19 @@ void SProducer::configuring()
 void SProducer::starting()
 {
     m_timer = m_associatedWorker->createTimer();
-    m_timer->setFunction(std::bind(&SProducer::updating, this));
+    m_timer->setFunction([this](auto&& ...){updating();});
     m_timer->setDuration(std::chrono::milliseconds(m_period));
 
     m_timer->start();
 
     // Init timeline pool
-    if(m_timelineSize)
+    if(m_timelineSize != 0U)
     {
         const auto timeline = m_timeline.lock();
 
         // This wouldn't hurt to initialize the timeline several times since it will be erased each time
         // but this would be a mess to know who is the last to initialize
-        SIGHT_ASSERT("Timeline initialized twice", timeline->getMaxElementNum() == ~0u);
+        SIGHT_ASSERT("Timeline initialized twice", timeline->getMaxElementNum() == ~0U);
 
         timeline->setMaximumSize(m_timelineSize);
 
@@ -87,7 +87,7 @@ void SProducer::updating()
     const std::string message = m_message + " #" + std::to_string(m_msgCount++);
 
     data->uidSender = m_senderId;
-    std::strcpy(data->szMsg, message.c_str());
+    std::copy(message.begin(), message.end(), data->szMsg.begin());
 
     timeline->pushObject(buffer);
 

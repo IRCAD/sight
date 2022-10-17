@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 
 #include <string>
 
-namespace sight::io::base
-{
-
-namespace reader
+namespace sight::io::base::reader
 {
 
 class IObjectReader;
@@ -51,8 +48,7 @@ template<typename CLASSNAME>
 friend SPTR(CLASSNAME) io::base::reader::factory::New();
 
 Key()
-{
-}
+= default;
 };
 
 IO_BASE_API SPTR(io::base::reader::IObjectReader) New(const io::base::reader::registry::KeyType& classname);
@@ -67,6 +63,4 @@ SPTR(CLASSNAME)  New()
 
 } // namespace factory
 
-} // namespace reader
-
-} // namespace sight::io::base
+} // namespace sight::io::base::reader

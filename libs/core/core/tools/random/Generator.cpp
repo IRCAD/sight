@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,10 +21,7 @@
 
 #include "Generator.hpp"
 
-namespace sight::core::tools
-{
-
-namespace random
+namespace sight::core::tools::random
 {
 
 static std::mutex s_mutex;
@@ -34,17 +31,15 @@ int safeRand(const bool reset)
 {
     std::lock_guard guard(s_mutex);
 
-    static std::mt19937 s_generator(1);
+    static std::mt19937 s_generator(std::random_device {}());
     static std::uniform_int_distribution<int> s_distributor(0, RAND_MAX);
 
     if(reset)
     {
-        s_generator = std::mt19937(1);
+        s_generator = std::mt19937(std::random_device {}());
     }
 
     return s_distributor(s_generator);
 }
 
-}
-
-}
+} // namespace sight::core::tools::random

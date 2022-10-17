@@ -62,7 +62,7 @@ public:
     DATA_API TimeLine(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~TimeLine();
+    DATA_API ~TimeLine() override;
 
     /// Push an object to the timeline
     DATA_API virtual void pushObject(const SPTR(timeline::Object)& obj) = 0;

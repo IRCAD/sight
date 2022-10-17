@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,10 +35,7 @@
 #include <QPointer>
 #include <QSlider>
 
-namespace sight::module::ui::qt
-{
-
-namespace video
+namespace sight::module::ui::qt::video
 {
 
 /**
@@ -57,7 +54,7 @@ public:
     MODULE_UI_QT_API SSlider() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SSlider() noexcept;
+    MODULE_UI_QT_API ~SSlider() noexcept override;
 
     /**@name Signals API
      * @{
@@ -129,9 +126,7 @@ private:
     QPointer<QLabel> m_totalDuration;
 
     /// Is the slider pressed ?
-    bool m_sliderPressed;
+    bool m_sliderPressed {false};
 };
 
-} // video
-
-} // sight::module::ui::qt
+} // namespace sight::module::ui::qt::video

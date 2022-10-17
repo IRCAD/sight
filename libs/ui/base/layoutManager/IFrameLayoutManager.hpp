@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,16 +28,11 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-#include <data/Composite.hpp>
-
 #include <filesystem>
 #include <functional>
 #include <list>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 /**
@@ -81,13 +76,10 @@ public:
     public:
 
         FrameInfo() :
-            m_name(""),
+
             m_minSize(std::make_pair(-1, -1)),
-            m_style(DEFAULT),
             m_size(std::make_pair(-1, -1)),
-            m_position(std::make_pair(-1, -1)),
-            m_state(FrameState::UNKNOWN),
-            m_visibility(true)
+            m_position(std::make_pair(-1, -1))
         {
         }
 
@@ -98,22 +90,22 @@ public:
         /// Frame minimum size (min width and min height)
         std::pair<int, int> m_minSize;
         /// Frame style
-        Style m_style;
+        Style m_style {DEFAULT};
         /// Frame size
         std::pair<int, int> m_size;
         /// Frame position
         std::pair<int, int> m_position;
         /// Frame state (maximize, minized, full screen)
-        FrameState m_state;
+        FrameState m_state {FrameState::UNKNOWN};
         /// Frame visibility
-        bool m_visibility;
+        bool m_visibility {true};
     };
 
     /// Constructor. Do nothing.
     UI_BASE_API IFrameLayoutManager();
 
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~IFrameLayoutManager();
+    UI_BASE_API ~IFrameLayoutManager() override;
 
     /**
      * @brief Configure the layout before creation.
@@ -179,16 +171,14 @@ protected:
 
     UI_BASE_API void readConfig();
 
-    UI_BASE_API void writeConfig();
+    UI_BASE_API void writeConfig() const;
 
 private:
 
-    void defaultCloseCallback();
+    static void defaultCloseCallback();
 
     /// Save frame configuration definition
     FrameInfo m_frameInfo;
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

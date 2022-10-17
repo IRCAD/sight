@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 
 #include <igtlTrackingDataMessage.h>
 
-namespace sight::io::igtl::detail
-{
-
-namespace converter
+namespace sight::io::igtl::detail::converter
 {
 
 const std::string TrackingStartConverter::s_IGTL_TYPE          = "STT_TDATA";
@@ -46,32 +43,30 @@ const std::string s_coordinateNameKey                          = "CoordinateName
 converterRegisterMacro(io::igtl::detail::converter::TrackingStartConverter);
 
 TrackingStartConverter::TrackingStartConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 TrackingStartConverter::~TrackingStartConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
-::igtl::MessageBase::Pointer TrackingStartConverter::fromFwDataObject(data::Object::csptr src) const
+::igtl::MessageBase::Pointer TrackingStartConverter::fromFwDataObject(data::Object::csptr /*src*/) const
 {
     ::igtl::StartTrackingDataMessage::Pointer trackingMsg = ::igtl::StartTrackingDataMessage::New();
 
     trackingMsg->SetResolution(0);
     trackingMsg->SetCoordinateName("Undefined");
 
-    return ::igtl::MessageBase::Pointer(trackingMsg.GetPointer());
+    return {trackingMsg.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
 
 data::Object::sptr TrackingStartConverter::fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const
 {
-    ::igtl::StartTrackingDataMessage* msg = dynamic_cast< ::igtl::StartTrackingDataMessage*>(src.GetPointer());
+    auto* msg = dynamic_cast< ::igtl::StartTrackingDataMessage*>(src.GetPointer());
 
     ::igtl::StartTrackingDataMessage::Pointer trackingMsg = ::igtl::StartTrackingDataMessage::Pointer(msg);
 
@@ -119,6 +114,4 @@ std::string const& TrackingStartConverter::getFwDataObjectType() const
     return TrackingStartConverter::s_FWDATA_OBJECT_TYPE;
 }
 
-} // namespace converter
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::converter

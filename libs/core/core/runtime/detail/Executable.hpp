@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "core/config.hpp"
 #include "core/runtime/IExecutable.hpp"
 
-namespace sight::core::runtime
+namespace sight::core::runtime::detail
 {
 
 /**
@@ -46,15 +46,15 @@ public:
      * @return  a shared pointer to the configuration element being the initialization data of the executable
      *          or null when none
      */
-    const std::shared_ptr<ConfigurationElement> getInitializationData() const;
+    [[nodiscard]] std::shared_ptr<ConfigurationElement> getInitializationData() const;
 
     /**
      * @name    Overrides.
      */
     /// @{
-    std::shared_ptr<Module> getModule() const override;
+    [[nodiscard]] std::shared_ptr<Module> getModule() const override;
 
-    void setInitializationData(const std::shared_ptr<ConfigurationElement> configuration) override;
+    void setInitializationData(std::shared_ptr<ConfigurationElement> element) override;
 
     /// @}
 
@@ -76,4 +76,4 @@ private:
     std::shared_ptr<ConfigurationElement> m_initializationData;
 };
 
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

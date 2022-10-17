@@ -25,9 +25,8 @@
 #include "activity/config.hpp"
 #include "activity/extension/Activity.hpp"
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 #include <data/mt/weak_ptr.hpp>
-#include <data/Series.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 
@@ -64,16 +63,16 @@ protected:
         const InOutMapType& inouts = InOutMapType()
     );
 
-    /// Create the activity series given in 'mainActivity' configuration
-    ACTIVITY_API virtual data::ActivitySeries::sptr createMainActivity() const;
+    /// Create the activity given in 'mainActivity' configuration
+    [[nodiscard]] ACTIVITY_API virtual data::Activity::sptr createMainActivity() const;
 
     /**
      * @brief Check if the activity is valid by calling the activity validator.
      * @return Return true if the given activity is valid
      */
-    ACTIVITY_API std::pair<bool, std::string> validateActivity(
-        const data::ActivitySeries::csptr& activitySeries
-    ) const;
+    static ACTIVITY_API std::pair<bool, std::string> validateActivity(
+        const data::Activity::csptr& activity
+    );
 
     std::string m_mainActivityId; ///< configuration id of the main activity
 

@@ -33,16 +33,13 @@ namespace sight::module::geometry::base
 
 //-----------------------------------------------------------------------------
 
-SPointListFromMatrices::SPointListFromMatrices() :
-    m_append(false)
-{
-}
+SPointListFromMatrices::SPointListFromMatrices()
+= default;
 
 //-----------------------------------------------------------------------------
 
 SPointListFromMatrices::~SPointListFromMatrices()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -112,4 +109,4 @@ void SPointListFromMatrices::updating()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::geometry::base

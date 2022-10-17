@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,8 @@
 #pragma once
 
 #include "io/igtl/config.hpp"
+// Patched header.
+#include "io/igtl/patch/igtlSocket.h"
 
 #include <core/Exception.hpp>
 
@@ -89,6 +91,7 @@ public:
 
     /**
      * @brief receive header
+     * @throw igtl::Exception on error (network error or timeout).
      * @return header
      */
 
@@ -97,7 +100,7 @@ public:
     /** @brief receive body pack
      *
      *  @param[in] header msg header
-     *
+     *  @throw igtl::Exception on error (network error or timeout).
      *  @return Message
      */
     IO_IGTL_API ::igtl::MessageBase::Pointer receiveBody(::igtl::MessageHeader::Pointer header);
@@ -107,7 +110,7 @@ public:
      *
      * @return socket
      */
-    IO_IGTL_API ::igtl::Socket::Pointer getSocket() const;
+    [[nodiscard]] IO_IGTL_API ::igtl::Socket::Pointer getSocket() const;
 
     /**
      * @brief add a new authorized device name
@@ -120,7 +123,7 @@ public:
      *
      * @return boolean
      */
-    IO_IGTL_API bool getFilteringByDeviceName() const;
+    [[nodiscard]] IO_IGTL_API bool getFilteringByDeviceName() const;
 
     /**
      * @brief activate/desactivate the filtering by device name
@@ -140,15 +143,30 @@ public:
      *
      * return std::string
      */
-    IO_IGTL_API std::string getDeviceNameOut() const;
+    [[nodiscard]] IO_IGTL_API std::string getDeviceNameOut() const;
 
 protected:
+
+    /// Patched methods from igtl.
+
+    /// Closes the socket (from igtlSocket::CloseSocket()).
+    /// Patched version: Added a close() after shutdown() on Linux.
+    static void closeSocket(int socket_descriptor);
+    /// Creates an endpoint for communication and returns the descriptor.
+    /// -1 indicates error.
+    static int createSocket();
+    /// Listen for connections on a socket. Returns 0 on success. -1 on error.
+    static int listenSocket(int socket_descriptor);
+    /// Binds socket to a particular port.
+    /// Returns 0 on success other -1 is returned.
+    /// Patched version: Doesn't rely on VTK_HAVE_SO_REUSEADDR to add option SO_REUSEADDR.
+    static int bindSocket(int socket_descriptor, std::uint16_t port);
 
     /// client socket
     ::igtl::Socket::Pointer m_socket;
 
     /// Filter the message by device name
-    bool m_filteringByDeviceName;
+    bool m_filteringByDeviceName {false};
 
     /// Set of authorized device names
     std::set<std::string> m_deviceNamesIn;

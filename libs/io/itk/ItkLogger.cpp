@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include <core/base.hpp>
 
 #include <itkOutputWindow.h>
@@ -27,12 +29,13 @@
 /**
  * @brief Outputs ITK messages to the sight log.
  */
+// NOLINTNEXTLINE(cppcoreguidelines-virtual-class-destructor): used via pointers
 class ItkLogger : public ::itk::OutputWindow
 {
 public:
 
-    typedef ItkLogger Self;
-    typedef ::itk::SmartPointer<Self> Pointer;
+    using Self    = ItkLogger;
+    using Pointer = ::itk::SmartPointer<Self>;
 
     itkTypeMacro(ItkLogger, ::itk::Object);
 
@@ -46,27 +49,25 @@ public:
 private:
 
     ItkLogger();
-    virtual ~ItkLogger();
+    ~ItkLogger() override;
 };
 
 //------------------------------------------------------------------------------
 
 ItkLogger::Pointer ItkLogger::New()
 {
-    return ItkLogger::Pointer(new ItkLogger());
+    return {new ItkLogger()};
 }
 
 //------------------------------------------------------------------------------
 
 ItkLogger::ItkLogger()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 ItkLogger::~ItkLogger()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 

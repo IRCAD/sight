@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,10 +36,7 @@ class QLayout;
 class QWidget;
 QT_END_NAMESPACE
 
-namespace sight::ui::qt
-{
-
-namespace container
+namespace sight::ui::qt::container
 {
 
 /**
@@ -66,7 +63,7 @@ public:
      *
      * @param The layout to set on the container widget
      */
-    UI_QT_API virtual void setLayout(QLayout* const layout);
+    UI_QT_API virtual void setLayout(QLayout* layout);
 
     UI_QT_API void clean() override;
     UI_QT_API void destroyContainer() override;
@@ -80,6 +77,4 @@ private:
     QPointer<QWidget> m_container;
 };
 
-} // namespace container
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::container

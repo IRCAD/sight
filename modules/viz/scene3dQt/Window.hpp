@@ -67,17 +67,17 @@ public:
      * In case any drawing surface backing stores (QRasterWindow or QOpenGLWindow) of Qt are supplied to this
      * class in any way we inform Qt that they will be unused.
      */
-    void render(QPainter*);
+    void render(QPainter* /*unused*/);
 
     /// Creates the Ogre render window associated to this window,
     /// called by renderNow() once the window is first exposed.
     void initialize();
 
     /// Returns the Ogre render window.
-    Ogre::RenderWindow* getOgreRenderWindow() const;
+    [[nodiscard]] Ogre::RenderWindow* getOgreRenderWindow() const;
 
     /// Gets this window ID.
-    int getId() const;
+    [[nodiscard]] int getId() const;
 
     /// Makes the OpenGL context as current one on this thread against this window.
     void makeCurrent();
@@ -86,7 +86,7 @@ public:
     void destroyWindow();
 
     /// Returns current frame number of the render window.
-    int getFrameId() const;
+    [[nodiscard]] int getFrameId() const;
 
     /// Renders immediately the frame.
     void renderNow();
@@ -126,10 +126,10 @@ private:
     void mouseReleaseEvent(QMouseEvent* _e) override;
 
     /// Manages when window visibility in the windowing system changes.
-    void exposeEvent(QExposeEvent*) override;
+    void exposeEvent(QExposeEvent* /*unused*/) override;
 
     /// Manages when window is moved.
-    void moveEvent(QMoveEvent*) override;
+    void moveEvent(QMoveEvent* /*unused*/) override;
 
     /// Manages generic events.
     bool event(QEvent* _event) override;
@@ -138,7 +138,7 @@ private:
 
     /// Converts the mouse event to be able to handle it with ogre.
     InteractionInfo convertMouseEvent(
-        const QMouseEvent* const _evt,
+        const QMouseEvent* _evt,
         InteractionInfo::InteractionEnum _interactionType
     ) const;
 
@@ -183,10 +183,13 @@ private:
     /// Defines the last size sent to Ogre. In hidpi
     QSize m_ogreSize;
 
+    /// Workaround to fix multiple scenes rendering with NVidia Prime
+    bool m_externalGLControl {true};
+
 private Q_SLOTS:
 
     /// Called when the screen changes.
-    void onScreenChanged(QScreen*);
+    void onScreenChanged(QScreen* /*unused*/);
 };
 
 //-----------------------------------------------------------------------------

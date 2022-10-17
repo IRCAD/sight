@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,23 +24,19 @@
 
 #include <QMenu>
 
-namespace sight::ui::qt
-{
-
-namespace container
+namespace sight::ui::qt::container
 {
 
 //-----------------------------------------------------------------------------
 
-QtMenuContainer::QtMenuContainer(ui::base::GuiBaseObject::Key key) noexcept
+QtMenuContainer::QtMenuContainer(ui::base::GuiBaseObject::Key /*key*/) noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-QtMenuContainer::~QtMenuContainer() noexcept
-{
-}
+QtMenuContainer::~QtMenuContainer() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -74,6 +70,4 @@ QMenu* QtMenuContainer::getQtMenu()
 
 //-----------------------------------------------------------------------------
 
-} // namespace container
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::container

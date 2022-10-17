@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,20 +41,18 @@ public:
     typedef std::shared_ptr<const HasSignals> csptr;
 
     HasSignals()
-    {
-    }
+    = default;
 
     virtual ~HasSignals()
-    {
-    }
+    = default;
 
-    SPTR(SignalBase) signal(const Signals::SignalKeyType& key) const
+    [[nodiscard]] SPTR(SignalBase) signal(const Signals::SignalKeyType& key) const
     {
         return m_signals[key];
     }
 
     template<typename SignalType>
-    SPTR(SignalType) signal(const Signals::SignalKeyType& key) const
+    [[nodiscard]] SPTR(SignalType) signal(const Signals::SignalKeyType& key) const
     {
         SPTR(SignalType) Signal = std::dynamic_pointer_cast<SignalType>(this->signal(key));
         return Signal;

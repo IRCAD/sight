@@ -24,13 +24,7 @@
 
 #include "io/dicom/helper/DicomDataWriter.hxx"
 
-namespace sight::io::dicom
-{
-
-namespace container
-{
-
-namespace sr
+namespace sight::io::dicom::container::sr
 {
 
 //------------------------------------------------------------------------------
@@ -43,8 +37,7 @@ DicomSRContainerNode::DicomSRContainerNode(const DicomCodedAttribute& codedAttri
 //------------------------------------------------------------------------------
 
 DicomSRContainerNode::~DicomSRContainerNode()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -59,8 +52,4 @@ void DicomSRContainerNode::write(gdcm::DataSet& dataset) const
 
 //------------------------------------------------------------------------------
 
-} //namespace sr
-
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container::sr

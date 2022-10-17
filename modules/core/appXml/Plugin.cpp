@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,21 +32,25 @@ SIGHT_REGISTER_PLUGIN("sight::module::appXml::Plugin");
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() noexcept :
-    m_configurationName(""),
-    m_parametersName("")
-{
-}
+Plugin::Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
 void Plugin::start()
+{
+    auto worker = core::thread::getDefaultWorker();
+    worker->post([this](auto&& ...){run();});
+}
+
+//------------------------------------------------------------------------------
+
+void Plugin::run()
 {
     SIGHT_FATAL_IF("Module appXml, missing param config in profile", !this->getModule()->hasParameter("config"));
     m_configurationName = this->getModule()->getParameterValue("config");
@@ -54,12 +58,7 @@ void Plugin::start()
     {
         m_parametersName = this->getModule()->getParameterValue("parameters");
     }
-}
 
-//------------------------------------------------------------------------------
-
-void Plugin::initialize()
-{
     SIGHT_ASSERT("The OSR is already initialized.", !m_appConfigMng);
     SIGHT_ASSERT("The configuration name parameter is not initialized.", !m_configurationName.empty());
 
@@ -83,12 +82,6 @@ void Plugin::initialize()
 //------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::uninitialize() noexcept
 {
     SIGHT_ASSERT("The OSR is not initialized.", m_appConfigMng);
     m_appConfigMng->stopAndDestroy();

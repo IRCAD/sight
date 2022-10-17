@@ -49,8 +49,7 @@ SSignalGate::SSignalGate()
 //-----------------------------------------------------------------------------
 
 SSignalGate::~SSignalGate()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -75,7 +74,8 @@ void SSignalGate::starting()
         {
             SIGHT_ASSERT("Wrong value for attribute src: " + signal, match.size() >= 3);
 
-            std::string uid, signalKey;
+            std::string uid;
+            std::string signalKey;
             uid.assign(match[1].first, match[1].second);
             signalKey.assign(match[2].first, match[2].second);
 
@@ -89,7 +89,7 @@ void SSignalGate::starting()
                 m_flags.push_back(false);
 
                 // Create a slot to our callback with a bound index to identify it
-                std::function<void()> task(std::bind(&SSignalGate::received, this, index));
+                std::function<void()> task([this, index](auto&& ...){received(index);});
                 auto slot = core::com::newSlot(task);
                 slot->setWorker(m_associatedWorker);
 

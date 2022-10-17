@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include "modules/viz/sample/config.hpp"
 
 #include <data/Image.hpp>
+#include <data/TransferFunction.hpp>
 
 #include <ui/base/IGuiContainer.hpp>
 
@@ -54,7 +55,7 @@ public:
     MODULE_VIZ_SAMPLE_API SImage() noexcept;
 
     /// Destroys the service.
-    MODULE_VIZ_SAMPLE_API virtual ~SImage() noexcept;
+    MODULE_VIZ_SAMPLE_API ~SImage() noexcept override;
 
 protected:
 
@@ -90,6 +91,9 @@ private:
 
     /// Contains the negato adaptor.
     service::IService::sptr m_negatoSrv {nullptr};
+
+    /// Default transfer function
+    data::TransferFunction::sptr m_tf;
 
     data::ptr<data::Image, data::Access::in> m_image {this, "image", false};
 };

@@ -28,10 +28,7 @@
 
 #include <data/Mesh.hpp>
 
-namespace sight::utestData
-{
-
-namespace generator
+namespace sight::utestData::generator
 {
 
 /**
@@ -103,7 +100,7 @@ private:
         const data::Mesh::sptr& mesh,
         PointsMapType& points,
         std::size_t nbPointsByEdge = 10,
-        float edgeDim              = 100.f
+        float edgeDim              = 100.F
     );
 
     /**
@@ -118,7 +115,7 @@ private:
         const data::Mesh::sptr& mesh,
         PointsMapType& points,
         std::size_t nbPointsByEdge = 10,
-        float edgeDim              = 100.f
+        float edgeDim              = 100.F
     );
 
     static data::Mesh::point_t addPoint(
@@ -134,6 +131,4 @@ private:
     static void shakePoints(const data::Mesh::sptr& mesh);
 };
 
-} // namespace generator
-
-} // namespace sight::utestData
+} // namespace sight::utestData::generator

@@ -85,7 +85,7 @@ public:
     MODULE_VIZ_SCENE3D_API void viewportDimensionsChanged(Ogre::Viewport* _viewport) override;
 
     /// Calls updating(). This is called right after the layer render target has been rendered.
-    MODULE_VIZ_SCENE3D_API void postRenderTargetUpdate(const Ogre::RenderTargetEvent&) override;
+    MODULE_VIZ_SCENE3D_API void postRenderTargetUpdate(const Ogre::RenderTargetEvent& /*evt*/) override;
 
 protected:
 

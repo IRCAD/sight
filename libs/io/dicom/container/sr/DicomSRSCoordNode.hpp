@@ -28,13 +28,7 @@
 
 #include <gdcmDataSet.h>
 
-namespace sight::io::dicom
-{
-
-namespace container
-{
-
-namespace sr
+namespace sight::io::dicom::container::sr
 {
 
 /**
@@ -50,21 +44,21 @@ public:
     IO_DICOM_API DicomSRSCoordNode(
         const DicomCodedAttribute& codedAttribute,
         const std::string& relationship,
-        const std::string& graphicType,
+        std::string graphicType,
         GraphicDataContainerType graphicDataContainer
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~DicomSRSCoordNode();
+    IO_DICOM_API ~DicomSRSCoordNode() override;
 
     /**
      * @brief Write the SR node in the dataset
      * @param[in] dataset Destination dataset
      */
-    IO_DICOM_API virtual void write(gdcm::DataSet& dataset) const;
+    IO_DICOM_API void write(gdcm::DataSet& dataset) const override;
 
     /// Get Graphic type
-    const std::string& getGraphicType() const
+    [[nodiscard]] const std::string& getGraphicType() const
     {
         return m_graphicType;
     }
@@ -76,7 +70,7 @@ public:
     }
 
     /// Get Graphic data container
-    const GraphicDataContainerType& getGraphicDataContainer() const
+    [[nodiscard]] const GraphicDataContainerType& getGraphicDataContainer() const
     {
         return m_graphicDataContainer;
     }
@@ -90,7 +84,7 @@ public:
 protected:
 
     /// Dump function
-    virtual void print(std::ostream& os) const;
+    void print(std::ostream& os) const override;
 
     /// Graphic Type
     std::string m_graphicType;
@@ -99,8 +93,4 @@ protected:
     GraphicDataContainerType m_graphicDataContainer;
 };
 
-} //namespace sr
-
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container::sr

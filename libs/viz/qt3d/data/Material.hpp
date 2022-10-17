@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,12 +37,9 @@ namespace Qt3DRender
 class QParameter;
 class QTechnique;
 
-}
+} // namespace Qt3DRender
 
-namespace sight::viz::qt3d
-{
-
-namespace data
+namespace sight::viz::qt3d::data
 {
 
 /**
@@ -147,6 +144,4 @@ private:
     QPointer<Qt3DRender::QParameter> m_shininess;
 };
 
-} // namespace data.
-
-} // namespace sight::viz::qt3d.
+} // namespace sight::viz::qt3d::data

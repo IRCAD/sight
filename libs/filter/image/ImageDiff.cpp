@@ -29,69 +29,9 @@ namespace sight::filter::image
 
 ImageDiff::ImageDiff(const std::size_t imageElementSize, const std::size_t reservedElements) :
     m_imgEltSize(imageElementSize),
-    m_eltSize(imageElementSize * 2 + sizeof(data::Image::IndexType)),
-    m_nbElts(0),
-    m_reservedSize(reservedElements * imageElementSize),
-    m_buffer(nullptr)
+    m_eltSize(imageElementSize * 2 + sizeof(data::Image::IndexType))
 {
-}
-
-//------------------------------------------------------------------------------
-
-ImageDiff::~ImageDiff()
-{
-    free(m_buffer);
-}
-
-//------------------------------------------------------------------------------
-
-ImageDiff::ImageDiff(const ImageDiff& other) :
-    m_imgEltSize(other.m_imgEltSize),
-    m_eltSize(other.m_eltSize),
-    m_nbElts(other.m_nbElts),
-    m_reservedSize(other.m_reservedSize),
-    m_buffer(reinterpret_cast<std::uint8_t*>(malloc(other.m_reservedSize)))
-{
-    std::memcpy(m_buffer, other.m_buffer, m_reservedSize);
-}
-
-//------------------------------------------------------------------------------
-
-ImageDiff::ImageDiff(ImageDiff&& other) :
-    m_imgEltSize(other.m_imgEltSize),
-    m_eltSize(other.m_eltSize),
-    m_nbElts(other.m_nbElts),
-    m_reservedSize(other.m_reservedSize),
-    m_buffer(other.m_buffer)
-{
-    other.m_buffer = nullptr;
-}
-
-//------------------------------------------------------------------------------
-
-ImageDiff& ImageDiff::operator=(const ImageDiff& other)
-{
-    ImageDiff tmpImageDiffs(other);
-    *this = std::move(tmpImageDiffs);
-
-    return *this;
-}
-
-//------------------------------------------------------------------------------
-
-ImageDiff& ImageDiff::operator=(ImageDiff&& other)
-{
-    free(m_buffer);
-
-    m_buffer       = other.m_buffer;
-    other.m_buffer = nullptr;
-
-    m_imgEltSize   = other.m_imgEltSize;
-    m_eltSize      = other.m_eltSize;
-    m_nbElts       = other.m_nbElts;
-    m_reservedSize = other.m_reservedSize;
-
-    return *this;
+    m_buffer.reserve(reservedElements);
 }
 
 //------------------------------------------------------------------------------
@@ -103,25 +43,14 @@ void ImageDiff::addDiff(const ImageDiff& diff)
     const std::size_t oldSize = this->getSize();
     const std::size_t newSize = oldSize + diff.getSize();
 
-    if(m_reservedSize < newSize || m_buffer == nullptr)
-    {
-        // Double the reserved size.
-        m_reservedSize = newSize + m_reservedSize * 2;
-        m_buffer       = reinterpret_cast<std::uint8_t*>(realloc(m_buffer, m_reservedSize));
-
-        SIGHT_FATAL_IF("Reallocation failed.", m_buffer == nullptr);
-    }
-
-    std::uint8_t* eltPtr = (m_buffer + oldSize);
-    std::memcpy(eltPtr, diff.m_buffer, diff.getSize());
-
-    m_nbElts += diff.m_nbElts;
+    m_buffer.reserve(newSize);
+    std::copy(diff.m_buffer.begin(), diff.m_buffer.end(), std::back_inserter(m_buffer));
 }
 
 //-----------------------------------------------------------------------------
 
 void ImageDiff::addDiff(
-    const data::Image::IndexType index,
+    data::Image::IndexType index,
     const data::Image::BufferType* oldValue,
     const data::Image::BufferType* newValue
 )
@@ -129,24 +58,10 @@ void ImageDiff::addDiff(
     const std::size_t oldSize = this->getSize();
     const std::size_t newSize = oldSize + m_eltSize;
 
-    if(m_reservedSize < newSize || m_buffer == nullptr)
-    {
-        // Double the reserved size.
-        m_reservedSize = m_reservedSize * 2 + m_eltSize;
-        m_buffer       = reinterpret_cast<std::uint8_t*>(realloc(m_buffer, m_reservedSize));
-
-        SIGHT_FATAL_IF("Reallocation failed.", m_buffer == nullptr);
-    }
-
-    std::uint8_t* eltPtr = (m_buffer + oldSize);
-
-    std::memcpy(eltPtr, &index, sizeof(index));
-    std::size_t offset = sizeof(index);
-    std::memcpy(eltPtr + offset, oldValue, m_imgEltSize);
-    offset += m_imgEltSize;
-    std::memcpy(eltPtr + offset, newValue, m_imgEltSize);
-
-    m_nbElts++;
+    m_buffer.reserve(newSize);
+    std::copy_n(reinterpret_cast<std::uint8_t*>(&index), sizeof(data::Image::IndexType), std::back_inserter(m_buffer));
+    std::copy_n(oldValue, m_imgEltSize, std::back_inserter(m_buffer));
+    std::copy_n(newValue, m_imgEltSize, std::back_inserter(m_buffer));
 }
 
 //------------------------------------------------------------------------------
@@ -155,7 +70,7 @@ void ImageDiff::applyDiff(const data::Image::sptr& img) const
 {
     const auto dumpLock = img->dump_lock();
 
-    for(std::size_t i = 0 ; i < m_nbElts ; ++i)
+    for(std::size_t i = 0 ; i < numElements() ; ++i)
     {
         applyDiffElt(img, i);
     }
@@ -167,7 +82,7 @@ void ImageDiff::revertDiff(const data::Image::sptr& img) const
 {
     const auto dumpLock = img->dump_lock();
 
-    for(std::size_t i = 0 ; i < m_nbElts ; ++i)
+    for(std::size_t i = 0 ; i < numElements() ; ++i)
     {
         revertDiffElt(img, i);
     }
@@ -177,48 +92,40 @@ void ImageDiff::revertDiff(const data::Image::sptr& img) const
 
 std::size_t ImageDiff::getSize() const
 {
-    return m_nbElts * m_eltSize;
+    return m_buffer.size();
 }
 
 //------------------------------------------------------------------------------
 
 std::size_t ImageDiff::numElements() const
 {
-    return m_nbElts;
+    return getSize() / m_eltSize;
 }
 
 //------------------------------------------------------------------------------
 
 void ImageDiff::clear()
 {
-    m_nbElts = 0;
+    m_buffer.clear();
 }
 
 //------------------------------------------------------------------------------
 
 void ImageDiff::shrink()
 {
-    m_reservedSize = this->getSize();
-    m_buffer       = reinterpret_cast<std::uint8_t*>(realloc(m_buffer, m_reservedSize));
-
-    SIGHT_FATAL_IF("Reallocation failed.", m_buffer == nullptr);
+    m_buffer.shrink_to_fit();
 }
 
 //------------------------------------------------------------------------------
 
 ImageDiff::ElementType ImageDiff::getElement(std::size_t index) const
 {
-    std::uint8_t* eltPtr = m_buffer + index * m_eltSize;
-    ElementType elt;
-    elt.m_index = *reinterpret_cast<data::Image::IndexType*>(eltPtr);
+    ElementType elt {};
 
-    std::size_t offset = sizeof(data::Image::IndexType);
+    elt.m_index = *reinterpret_cast<const data::Image::IndexType*>(&m_buffer[index * m_eltSize]);
 
-    elt.m_oldValue = reinterpret_cast<data::Image::BufferType*>(eltPtr + offset);
-
-    offset += m_imgEltSize;
-
-    elt.m_newValue = reinterpret_cast<data::Image::BufferType*>(eltPtr + offset);
+    elt.m_oldValue = &m_buffer[index * m_eltSize + sizeof(data::Image::IndexType)];
+    elt.m_newValue = &m_buffer[index * m_eltSize + sizeof(data::Image::IndexType) + m_imgEltSize];
 
     return elt;
 }
@@ -227,28 +134,16 @@ ImageDiff::ElementType ImageDiff::getElement(std::size_t index) const
 
 void ImageDiff::applyDiffElt(const data::Image::sptr& img, std::size_t eltIndex) const
 {
-    std::uint8_t* eltPtr               = m_buffer + eltIndex * m_eltSize;
-    const data::Image::IndexType index = *reinterpret_cast<data::Image::IndexType*>(eltPtr);
-
-    const std::size_t offset = sizeof(index) + m_imgEltSize;
-
-    data::Image::BufferType* newValue = reinterpret_cast<data::Image::BufferType*>(eltPtr + offset);
-
-    img->setPixel(index, newValue);
+    ElementType elt = getElement(eltIndex);
+    img->setPixel(elt.m_index, elt.m_newValue);
 }
 
 //------------------------------------------------------------------------------
 
 void ImageDiff::revertDiffElt(const data::Image::sptr& img, std::size_t eltIndex) const
 {
-    std::uint8_t* eltPtr               = m_buffer + eltIndex * m_eltSize;
-    const data::Image::IndexType index = *reinterpret_cast<data::Image::IndexType*>(eltPtr);
-
-    const std::size_t offset = sizeof(index);
-
-    data::Image::BufferType* oldValue = reinterpret_cast<data::Image::BufferType*>(eltPtr + offset);
-
-    img->setPixel(index, oldValue);
+    ElementType elt = getElement(eltIndex);
+    img->setPixel(elt.m_index, elt.m_oldValue);
 }
 
 } // namespace sight::filter::image

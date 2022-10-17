@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,10 +34,7 @@
 #include <QScrollArea>
 #include <QString>
 
-namespace sight::ui::qt
-{
-
-namespace widget
+namespace sight::ui::qt::widget
 {
 
 class Page
@@ -46,42 +43,42 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setText(const QString& text)
+    void setText(const QString& text) const
     {
         button->setText(text);
     }
 
     //------------------------------------------------------------------------------
 
-    void setIcon(const QIcon& is)
+    void setIcon(const QIcon& is) const
     {
         button->setIcon(is);
     }
 
     //------------------------------------------------------------------------------
 
-    void setToolTip(const QString& tip)
+    void setToolTip(const QString& tip) const
     {
         button->setToolTip(tip);
     }
 
     //------------------------------------------------------------------------------
 
-    QString toolTip() const
+    [[nodiscard]] QString toolTip() const
     {
         return button->toolTip();
     }
 
     //------------------------------------------------------------------------------
 
-    QString text() const
+    [[nodiscard]] QString text() const
     {
         return button->text();
     }
 
     //------------------------------------------------------------------------------
 
-    QIcon icon() const
+    [[nodiscard]] QIcon icon() const
     {
         return button->icon();
     }
@@ -104,8 +101,8 @@ Q_OBJECT
 
 public:
 
-    UI_QT_API QfwToolBox(QWidget* parent = 0);
-    UI_QT_API virtual ~QfwToolBox();
+    UI_QT_API QfwToolBox(QWidget* parent = nullptr);
+    UI_QT_API ~QfwToolBox() override;
 
     UI_QT_API int addItem(QWidget* widget, const QString& text);
     UI_QT_API int insertItem(int index, QWidget* widget, const QString& text);
@@ -113,18 +110,18 @@ public:
     UI_QT_API void removeItem(int index);
 
     UI_QT_API void setItemEnabled(int index, bool enabled);
-    UI_QT_API bool isItemEnabled(int index) const;
+    [[nodiscard]] UI_QT_API bool isItemEnabled(int index) const;
 
     UI_QT_API void setItemText(int index, const QString& text);
-    UI_QT_API QString itemText(int index) const;
+    [[nodiscard]] UI_QT_API QString itemText(int index) const;
 
     UI_QT_API void setItemToolTip(int index, const QString& toolTip);
-    UI_QT_API QString itemToolTip(int index) const;
+    [[nodiscard]] UI_QT_API QString itemToolTip(int index) const;
 
-    UI_QT_API QWidget* widget(int index) const;
+    [[nodiscard]] UI_QT_API QWidget* widget(int index) const;
 
     UI_QT_API int indexOf(QWidget* widget) const;
-    UI_QT_API int count() const;
+    [[nodiscard]] UI_QT_API int count() const;
 
     UI_QT_API void collapseItem(int index);
     UI_QT_API void expandItem(int index);
@@ -136,12 +133,15 @@ protected:
 private Q_SLOTS:
 
     void buttonToggled(bool checked);
-    void widgetDestroyed(QObject*);
+    void widgetDestroyed(QObject* /*object*/);
 
 private:
 
-    ui::qt::widget::Page* page(QWidget* widget) const;
-    const ui::qt::widget::Page* page(int index) const;
+    template<typename TOOLBOX>
+    static auto page(TOOLBOX& toolbox, QWidget* widget);
+    [[nodiscard]] const ui::qt::widget::Page* page(QWidget* widget) const;
+    ui::qt::widget::Page* page(QWidget* widget);
+    [[nodiscard]] const ui::qt::widget::Page* page(int index) const;
     ui::qt::widget::Page* page(int index);
 
     void relayout();
@@ -150,6 +150,4 @@ private:
     QFormLayout* layout;
 };
 
-} // namespace widget
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::widget

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "SPushSelection.hpp"
 
-#include <data/helper/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>
 
 #include <service/macros.hpp>
@@ -34,15 +34,13 @@ namespace sight::module::ui::base::series
 
 //------------------------------------------------------------------------------
 
-SPushSelection::SPushSelection() noexcept
-{
-}
+SPushSelection::SPushSelection() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SPushSelection::~SPushSelection() noexcept
-{
-}
+SPushSelection::~SPushSelection() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -73,29 +71,28 @@ void SPushSelection::configuring()
 
 void SPushSelection::updating()
 {
-    auto destinationSeriesDB = m_seriesDB.lock();
-    SIGHT_ASSERT("'seriesDB' key is not found.", destinationSeriesDB);
+    auto dest_series_set = m_series_set.lock();
+    SIGHT_ASSERT("\"seriesSet\" key is not found.", dest_series_set);
 
-    data::helper::SeriesDB sDBhelper(*destinationSeriesDB);
-    data::SeriesDB::ContainerType container = destinationSeriesDB->getContainer();
-    const auto selectedSeries               = m_selectedSeries.lock();
+    const auto selectedSeries = m_selectedSeries.lock();
 
     // Save added series in this container in order to display information on the push
     std::vector<data::Series::sptr> addedSeries;
 
-    // Loop through all selected series
-    for(const data::Object::sptr& obj : selectedSeries->getContainer())
     {
-        data::Series::sptr series = data::Series::dynamicCast(obj);
+        const auto scoped_emitter = dest_series_set->scoped_emit();
 
-        if(series && std::find(container.begin(), container.end(), series) == container.end())
+        // Loop through all selected series
+        for(const auto& object : *selectedSeries)
         {
-            sDBhelper.add(series);
-            addedSeries.push_back(series);
+            const auto& series = data::Series::dynamicCast(object);
+
+            if(series && dest_series_set->insert(dest_series_set->cend(), series).second)
+            {
+                addedSeries.push_back(series);
+            }
         }
     }
-
-    sDBhelper.notify();
 
     // Display the informations
     sight::ui::base::dialog::MessageDialog messageBox;
@@ -123,9 +120,9 @@ void SPushSelection::updating()
             ss << addedSeries.size() << " series have been correctly pushed in the database:\n";
         }
 
-        for(const data::Series::sptr& series : addedSeries)
+        for(const auto& series : addedSeries)
         {
-            std::string description = series->getDescription();
+            std::string description = series->getSeriesDescription();
             description = (description.empty()) ? "[No description]" : description;
             ss << "- " << description << std::endl;
         }

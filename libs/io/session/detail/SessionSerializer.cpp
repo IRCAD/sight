@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,47 +21,42 @@
 
 #include "SessionSerializer.hpp"
 
-#include "ActivitySeries.hpp"
+#include "Activity.hpp"
+#include "ActivitySet.hpp"
 #include "Array.hpp"
 #include "CalibrationInfo.hpp"
 #include "Camera.hpp"
-#include "CameraSeries.hpp"
+#include "CameraSet.hpp"
 #include "Color.hpp"
 #include "Composite.hpp"
 #include "DicomSeries.hpp"
 #include "Edge.hpp"
-#include "Equipment.hpp"
 #include "Graph.hpp"
-#include "Histogram.hpp"
 #include "Image.hpp"
 #include "ImageSeries.hpp"
 #include "Landmarks.hpp"
 #include "Line.hpp"
-#include "List.hpp"
 #include "Material.hpp"
 #include "Matrix4.hpp"
 #include "Mesh.hpp"
 #include "ModelSeries.hpp"
 #include "Node.hpp"
-#include "Patient.hpp"
 #include "Plane.hpp"
 #include "PlaneList.hpp"
 #include "Point.hpp"
 #include "PointList.hpp"
 #include "Port.hpp"
-#include "ProcessObject.hpp"
 #include "Reconstruction.hpp"
 #include "ReconstructionTraits.hpp"
 #include "Resection.hpp"
 #include "ResectionDB.hpp"
 #include "ROITraits.hpp"
 #include "Series.hpp"
-#include "SeriesDB.hpp"
+#include "SeriesSet.hpp"
+#include "Set.hpp"
 #include "String.hpp"
 #include "StructureTraits.hpp"
 #include "StructureTraitsDictionary.hpp"
-#include "Study.hpp"
-#include "Tag.hpp"
 #include "TransferFunction.hpp"
 #include "Vector.hpp"
 
@@ -75,10 +70,7 @@
 #include <atomic>
 #include <shared_mutex>
 
-namespace sight::io::session
-{
-
-namespace detail
+namespace sight::io::session::detail
 {
 
 using core::crypto::PasswordKeeper;
@@ -90,50 +82,45 @@ static std::shared_mutex s_serializers_mutex;
 
 // Serializer registry
 static const std::unordered_map<std::string, serializer_t> s_defaultSerializers = {
-    {data::ActivitySeries::classname(), &ActivitySeries::serialize},
+    {data::Activity::classname(), &Activity::serialize},
+    {data::ActivitySet::classname(), &ActivitySet::serialize},
     {data::Array::classname(), &Array::serialize},
     {data::Boolean::classname(), &Helper::serialize<data::Boolean>},
     {data::Camera::classname(), &Camera::serialize},
-    {data::CameraSeries::classname(), &CameraSeries::serialize},
+    {data::CameraSet::classname(), &CameraSet::serialize},
     {data::CalibrationInfo::classname(), &CalibrationInfo::serialize},
     {data::Color::classname(), &Color::serialize},
     {data::Composite::classname(), &Composite::serialize},
     {data::DicomSeries::classname(), &DicomSeries::serialize},
     {data::Edge::classname(), &Edge::serialize},
-    {data::Equipment::classname(), &Equipment::serialize},
     {data::Float::classname(), &Helper::serialize<data::Float>},
     {data::Graph::classname(), &Graph::serialize},
-    {data::Histogram::classname(), &Histogram::serialize},
     {data::Integer::classname(), &Helper::serialize<data::Integer>},
     {data::Image::classname(), &Image::serialize},
     {data::ImageSeries::classname(), &ImageSeries::serialize},
     {data::Landmarks::classname(), &Landmarks::serialize},
     {data::Line::classname(), &Line::serialize},
-    {data::List::classname(), &List::serialize},
     {data::Material::classname(), &Material::serialize},
     {data::Matrix4::classname(), &Matrix4::serialize},
     {data::Mesh::classname(), &Mesh::serialize},
     {data::ModelSeries::classname(), &ModelSeries::serialize},
     {data::Node::classname(), &Node::serialize},
-    {data::Patient::classname(), &Patient::serialize},
     {data::Point::classname(), &Point::serialize},
     {data::PointList::classname(), &PointList::serialize},
     {data::Plane::classname(), &Plane::serialize},
     {data::PlaneList::classname(), &PlaneList::serialize},
     {data::Port::classname(), &Port::serialize},
-    {data::ProcessObject::classname(), &ProcessObject::serialize},
     {data::Reconstruction::classname(), &Reconstruction::serialize},
     {data::ReconstructionTraits::classname(), &ReconstructionTraits::serialize},
     {data::Resection::classname(), &Resection::serialize},
     {data::ResectionDB::classname(), &ResectionDB::serialize},
     {data::ROITraits::classname(), &ROITraits::serialize},
     {data::Series::classname(), &Series::serialize},
-    {data::SeriesDB::classname(), &SeriesDB::serialize},
+    {data::SeriesSet::classname(), &SeriesSet::serialize},
+    {data::Set::classname(), &Set::serialize},
     {data::String::classname(), &String::serialize},
     {data::StructureTraits::classname(), &StructureTraits::serialize},
     {data::StructureTraitsDictionary::classname(), &StructureTraitsDictionary::serialize},
-    {data::Study::classname(), &Study::serialize},
-    {data::Tag::classname(), &Tag::serialize},
     {data::TransferFunction::classname(), &TransferFunction::serialize},
     {data::Vector::classname(), &Vector::serialize}
 };
@@ -150,16 +137,14 @@ serializer_t SessionSerializer::findSerializer(const std::string& classname) con
         // Return the found serializer
         return customIt->second;
     }
-    else
-    {
-        // Protect serializers map
-        std::shared_lock guard(s_serializers_mutex);
 
-        if(const auto& it = s_serializers.find(classname); it != s_serializers.cend())
-        {
-            // Return the found serializer
-            return it->second;
-        }
+    // Protect serializers map
+    std::shared_lock guard(s_serializers_mutex);
+
+    if(const auto& it = s_serializers.find(classname); it != s_serializers.cend())
+    {
+        // Return the found serializer
+        return it->second;
     }
 
     SIGHT_THROW("There is no serializer registered for class '" << classname << "'.");
@@ -206,6 +191,7 @@ void SessionSerializer::deepSerialize(
 
         // Put basic meta information
         object_tree.put(ISession::s_uuid, uuid);
+        Helper::writeString(object_tree, ISession::s_description, object->getDescription());
 
         // Find the serializer using the classname
         const auto& serializer = findSerializer(class_name);
@@ -320,7 +306,7 @@ void SessionSerializer::setDefaultSerializer(const std::string& className, seria
 //------------------------------------------------------------------------------
 
 void SessionSerializer::serialize(
-    const std::filesystem::path& archive_path,
+    const std::filesystem::path& archivePath,
     data::Object::csptr object,
     const Archive::ArchiveFormat archiveFormat,
     const secure_string& password,
@@ -344,12 +330,12 @@ void SessionSerializer::serialize(
         }
 
         // Create the archive that will hold all binary files
-        archive = zip::ArchiveWriter::get(archive_path.parent_path(), archiveFormat);
+        archive = zip::ArchiveWriter::get(archivePath.parent_path(), archiveFormat);
     }
     else
     {
         // Create the archive that will hold the property tree and all binary files
-        archive = zip::ArchiveWriter::get(archive_path, archiveFormat);
+        archive = zip::ArchiveWriter::get(archivePath, archiveFormat);
     }
 
     // Initialize the ptree cache
@@ -364,7 +350,7 @@ void SessionSerializer::serialize(
     if(archiveFormat == Archive::ArchiveFormat::FILESYSTEM)
     {
         // Write the final property tree to the filesystem
-        boost::property_tree::write_json(archive_path.string(), tree);
+        boost::property_tree::write_json(archivePath.string(), tree);
     }
     else
     {
@@ -376,6 +362,4 @@ void SessionSerializer::serialize(
     }
 }
 
-} // namespace detail
-
-} // namespace sight::io::session
+} // namespace sight::io::session::detail

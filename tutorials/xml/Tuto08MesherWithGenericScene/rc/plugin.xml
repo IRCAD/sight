@@ -18,7 +18,7 @@
 
             <object uid="modelSeries" type="sight::data::ModelSeries" src="deferred" />
             <object uid="imageSeries" type="sight::data::ImageSeries" />
-            <object uid="image" type="sight::data::Image" src="deferred" />
+            <object uid="tf" type="sight::data::TransferFunction" />
             <object uid="reconstruction" type="sight::data::Reconstruction" src="deferred" />
             <object uid="snapshot" type="sight::data::Image" />
 
@@ -116,12 +116,14 @@
                         <view caption="Organs" expanded="true" />
                         <view caption="Material" expanded="true" />
                         <view caption="Representation" />
+                        <view caption= "Threshold" proportion="0" />
                     </layout>
                 </gui>
                 <registry>
                     <view sid="listOrganEditorSrv" start="false" />
                     <view sid="organMaterialEditorSrv" start="false" />
                     <view sid="representationEditorSrv" start="false" />
+                    <view sid="thresholdSliderSrv" start="false" />
                 </registry>
             </service>
 
@@ -165,7 +167,8 @@
             </service>
 
             <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true">
-                <inout key="image" uid="image" />
+                <in key="image" uid="imageSeries" />
+                <inout key="tf" uid="tf" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
@@ -203,6 +206,12 @@
                 </config>
             </service>
 
+            <service uid="thresholdSliderSrv" type="sight::module::ui::qt::SParameters" >
+                <parameters>
+                    <param type="int" name="threshold" key="threshold" widget="slider" defaultValue="255" min="0" max="255" depends="enable"/>
+                </parameters>
+            </service>
+
             <service uid="showNegatoSrv" type="sight::module::ui::qt::com::SSignalButton">
                 <config>
                     <checkable>true</checkable>
@@ -222,24 +231,20 @@
             </service>
 
             <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
-                <inout key="image" uid="image" />
+                <inout key="image" uid="imageSeries" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
             <service uid="mesher50Srv" type="sight::module::filter::mesh::SVTKMesher">
                 <in key="imageSeries" uid="imageSeries" />
                 <out key="modelSeries" uid="modelSeries" />
-                <config>
-                    <percentReduction>50</percentReduction>
-                </config>
+               <config percentReduction="50" threshold="255" />
             </service>
 
             <service uid="mesher80Srv" type="sight::module::filter::mesh::SVTKMesher">
                 <in key="imageSeries" uid="imageSeries" />
                 <out key="modelSeries" uid="modelSeries" />
-                <config>
-                    <percentReduction>80</percentReduction>
-                </config>
+              <config percentReduction="80" threshold="255" />
             </service>
 
             <service uid="modelSeriesWriterSrv" type="sight::module::ui::base::io::SSelector">
@@ -250,12 +255,6 @@
             <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector">
                 <inout key="data" uid="imageSeries" />
                 <type mode="reader" />
-            </service>
-            <!-- extract a sight::data::Image from the sight::data::ImageSeries -->
-            <service uid="extractImageSrv" type="sight::module::data::SGetImage">
-                <in key="imageSeries" uid="imageSeries" />
-                <out key="image" uid="image" />
-
             </service>
 
             <service uid="updaterReconstSrv" type="sight::module::data::SSelectObject">
@@ -290,6 +289,13 @@
                 <slot>updaterReconstSrv/add</slot>
             </connect>
 
+             <connect>
+                <signal>thresholdSliderSrv/intChanged</signal>
+                <slot>mesher50Srv/updateThreshold</slot>
+                <slot>mesher80Srv/updateThreshold</slot>
+            </connect>
+
+
             <connect>
                 <signal>snapshotSrv/clicked</signal>
                 <slot>imageWriterSrv/update</slot>
@@ -310,11 +316,6 @@
                 <slot>negatoAdp/updateVisibility</slot>
             </connect>
 
-            <connect>
-                <signal>imageSeries/modified</signal>
-                <slot>extractImageSrv/update</slot>
-            </connect>
-
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
@@ -324,6 +325,7 @@
             <start uid="representationEditorSrv" />
             <start uid="organMaterialEditorSrv" />
             <start uid="sliderIndexEditorSrv" />
+            <start uid="thresholdSliderSrv" />
             <start uid="listOrganEditorSrv" />
             <start uid="mesher50Srv" />
             <start uid="mesher80Srv" />
@@ -332,8 +334,6 @@
             <start uid="modelSeriesAdp" />
             <start uid="negatoAdp" />
             <start uid="snapshotAdp" />
-            <start uid="extractImageSrv" />
-
         </config>
     </extension>
 </plugin>

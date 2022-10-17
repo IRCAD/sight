@@ -36,10 +36,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::PointListTest);
 
-namespace sight::geometry::data
-{
-
-namespace ut
+namespace sight::geometry::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -88,10 +85,10 @@ void PointListTest::computeDistance()
         // And the second one with inscreasing x values but shifted in y
         for(std::size_t i = 0 ; i < nbPoints ; i++)
         {
-            p = sight::data::Point::New(static_cast<float>(i), 0.0f, 0.0f);
+            p = sight::data::Point::New(static_cast<float>(i), 0.0F, 0.0F);
             pl1->pushBack(p);
 
-            p = sight::data::Point::New(static_cast<float>(i), 1.0f, 0.0f);
+            p = sight::data::Point::New(static_cast<float>(i), 1.0F, 0.0F);
             pl2->pushBack(p);
         }
 
@@ -117,10 +114,10 @@ void PointListTest::computeDistance()
         // And the second one with increasing x values but shifted in y
         for(std::size_t i = 0 ; i < nbPoints ; i++)
         {
-            p = sight::data::Point::New(static_cast<float>(i), 0.0f, 0.0f);
+            p = sight::data::Point::New(static_cast<float>(i), 0.0F, 0.0F);
             pl1->pushBack(p);
 
-            p = sight::data::Point::New(static_cast<float>(i), static_cast<float>(i), 0.0f);
+            p = sight::data::Point::New(static_cast<float>(i), static_cast<float>(i), 0.0F);
             pl2->pushBack(p);
         }
 
@@ -145,15 +142,15 @@ void PointListTest::transform()
     {
         // Test sample
         sight::data::PointList::sptr pl1 = sight::data::PointList::New();
-        pl1->pushBack(sight::data::Point::New(0.0f, 0.0f, 0.0f));
-        pl1->pushBack(sight::data::Point::New(1.0f, 0.0f, 0.0f));
-        pl1->pushBack(sight::data::Point::New(1.0f, 1.0f, 0.0f));
-        pl1->pushBack(sight::data::Point::New(0.0f, 1.0f, 0.0f));
+        pl1->pushBack(sight::data::Point::New(0.0F, 0.0F, 0.0F));
+        pl1->pushBack(sight::data::Point::New(1.0F, 0.0F, 0.0F));
+        pl1->pushBack(sight::data::Point::New(1.0F, 1.0F, 0.0F));
+        pl1->pushBack(sight::data::Point::New(0.0F, 1.0F, 0.0F));
 
-        pl1->pushBack(sight::data::Point::New(0.0f, 0.0f, 1.0f));
-        pl1->pushBack(sight::data::Point::New(1.0f, 0.0f, 1.0f));
-        pl1->pushBack(sight::data::Point::New(1.0f, 1.0f, 1.0f));
-        pl1->pushBack(sight::data::Point::New(0.0f, 1.0f, 1.0f));
+        pl1->pushBack(sight::data::Point::New(0.0F, 0.0F, 1.0F));
+        pl1->pushBack(sight::data::Point::New(1.0F, 0.0F, 1.0F));
+        pl1->pushBack(sight::data::Point::New(1.0F, 1.0F, 1.0F));
+        pl1->pushBack(sight::data::Point::New(0.0F, 1.0F, 1.0F));
 
         // Reference list
         const sight::data::PointList::PointListContainer points1 = pl1->getPoints();
@@ -183,22 +180,22 @@ void PointListTest::transform()
 
     // Simple test with translation
     {
-        std::vector<float> translation(3, 0.0f);
+        std::vector<float> translation(3, 0.0F);
         translation[0] = 8.0;
         translation[1] = 16.0;
         translation[2] = 32.0;
 
         // Test sample
         sight::data::PointList::sptr pl1 = sight::data::PointList::New();
-        pl1->pushBack(sight::data::Point::New(0.0f, 0.0f, 0.0f));
-        pl1->pushBack(sight::data::Point::New(1.0f, 0.0f, 0.0f));
-        pl1->pushBack(sight::data::Point::New(1.0f, 1.0f, 0.0f));
-        pl1->pushBack(sight::data::Point::New(0.0f, 1.0f, 0.0f));
+        pl1->pushBack(sight::data::Point::New(0.0F, 0.0F, 0.0F));
+        pl1->pushBack(sight::data::Point::New(1.0F, 0.0F, 0.0F));
+        pl1->pushBack(sight::data::Point::New(1.0F, 1.0F, 0.0F));
+        pl1->pushBack(sight::data::Point::New(0.0F, 1.0F, 0.0F));
 
-        pl1->pushBack(sight::data::Point::New(0.0f, 0.0f, 1.0f));
-        pl1->pushBack(sight::data::Point::New(1.0f, 0.0f, 1.0f));
-        pl1->pushBack(sight::data::Point::New(1.0f, 1.0f, 1.0f));
-        pl1->pushBack(sight::data::Point::New(0.0f, 1.0f, 1.0f));
+        pl1->pushBack(sight::data::Point::New(0.0F, 0.0F, 1.0F));
+        pl1->pushBack(sight::data::Point::New(1.0F, 0.0F, 1.0F));
+        pl1->pushBack(sight::data::Point::New(1.0F, 1.0F, 1.0F));
+        pl1->pushBack(sight::data::Point::New(0.0F, 1.0F, 1.0F));
 
         // Reference list
         const sight::data::PointList::PointListContainer points1 = pl1->getPoints();
@@ -238,33 +235,33 @@ void PointListTest::transform()
     // Simple test with rotation
     {
         sight::data::PointList::sptr pl1 = sight::data::PointList::New();
-        pl1->pushBack(sight::data::Point::New(0.0f, 0.0f, 0.0f));
-        pl1->pushBack(sight::data::Point::New(1.0f, 0.0f, 0.0f));
-        pl1->pushBack(sight::data::Point::New(1.0f, 1.0f, 0.0f));
-        pl1->pushBack(sight::data::Point::New(0.0f, 1.0f, 0.0f));
+        pl1->pushBack(sight::data::Point::New(0.0F, 0.0F, 0.0F));
+        pl1->pushBack(sight::data::Point::New(1.0F, 0.0F, 0.0F));
+        pl1->pushBack(sight::data::Point::New(1.0F, 1.0F, 0.0F));
+        pl1->pushBack(sight::data::Point::New(0.0F, 1.0F, 0.0F));
 
-        pl1->pushBack(sight::data::Point::New(0.0f, 0.0f, 1.0f));
-        pl1->pushBack(sight::data::Point::New(1.0f, 0.0f, 1.0f));
-        pl1->pushBack(sight::data::Point::New(1.0f, 1.0f, 1.0f));
-        pl1->pushBack(sight::data::Point::New(0.0f, 1.0f, 1.0f));
+        pl1->pushBack(sight::data::Point::New(0.0F, 0.0F, 1.0F));
+        pl1->pushBack(sight::data::Point::New(1.0F, 0.0F, 1.0F));
+        pl1->pushBack(sight::data::Point::New(1.0F, 1.0F, 1.0F));
+        pl1->pushBack(sight::data::Point::New(0.0F, 1.0F, 1.0F));
 
         sight::data::PointList::sptr pl2 = sight::data::PointList::New();
-        pl2->pushBack(sight::data::Point::New(0.0f, 0.0f, 0.0f));
-        pl2->pushBack(sight::data::Point::New(-1.0f, 0.0f, 0.0f));
-        pl2->pushBack(sight::data::Point::New(-1.0f, -1.0f, 0.0f));
-        pl2->pushBack(sight::data::Point::New(0.0f, -1.0f, 0.0f));
+        pl2->pushBack(sight::data::Point::New(0.0F, 0.0F, 0.0F));
+        pl2->pushBack(sight::data::Point::New(-1.0F, 0.0F, 0.0F));
+        pl2->pushBack(sight::data::Point::New(-1.0F, -1.0F, 0.0F));
+        pl2->pushBack(sight::data::Point::New(0.0F, -1.0F, 0.0F));
 
-        pl2->pushBack(sight::data::Point::New(0.0f, 0.0f, 1.0f));
-        pl2->pushBack(sight::data::Point::New(-1.0f, 0.0f, 1.0f));
-        pl2->pushBack(sight::data::Point::New(-1.0f, -1.0f, 1.0f));
-        pl2->pushBack(sight::data::Point::New(0.0f, -1.0f, 1.0f));
+        pl2->pushBack(sight::data::Point::New(0.0F, 0.0F, 1.0F));
+        pl2->pushBack(sight::data::Point::New(-1.0F, 0.0F, 1.0F));
+        pl2->pushBack(sight::data::Point::New(-1.0F, -1.0F, 1.0F));
+        pl2->pushBack(sight::data::Point::New(0.0F, -1.0F, 1.0F));
 
         // Perform a 180 degrees rotation around Z
         const auto tf1 = sight::data::Matrix4::New();
-        tf1->setCoefficient(0, 0, -1.0f);
-        tf1->setCoefficient(0, 1, 0.0f);
-        tf1->setCoefficient(1, 0, 0.0f);
-        tf1->setCoefficient(1, 1, -1.0f);
+        tf1->setCoefficient(0, 0, -1.0F);
+        tf1->setCoefficient(0, 1, 0.0F);
+        tf1->setCoefficient(1, 0, 0.0F);
+        tf1->setCoefficient(1, 1, -1.0F);
 
         geometry::data::PointList::transform(pl1, tf1);
 
@@ -316,10 +313,10 @@ void PointListTest::associate()
         // Build 2 point lists with the same points, the point are in the inverse order in the second list
         for(std::size_t i = 0 ; i <= nbPoints ; i++)
         {
-            p = sight::data::Point::New(static_cast<float>(i), 0.0f, 0.0f);
+            p = sight::data::Point::New(static_cast<float>(i), 0.0F, 0.0F);
             pl1->pushBack(p);
 
-            p = sight::data::Point::New(static_cast<float>(nbPoints - i), 0.0f, 0.0f);
+            p = sight::data::Point::New(static_cast<float>(nbPoints - i), 0.0F, 0.0F);
             pl2->pushBack(p);
         }
 
@@ -367,22 +364,22 @@ void PointListTest::associate()
     // Check that the matched points are really the closest
     {
         // Create an initial octahedron with points
-        sight::data::PointList::sptr pl1 = sight::data::PointList::New();
-        pl1->pushBack(sight::data::Point::New(1.0f, 0.0f, 0.0f));
-        pl1->pushBack(sight::data::Point::New(2.0f, 0.0f, 1.0f));
-        pl1->pushBack(sight::data::Point::New(2.0f, 0.8f, 0.0f));
-        pl1->pushBack(sight::data::Point::New(2.0f, 0.0f, -1.0f));
-        pl1->pushBack(sight::data::Point::New(2.0f, -0.8f, 0.0f));
-        pl1->pushBack(sight::data::Point::New(3.0f, 0.0f, 0.0f));
+        pl1 = sight::data::PointList::New();
+        pl1->pushBack(sight::data::Point::New(1.0F, 0.0F, 0.0F));
+        pl1->pushBack(sight::data::Point::New(2.0F, 0.0F, 1.0F));
+        pl1->pushBack(sight::data::Point::New(2.0F, 0.8F, 0.0F));
+        pl1->pushBack(sight::data::Point::New(2.0F, 0.0F, -1.0F));
+        pl1->pushBack(sight::data::Point::New(2.0F, -0.8F, 0.0F));
+        pl1->pushBack(sight::data::Point::New(3.0F, 0.0F, 0.0F));
 
         // Reference final octahedron
-        sight::data::PointList::sptr pl2 = sight::data::PointList::New();
-        pl2->pushBack(sight::data::Point::New(0.0f, 0.0f, 5.2f));
-        pl2->pushBack(sight::data::Point::New(1.0f, 0.0f, 6.2f));
-        pl2->pushBack(sight::data::Point::New(0.0f, 0.8f, 6.2f));
-        pl2->pushBack(sight::data::Point::New(-1.0f, 0.0f, 6.2f));
-        pl2->pushBack(sight::data::Point::New(0.0f, -0.8f, 6.2f));
-        pl2->pushBack(sight::data::Point::New(0.0f, 0.0f, 7.2f));
+        pl2 = sight::data::PointList::New();
+        pl2->pushBack(sight::data::Point::New(0.0F, 0.0F, 5.2F));
+        pl2->pushBack(sight::data::Point::New(1.0F, 0.0F, 6.2F));
+        pl2->pushBack(sight::data::Point::New(0.0F, 0.8F, 6.2F));
+        pl2->pushBack(sight::data::Point::New(-1.0F, 0.0F, 6.2F));
+        pl2->pushBack(sight::data::Point::New(0.0F, -0.8F, 6.2F));
+        pl2->pushBack(sight::data::Point::New(0.0F, 0.0F, 7.2F));
 
         // Transform the point list
         auto tf1 = sight::data::Matrix4::New();
@@ -390,10 +387,10 @@ void PointListTest::associate()
         tf1->setCoefficient(2, 3, 4.2);
 
         // Add a 90 degrees rotation around Y
-        tf1->setCoefficient(0, 0, 0.0f);
-        tf1->setCoefficient(0, 2, 1.0f);
-        tf1->setCoefficient(2, 0, 1.0f);
-        tf1->setCoefficient(2, 2, 0.0f);
+        tf1->setCoefficient(0, 0, 0.0F);
+        tf1->setCoefficient(0, 2, 1.0F);
+        tf1->setCoefficient(2, 0, 1.0F);
+        tf1->setCoefficient(2, 2, 0.0F);
 
         geometry::data::PointList::transform(pl1, tf1);
 
@@ -414,7 +411,7 @@ void PointListTest::associate()
             const sight::data::Point::PointCoordArrayType tmp2 = points2[i]->getCoord();
 
             // Compare the components
-            for(int j = 0 ; j < nbComponents ; j++)
+            for(std::size_t j = 0 ; j < nbComponents ; j++)
             {
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(tmp1[j], tmp2[j], 1e-5);
             }
@@ -478,9 +475,9 @@ void PointListTest::removeClosestPointNominal()
         const auto pRes =
             geometry::data::PointList::removeClosestPoint(pl, p, std::numeric_limits<float>::max());
         CPPUNIT_ASSERT(pRes != nullptr);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[0], p->getCoord()[0], std::numeric_limits<float>::min());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[1], p->getCoord()[1], std::numeric_limits<float>::min());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[2], p->getCoord()[2], std::numeric_limits<float>::min());
+        CPPUNIT_ASSERT_EQUAL(pRes->getCoord()[0], p->getCoord()[0]);
+        CPPUNIT_ASSERT_EQUAL(pRes->getCoord()[1], p->getCoord()[1]);
+        CPPUNIT_ASSERT_EQUAL(pRes->getCoord()[2], p->getCoord()[2]);
     }
 }
 
@@ -522,12 +519,10 @@ void PointListTest::removeClosestPointExtreme()
         const auto pRes =
             geometry::data::PointList::removeClosestPoint(pl, p, std::numeric_limits<float>::max());
         CPPUNIT_ASSERT(pRes != nullptr);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[0], p->getCoord()[0], i + std::numeric_limits<float>::max());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[1], p->getCoord()[1], i + std::numeric_limits<float>::max());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(pRes->getCoord()[2], p->getCoord()[2], i + std::numeric_limits<float>::max());
+        CPPUNIT_ASSERT_EQUAL(pRes->getCoord()[0], p->getCoord()[0]);
+        CPPUNIT_ASSERT_EQUAL(pRes->getCoord()[1], p->getCoord()[1]);
+        CPPUNIT_ASSERT_EQUAL(pRes->getCoord()[2], p->getCoord()[2]);
     }
 }
 
-} //namespace ut
-
-} //namespace sight::geometry::data
+} // namespace sight::geometry::data::ut

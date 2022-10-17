@@ -30,10 +30,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 //-----------------------------------------------------------------------------
@@ -54,14 +51,12 @@ const std::map<std::string, CardinalLayoutManagerBase::Align> CardinalLayoutMana
 //-----------------------------------------------------------------------------
 
 CardinalLayoutManagerBase::CardinalLayoutManagerBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 CardinalLayoutManagerBase::~CardinalLayoutManagerBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -74,7 +69,7 @@ void CardinalLayoutManagerBase::initialize(ConfigurationType configuration)
 
     std::vector<ConfigurationType> vectViews = configuration->find("view");
     m_views.clear();
-    for(ConfigurationType view : vectViews)
+    for(const ConfigurationType& view : vectViews)
     {
         ViewInfo vi;
         if(view->hasAttribute("align"))
@@ -94,6 +89,18 @@ void CardinalLayoutManagerBase::initialize(ConfigurationType configuration)
         {
             const std::string height = view->getExistingAttributeValue("minHeight");
             vi.m_minSize.second = boost::lexical_cast<int>(height);
+        }
+
+        if(view->hasAttribute("maxWidth"))
+        {
+            const std::string width = view->getExistingAttributeValue("maxWidth");
+            vi.m_maxSize.first = std::stoi(width);
+        }
+
+        if(view->hasAttribute("maxHeight"))
+        {
+            const std::string height = view->getExistingAttributeValue("maxHeight");
+            vi.m_maxSize.second = std::stoi(height);
         }
 
         if(view->hasAttribute("resizable"))
@@ -177,6 +184,4 @@ void CardinalLayoutManagerBase::initialize(ConfigurationType configuration)
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

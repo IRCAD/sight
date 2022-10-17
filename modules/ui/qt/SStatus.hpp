@@ -102,7 +102,7 @@ public:
     MODULE_UI_QT_API SStatus() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SStatus() noexcept;
+    MODULE_UI_QT_API ~SStatus() noexcept override;
 
     /**
      * @name Slots API
@@ -151,24 +151,24 @@ protected:
     void changeToOrange();
 
     /// SLOT : change label color (true = green, false = red)
-    void toggleGreenRed(const bool green);
+    void toggleGreenRed(bool green);
 
     /// SLOT : change nth label color
-    void changeNthToGreen(const int index);
+    void changeNthToGreen(int index);
 
     /// SLOT : change nth label color
-    void changeNthToRed(const int index);
+    void changeNthToRed(int index);
 
     /// SLOT : change nth label color
-    void changeNthToOrange(const int index);
+    void changeNthToOrange(int index);
 
     /// SLOT : change nth label color (true = green, false = red)
-    void toggleNthGreenRed(const int index, const bool green);
+    void toggleNthGreenRed(int index, bool green);
 
 private:
 
     /// Number of status
-    std::size_t m_count;
+    std::size_t m_count {1};
 
     QVector<QPointer<QLabel> > m_indicator;
     QVector<QPointer<QLabel> > m_labelStatus;
@@ -178,10 +178,10 @@ private:
     std::string m_orangeTooltip; ///< Tooltip for orange status
     std::string m_layout;        ///< Layout orientation
 
-    bool m_isCircular; ///< label is a circle if true (else it's a square)
+    bool m_isCircular {false}; ///< label is a circle if true (else it's a square)
 
-    std::size_t m_width;  ///< width of indicator
-    std::size_t m_height; ///< height of indicator
+    std::size_t m_width {20};  ///< width of indicator
+    std::size_t m_height {20}; ///< height of indicator
 };
 
 } // namespace sight::module::ui::qt

@@ -106,7 +106,8 @@ void Matrix::copyFromCv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::Matrix
         _rvec.type() != CV_64F || _tvec.type() != CV_64F
     );
 
-    cv::Mat d_rvec, d_tvec;
+    cv::Mat d_rvec;
+    cv::Mat d_tvec;
     _rvec.convertTo(d_rvec, CV_64F);
     _tvec.convertTo(d_tvec, CV_64F);
 

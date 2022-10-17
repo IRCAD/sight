@@ -24,10 +24,7 @@
 
 #include <core/thread/Worker.hpp>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 //-----------------------------------------------------------------------------
@@ -53,11 +50,11 @@ SelectorDialog::SelectorDialog(
     create();
     core::thread::getDefaultWorker()->postTask<void>(
         [&]
-            {
-                m_implementation->setTitle(title);
-                m_implementation->setMessage(message);
-                m_implementation->setSelections(_selections);
-            }).wait();
+        {
+            m_implementation->setTitle(title);
+            m_implementation->setMessage(message);
+            m_implementation->setSelections(_selections);
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -74,10 +71,10 @@ void SelectorDialog::create()
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
-            {
-                ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ISelectorDialog::REGISTRY_KEY);
-                m_implementation                     = ui::base::dialog::ISelectorDialog::dynamicCast(guiObj);
-            })
+        {
+            ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ISelectorDialog::REGISTRY_KEY);
+            m_implementation                     = ui::base::dialog::ISelectorDialog::dynamicCast(guiObj);
+        })
     ).wait();
 }
 
@@ -88,9 +85,9 @@ void SelectorDialog::setTitle(std::string title)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
-            {
-                m_implementation->setTitle(title);
-            })
+        {
+            m_implementation->setTitle(title);
+        })
     ).wait();
 }
 
@@ -98,7 +95,7 @@ void SelectorDialog::setTitle(std::string title)
 
 std::string SelectorDialog::show()
 {
-    std::function<std::string()> f         = std::bind(&ISelectorDialog::show, m_implementation);
+    std::function<std::string()> f         = [this](auto&& ...){return m_implementation->show();};
     std::shared_future<std::string> future =
         core::thread::getDefaultWorker()->postTask<std::string>(f);
     future.wait();
@@ -112,9 +109,9 @@ void SelectorDialog::setSelections(std::vector<std::string> _selections)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
-            {
-                m_implementation->setSelections(_selections);
-            })
+        {
+            m_implementation->setSelections(_selections);
+        })
     ).wait();
 }
 
@@ -125,9 +122,9 @@ void SelectorDialog::setMessage(const std::string& msg)
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
-            {
-                m_implementation->setMessage(msg);
-            })
+        {
+            m_implementation->setMessage(msg);
+        })
     ).wait();
 }
 
@@ -138,14 +135,12 @@ void SelectorDialog::addCustomButton(const std::string& label, std::function<voi
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
-            {
-                m_implementation->addCustomButton(label, clickedFn);
-            })
+        {
+            m_implementation->addCustomButton(label, clickedFn);
+        })
     ).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-} //namespace dialog
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::dialog

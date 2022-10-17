@@ -25,36 +25,30 @@
 #include "core/runtime/detail/Module.hpp"
 #include "core/runtime/Runtime.hpp"
 
-#include <limits.h>
-
+#include <climits>
 #include <filesystem>
 #include <string>
+#include <unordered_map>
+#include <utility>
 
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace dl
+namespace sight::core::runtime::detail::dl
 {
 
 //------------------------------------------------------------------------------
 
-Native::Native(const std::string& name) noexcept :
-    m_name(name)
+Native::Native(std::string name) noexcept :
+    m_name(std::move(name))
 {
 }
 
 //------------------------------------------------------------------------------
 
-Native::~Native() noexcept
-{
-}
+Native::~Native() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-const std::filesystem::path Native::getFullPath() const
+std::filesystem::path Native::getFullPath() const
 {
 #if defined(linux) || defined(__linux)
     // Cache the list of all libraries for each location to speed-up searches
@@ -65,28 +59,43 @@ const std::filesystem::path Native::getFullPath() const
 
     if(auto it = s_cache.find(m_searchPath); it == s_cache.end())
     {
-        static const std::regex libraryRegex("lib(.*).so\\.?[0-9\\.]*");
-
-        auto& map = s_cache[m_searchPath];
-        for(const auto& p : std::filesystem::directory_iterator(m_searchPath))
         {
-            // Skip the symlinks, this speedups the process, avoid duplicates, and make unit-testing more consistent
-            if(!std::filesystem::is_symlink(p.path()))
-            {
-                const std::filesystem::path filename = p.path().filename();
-                const std::string filename_str       = filename.string();
+            static const std::regex libraryRegex("lib(.*).so(\\.?[0-9\\.]*)?");
 
-                if(std::smatch match; std::regex_match(filename_str, match, libraryRegex))
+            auto& map = s_cache[m_searchPath];
+            for(const auto& p : std::filesystem::directory_iterator(m_searchPath))
+            {
                 {
-                    map[match[1].str()] = filename;
+                    const std::filesystem::path filename = p.path().filename();
+                    const std::string filename_str       = filename.string();
+
+                    if(std::smatch match; std::regex_match(filename_str, match, libraryRegex))
+                    {
+                        const auto library_name = match[1].str();
+                        const auto itFind       = map.find(library_name);
+
+                        if(itFind == map.end())
+                        {
+                            map[library_name] = filename;
+                        }
+                        else
+                        {
+                            const auto extension = itFind->second.extension();
+
+                            if(extension != ".so")
+                            {
+                                map[library_name] = filename;
+                            }
+                        }
+                    }
                 }
             }
         }
     }
 
-    const std::filesystem::path result = m_searchPath / s_cache[m_searchPath][m_name];
+    std::filesystem::path result = m_searchPath / s_cache[m_searchPath][m_name];
 #elif defined(WIN32)
-    const std::filesystem::path result = m_searchPath / (this->getName() + ".dll");
+    std::filesystem::path result = m_searchPath / (this->getName() + ".dll");
 #endif
 
     // Test that the result path exists.
@@ -110,7 +119,7 @@ const std::filesystem::path Native::getFullPath() const
 
 //------------------------------------------------------------------------------
 
-const std::string Native::getName() const
+std::string Native::getName() const
 {
     return m_name;
 }
@@ -124,14 +133,4 @@ void Native::setSearchPath(const std::filesystem::path& path) noexcept
 
 //------------------------------------------------------------------------------
 
-void Native::operator=(const Native&) noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace dl
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail::dl

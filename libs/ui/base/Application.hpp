@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,12 +47,10 @@ protected:
     UI_BASE_API static Application::sptr factory();
 
     Application()
-    {
-    }
+    = default;
 
-    virtual ~Application()
-    {
-    }
+    ~Application() override
+    = default;
 };
 
 } // namespace sight::ui::base

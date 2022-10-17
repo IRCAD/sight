@@ -29,10 +29,7 @@
 #include <iostream>
 #include <string>
 
-namespace sight::io::dicom
-{
-
-namespace container
+namespace sight::io::dicom::container
 {
 
 /**
@@ -53,14 +50,14 @@ public:
      * @param[in] codingSchemeVersion Coding Scheme Version (0003,0103)
      */
     IO_DICOM_API DicomCodedAttribute(
-        const std::string& codeValue              = "",
-        const std::string& codingSchemeDesignator = "",
-        const std::string& codeMeaning            = "",
-        const std::string& codingSchemeVersion    = ""
+        std::string codeValue              = "",
+        std::string codingSchemeDesignator = "",
+        std::string codeMeaning            = "",
+        std::string codingSchemeVersion    = ""
     );
 
     /// Returns true if the attribute is empty
-    IO_DICOM_API bool isEmpty() const;
+    [[nodiscard]] IO_DICOM_API bool isEmpty() const;
 
     /**
      * @brief Comparison operators overloading
@@ -79,7 +76,7 @@ public:
     }
 
     /// Get code value
-    const std::string getCodeValue() const
+    [[nodiscard]] std::string getCodeValue() const
     {
         return m_codeValue;
     }
@@ -91,7 +88,7 @@ public:
     }
 
     /// Get coding scheme designator
-    const std::string getCodingSchemeDesignator() const
+    [[nodiscard]] std::string getCodingSchemeDesignator() const
     {
         return m_codingSchemeDesignator;
     }
@@ -103,7 +100,7 @@ public:
     }
 
     /// Get code meaning
-    const std::string getCodeMeaning() const
+    [[nodiscard]] std::string getCodeMeaning() const
     {
         return m_codeMeaning;
     }
@@ -115,7 +112,7 @@ public:
     }
 
     /// Get coding scheme version
-    const std::string getCodingSchemeVersion() const
+    [[nodiscard]] std::string getCodingSchemeVersion() const
     {
         return m_codingSchemeVersion;
     }
@@ -127,7 +124,7 @@ public:
     }
 
     /// Convert entry to GDCM format
-    IO_DICOM_API gdcm::SegmentHelper::BasicCodedEntry toGDCMFormat() const;
+    [[nodiscard]] IO_DICOM_API gdcm::SegmentHelper::BasicCodedEntry toGDCMFormat() const;
 
 private:
 
@@ -144,6 +141,4 @@ private:
     std::string m_codingSchemeVersion;
 };
 
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container

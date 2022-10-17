@@ -73,7 +73,7 @@ public:
     MODULE_UI_HISTORY_API SCommandHistory();
 
     /// Destructor.
-    MODULE_UI_HISTORY_API virtual ~SCommandHistory();
+    MODULE_UI_HISTORY_API ~SCommandHistory() override;
 
 protected:
 

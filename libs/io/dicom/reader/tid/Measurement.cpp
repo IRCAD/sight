@@ -34,13 +34,7 @@
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace tid
+namespace sight::io::dicom::reader::tid
 {
 
 //------------------------------------------------------------------------------
@@ -59,8 +53,7 @@ Measurement::Measurement(
 //------------------------------------------------------------------------------
 
 Measurement::~Measurement()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -92,7 +85,7 @@ void Measurement::readNode(const SPTR(io::dicom::container::sr::DicomSRNode)& no
                             const int frameNumber = imageNode->getFrameNumber();
                             double zCoordinate    = io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(
                                 m_object,
-                                frameNumber
+                                std::size_t(frameNumber)
                             );
 
                             auto origin = data::Point::New(
@@ -137,7 +130,7 @@ void Measurement::addDistance(
     const SPTR(data::Point)& point2
 )
 {
-    data::Vector::sptr distanceVector = data::helper::MedicalImage::getDistances(*m_object);
+    auto distanceVector = data::helper::MedicalImage::getDistances(*m_object);
 
     if(!distanceVector)
     {
@@ -149,14 +142,10 @@ void Measurement::addDistance(
     pointList->getPoints().push_back(point1);
     pointList->getPoints().push_back(point2);
 
-    distanceVector->getContainer().push_back(pointList);
+    distanceVector->push_back(pointList);
     data::helper::MedicalImage::setDistanceVisibility(*m_object, true);
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace tid
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::tid

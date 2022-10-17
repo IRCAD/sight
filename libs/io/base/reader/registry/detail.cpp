@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,25 +24,15 @@
 
 #include <core/LazyInstantiator.hpp>
 
-namespace sight::io::base
-{
-
-namespace reader
-{
-
-namespace registry
+namespace sight::io::base::reader::registry
 {
 
 struct FwDataIOReaderRegistryInstantiatorTag {};
 
 SPTR(Type) get()
 {
-    typedef core::LazyInstantiator<Type, FwDataIOReaderRegistryInstantiatorTag> InstantiatorType;
+    using InstantiatorType = core::LazyInstantiator<Type, FwDataIOReaderRegistryInstantiatorTag>;
     return InstantiatorType::getInstance();
 }
 
-} // namespace registry
-
-} // namespace reader
-
-} // namespace sight::io::base
+} // namespace sight::io::base::reader::registry

@@ -61,8 +61,7 @@ AppManager::AppManager()
 //------------------------------------------------------------------------------
 
 AppManager::~AppManager()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -288,7 +287,7 @@ void AppManager::startServices()
 
     m_isStarted = true;
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
+    std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
     futures.clear();
 
     for(const auto& srv : serviceToUpdate)
@@ -296,7 +295,7 @@ void AppManager::startServices()
         futures.push_back(srv->update());
     }
 
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
+    std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 }
 
 //------------------------------------------------------------------------------
@@ -318,7 +317,7 @@ void AppManager::stopAndUnregisterServices()
     }
 
     // This part in unlocked to allow potential async calls of add/removeObject() to not result in a deadlock
-    std::for_each(futures.begin(), futures.end(), std::mem_fn(&::std::shared_future<void>::wait));
+    std::ranges::for_each(futures, std::mem_fn(&::std::shared_future<void>::wait));
 
     {
         // unregister the services
@@ -340,10 +339,10 @@ void AppManager::addProxyConnection(const helper::ProxyConnections& proxy)
 {
     std::unique_lock<std::mutex> lock(m_serviceMutex);
 
-    static std::size_t count = 0;
-    std::string channel      = proxy.m_channel;
+    std::string channel = proxy.m_channel;
     if(channel == "undefined")
     {
+        static std::size_t count = 0;
         channel = "AppManager_channel_" + std::to_string(count++);
     }
 
@@ -378,11 +377,9 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
             SIGHT_WARN("Object '" + id + "' is already registered.");
             return;
         }
-        else
-        {
-            SIGHT_WARN("Object '" + id + "' has not been unregistered, we will do it.");
-            this->removeObject(it->second, id);
-        }
+
+        SIGHT_WARN("Object '" + id + "' has not been unregistered, we will do it.");
+        this->removeObject(it->second, id);
     }
 
     auto proxy = service::registry::Proxy::getDefault();
@@ -453,12 +450,13 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
     if(m_isStarted)
     {
         std::vector<service::IService::SharedFutureType> futures;
+        futures.reserve(serviceToStart.size());
         for(const auto& srvInfo : serviceToStart)
         {
             futures.push_back(this->start(srvInfo));
         }
 
-        std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
+        std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
         futures.clear();
 
         for(const auto& srv : serviceToUpdate)
@@ -466,7 +464,7 @@ void AppManager::addObject(data::Object::sptr obj, const std::string& id)
             futures.push_back(srv->update());
         }
 
-        std::for_each(futures.begin(), futures.end(), std::mem_fn(&std::shared_future<void>::wait));
+        std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
     }
 
     m_registeredObject.insert(std::make_pair(id, obj));

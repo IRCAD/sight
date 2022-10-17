@@ -32,24 +32,20 @@
 
 #include <utility>
 
-namespace sight::ui::base
-{
-
-namespace registry
+namespace sight::ui::base::registry
 {
 
 //-----------------------------------------------------------------------------
 
-ToolBar::ToolBar(const std::string& sid) :
-    m_sid(sid)
+ToolBar::ToolBar(std::string sid) :
+    m_sid(std::move(sid))
 {
 }
 
 //-----------------------------------------------------------------------------
 
 ToolBar::~ToolBar()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -87,7 +83,7 @@ void ToolBar::initialize(core::runtime::ConfigurationElement::sptr configuration
     m_callbacks.clear();
     // initialize m_actionSids map with configuration
     std::vector<ConfigurationType> vectMenuItems = configuration->find("menuItem");
-    for(ConfigurationType menuItem : vectMenuItems)
+    for(const ConfigurationType& menuItem : vectMenuItems)
     {
         SIGHT_ASSERT("[" + m_sid + "] <menuItem> tag must have 'sid' attribute", menuItem->hasAttribute("sid"));
         if(menuItem->hasAttribute("sid"))
@@ -131,7 +127,7 @@ void ToolBar::initialize(core::runtime::ConfigurationElement::sptr configuration
     index = 0;
     // initialize m_menuSids map with configuration
     std::vector<ConfigurationType> vectMenus = configuration->find("menu");
-    for(ConfigurationType menu : vectMenus)
+    for(const ConfigurationType& menu : vectMenus)
     {
         SIGHT_ASSERT("[" + m_sid + "] <menu> tag must have sid attribute", menu->hasAttribute("sid"));
         if(menu->hasAttribute("sid"))
@@ -162,13 +158,11 @@ void ToolBar::initialize(core::runtime::ConfigurationElement::sptr configuration
     index = 0;
     // initialize m_menuSids map with configuration
     std::vector<ConfigurationType> vectEditors = configuration->find("editor");
-    for(ConfigurationType editor : vectEditors)
+    for(const ConfigurationType& editor : vectEditors)
     {
         SIGHT_ASSERT(
             "[" + m_sid + "] <editor> tag must have sid attribute",
-            editor->hasAttribute(
-                "sid"
-            ) || editor->hasAttribute("wid")
+            editor->hasAttribute("sid") || editor->hasAttribute("wid")
         );
         if(editor->hasAttribute("sid"))
         {
@@ -208,7 +202,7 @@ void ToolBar::initialize(core::runtime::ConfigurationElement::sptr configuration
 void ToolBar::manage(std::vector<ui::base::container::fwMenuItem::sptr> menuItems)
 {
     ui::base::container::fwMenuItem::sptr menuItem;
-    for(SIDToolBarMapType::value_type sid : m_actionSids)
+    for(const SIDToolBarMapType::value_type& sid : m_actionSids)
     {
         SIGHT_ASSERT(
             "The toolBar '" << m_sid << "' contains more menuItem in <registry> than in <layout>: "
@@ -252,7 +246,7 @@ void ToolBar::manage(std::vector<ui::base::container::fwMenuItem::sptr> menuItem
 void ToolBar::manage(std::vector<ui::base::container::fwMenu::sptr> menus)
 {
     ui::base::container::fwMenu::sptr menu;
-    for(SIDToolBarMapType::value_type sid : m_menuSids)
+    for(const SIDToolBarMapType::value_type& sid : m_menuSids)
     {
         SIGHT_ASSERT(
             "The toolBar '" << m_sid << "' contains more menu in <registry> than in <layout>: "
@@ -283,7 +277,7 @@ void ToolBar::manage(std::vector<ui::base::container::fwMenu::sptr> menus)
 void ToolBar::manage(std::vector<ui::base::container::fwContainer::sptr> containers)
 {
     ui::base::container::fwContainer::sptr container;
-    for(SIDToolBarMapType::value_type sid : m_editorSids)
+    for(const SIDToolBarMapType::value_type& sid : m_editorSids)
     {
         SIGHT_ASSERT(
             "The toolBar '" << m_sid << "' contains more editors in <registry> than in <layout>: "
@@ -308,7 +302,7 @@ void ToolBar::manage(std::vector<ui::base::container::fwContainer::sptr> contain
         }
     }
 
-    for(WIDToolBarMapType::value_type wid : m_editorWids)
+    for(const WIDToolBarMapType::value_type& wid : m_editorWids)
     {
         SIGHT_ASSERT(
             "The toolBar '" << m_sid << "' contains more editors in <registry> than in <layout>: "
@@ -324,7 +318,7 @@ void ToolBar::manage(std::vector<ui::base::container::fwContainer::sptr> contain
 
 void ToolBar::unmanage()
 {
-    for(SIDToolBarMapType::value_type sid : m_actionSids)
+    for(const SIDToolBarMapType::value_type& sid : m_actionSids)
     {
         if(sid.second.second) //service is auto started?
         {
@@ -342,7 +336,7 @@ void ToolBar::unmanage()
         ui::base::GuiRegistry::unregisterActionSIDToParentSID(sid.first, m_sid);
     }
 
-    for(SIDToolBarMapType::value_type sid : m_menuSids)
+    for(const SIDToolBarMapType::value_type& sid : m_menuSids)
     {
         if(sid.second.second) //service is auto started?
         {
@@ -360,7 +354,7 @@ void ToolBar::unmanage()
         ui::base::GuiRegistry::unregisterSIDMenu(sid.first);
     }
 
-    for(SIDToolBarMapType::value_type sid : m_editorSids)
+    for(const SIDToolBarMapType::value_type& sid : m_editorSids)
     {
         if(sid.second.second) //service is auto started?
         {
@@ -378,7 +372,7 @@ void ToolBar::unmanage()
         ui::base::GuiRegistry::unregisterSIDContainer(sid.first);
     }
 
-    for(WIDToolBarMapType::value_type wid : m_editorWids)
+    for(const WIDToolBarMapType::value_type& wid : m_editorWids)
     {
         ui::base::GuiRegistry::unregisterWIDContainer(wid.first);
     }
@@ -393,6 +387,4 @@ void ToolBar::onItemAction()
 
 //-----------------------------------------------------------------------------
 
-} // namespace registry
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::registry

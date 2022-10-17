@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,7 +86,7 @@ GEOMETRY_DATA_API double getDistance(const fwPlane& _plane);
  *  @param [in] _plane
  *  @return [out] _plane
  */
-GEOMETRY_DATA_API void setDistance(fwPlane& _plane, const double _distance);
+GEOMETRY_DATA_API void setDistance(fwPlane& _plane, double _distance);
 /**
  *  @brief Give the intersection between a plane and a line. The result is returned in a point (_point)
  *  @param [in]  _fwPlane

@@ -1,4 +1,4 @@
-sight_add_target(Tuto03MesherWithGenericSceneCpp TYPE APP START ON)
+sight_add_target(Tuto03MesherWithGenericSceneCpp TYPE APP)
 
 add_dependencies(
     Tuto03MesherWithGenericSceneCpp

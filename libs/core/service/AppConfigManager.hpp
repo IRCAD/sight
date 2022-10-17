@@ -45,7 +45,7 @@ namespace sight::data
 
 class Composite;
 
-}
+} // namespace sight::data
 
 namespace sight::service
 {
@@ -70,14 +70,14 @@ public:
     SERVICE_API AppConfigManager();
 
     /// Does nothing.
-    SERVICE_API virtual ~AppConfigManager();
+    SERVICE_API ~AppConfigManager() override;
 
     /**
      * @brief Sets configuration.
      * @param _configId The identifier of the requested config.
      * @param _replaceFields The associations between the value and the pattern to replace in the config.
      */
-    SERVICE_API virtual void setConfig(
+    SERVICE_API void setConfig(
         const std::string& _configId,
         const FieldAdaptorType& _replaceFields = FieldAdaptorType()
     ) override;
@@ -87,7 +87,7 @@ public:
      * @param _configId The identifier of the requested config.
      * @param _replaceFields Composite of association between the value and the pattern to replace in the config.
      */
-    SERVICE_API virtual void setConfig(
+    SERVICE_API void setConfig(
         const std::string& _configId,
         const data::Composite::csptr& _replaceFields
     ) override;
@@ -156,10 +156,10 @@ private:
 
     data::Object::sptr getNewObject(ConfigAttribute type, const std::string& uid) const;
 
-    data::Object::sptr getNewObject(
+    static data::Object::sptr getNewObject(
         ConfigAttribute type,
         ConfigAttribute uid = ConfigAttribute("", false)
-    ) const;
+    );
 
     data::Object::sptr getObject(ConfigAttribute type, const std::string& uid) const;
 
@@ -273,7 +273,7 @@ private:
     data::Composite::sptr m_tmpRootObject;
 
     /// Counter used to generate a unique proxy name.
-    unsigned int m_proxyID;
+    unsigned int m_proxyID {0};
 
     /// Keep the connection between the OSR and `addObjects`.
     core::com::Connection m_addObjectConnection;
@@ -282,7 +282,7 @@ private:
     core::com::Connection m_removeObjectConnection;
 
     /// Hack to know if we are doing a unit test. We skip some code in this case to be able to launch a configuration.
-    bool m_isUnitTest;
+    bool m_isUnitTest {false};
 };
 
 // ------------------------------------------------------------------------

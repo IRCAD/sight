@@ -31,13 +31,7 @@
 
 #include <gdcmReader.h>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace tid
+namespace sight::io::dicom::reader::tid
 {
 
 /**
@@ -57,11 +51,11 @@ public:
      * @param[in] logger Logger
      */
     IO_DICOM_API TemplateID(
-        const CSPTR(data::DicomSeries)& dicomSeries,
-        const SPTR(gdcm::Reader)& reader,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const SPTR(DATATYPE)& object,
-        const core::log::Logger::sptr& logger
+        CSPTR(data::DicomSeries)dicomSeries,
+        SPTR(gdcm::Reader)reader,
+        SPTR(io::dicom::container::DicomInstance)instance,
+        SPTR(DATATYPE)object,
+        core::log::Logger::sptr logger
     );
 
     /// Destructor
@@ -89,36 +83,30 @@ protected:
 
 template<class DATATYPE>
 TemplateID<DATATYPE>::TemplateID(
-    const CSPTR(data::DicomSeries)& dicomSeries,
-    const SPTR(gdcm::Reader)& reader,
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const SPTR(DATATYPE)& object,
-    const core::log::Logger::sptr& logger
+    CSPTR(data::DicomSeries)dicomSeries,
+    SPTR(gdcm::Reader)reader,
+    SPTR(io::dicom::container::DicomInstance)instance,
+    SPTR(DATATYPE)object,
+    core::log::Logger::sptr logger
 ) :
-    m_dicomSeries(dicomSeries),
-    m_reader(reader),
-    m_instance(instance),
-    m_object(object),
-    m_logger(logger)
+    m_dicomSeries(std::move(dicomSeries)),
+    m_reader(std::move(reader)),
+    m_instance(std::move(instance)),
+    m_object(std::move(object)),
+    m_logger(std::move(logger))
 {
-    SIGHT_ASSERT("DicomSeries should not be null.", dicomSeries);
-    SIGHT_ASSERT("Reader should not be null.", reader);
-    SIGHT_ASSERT("Instance should not be null.", instance);
-    SIGHT_ASSERT("Object should not be null.", object);
-    SIGHT_ASSERT("Logger should not be null.", logger);
+    SIGHT_ASSERT("DicomSeries should not be null.", m_dicomSeries);
+    SIGHT_ASSERT("Reader should not be null.", m_reader);
+    SIGHT_ASSERT("Instance should not be null.", m_instance);
+    SIGHT_ASSERT("Object should not be null.", m_object);
+    SIGHT_ASSERT("Logger should not be null.", m_logger);
 }
 
 //------------------------------------------------------------------------------
 
-template<class DATATYPE>
-TemplateID<DATATYPE>::~TemplateID()
-{
-}
+template<class DATATYPE> TemplateID<DATATYPE>::~TemplateID()
+= default;
 
 //------------------------------------------------------------------------------
 
-} // namespace tid
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::tid

@@ -30,35 +30,28 @@
 
 #include <core/com/Slots.hpp>
 
-#include <data/ActivitySeries.hpp>
-#include <data/Series.hpp>
+#include <data/Activity.hpp>
 
-namespace sight::ui::base
-{
-
-namespace view
+namespace sight::ui::base::view
 {
 
 /**
  * @brief Defines the base class for services displaying activity view
  *
  * @section Slots Slots
- * - \b launchActivity( data::ActivitySeries::sptr ): This slot allows to create a view for the given activity
- *   series.
- * - \b launchActivitySeries( data::Series::sptr ): This slot allows to create a view for the given activity
- *   series.
+ * - \b launchActivity( data::Activity::sptr ): This slot allows to create a view for the given activity.
  *
  *  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::ui::qt::activity::SDynamicView" autoConnect="true" >
      <mainActivity id="SDBActivity" />
      <parameters>
-         <parameter replace="SERIESDB" by="medicalData"  />
+         <parameter replace="SERIES_SET" by="medicalData"  />
          <parameter replace="ICON_PATH" by="sight::module::ui::icons/app.ico"  />
      </parameters>
    </service>
    @endcode
- * - \b mainActivity (optional): information about the main activity (first tab). The activity series will be generated.
+ * - \b mainActivity (optional): information about the main activity (first tab). The activity will be generated.
  *   This activity must not have requirement.
  *   - \b id : identifier of the activity
  * - \b parameters (optional) : additional parameters used to launch the activities
@@ -74,7 +67,6 @@ public:
     SIGHT_DECLARE_CLASS(IActivityView, ui::base::IGuiContainer);
 
     UI_BASE_API static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT;
-    UI_BASE_API static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;
 
 protected:
 
@@ -92,26 +84,18 @@ protected:
 
     /**
      * @brief Slot: Launch the given activity in a new tab.
-     * @note The same activity series cannot be launch in two different tabs.
+     * @note The same activity cannot be launch in two different tabs.
      */
-    UI_BASE_API virtual void launchActivity(data::ActivitySeries::sptr activitySeries) = 0;
-
-    /**
-     * @brief Slot: Launch the given activity in a new tab.
-     * @note The same activity series cannot be launch in two different tabs.
-     */
-    UI_BASE_API virtual void launchActivitySeries(data::Series::sptr series);
+    UI_BASE_API virtual void launchActivity(data::Activity::sptr activity) = 0;
 
     /**
      * @brief Check if the activity is valid by calling the activity validator.
      * @return Return true if the given activity is valid
      */
-    UI_BASE_API virtual bool validateActivity(data::ActivitySeries::sptr activitySeries) const;
+    UI_BASE_API virtual bool validateActivity(data::Activity::sptr activity) const;
 
-    /// Create the activity series given in 'mainActivity' configuration
-    UI_BASE_API data::ActivitySeries::sptr createMainActivity() const override;
+    /// Create the activity given in 'mainActivity' configuration
+    UI_BASE_API data::Activity::sptr createMainActivity() const override;
 };
 
-} // namespace view
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::view

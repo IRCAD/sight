@@ -66,9 +66,9 @@ void SGetCamera::starting()
 
 void SGetCamera::updating()
 {
-    const auto cameraSeries = m_cameraSeries.lock();
+    const auto camera_set = m_camera_set.lock();
 
-    if(cameraSeries == nullptr)
+    if(camera_set == nullptr)
     {
         SIGHT_THROW_EXCEPTION(sight::data::Exception("Missing input camera series"));
     }
@@ -76,21 +76,21 @@ void SGetCamera::updating()
     size_t i = 0;
     for(auto& index : m_cameraIndexNumbers)
     {
-        m_camera[i] = cameraSeries->getCamera(index);
+        m_camera[i] = camera_set->get_camera(index);
         i++;
     }
 
-    size_t j = 0;
     if(!m_extrinsicIndexNumbers.empty())
     {
+        size_t j = 0;
         for(auto& index : m_extrinsicIndexNumbers)
         {
-            if(cameraSeries->getExtrinsicMatrix(index) == nullptr)
+            if(camera_set->get_extrinsic_matrix(index) == nullptr)
             {
                 SIGHT_THROW_EXCEPTION(sight::data::Exception("Cameras does not have extrinsic Matrix"));
             }
 
-            m_extrinsic[j] = cameraSeries->getExtrinsicMatrix(index);
+            m_extrinsic[j] = camera_set->get_extrinsic_matrix(index);
             j++;
         }
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,10 +42,7 @@ const core::com::Slots::SlotKeyType ITracker::s_STOP_TRACKING_SLOT  = "stopTrack
 
 //-----------------------------------------------------------------------------
 
-ITracker::ITracker() :
-    m_lastTimestamp(0),
-    m_dropObj(true),
-    m_isTracking(false)
+ITracker::ITracker()
 {
     newSlot(s_TRACK_SLOT, &ITracker::track, this);
     newSlot(s_START_TRACKING_SLOT, &ITracker::startTracking, this);
@@ -55,17 +52,16 @@ ITracker::ITracker() :
 //-----------------------------------------------------------------------------
 
 ITracker::~ITracker()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 void ITracker::configuring()
 {
     const service::IService::ConfigType config = this->getConfigTree();
-    if(config.count("dropObj"))
+    if(config.count("dropObj") != 0U)
     {
-        const std::string dropStr = config.get<std::string>("dropObj");
+        const auto dropStr = config.get<std::string>("dropObj");
         SIGHT_ASSERT("'dropObj' value must be 'true' or 'false'.", dropStr == "true" || dropStr == "false");
         m_dropObj = (dropStr == "true");
     }
@@ -114,11 +110,7 @@ void ITracker::track(core::HiResClock::HiResClockType timestamp)
 
 service::IService::KeyConnectionsMap ITracker::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-
-    connections.push(s_TIMELINE_INPUT, data::BufferTL::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT);
-
-    return connections;
+    return {{s_TIMELINE_INPUT, data::BufferTL::s_OBJECT_PUSHED_SIG, s_TRACK_SLOT}};
 }
 
 //-----------------------------------------------------------------------------

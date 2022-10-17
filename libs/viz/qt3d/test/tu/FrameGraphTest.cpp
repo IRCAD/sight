@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,23 +38,18 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3dTest::ut::FrameGraphTest);
 
-namespace sight::viz::qt3dTest
-{
-
-namespace ut
+namespace sight::viz::qt3dTest::ut
 {
 
 //------------------------------------------------------------------------------
 
 FrameGraphTest::FrameGraphTest()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 FrameGraphTest::~FrameGraphTest()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -68,55 +63,57 @@ void FrameGraphTest::tearDown()
 {
 }
 
+#define ASSERT_NOT_NULL(expr) if((expr) == nullptr){throw std::runtime_error(#expr " is null.");}
+
 //------------------------------------------------------------------------------
 
 void FrameGraphTest::initializeFrameGraph()
 {
     TestApplication app;
 
-    auto frameGraph = new sight::viz::qt3d::core::FrameGraph();
+    auto* frameGraph = new sight::viz::qt3d::core::FrameGraph();
 
-    CPPUNIT_ASSERT(frameGraph != nullptr);
+    ASSERT_NOT_NULL(frameGraph);
 
     // Asserts QRenderSurfaceSelector exists.
     CPPUNIT_ASSERT_EQUAL(frameGraph->children().size(), 1);
 
-    auto renderSurfaceSelector = qobject_cast<Qt3DRender::QRenderSurfaceSelector*>(frameGraph->childNodes()[0]);
-    CPPUNIT_ASSERT(renderSurfaceSelector != nullptr);
+    auto* renderSurfaceSelector = qobject_cast<Qt3DRender::QRenderSurfaceSelector*>(frameGraph->childNodes()[0]);
+    ASSERT_NOT_NULL(renderSurfaceSelector);
 
     // Asserts QViewport exists.
     CPPUNIT_ASSERT_EQUAL(renderSurfaceSelector->children().size(), 1);
 
-    auto viewport = qobject_cast<Qt3DRender::QViewport*>(renderSurfaceSelector->childNodes()[0]);
-    CPPUNIT_ASSERT(viewport != nullptr);
+    auto* viewport = qobject_cast<Qt3DRender::QViewport*>(renderSurfaceSelector->childNodes()[0]);
+    ASSERT_NOT_NULL(viewport);
 
     // Asserts QCameraSelector exists.
     CPPUNIT_ASSERT_EQUAL(viewport->children().size(), 1);
 
-    auto cameraSelector = qobject_cast<Qt3DRender::QCameraSelector*>(viewport->childNodes()[0]);
-    CPPUNIT_ASSERT(cameraSelector != nullptr);
+    auto* cameraSelector = qobject_cast<Qt3DRender::QCameraSelector*>(viewport->childNodes()[0]);
+    ASSERT_NOT_NULL(cameraSelector);
 
     // Asserts QClearBuffers exists.
     CPPUNIT_ASSERT_EQUAL(cameraSelector->children().size(), 1);
 
-    auto clearBuffers = qobject_cast<Qt3DRender::QClearBuffers*>(cameraSelector->childNodes()[0]);
-    CPPUNIT_ASSERT(clearBuffers != nullptr);
+    auto* clearBuffers = qobject_cast<Qt3DRender::QClearBuffers*>(cameraSelector->childNodes()[0]);
+    ASSERT_NOT_NULL(clearBuffers);
 
     // Asserts QRenderStateSet exists.
     CPPUNIT_ASSERT_EQUAL(clearBuffers->children().size(), 1);
 
-    auto renderStateSet = qobject_cast<Qt3DRender::QRenderStateSet*>(clearBuffers->childNodes()[0]);
-    CPPUNIT_ASSERT(renderStateSet != nullptr);
+    auto* renderStateSet = qobject_cast<Qt3DRender::QRenderStateSet*>(clearBuffers->childNodes()[0]);
+    ASSERT_NOT_NULL(renderStateSet);
 
     // Asserts renderStateSet has right render states.
     CPPUNIT_ASSERT_EQUAL(renderStateSet->renderStates().size(), 2);
 
-    auto culling = qobject_cast<Qt3DRender::QCullFace*>(renderStateSet->renderStates()[0]);
-    CPPUNIT_ASSERT(culling != nullptr);
+    auto* culling = qobject_cast<Qt3DRender::QCullFace*>(renderStateSet->renderStates()[0]);
+    ASSERT_NOT_NULL(culling);
     CPPUNIT_ASSERT_EQUAL(culling->mode(), Qt3DRender::QCullFace::NoCulling);
 
-    auto depthTest = qobject_cast<Qt3DRender::QDepthTest*>(renderStateSet->renderStates()[1]);
-    CPPUNIT_ASSERT(depthTest != nullptr);
+    auto* depthTest = qobject_cast<Qt3DRender::QDepthTest*>(renderStateSet->renderStates()[1]);
+    ASSERT_NOT_NULL(depthTest);
     CPPUNIT_ASSERT_EQUAL(depthTest->depthFunction(), Qt3DRender::QDepthTest::Less);
 
     delete frameGraph;
@@ -124,6 +121,4 @@ void FrameGraphTest::initializeFrameGraph()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut.
-
-} // namespace sight::viz::qt3dTest.
+} // namespace sight::viz::qt3dTest::ut

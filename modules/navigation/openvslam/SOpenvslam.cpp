@@ -28,7 +28,9 @@
 #include <core/location/SingleFolder.hpp>
 #include <core/Profiling.hpp>
 #include <core/runtime/operations.hpp>
+#include <core/tools/Os.hpp>
 
+#include <io/http/Download.hpp>
 #include <io/opencv/FrameTL.hpp>
 
 #include <navigation/openvslam/Helper.hpp>
@@ -48,6 +50,8 @@
 #include <openvslam/publish/frame_publisher.h>
 #include <openvslam/publish/map_publisher.h>
 #include <openvslam/system.h>
+
+#include <memory>
 
 namespace sight::module::navigation::openvslam
 {
@@ -82,24 +86,23 @@ static const core::com::Signals::SignalKeyType s_MAP_LOADED_SIG = "mapLoaded";
 
 static const std::string s_DOWNSAMPLE_CONFIG = "downsampleWidth";
 static const std::string s_MODE_CONFIG       = "mode";
+
 static std::string s_windowName;
+
+const core::com::Slots::SlotKeyType s_INTERNAL_DOWNLOAD_VOC_FILE_SLOT = "InternalDownloadVocFile";
 
 //------------------------------------------------------------------------------
 
-SOpenvslam::SOpenvslam() noexcept
+SOpenvslam::SOpenvslam() noexcept :
+    m_sigTrackingInitialized(newSignal<SignalType>(s_TRACKING_INITIALIZED_SIG)),
+    m_sigTrackingNotInitialized(newSignal<SignalType>(s_TRACKING_NOT_INITIALIZED_SIG)),
+    m_sigTracked(newSignal<SignalType>(s_TRACKED_SIG)),
+    m_sigTrackingLost(newSignal<SignalType>(s_TRACKING_LOST_SIG)),
+    m_sigVocFileUnloaded(newSignal<SignalType>(s_VOCFILE_UNLOADED_SIG)),
+    m_sigVocFileLoadingStarted(newSignal<SignalType>(s_VOCFILE_LOADING_STARTED_SIG)),
+    m_sigVocFileLoaded(newSignal<SignalType>(s_VOCFILE_LOADED_SIG)),
+    m_sigMapLoaded(newSignal<SignalType>(s_MAP_LOADED_SIG))
 {
-    m_sigTrackingInitialized    = newSignal<SignalType>(s_TRACKING_INITIALIZED_SIG);
-    m_sigTrackingNotInitialized = newSignal<SignalType>(s_TRACKING_NOT_INITIALIZED_SIG);
-
-    m_sigTracked      = newSignal<SignalType>(s_TRACKED_SIG);
-    m_sigTrackingLost = newSignal<SignalType>(s_TRACKING_LOST_SIG);
-
-    m_sigVocFileUnloaded       = newSignal<SignalType>(s_VOCFILE_UNLOADED_SIG);
-    m_sigVocFileLoadingStarted = newSignal<SignalType>(s_VOCFILE_LOADING_STARTED_SIG);
-    m_sigVocFileLoaded         = newSignal<SignalType>(s_VOCFILE_LOADED_SIG);
-
-    m_sigMapLoaded = newSignal<SignalType>(s_MAP_LOADED_SIG);
-
     newSlot(s_ENABLE_LOCALIZATION_SLOT, &SOpenvslam::enableLocalization, this);
     newSlot(s_ACTIVATE_LOCALIZATION_SLOT, &SOpenvslam::activateLocalization, this);
 
@@ -117,11 +120,39 @@ SOpenvslam::SOpenvslam() noexcept
 
     newSlot(s_PAUSE_TRACKER_SLOT, &SOpenvslam::pause, this);
 
-    m_pointcloudWorker = core::thread::Worker::New();
+    newSlot(
+        s_INTERNAL_DOWNLOAD_VOC_FILE_SLOT,
+        [this]()
+        {
+            SIGHT_INFO("Downloading orb_vocab.dbow2...");
 
-    m_timer = m_pointcloudWorker->createTimer();
-    m_timer->setFunction(std::bind(&SOpenvslam::updatePointCloud, this));
-    m_timer->setDuration(std::chrono::milliseconds(1000)); // update pointcloud every seconds.
+            this->notify(sight::service::IService::NotificationType::INFO, "Downloading Vocabulary");
+            m_sigVocFileLoadingStarted->asyncEmit();
+            try
+            {
+                std::string url;
+                // Check first if the ENV SIGHT_OPENVSLAM_VOC_URL is set.
+                const std::string env_download_url = core::tools::os::getEnv("SIGHT_OPENVSLAM_VOC_URL");
+
+                if(env_download_url.empty())
+                {
+                    url = "https://cloud.ircad.fr/index.php/s/tojArWTZcK223Fq/download";
+                }
+                else
+                {
+                    url = env_download_url;
+                }
+
+                io::http::downloadFile(url, m_vocabularyPath);
+                m_sigVocFileLoaded->asyncEmit();
+            }
+            catch(core::Exception& _e)
+            {
+                SIGHT_FATAL("orb_vocab.dbow2 file hasn't been downloaded: " + std::string(_e.what()));
+                m_sigVocFileUnloaded->asyncEmit();
+            }
+            this->notify(sight::service::IService::NotificationType::SUCCESS, "Vocabulary downloaded");
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -130,7 +161,7 @@ SOpenvslam::~SOpenvslam() noexcept
 {
     if(this->isStarted())
     {
-        this->stopping();
+        this->stop().wait();
     }
 }
 
@@ -169,6 +200,16 @@ void SOpenvslam::configuring()
 
 void SOpenvslam::starting()
 {
+    const auto& user_path = core::tools::os::getUserConfigDir("openvslam");
+    m_vocabularyPath = std::filesystem::path(user_path) / "orb_vocab.dbow2";
+
+    if(!std::filesystem::exists(m_vocabularyPath))
+    {
+        this->slot(s_INTERNAL_DOWNLOAD_VOC_FILE_SLOT)->asyncRun();
+    }
+
+    m_sigVocFileLoaded->asyncEmit();
+
     // input parameters
     const auto frameTL = m_timeline.lock();
     SIGHT_ASSERT("The input " << s_TIMELINE_INPUT << " is not valid.", frameTL);
@@ -191,6 +232,12 @@ void SOpenvslam::starting()
         const auto frameTL2 = m_timeline2.lock();
         SIGHT_ASSERT("The input " << s_TIMELINE2_INPUT << " is not valid.", frameTL2);
     }
+
+    m_pointcloudWorker = core::thread::Worker::New();
+
+    m_timer = m_pointcloudWorker->createTimer();
+    m_timer->setFunction([this](){updatePointCloud();});
+    m_timer->setDuration(std::chrono::milliseconds(1000)); // update pointcloud every seconds.
 }
 
 //------------------------------------------------------------------------------
@@ -205,6 +252,10 @@ void SOpenvslam::stopping()
         // Ensure that opencv windows is closed.
         cv::destroyWindow(s_windowName);
     }
+
+    m_pointcloudWorker->stop();
+    m_pointcloudWorker.reset();
+    m_sigVocFileUnloaded->asyncEmit();
 }
 
 //------------------------------------------------------------------------------
@@ -227,17 +278,6 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
 {
     const std::unique_lock<std::mutex> lock(m_slamLock);
 
-    if(m_vocabularyPath.empty())
-    {
-        m_sigVocFileLoadingStarted->asyncEmit();
-        m_vocabularyPath =
-            core::runtime::getModuleResourceFilePath(
-                "sight::module::navigation::openvslam",
-                "orb_vocab.dbow2"
-            ).string();
-        m_sigVocFileLoaded->asyncEmit();
-    }
-
     if(m_slamSystem == nullptr)
     {
         const auto camera = m_camera.lock();
@@ -247,7 +287,7 @@ void SOpenvslam::startTracking(const std::string& _mapFile)
             m_initializerParameters
         );
 
-        m_slamSystem = std::unique_ptr< ::openvslam::system>(new ::openvslam::system(config, m_vocabularyPath));
+        m_slamSystem = std::make_unique< ::openvslam::system>(config, m_vocabularyPath);
 
         m_slamSystem->startup();
 
@@ -301,9 +341,12 @@ void SOpenvslam::stopTracking()
             const std::string baseFilename =
                 m_trajectoriesSavePath->getFile().filename().replace_extension("").string();
 
-            m_slamSystem->save_frame_trajectory(folder + "/" + baseFilename + "_frames_traj.txt", m_trajectoriesFormat);
             m_slamSystem->save_frame_trajectory(
-                folder + "/" + baseFilename + "_keyframes_traj.txt",
+                std::string(folder) + "/" + baseFilename + "_frames_traj.txt",
+                m_trajectoriesFormat
+            );
+            m_slamSystem->save_frame_trajectory(
+                std::string(folder) + "/" + baseFilename + "_keyframes_traj.txt",
                 m_trajectoriesFormat
             );
             m_trajectoriesSavePath.reset();
@@ -468,7 +511,7 @@ void SOpenvslam::setEnumParameter(std::string _val, std::string _key)
         }
         else
         {
-            SIGHT_ERROR("Value'" + _val + "' is not handled for key '" + _key + "'");
+            SIGHT_ERROR(std::string("Value'") + _val + "' is not handled for key '" + _key + "'");
         }
     }
     else
@@ -595,11 +638,11 @@ void SOpenvslam::saveTrajectories()
         //cspell: disable
         // Save frame & keyframes trajectory using choosen folder and basename
         m_slamSystem->save_frame_trajectory(
-            trajectories_folder + "/" + trajectories_filename + "_frames_traj.txt",
+            std::string(trajectories_folder) + "/" + trajectories_filename + "_frames_traj.txt",
             m_trajectoriesFormat
         );
         m_slamSystem->save_frame_trajectory(
-            trajectories_folder + "/" + trajectories_filename + "_keyframes_traj.txt",
+            std::string(trajectories_folder) + "/" + trajectories_filename + "_keyframes_traj.txt",
             m_trajectoriesFormat
         );
         //cspell: enable
@@ -685,14 +728,14 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
     if(m_slamSystem && !m_isPaused)
     {
         // Use a lambda expression to scope the lock of timeline and preserve constness of imgLeft.
-        const cv::Mat imgLeft = [&]() -> const cv::Mat
+        const cv::Mat imgLeft = [&]() -> cv::Mat
                                 {
                                     const auto frameTL     = m_timeline.lock();
                                     const auto bufferFrame = frameTL->getClosestBuffer(timestamp);
                                     if(bufferFrame == nullptr)
                                     {
                                         // return empty image.
-                                        return cv::Mat();
+                                        return {};
                                     }
 
                                     const std::uint8_t* frameData = &bufferFrame->getElement(0);
@@ -765,7 +808,7 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
         }
 
         const auto floatObj = m_scale.lock();
-        float scale         = 1.0f;
+        float scale         = 1.0F;
         if(floatObj)
         {
             // FIXME : Arbitrary scale, the real scale should be computed with respect to a real object in the 3D Scene.
@@ -786,13 +829,13 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
             {
                 const auto inv = pos.inverse();
 
-                float matrix[16];
+                std::array<float, 16> matrix {};
 
-                for(int i = 0 ; i < 4 ; ++i)
+                for(std::size_t i = 0 ; i < 4 ; ++i)
                 {
-                    for(int j = 0 ; j < 4 ; ++j)
+                    for(std::size_t j = 0 ; j < 4 ; ++j)
                     {
-                        matrix[i * 4 + j] = static_cast<float>(inv(i, j));
+                        matrix[i * 4 + j] = static_cast<float>(inv(std::int64_t(i), std::int64_t(j)));
                     }
                 }
 
@@ -822,26 +865,6 @@ void SOpenvslam::tracking(core::HiResClock::HiResClockType& timestamp)
 
 //------------------------------------------------------------------------------
 
-void SOpenvslam::loadVocabulary(const std::string& _filePath)
-{
-    if(_filePath.empty())
-    {
-        sight::ui::base::dialog::MessageDialog::show(
-            "Vocabulary",
-            "Vocabulary file : " + _filePath + " can not be loaded.",
-            sight::ui::base::dialog::MessageDialog::WARNING
-        );
-        m_sigVocFileUnloaded->asyncEmit();
-    }
-    else
-    {
-        m_vocabularyPath = _filePath;
-        m_sigVocFileLoaded->asyncEmit();
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void SOpenvslam::updatePointCloud()
 {
     // Do not update the pointcloud if localization mode is enabled (no points will be added to openvslam's map),
@@ -850,7 +873,7 @@ void SOpenvslam::updatePointCloud()
 
     if(!m_isPaused && pointcloud.get_shared())
     {
-        float scale = 1.f;
+        float scale = 1.F;
         {
             const auto s = m_scale.lock();
             if(s && s->value() > 0)
@@ -880,9 +903,9 @@ void SOpenvslam::updatePointCloud()
         unsigned int i = 0;
         if(m_localMap)
         {
-            for(const auto lm : local_landmarks)
+            for(auto* const lm : local_landmarks)
             {
-                if(!lm || lm->will_be_erased())
+                if((lm == nullptr) || lm->will_be_erased())
                 {
                     continue;
                 }
@@ -900,9 +923,9 @@ void SOpenvslam::updatePointCloud()
         }
         else
         {
-            for(const auto lm : landmarks)
+            for(auto* const lm : landmarks)
             {
-                if(!lm || lm->will_be_erased())
+                if((lm == nullptr) || lm->will_be_erased())
                 {
                     continue;
                 }

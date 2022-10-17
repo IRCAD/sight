@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #pragma once
 
 #include <data/helper/MedicalImage.hpp>
@@ -57,7 +59,7 @@ void moveFromItk(
     _dataImage->setOrigin(vOrigin);
     _dataImage->setSpacing(vSpacing);
 
-    const auto pixelType = core::tools::Type::create<typename ITKIMAGE::PixelType>();
+    const auto pixelType = core::Type::get<typename ITKIMAGE::PixelType>();
     const auto dumpLock  = _dataImage->dump_lock();
     if(_bufferManagerIsDataImage)
     {
@@ -89,12 +91,12 @@ void moveFromItk(
 
     if(sight::data::helper::MedicalImage::checkImageValidity(_dataImage))
     {
-        sight::data::helper::MedicalImage::checkTransferFunctionPool(_dataImage);
+        sight::data::helper::MedicalImage::updateDefaultTransferFunction(*_dataImage);
         sight::data::helper::MedicalImage::checkImageSliceIndex(_dataImage);
     }
 
     // Post Condition correct PixelType
-    SIGHT_ASSERT("Sorry, pixel type is not correct", _dataImage->getType() != core::tools::Type::s_UNSPECIFIED_TYPE);
+    SIGHT_ASSERT("Sorry, pixel type is not correct", _dataImage->getType() != core::Type::NONE);
 }
 
 //------------------------------------------------------------------------------
@@ -139,26 +141,23 @@ typename ITKIMAGE::Pointer moveToItk(data::Image::csptr imageData)
 
     itkImage->SetSpacing(spacing);
 
-    // update origin information ; workaround due to GetOrigin const
-    std::copy(
-        imageData->getOrigin().begin(),
-        imageData->getOrigin().end(),
-        const_cast<typename ITKIMAGE::PointType*>(&itkImage->GetOrigin())->Begin()
-    );
+    // update origin information
+    itkImage->SetOrigin(imageData->getOrigin().data());
 
     ::itk::ImageRegion<ITKIMAGE::ImageDimension> itkRegion;
 
-    unsigned long nb_pixels = 1;
+    std::uint64_t nb_pixels = 1;
     for(std::uint8_t d = 0 ; d < ITKIMAGE::ImageDimension ; ++d)
     {
         // itkRegion.SetIndex( d,  static_cast<int>(imageData->getOrigin()[d]) );
-        itkRegion.SetSize(d, static_cast<unsigned long>(imageData->getSize()[d]));
-        nb_pixels *= static_cast<unsigned long>(itkRegion.GetSize()[d]);
+        itkRegion.SetSize(d, static_cast<std::uint64_t>(imageData->getSize()[d]));
+        nb_pixels *= static_cast<std::uint64_t>(itkRegion.GetSize()[d]);
     }
 
     itkImage->SetRegions(itkRegion);
 
     itkImage->GetPixelContainer()->SetImportPointer(
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
         static_cast<typename ITKIMAGE::PixelType*>(const_cast<void*>(imageData->getBuffer())),
         nb_pixels,
         false
@@ -169,4 +168,4 @@ typename ITKIMAGE::Pointer moveToItk(data::Image::csptr imageData)
 
 //------------------------------------------------------------------------------
 
-} // end namespace
+} // namespace sight::io::itk

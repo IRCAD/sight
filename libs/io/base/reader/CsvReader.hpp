@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,7 @@
 #include <string>
 #include <vector>
 
-namespace sight::io::base
-{
-
-namespace reader
+namespace sight::io::base::reader
 {
 
 /**
@@ -73,6 +70,4 @@ private:
     std::ifstream m_stream;
 };
 
-} // namespace reader
-
-} // namespace sight::io::base
+} // namespace sight::io::base::reader

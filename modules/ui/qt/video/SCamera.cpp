@@ -36,22 +36,19 @@
 
 #include <ui/base/dialog/InputDialog.hpp>
 #include <ui/base/dialog/LocationDialog.hpp>
-#include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/Preferences.hpp>
 #include <ui/qt/container/QtContainer.hpp>
 
 #include <QByteArray>
-#include <QCamera>
 #include <QHBoxLayout>
 #include <QLabel>
+#include <QLineEdit>
+#include <QMessageBox>
 #include <QPushButton>
 
 #include <filesystem>
 
-namespace sight::module::ui::qt
-{
-
-namespace video
+namespace sight::module::ui::qt::video
 {
 
 static const core::com::Signals::SignalKeyType s_CONFIGURED_CAMERAS_SIG = "configuredCameras";
@@ -67,6 +64,9 @@ static const std::string s_VIDEO_SUPPORT_CONFIG        = "videoSupport";
 static const std::string s_USE_ABSOLUTE_PATH           = "useAbsolutePath";
 static const std::string s_CREATE_CAMERA_NUMBER_CONFIG = "createCameraNumber";
 static const std::string s_LABEL_CONFIG                = "label";
+static const std::string s_RESOLUTION_CONFIG           = "resolution";
+
+const std::string SCamera::s_RESOLUTION_PREF_KEY = "camera_resolution";
 
 //------------------------------------------------------------------------------
 
@@ -84,12 +84,6 @@ SCamera::SCamera() :
 
 //------------------------------------------------------------------------------
 
-SCamera::~SCamera() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
 void SCamera::configuring()
 {
     const service::IService::ConfigType config = this->getConfigTree();
@@ -98,6 +92,8 @@ void SCamera::configuring()
     m_useAbsolutePath  = config.get<bool>(s_USE_ABSOLUTE_PATH, false);
     m_numCreateCameras = config.get<std::size_t>(s_CREATE_CAMERA_NUMBER_CONFIG, m_numCreateCameras);
     m_label            = config.get<std::string>(s_LABEL_CONFIG, m_label);
+
+    m_resolution = config.get<std::string>(s_RESOLUTION_CONFIG, "preferences");
 
     this->initialize();
 }
@@ -120,7 +116,10 @@ void SCamera::starting()
         layout->addWidget(sourceLabel);
     }
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     m_devicesComboBox = new QComboBox();
+    m_devicesComboBox->setObjectName(serviceID);
     layout->addWidget(m_devicesComboBox);
 
     m_devicesComboBox->addItem("Device...", "device");
@@ -132,37 +131,52 @@ void SCamera::starting()
         m_devicesComboBox->addItem("Stream...", "stream");
     }
 
+    // Add button to edit the preferences when and set `m_preferenceMode` to true
+    if(m_resolution == "preferences")
+    {
+        auto path = core::runtime::getModuleResourcePath("sight::module::ui::flaticons");
+        // Add preference setting button
+        QPointer<QPushButton> setPrefButton = new QPushButton();
+        setPrefButton->setIcon(QIcon(QString::fromStdString((path / "BlueParametersCamera.svg").string())));
+        setPrefButton->setToolTip("Set camera resolution preference");
+        layout->addWidget(setPrefButton);
+        m_preferenceMode = true;
+
+        QObject::connect(setPrefButton, SIGNAL(clicked()), this, SLOT(setPreference()));
+    }
+
     qtContainer->setLayout(layout);
 
-    ::QObject::connect(m_devicesComboBox, qOverload<int>(&QComboBox::activated), this, &SCamera::onApply);
+    ::QObject::connect(m_devicesComboBox, qOverload<int>(&QComboBox::activated), this, &SCamera::onActivated);
+    ::QObject::connect(m_devicesComboBox, qOverload<int>(&QComboBox::currentIndexChanged), this, &SCamera::onApply);
 
     // Create camera data if necessary
-    auto cameraSeries = m_cameraSeries.lock();
-    if(cameraSeries)
+    auto camera_set = m_camera_set.lock();
+    if(camera_set)
     {
-        const std::size_t numCameras = cameraSeries->numCameras();
+        const std::size_t numCameras = camera_set->size();
         if(numCameras == 0)
         {
-            SIGHT_ASSERT("No camera data in the CameraSeries.", m_numCreateCameras != 0);
+            SIGHT_ASSERT("No camera data in the CameraSet.", m_numCreateCameras != 0);
 
             for(std::size_t i = 0 ; i < m_numCreateCameras ; ++i)
             {
-                data::Camera::sptr camera = data::Camera::New();
-                const std::size_t index   = cameraSeries->numCameras();
-                cameraSeries->addCamera(camera);
-                cameraSeries->setExtrinsicMatrix(index, data::Matrix4::New());
-                const auto sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
-                    data::CameraSeries::s_ADDED_CAMERA_SIG
+                auto camera = data::Camera::New();
+                camera_set->add_camera(camera);
+
+                const auto sig = camera_set->signal<data::CameraSet::added_camera_signal_t>(
+                    data::CameraSet::s_ADDED_CAMERA_SIG
                 );
+
                 sig->asyncEmit(camera);
             }
 
-            SIGHT_INFO("No camera data in the CameraSeries, " << m_numCreateCameras << " will be created.");
+            SIGHT_INFO("No camera data in the CameraSet, " << m_numCreateCameras << " will be created.");
         }
         else
         {
             SIGHT_WARN_IF(
-                "CameraSeries contains camera data but the service is configured to create "
+                "CameraSet contains camera data but the service is configured to create "
                 << m_numCreateCameras << " cameras.",
                 m_numCreateCameras != 0
             );
@@ -200,7 +214,23 @@ void SCamera::onApply(int _index)
         case 2:
             this->onChooseStream();
             break;
+
+        default:
+            SIGHT_ASSERT("Invalid index: " << _index, false);
     }
+}
+
+//------------------------------------------------------------------------------
+void SCamera::onActivated(int _index)
+{
+    // If the current index did change, onCurrentIndexChanged will be called, we wouldn't want onApply to be called
+    // twice
+    if(oldIndex == _index)
+    {
+        onApply(_index);
+    }
+
+    oldIndex = _index;
 }
 
 //------------------------------------------------------------------------------
@@ -266,10 +296,8 @@ void SCamera::onChooseFile()
                                                                 {
                                                                     return entryPath;
                                                                 }
-                                                                else
-                                                                {
-                                                                    ++currentEntry;
-                                                                }
+
+                                                                ++currentEntry;
                                                             }
                                                         }
                                                     }
@@ -387,36 +415,76 @@ void SCamera::onChooseStream()
 
 void SCamera::onChooseDevice()
 {
-    std::vector<data::Camera::sptr> cameras = this->getCameras();
-
-    std::size_t count = 0;
-    for(auto& camera : cameras)
+    if(m_preferenceMode)
     {
-        module::ui::qt::video::CameraDeviceDlg camDialog;
-        camDialog.setWindowTitle(QString("Camera device selector for video source #%1").arg(count++));
-
-        if(camDialog.exec() != QDialog::Accepted)
+        try
         {
-            return;
+            sight::ui::base::Preferences resolutionPreference;
+            m_cameraResolutionPreference = resolutionPreference.get<std::string>(s_RESOLUTION_PREF_KEY);
         }
-
-        bool isSelected = false;
+        catch(boost::property_tree::ptree_error&)
         {
-            data::mt::locked_ptr<data::Camera> lock(camera);
-            isSelected = camDialog.getSelectedCamera(camera);
+            SIGHT_ERROR("Couldn't get preference. The required key doesn't exist.");
         }
-
-        if(isSelected)
+        if(!m_cameraResolutionPreference.empty())
         {
-            const data::Camera::ModifiedSignalType::sptr sig =
-                camera->signal<data::Camera::ModifiedSignalType>(data::Camera::s_MODIFIED_SIG);
-            sig->asyncEmit();
-
-            this->signal<ConfiguredSignalType>(s_CONFIGURED_DEVICE_SIG)->asyncEmit();
+            m_resolution = m_cameraResolutionPreference;
         }
     }
 
-    m_sigConfiguredCameras->asyncEmit();
+    std::vector<data::Camera::sptr> cameras = this->getCameras();
+    const QList<QCameraInfo> devices        = QCameraInfo::availableCameras();
+    if(devices.isEmpty())
+    {
+        auto* errorMessageBox = new QMessageBox(
+            QMessageBox::Critical,
+            "Error",
+            "No device available. Please connect a camera device and relaunch the application."
+        );
+        errorMessageBox->exec();
+    }
+    else
+    {
+        bool configured   = true;
+        std::size_t count = 0;
+        for(auto& camera : cameras)
+        {
+            module::ui::qt::video::CameraDeviceDlg camDialog(m_resolution);
+            camDialog.setWindowTitle(QString("Camera device selector for video source #%1").arg(count++));
+
+            if(((devices.size() > 1 && m_resolution != "preferences") || m_resolution == "prompt")
+               && camDialog.exec() != QDialog::Accepted)
+            {
+                return;
+            }
+
+            bool isSelected = false;
+            {
+                data::mt::locked_ptr<data::Camera> lock(camera);
+
+                isSelected  = camDialog.getSelectedCamera(camera, m_resolution);
+                configured &= isSelected;
+            }
+
+            if(isSelected)
+            {
+                const data::Camera::ModifiedSignalType::sptr sig =
+                    camera->signal<data::Camera::ModifiedSignalType>(data::Camera::s_MODIFIED_SIG);
+                sig->asyncEmit();
+
+                this->signal<ConfiguredSignalType>(s_CONFIGURED_DEVICE_SIG)->asyncEmit();
+            }
+            else if(m_preferenceMode)
+            {
+                QMetaObject::invokeMethod(this, "setPreference", Qt::QueuedConnection);
+            }
+        }
+
+        if(configured)
+        {
+            m_sigConfiguredCameras->asyncEmit();
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -425,20 +493,21 @@ std::vector<data::Camera::sptr> SCamera::getCameras() const
 {
     std::vector<data::Camera::sptr> cameras;
 
-    auto cameraSeries = m_cameraSeries.lock();
-    if(cameraSeries)
+    auto camera_set = m_camera_set.lock();
+    if(camera_set)
     {
-        const std::size_t numCameras = cameraSeries->numCameras();
-        for(std::size_t i = 0 ; i < numCameras ; ++i)
+        for(std::size_t i = 0, numCameras = camera_set->size() ; i < numCameras ; ++i)
         {
-            cameras.push_back(cameraSeries->getCamera(i));
+            cameras.push_back(camera_set->get_camera(i));
         }
     }
     else
     {
         const auto camera = m_camera.lock();
-        SIGHT_ASSERT("'" << s_CAMERA << "' does not exist.", camera);
-        cameras.push_back(camera.get_shared());
+        if(camera)
+        {
+            cameras.push_back(camera.get_shared());
+        }
     }
 
     return cameras;
@@ -446,6 +515,15 @@ std::vector<data::Camera::sptr> SCamera::getCameras() const
 
 //------------------------------------------------------------------------------
 
-} //namespace video
+void SCamera::setPreference()
+{
+    // set m_resolution to "prompt" mode in order to display the camera selection dialog anytime the button is clicked
+    m_resolution     = "prompt";
+    m_preferenceMode = false;
+    this->onChooseDevice();
+    m_preferenceMode = true;
+}
 
-} //namespace sight::module::ui::qt
+//------------------------------------------------------------------------------
+
+} // namespace sight::module::ui::qt::video

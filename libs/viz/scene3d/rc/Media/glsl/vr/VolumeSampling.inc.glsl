@@ -10,7 +10,7 @@ uniform int u_iMinImageValue;
 uniform int u_iMaxImageValue;
 #else // PREINTEGRATION
 uniform sampler1D u_s1TFTexture;
-uniform vec2 u_f2TFWindow;
+uniform vec3 u_f3TFWindow;
 uniform float u_fOpacityCorrectionFactor;
 #endif // PREINTEGRATION
 
@@ -18,10 +18,10 @@ uniform float u_fOpacityCorrectionFactor;
 //-----------------------------------------------------------------------------
 
 #ifdef PREINTEGRATION
-vec4 samplePreIntegrationTable(in sampler3D _s3Image, in VolumeRay _vray_Ms)
+vec4 samplePreIntegrationTable(in sampler3D _s3Image, in VolumeRay _ray_Ms)
 {
-    vec3 rayBack_Ms  = _vray_Ms.position;
-    vec3 rayFront_Ms = rayBack_Ms + _vray_Ms.direction;
+    vec3 rayBack_Ms  = _ray_Ms.position;
+    vec3 rayFront_Ms = rayBack_Ms + _ray_Ms.direction;
 
     float sf = texture(_s3Image, rayBack_Ms).r;
     float sb = texture(_s3Image, rayFront_Ms).r;
@@ -35,17 +35,17 @@ vec4 samplePreIntegrationTable(in sampler3D _s3Image, in VolumeRay _vray_Ms)
 
 //-----------------------------------------------------------------------------
 
-vec4 sampleVolume(in sampler3D _s3Image, in VolumeRay _vray_Ms)
+vec4 sampleVolume(in sampler3D _s3Image, in VolumeRay _ray_Ms)
 {
 #ifdef PREINTEGRATION
-    vec4 sampleColor = samplePreIntegrationTable(_s3Image, _vray_Ms);
+    vec4 sampleColor = samplePreIntegrationTable(_s3Image, _ray_Ms);
 #else // PREINTEGRATION
-    float voxelIntensity = texture(_s3Image, _vray_Ms.position).r;
-    vec4 sampleColor = sampleTransferFunction(voxelIntensity, u_s1TFTexture, u_f2TFWindow);
+    float voxelIntensity = texture(_s3Image, _ray_Ms.position).r;
+    vec4 sampleColor = sampleTransferFunction(voxelIntensity, u_s1TFTexture, u_f3TFWindow);
 
     // Opacity correction.
     // TODO: compute this when generating the GPU transfer function to improve performance.
-    sampleColor.a = 1 - pow(1 - sampleColor.a, _vray_Ms.stepLength * u_fOpacityCorrectionFactor);
+    sampleColor.a = 1 - pow(1 - sampleColor.a, _ray_Ms.stepLength * u_fOpacityCorrectionFactor);
 #endif // PREINTEGRATION
 
     return sampleColor;

@@ -26,10 +26,7 @@
 
 #include <data/Array.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Array
+namespace sight::io::session::detail::Array
 {
 
 constexpr static auto s_Size {"Size"};
@@ -45,11 +42,11 @@ inline static void serialize(
     zip::ArchiveWriter& archive,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>&,
+    std::map<std::string, data::Object::csptr>& /*unused*/,
     const core::crypto::secure_string& password = ""
 )
 {
-    const auto array = Helper::safeCast<data::Array>(object);
+    const auto array = Helper::safe_cast<data::Array>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Array>(tree, 1);
@@ -65,7 +62,7 @@ inline static void serialize(
     tree.add_child(s_Sizes, sizesTree);
 
     // type, isBufferOwner
-    tree.put(s_Type, array->getType().string());
+    tree.put(s_Type, array->getType().name());
     tree.put(s_IsBufferOwner, array->getIsBufferOwner());
 
     // Create the output file inside the archive
@@ -84,13 +81,13 @@ inline static void serialize(
 inline static data::Array::sptr deserialize(
     zip::ArchiveReader& archive,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>&,
+    const std::map<std::string, data::Object::sptr>& /*unused*/,
     data::Object::sptr object,
     const core::crypto::secure_string& password = ""
 )
 {
     // Create or reuse the object
-    auto array = Helper::safeCast<data::Array>(object);
+    auto array = Helper::cast_or_create<data::Array>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Array>(tree, 0, 1);
@@ -125,6 +122,4 @@ inline static data::Array::sptr deserialize(
     return array;
 }
 
-} // namespace detail::Array
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Array

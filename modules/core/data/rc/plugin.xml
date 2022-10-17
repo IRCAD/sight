@@ -19,30 +19,14 @@
           <service>sight::module::data::SManage</service>
           <object key="object">sight::data::Object</object>
           <object key="container">sight::data::Object</object>
-          <desc>This service manages an object (add/swap/remove) into a container object (composite, vector, seriesDB).</desc>
-     </extension>
-
-     <extension implements="sight::service::extension::Factory">
-          <type>sight::service::IController</type>
-          <service>sight::module::data::SMergeTF</service>
-          <object key="tfPool">sight::data::Composite</object>
-          <object key="tf">sight::data::TransferFunction</object>
-          <desc>Controller that merge all TF from a composite into one TF.</desc>
+          <desc>This service manages an object (add/swap/remove) into a container object (Composite, Vector, SeriesSet).</desc>
      </extension>
 
      <extension implements="sight::service::extension::Factory">
           <type>sight::service::IController</type>
           <service>sight::module::data::SSeriesSignal</service>
-          <object>sight::data::SeriesDB</object>
+          <object>sight::data::SeriesSet</object>
           <desc>This service emits a signal for each added series (the signal contains the added series)</desc>
-     </extension>
-
-     <extension implements="sight::service::extension::Factory">
-          <type>sight::service::IController</type>
-          <service>sight::module::data::SGetImage</service>
-          <object key="imageSeries">sight::data::ImageSeries</object>
-          <object key="image">sight::data::Image</object>
-          <desc>This service extract an image from image series</desc>
      </extension>
 
      <extension implements="sight::service::extension::Factory">
@@ -62,7 +46,7 @@
      <extension implements="sight::service::extension::Factory">
           <type>sight::service::IController</type>
           <service>sight::module::data::SGetCamera</service>
-          <object key="cameraSeries">sight::data::CameraSeries</object>
+          <object key="cameraSet">sight::data::CameraSet</object>
           <object key="camera">sight::data::Camera</object>
           <desc>This service extracts camera parameters from a camera series</desc>
      </extension>
@@ -77,7 +61,7 @@
      <extension implements="sight::service::extension::Factory">
           <type>sight::service::IController</type>
           <service>sight::module::data::SGetSeries</service>
-          <object key="seriesDB">sight::data::SeriesDB</object>
+          <object key="seriesSet">sight::data::SeriesSet</object>
           <object key="series">sight::data::Series</object>
           <desc>This service extracts series from database of series</desc>
      </extension>

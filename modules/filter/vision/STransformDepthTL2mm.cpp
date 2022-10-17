@@ -34,8 +34,7 @@ static const core::com::Slots::SlotKeyType s_COMPUTE_SLOT = "compute";
 
 //------------------------------------------------------------------------------
 
-STransformDepthTL2mm::STransformDepthTL2mm() :
-    m_lastTimestamp(0)
+STransformDepthTL2mm::STransformDepthTL2mm()
 {
     newSlot(s_COMPUTE_SLOT, &STransformDepthTL2mm::compute, this);
 }
@@ -43,8 +42,7 @@ STransformDepthTL2mm::STransformDepthTL2mm() :
 //------------------------------------------------------------------------------
 
 STransformDepthTL2mm::~STransformDepthTL2mm()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -72,9 +70,9 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
     {
         const auto originFrameTL = m_originFrameTL.lock();
         SIGHT_ASSERT("missing '" << s_ORIGIN_FRAME_TL_INPUT << "' timeline", originFrameTL);
-        const auto cameraSeries = m_cameraSeries.lock();
-        SIGHT_ASSERT("missing '" << s_CAMERA_SERIES_INPUT << "' cameraSeries", cameraSeries);
-        data::Camera::csptr depthCamera = cameraSeries->getCamera(0);
+        const auto camera_set = m_camera_set.lock();
+        SIGHT_ASSERT("missing '" << s_CAMERA_SET_INPUT << "' cameraSet", camera_set);
+        data::Camera::csptr depthCamera = camera_set->get_camera(0);
 
         auto scaledFrameTL = m_scaledDepthTL.lock();
         SIGHT_ASSERT("missing '" << s_SCALED_FRAME_TL_INOUT << "' timeline", scaledFrameTL);
@@ -94,16 +92,16 @@ void STransformDepthTL2mm::compute(core::HiResClock::HiResClockType timestamp)
                 scaledFrameTL->initPoolSize(
                     width,
                     height,
-                    core::tools::Type::s_UINT16,
+                    core::Type::UINT16,
                     data::FrameTL::PixelFormat::GRAY_SCALE
                 );
             }
 
-            const std::uint16_t* depthBufferIn = reinterpret_cast<const std::uint16_t*>(&depthBufferObj->getElement(0));
+            const auto* depthBufferIn = reinterpret_cast<const std::uint16_t*>(&depthBufferObj->getElement(0));
 
             SPTR(data::FrameTL::BufferType) depthBufferOutObj = scaledFrameTL->createBuffer(timestamp);
 
-            std::uint16_t* depthBufferOut = reinterpret_cast<std::uint16_t*>(depthBufferOutObj->addElement(0));
+            auto* depthBufferOut = reinterpret_cast<std::uint16_t*>(depthBufferOutObj->addElement(0));
 
             for(std::size_t i = 0 ; i < size ; ++i)
             {
@@ -134,11 +132,7 @@ void STransformDepthTL2mm::updating()
 
 service::IService::KeyConnectionsMap STransformDepthTL2mm::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-
-    connections.push(s_ORIGIN_FRAME_TL_INPUT, data::BufferTL::s_OBJECT_PUSHED_SIG, s_COMPUTE_SLOT);
-
-    return connections;
+    return {{s_ORIGIN_FRAME_TL_INPUT, data::BufferTL::s_OBJECT_PUSHED_SIG, s_COMPUTE_SLOT}};
 }
 
 //-----------------------------------------------------------------------------

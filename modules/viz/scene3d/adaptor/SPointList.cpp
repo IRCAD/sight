@@ -75,7 +75,7 @@ SPointList::SPointList() noexcept
 
 SPointList::~SPointList() noexcept
 {
-    if(m_entity)
+    if(m_entity != nullptr)
     {
         Ogre::SceneManager* sceneMgr = this->getSceneManager();
         sceneMgr->destroyEntity(m_entity);
@@ -86,7 +86,7 @@ SPointList::~SPointList() noexcept
 
 void SPointList::setVisible(bool _visible)
 {
-    if(m_entity)
+    if(m_entity != nullptr)
     {
         this->getRenderService()->makeCurrent();
 
@@ -117,7 +117,7 @@ void SPointList::configuring()
 
     m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
 
-    if(config.count(s_MATERIAL_TEMPLATE_CONFIG))
+    if(config.count(s_MATERIAL_TEMPLATE_CONFIG) != 0U)
     {
         // An existing Ogre material will be used for this mesh
         m_customMaterial       = true;
@@ -225,7 +225,7 @@ void SPointList::stopping()
     SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
     m_meshGeometry->clearMesh(*sceneMgr);
 
-    if(m_entity)
+    if(m_entity != nullptr)
     {
         sceneMgr->destroyEntity(m_entity);
         m_entity = nullptr;
@@ -281,7 +281,7 @@ void SPointList::createLabel(const data::PointList::csptr& _pointList)
 
     std::size_t i           = 0;
     std::string labelNumber = std::to_string(i);
-    for(auto& point : _pointList->getPoints())
+    for(const auto& point : _pointList->getPoints())
     {
         const auto label = point->getLabel();
         if(!label.empty())
@@ -372,7 +372,7 @@ void SPointList::updateMesh(const data::PointList::csptr& _pointList)
     // Create entity and attach it in the scene graph
     //------------------------------------------
 
-    if(!m_entity)
+    if(m_entity == nullptr)
     {
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
@@ -388,7 +388,7 @@ void SPointList::updateMesh(const data::PointList::csptr& _pointList)
     //------------------------------------------
     // Create sub-services
     //------------------------------------------
-    this->updateMaterialAdaptor();
+    this->updateMaterialAdaptor(_pointList->getID());
 
     this->attachNode(m_entity);
 
@@ -426,7 +426,7 @@ void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
     // Create entity and attach it in the scene graph
     //------------------------------------------
 
-    if(!m_entity)
+    if(m_entity == nullptr)
     {
         m_entity = m_meshGeometry->createEntity(*sceneMgr);
         m_entity->setVisible(m_isVisible);
@@ -443,7 +443,7 @@ void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
     //------------------------------------------
     // Create sub-services
     //------------------------------------------
-    this->updateMaterialAdaptor();
+    this->updateMaterialAdaptor(_mesh->getID());
 
     this->attachNode(m_entity);
 
@@ -457,7 +457,7 @@ void SPointList::updateMesh(const data::Mesh::csptr& _mesh)
 
 //------------------------------------------------------------------------------
 
-scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::string& _materialSuffix)
+scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::string& _meshId)
 {
     auto materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
         "sight::module::viz::scene3d::adaptor::SMaterial"
@@ -473,22 +473,7 @@ scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::s
         materialAdaptor->setMaterialTemplateName(m_materialTemplateName);
     }
 
-    std::string meshName;
-    const auto pointList = m_pointList.lock();
-    if(pointList)
-    {
-        meshName = pointList->getID();
-    }
-    else
-    {
-        const auto mesh = m_mesh.lock();
-        if(mesh)
-        {
-            meshName = mesh->getID();
-        }
-    }
-
-    const std::string mtlName = meshName + "_" + materialAdaptor->getID() + _materialSuffix;
+    const std::string mtlName = _meshId + "_" + materialAdaptor->getID();
 
     materialAdaptor->setMaterialName(mtlName);
 
@@ -497,16 +482,16 @@ scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::s
 
 //------------------------------------------------------------------------------
 
-void SPointList::updateMaterialAdaptor()
+void SPointList::updateMaterialAdaptor(const std::string& _meshId)
 {
     if(!m_materialAdaptor)
     {
-        if(m_entity)
+        if(m_entity != nullptr)
         {
-            m_materialAdaptor = this->createMaterialService();
+            m_materialAdaptor = this->createMaterialService(_meshId);
             m_materialAdaptor->start();
 
-            auto materialFw = m_materialAdaptor->getMaterialFw();
+            auto* materialFw = m_materialAdaptor->getMaterialFw();
             m_meshGeometry->updateMaterial(materialFw, false);
             materialFw->setMeshSize(m_radius);
 
@@ -535,13 +520,13 @@ void SPointList::updateMaterialAdaptor()
     else if(m_materialAdaptor->getInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock()
             != m_material)
     {
-        auto materialFw = m_materialAdaptor->getMaterialFw();
+        auto* materialFw = m_materialAdaptor->getMaterialFw();
         m_meshGeometry->updateMaterial(materialFw, false);
         materialFw->setMeshSize(m_radius);
     }
     else
     {
-        auto materialFw = m_materialAdaptor->getMaterialFw();
+        auto* materialFw = m_materialAdaptor->getMaterialFw();
         m_meshGeometry->updateMaterial(materialFw, false);
         materialFw->setMeshSize(m_radius);
 
@@ -566,11 +551,10 @@ void SPointList::attachNode(Ogre::MovableObject* _node)
 
 void SPointList::detachAndDestroyEntity()
 {
-    if(m_entity)
+    if(m_entity != nullptr)
     {
-        Ogre::SceneManager* const sceneMgr   = this->getSceneManager();
-        Ogre::SceneNode* const rootSceneNode = sceneMgr->getRootSceneNode();
-        if(m_sceneNode)
+        Ogre::SceneManager* const sceneMgr = this->getSceneManager();
+        if(m_sceneNode != nullptr)
         {
             m_sceneNode->detachObject(m_entity);
         }

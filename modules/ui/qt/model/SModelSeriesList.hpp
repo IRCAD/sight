@@ -44,10 +44,7 @@ class QCheckBox;
 class QListWidgetItem;
 class QTreeWidgetItem;
 
-namespace sight::module::ui::qt
-{
-
-namespace model
+namespace sight::module::ui::qt::model
 {
 
 /**
@@ -164,16 +161,16 @@ private:
 private Q_SLOTS:
 
     /// Changes the current item, called when new current item is setted in m_organChoice.
-    void onCurrentItemChanged(QTreeWidgetItem* _current, QTreeWidgetItem*);
+    void onCurrentItemChanged(QTreeWidgetItem* _current, QTreeWidgetItem* /*unused*/);
 
     /// Changes the current item, called when new current item is setted in m_organChoice.
-    void onCurrentItemChanged(QTreeWidgetItem* _current, int _column);
+    static void onCurrentItemChanged(QTreeWidgetItem* _current, int _column);
 
     /// Shows reconstructions, called when m_showCheckBox is clicked.
     void onShowReconstructions(int state);
 
     /// Shows a reconstruction, called when new current item is setted in m_organChoice.
-    void onOrganChoiceVisibility(QTreeWidgetItem* _item, int);
+    static void onOrganChoiceVisibility(QTreeWidgetItem* _item, int /*unused*/);
 
     /// Shows reconstructions, called when m_checkAllButton is clicked.
     void onCheckAllCheckBox();
@@ -229,6 +226,4 @@ private:
     data::ptr<data::ModelSeries, data::Access::inout> m_modelSeries {this, "modelSeries", true};
 };
 
-} // namespace model.
-
-} // namespace sight::module::ui::qt.
+} // namespace sight::module::ui::qt::model

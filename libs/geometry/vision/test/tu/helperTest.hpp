@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::geometry::vision
-{
-
-namespace ut
+namespace sight::geometry::vision::ut
 {
 
 class helperTest : public CPPUNIT_NS::TestFixture
@@ -38,7 +35,6 @@ CPPUNIT_TEST(reprojectionRealDatasetTest1);
 CPPUNIT_TEST(reprojectionRealDatasetTest2);
 CPPUNIT_TEST(toolCalibrationBasic);
 CPPUNIT_TEST(toolCalibration);
-CPPUNIT_TEST(generateCharucoDict);
 CPPUNIT_TEST(chessboardDetectionTest);
 CPPUNIT_TEST(chessboardDetectionScaleTest);
 CPPUNIT_TEST_SUITE_END();
@@ -46,19 +42,16 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void reprojectionRealDatasetTest1();
-    void reprojectionRealDatasetTest2();
-    void reprojectionIdentity();
-    void toolCalibrationBasic();
-    void toolCalibration();
-    void generateCharucoDict();
-    void chessboardDetectionTest();
-    void chessboardDetectionScaleTest();
+    static void reprojectionRealDatasetTest1();
+    static void reprojectionRealDatasetTest2();
+    static void reprojectionIdentity();
+    static void toolCalibrationBasic();
+    static void toolCalibration();
+    static void chessboardDetectionTest();
+    static void chessboardDetectionScaleTest();
 };
 
-} //namespace ut
-
-} //namespace sight::geometry::vision
+} // namespace sight::geometry::vision::ut

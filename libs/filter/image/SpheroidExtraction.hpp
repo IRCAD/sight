@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -21,6 +21,8 @@
  ***********************************************************************/
 
 #pragma once
+
+#if HAS_ITK_REVIEW_MODULE
 
 #include "filter/image/config.hpp"
 
@@ -49,12 +51,14 @@ public:
      */
     FILTER_IMAGE_API static data::PointList::sptr extract(
         const data::Image::csptr& _image,
-        const double _threshold,
-        const double _radiusMin,
-        const double _radiusMax,
-        const double _elongationMin,
-        const double _elongationMax
+        double _threshold,
+        double _radiusMin,
+        double _radiusMax,
+        double _elongationMin,
+        double _elongationMax
     );
 };
 
 } // namespace sight::filter::image.
+
+#endif // HAS_ITK_REVIEW_MODULE

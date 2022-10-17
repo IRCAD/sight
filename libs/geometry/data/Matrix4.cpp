@@ -46,11 +46,11 @@ bool invert(
     auto& coefs = _output.getCoefficients();
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        const std::size_t rowDst   = i * 4;
-        const glm::length_t rowSrc = static_cast<glm::length_t>(i);
+        const std::size_t rowDst = i * 4;
+        const auto rowSrc        = static_cast<glm::length_t>(i);
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            const glm::length_t colSrc = static_cast<glm::length_t>(j);
+            const auto colSrc = static_cast<glm::length_t>(j);
             coefs[rowDst + j] = matInverse[rowSrc][colSrc];
         }
     }
@@ -77,11 +77,11 @@ void multiply(
     auto& coefs = _output.getCoefficients();
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        const std::size_t rowDst   = i * 4;
-        const glm::length_t rowSrc = static_cast<glm::length_t>(i);
+        const std::size_t rowDst = i * 4;
+        const auto rowSrc        = static_cast<glm::length_t>(i);
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            const glm::length_t colSrc = static_cast<glm::length_t>(j);
+            const auto colSrc = static_cast<glm::length_t>(j);
             coefs[rowDst + j] = matC[rowSrc][colSrc];
         }
     }

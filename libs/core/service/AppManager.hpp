@@ -134,7 +134,7 @@ class SERVICE_CLASS_API AppManager : public core::com::HasSlots
 public:
 
     SERVICE_API AppManager();
-    SERVICE_API ~AppManager();
+    SERVICE_API ~AppManager() override;
 
     using Access = data::Access;
 
@@ -315,11 +315,11 @@ protected:
 
     struct Input
     {
-        InputType type;
+        InputType type {InputType::OTHER};
         std::string key;
         std::string value;
         std::string defaultValue;
-        bool isOptional;
+        bool isOptional {};
     };
 
     typedef std::map<std::string, Input> InputContainer;
@@ -355,8 +355,8 @@ private:
         /// constructor
         SERVICE_API ServiceInfo(
             const service::IService::sptr& srv,
-            const bool autoStart,
-            const bool autoUpdate
+            bool autoStart,
+            bool autoUpdate
         );
 
         /// service
@@ -370,7 +370,7 @@ private:
     };
 
     /// Add the service and register the existing object
-    void internalAddService(const service::IService::sptr& srv, const bool autoStart, const bool autoUpdate);
+    void internalAddService(const service::IService::sptr& srv, bool autoStart, bool autoUpdate);
 
     /// Return the service information
     ServiceInfo& getServiceInfo(const service::IService::sptr& srv);
@@ -450,4 +450,4 @@ SPTR(SERVICE) AppManager::addService(const std::string& type, bool autoStart, bo
     return this->addService<SERVICE>(type, "", autoStart, autoUpdate);
 }
 
-} // fwServices
+} // namespace sight::service

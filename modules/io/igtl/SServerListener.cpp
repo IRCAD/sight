@@ -36,16 +36,15 @@ namespace sight::module::io::igtl
 
 //-----------------------------------------------------------------------------
 
-SServerListener::SServerListener()
+SServerListener::SServerListener() :
+    m_server(std::make_shared<sight::io::igtl::Server>())
 {
-    m_server = std::make_shared<sight::io::igtl::Server>();
 }
 
 //-----------------------------------------------------------------------------
 
 SServerListener::~SServerListener()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -79,9 +78,9 @@ void SServerListener::starting()
 
         m_server->start(port);
 
-        m_serverFuture = std::async(std::launch::async, std::bind(&sight::io::igtl::Server::runServer, m_server));
+        m_serverFuture = std::async(std::launch::async, [this](auto&& ...){m_server->runServer();});
         m_sigConnected->asyncEmit();
-        m_receiveFuture = std::async(std::launch::async, std::bind(&SServerListener::receiveObject, this));
+        m_receiveFuture = std::async(std::launch::async, [this](auto&& ...){receiveObject();});
     }
     catch(core::Exception& e)
     {

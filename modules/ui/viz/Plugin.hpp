@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,13 +37,13 @@ struct MODULE_UI_VIZ_CLASS_API Plugin : public core::runtime::Plugin
     /**
      * @brief   destructor
      */
-    MODULE_UI_VIZ_API ~Plugin() noexcept;
+    MODULE_UI_VIZ_API ~Plugin() noexcept override;
 
     // Overrides
-    MODULE_UI_VIZ_API void start();
+    MODULE_UI_VIZ_API void start() override;
 
     // Overrides
-    MODULE_UI_VIZ_API void stop() noexcept;
+    MODULE_UI_VIZ_API void stop() noexcept override;
 };
 
 } // namespace sight::module::ui::viz

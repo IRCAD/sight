@@ -24,25 +24,21 @@
 
 #include <core/tools/System.hpp>
 
-#include <data/Equipment.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
-#include <data/Patient.hpp>
-#include <data/SeriesDB.hpp>
-#include <data/Study.hpp>
 
 #include <io/dicom/helper/DicomAnonymizer.hpp>
 #include <io/dicom/helper/DicomDataReader.hxx>
 #include <io/dicom/helper/DicomSearch.hpp>
 #include <io/dicom/helper/DicomSeriesWriter.hpp>
-#include <io/dicom/reader/SeriesDB.hpp>
+#include <io/dicom/reader/SeriesSet.hpp>
 #include <io/dicom/writer/Series.hpp>
 
 #include <utest/Filter.hpp>
 
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
-#include <utestData/generator/SeriesDB.hpp>
+#include <utestData/generator/SeriesSet.hpp>
 
 #include <gdcmDicts.h>
 #include <gdcmGlobal.h>
@@ -53,10 +49,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::DicomAnonymizerTest);
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 //------------------------------------------------------------------------------
@@ -91,7 +84,7 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
     }
 
     data::ImageSeries::sptr imgSeries;
-    imgSeries = utestData::generator::SeriesDB::createImageSeries();
+    imgSeries = utestData::generator::SeriesSet::createImageSeries();
 
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "anonymizedDicomFolderTest";
     std::filesystem::create_directories(path);
@@ -107,40 +100,40 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
     CPPUNIT_ASSERT_NO_THROW(anonymizer.anonymize(path));
 
     // Load ImageSeries
-    data::SeriesDB::sptr sdb                 = data::SeriesDB::New();
-    io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
-    reader->setObject(sdb);
+    auto series_set = data::SeriesSet::New();
+    auto reader     = io::dicom::reader::SeriesSet::New();
+    reader->setObject(series_set);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Check series
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), sdb->getContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
-    data::ImageSeries::sptr anonymizedSeries =
-        data::ImageSeries::dynamicCast(sdb->getContainer().front());
+    auto anonymizedSeries =
+        data::ImageSeries::dynamicCast(series_set->front());
 
     CPPUNIT_ASSERT(anonymizedSeries);
 
     // Check values
-    CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getDate());
-    CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getTime());
-    CPPUNIT_ASSERT_EQUAL(std::string("Description"), anonymizedSeries->getDescription()); // action code K
-    CPPUNIT_ASSERT_EQUAL(std::size_t(0), anonymizedSeries->getPerformingPhysiciansName().size());
-    CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getEquipment()->getInstitutionName());
-    CPPUNIT_ASSERT_EQUAL(std::string("ANONYMIZED^ANONYMIZED"), anonymizedSeries->getPatient()->getName());
-    CPPUNIT_ASSERT_EQUAL(std::string("ANONYMIZED"), anonymizedSeries->getPatient()->getPatientId());
-    CPPUNIT_ASSERT_EQUAL(std::string("19000101"), anonymizedSeries->getPatient()->getBirthdate());
-    CPPUNIT_ASSERT_EQUAL(std::string("O"), anonymizedSeries->getPatient()->getSex());
-    CPPUNIT_ASSERT_EQUAL(std::string("19000101"), anonymizedSeries->getStudy()->getDate());
-    CPPUNIT_ASSERT_EQUAL(std::string("000000.000000"), anonymizedSeries->getStudy()->getTime());
+    CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getSeriesDate());
+    CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getSeriesTime());
+    CPPUNIT_ASSERT_EQUAL(std::string("Description"), anonymizedSeries->getSeriesDescription()); // action code K
+    CPPUNIT_ASSERT_EQUAL(std::size_t(0), anonymizedSeries->getPerformingPhysicianName().size());
+    CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getInstitutionName());
+    CPPUNIT_ASSERT_EQUAL(std::string("ANONYMIZED^ANONYMIZED"), anonymizedSeries->getPatientName());
+    CPPUNIT_ASSERT_EQUAL(std::string("ANONYMIZED"), anonymizedSeries->getPatientID());
+    CPPUNIT_ASSERT_EQUAL(std::string("19000101"), anonymizedSeries->getPatientBirthDate());
+    CPPUNIT_ASSERT_EQUAL(std::string("O"), anonymizedSeries->getPatientSex());
+    CPPUNIT_ASSERT_EQUAL(std::string("19000101"), anonymizedSeries->getStudyDate());
+    CPPUNIT_ASSERT_EQUAL(std::string("000000.000000"), anonymizedSeries->getStudyTime());
     CPPUNIT_ASSERT_EQUAL(
         std::string("ANONYMIZED^ANONYMIZED"),
-        anonymizedSeries->getStudy()->getReferringPhysicianName()
+        anonymizedSeries->getReferringPhysicianName()
     );
-    CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getStudy()->getDescription());
-    CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getStudy()->getPatientAge());
-    CPPUNIT_ASSERT(imgSeries->getInstanceUID() != anonymizedSeries->getInstanceUID());
-    CPPUNIT_ASSERT(imgSeries->getStudy()->getInstanceUID() != anonymizedSeries->getStudy()->getInstanceUID());
+    CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getStudyDescription());
+    CPPUNIT_ASSERT_EQUAL(std::string(""), anonymizedSeries->getPatientAge());
+    CPPUNIT_ASSERT(imgSeries->getSeriesInstanceUID() != anonymizedSeries->getSeriesInstanceUID());
+    CPPUNIT_ASSERT(imgSeries->getStudyInstanceUID() != anonymizedSeries->getStudyInstanceUID());
 }
 
 //------------------------------------------------------------------------------
@@ -167,7 +160,7 @@ void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
     m_uidContainer.clear();
     std::vector<std::filesystem::path> oldFilenames;
     io::dicom::helper::DicomSearch::searchRecursively(srcPath, oldFilenames, true);
-    for(std::filesystem::path filename : oldFilenames)
+    for(const std::filesystem::path& filename : oldFilenames)
     {
         // Try to open the file
         gdcm::Reader reader;
@@ -262,20 +255,20 @@ void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
 
     m_uidContainer.erase("");
 
-    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
+    auto series_set = data::SeriesSet::New();
 
     // Read DicomSeries
-    io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
-    reader->setObject(seriesDB);
+    io::dicom::reader::SeriesSet::sptr reader = io::dicom::reader::SeriesSet::New();
+    reader->setObject(series_set);
     reader->setFolder(srcPath);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Write DicomSeries
     const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "anonymizedDicomFolderTest2";
     std::filesystem::create_directories(path);
     io::dicom::helper::DicomSeriesWriter::sptr writer = io::dicom::helper::DicomSeriesWriter::New();
-    writer->setObject((*seriesDB)[0]);
+    writer->setObject((*series_set)[0]);
     writer->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
@@ -286,7 +279,7 @@ void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
     // Read DICOM files
     std::vector<std::filesystem::path> filenames;
     io::dicom::helper::DicomSearch::searchRecursively(path, filenames, true);
-    for(std::filesystem::path filename : filenames)
+    for(const std::filesystem::path& filename : filenames)
     {
         this->testAnonymizedFile(filename);
     }
@@ -328,17 +321,11 @@ std::string getDummyValue(const gdcm::Tag& tag)
             return "19000101000000.000000";
 
         case gdcm::VR::FD:
-            return "0";
-
         case gdcm::VR::FL:
-            return "0";
-
         case gdcm::VR::IS:
             return "0";
 
         case gdcm::VR::LO:
-            return "ANONYMIZED";
-
         case gdcm::VR::LT:
             return "ANONYMIZED";
 
@@ -346,8 +333,6 @@ std::string getDummyValue(const gdcm::Tag& tag)
             return "00H00H";
 
         case gdcm::VR::OF:
-            return "0";
-
         case gdcm::VR::OW:
             return "0";
 
@@ -729,6 +714,4 @@ void DicomAnonymizerTest::testAnonymizedFile(const std::filesystem::path& filena
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

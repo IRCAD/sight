@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 #include <core/runtime/helper.hpp>
 #include <core/runtime/Runtime.hpp>
 
-namespace sight::service
-{
-
-namespace extension
+namespace sight::service::extension
 {
 
 const std::string Config::CONFIG_EXT_POINT = "sight::service::extension::Config";
@@ -46,25 +43,24 @@ Config::sptr Config::getDefault()
 //-----------------------------------------------------------------------------
 
 Config::~Config()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 void Config::parseBundleInformation()
 {
-    typedef std::shared_ptr<core::runtime::Extension> ExtensionType;
+    using ExtensionType = std::shared_ptr<core::runtime::Extension>;
 
     std::vector<ExtensionType> extElements;
     extElements = core::runtime::getAllExtensionsForPoint(CONFIG_EXT_POINT);
-    for(ExtensionType ext : extElements)
+    for(const ExtensionType& ext : extElements)
     {
         // Get id
         SIGHT_ASSERT("Missing id element", ext->hasConfigurationElement("id"));
         std::string id = ext->findConfigurationElement("id")->getValue();
 
         // Get service
-        std::string service = "";
+        std::string service;
         if(ext->hasConfigurationElement("service"))
         {
             service = ext->findConfigurationElement("service")->getValue();
@@ -119,8 +115,7 @@ void Config::addServiceConfigInfo
 //-----------------------------------------------------------------------------
 
 Config::Config()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -143,7 +138,7 @@ core::runtime::ConfigurationElement::csptr Config::getServiceConfig(
     const std::string serviceImpl = core::runtime::filterID(_serviceImpl);
 #endif
     core::mt::ReadLock lock(m_registryMutex);
-    Registry::const_iterator iter = m_reg.find(configId);
+    auto iter = m_reg.find(configId);
     SIGHT_ASSERT(
         "The id " << configId << " is not found in the application configuration registry",
         iter != m_reg.end()
@@ -160,7 +155,7 @@ core::runtime::ConfigurationElement::csptr Config::getServiceConfig(
 const std::string& Config::getConfigDesc(const std::string& configId) const
 {
     core::mt::ReadLock lock(m_registryMutex);
-    Registry::const_iterator iter = m_reg.find(configId);
+    auto iter = m_reg.find(configId);
     SIGHT_ASSERT(
         "The id " << configId << " is not found in the application configuration registry",
         iter != m_reg.end()
@@ -176,7 +171,7 @@ std::vector<std::string> Config::getAllConfigForService(std::string _serviceImpl
     core::mt::ReadLock lock(m_registryMutex);
     std::vector<std::string> configs;
 
-    for(Registry::value_type srvCfg : m_reg)
+    for(const Registry::value_type& srvCfg : m_reg)
     {
         ServiceConfigInfo::sptr info = srvCfg.second;
         if((info->service.empty() && !matchingOnly) || info->service == serviceImpl)
@@ -190,6 +185,4 @@ std::vector<std::string> Config::getAllConfigForService(std::string _serviceImpl
 
 //-----------------------------------------------------------------------------
 
-} // namespace extension
-
-} // namespace sight::service
+} // namespace sight::service::extension

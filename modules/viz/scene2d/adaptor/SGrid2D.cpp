@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,9 @@
 
 #include <QGraphicsItemGroup>
 
-namespace sight::module::viz::scene2d
-{
+using sight::viz::scene2d::vec2d_t;
 
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 //---------------------------------------------------------------------------------------------------------------
@@ -43,23 +42,15 @@ const core::com::Slots::SlotKeyType SGrid2D::s_SET_GRID_SPACING_SLOT = "setGridS
 
 //---------------------------------------------------------------------------------------------------------------
 
-SGrid2D::SGrid2D() noexcept :
-    m_xMin(0.f),
-    m_xMax(0.f),
-    m_yMin(0.f),
-    m_yMax(0.f),
-    m_xSpacing(10.f),
-    m_ySpacing(10.f),
-    m_layer(nullptr)
+SGrid2D::SGrid2D() noexcept
 {
     newSlot(s_SET_GRID_SPACING_SLOT, &sight::module::viz::scene2d::adaptor::SGrid2D::setGridSpacing, this);
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-SGrid2D::~SGrid2D() noexcept
-{
-}
+SGrid2D::~SGrid2D() noexcept =
+    default;
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -82,17 +73,17 @@ void SGrid2D::configuring()
 
     // If the corresponding attributes are present in the config, set the xSpacing, ySpacing between
     // the lines and color of the lines:
-    if(config.count("xSpacing"))
+    if(config.count("xSpacing") != 0U)
     {
         m_xSpacing = config.get<float>("xSpacing");
     }
 
-    if(config.count("ySpacing"))
+    if(config.count("ySpacing") != 0U)
     {
         m_ySpacing = config.get<float>("ySpacing");
     }
 
-    if(config.count("color"))
+    if(config.count("color") != 0U)
     {
         sight::viz::scene2d::data::InitQtPen::setPenColor(m_pen, config.get<std::string>("color"), m_opacity);
     }
@@ -102,8 +93,8 @@ void SGrid2D::configuring()
 
 void SGrid2D::draw()
 {
-    SIGHT_ASSERT("m_xSpacing can not be equal to 0", m_xSpacing != 0.f);
-    SIGHT_ASSERT("m_ySpacing can not be equal to 0", m_ySpacing != 0.f);
+    SIGHT_ASSERT("m_xSpacing can not be equal to 0", m_xSpacing != 0.F);
+    SIGHT_ASSERT("m_ySpacing can not be equal to 0", m_ySpacing != 0.F);
 
     // Remove all lines from the scene
     for(const auto& line : m_lines)
@@ -126,38 +117,45 @@ void SGrid2D::draw()
     const float yEndVal   = getYEndVal();   // Allows to start drawing the grid from 0 with the correct step
 
     // Holds the current computed coordinates:
-    Point2DType coord1, coord2;
+    vec2d_t coord1;
+    vec2d_t coord2;
 
     // Draw the horizontal lines
-    for(float yVal = yStartVal ; yVal <= yEndVal ; yVal += m_ySpacing)
+    float yVal = yStartVal;
+    for(std::size_t i = 0 ; i < static_cast<std::size_t>((yEndVal - yStartVal) / m_ySpacing) ; i++)
     {
-        coord1 = this->mapAdaptorToScene(Point2DType(xStartVal, yVal), m_xAxis, m_yAxis);
-        coord2 = this->mapAdaptorToScene(Point2DType(xEndVal, yVal), m_xAxis, m_yAxis);
+        coord1 = this->mapAdaptorToScene((vec2d_t(xStartVal, yVal)));
+        coord2 = this->mapAdaptorToScene((vec2d_t(xEndVal, yVal)));
 
-        QGraphicsLineItem* line = new QGraphicsLineItem(coord1.first, coord1.second, coord2.first, coord2.second);
+        auto* line = new QGraphicsLineItem(coord1.x, coord1.y, coord2.x, coord2.y);
 
         // Set the line the pen and push it back in to the lines vector
         line->setPen(m_pen);
         m_lines.push_back(line);
+
+        yVal += m_ySpacing;
     }
 
     // Draw the vertical lines
-    for(float xVal = xStartVal ; xVal <= xEndVal ; xVal += m_xSpacing)
+    float xVal = xStartVal;
+    for(std::size_t i = 0 ; i < static_cast<std::size_t>((xEndVal - xStartVal) / m_xSpacing) ; i++)
     {
-        coord1 = this->mapAdaptorToScene(Point2DType(xVal, yStartVal), m_xAxis, m_yAxis);
-        coord2 = this->mapAdaptorToScene(Point2DType(xVal, yEndVal), m_xAxis, m_yAxis);
+        coord1 = this->mapAdaptorToScene((vec2d_t(xVal, yStartVal)));
+        coord2 = this->mapAdaptorToScene((vec2d_t(xVal, yEndVal)));
 
-        QGraphicsLineItem* line = new QGraphicsLineItem(coord1.first, coord1.second, coord2.first, coord2.second);
+        auto* line = new QGraphicsLineItem(coord1.x, coord1.y, coord2.x, coord2.y);
 
         // Set the line the pen and push it back in to the lines vector
         line->setPen(m_pen);
         m_lines.push_back(line);
+
+        xVal += m_xSpacing;
     }
 
     // Add the lines contained in the lines vector to the layer
-    for(unsigned int i = 0 ; i < m_lines.size() ; i++)
+    for(auto& m_line : m_lines)
     {
-        m_layer->addToGroup(m_lines.at(i));
+        m_layer->addToGroup(m_line);
     }
 
     // Set the layer position (according to the related axis) and zValue
@@ -184,30 +182,30 @@ void SGrid2D::starting()
 
 //---------------------------------------------------------------------------------------------------------------
 
-float SGrid2D::getXStartVal()
+float SGrid2D::getXStartVal() const
 {
-    return (int) (m_xMin / m_xSpacing) * m_xSpacing;
+    return std::floor(m_xMin / m_xSpacing) * m_xSpacing;
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-float SGrid2D::getXEndVal()
+float SGrid2D::getXEndVal() const
 {
-    return (int) (m_xMax / m_xSpacing) * m_xSpacing;
+    return std::floor(m_xMax / m_xSpacing) * m_xSpacing;
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-float SGrid2D::getYStartVal()
+float SGrid2D::getYStartVal() const
 {
-    return (int) (m_yMin / m_ySpacing) * m_ySpacing;
+    return std::floor(m_yMin / m_ySpacing) * m_ySpacing;
 }
 
 //---------------------------------------------------------------------------------------------------------------
 
-float SGrid2D::getYEndVal()
+float SGrid2D::getYEndVal() const
 {
-    return (int) (m_yMax / m_ySpacing) * m_ySpacing;
+    return std::floor(m_yMax / m_ySpacing) * m_ySpacing;
 }
 
 //---------------------------------------------------------------------------------------------------------------
@@ -250,6 +248,4 @@ void SGrid2D::stopping()
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 }
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

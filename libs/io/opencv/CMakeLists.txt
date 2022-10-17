@@ -1,4 +1,4 @@
-sight_add_target(io_opencv TYPE LIBRARY WARNINGS_AS_ERRORS OFF)
+sight_add_target(io_opencv TYPE LIBRARY)
 
 target_link_libraries(io_opencv PUBLIC opencv_calib3d)
 

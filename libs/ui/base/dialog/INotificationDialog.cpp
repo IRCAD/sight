@@ -22,10 +22,7 @@
 
 #include "ui/base/dialog/INotificationDialog.hpp"
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 static const std::string s_defaultMessage = "Empty message";
@@ -35,17 +32,16 @@ const INotificationDialog::FactoryRegistryKeyType INotificationDialog::REGISTRY_
 
 //-----------------------------------------------------------------------------
 
-INotificationDialog::INotificationDialog()
+INotificationDialog::INotificationDialog() :
+    m_message(s_defaultMessage),
+    m_fullMessage(m_message)
 {
-    m_message     = s_defaultMessage;
-    m_fullMessage = m_message;
 }
 
 //-----------------------------------------------------------------------------
 
 INotificationDialog::~INotificationDialog()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -101,6 +97,4 @@ void INotificationDialog::setDuration(int _durationInMs)
 
 //-----------------------------------------------------------------------------
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

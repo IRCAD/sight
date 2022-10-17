@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,22 +22,14 @@
 
 #pragma once
 
-#if defined(__GNUC__)
-#pragma GCC visibility push(default)
-#endif
-#include <string>
-#include <filesystem>
-#include <libxml/tree.h>
-#if defined(__GNUC__)
-#pragma GCC visibility pop
-#endif
-
 #include "core/config.hpp"
 
-namespace sight::core::runtime
-{
+#include <libxml/tree.h>
 
-namespace detail
+#include <filesystem>
+#include <string>
+
+namespace sight::core::runtime::detail
 {
 
 namespace profile
@@ -45,9 +37,8 @@ namespace profile
 
 class Activater;
 class Profile;
-class Starter;
 
-}
+} // namespace profile
 
 namespace io
 {
@@ -76,7 +67,7 @@ public:
      * @return      a shared pointer to the created profile
      */
     static std::shared_ptr<core::runtime::detail::profile::Profile> processProfile(xmlNodePtr node);
-    static std::shared_ptr<core::runtime::detail::profile::Starter> processStarter(xmlNodePtr node);
+    static std::string processStarter(xmlNodePtr node);
 
     /**
      * @brief       Processes the given xml node as an activater.
@@ -141,6 +132,4 @@ private:
 
 } // namespace io
 
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

@@ -23,19 +23,12 @@
 #pragma once
 
 #include "core/config.hpp"
-#include "core/tools/Exception.hpp"
+#include "core/Exception.hpp"
 
 #include <filesystem>
 #include <string>
 
-namespace sight::core::tools
-{
-
-/**
- * @brief   Namespace core::tools::os contains tools methods which depend on os like get user application data
- * directory.
- */
-namespace os
+namespace sight::core::tools::os
 {
 
 /**
@@ -57,7 +50,41 @@ CORE_API std::string getEnv(const std::string& name, bool* ok = nullptr);
 CORE_API std::string getEnv(const std::string& name, const std::string& defaultValue);
 
 /**
- * @brief   Return the users's application data directory
+ * @brief   Return the users's application config directory
+ *
+ * @param company The company name
+ * @param appName The application name
+ * @param createDirectory if true, create the returned directory if it don't exist
+ *
+ * Return the application config directory. If company or appName is not empty, append them to
+ * the path. Under unix, XDG conventions are respected.
+ * For example, the UserConfigDir under linux will be "~/.local/share/company/appName"
+ */
+CORE_API std::filesystem::path getUserDataDir(
+    const std::string& appName = "",
+    bool createDirectory       = true,
+    const std::string& company = "sight"
+);
+
+/**
+ * @brief   Return the users's application config directory
+ *
+ * @param company The company name
+ * @param appName The application name
+ * @param createDirectory if true, create the returned directory if it don't exist
+ *
+ * Return the application config directory. If company or appName is not empty, append them to
+ * the path. Under unix, XDG conventions are respected.
+ * For example, the UserConfigDir under linux will be "~/.config/company/appName"
+ */
+CORE_API std::filesystem::path getUserConfigDir(
+    const std::string& appName = "",
+    bool createDirectory       = true,
+    const std::string& company = "sight"
+);
+
+/**
+ * @brief   Return the users's application cache directory
  *
  * @param company The company name
  * @param appName The application name
@@ -65,12 +92,12 @@ CORE_API std::string getEnv(const std::string& name, const std::string& defaultV
  *
  * Return the application data directory. If company or appName is not empty, append them to
  * the path. Under unix, XDG conventions are respected.
- * For example, the UserDataDir under linux will be "~/.config/company/appName"
+ * For example, the UserCacheDir under linux will be "~/.cache/company/appName"
  */
-CORE_API std::string getUserDataDir(
-    std::string company  = "",
-    std::string appName  = "",
-    bool createDirectory = false
+CORE_API std::filesystem::path getUserCacheDir(
+    const std::string& appName = "",
+    bool createDirectory       = true,
+    const std::string& company = "sight"
 );
 
 /**
@@ -80,10 +107,8 @@ CORE_API std::string getUserDataDir(
  * i.e. 'jpeg' or 'boost_filesystem'. The function will try to use the appropriate combination according to
  * the platform and the build type.
  * @return path to the library on the filesystem
- * @throw core::tools::Exception if the library could not be found (not loaded for instance)
+ * @throw core::Exception if the library could not be found (not loaded for instance)
  */
 CORE_API std::filesystem::path getSharedLibraryPath(const std::string& _libName);
 
-} // namespace os
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::os

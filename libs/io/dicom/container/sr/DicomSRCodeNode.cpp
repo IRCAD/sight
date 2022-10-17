@@ -24,13 +24,9 @@
 
 #include "io/dicom/helper/DicomDataWriter.hxx"
 
-namespace sight::io::dicom
-{
+#include <utility>
 
-namespace container
-{
-
-namespace sr
+namespace sight::io::dicom::container::sr
 {
 
 //------------------------------------------------------------------------------
@@ -39,18 +35,17 @@ DicomSRCodeNode::DicomSRCodeNode(
     const DicomCodedAttribute& codedAttribute,
     const std::string& relationship
     ,
-    const DicomCodedAttribute& codedEntry
+    DicomCodedAttribute codedEntry
 ) :
     io::dicom::container::sr::DicomSRNode(codedAttribute, "CODE", relationship),
-    m_codedEntry(codedEntry)
+    m_codedEntry(std::move(codedEntry))
 {
 }
 
 //------------------------------------------------------------------------------
 
 DicomSRCodeNode::~DicomSRCodeNode()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -74,8 +69,4 @@ void DicomSRCodeNode::print(std::ostream& os) const
 
 //------------------------------------------------------------------------------
 
-} //namespace sr
-
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container::sr

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,7 @@
 
 #include "io/dicom/reader/iod/InformationObjectDefinition.hpp"
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace iod
+namespace sight::io::dicom::reader::iod
 {
 
 /**
@@ -57,14 +51,14 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API ~CTMRImageIOD();
+    IO_DICOM_API ~CTMRImageIOD() override;
 
     /**
      * @brief Read a DICOM File
      * @param[in,out] series Series that must be enriched
      * @throw(io::dicom::exception::Failed)
      */
-    IO_DICOM_API void read(data::Series::sptr series);
+    IO_DICOM_API void read(data::Series::sptr series) override;
 
     /// Enable buffer rotation
     void setBufferRotationEnabled(bool enabled)
@@ -75,11 +69,7 @@ public:
 protected:
 
     /// Enable buffer rotation
-    bool m_enableBufferRotation;
+    bool m_enableBufferRotation {true};
 };
 
-} // namespace iod
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::iod

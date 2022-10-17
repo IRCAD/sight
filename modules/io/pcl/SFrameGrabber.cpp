@@ -49,17 +49,7 @@ using sight::io::base::service::IGrabber;
 //------------------------------------------------------------------------------
 
 SFrameGrabber::SFrameGrabber() noexcept :
-    m_loopVideo(false),
-    m_isInitialized(false),
-    m_fps(30),
-    m_imageCount(0)
-{
-    m_worker = core::thread::Worker::New();
-}
-
-//------------------------------------------------------------------------------
-
-SFrameGrabber::~SFrameGrabber() noexcept
+    m_worker(core::thread::Worker::New())
 {
 }
 
@@ -223,7 +213,7 @@ void SFrameGrabber::readImages(const std::filesystem::path& folder, const std::s
         if(width != 0 && height != 0)
         {
             const auto frameTL = m_frame.lock();
-            frameTL->initPoolSize(width, height, core::tools::Type::s_FLOAT, data::FrameTL::PixelFormat::RGB);
+            frameTL->initPoolSize(width, height, core::Type::FLOAT, data::FrameTL::PixelFormat::RGB);
         }
         else
         {

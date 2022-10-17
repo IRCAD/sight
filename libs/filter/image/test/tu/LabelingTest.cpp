@@ -32,10 +32,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::LabelingTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -57,7 +54,7 @@ void LabelingTest::computeCentroids()
     // Initial image creation
     data::Image::sptr img = data::Image::New();
 
-    const core::tools::Type type          = core::tools::Type::s_UINT8;
+    const core::Type type                 = core::Type::UINT8;
     const data::Image::Size imgSize       = {256, 256, 256};
     const data::Image::Spacing imgSpacing = {1., 1., 1.};
     const data::Image::Origin imgOrigin   = {0., 0., 0.};
@@ -84,19 +81,18 @@ void LabelingTest::computeCentroids()
     // Add pre-defined features into the images
     std::vector<std::vector<unsigned int> > featureOrigin;
     std::vector<std::vector<unsigned int> > featureSize;
-    val = 255;
 
     // feature 1
-    featureOrigin.push_back(std::vector<unsigned int>(3, 96));
-    featureSize.push_back(std::vector<unsigned int>(3, 64));
+    featureOrigin.emplace_back(3, 96);
+    featureSize.emplace_back(3, 64);
 
     // feature 2
-    featureOrigin.push_back(std::vector<unsigned int>(3, 16));
-    featureSize.push_back(std::vector<unsigned int>(3, 16));
+    featureOrigin.emplace_back(3, 16);
+    featureSize.emplace_back(3, 16);
 
     // feature 3
-    featureOrigin.push_back(std::vector<unsigned int>(3, 255));
-    featureSize.push_back(std::vector<unsigned int>(3, 1));
+    featureOrigin.emplace_back(3, 255);
+    featureSize.emplace_back(3, 1);
 
     // Setup the image with the pre-defined features
     for(unsigned int f = 0 ; f < featureOrigin.size() ; ++f)
@@ -140,6 +136,4 @@ void LabelingTest::computeCentroids()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut.
-
-} //namespace sight::filter::image.
+} // namespace sight::filter::image::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,10 @@
 
 #pragma once
 
+#include <array>
 #include <cstdint>
 
-namespace sight::data
-{
-
-namespace iterator
+namespace sight::data::iterator
 {
 
 /// Used to iterate through a RGB image of type 'uint8'
@@ -102,7 +100,7 @@ struct uv
 /// Used to iterate through colors
 using rgba = data::iterator::rgba;
 
-}
+} // namespace point
 
 typedef std::uint32_t cell_t;
 typedef std::uint32_t point_t;
@@ -118,22 +116,22 @@ struct point
 
 struct line
 {
-    cell_t pt[2];
+    std::array<cell_t, 2> pt;
 };
 
 struct triangle
 {
-    cell_t pt[3];
+    std::array<cell_t, 3> pt;
 };
 
 struct quad
 {
-    cell_t pt[4];
+    std::array<cell_t, 4> pt;
 };
 
 struct tetra
 {
-    cell_t pt[4];
+    std::array<cell_t, 4> pt;
 };
 
 /// Stores a representation of a normal.
@@ -160,8 +158,6 @@ struct rgba
     std::uint8_t a;
 };
 
-}
+} // namespace cell
 
-} // namespace iterator
-
-} // namespace sight::data
+} // namespace sight::data::iterator

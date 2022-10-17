@@ -23,10 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 /**
@@ -46,19 +43,17 @@ private:
 public:
 
     /// Does nothing
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     /// Tests copies
-    void copyTest();
+    static void copyTest();
     /// Tests getter
-    void getterTest();
+    static void getterTest();
     ///Tests setter
-    void setterTest();
+    static void setterTest();
     /// Tests labels of data::Point
-    void labelTest();
+    static void labelTest();
 };
 
-} // namespace ut
-
-} // namespace sight::data
+} // namespace sight::data::ut

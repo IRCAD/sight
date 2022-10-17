@@ -42,10 +42,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::ObjectServiceTest);
 
 //------------------------------------------------------------------------------
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 //------------------------------------------------------------------------------
@@ -269,6 +266,4 @@ void ObjectServiceTest::unregisterService(data::Object::sptr obj, const std::str
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

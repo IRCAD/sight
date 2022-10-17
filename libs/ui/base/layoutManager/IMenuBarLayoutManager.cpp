@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 
 #include "ui/base/layoutManager/IMenuBarLayoutManager.hpp"
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 const IMenuBarLayoutManager::RegistryKeyType IMenuBarLayoutManager::REGISTRY_KEY =
@@ -40,14 +37,12 @@ const IMenuBarLayoutManager::RegistryKeyType IMenuBarLayoutManager::REGISTRY_KEY
 //-----------------------------------------------------------------------------
 
 IMenuBarLayoutManager::IMenuBarLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IMenuBarLayoutManager::~IMenuBarLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -60,7 +55,7 @@ void IMenuBarLayoutManager::initialize(ConfigurationType configuration)
 
     std::vector<ConfigurationType> vectMenus = configuration->find("menu");
     m_menus.clear();
-    for(ConfigurationType menu : vectMenus)
+    for(const ConfigurationType& menu : vectMenus)
     {
         SIGHT_ASSERT("missing <name> attribute", menu->hasAttribute("name"));
         if(menu->hasAttribute("name"))
@@ -75,7 +70,7 @@ void IMenuBarLayoutManager::initialize(ConfigurationType configuration)
 
 void IMenuBarLayoutManager::destroyMenus()
 {
-    for(ui::base::container::fwMenu::sptr menu : m_menus)
+    for(const ui::base::container::fwMenu::sptr& menu : m_menus)
     {
         menu->destroyContainer();
     }
@@ -92,6 +87,4 @@ std::vector<ui::base::container::fwMenu::sptr> IMenuBarLayoutManager::getMenus()
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

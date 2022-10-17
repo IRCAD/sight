@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,46 +33,46 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-Boolean::Boolean(data::Object::Key) noexcept :
+Boolean::Boolean(data::Object::Key /*unused*/) noexcept :
     GenericField<bool>(false)
 {
 }
 
 //------------------------------------------------------------------------------
-
-Boolean::~Boolean() noexcept
+void Boolean::shallowCopy(const Object::csptr& source)
 {
-}
+    const auto& other = dynamicConstCast(source);
 
-//------------------------------------------------------------------------------
-void Boolean::shallowCopy(const Object::csptr& _source)
-{
-    Boolean::csptr other = Boolean::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
+
     m_value = other->m_value;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Boolean::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Boolean::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Boolean::csptr other = Boolean::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
+
     m_value = other->m_value;
+
+    BaseClass::deepCopy(other, cache);
 }
 
 } // namespace sight::data

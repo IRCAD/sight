@@ -36,12 +36,9 @@ class QRenderStateSet;
 class QRenderSurfaceSelector;
 class QViewport;
 
-}
+} // namespace Qt3DRender
 
-namespace sight::viz::qt3d
-{
-
-namespace core
+namespace sight::viz::qt3d::core
 {
 
 /**
@@ -81,13 +78,13 @@ public:
     VIZ_QT3D_QT_API ~FrameGraph() override;
 
     /// @returns the camera this framegraph is associated to.
-    VIZ_QT3D_QT_API Qt3DCore::QEntity* getCamera() const;
+    [[nodiscard]] VIZ_QT3D_QT_API Qt3DCore::QEntity* getCamera() const;
 
     /// @returns the framegraph's clear color.
-    VIZ_QT3D_QT_API QColor getClearColor() const;
+    [[nodiscard]] VIZ_QT3D_QT_API QColor getClearColor() const;
 
     /// @returns the buffers to clear before rendering.
-    VIZ_QT3D_QT_API Qt3DRender::QClearBuffers::BufferType getBuffersToClear() const;
+    [[nodiscard]] VIZ_QT3D_QT_API Qt3DRender::QClearBuffers::BufferType getBuffersToClear() const;
 
     /// Gets the camera selector.
     VIZ_QT3D_QT_API Qt3DRender::QCameraSelector* getCameraSelector();
@@ -140,6 +137,4 @@ private:
     QPointer<Qt3DRender::QRenderStateSet> m_renderStateSet;
 };
 
-} // namespace core.
-
-} // namespace sight::viz::qt3d.
+} // namespace sight::viz::qt3d::core

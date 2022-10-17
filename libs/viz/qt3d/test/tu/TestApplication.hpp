@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,19 +23,19 @@
 
 #include <QGuiApplication>
 
+#include <array>
 #include <string>
 
 struct ArgV
 {
 #ifdef WIN32
-    std::string m_argvs[1] = {"TestApplication"};
-    char* m_argv[2]        = {m_argvs[0].data(), nullptr};
-    int m_argc {1};
+    std::array<std::string, 1> m_argvs = {"TestApplication"};
+    std::array<char*, 2> m_argv        = {m_argvs[0].data(), nullptr};
 #else
-    std::string m_argvs[3] = {"TestApplication", "-platform", "offscreen"};
-    char* m_argv[4]        = {m_argvs[0].data(), m_argvs[1].data(), m_argvs[2].data(), nullptr};
-    int m_argc {3};
+    std::array<std::string, 3> m_argvs = {"TestApplication", "-platform", "offscreen"};
+    std::array<char*, 4> m_argv        = {m_argvs[0].data(), m_argvs[1].data(), m_argvs[2].data(), nullptr};
 #endif
+    int m_argc {int(m_argvs.size())};
 };
 
 class TestApplication : private ArgV,
@@ -45,7 +45,7 @@ public:
 
     TestApplication() :
         ArgV(),
-        QGuiApplication(m_argc, m_argv)
+        QGuiApplication(m_argc, m_argv.data())
     {
     }
 };

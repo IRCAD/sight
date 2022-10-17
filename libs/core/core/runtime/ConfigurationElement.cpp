@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,10 @@
 #include "core/runtime/IExecutable.hpp"
 #include "core/runtime/Module.hpp"
 #include "core/runtime/RuntimeException.hpp"
+
 #include <core/base.hpp>
+
+#include <utility>
 
 namespace sight::core::runtime
 {
@@ -36,17 +39,15 @@ std::ostream& operator<<(std::ostream& _sstream, ConfigurationElement& _configur
 {
     _sstream << "Configuration element " << _configurationElement.getName() << " value = "
     << _configurationElement.getValue() << std::endl;
-    for(ConfigurationElement::AttributeContainer::iterator iter = _configurationElement.m_attributes.begin() ;
-        iter != _configurationElement.m_attributes.end() ; ++iter)
+    for(auto& m_attribute : _configurationElement.m_attributes)
     {
-        _sstream << "Id = " << iter->first << " with value " << iter->second << std::endl;
+        _sstream << "Id = " << m_attribute.first << " with value " << m_attribute.second << std::endl;
     }
 
     _sstream << "Subelement : " << std::endl;
-    for(ConfigurationElementContainer::Container::iterator iter = _configurationElement.begin() ;
-        iter != _configurationElement.end() ; ++iter)
+    for(auto& iter : _configurationElement)
     {
-        _sstream << std::endl << *(*iter) << std::endl;
+        _sstream << std::endl << *iter << std::endl;
     }
 
     return _sstream;
@@ -54,32 +55,32 @@ std::ostream& operator<<(std::ostream& _sstream, ConfigurationElement& _configur
 
 //------------------------------------------------------------------------------
 
-ConfigurationElement::ConfigurationElement(const std::shared_ptr<Module> module, const std::string& name) :
-    m_name(name),
+ConfigurationElement::ConfigurationElement(const std::shared_ptr<Module> module, std::string name) :
+    m_name(std::move(name)),
     m_module(module)
 {
 }
 
 //------------------------------------------------------------------------------
 
-const std::shared_ptr<Module> ConfigurationElement::getModule() const noexcept
+std::shared_ptr<Module> ConfigurationElement::getModule() const noexcept
 {
     return m_module.lock();
 }
 
 //------------------------------------------------------------------------------
 
-const std::string ConfigurationElement::getAttributeValue(const std::string& name) const noexcept
+std::string ConfigurationElement::getAttributeValue(const std::string& name) const noexcept
 {
-    AttributeContainer::const_iterator foundPos = m_attributes.find(name);
+    auto foundPos = m_attributes.find(name);
     return foundPos == m_attributes.end() ? std::string() : foundPos->second;
 }
 
 //------------------------------------------------------------------------------
 
-const std::string ConfigurationElement::getExistingAttributeValue(const std::string& name) const
+std::string ConfigurationElement::getExistingAttributeValue(const std::string& name) const
 {
-    AttributeContainer::const_iterator foundPos = m_attributes.find(name);
+    auto foundPos = m_attributes.find(name);
     if(foundPos == m_attributes.end())
     {
         SIGHT_THROW_EXCEPTION(NoSuchAttribute(name));
@@ -90,30 +91,28 @@ const std::string ConfigurationElement::getExistingAttributeValue(const std::str
 
 //------------------------------------------------------------------------------
 
-const ConfigurationElement::AttributePair ConfigurationElement::getSafeAttributeValue(const std::string& name) const
+ConfigurationElement::AttributePair ConfigurationElement::getSafeAttributeValue(const std::string& name) const
 noexcept
 {
-    AttributeContainer::const_iterator foundPos = m_attributes.find(name);
+    auto foundPos = m_attributes.find(name);
     if(foundPos == m_attributes.end())
     {
-        return AttributePair(false, std::string());
+        return {false, std::string()};
     }
-    else
-    {
-        return AttributePair(true, foundPos->second);
-    }
+
+    return {true, foundPos->second};
 }
 
 //------------------------------------------------------------------------------
 
-const std::string ConfigurationElement::getName() const noexcept
+std::string ConfigurationElement::getName() const noexcept
 {
     return m_name;
 }
 
 //------------------------------------------------------------------------------
 
-const std::string ConfigurationElement::getValue() const noexcept
+std::string ConfigurationElement::getValue() const noexcept
 {
     return m_value;
 }
@@ -122,13 +121,13 @@ const std::string ConfigurationElement::getValue() const noexcept
 
 bool ConfigurationElement::hasAttribute(const std::string& name) const noexcept
 {
-    AttributeContainer::const_iterator foundPos = m_attributes.find(name);
+    auto foundPos = m_attributes.find(name);
     return foundPos != m_attributes.end();
 }
 
 //------------------------------------------------------------------------------
 
-const std::map<std::string, std::string> ConfigurationElement::getAttributes() const noexcept
+std::map<std::string, std::string> ConfigurationElement::getAttributes() const noexcept
 {
     return m_attributes;
 }
@@ -149,12 +148,6 @@ void ConfigurationElement::setValue(const std::string& value) noexcept
 
 //------------------------------------------------------------------------------
 
-void ConfigurationElement::operator=(const ConfigurationElement&) noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
 std::vector<ConfigurationElement::sptr> ConfigurationElement::find(
     std::string name,
     std::string attribute,
@@ -162,7 +155,7 @@ std::vector<ConfigurationElement::sptr> ConfigurationElement::find(
     int depth
 )
 {
-    typedef std::vector<ConfigurationElement::sptr> ConfVector;
+    using ConfVector = std::vector<ConfigurationElement::sptr>;
     ConfVector result;
 
     bool nameOk           = (name.empty() || this->getName() == name);
@@ -192,8 +185,7 @@ std::vector<ConfigurationElement::sptr> ConfigurationElement::find(
 //-----------------------------------------------------------------------------
 
 ConfigurationElement::~ConfigurationElement()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 

@@ -32,6 +32,18 @@ function(plugin_setup PROJECT)
             DEPENDS ${PLUGIN_CONFIG_COMMAND_DEPENDS} "${CMAKE_CURRENT_SOURCE_DIR}/rc/plugin.xml"
             COMMENT "Generating service registration file for ${PROJECT}"
         )
+
+        # Determine if the plugin need to be started in the profile.xml
+        file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/rc/plugin.xml" PLUGIN_CONTENT)
+        foreach(LINE ${PLUGIN_CONTENT})
+            if("${LINE}" MATCHES "<plugin.*")
+                if("${LINE}" MATCHES "<plugin.*autostart=\"true\".*")
+                    set_target_properties(${PROJECT} PROPERTIES SIGHT_START ON)
+                endif()
+                break() # Do not parse the rest of the file
+            endif()
+        endforeach()
+
     endif()
 
 endfunction()

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,9 +52,8 @@ SStyleSelector::SStyleSelector() noexcept
 
 //-----------------------------------------------------------------------------
 
-SStyleSelector::~SStyleSelector() noexcept
-{
-}
+SStyleSelector::~SStyleSelector() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -71,7 +70,7 @@ void SStyleSelector::starting()
     const auto styleRc = core::runtime::getModuleResourcePath("sight::module::ui::qt");
 
     // Stores each rcc & qss
-    for(auto& p : std::filesystem::directory_iterator(styleRc))
+    for(const auto& p : std::filesystem::directory_iterator(styleRc))
     {
         std::filesystem::path f = p;
 
@@ -84,7 +83,7 @@ void SStyleSelector::starting()
                 filename.begin(),
                 filename.end(),
                 name.begin(),
-                [](unsigned char c) -> unsigned char {return std::toupper(c);});
+                [](unsigned char c) -> unsigned char {return static_cast<unsigned char>(std::toupper(c));});
 
             m_styleMap[name] = f.replace_extension("");
         }
@@ -125,7 +124,11 @@ void SStyleSelector::changeStyle(const std::string& _styleName)
     }
 
     // Load ressources
-    const bool resourceLoaded = QResource::registerResource(path.replace_extension(".rcc").string().c_str());
+    [[maybe_unused]] const bool resourceLoaded = QResource::registerResource(
+        path.replace_extension(
+            ".rcc"
+        ).string().c_str()
+    );
     SIGHT_ASSERT("Cannot load resources '" + path.replace_extension(".rcc").string() + "'.", resourceLoaded);
 
     // Load stylesheet.
@@ -153,7 +156,7 @@ void SStyleSelector::updateFromPrefs()
             this->changeStyle(*theme);
         }
     }
-    catch(const sight::ui::base::PreferencesDisabled& e)
+    catch(const sight::ui::base::PreferencesDisabled& /*e*/)
     {
         // Nothing to do..
     }
@@ -161,4 +164,4 @@ void SStyleSelector::updateFromPrefs()
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::qt

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,6 @@
 
 #include <service/macros.hpp>
 
-using sight::core::runtime::ConfigurationElementContainer;
-
 namespace sight::io::base::service
 {
 
@@ -54,9 +52,8 @@ IReader::IReader() noexcept
 
 //-----------------------------------------------------------------------------
 
-IReader::~IReader() noexcept
-{
-}
+IReader::~IReader() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -69,7 +66,7 @@ std::string IReader::getSelectorDialogTitle()
 
 std::vector<std::string> IReader::getSupportedExtensions()
 {
-    return std::vector<std::string>();
+    return {};
 }
 
 //-----------------------------------------------------------------------------
@@ -181,24 +178,24 @@ void IReader::configuring()
 
     m_windowTitle = config.get("windowTitle", "");
 
-    if(this->getIOPathType() & io::base::service::FILE)
+    if((this->getIOPathType() & io::base::service::FILE) != 0)
     {
         SIGHT_THROW_IF("This reader cannot manages FILE and FILES.", this->getIOPathType() & io::base::service::FILES);
         SIGHT_THROW_IF("At least one file must be defined in configuration", config.count("file") > 1);
         if(config.count("file") == 1)
         {
-            const std::string file = config.get<std::string>("file");
+            const auto file = config.get<std::string>("file");
             this->setFile(std::filesystem::path(file));
         }
         else if(config.count("resource") == 1)
         {
-            const std::string resource = config.get<std::string>("resource");
-            const auto file            = core::runtime::getResourceFilePath(resource);
+            const auto resource = config.get<std::string>("resource");
+            const auto file     = core::runtime::getResourceFilePath(resource);
             this->setFile(file);
         }
     }
 
-    if(this->getIOPathType() & io::base::service::FILES)
+    if((this->getIOPathType() & io::base::service::FILES) != 0)
     {
         SIGHT_THROW_IF("This reader cannot manage FILE and FILES.", this->getIOPathType() & io::base::service::FILE);
 
@@ -207,33 +204,33 @@ void IReader::configuring()
         const auto filesCfg = config.equal_range("file");
         for(auto fileCfg = filesCfg.first ; fileCfg != filesCfg.second ; ++fileCfg)
         {
-            const std::string location = fileCfg->second.get_value<std::string>();
+            const auto location = fileCfg->second.get_value<std::string>();
             locations.push_back(std::filesystem::path(location));
         }
 
         const auto resourcesCfg = config.equal_range("resource");
         for(auto resourceCfg = resourcesCfg.first ; resourceCfg != resourcesCfg.second ; ++resourceCfg)
         {
-            const std::string resource = resourceCfg->second.get_value<std::string>();
-            const auto file            = core::runtime::getResourceFilePath(resource);
+            const auto resource = resourceCfg->second.get_value<std::string>();
+            const auto file     = core::runtime::getResourceFilePath(resource);
             locations.push_back(file);
         }
 
         this->setFiles(locations);
     }
 
-    if(this->getIOPathType() & io::base::service::FOLDER)
+    if((this->getIOPathType() & io::base::service::FOLDER) != 0)
     {
         SIGHT_THROW_IF("At least one folder must be defined in configuration", config.count("folder") > 1);
         if(config.count("folder") == 1)
         {
-            const std::string folder = config.get<std::string>("folder");
+            const auto folder = config.get<std::string>("folder");
             this->setFolder(std::filesystem::path(folder));
         }
         else if(config.count("resource") == 1)
         {
-            const std::string resource = config.get<std::string>("resource");
-            auto folder                = core::runtime::getModuleResourceFilePath(resource);
+            const auto resource = config.get<std::string>("resource");
+            auto folder         = core::runtime::getModuleResourceFilePath(resource);
             if(folder.empty())
             {
                 // If not found in a module, look into libraries
@@ -260,7 +257,7 @@ io::base::service::IOPathType IReader::getIOPathType() const
 
 bool IReader::hasLocationDefined() const
 {
-    return m_locations.size() > 0;
+    return !m_locations.empty();
 }
 
 //-----------------------------------------------------------------------------
@@ -296,4 +293,4 @@ void IReader::readFiles(io::base::service::LocationsType files)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::io
+} // namespace sight::io::base::service

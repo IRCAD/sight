@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Slot.hpp>
 
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <ui/base/IAction.hpp>
 
@@ -36,16 +36,13 @@ namespace sight::core::jobs
 
 class IJob;
 
-}
+} // namespace sight::core::jobs
 
-namespace sight::module::ui::base
-{
-
-namespace series
+namespace sight::module::ui::base::series
 {
 
 /**
- * @brief This action allows to load a new SeriesDB and merge it with the current SeriesDB
+ * @brief This action allows to load a new SeriesSet and merge it with the current SeriesSet
  *
  * @section Slots Slots
  * - \b forwardJob(core::jobs::IJob::sptr) : Called to forward a job.
@@ -57,18 +54,18 @@ namespace series
  * @section XML XML Configuration
  * @code{.xml}
    <service uid="action" type="sight::module::ui::base::series::SDBMerger">
-        <inout key="seriesDB" uid="..." />
-        <IOSelectorSrvConfig name="seriesDBImporterConfig" />
+        <inout key="seriesSet" uid="..." />
+        <IOSelectorSrvConfig name="seriesSetImporterConfig" />
    </service>
    @endcode
  * With :
- * - \b seriesDBImporterConfig : the id of a configuration for SSelector
+ * - \b seriesSetImporterConfig : the id of a configuration for SSelector
  * for example
  * @code{.xml}
     <extension implements="sight::service::extension::Config">
-        <id>seriesDBImporterConfig</id>
+        <id>seriesSetImporterConfig</id>
         <service>module::ui::base::editor::SSelector</service>
-        <desc>IOSelector config to import SeriesDB</desc>
+        <desc>IOSelector config to import SeriesSet</desc>
         <config>
             <type mode="reader" />
             <selection mode="exclude" />
@@ -78,7 +75,7 @@ namespace series
    @endcode
  *
  * @subsection In-Out In-Out
- * - \b seriesDB [sight::data::SeriesDB]: the SeriesDB to merge.
+ * - \b seriesSet [sight::data::SeriesSet]: the SeriesSet to merge.
  */
 class MODULE_UI_BASE_CLASS_API SDBMerger : public sight::ui::base::IAction
 {
@@ -91,7 +88,7 @@ public:
 
     MODULE_UI_BASE_API SDBMerger() noexcept;
 
-    MODULE_UI_BASE_API virtual ~SDBMerger() noexcept;
+    MODULE_UI_BASE_API ~SDBMerger() noexcept override;
 
 protected:
 
@@ -110,7 +107,7 @@ protected:
     /// Start action.
     void starting() override;
 
-    /// Show the SeriesDB reader selector, load the new SeriesDB and merge it the the current SeriesDB
+    /// Show the SeriesSet reader selector, load the new SeriesSet and merge it the the current SeriesSet
     void updating() override;
 
     /// Stop action.
@@ -126,11 +123,9 @@ private:
     SPTR(JobCreatedSignalType) m_sigJobCreated;
     SPTR(ForwardJobSlotType) m_slotForwardJob;
 
-    static constexpr std::string_view s_SERIESDB = "seriesDB";
+    static constexpr std::string_view s_SERIES_SET = "seriesSet";
 
-    data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, s_SERIESDB};
+    data::ptr<data::SeriesSet, data::Access::inout> m_series_set {this, s_SERIES_SET};
 };
 
-} // namespace series
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::series

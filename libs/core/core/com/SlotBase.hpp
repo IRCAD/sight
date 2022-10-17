@@ -41,7 +41,7 @@ namespace sight::core::thread
 
 class Worker;
 
-}
+} // namespace sight::core::thread
 
 namespace sight::core::com
 {
@@ -52,7 +52,7 @@ namespace util
 template<typename T, typename R>
 struct WeakCall;
 
-}
+} // namespace util
 
 template<typename F>
 struct SlotRun;
@@ -85,9 +85,8 @@ struct CORE_CLASS_API SlotBase : virtual core::BaseObject
     /// Connections container type
     typedef std::set<CSPTR(SlotConnectionBase)> ConnectionSetType;
 
-    virtual ~SlotBase()
-    {
-    }
+    ~SlotBase() override
+    = default;
 
     /**
      * @brief Returns Slot's arity.

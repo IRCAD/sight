@@ -34,6 +34,7 @@
 
 #include <QDesktopWidget>
 #include <QEvent>
+#include <QGuiApplication>
 #include <QRect>
 #include <QShortcut>
 #include <QVBoxLayout>
@@ -41,12 +42,31 @@
 
 //-----------------------------------------------------------------------------
 
-fwRenderOgreRegisterMacro(
+SIGHT_REGISTER_SCENE3D(
     sight::module::viz::scene3dQt::WindowInteractor,
     sight::viz::scene3d::IWindowInteractor::REGISTRY_KEY
 );
 
 //-----------------------------------------------------------------------------
+
+EventDispatcher::EventDispatcher(QObject* dispatchedTo, const QList<QEvent::Type>& eventsToDispatch) :
+    m_dispatchedTo(dispatchedTo),
+    m_eventsToDispatch(eventsToDispatch)
+{
+}
+
+//------------------------------------------------------------------------------
+
+bool EventDispatcher::eventFilter(QObject* /*watched*/, QEvent* event)
+{
+    if(m_eventsToDispatch.contains(event->type()))
+    {
+        m_dispatchedTo->event(event);
+        return true;
+    }
+
+    return false;
+}
 
 namespace sight::module::viz::scene3dQt
 {
@@ -55,6 +75,7 @@ namespace sight::module::viz::scene3dQt
 
 WindowInteractor::WindowInteractor(
     sight::viz::scene3d::IWindowInteractor::Key
+    /*unused*/
 )
 {
 }
@@ -65,7 +86,7 @@ WindowInteractor::~WindowInteractor()
 {
     // Delete the window container if it is not attached to the parent container.
     // i.e. it is shown in fullscreen.
-    if(m_windowContainer && m_windowContainer->parent() == nullptr)
+    if((m_windowContainer != nullptr) && m_windowContainer->parent() == nullptr)
     {
         delete m_windowContainer;
     }
@@ -89,13 +110,14 @@ void WindowInteractor::requestRender()
 
 void WindowInteractor::createContainer(
     sight::ui::base::container::fwContainer::sptr _parent,
-    bool _fullscreen
+    bool _fullscreen,
+    const std::string& id
 )
 {
     SIGHT_ASSERT("Invalid parent.", _parent);
     m_parentContainer = ui::qt::container::QtContainer::dynamicCast(_parent);
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     m_parentContainer->setLayout(layout);
     layout->setContentsMargins(0, 0, 0, 0);
 
@@ -113,6 +135,13 @@ void WindowInteractor::createContainer(
 #endif
 
     m_windowContainer = QWidget::createWindowContainer(m_qOgreWidget);
+    m_windowContainer->setObjectName(QString::fromStdString(id));
+    m_windowContainer->installEventFilter(
+        new EventDispatcher(
+            m_qOgreWidget,
+            {QEvent::MouseButtonPress, QEvent::MouseButtonRelease, QEvent::Enter, QEvent::MouseMove, QEvent::Leave
+            })
+    );
     layout->addWidget(m_windowContainer);
     m_windowContainer->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
     m_windowContainer->setMouseTracking(true);
@@ -215,7 +244,7 @@ void WindowInteractor::onInteracted(sight::viz::scene3d::IWindowInteractor::Inte
     service::IService::sptr renderService                = m_renderService.lock();
     sight::viz::scene3d::SRender::sptr ogreRenderService = sight::viz::scene3d::SRender::dynamicCast(renderService);
 
-    for(auto layerMap : ogreRenderService->getLayers())
+    for(const auto& layerMap : ogreRenderService->getLayers())
     {
         sight::viz::scene3d::Layer::sptr layer = layerMap.second;
         layer->slot<sight::viz::scene3d::Layer::InteractionSlotType>(sight::viz::scene3d::Layer::s_INTERACTION_SLOT)->
@@ -252,19 +281,22 @@ void WindowInteractor::setFullscreen(bool _fullscreen, int _screenNumber)
     {
         container->layout()->removeWidget(m_windowContainer);
 
-        QDesktopWidget* desktop = QApplication::desktop();
+        const QDesktopWidget* desktop = QApplication::desktop();
 
+        QRect screenres;
         if(_screenNumber < 0)
         {
             _screenNumber = desktop->screenNumber(container) + 1;
         }
 
-        if(_screenNumber >= desktop->screenCount())
+        if(_screenNumber >= QGuiApplication::screens().count())
         {
-            _screenNumber = desktop->primaryScreen();
+            screenres = QGuiApplication::primaryScreen()->geometry();
         }
-
-        QRect screenres = desktop->screenGeometry(_screenNumber);
+        else
+        {
+            screenres = QGuiApplication::screens()[_screenNumber]->geometry();
+        }
 
         m_windowContainer->setParent(nullptr);
         m_windowContainer->showFullScreen();

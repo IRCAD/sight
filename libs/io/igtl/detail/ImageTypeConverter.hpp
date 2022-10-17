@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "io/igtl/detail/exception/Conversion.hpp"
 
 #include <core/tools/Failed.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <map>
 #include <string>
@@ -41,39 +41,39 @@ class IO_IGTL_CLASS_API ImageTypeConverter
 {
 public:
 
-    typedef std::map<core::tools::Type, std::uint8_t> TypeConverterMap;
+    typedef std::map<core::Type, std::uint8_t> TypeConverterMap;
+
+    /// Not implemented
+    ImageTypeConverter() = delete;
+
+    /// Not implemented
+    ~ImageTypeConverter() = delete;
 
     /**
-     * @brief init type converter map for conversion between core::tools::Type and igtlImage enum Type
+     * @brief init type converter map for conversion between core::Type and igtlImage enum Type
      *
-     * @return a map contain all equivalence between core::tools::Type and igtlImage enum Type
+     * @return a map contain all equivalence between core::Type and igtlImage enum Type
      */
 
     static TypeConverterMap initTypeConverterMap();
 
     /**
-     * @brief get core::tools::Type from an igtlType
+     * @brief get core::Type from an igtlType
      *
      * @param[in] igtlType
-     * @return a core::tools::Type
+     * @return a core::Type
      */
-    static const core::tools::Type& getFwToolsType(const std::uint8_t& igtlType);
+    static const core::Type& getFwToolsType(const std::uint8_t& igtlType);
 
     /**
-     * @brief get igtlType from a core::tools::Type
+     * @brief get igtlType from a core::Type
      *
      * @param[in] type
      * @return uint8 value correspond to an type enum in ::igtl::ImageMessage2
      */
-    static std::uint8_t getIgtlType(const core::tools::Type& type);
+    static std::uint8_t getIgtlType(const core::Type& type);
 
 private:
-
-    /// Not implemented
-    ImageTypeConverter();
-
-    /// Not implemented
-    ~ImageTypeConverter();
 
     /// type converter map between igtl pixel type and Sight pixel type
     static TypeConverterMap s_typeConverterMap;

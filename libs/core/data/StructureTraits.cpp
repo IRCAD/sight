@@ -34,34 +34,24 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-StructureTraits::StructureTraits(data::Object::Key) :
-    m_anatomicRegion(""),
-    m_propertyCategory(""),
-    m_propertyType("")
-{
-    m_color = data::Color::New();
-}
-
-//------------------------------------------------------------------------------
-
-StructureTraits::~StructureTraits()
+StructureTraits::StructureTraits(data::Object::Key /*unused*/) :
+    m_color(data::Color::New())
 {
 }
 
 //------------------------------------------------------------------------------
 
-void StructureTraits::shallowCopy(const data::Object::csptr& _source)
+void StructureTraits::shallowCopy(const Object::csptr& source)
 {
-    StructureTraits::csptr other = StructureTraits::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-
-    this->fieldShallowCopy(other);
 
     m_type               = other->m_type;
     m_categories         = other->m_categories;
@@ -73,22 +63,24 @@ void StructureTraits::shallowCopy(const data::Object::csptr& _source)
     m_anatomicRegion     = other->m_anatomicRegion;
     m_propertyCategory   = other->m_propertyCategory;
     m_propertyType       = other->m_propertyType;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void StructureTraits::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
+void StructureTraits::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    StructureTraits::csptr other = StructureTraits::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
 
-    this->fieldDeepCopy(other, cache);
     m_type               = other->m_type;
     m_categories         = other->m_categories;
     m_color              = data::Object::copy(other->m_color, cache);
@@ -99,6 +91,8 @@ void StructureTraits::cachedDeepCopy(const data::Object::csptr& _source, DeepCop
     m_anatomicRegion     = other->m_anatomicRegion;
     m_propertyCategory   = other->m_propertyCategory;
     m_propertyType       = other->m_propertyType;
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -120,7 +114,7 @@ bool StructureTraits::operator==(const StructureTraits& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

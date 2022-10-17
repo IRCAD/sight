@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::utestData
-{
-
-namespace ut
+namespace sight::utestData::ut
 {
 
 /**
@@ -45,15 +42,13 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void generator3DTest();
-    void generator2DTest();
-    void deepCopyTest();
-    void stressTest();
+    static void generator3DTest();
+    static void generator2DTest();
+    static void deepCopyTest();
+    static void stressTest();
 };
 
-} //namespace ut
-
-} //namespace sight::utestData
+} // namespace sight::utestData::ut

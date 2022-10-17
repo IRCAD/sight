@@ -36,7 +36,7 @@ namespace sight::data
 /**
  * @brief This class represents a 3D transformation matrix (4x4).
  */
-class DATA_CLASS_API Matrix4 : public Object
+class DATA_CLASS_API Matrix4 final : public Object
 {
 public:
 
@@ -58,13 +58,7 @@ public:
     DATA_API Matrix4(Object::Key key);
 
     //! @brief destructor
-    DATA_API virtual ~Matrix4();
-
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    DATA_API ~Matrix4() noexcept override = default;
 
     /// Getters/setters
     TMCoefArray& getCoefficients();
@@ -116,10 +110,24 @@ public:
     DATA_API bool operator!=(const Matrix4& other) const noexcept;
     /// @}
 
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
+
+    /// Defines deep copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
 protected:
 
     //! Matrix coefficient number (4x4). m_vCoefficients[0] to m_vCoefficients[3] is the first row of the matrix
-    TMCoefArray m_vCoefficients;
+    TMCoefArray m_vCoefficients {};
 
     static constexpr TMCoefArray s_IDENTITY = {1., 0., 0., 0.,
                                                0., 1., 0., 0.,

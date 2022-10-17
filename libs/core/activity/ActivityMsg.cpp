@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+//cspell: ignore TABID
+
 #include "activity/ActivityMsg.hpp"
 
 #include <core/tools/UUID.hpp>
@@ -37,28 +39,25 @@ namespace sight::activity
 //-----------------------------------------------------------------------------
 
 ActivityMsg::ActivityMsg(
-    const data::ActivitySeries::sptr& series,
+    const data::Activity::sptr& activity,
     const activity::extension::ActivityInfo& info,
     const ParametersType& parameters
-)
+) :
+    m_title(info.title),
+    m_tabID("TABID_" + core::tools::UUID::generateUUID()),
+    m_appConfigID(info.appConfig.id),
+    m_tabInfo(info.tabInfo.empty() ? info.title : info.tabInfo),
+    m_iconPath(info.icon),
+    m_tooltip(m_tabInfo),
+    m_activity(activity)
 {
-    SIGHT_ASSERT("ActivitySeries instantiation failed", series);
+    SIGHT_ASSERT("Activity instantiation failed", activity);
 
     m_replacementMap = sight::activity::extension::Activity::getDefault()->getReplacementMap(
-        *series,
+        *activity,
         info,
         parameters
     );
-
-    //cspell: ignore TABID
-    m_title       = info.title;
-    m_appConfigID = info.appConfig.id;
-    m_closable    = true;
-    m_tabID       = "TABID_" + core::tools::UUID::generateUUID();
-    m_tabInfo     = info.tabInfo.empty() ? info.title : info.tabInfo;
-    m_iconPath    = info.icon;
-    m_tooltip     = m_tabInfo;
-    m_series      = series;
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,9 +23,10 @@
 #pragma once
 
 #include "service/config.hpp"
-#include <service/op/Add.hpp>
 
 #include <core/macros.hpp>
+
+#include <service/op/Add.hpp>
 
 #include <vector>
 
@@ -47,13 +48,13 @@ public:
      * @brief Get all subservices linked to this service
      * @return The vector of linked services
      */
-    const ServiceVector& getRegisteredServices() const;
+    [[nodiscard]] const ServiceVector& getRegisteredServices() const;
 
     /**
      * @brief Return a specific registered service
      * @param[in] id Identifier of the service
      */
-    SERVICE_API CSPTR(service::IService) getRegisteredService(const core::tools::fwID::IDType& _id) const;
+    [[nodiscard]] SERVICE_API CSPTR(service::IService) getRegisteredService(const core::tools::fwID::IDType& _id) const;
 
 protected:
 

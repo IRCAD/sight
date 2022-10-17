@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,45 +22,34 @@
 
 #include "io/dicom/reader/iod/InformationObjectDefinition.hpp"
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace iod
+namespace sight::io::dicom::reader::iod
 {
 
 //------------------------------------------------------------------------------
 
 InformationObjectDefinition::InformationObjectDefinition(
-    const data::DicomSeries::csptr& dicomSeries,
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const core::log::Logger::sptr& logger,
+    data::DicomSeries::csptr dicomSeries,
+    SPTR(io::dicom::container::DicomInstance)instance,
+    core::log::Logger::sptr logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    m_instance(instance),
-    m_dicomSeries(dicomSeries),
-    m_logger(logger),
-    m_progressCallback(progress),
-    m_cancelRequestedCallback(cancel)
+    m_instance(std::move(instance)),
+    m_dicomSeries(std::move(dicomSeries)),
+    m_logger(std::move(logger)),
+    m_progressCallback(std::move(progress)),
+    m_cancelRequestedCallback(std::move(cancel))
 {
-    SIGHT_ASSERT("DicomSeries should not be null.", dicomSeries);
-    SIGHT_ASSERT("Instance should not be null.", instance);
-    SIGHT_ASSERT("Logger should not be null.", logger);
+    SIGHT_ASSERT("DicomSeries should not be null.", m_dicomSeries);
+    SIGHT_ASSERT("Instance should not be null.", m_instance);
+    SIGHT_ASSERT("Logger should not be null.", m_logger);
 }
 
 //------------------------------------------------------------------------------
 
 InformationObjectDefinition::~InformationObjectDefinition()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
-} // namespace iod
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::iod

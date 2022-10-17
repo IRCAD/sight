@@ -4,14 +4,11 @@ Contains xml configurations related to 3D visualization. These configurations ar
 
 ## Configurations
 
-- **OgreHistogramManager**
-Defines a widget view that allows to tweak a transfer function and display the histogram of a image given as parameters.
-
 - **OgreLightManager**
 Defines a simple widget view to select and tweak lights in a 3D scene.
 
 - **OgreOrganManager**
-Defines a widget view to select reconstructions in a `sight::data::ModelSeries` and modify shading settings such as 
+Defines a widget view to select reconstructions in a `sight::data::ModelSeries` and modify shading settings such as
 color and transparency.
 
 ## How to use it
@@ -23,23 +20,6 @@ add_dependencies(myTarget config_viz_scene3d ... )
 ```
 
 ### XML
-
-The `OgreHistogramManager` configuration can be included with the following code:
-
-```xml
-
-<service uid="histogramManagerCfg" type="sight::service::SConfigController" >
-    <appConfig id="OgreHistogramManager" />
-    <parameter replace="WID_PARENT" by="parentView" />
-    <inout key="IMAGE" uid="image" />
-    <inout key="TF" uid="transferFunction" />
-</service>
-```
-
-where:
-- WID_PARENT is the identifier of the parent window view,
-- IMAGE is a `sight::data::Image`,
-- TF is a `sight::data::TransferFunction`.
 
 The `OgreLightManager` configuration can be included with the following code:
 

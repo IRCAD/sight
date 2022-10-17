@@ -26,13 +26,7 @@
 
 #include <data/Series.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 //------------------------------------------------------------------------------
@@ -53,8 +47,7 @@ FrameOfReference::FrameOfReference(
 //------------------------------------------------------------------------------
 
 FrameOfReference::~FrameOfReference()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -73,8 +66,4 @@ void FrameOfReference::writeFrameOfReferenceModule()
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

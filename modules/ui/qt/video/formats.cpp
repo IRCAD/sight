@@ -24,10 +24,7 @@
 
 #include <boost/assign.hpp>
 
-namespace sight::module::ui::qt
-{
-
-namespace video
+namespace sight::module::ui::qt::video
 {
 
 // The format of the code is shitty, that's because of uncrustify who doesn't allow us to write a pair per line.
@@ -169,6 +166,4 @@ PixelFormatTranslatorType pixelFormatTranslator = boost::assign::list_of<PixelFo
     data::Camera::PixelFormat::USER
                                                   );
 
-} // video
-
-} // sight::module::ui::qt
+} // namespace sight::module::ui::qt::video

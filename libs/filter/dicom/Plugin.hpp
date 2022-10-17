@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ public:
     FILTER_DICOM_API Plugin();
 
     /// Destructor
-    FILTER_DICOM_API ~Plugin();
+    FILTER_DICOM_API ~Plugin() = default;
 };
 
 } // namespace sight::filter::dicom

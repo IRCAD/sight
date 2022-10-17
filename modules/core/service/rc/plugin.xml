@@ -45,8 +45,8 @@
 
      <extension implements="sight::service::extension::Factory">
         <type>sight::service::IXMLParser</type>
-        <service>sight::service::parser::List</service>
-        <object>sight::data::List</object>
+        <service>sight::service::parser::Vector</service>
+        <object>sight::data::Vector</object>
     </extension>
 
     <extension implements="sight::service::extension::Factory">

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 class SlotsSignalsTest : public CPPUNIT_NS::TestFixture
@@ -43,15 +40,13 @@ private:
 
 public:
 
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void basicTest();
-    void comObjectServiceTest();
-    void comServiceToServiceTest();
-    void blockConnectionTest();
+    static void basicTest();
+    static void comObjectServiceTest();
+    static void comServiceToServiceTest();
+    static void blockConnectionTest();
 };
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

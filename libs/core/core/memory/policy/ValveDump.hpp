@@ -27,13 +27,11 @@
 #include "core/memory/BufferManager.hpp"
 #include "core/memory/IPolicy.hpp"
 #include "core/memory/policy/factory/new.hpp"
+#include "core/memory/tools/MemoryMonitorTools.hpp"
 
 #include <core/base.hpp>
 
-namespace sight::core::memory
-{
-
-namespace policy
+namespace sight::core::memory::policy
 {
 
 /**
@@ -47,71 +45,72 @@ namespace policy
  * this policy will try to reach minFreeMem + hysteresisOffset bytes of free
  * memory.
  */
-class CORE_CLASS_API ValveDump : public core::memory::IPolicy
+template<typename TOOL = tools::MemoryMonitorTools>
+class ValveDump : public core::memory::IPolicy
 {
 public:
 
     SIGHT_DECLARE_CLASS(ValveDump, core::memory::IPolicy, core::memory::policy::factory::New<ValveDump>);
 
-    CORE_API ValveDump();
+    ValveDump();
 
-    CORE_API virtual void allocationRequest(
+    void allocationRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer,
         BufferInfo::SizeType size
     ) override;
-    CORE_API virtual void setRequest(
+    void setRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer,
         BufferInfo::SizeType size
     ) override;
-    CORE_API virtual void reallocateRequest(
+    void reallocateRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer,
         BufferInfo::SizeType newSize
     ) override;
 
-    CORE_API virtual void destroyRequest(
+    void destroyRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
 
-    CORE_API virtual void lockRequest(
+    void lockRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
-    CORE_API virtual void unlockRequest(
-        BufferInfo& info,
-        core::memory::BufferManager::ConstBufferPtrType buffer
-    ) override;
-
-    CORE_API virtual void dumpSuccess(
-        BufferInfo& info,
-        core::memory::BufferManager::ConstBufferPtrType buffer
-    ) override;
-    CORE_API virtual void restoreSuccess(
+    void unlockRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
 
-    CORE_API void refresh() override;
+    void dumpSuccess(
+        BufferInfo& info,
+        core::memory::BufferManager::ConstBufferPtrType buffer
+    ) override;
+    void restoreSuccess(
+        BufferInfo& info,
+        core::memory::BufferManager::ConstBufferPtrType buffer
+    ) override;
 
-    CORE_API bool setParam(const std::string& name, const std::string& value) override;
-    CORE_API std::string getParam(const std::string& name, bool* ok = NULL) const override;
-    CORE_API const core::memory::IPolicy::ParamNamesType& getParamNames() const override;
+    void refresh() override;
+
+    bool setParam(const std::string& name, const std::string& value) override;
+    std::string getParam(const std::string& name, bool* ok = nullptr) const override;
+    const core::memory::IPolicy::ParamNamesType& getParamNames() const override;
 
 protected:
 
-    CORE_API bool needDump(std::size_t supplement) const;
+    bool needDump(std::size_t supplement) const;
 
-    CORE_API std::size_t dump(std::size_t nbOfBytes);
+    std::size_t dump(std::size_t nbOfBytes);
 
-    CORE_API void apply(std::size_t supplement = 0);
+    void apply(std::size_t supplement = 0);
 
     std::size_t m_minFreeMem;
-    std::size_t m_hysteresisOffset;
+    std::size_t m_hysteresisOffset {0};
 };
 
-} // namespace policy
+} // namespace sight::core::memory::policy
 
-} // namespace sight::core::memory
+#include "ValveDump.hxx"

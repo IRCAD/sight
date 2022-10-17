@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,10 +34,7 @@ namespace sight::activity
 
 class IValidator;
 
-namespace validator
-{
-
-namespace registry
+namespace validator::registry
 {
 
 typedef std::string KeyType;
@@ -46,8 +43,6 @@ typedef core::FactoryRegistry<SPTR(activity::IValidator)(), KeyType> Type;
 
 ACTIVITY_API SPTR(Type) get();
 
-} // namespace registry
-
-} // namespace validator
+} // namespace validator::registry
 
 } // namespace sight::activity

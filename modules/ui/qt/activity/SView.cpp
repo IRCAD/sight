@@ -36,10 +36,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 const core::com::Signals::SignalKeyType s_ACTIVITY_LAUNCHED_SIG = "activityLaunched";
@@ -48,16 +45,15 @@ static const std::string s_BORDER_CONFIG = "border";
 
 //------------------------------------------------------------------------------
 
-SView::SView()
+SView::SView() :
+    m_sigActivityLaunched(newSignal<ActivityLaunchedSignalType>(s_ACTIVITY_LAUNCHED_SIG))
 {
-    m_sigActivityLaunched = newSignal<ActivityLaunchedSignalType>(s_ACTIVITY_LAUNCHED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
 SView::~SView()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -80,16 +76,20 @@ void SView::starting()
 {
     this->sight::ui::base::IGuiContainer::create();
 
-    auto parentContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto parentContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    parentContainer->getQtContainer()->setObjectName(serviceID);
+
+    auto* layout = new QVBoxLayout();
     if(m_border >= 0)
     {
         layout->setContentsMargins(m_border, m_border, m_border, m_border);
     }
 
-    QWidget* widget = new QWidget();
+    auto* widget = new QWidget();
     layout->addWidget(widget);
+    widget->setObjectName(serviceID + "/container");
 
     auto subContainer = sight::ui::qt::container::QtContainer::New();
 
@@ -99,11 +99,11 @@ void SView::starting()
 
     parentContainer->setLayout(layout);
 
-    m_configManager = service::IAppConfigManager::New();
+    m_configManager = service::AppConfigManager::New();
 
     if(!m_mainActivityId.empty())
     {
-        data::ActivitySeries::sptr activity = this->createMainActivity();
+        data::Activity::sptr activity = this->createMainActivity();
         if(activity)
         {
             this->launchActivity(activity);
@@ -136,9 +136,9 @@ void SView::updating()
 
 //------------------------------------------------------------------------------
 
-void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
+void SView::launchActivity(data::Activity::sptr activity)
 {
-    if(this->validateActivity(activitySeries))
+    if(this->validateActivity(activity))
     {
         if(m_configManager->isStarted())
         {
@@ -146,7 +146,7 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
         }
 
         auto [info, replacementMap] = sight::activity::extension::Activity::getDefault()->getInfoAndReplacementMap(
-            *activitySeries,
+            *activity,
             m_parameters
         );
 
@@ -158,7 +158,7 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
             m_configManager->setConfig(info.appConfig.id, replacementMap);
             m_configManager->launch();
 
-            m_sigActivityLaunched->asyncEmit(activitySeries);
+            m_sigActivityLaunched->asyncEmit(activity);
         }
         catch(std::exception& e)
         {
@@ -174,6 +174,4 @@ void SView::launchActivity(data::ActivitySeries::sptr activitySeries)
 
 //------------------------------------------------------------------------------
 
-} // namespace activity
-
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::activity

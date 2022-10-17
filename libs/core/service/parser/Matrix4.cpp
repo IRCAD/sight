@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,9 @@
 
 #include <data/Matrix4.hpp>
 
-namespace sight::service
-{
+#include <cmath>
 
-namespace parser
+namespace sight::service::parser
 {
 
 //------------------------------------------------------------------------------
@@ -53,7 +52,7 @@ void Matrix4::createConfig(core::tools::Object::sptr _obj)
             std::string input = elem->getValue();
             std::istringstream inputString(input);
 
-            double coef;
+            double coef = NAN;
             for(unsigned int k = 0 ; k < 16 ; k++)
             {
                 inputString >> coef;
@@ -65,6 +64,4 @@ void Matrix4::createConfig(core::tools::Object::sptr _obj)
 
 //------------------------------------------------------------------------------
 
-} //namespace parser
-
-} //namespace sight::service
+} // namespace sight::service::parser

@@ -46,14 +46,14 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-BitmapImageReader::BitmapImageReader(io::base::reader::IObjectReader::Key) :
+BitmapImageReader::BitmapImageReader(io::base::reader::IObjectReader::Key /*unused*/) :
     m_job(core::jobs::Observer::New("Bitmap image reader"))
 {
     /* Initialize the available extensions */
     std::vector<std::string> ext;
     BitmapImageReader::getAvailableExtensions(ext);
 
-    if(ext.size() > 0)
+    if(!ext.empty())
     {
         m_availableExtensions = ext.at(0);
         for(std::vector<std::string>::size_type i = 1 ; i < ext.size() ; i++)
@@ -66,8 +66,7 @@ BitmapImageReader::BitmapImageReader(io::base::reader::IObjectReader::Key) :
 //------------------------------------------------------------------------------
 
 BitmapImageReader::~BitmapImageReader()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -87,14 +86,14 @@ void BitmapImageReader::read()
 
     reader->SetFileName(this->getFile().string().c_str());
 
-    using namespace sight::io::vtk::helper;
+    using helper::vtkLambdaCommand;
     vtkSmartPointer<vtkLambdaCommand> progressCallback;
 
     progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
     progressCallback->SetCallback(
-        [&](vtkObject* caller, long unsigned int, void*)
+        [&](vtkObject* caller, std::uint64_t, void*)
         {
-            auto filter = static_cast<vtkGenericDataObjectReader*>(caller);
+            auto* filter = static_cast<vtkGenericDataObjectReader*>(caller);
             m_job->doneWork(static_cast<uint64_t>(filter->GetProgress() * 100.0));
         });
     reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);

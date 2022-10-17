@@ -49,20 +49,18 @@ static const core::com::Signals::SignalKeyType s_CHESSBOARD_FOUND_SIG    = "ches
 
 // ----------------------------------------------------------------------------
 
-SChessBoardDetector::SChessBoardDetector() noexcept
+SChessBoardDetector::SChessBoardDetector() noexcept :
+    m_sigChessboardDetected(newSignal<ChessboardDetectedSignalType>(s_CHESSBOARD_DETECTED_SIG)),
+    m_sigChessboardFound(newSignal<ChessboardFoundSignalType>(s_CHESSBOARD_FOUND_SIG))
 {
-    m_sigChessboardDetected = newSignal<ChessboardDetectedSignalType>(s_CHESSBOARD_DETECTED_SIG);
-    m_sigChessboardFound    = newSignal<ChessboardFoundSignalType>(s_CHESSBOARD_FOUND_SIG);
-
     newSlot(s_RECORD_POINTS_SLOT, &SChessBoardDetector::recordPoints, this);
     newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SChessBoardDetector::updateChessboardSize, this);
 }
 
 // ----------------------------------------------------------------------------
 
-SChessBoardDetector::~SChessBoardDetector() noexcept
-{
-}
+SChessBoardDetector::~SChessBoardDetector() noexcept =
+    default;
 
 // ----------------------------------------------------------------------------
 
@@ -105,7 +103,7 @@ void SChessBoardDetector::updating()
     std::vector<std::thread> detectionJobs;
     for(std::size_t i = 1 ; i < imageGroupSize ; ++i)
     {
-        detectionJobs.push_back(std::thread(&SChessBoardDetector::doDetection, this, i));
+        detectionJobs.emplace_back(&SChessBoardDetector::doDetection, this, i);
     }
 
     // Detection in the first image is done on the service's worker.
@@ -190,9 +188,9 @@ void SChessBoardDetector::updateChessboardSize()
         m_height = preferences.get(m_heightKey, m_height);
         m_scale  = preferences.get(m_scaleKey, m_scale);
 
-        if(m_scale > 1.f)
+        if(m_scale > 1.F)
         {
-            m_scale = 1.f;
+            m_scale = 1.F;
             SIGHT_ERROR("It is pointless to upscale the image for chessboard detection.");
         }
     }

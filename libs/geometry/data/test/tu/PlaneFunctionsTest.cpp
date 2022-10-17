@@ -27,10 +27,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::PlaneFunctionsTest);
 
-namespace sight::geometry::data
-{
-
-namespace ut
+namespace sight::geometry::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -291,6 +288,4 @@ void PlaneFunctionsTest::checkOperator()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::geometry::data
+} // namespace sight::geometry::data::ut

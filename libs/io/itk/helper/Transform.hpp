@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 
 #include <itkMatrix.h>
 
-namespace sight::io::itk
-{
-
-namespace helper
+namespace sight::io::itk::helper
 {
 
 /**
@@ -61,6 +58,4 @@ public:
     );
 };
 
-} // namespace helper
-
-} // namespace sight::io::itk
+} // namespace sight::io::itk::helper

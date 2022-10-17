@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@
 
 #include <ui/base/Preferences.hpp>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 const ILocationDialog::FactoryRegistryKeyType ILocationDialog::REGISTRY_KEY = "::ui::base::dialog::LocationDialog";
@@ -46,36 +43,34 @@ const std::string ILocationDialog::DLG_DEFAULT_DIRECTORY = "DLG_DEFAULT_DIRECTOR
 
 //------------------------------------------------------------------------------
 
-inline static std::string get_frame_key(const std::string& title)
+inline static std::string getFrameKey(const std::string& title)
 {
-    return ILocationDialog::SOFTWARE_UI + "." + title;
+    return std::string(ILocationDialog::SOFTWARE_UI) + "." + title;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string get_file_key(const std::string& title)
+inline static std::string getFileKey(const std::string& title)
 {
-    return get_frame_key(title) + "." + ILocationDialog::DLG_DEFAULT_FILE;
+    return getFrameKey(title) + "." + ILocationDialog::DLG_DEFAULT_FILE;
 }
 
 //------------------------------------------------------------------------------
 
-inline static std::string get_directory_key(const std::string& title)
+inline static std::string getDirectoryKey(const std::string& title)
 {
-    return get_frame_key(title) + "." + ILocationDialog::DLG_DEFAULT_DIRECTORY;
+    return getFrameKey(title) + "." + ILocationDialog::DLG_DEFAULT_DIRECTORY;
 }
 
 //-----------------------------------------------------------------------------
 
 ILocationDialog::ILocationDialog()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 ILocationDialog::~ILocationDialog()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -100,7 +95,7 @@ void ILocationDialog::setDefaultLocation(core::location::ILocation::sptr loc)
 
 //------------------------------------------------------------------------------
 
-const core::location::ILocation::sptr ILocationDialog::getDefaultLocation()
+core::location::ILocation::sptr ILocationDialog::getDefaultLocation()
 {
     core::location::ILocation::sptr location;
 
@@ -108,7 +103,7 @@ const core::location::ILocation::sptr ILocationDialog::getDefaultLocation()
     {
         ui::base::Preferences preferences;
 
-        if(const auto& default_file = preferences.get_optional<std::filesystem::path>(get_file_key(getTitle()));
+        if(const auto& default_file = preferences.get_optional<std::filesystem::path>(getFileKey(getTitle()));
            default_file)
         {
             auto single_file = std::make_shared<core::location::SingleFile>();
@@ -116,7 +111,7 @@ const core::location::ILocation::sptr ILocationDialog::getDefaultLocation()
             location = single_file;
         }
         else if(const auto& default_directory =
-                    preferences.get_optional<std::filesystem::path>(get_directory_key(getTitle())); default_directory)
+                    preferences.get_optional<std::filesystem::path>(getDirectoryKey(getTitle())); default_directory)
         {
             auto single_directory = std::make_shared<core::location::SingleFolder>();
             single_directory->setFolder(*default_directory);
@@ -148,11 +143,11 @@ void ILocationDialog::saveDefaultLocation(core::location::ILocation::sptr loc)
 
             if(auto singleFile = core::location::SingleFile::dynamicCast(loc))
             {
-                preferences.put(get_file_key(getTitle()), singleFile->getFile());
+                preferences.put(getFileKey(getTitle()), singleFile->getFile());
             }
             else if(auto singleDirectory = core::location::SingleFolder::dynamicCast(loc))
             {
-                preferences.put(get_directory_key(getTitle()), singleDirectory->getFolder());
+                preferences.put(getDirectoryKey(getTitle()), singleDirectory->getFolder());
             }
         }
         catch(const ui::base::PreferencesDisabled&)
@@ -164,6 +159,4 @@ void ILocationDialog::saveDefaultLocation(core::location::ILocation::sptr loc)
 
 //-----------------------------------------------------------------------------
 
-} //namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

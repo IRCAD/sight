@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,21 +22,16 @@
 
 #include "filter/dicom/composite/IComposite.hpp"
 
-namespace sight::filter::dicom
-{
-
-namespace composite
+namespace sight::filter::dicom::composite
 {
 
 IComposite::IComposite()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IComposite::~IComposite()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -58,7 +53,7 @@ IComposite::DicomSeriesContainerType IComposite::apply(
     for(const filter::dicom::IFilter::sptr& filter : m_filterContainer)
     {
         DicomSeriesContainerType filtered;
-        // For every serie
+        // For every series
         for(const data::DicomSeries::sptr& s : result)
         {
             DicomSeriesContainerType tempo = filter->apply(s, logger);
@@ -118,7 +113,7 @@ void IComposite::addChild(const filter::dicom::IFilter::sptr& filter)
 
 void IComposite::removeChild(const filter::dicom::IFilter::sptr& filter)
 {
-    FilterContainerType::iterator it = std::find(m_filterContainer.begin(), m_filterContainer.end(), filter);
+    auto it = std::find(m_filterContainer.begin(), m_filterContainer.end(), filter);
     if(it != m_filterContainer.end())
     {
         m_filterContainer.erase(it);
@@ -132,6 +127,4 @@ IComposite::FilterContainerType& IComposite::getChildren()
     return m_filterContainer;
 }
 
-} // namespace composite
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::composite

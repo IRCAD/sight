@@ -33,17 +33,12 @@
 namespace sight::core::memory
 {
 
-namespace stream
-{
-
-namespace in
+namespace stream::in
 {
 
 class IFactory;
 
-}
-
-}
+} // namespace stream::in
 
 /**
  * @brief   Define Base class for Sight buffers
@@ -105,8 +100,14 @@ public:
 
         typedef typename std::conditional_t<std::is_const_v<T>, const void*, void*> BufferType;
 
-        LockBase()  = default;
-        ~LockBase() = default;
+        LockBase() = default;
+        inline ~LockBase()
+        {
+            // Resetting the counter in the destructor **BEFORE** resetting BufferObject shared pointer is required !
+            // Otherwise, the lock count assert in the destruction of the buffer, in
+            // BufferManager::::unregisterBufferImpl() will be triggered.
+            m_count.reset();
+        }
 
         /**
          * @brief Build a lock on object 'bo'
@@ -116,12 +117,13 @@ public:
          * @param bo BufferObject to lock
          */
         LockBase(const SPTR(T)& bo) :
+            m_count(bo->m_count.lock()),
             m_bufferObject(bo)
         {
             SIGHT_ASSERT("Can't lock NULL object", bo);
 
             core::mt::ScopedLock lock(bo->m_lockDumpMutex);
-            m_count = bo->m_count.lock();
+
             if(!m_count)
             {
                 m_count     = bo->m_bufferManager->lockBuffer(&(bo->m_buffer)).get();
@@ -132,7 +134,7 @@ public:
         /**
          * @brief Returns BufferObject's buffer pointer
          */
-        typename LockBase<T>::BufferType getBuffer() const
+        [[nodiscard]] typename LockBase<T>::BufferType getBuffer() const
         {
             return m_bufferObject->m_buffer;
         }
@@ -176,7 +178,7 @@ public:
      *
      * unregister the buffer from the buffer manager.
      */
-    CORE_API virtual ~BufferObject();
+    CORE_API ~BufferObject() override;
 
     /**
      * @brief Buffer allocation
@@ -265,7 +267,7 @@ public:
     /**
      * @brief Returns the number of locks on the BufferObject
      */
-    long lockCount() const
+    std::int64_t lockCount() const
     {
         return m_count.use_count();
     }
@@ -273,7 +275,7 @@ public:
     /**
      * @brief Returns true if the buffer has any lock
      */
-    long isLocked() const
+    bool isLocked() const
     {
         return lockCount() != 0;
     }
@@ -325,9 +327,9 @@ public:
 
 protected:
 
-    core::memory::BufferManager::BufferType m_buffer;
+    core::memory::BufferManager::BufferType m_buffer {nullptr};
 
-    SizeType m_size;
+    SizeType m_size {0};
 
     mutable WeakCounterType m_count;
     mutable core::mt::Mutex m_lockDumpMutex;
@@ -338,4 +340,4 @@ protected:
     core::memory::BufferAllocationPolicy::sptr m_allocPolicy;
 };
 
-} // namespace sight::core
+} // namespace sight::core::memory

@@ -22,14 +22,14 @@ This module contains services for reading and writing VTK related data.
 
 - **SModelSeriesObjWriter**: same as `SModelSeriesWriter`, but limited to `.obj` files.
 
-- **SSeriesDBReader**: reads VTK files and converts them into a `sight::data::SeriesDB`.
+- **SSeriesSetReader**: reads VTK files and converts them into a `sight::data::SeriesSet`.
 
 ## How to use it
 
 ### CMake
 
 ```cmake
-add_dependencies(myTarget 
+add_dependencies(myTarget
     ...
     module_io_vtk
 )

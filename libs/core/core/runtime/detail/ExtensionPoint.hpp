@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
+#include "core/runtime/detail/Extension.hpp"
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/ModuleElement.hpp"
 #include "core/runtime/Runtime.hpp"
@@ -32,6 +33,7 @@
 #include <algorithm>
 #include <filesystem>
 #include <iostream>
+#include <ranges>
 #include <string>
 
 namespace sight::core::runtime
@@ -45,10 +47,9 @@ namespace detail
 namespace io
 {
 
-class ModuleDescriptorReader;
 class Validator;
 
-}
+} // namespace io
 
 /**
  * @brief   Defines the extension point class.
@@ -69,10 +70,17 @@ public:
      *                      validate extensions contributed to the point.
      */
     ExtensionPoint(
-        const std::shared_ptr<Module> module,
+        const std::shared_ptr<core::runtime::Module> module,
         const std::string& id,
-        const std::filesystem::path& schema
+        std::filesystem::path schema
     );
+
+    /**
+     * @brief   Assignment operator.
+     *
+     * @remark  Assignment is forbidden for this class.
+     */
+    void operator=(const ExtensionPoint&) noexcept = delete;
 
     /**
      * @brief   Retrieves all configuration elements contributed by extensions
@@ -80,7 +88,7 @@ public:
      *
      * @return  a container with all found configuration elements
      */
-    const ConfigurationElementContainer getAllConfigurationElements() const
+    ConfigurationElementContainer getAllConfigurationElements() const
     {
         typedef std::back_insert_iterator<ConfigurationElementContainer> Inserter;
 
@@ -102,15 +110,9 @@ public:
     template<typename OutputIterator>
     void getAllConfigurationElements(OutputIterator& output) const
     {
-        typedef std::vector<std::shared_ptr<Extension> > ExtensionContainer;
-
-        // Retrieves all connected extensions.
-        auto extensions = getAllExtensions();
-
         // Walk through the collected extensions to extract configuration elements.
-        for(ExtensionContainer::const_iterator i = extensions.begin() ; i != extensions.end() ; ++i)
+        for(auto extension : getAllExtensions())
         {
-            std::shared_ptr<Extension> extension(*i);
             if(extension->isEnabled())
             {
                 std::copy(extension->begin(), extension->end(), output);
@@ -129,19 +131,19 @@ public:
      *
      * @return  output  shared pointers to found extensions
      */
-    std::vector<std::shared_ptr<Extension> > getAllExtensions() const
+    std::vector<std::shared_ptr<core::runtime::Extension> > getAllExtensions() const
     {
-        std::vector<std::shared_ptr<Extension> > container;
+        std::vector<std::shared_ptr<core::runtime::Extension> > container;
         Runtime& runtime = Runtime::get();
 
-        for(auto extension : runtime.getExtensions())
-        {
-            if(extension->getPoint() == m_id && extension->isEnabled() == true
-               && extension->validate() == Extension::Valid)
-            {
-                container.push_back(extension);
-            }
-        }
+        std::ranges::copy_if(
+            runtime.getExtensions(),
+            std::back_inserter(container),
+            [this](const auto& e)
+                {
+                    const auto extension = std::dynamic_pointer_cast<detail::Extension>(e);
+                    return extension->getPoint() == m_id && extension->isEnabled() && extension->validate() == Extension::Valid;
+                });
 
         return container;
     }
@@ -167,13 +169,6 @@ private:
     const std::filesystem::path m_schema; ///< a path to the XML schema used to validate
     // contributed extensions
     mutable std::shared_ptr<io::Validator> m_validator; ///< a shared pointer to the extension validator
-
-    /**
-     * @brief   Assignment operator.
-     *
-     * @remark  Assignment is forbidden for this class.
-     */
-    void operator=(const ExtensionPoint&) noexcept;
 };
 
 } // namespace detail

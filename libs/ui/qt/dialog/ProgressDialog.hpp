@@ -42,10 +42,7 @@ QT_BEGIN_NAMESPACE
 class QProgressDialog;
 QT_END_NAMESPACE
 
-namespace sight::ui::qt
-{
-
-namespace dialog
+namespace sight::ui::qt::dialog
 {
 
 /**
@@ -69,7 +66,7 @@ public:
         const std::string& message = std::string(86, ' ')
     );
 
-    UI_QT_API virtual ~ProgressDialog();
+    UI_QT_API ~ProgressDialog() override;
 
     UI_QT_API void operator()(float percent, std::string msg) override;
 
@@ -95,6 +92,4 @@ protected:
     QPointer<QMainWindow> m_mainWindow;
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::dialog

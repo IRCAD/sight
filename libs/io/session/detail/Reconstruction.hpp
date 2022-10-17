@@ -29,10 +29,7 @@
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Reconstruction
+namespace sight::io::session::detail::Reconstruction
 {
 
 constexpr static auto s_IsVisible {"IsVisible"};
@@ -46,14 +43,14 @@ constexpr static auto s_ComputedMaskVolume {"ComputedMaskVolume"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto reconstruction = Helper::safeCast<data::Reconstruction>(object);
+    const auto reconstruction = Helper::safe_cast<data::Reconstruction>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Reconstruction>(tree, 1);
@@ -73,15 +70,15 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Reconstruction::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto reconstruction = Helper::safeCast<data::Reconstruction>(object);
+    auto reconstruction = Helper::cast_or_create<data::Reconstruction>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Reconstruction>(tree, 0, 1);
@@ -100,6 +97,4 @@ inline static data::Reconstruction::sptr deserialize(
     return reconstruction;
 }
 
-} // namespace detail::Reconstruction
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Reconstruction

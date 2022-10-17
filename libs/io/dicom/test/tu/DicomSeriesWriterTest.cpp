@@ -25,11 +25,10 @@
 #include <core/tools/System.hpp>
 
 #include <data/DicomSeries.hpp>
-#include <data/SeriesDB.hpp>
 
 #include <io/dicom/helper/DicomAnonymizer.hpp>
 #include <io/dicom/helper/DicomSeriesWriter.hpp>
-#include <io/dicom/reader/SeriesDB.hpp>
+#include <io/dicom/reader/SeriesSet.hpp>
 #include <io/zip/WriteDirArchive.hpp>
 
 #include <utest/Filter.hpp>
@@ -41,10 +40,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::DicomSeriesWriterTest);
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 //------------------------------------------------------------------------------
@@ -56,13 +52,11 @@ void DicomSeriesWriterTest::setUp()
         std::cout << std::endl << "Ignoring slow " << std::endl;
         return;
     }
-    else
-    {
-        std::cout << std::endl << "Executing slow tests.." << std::endl;
-    }
+
+    std::cout << std::endl << "Executing slow tests.." << std::endl;
 
     // Set up context before running a test.
-    data::SeriesDB::sptr srcSeriesDB    = data::SeriesDB::New();
+    auto src_series_set                 = data::SeriesSet::New();
     const std::filesystem::path srcPath = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB/01-CT-DICOM_LIVER";
 
     CPPUNIT_ASSERT_MESSAGE(
@@ -71,14 +65,13 @@ void DicomSeriesWriterTest::setUp()
     );
 
     // Read source Dicom
-    io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
-    reader->setObject(srcSeriesDB);
+    auto reader = io::dicom::reader::SeriesSet::New();
+    reader->setObject(src_series_set);
     reader->setFolder(srcPath);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), srcSeriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), src_series_set->size());
 
-    m_srcDicomSeries =
-        data::DicomSeries::dynamicCast(srcSeriesDB->getContainer().front());
+    m_srcDicomSeries = data::DicomSeries::dynamicCast(src_series_set->front());
 }
 
 //------------------------------------------------------------------------------
@@ -97,22 +90,23 @@ void DicomSeriesWriterTest::checkDicomSeries(const std::filesystem::path& p, boo
         return;
     }
 
-    data::SeriesDB::sptr destSeriesDB = data::SeriesDB::New();
+    auto dest_series_set = data::SeriesSet::New();
 
-    io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
-    reader->setObject(destSeriesDB);
+    auto reader = io::dicom::reader::SeriesSet::New();
+    reader->setObject(dest_series_set);
     reader->setFolder(p);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), destSeriesDB->size());
-    data::DicomSeries::sptr destDicomSeries =
-        data::DicomSeries::dynamicCast(destSeriesDB->getContainer().front());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), dest_series_set->size());
+    auto destDicomSeries = data::DicomSeries::dynamicCast(dest_series_set->front());
 
     // Compare Source and Destination Series
     if(anonymized)
     {
-        destDicomSeries->setInstanceUID(m_srcDicomSeries->getInstanceUID());
-        destDicomSeries->setStudy(m_srcDicomSeries->getStudy());
-        destDicomSeries->setPatient(m_srcDicomSeries->getPatient());
+        destDicomSeries->setSeriesInstanceUID(m_srcDicomSeries->getSeriesInstanceUID());
+        destDicomSeries->copyPatientModule(m_srcDicomSeries);
+        destDicomSeries->copyGeneralStudyModule(m_srcDicomSeries);
+        destDicomSeries->copyPatientStudyModule(m_srcDicomSeries);
+        destDicomSeries->copyGeneralEquipmentModule(m_srcDicomSeries);
     }
 
     destDicomSeries->setDicomContainer(m_srcDicomSeries->getDicomContainer());
@@ -201,6 +195,4 @@ void DicomSeriesWriterTest::writeReadDirArchiveTest()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

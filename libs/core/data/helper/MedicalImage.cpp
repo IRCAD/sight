@@ -22,27 +22,22 @@
 
 #include "data/helper/MedicalImage.hpp"
 
-#include "data/helper/Composite.hpp"
 #include "data/helper/Field.hpp"
 
 #include <data/Boolean.hpp>
 #include <data/Composite.hpp>
-#include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 #include <data/String.hpp>
-#include <data/TransferFunction.hpp>
 #include <data/Vector.hpp>
 
+#include <cmath>
 #include <numeric>
 #include <utility> // std::pair
 
-namespace sight::data
-{
-
-namespace helper
+namespace sight::data::helper
 {
 
 namespace id
@@ -58,7 +53,7 @@ static constexpr std::string_view distance_visibility  = "ShowDistances";
 static constexpr std::string_view transferFunction     = "m_transferFunctionCompositeId";
 static constexpr std::string_view landmarks_visibility = "ShowLandmarks";
 
-}
+} // namespace id
 
 namespace MedicalImage
 {
@@ -105,7 +100,7 @@ bool checkImageSliceIndex(data::Image::sptr _pImg)
     const auto frontalIdx  = getSliceIndex(*_pImg, orientation_t::FRONTAL);
     const auto sagittalIdx = getSliceIndex(*_pImg, orientation_t::SAGITTAL);
 
-    std::int64_t index_values[3] = {0, 0, 0};
+    std::array<std::int64_t, 3> index_values = {0, 0, 0};
 
     // Check if values are out of bounds
     if(!axialIdx.has_value()
@@ -147,61 +142,44 @@ bool checkImageSliceIndex(data::Image::sptr _pImg)
 
 bool isBufNull(const data::Image::BufferType* buf, const unsigned int len)
 {
-    bool isNull;
-    const data::Image::BufferType* buffer = static_cast<const data::Image::BufferType*>(buf);
+    bool isNull        = false;
+    const auto* buffer = static_cast<const data::Image::BufferType*>(buf);
     isNull = 0 == std::accumulate(
         buffer,
         buffer + len,
         0,
-        std::bit_or<data::Image::BufferType>()
+        std::bit_or<>()
     );
     return isNull;
 }
 
 //------------------------------------------------------------------------------
 
-bool checkTransferFunctionPool(const data::Image::sptr& image)
+bool updateDefaultTransferFunction(data::Image& image)
 {
     bool fieldIsCreated = false;
-    const std::string poolFieldName(id::transferFunction);
-    data::Composite::sptr tfPool;
 
-    tfPool = image->getField<data::Composite>(poolFieldName);
-    // Transfer functions
-    if(!tfPool)
+    auto tf = image.getField<data::TransferFunction>(std::string(id::transferFunction));
+    if(tf == nullptr)
     {
-        tfPool = data::Composite::New();
-
-        // Set in selected image
-        data::helper::Field fieldHelper(image);
-        fieldHelper.setField(poolFieldName, tfPool);
-        fieldHelper.notify();
-
-        // TF pool is modified
+        tf = data::TransferFunction::createDefaultTF();
+        image.setField(std::string(id::transferFunction), tf);
         fieldIsCreated = true;
     }
 
-    const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
-    if(tfPool->find(defaultTFName) == tfPool->end())
+    if(const auto& windowWidths = image.getWindowWidth(), windowCenters = image.getWindowCenter();
+       !windowWidths.empty() && !windowCenters.empty() && windowWidths.front() != 0.0 && windowCenters.front() != 0.0)
     {
-        data::TransferFunction::sptr tf = data::TransferFunction::createDefaultTF();
-        if(image->getWindowWidth() != 0.)
-        {
-            tf->setWindow(image->getWindowWidth());
-            tf->setLevel(image->getWindowCenter());
-        }
-        else if(checkImageValidity(image))
-        {
-            double min, max;
-            getMinMax(image, min, max);
-            data::TransferFunction::TFValuePairType wlMinMax(min, max);
-            tf->setWLMinMax(wlMinMax);
-        }
-
-        // Set in TFPool
-        data::helper::Composite compositeHelper(tfPool);
-        compositeHelper.add(defaultTFName, tf);
-        compositeHelper.notify();
+        tf->setWindow(windowWidths.front());
+        tf->setLevel(windowCenters.front());
+    }
+    else if(checkImageValidity(image))
+    {
+        double min = NAN;
+        double max = NAN;
+        getMinMax(image.getSptr(), min, max);
+        data::TransferFunction::min_max_t wlMinMax(min, max);
+        tf->setWindowMinMax(wlMinMax);
     }
 
     return fieldIsCreated;
@@ -372,24 +350,14 @@ void setLandmarksVisibility(data::Image& _image, bool _visibility)
 
 //------------------------------------------------------------------------------
 
-data::Composite::sptr getTransferFunction(const data::Image& _image)
+data::TransferFunction::sptr getTransferFunction(const data::Image& _image)
 {
-    const auto field = _image.getField(std::string(id::transferFunction));
-    if(field)
-    {
-        const auto composite = _image.getField<data::Composite>(std::string(id::transferFunction));
-        if(composite)
-        {
-            return composite;
-        }
-    }
-
-    return nullptr;
+    return _image.getField<data::TransferFunction>(std::string(id::transferFunction));
 }
 
 //------------------------------------------------------------------------------
 
-void setTransferFunction(data::Image& _image, const data::Composite::sptr& _cmp)
+void setTransferFunction(data::Image& _image, const data::TransferFunction::sptr& _cmp)
 {
     _image.setField(std::string(id::transferFunction), _cmp);
 }
@@ -398,6 +366,4 @@ void setTransferFunction(data::Image& _image, const data::Composite::sptr& _cmp)
 
 } //namespace MedicalImage
 
-} //namespace helper
-
-} //namespace sight::data
+} // namespace sight::data::helper

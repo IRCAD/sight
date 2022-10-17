@@ -48,8 +48,7 @@ static const core::com::Slots::SlotKeyType s_WRITE        = "write";
 
 //------------------------------------------------------------------------------
 
-SMatrixWriter::SMatrixWriter() noexcept :
-    m_isRecording(false)
+SMatrixWriter::SMatrixWriter() noexcept
 {
     newSlot(s_SAVE_MATRIX, &SMatrixWriter::saveMatrix, this);
     newSlot(s_START_RECORD, &SMatrixWriter::startRecord, this);
@@ -166,11 +165,11 @@ void SMatrixWriter::write(core::HiResClock::HiResClockType timestamp)
             if(buffer)
             {
                 timestamp = object->getTimestamp();
-                const std::size_t time = static_cast<std::size_t>(timestamp);
+                const auto time = static_cast<std::size_t>(timestamp);
                 m_filestream << time << ";";
                 for(unsigned int i = 0 ; i < numberOfMat ; ++i)
                 {
-                    const float* values = buffer->getElement(i);
+                    const std::array<float, 16> values = buffer->getElement(i);
 
                     for(unsigned int v = 0 ; v < 16 ; ++v)
                     {
@@ -201,6 +200,13 @@ void SMatrixWriter::startRecord()
 
     if(this->hasLocationDefined())
     {
+        // Make sure the parent path exists
+        const std::filesystem::path dirname = this->getFile().parent_path();
+        if(!std::filesystem::exists(dirname))
+        {
+            std::filesystem::create_directories(dirname);
+        }
+
         if(!m_filestream.is_open())
         {
             m_filestream.open(this->getFile().string(), std::ofstream::out | openMode);
@@ -212,7 +218,7 @@ void SMatrixWriter::startRecord()
         {
             SIGHT_WARN(
                 "The file " + this->getFile().string()
-                + " can't be open. Please check if it is already open in another program."
+                + " can't be opened. Please check if it is already open in another program."
             );
         }
     }

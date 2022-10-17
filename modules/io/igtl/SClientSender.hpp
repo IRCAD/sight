@@ -62,7 +62,7 @@ public:
     MODULE_IO_IGTL_API SClientSender();
 
     /// Destructor
-    MODULE_IO_IGTL_API virtual ~SClientSender();
+    MODULE_IO_IGTL_API ~SClientSender() override;
 
 protected:
 
@@ -87,7 +87,7 @@ private:
      * @param[in] obj obj to send
      * @param[in] index index of the object in the group
      */
-    void sendObject(const data::Object::csptr& obj, const std::size_t index) override;
+    void sendObject(const data::Object::csptr& obj, std::size_t index) override;
 
     /// client socket
     sight::io::igtl::Client m_client;

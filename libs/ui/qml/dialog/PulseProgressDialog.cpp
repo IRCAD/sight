@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,28 +35,24 @@
 #include <QtConcurrent>
 #include <QtCore>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qml::dialog::PulseProgressDialog,
     sight::ui::base::dialog::IPulseProgressDialog::REGISTRY_KEY
 );
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 //------------------------------------------------------------------------------
 
-PulseProgressDialog::PulseProgressDialog(ui::base::GuiBaseObject::Key)
+PulseProgressDialog::PulseProgressDialog(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 PulseProgressDialog::~PulseProgressDialog()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -94,7 +90,7 @@ void PulseProgressDialog::show()
     QFutureWatcher<void> futureWatcher;
 
     window->setProperty("title", m_title);
-    QObject* dialog = window->findChild<QObject*>("dialog");
+    auto* dialog = window->findChild<QObject*>("dialog");
     SIGHT_ASSERT("The dialog is not found inside the window", dialog);
     Q_EMIT messageChanged();
     // Start the computation.
@@ -113,18 +109,11 @@ void PulseProgressDialog::show()
 
 //------------------------------------------------------------------------------
 
-bool PulseProgressDialog::eventFilter(QObject*, QEvent* event)
+bool PulseProgressDialog::eventFilter(QObject* /*watched*/, QEvent* event)
 {
-    if(event->type() == QEvent::Shortcut || event->type() == QEvent::ShortcutOverride)
-    {
-        return true;
-    }
-
-    return false;
+    return event->type() == QEvent::Shortcut || event->type() == QEvent::ShortcutOverride;
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

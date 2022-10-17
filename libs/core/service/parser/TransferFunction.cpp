@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 #include <data/Color.hpp>
 #include <data/TransferFunction.hpp>
 
-namespace sight::service
-{
-
-namespace parser
+namespace sight::service::parser
 {
 
 // ------------------------------------------------------------------------------
@@ -50,7 +47,7 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
     SIGHT_ASSERT("TransferFunction not instanced", tf);
 
     const ConfigType config = core::runtime::Convert::toPropertyTree(m_cfg).get_child("object");
-    if(config.count("colors"))
+    if(config.count("colors") != 0U)
     {
         const ConfigType colorCfg = config.get_child("colors");
 
@@ -64,35 +61,39 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
         {
             const auto stepsConfig = colorCfg.equal_range("step");
 
-            for(auto itStepCfg = stepsConfig.first ; itStepCfg != stepsConfig.second ; ++itStepCfg)
-            {
-                const double value         = itStepCfg->second.get<double>("<xmlattr>.value");
-                const std::string strColor = itStepCfg->second.get<std::string>("<xmlattr>.color");
-
-                data::Color::sptr newColor = data::Color::New();
-                newColor->setRGBA(strColor);
-
-                const data::TransferFunction::TFColor color(newColor->red(), newColor->green(),
-                                                            newColor->blue(), newColor->alpha());
-                tf->addTFColor(value, color);
-            }
-
-            tf->setWLMinMax(tf->getMinMaxTFValues());
-
-            const bool isClamped = colorCfg.get<bool>("<xmlattr>.isClamped", true);
-            tf->setIsClamped(isClamped);
-
+            auto tfData            = tf->pieces().emplace_back(data::TransferFunctionPiece::New());
             const std::string name = config.get<std::string>("name", "");
             if(!name.empty())
             {
                 tf->setName(name);
             }
+
+            for(auto itStepCfg = stepsConfig.first ; itStepCfg != stepsConfig.second ; ++itStepCfg)
+            {
+                const auto value    = itStepCfg->second.get<double>("<xmlattr>.value");
+                const auto strColor = itStepCfg->second.get<std::string>("<xmlattr>.color");
+
+                data::Color::sptr newColor = data::Color::New();
+                newColor->setRGBA(strColor);
+
+                const data::TransferFunction::color_t color(newColor->red(), newColor->green(),
+                                                            newColor->blue(), newColor->alpha());
+                (*tfData)[value] = color;
+            }
+
+            tfData->setWindowMinMax(tfData->minMax());
+
+            const bool isClamped = colorCfg.get<bool>("<xmlattr>.isClamped", true);
+            tfData->setClamped(isClamped);
         }
+    }
+    else
+    {
+        data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
+        tf->deepCopy(defaultTf);
     }
 }
 
 // ------------------------------------------------------------------------------
 
-} // namespace parser
-
-} // namespace sight::service
+} // namespace sight::service::parser

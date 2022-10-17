@@ -31,10 +31,7 @@
 #include <QMessageBox>
 #include <QTimer>
 
-namespace sight::ui::qt
-{
-
-namespace dialog
+namespace sight::ui::qt::dialog
 {
 
 //------------------------------------------------------------------------------
@@ -44,16 +41,11 @@ bool checkSizeOfMessage(const QString& _message, const QFontMetrics& _fm, const 
 {
     const auto rect = _fm.boundingRect(
         QRect(0, 0, _acceptable_size.width(), _acceptable_size.height()),
-        Qt::TextWordWrap | Qt::AlignHCenter | Qt::AlignVCenter,
+        int(Qt::TextWordWrap) | Qt::AlignHCenter | Qt::AlignVCenter,
         _message
     );
 
-    if(rect.width() >= _acceptable_size.width() || rect.height() >= _acceptable_size.height())
-    {
-        return false;
-    }
-
-    return true;
+    return !(rect.width() >= _acceptable_size.width() || rect.height() >= _acceptable_size.height());
 }
 
 //------------------------------------------------------------------------------
@@ -84,15 +76,14 @@ std::size_t truncMessageToFit(const std::string& _message, const QFontMetrics& _
 
 //------------------------------------------------------------------------------
 
-NotificationDialog::NotificationDialog(ui::base::GuiBaseObject::Key)
+NotificationDialog::NotificationDialog(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 NotificationDialog::~NotificationDialog()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -102,7 +93,7 @@ void NotificationDialog::show()
     m_parent = qApp->activeWindow();
 
     // If the active window is a slide bar, we need to retrieve the native parent.
-    if(m_parent && m_parent->objectName() == "SlideBar")
+    if((m_parent != nullptr) && m_parent->objectName() == "SlideBar")
     {
         m_parent = m_parent->nativeParentWidget();
     }
@@ -117,7 +108,7 @@ void NotificationDialog::show()
     }
 
     // If there is no parent here, we get the top one.
-    if(!m_parent)
+    if(m_parent == nullptr)
     {
         SIGHT_ERROR("Notification ignored, no Active Window are found(Focus may be lost).");
         return;
@@ -189,8 +180,8 @@ void NotificationDialog::show()
     }
 
     // Fade in effect.
-    QGraphicsOpacityEffect* const effect = new QGraphicsOpacityEffect();
-    QPropertyAnimation* const a          = new QPropertyAnimation(effect, "opacity");
+    auto* const effect = new QGraphicsOpacityEffect();
+    auto* const a      = new QPropertyAnimation(effect, "opacity");
     a->setDuration(200); // In milliseconds
     a->setStartValue(0); // Full transparent.
     a->setEndValue(0.9); // 90% of opacity, to see through the popup.
@@ -215,7 +206,7 @@ void NotificationDialog::show()
     m_parent->installEventFilter(m_msgContainer);
 
     // Gives it a layout with the clickable label.
-    QBoxLayout* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
+    auto* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
     layout->setSpacing(0);
     layout->setContentsMargins(0, 0, 0, 0);
     m_msgContainer->setLayout(layout);
@@ -233,7 +224,7 @@ void NotificationDialog::show()
             icon = QMessageBox::Information;
         }
 
-        QMessageBox* full_message_box = new QMessageBox(
+        auto* full_message_box = new QMessageBox(
             icon,
             "Read more ...",
             QString::fromStdString(m_fullMessage),
@@ -249,13 +240,13 @@ void NotificationDialog::show()
     QObject::connect(
         m_msgBox,
         &ClickableQLabel::destroyed,
-        [ = ]()
+        [ =, this]()
+        {
+            if(m_closedCallBack)
             {
-                if(m_closedCallBack)
-                {
-                    m_closedCallBack();
-                }
-            });
+                m_closedCallBack();
+            }
+        });
 
     // Displays it.
     m_msgContainer->show();
@@ -271,7 +262,7 @@ void NotificationDialog::show()
 
 bool NotificationDialog::isVisible() const
 {
-    if(!m_msgBox)
+    if(m_msgBox == nullptr)
     {
         return false;
     }
@@ -283,7 +274,7 @@ bool NotificationDialog::isVisible() const
 
 void NotificationDialog::close() const
 {
-    if(m_msgBox)
+    if(m_msgBox != nullptr)
     {
         // Closing after a fade out effect.
         m_msgBox->fadeout();
@@ -294,7 +285,7 @@ void NotificationDialog::close() const
 
 void NotificationDialog::moveDown()
 {
-    if(m_msgContainer && m_index > 0)
+    if((m_msgContainer != nullptr) && m_index > 0)
     {
         --m_index;
         auto position = this->computePosition();
@@ -310,102 +301,102 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
     const int margin = 5;
     if(m_position == Position::CENTERED)
     {
-        position = [ = ](QWidget* _parent) -> QPoint
+        position = [*this](QWidget* _parent) -> QPoint
                    {
                        const auto parentPosCenter = _parent->mapToGlobal(_parent->rect().center());
 
-                       return QPoint(
+                       return {
                            parentPosCenter.x() - static_cast<int>(m_size[0] / 2),
                            parentPosCenter.y() - static_cast<int>(m_size[1] / 2)
-                       );
+                       };
                    };
     }
     else if(m_position == Position::CENTERED_TOP)
     {
-        position = [ = ](QWidget* _parent) -> QPoint
+        position = [*this](QWidget* _parent) -> QPoint
                    {
                        const int parentX = _parent->mapToGlobal(_parent->rect().center()).x();
                        const int parentY = _parent->mapToGlobal(_parent->rect().topLeft()).y();
                        const int height  = static_cast<int>(m_size[1]) + margin;
 
-                       return QPoint(
+                       return {
                            parentX - static_cast<int>(m_size[0] / 2),
                            parentY + margin + (height * static_cast<int>(m_index))
-                       );
+                       };
                    };
     }
     else if(m_position == Position::CENTERED_BOTTOM)
     {
-        position = [ = ](QWidget* _parent) -> QPoint
+        position = [*this](QWidget* _parent) -> QPoint
                    {
                        const int parentX = _parent->mapToGlobal(_parent->rect().center()).x();
                        const int parentY = _parent->mapToGlobal(_parent->rect().bottomLeft()).y();
                        const int height  = static_cast<int>(m_size[1]) + margin;
 
-                       return QPoint(
+                       return {
                            parentX - static_cast<int>(m_size[0] / 2),
                            parentY - margin - (height * (static_cast<int>(m_index) + 1))
-                       );
+                       };
                    };
     }
     else if(m_position == Position::TOP_LEFT)
     {
-        position = [ = ](QWidget* _parent) -> QPoint
+        position = [*this](QWidget* _parent) -> QPoint
                    {
                        const auto parrentTopLeft = _parent->mapToGlobal(_parent->rect().topLeft());
                        const int parentX         = parrentTopLeft.x();
                        const int parentY         = parrentTopLeft.y();
                        const int height          = static_cast<int>(m_size[1]) + margin;
 
-                       return QPoint(
+                       return {
                            parentX + margin,
                            parentY + margin + (height * static_cast<int>(m_index))
-                       );
+                       };
                    };
     }
     else if(m_position == Position::TOP_RIGHT)
     {
-        position = [ = ](QWidget* _parent) -> QPoint
+        position = [*this](QWidget* _parent) -> QPoint
                    {
                        const auto parrentTopRight = _parent->mapToGlobal(_parent->rect().topRight());
                        const int parentX          = parrentTopRight.x();
                        const int parentY          = parrentTopRight.y();
                        const int height           = static_cast<int>(m_size[1]) + margin;
 
-                       return QPoint(
+                       return {
                            parentX - margin - static_cast<int>(m_size[0]),
                            parentY + margin + (height * static_cast<int>(m_index))
-                       );
+                       };
                    };
     }
     else if(m_position == Position::BOTTOM_LEFT)
     {
-        position = [ = ](QWidget* _parent) -> QPoint
+        position = [*this](QWidget* _parent) -> QPoint
                    {
                        const auto parrentBottomLeft = _parent->mapToGlobal(_parent->rect().bottomLeft());
                        const int parentX            = parrentBottomLeft.x();
                        const int parentY            = parrentBottomLeft.y();
                        const int height             = static_cast<int>(m_size[1]) + margin;
 
-                       return QPoint(
+                       return {
                            parentX + margin,
                            parentY - (height * (static_cast<int>(m_index) + 1))
-                       );
+                       };
                    };
     }
     else if(m_position == Position::BOTTOM_RIGHT)
     {
-        position = [ = ](QWidget* _parent) -> QPoint
+        position = [*this](QWidget* _parent) -> QPoint
                    {
                        const auto parrentBottomRight = _parent->mapToGlobal(_parent->rect().bottomRight());
                        const int parentX             = parrentBottomRight.x();
                        const int parentY             = parrentBottomRight.y();
                        const int height              = static_cast<int>(m_size[1]) + margin;
 
-                       return QPoint(
+                       return {
                            parentX - margin - static_cast<int>(m_size[0]),
                            parentY - (height * (static_cast<int>(m_index) + 1))
-                       );
+                       };
                    };
     }
 
@@ -414,6 +405,4 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog.
-
-} // namespace sight::ui::qt.
+} // namespace sight::ui::qt::dialog

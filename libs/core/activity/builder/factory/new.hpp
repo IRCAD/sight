@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@ namespace sight::activity
 
 class IBuilder;
 
-namespace builder
-{
-
-namespace factory
+namespace builder::factory
 {
 
 template<class CLASSNAME>
@@ -51,8 +48,7 @@ template<typename CLASSNAME>
 friend SPTR(CLASSNAME) activity::builder::factory::New();
 
 Key()
-{
-}
+= default;
 };
 
 ACTIVITY_API SPTR(activity::IBuilder) New(const activity::builder::registry::KeyType& classname);
@@ -64,8 +60,6 @@ SPTR(CLASSNAME)  New()
     return builder;
 }
 
-} // namespace factory
-
-} // namespace builder
+} // namespace builder::factory
 
 } // namespace sight::activity

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,10 +34,7 @@
 #include <filesystem>
 #include <functional>
 
-namespace sight::io::base
-{
-
-namespace reader
+namespace sight::io::base::reader
 {
 
 /**
@@ -53,7 +50,7 @@ class IO_BASE_CLASS_API IObjectReader : public core::BaseObject
 {
 public:
 
-    SIGHT_DECLARE_CLASS(IObjectReader);
+    SIGHT_DECLARE_CLASS(IObjectReader, core::BaseObject);
 
     typedef std::function<void (std::uint64_t /*progress*/)> ProgressCallback;
     typedef std::function<void ()> CancelCallback;
@@ -105,7 +102,7 @@ public:
     /**
      * @brief Requests reader abortion.
      */
-    IO_BASE_API void cancel();
+    IO_BASE_API void cancel() const;
 
     /// Returns the internal job
     IO_BASE_API virtual SPTR(core::jobs::IJob) getJob() const
@@ -119,7 +116,7 @@ protected:
     IO_BASE_API IObjectReader();
 
     /// Destructor. Does nothing.
-    IO_BASE_API virtual ~IObjectReader();
+    IO_BASE_API ~IObjectReader() override;
 
     /**
      * @brief Object result of reading process.
@@ -129,6 +126,4 @@ protected:
     core::tools::Object::wptr m_object;
 };
 
-} // namespace reader
-
-} // namespace sight::io::base
+} // namespace sight::io::base::reader

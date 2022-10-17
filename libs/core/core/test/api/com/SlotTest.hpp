@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::com
-{
-
-namespace ut
+namespace sight::core::com::ut
 {
 
 class SlotTest : public CPPUNIT_NS::TestFixture
@@ -41,24 +38,26 @@ CPPUNIT_TEST(asyncTest);
 CPPUNIT_TEST(slotBaseTest);
 CPPUNIT_TEST(exceptionTest);
 CPPUNIT_TEST(workerSwapTest);
+CPPUNIT_TEST(sloppinessTest);
+CPPUNIT_TEST(noWorkerTest);
 
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void buildTest();
-    void runTest();
-    void callTest();
-    void asyncTest();
-    void slotBaseTest();
-    void exceptionTest();
-    void workerSwapTest();
+    static void buildTest();
+    static void runTest();
+    static void callTest();
+    static void asyncTest();
+    static void slotBaseTest();
+    static void exceptionTest();
+    static void workerSwapTest();
+    static void sloppinessTest();
+    static void noWorkerTest();
 };
 
-} //namespace ut
-
-} //namespace sight::core::com
+} // namespace sight::core::com::ut

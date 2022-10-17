@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,15 +30,11 @@
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 
-#include <boost/algorithm/string/classification.hpp>
-#include <boost/algorithm/string/split.hpp>
+#include <boost/algorithm/string.hpp>
 
 #include <regex>
 
-namespace sight::service
-{
-
-namespace extension
+namespace sight::service::extension
 {
 
 AppConfig::sptr AppConfig::s_currentAppConfig = AppConfig::New();
@@ -50,11 +46,12 @@ AppConfig::UidDefinitionType AppConfig::s_uidDefinitionDictionary = {{"object", 
     {"service", "uid"},
     {"view", "sid"},
     {"view", "wid"},
+    {"editor", "wid"},
     {"slideView", "wid"},
     {"connect", "channel"},
     {"menuItem", "sid"},
 };
-static const std::regex s_isVariable("\\$\\{.*\\}.*");
+static const std::regex s_isVariable(R"(\$\{.*\}.*)");
 
 //-----------------------------------------------------------------------------
 
@@ -66,8 +63,7 @@ AppConfig::sptr AppConfig::getDefault()
 //-----------------------------------------------------------------------------
 
 AppConfig::~AppConfig()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -80,7 +76,7 @@ void AppConfig::parseBundleInformation()
         std::string configId = ext->findConfigurationElement("id")->getValue();
 
         // Get group
-        std::string group = "";
+        std::string group;
         if(ext->hasConfigurationElement("group"))
         {
             group = ext->findConfigurationElement("group")->getValue();
@@ -98,7 +94,7 @@ void AppConfig::parseBundleInformation()
         {
             core::runtime::ConfigurationElement::csptr parametersConfig = ext->findConfigurationElement("parameters");
             core::runtime::ConfigurationElement::Container elements     = parametersConfig->getElements();
-            for(core::runtime::ConfigurationElement::sptr paramConfig : elements)
+            for(const core::runtime::ConfigurationElement::sptr& paramConfig : elements)
             {
                 std::string name = paramConfig->getExistingAttributeValue("name");
 
@@ -156,8 +152,7 @@ void AppConfig::addAppInfo(
 //-----------------------------------------------------------------------------
 
 AppConfig::AppConfig()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -177,7 +172,7 @@ core::runtime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig(
 {
     core::mt::ReadLock lock(m_registryMutex);
     // Get config template
-    Registry::const_iterator iter = m_reg.find(configId);
+    auto iter = m_reg.find(configId);
     SIGHT_ASSERT(
         "The id " << configId << " is not found in the application configuration registry",
         iter != m_reg.end()
@@ -189,10 +184,10 @@ core::runtime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig(
     FieldAdaptorType fields;
     AppInfo::ParametersType parameters = iter->second->parameters;
 
-    for(AppInfo::ParametersType::value_type param : parameters)
+    for(const AppInfo::ParametersType::value_type& param : parameters)
     {
-        FieldAdaptorType::const_iterator iterField = fieldAdaptors.find(param.first);
-        const std::string key                      = "\\$\\{" + param.first + "\\}";
+        auto iterField        = fieldAdaptors.find(param.first);
+        const std::string key = "\\$\\{" + param.first + "\\}";
         if(iterField != fieldAdaptors.end())
         {
             fields[key] = iterField->second;
@@ -213,12 +208,17 @@ core::runtime::ConfigurationElement::csptr AppConfig::getAdaptedTemplateConfig(
     std::string autoPrefixName;
     if(autoPrefixId)
     {
-        autoPrefixName = this->getUniqueIdentifier(configId);
+        autoPrefixName = sight::service::extension::AppConfig::getUniqueIdentifier(configId);
     }
 
     UidParameterReplaceType parameterReplaceAdaptors;
-    this->collectUIDForParameterReplace(iter->second->config, parameterReplaceAdaptors);
-    newConfig = this->adaptConfig(iter->second->config, fields, parameterReplaceAdaptors, autoPrefixName);
+    sight::service::extension::AppConfig::collectUIDForParameterReplace(iter->second->config, parameterReplaceAdaptors);
+    newConfig = sight::service::extension::AppConfig::adaptConfig(
+        iter->second->config,
+        fields,
+        parameterReplaceAdaptors,
+        autoPrefixName
+    );
 
     return newConfig;
 }
@@ -240,7 +240,7 @@ const
 
 std::shared_ptr<core::runtime::Module> AppConfig::getModule(const std::string& _configId)
 {
-    Registry::const_iterator iter = m_reg.find(_configId);
+    auto iter = m_reg.find(_configId);
     SIGHT_ASSERT(
         "The id " << _configId << " is not found in the application configuration registry",
         iter != m_reg.end()
@@ -285,7 +285,7 @@ std::vector<std::string> AppConfig::getConfigsFromGroup(const std::string& group
 
 //-----------------------------------------------------------------------------
 
-FieldAdaptorType AppConfig::compositeToFieldAdaptor(data::Composite::csptr fieldAdaptors) const
+FieldAdaptorType AppConfig::compositeToFieldAdaptor(data::Composite::csptr fieldAdaptors)
 {
     FieldAdaptorType fields;
     for(const data::Composite::value_type& elem : *fieldAdaptors)
@@ -474,6 +474,4 @@ std::string AppConfig::adaptField(const std::string& _str, const FieldAdaptorTyp
 
 //-----------------------------------------------------------------------------
 
-} // namespace extension
-
-} // namespace sight::service
+} // namespace sight::service::extension

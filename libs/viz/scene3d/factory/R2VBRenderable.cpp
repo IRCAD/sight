@@ -23,10 +23,7 @@
 #include "viz/scene3d/factory/R2VBRenderable.hpp"
 #include "viz/scene3d/R2VBRenderable.hpp"
 
-namespace sight::viz::scene3d
-{
-
-namespace factory
+namespace sight::viz::scene3d::factory
 {
 
 //-----------------------------------------------------------------------------
@@ -35,7 +32,7 @@ Ogre::String R2VBRenderable::FACTORY_TYPE_NAME = "R2VBRenderable";
 
 //-----------------------------------------------------------------------------
 
-const Ogre::String& R2VBRenderable::getType(void) const
+const Ogre::String& R2VBRenderable::getType() const
 {
     return FACTORY_TYPE_NAME;
 }
@@ -59,6 +56,4 @@ void R2VBRenderable::destroyInstance(Ogre::MovableObject* obj)
 }
 #endif
 
-} // namespace factory
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::factory

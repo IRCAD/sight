@@ -26,7 +26,9 @@
 #include "data/registry/macros.hpp"
 
 #include <core/com/Signal.hxx>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
+
+#include <glm/common.hpp>
 
 SIGHT_REGISTER_DATA(sight::data::TransferFunction)
 
@@ -35,362 +37,157 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-const std::string TransferFunction::s_DEFAULT_TF_NAME = "CT-GreyLevel";
+const std::string TransferFunction::s_DEFAULT_TF_NAME = "GreyLevel";
 
 const core::com::Signals::SignalKeyType TransferFunction::s_POINTS_MODIFIED_SIG    = "pointsModified";
 const core::com::Signals::SignalKeyType TransferFunction::s_WINDOWING_MODIFIED_SIG = "windowingModified";
 
 //------------------------------------------------------------------------------
 
-data::TransferFunction::sptr TransferFunction::createDefaultTF()
+ITransferFunction::value_t ITransferFunction::mapValueToWindow(value_t _value) const
 {
-    TransferFunction::sptr tf = TransferFunction::New();
+    const min_max_t minMax       = this->minMax();
+    const min_max_t windowMinMax = this->windowMinMax();
 
-    tf->setName(TransferFunction::s_DEFAULT_TF_NAME);
-    tf->addTFColor(0.0, TFColor());
-    tf->addTFColor(1.0, TFColor(1.0, 1.0, 1.0, 1.0));
-    tf->setIsClamped(false);
-    tf->setWindow(500.);
-    tf->setLevel(50.);
-    return tf;
+    const value_t scale = window() / (minMax.second - minMax.first);
+    const value_t value = (_value - minMax.first) * scale + windowMinMax.first;
+
+    return value;
 }
 
 //------------------------------------------------------------------------------
 
-TransferFunction::TransferFunction(data::Object::Key)
+ITransferFunction::value_t ITransferFunction::mapValueFromWindow(value_t _value) const
 {
-    newSignal<PointsModifiedSignalType>(s_POINTS_MODIFIED_SIG);
-    newSignal<WindowingModifiedSignalType>(s_WINDOWING_MODIFIED_SIG);
+    const min_max_t minMax       = this->minMax();
+    const min_max_t windowMinMax = this->windowMinMax();
 
-    this->initTF();
+    const value_t scale = (minMax.second - minMax.first) / window();
+    const value_t value = (_value - windowMinMax.first) * scale + minMax.first;
+
+    return value;
 }
 
 //------------------------------------------------------------------------------
 
-TransferFunction::~TransferFunction()
+ITransferFunction::color_t ITransferFunction::sampleNearest(value_t _value) const
 {
+    return sample(_value, InterpolationMode::NEAREST);
 }
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::initTF()
+ITransferFunction::color_t ITransferFunction::sampleLinear(value_t _value) const
 {
-    m_level  = 0;
-    m_window = 100;
-
-    m_name = "";
-
-    m_interpolationMode = TransferFunction::LINEAR;
-    m_isClamped         = true;
-
-    m_tfData.clear();
+    return sample(_value, InterpolationMode::LINEAR);
 }
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::shallowCopy(const Object::csptr& _source)
+TransferFunctionPiece::min_max_t ITransferFunction::windowMinMax() const
 {
-    TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
-        ),
-        !bool(other)
-    );
-    this->fieldShallowCopy(_source);
-    this->m_level             = other->m_level;
-    this->m_window            = other->m_window;
-    this->m_name              = other->m_name;
-    this->m_backgroundColor   = other->m_backgroundColor;
-    this->m_tfData            = other->m_tfData;
-    this->m_interpolationMode = other->m_interpolationMode;
-    this->m_isClamped         = other->m_isClamped;
-}
+    min_max_t minMax;
+    const value_t halfWindow = this->window() / 2.;
 
-//------------------------------------------------------------------------------
-
-void TransferFunction::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache)
-{
-    TransferFunction::csptr other = TransferFunction::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
-        ),
-        !bool(other)
-    );
-    this->fieldDeepCopy(_source, _cache);
-    this->m_level             = other->m_level;
-    this->m_window            = other->m_window;
-    this->m_name              = other->m_name;
-    this->m_backgroundColor   = other->m_backgroundColor;
-    this->m_tfData            = other->m_tfData;
-    this->m_interpolationMode = other->m_interpolationMode;
-    this->m_isClamped         = other->m_isClamped;
-}
-
-//------------------------------------------------------------------------------
-
-TransferFunction::TFValueVectorType TransferFunction::getTFValues() const
-{
-    TFValueVectorType values;
-    values.reserve(m_tfData.size());
-    std::transform(
-        m_tfData.begin(),
-        m_tfData.end(),
-        std::back_inserter(values),
-        std::bind(&TFDataType::value_type::first, std::placeholders::_1)
-    );
-    return values;
-}
-
-//------------------------------------------------------------------------------
-
-TransferFunction::TFValueVectorType TransferFunction::getScaledValues() const
-{
-    TFValueVectorType values;
-    values.reserve(m_tfData.size());
-    TFValuePairType minMax       = this->getMinMaxTFValues();
-    TFValuePairType windowMinMax = this->getWLMinMax();
-
-    const double scale = m_window / (minMax.second - minMax.first);
-
-    for(const TFDataType::value_type& data : m_tfData)
-    {
-        const double value = (data.first - minMax.first) * scale + windowMinMax.first;
-        values.push_back(value);
-    }
-
-    return values;
-}
-
-//------------------------------------------------------------------------------
-
-TransferFunction::TFValuePairType TransferFunction::getMinMaxTFValues() const
-{
-    SIGHT_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
-    TFValuePairType minMax;
-    minMax.first  = m_tfData.begin()->first;
-    minMax.second = (m_tfData.rbegin())->first;
+    const value_t level = this->level();
+    minMax.first  = level - halfWindow;
+    minMax.second = level + halfWindow;
     return minMax;
 }
 
 //------------------------------------------------------------------------------
 
-TransferFunction::TFValuePairType TransferFunction::getWLMinMax() const
+void ITransferFunction::setWindowMinMax(const min_max_t& _minMax)
 {
-    TFValuePairType minMax;
-    const double halfWindow = m_window / 2.;
-    minMax.first  = m_level - halfWindow;
-    minMax.second = m_level + halfWindow;
+    this->setWindow(_minMax.second - _minMax.first);
+
+    const value_t halfWindow = window() * 0.5;
+    this->setLevel(halfWindow + _minMax.first);
+}
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+TransferFunctionPiece::min_max_t TransferFunctionPiece::minMax() const
+{
+    SIGHT_ASSERT("It must have at least one value.", !this->empty());
+    min_max_t minMax;
+    minMax.first  = this->begin()->first;
+    minMax.second = (this->rbegin())->first;
     return minMax;
 }
 
 //------------------------------------------------------------------------------
 
-void TransferFunction::setWLMinMax(const TFValuePairType& _minMax)
+TransferFunctionPiece::color_t TransferFunctionPiece::sample(
+    value_t _value,
+    std::optional<InterpolationMode> _mode
+) const
 {
-    m_window = _minMax.second - _minMax.first;
-    const double halfWindow = m_window / 2.;
-    m_level = halfWindow + _minMax.first;
-}
+    SIGHT_ASSERT("It must have at least one value.", !empty());
 
-//------------------------------------------------------------------------------
+    const value_t value = this->mapValueFromWindow(_value);
 
-TransferFunction::TFValueType TransferFunction::getNearestValue(TFValueType _value) const
-{
-    SIGHT_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
-    const std::pair<double, double> minMax = core::tools::Type::s_DOUBLE.minMax<double>();
-    double previousValue                   = minMax.first;
-    double nextValue                       = minMax.second;
+    const color_t blackColor(0.0);
 
-    TFValueType val;
-    for(const TFDataType::value_type& data : m_tfData)
+    value_t previousValue = value;
+    color_t previousColor = m_clamped ? blackColor : this->begin()->second;
+
+    value_t nextValue = value;
+    color_t nextColor = m_clamped ? blackColor : this->rbegin()->second;
+
+    color_t color(0.0);
+
+    bool found = false;
+    for(const data_t::value_type& data : *this)
     {
-        if(_value < data.first)
+        nextValue = data.first;
+        nextColor = data.second;
+
+        if(value < data.first)
         {
-            nextValue = data.first;
+            found = true;
             break;
         }
-        else
-        {
-            previousValue = data.first;
-        }
+
+        previousValue = nextValue;
+        previousColor = nextColor;
     }
 
-    if(previousValue == minMax.first)
+    if(!found)
     {
-        val = nextValue;
-    }
-    else if(nextValue == minMax.second)
-    {
-        val = previousValue;
-    }
-    else
-    {
-        if((_value - previousValue) < (nextValue - _value))
-        {
-            val = previousValue;
-        }
-        else
-        {
-            val = nextValue;
-        }
+        nextValue = value;
+        nextColor = m_clamped ? blackColor : this->rbegin()->second;
     }
 
-    return val;
-}
-
-//------------------------------------------------------------------------------
-
-TransferFunction::TFColorVectorType TransferFunction::getTFColors() const
-{
-    TFColorVectorType colors;
-    std::transform(
-        m_tfData.begin(),
-        m_tfData.end(),
-        std::back_inserter(colors),
-        std::bind(&TFDataType::value_type::second, std::placeholders::_1)
-    );
-    return colors;
-}
-
-//------------------------------------------------------------------------------
-
-TransferFunction::TFColor TransferFunction::getNearestColor(TFValueType _value) const
-{
-    SIGHT_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
-
-    const double min = std::numeric_limits<double>::min();
-    const double max = std::numeric_limits<double>::max();
-
-    double previousValue = min;
-    double nextValue     = max;
-
-    const TFColor blackColor(0.0, 0.0, 0.0, 0.0);
-    TFColor color;
-    TFColor previousColor = blackColor;
-    TFColor nextColor     = blackColor;
-
-    for(const TFDataType::value_type& data : m_tfData)
+    const InterpolationMode mode = _mode == std::nullopt ? m_interpolationMode : _mode.value();
+    switch(mode)
     {
-        if(_value < data.first)
+        case TransferFunctionPiece::InterpolationMode::LINEAR:
         {
-            nextValue = data.first;
-            nextColor = data.second;
+            const value_t distance    = nextValue - previousValue;
+            const value_t interpolant = distance < 1e-5 ? 0. : (value - previousValue) / distance;
+            color = glm::mix(previousColor, nextColor, interpolant);
             break;
         }
-        else
-        {
-            previousValue = data.first;
-            previousColor = data.second;
-        }
-    }
 
-    if(previousValue == min)
-    {
-        if(m_isClamped)
+        case TransferFunctionPiece::InterpolationMode::NEAREST:
         {
-            color = blackColor;
-        }
-        else
-        {
-            color = nextColor;
-        }
-    }
-    else if(nextValue == max)
-    {
-        if(m_isClamped && (_value != previousValue))
-        {
-            color = blackColor;
-        }
-        else
-        {
-            color = previousColor;
-        }
-    }
-    else
-    {
-        if((_value - previousValue) < (nextValue - _value))
-        {
-            color = previousColor;
-        }
-        else
-        {
-            color = nextColor;
-        }
-    }
+            if((value - previousValue) <= (nextValue - value))
+            {
+                color = previousColor;
+            }
+            else
+            {
+                color = nextColor;
+            }
 
-    return color;
-}
-
-//------------------------------------------------------------------------------
-
-TransferFunction::TFColor TransferFunction::getLinearColor(TFValueType _value) const
-{
-    SIGHT_ASSERT("It must have at least one value.", m_tfData.size() >= 1);
-
-    const double min     = std::numeric_limits<double>::min();
-    const double max     = std::numeric_limits<double>::max();
-    double previousValue = min;
-    double nextValue     = max;
-
-    const TFColor blackColor(0.0, 0.0, 0.0, 0.0);
-    TFColor color;
-    TFColor previousColor = blackColor;
-    TFColor nextColor     = blackColor;
-
-    for(const TFDataType::value_type& data : m_tfData)
-    {
-        if(_value < data.first)
-        {
-            nextValue = data.first;
-            nextColor = data.second;
             break;
         }
-        else
-        {
-            previousValue = data.first;
-            previousColor = data.second;
-        }
-    }
 
-    if(previousValue == min)
-    {
-        if(m_isClamped)
-        {
-            color = blackColor;
-        }
-        else
-        {
-            color = nextColor;
-        }
-    }
-    else if(nextValue == max)
-    {
-        if(m_isClamped && (_value != previousValue))
-        {
-            color = blackColor;
-        }
-        else
-        {
-            color = previousColor;
-        }
-    }
-    else
-    {
-        // Interpolate the color.
-        const double distanceToNextValue     = nextValue - _value;
-        const double distanceToPreviousValue = _value - previousValue;
-        const double distance                = 1.0 / (nextValue - previousValue);
-        const double coefPrevious            = 1.0 - (distanceToPreviousValue * distance);
-        const double coefNext                = 1.0 - (distanceToNextValue * distance);
-
-        color.r = coefPrevious * previousColor.r + coefNext * nextColor.r;
-        color.g = coefPrevious * previousColor.g + coefNext * nextColor.g;
-        color.b = coefPrevious * previousColor.b + coefNext * nextColor.b;
-        color.a = coefPrevious * previousColor.a + coefNext * nextColor.a;
+        default:
+            SIGHT_ASSERT("Unreachable code, undefined interpolation mode", false);
     }
 
     return color;
@@ -398,69 +195,229 @@ TransferFunction::TFColor TransferFunction::getLinearColor(TFValueType _value) c
 
 //-----------------------------------------------------------------------------
 
-TransferFunction::TFColor TransferFunction::getInterpolatedColor(TFValueType value) const
+void TransferFunctionPiece::setLevel(TransferFunctionPiece::value_t _value)
 {
-    TFColor color;
+    m_level = _value;
+}
 
-    if(m_interpolationMode == LINEAR)
-    {
-        color = this->getLinearColor(value);
-    }
-    else if(m_interpolationMode == NEAREST)
-    {
-        color = this->getNearestColor(value);
-    }
+//-----------------------------------------------------------------------------
 
-    return color;
+void TransferFunctionPiece::setWindow(TransferFunctionPiece::value_t _value)
+{
+    m_window = _value;
+}
+
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+data::TransferFunction::sptr TransferFunction::createDefaultTF()
+{
+    TransferFunction::sptr tf = TransferFunction::New();
+
+    tf->setName(TransferFunction::s_DEFAULT_TF_NAME);
+
+    auto tfData = tf->pieces().emplace_back(data::TransferFunctionPiece::New());
+    tfData->insert({0.0, color_t()});
+    tfData->insert({1.0, color_t(1.0, 1.0, 1.0, 1.0)});
+    tfData->setClamped(false);
+    tfData->setWindow(500.);
+    tfData->setLevel(50.);
+
+    tf->fitWindow();
+
+    return tf;
 }
 
 //------------------------------------------------------------------------------
 
-const TransferFunction::TFColor& TransferFunction::getTFColor(TFValueType _value) const
+TransferFunction::TransferFunction(data::Object::Key /*unused*/)
 {
-    TFDataType::const_iterator itr = m_tfData.find(_value);
-    SIGHT_ASSERT("The value " << _value << " is not defined in the transfer function.", itr != m_tfData.end());
-    return itr->second;
+    newSignal<PointsModifiedSignalType>(s_POINTS_MODIFIED_SIG);
+    newSignal<WindowingModifiedSignalType>(s_WINDOWING_MODIFIED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-bool TransferFunction::TFColor::operator==(const TFColor& _color) const noexcept
+void TransferFunction::shallowCopy(const Object::csptr& source)
 {
-    return r == _color.r && g == _color.g && b == _color.b && a == _color.a;
+    const auto& other = dynamicConstCast(source);
+
+    SIGHT_THROW_EXCEPTION_IF(
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
+        ),
+        !bool(other)
+    );
+
+    m_name            = other->m_name;
+    m_backgroundColor = other->m_backgroundColor;
+
+    m_level  = other->m_level;
+    m_window = other->m_window;
+
+    m_pieces.clear();
+    std::copy(other->m_pieces.cbegin(), other->m_pieces.cend(), std::back_inserter(m_pieces));
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-bool TransferFunction::TFColor::operator!=(const TFColor& other) const noexcept
+void TransferFunction::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    return !(*this == other);
+    const auto& other = dynamicConstCast(source);
+
+    SIGHT_THROW_EXCEPTION_IF(
+        data::Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
+        ),
+        !bool(other)
+    );
+
+    m_name            = other->m_name;
+    m_backgroundColor = other->m_backgroundColor;
+
+    m_level  = other->m_level;
+    m_window = other->m_window;
+
+    m_pieces.clear();
+
+    std::transform(
+        other->m_pieces.cbegin(),
+        other->m_pieces.cend(),
+        std::back_inserter(this->m_pieces),
+        [&](const auto& value)
+        {
+            auto data = TransferFunctionPiece::New();
+            *data     = *value;
+            return data;
+        });
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
 
-bool TransferFunction::operator==(const TransferFunction& other) const noexcept
+bool TransferFunction::operator==(const TransferFunction& _other) const noexcept
 {
-    if(!core::tools::is_equal(m_level, other.m_level)
-       || !core::tools::is_equal(m_window, other.m_window)
-       || m_name != other.m_name
-       || m_interpolationMode != other.m_interpolationMode
-       || m_isClamped != other.m_isClamped
-       || !core::tools::is_equal(m_backgroundColor, other.m_backgroundColor)
-       || !core::tools::is_equal(m_tfData, other.m_tfData))
+    if(m_name != _other.m_name
+       || !core::tools::is_equal(m_backgroundColor, _other.m_backgroundColor)
+       || m_pieces != _other.m_pieces)
     {
         return false;
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(_other);
 }
 
 //------------------------------------------------------------------------------
 
-bool TransferFunction::operator!=(const TransferFunction& other) const noexcept
+bool TransferFunction::operator!=(const TransferFunction& _other) const noexcept
 {
-    return !(*this == other);
+    return !(*this == _other);
 }
+
+//-----------------------------------------------------------------------------
+
+void TransferFunction::fitWindow()
+{
+    min_max_t minMax {std::numeric_limits<value_t>::max(), std::numeric_limits<value_t>::lowest()};
+
+    for(auto& piece : this->pieces())
+    {
+        const auto pieceMinMax = piece->minMax();
+        minMax.first  = std::min(piece->mapValueToWindow(pieceMinMax.first), minMax.first);
+        minMax.second = std::max(piece->mapValueToWindow(pieceMinMax.second), minMax.second);
+    }
+
+    // Updates the window/level.
+    m_window = minMax.second - minMax.first;
+    m_level  = minMax.first + m_window * .5;
+}
+
+//------------------------------------------------------------------------------
+
+void TransferFunction::setLevel(value_t _value)
+{
+    const double delta = _value - this->level();
+    for(auto& piece : this->pieces())
+    {
+        piece->setLevel(piece->level() + delta);
+    }
+
+    m_level = _value;
+}
+
+//-----------------------------------------------------------------------------
+
+void TransferFunction::setWindow(value_t _value)
+{
+    const double scale = _value / this->window();
+    for(auto& piece : this->pieces())
+    {
+        piece->setWindow(piece->window() * scale);
+    }
+
+    m_window = _value;
+}
+
+//------------------------------------------------------------------------------
+
+TransferFunctionPiece::min_max_t TransferFunction::minMax() const
+{
+    if(empty())
+    {
+        return {-1., 1.};
+    }
+
+    min_max_t minMax {std::numeric_limits<value_t>::max(), std::numeric_limits<value_t>::lowest()};
+
+    for(const auto& piece : this->pieces())
+    {
+        const auto pieceMinMax = piece->minMax();
+        minMax.first  = std::min(piece->mapValueToWindow(pieceMinMax.first), minMax.first);
+        minMax.second = std::max(piece->mapValueToWindow(pieceMinMax.second), minMax.second);
+    }
+
+    return minMax;
+}
+
+//------------------------------------------------------------------------------
+
+TransferFunctionPiece::color_t TransferFunction::sample(value_t _value, std::optional<InterpolationMode> _mode) const
+{
+    SIGHT_ASSERT("It must have at least one value.", !empty());
+
+    ITransferFunction::color_t result(0.);
+    std::vector<ITransferFunction::color_t> colors;
+    colors.reserve(this->pieces().size());
+
+    // 1. Determine the maximum of opacity for this value
+    for(const auto& piece : this->pieces())
+    {
+        ITransferFunction::color_t color = piece->sample(_value, _mode);
+        result.a = std::max(result.a, color.a);
+        colors.push_back(color);
+    }
+
+    result.a = std::min(result.a, 1.);
+
+    // 2. Mix the colors by the ratio of the opacity and the maximum opacity
+    for(const auto& color : colors)
+    {
+        const double ratio = result.a == 0. ? 1.0 : color.a / result.a;
+        result.r += color.r * ratio;
+        result.g += color.g * ratio;
+        result.b += color.b * ratio;
+    }
+
+    return glm::min(result, glm::dvec4(1.));
+}
+
+//------------------------------------------------------------------------------
 
 } // end namespace sight::data

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ public:
     MODULE_UI_QT_API SListView() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SListView() noexcept;
+    MODULE_UI_QT_API ~SListView() noexcept override;
 
     /**@name Signals API
      * @{

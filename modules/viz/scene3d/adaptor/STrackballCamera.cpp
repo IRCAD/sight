@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,15 +30,13 @@ static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
 
 //-----------------------------------------------------------------------------
 
-STrackballCamera::STrackballCamera() noexcept
-{
-}
+STrackballCamera::STrackballCamera() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-STrackballCamera::~STrackballCamera() noexcept
-{
-}
+STrackballCamera::~STrackballCamera() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 

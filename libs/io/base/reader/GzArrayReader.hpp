@@ -31,10 +31,7 @@
 
 #include <filesystem>
 
-namespace sight::io::base
-{
-
-namespace reader
+namespace sight::io::base::reader
 {
 
 /**
@@ -59,7 +56,7 @@ public:
     IO_BASE_API GzArrayReader(io::base::reader::IObjectReader::Key key);
 
     /// Destructor. Does nothing.
-    IO_BASE_API virtual ~GzArrayReader();
+    IO_BASE_API ~GzArrayReader() override;
 
     /// Reads the file using the zlib API.
     IO_BASE_API void read() override;
@@ -68,6 +65,4 @@ public:
     IO_BASE_API std::string extension() const override;
 };
 
-} // namespace reader
-
-} // namespace sight::io::base
+} // namespace sight::io::base::reader

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <igtlPolyDataMessage.h>
 
-namespace sight::io::igtl::detail
-{
-
-namespace converter
+namespace sight::io::igtl::detail::converter
 {
 
 /**
@@ -48,21 +45,21 @@ public:
     IO_IGTL_API MeshConverter();
 
     /// Destructor
-    IO_IGTL_API ~MeshConverter();
+    IO_IGTL_API ~MeshConverter() override;
 
     /**
      * @brief convert a igtl::PositionMessage to a data::Line
      *
      * @return an data::Image converted from an ::igtl::ImageMessage
      */
-    IO_IGTL_API data::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
+    [[nodiscard]] IO_IGTL_API data::Object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const override;
 
     /**
      * @brief convert a data::Line to an igtl::PositionMessage
      *
      * @return an  ::igtl::ImageMessage converted from an data::Image
      */
-    IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const override;
 
     /**
      * @brief create a new LineConverter smart pointer
@@ -76,28 +73,31 @@ public:
      *
      * @return the igtlType supported for conversion
      */
-    IO_IGTL_API std::string const& getIgtlType() const;
+    [[nodiscard]] IO_IGTL_API std::string const& getIgtlType() const override;
 
     /**
      * @brief get the fwData object type supported for conversion
      *
      * @return the fwData Object type supported for conversion
      */
-    IO_IGTL_API std::string const& getFwDataObjectType() const;
+    [[nodiscard]] IO_IGTL_API std::string const& getFwDataObjectType() const override;
 
 private:
 
     /// copy cells from a fwMesh to polydata message
-    void copyCellsFromFwMesh(data::Mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest) const;
+    static void copyCellsFromFwMesh(data::Mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest);
 
     /// copy points from fwMesh to polydata message
-    void copyPointsFromFwMesh(data::Mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest) const;
+    static void copyPointsFromFwMesh(data::Mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest);
 
     /// copy attributes from fwMesh(Normals, Colors) to polydata message
-    void copyAttributesFromFwMesh(data::Mesh::csptr meshSrc, ::igtl::PolyDataMessage::Pointer dest) const;
+    static void copyAttributesFromFwMesh(
+        data::Mesh::csptr meshSrc,
+        ::igtl::PolyDataMessage::Pointer dest
+    );
 
     /// copy attribute from polydata message to fwMesh
-    void copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer src, data::Mesh::sptr dest) const;
+    static void copyAttributeFromPolyData(::igtl::PolyDataMessage::Pointer src, data::Mesh::sptr dest);
 
 private:
 
@@ -108,6 +108,4 @@ private:
     static const std::string s_FWDATA_OBJECT_TYPE;
 };
 
-} // namespace converter
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::converter

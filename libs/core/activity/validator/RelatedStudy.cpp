@@ -25,35 +25,30 @@
 #include "activity/validator/registry/macros.hpp"
 
 #include <data/Series.hpp>
-#include <data/Study.hpp>
 #include <data/Vector.hpp>
 
 #include <boost/algorithm/string.hpp>
 
-namespace sight::activity
+namespace sight::activity::validator
 {
 
-namespace validator
-{
-
-fwActivitiesValidatorRegisterMacro(sight::activity::validator::RelatedStudy);
+SIGHT_REGISTER_ACTIVITY_VALIDATOR(sight::activity::validator::RelatedStudy);
 
 //-----------------------------------------------------------------------------
 
-RelatedStudy::RelatedStudy(activity::IValidator::Key)
+RelatedStudy::RelatedStudy(activity::IValidator::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 RelatedStudy::~RelatedStudy()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IValidator::ValidationType RelatedStudy::validate(
-    const activity::extension::ActivityInfo&,
+    const activity::extension::ActivityInfo& /*activityInfo*/,
     const data::Vector::csptr& currentSelection
 ) const
 {
@@ -64,22 +59,19 @@ IValidator::ValidationType RelatedStudy::validate(
         validation.first  = true;
         validation.second = "Selected series refers to the same study.";
 
-        data::Series::sptr seriesRef = data::Series::dynamicCast((*currentSelection)[0]);
-        data::Study::sptr studyRef   = seriesRef->getStudy();
+        auto seriesRef                  = data::Series::dynamicCast((*currentSelection)[0]);
+        std::string studyInstanceUIDRef = seriesRef->getStudyInstanceUID();
+        boost::algorithm::trim(studyInstanceUIDRef);
 
-        std::string instanceUIDRef = studyRef->getInstanceUID();
-        boost::algorithm::trim(instanceUIDRef);
-
-        data::Vector::ContainerType::const_iterator it;
+        data::Vector::container_type::const_iterator it;
         for(it = currentSelection->begin() + 1 ; it != currentSelection->end() ; ++it)
         {
-            data::Series::sptr series = data::Series::dynamicCast(*it);
-            data::Study::sptr study   = series->getStudy();
+            auto series = data::Series::dynamicCast(*it);
 
-            std::string instanceUID = study->getInstanceUID();
-            boost::algorithm::trim(instanceUID);
+            std::string studyInstanceUID = series->getStudyInstanceUID();
+            boost::algorithm::trim(studyInstanceUID);
 
-            if(instanceUIDRef != instanceUID)
+            if(studyInstanceUIDRef != studyInstanceUID)
             {
                 validation.first  = false;
                 validation.second = "Selected series do not refer to the same study.";
@@ -99,6 +91,4 @@ IValidator::ValidationType RelatedStudy::validate(
 
 //-----------------------------------------------------------------------------
 
-} // namespace validator
-
-} // namespace sight::activity
+} // namespace sight::activity::validator

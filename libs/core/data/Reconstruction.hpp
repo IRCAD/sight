@@ -40,7 +40,7 @@ namespace sight::data
  *
  * A reconstruction is represented by a mesh, a material and an image (mask).
  */
-class DATA_CLASS_API Reconstruction : public Object
+class DATA_CLASS_API Reconstruction final : public Object
 {
 public:
 
@@ -55,10 +55,7 @@ public:
     DATA_API Reconstruction(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Reconstruction();
-
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    DATA_API ~Reconstruction() noexcept override = default;
 
     /// Constant to inform that mask volume has not been computed yet.
     DATA_API static const double s_NO_COMPUTED_MASK_VOLUME;
@@ -68,7 +65,7 @@ public:
      * @brief Get/Set value of the bIsVisible.
      */
     bool getIsVisible() const;
-    void setIsVisible(const bool _bIsVisible);
+    void setIsVisible(bool _bIsVisible);
     /// @}
 
     /**
@@ -143,13 +140,24 @@ public:
     DATA_API bool operator!=(const Reconstruction& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     //! true if this reconstruction is visible
-    bool m_bIsVisible;
+    bool m_bIsVisible {false};
 
     //! Organ name
     std::string m_sOrganName;

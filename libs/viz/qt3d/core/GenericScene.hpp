@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,10 +36,7 @@
 #include <Qt3DRender/QCamera>
 #include <Qt3DRender/QRenderSettings>
 
-namespace sight::viz::qt3d
-{
-
-namespace core
+namespace sight::viz::qt3d::core
 {
 
 /**
@@ -142,6 +139,4 @@ private:
     QPointer<FrameGraph> m_frameGraph;
 };
 
-} // namespace core.
-
-} // namespace sight::viz::qt3d.
+} // namespace sight::viz::qt3d::core

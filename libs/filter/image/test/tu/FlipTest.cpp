@@ -31,10 +31,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::FlipTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -44,7 +41,7 @@ void FlipTest::flipAlongXAxisTest()
     const data::Image::Size size          = {{3, 3, 3}};
     const data::Image::Spacing spacing    = {{0.1, 0.4, 1.6}};
     const data::Image::Origin origin      = {{0., 0., 0.}};
-    const core::tools::Type type          = core::tools::Type::s_UINT8;
+    const core::Type type                 = core::Type::UINT8;
     const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes {true, false, false};
 
@@ -81,7 +78,7 @@ void FlipTest::flipAlongYAxisTest()
     const data::Image::Size size          = {{3, 3, 3}};
     const data::Image::Spacing spacing    = {{0.5, 0.5, 0.5}};
     const data::Image::Origin origin      = {{8., 4., 2.}};
-    const core::tools::Type type          = core::tools::Type::s_UINT8;
+    const core::Type type                 = core::Type::UINT8;
     const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes {false, true, false};
 
@@ -118,7 +115,7 @@ void FlipTest::flipAlongZAxisTest()
     const data::Image::Size size          = {{3, 3, 3}};
     const data::Image::Spacing spacing    = {{2.0, 2.0, 2.0}};
     const data::Image::Origin origin      = {{0., 0., 0.}};
-    const core::tools::Type type          = core::tools::Type::s_UINT8;
+    const core::Type type                 = core::Type::UINT8;
     const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes {false, false, true};
 
@@ -156,7 +153,7 @@ void FlipTest::flipAlongMultipleAxesTest()
         const data::Image::Size size          = {{3, 3, 3}};
         const data::Image::Spacing spacing    = {{0.5, 0.5, 0.5}};
         const data::Image::Origin origin      = {{0., 0., 0.}};
-        const core::tools::Type type          = core::tools::Type::s_UINT8;
+        const core::Type type                 = core::Type::UINT8;
         const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
         std::array<bool, 3> flipAxes {true, true, false};
 
@@ -190,7 +187,7 @@ void FlipTest::flipAlongMultipleAxesTest()
         const data::Image::Size size          = {{3, 3, 3}};
         const data::Image::Spacing spacing    = {{0.5, 0.5, 0.5}};
         const data::Image::Origin origin      = {{0., 0., 0.}};
-        const core::tools::Type type          = core::tools::Type::s_UINT8;
+        const core::Type type                 = core::Type::UINT8;
         const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
         std::array<bool, 3> flipAxes {true, true, true};
 
@@ -232,7 +229,7 @@ void FlipTest::flipEmptyImageTest()
     const data::Image::Size size          = {0, 0, 0};
     const data::Image::Spacing spacing    = {0., 0., 0.};
     const data::Image::Origin origin      = {0., 0., 0.};
-    const core::tools::Type type          = core::tools::Type::s_UINT8;
+    const core::Type type                 = core::Type::UINT8;
     const data::Image::PixelFormat format = data::Image::GRAY_SCALE;
     std::array<bool, 3> flipAxes {false, true, false};
 
@@ -256,6 +253,4 @@ void FlipTest::flipEmptyImageTest()
 
 //------------------------------------------------------------------------------
 
-} // ut
-
-} // imageFilterOp
+} // namespace sight::filter::image::ut

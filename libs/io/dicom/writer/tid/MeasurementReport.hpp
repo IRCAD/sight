@@ -27,13 +27,7 @@
 
 #include <data/Image.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace tid
+namespace sight::io::dicom::writer::tid
 {
 
 /**
@@ -57,7 +51,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~MeasurementReport();
+    IO_DICOM_API ~MeasurementReport() override;
 
     /**
      * @brief Create Measurement Report template root node
@@ -66,8 +60,4 @@ public:
     IO_DICOM_API virtual SPTR(io::dicom::container::sr::DicomSRNode) createRootNode(bool useSCoord3D = true);
 };
 
-} // namespace tid
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::tid

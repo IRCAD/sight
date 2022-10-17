@@ -22,18 +22,16 @@
 
 #include "helper.hpp"
 
-#include "geometry/vision/ReprojectionError.hpp"
+#include "geometry/vision/detail/ReprojectionError.hpp"
 
 #include <core/spyLog.hpp>
 
 #include <geometry/eigen/helper.hpp>
 
+#include <cmath>
 #include <thread>
 
-namespace sight::geometry::vision
-{
-
-namespace helper
+namespace sight::geometry::vision::helper
 {
 
 //-----------------------------------------------------------------------------
@@ -50,7 +48,8 @@ ErrorAndPointsType computeReprojectionError(
     ErrorAndPointsType errorAndProjectedPoints;
     std::vector<cv::Point2f> imagePoints2;
     int totalPoints = 0;
-    double totalErr = 0, err;
+    double totalErr = 0;
+    double err      = NAN;
 
     //projection
     cv::projectPoints(
@@ -91,7 +90,10 @@ cv::Matx44f cameraPoseMonocular(
         _objectPoints.size() == _imagePoints.size()
     );
 
-    cv::Mat rvec, tvec, R, T;
+    cv::Mat rvec;
+    cv::Mat tvec;
+    cv::Mat R;
+    cv::Mat T;
     T = cv::Mat::eye(4, 4, CV_64F);
 
     //solvePnP
@@ -116,18 +118,21 @@ cv::Matx44f cameraPoseStereo(
     const cv::Mat& _distCoeffs2,
     const std::vector<cv::Point2f>& _imgPoints1,
     const std::vector<cv::Point2f>& _imgPoints2,
-    const cv::Mat& _R,
-    const cv::Mat& _T
+    const cv::Mat& _r,
+    const cv::Mat& _t
 )
 {
     //1. initialize solution with solvePnP
-    cv::Mat rvec, tvec, R, T;
+    cv::Mat rvec;
+    cv::Mat tvec;
+    cv::Mat R;
+    cv::Mat T;
     T = cv::Mat::eye(4, 4, CV_64F);
 
     cv::Mat extrinsic = cv::Mat::eye(4, 4, CV_64F);
 
-    extrinsic(cv::Range(0, 3), cv::Range(0, 3)) = _R * 1;
-    extrinsic(cv::Range(0, 3), cv::Range(3, 4)) = _T * 1;
+    extrinsic(cv::Range(0, 3), cv::Range(0, 3)) = _r * 1;
+    extrinsic(cv::Range(0, 3), cv::Range(3, 4)) = _t * 1;
 
     cv::solvePnP(
         _objectPoints,
@@ -154,7 +159,7 @@ cv::Matx44f cameraPoseStereo(
     //Cost function for image 1
     for(std::size_t i = 0 ; i < _imgPoints1.size() ; ++i)
     {
-        ::ceres::CostFunction* cost_function = ReprojectionError::Create(
+        ::ceres::CostFunction* cost_function = detail::ReprojectionError::Create(
             _cameraMatrix1,
             _distCoeffs1,
             _imgPoints1[i],
@@ -171,7 +176,7 @@ cv::Matx44f cameraPoseStereo(
     //image 2
     for(std::size_t i = 0 ; i < _imgPoints2.size() ; ++i)
     {
-        ::ceres::CostFunction* cost_function = ReprojectionError::Create(
+        ::ceres::CostFunction* cost_function = detail::ReprojectionError::Create(
             _cameraMatrix2,
             _distCoeffs2,
             _imgPoints2[i],
@@ -193,7 +198,7 @@ cv::Matx44f cameraPoseStereo(
     options.function_tolerance           = 1e-8;
     options.max_num_iterations           = 100;
 
-    int numthreads = std::thread::hardware_concurrency() / 2;
+    int numthreads = static_cast<int>(std::thread::hardware_concurrency() / 2);
 
     options.num_threads = numthreads;
 
@@ -221,10 +226,7 @@ void calibratePointingTool(
     data::Matrix4::sptr _centerMatrix
 )
 {
-    const data::Vector::ContainerType matrices = _matricesVector->getContainer();
-    const std::size_t nbrMatrices              = matrices.size();
-
-    if(nbrMatrices < 4)
+    if(_matricesVector->size() < 4)
     {
         SIGHT_WARN("Number of points when computing the tool calibration should be more than 5.");
         return;
@@ -235,9 +237,9 @@ void calibratePointingTool(
     Eigen::Vector4d vectorSum;
     vectorSum.fill(0);
 
-    for(std::size_t i = 0 ; i < nbrMatrices ; ++i)
+    for(std::size_t i = 0 ; i < _matricesVector->size() ; ++i)
     {
-        data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(matrices.at(i));
+        data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(_matricesVector->at(i));
         SIGHT_ASSERT("This element of the vector is not a data::Matrix4", m1);
         geometry::eigen::helper::EigenMatrix xyz1;
         xyz1.fill(0.);
@@ -264,9 +266,9 @@ void calibratePointingTool(
 
     Eigen::Vector3d translation;
     translation.fill(0);
-    for(std::size_t i = 0 ; i < nbrMatrices ; ++i)
+    for(std::size_t i = 0 ; i < _matricesVector->size() ; ++i)
     {
-        data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(matrices.at(i));
+        data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(_matricesVector->at(i));
         SIGHT_ASSERT("This element of the vector is not a data::Matrix4", m1);
         const geometry::eigen::helper::EigenMatrix pointMatrix =
             geometry::eigen::helper::toEigen(m1->getCoefficients());
@@ -283,7 +285,7 @@ void calibratePointingTool(
         translation(2) += calibrationMatrix(2, 3);
     }
 
-    translation /= static_cast<double>(nbrMatrices);
+    translation /= static_cast<double>(_matricesVector->size());
 
     _calibrationMatrix->setCoefficient(0, 3, translation(0));
     _calibrationMatrix->setCoefficient(1, 3, translation(1));
@@ -292,109 +294,6 @@ void calibratePointingTool(
     _centerMatrix->setCoefficient(0, 3, a);
     _centerMatrix->setCoefficient(1, 3, b);
     _centerMatrix->setCoefficient(2, 3, c);
-}
-
-//-----------------------------------------------------------------------------
-
-cv::Ptr<cv::aruco::Dictionary> generateArucoDictionary(
-    const std::size_t _width,
-    const std::size_t _height,
-    const int _markerSizeInBits
-)
-{
-    //Determine which dictionary to use
-    // nb of markers (< 50,< 100 < 250, < 1000)
-    const std::size_t nbMarkers                      = (_width * _height) / 2;
-    cv::aruco::PREDEFINED_DICTIONARY_NAME dictionary = cv::aruco::DICT_6X6_100;
-    if(_markerSizeInBits == 4)
-    {
-        if(nbMarkers <= 50)
-        {
-            dictionary = cv::aruco::DICT_4X4_50;
-        }
-        else if(nbMarkers <= 100)
-        {
-            dictionary = cv::aruco::DICT_4X4_100;
-        }
-        else if(nbMarkers <= 250)
-        {
-            dictionary = cv::aruco::DICT_4X4_250;
-        }
-        else
-        {
-            dictionary = cv::aruco::DICT_4X4_1000;
-        }
-    }
-    else if(_markerSizeInBits == 5)
-    {
-        if(nbMarkers <= 50)
-        {
-            dictionary = cv::aruco::DICT_5X5_50;
-        }
-        else if(nbMarkers <= 100)
-        {
-            dictionary = cv::aruco::DICT_5X5_100;
-        }
-        else if(nbMarkers <= 250)
-        {
-            dictionary = cv::aruco::DICT_5X5_250;
-        }
-        else
-        {
-            dictionary = cv::aruco::DICT_5X5_1000;
-        }
-    }
-    else if(_markerSizeInBits == 6)
-    {
-        if(nbMarkers <= 50)
-        {
-            dictionary = cv::aruco::DICT_6X6_50;
-        }
-        else if(nbMarkers <= 100)
-        {
-            dictionary = cv::aruco::DICT_6X6_100;
-        }
-        else if(nbMarkers <= 250)
-        {
-            dictionary = cv::aruco::DICT_6X6_250;
-        }
-        else
-        {
-            dictionary = cv::aruco::DICT_6X6_1000;
-        }
-    }
-    else if(_markerSizeInBits == 7)
-    {
-        if(nbMarkers <= 50)
-        {
-            dictionary = cv::aruco::DICT_7X7_50;
-        }
-        else if(nbMarkers <= 100)
-        {
-            dictionary = cv::aruco::DICT_7X7_100;
-        }
-        else if(nbMarkers <= 250)
-        {
-            dictionary = cv::aruco::DICT_7X7_250;
-        }
-        else
-        {
-            dictionary = cv::aruco::DICT_7X7_1000;
-        }
-    }
-    else
-    {
-        throw std::invalid_argument(
-                  "Cannot generate dictionary with marker size of: "
-                  + std::to_string(_markerSizeInBits)
-        );
-    }
-
-    return cv::aruco::generateCustomDictionary(
-        static_cast<int>(nbMarkers),
-        _markerSizeInBits,
-        cv::aruco::getPredefinedDictionary(dictionary)
-    );
 }
 
 //-----------------------------------------------------------------------------
@@ -433,7 +332,7 @@ data::PointList::sptr detectChessboard(
 
     cv::Mat detectionImage;
 
-    if(_scale < 1.f)
+    if(_scale < 1.F)
     {
         cv::resize(grayImg, detectionImage, cv::Size(), _scale, _scale);
     }
@@ -448,7 +347,7 @@ data::PointList::sptr detectChessboard(
     {
         // Rescale points to get their coordinates in the full scale image.
         const auto rescale = [_scale](cv::Point2f& _pt){_pt = _pt / _scale;};
-        std::for_each(corners.begin(), corners.end(), rescale);
+        std::ranges::for_each(corners, rescale);
 
         // Refine points coordinates in the full scale image.
         cv::TermCriteria term(cv::TermCriteria::MAX_ITER + cv::TermCriteria::EPS, 30, 0.1);
@@ -459,7 +358,7 @@ data::PointList::sptr detectChessboard(
         points.reserve(corners.size());
 
         const auto cv2SightPt = [](const cv::Point2f& p){return data::Point::New(p.x, p.y);};
-        std::transform(corners.cbegin(), corners.cend(), std::back_inserter(points), cv2SightPt);
+        std::ranges::transform(corners, std::back_inserter(points), cv2SightPt);
     }
 
     return pointlist;
@@ -467,6 +366,4 @@ data::PointList::sptr detectChessboard(
 
 // ----------------------------------------------------------------------------
 
-} //namespace sight::geometry::vision
-
-} //namespace helper
+} // namespace sight::geometry::vision::helper

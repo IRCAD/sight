@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,23 +32,18 @@
 #include <QApplication>
 #include <QVBoxLayout>
 
-namespace sight::module::ui::debug
-{
-
-namespace action
+namespace sight::module::ui::debug::action
 {
 
 //------------------------------------------------------------------------------
 
-ComponentsTree::ComponentsTree() noexcept
-{
-}
+ComponentsTree::ComponentsTree() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-ComponentsTree::~ComponentsTree() noexcept
-{
-}
+ComponentsTree::~ComponentsTree() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -61,9 +56,9 @@ void ComponentsTree::updating()
 
     for(const auto& module : defaultRuntime->getModules())
     {
-        const std::string moduleName      = module->getIdentifier();
-        const bool isModuleEnabled        = module->isEnabled();
-        QTreeWidgetItem* const moduleItem = new QTreeWidgetItem();
+        const std::string moduleName = module->getIdentifier();
+        const bool isModuleEnabled   = module->isEnabled();
+        auto* const moduleItem       = new QTreeWidgetItem();
         if(!isModuleEnabled)
         {
             moduleItem->setBackground(0, QBrush(QColor(155, 155, 155)));
@@ -73,7 +68,7 @@ void ComponentsTree::updating()
         m_treeContainer->addTopLevelItem(moduleItem);
 
         //Extensions
-        QTreeWidgetItem* extensionsItem = new QTreeWidgetItem();
+        auto* extensionsItem = new QTreeWidgetItem();
         extensionsItem->setText(0, QObject::tr("Extensions"));
         moduleItem->addChild(extensionsItem);
 
@@ -81,7 +76,7 @@ void ComponentsTree::updating()
         {
             const std::string point       = extension->getPoint();
             const bool isExtensionEnabled = extension->isEnabled();
-            QTreeWidgetItem* const item   = new QTreeWidgetItem();
+            auto* const item              = new QTreeWidgetItem();
             if(!isExtensionEnabled)
             {
                 item->setBackground(0, QBrush(QColor(155, 155, 155)));
@@ -114,7 +109,7 @@ void ComponentsTree::starting()
     m_treeContainer = new QTreeWidget(m_dialog);
     m_treeContainer->setHeaderHidden(true);
 
-    QVBoxLayout* topsizer = new QVBoxLayout();
+    auto* topsizer = new QVBoxLayout();
     topsizer->addWidget(m_treeContainer);
     topsizer->setContentsMargins(0, 0, 0, 0);
     m_dialog->setLayout(topsizer);
@@ -132,6 +127,4 @@ void ComponentsTree::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace action
-
-} // namespace sight::module::ui::debug
+} // namespace sight::module::ui::debug::action

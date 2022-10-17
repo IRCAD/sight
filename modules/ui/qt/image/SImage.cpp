@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,23 +32,18 @@
 #include <QLabel>
 #include <QVBoxLayout>
 
-namespace sight::module::ui::qt
-{
-
-namespace image
+namespace sight::module::ui::qt::image
 {
 
 //-----------------------------------------------------------------------------
 
-SImage::SImage() noexcept
-{
-}
+SImage::SImage() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-SImage::~SImage() noexcept
-{
-}
+SImage::~SImage() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -58,10 +53,10 @@ void SImage::starting()
 
     const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
-    QVBoxLayout* const layout = new QVBoxLayout();
-    QLabel* const label       = new QLabel("");
+    auto* const layout = new QVBoxLayout();
+    auto* const label  = new QLabel("");
 
-    QPixmap* const pixmap = new QPixmap();
+    auto* const pixmap = new QPixmap();
 
     pixmap->load(m_path.string().c_str());
 
@@ -105,7 +100,7 @@ void SImage::configuring()
     this->initialize();
 
     const ConfigType cfg = this->getConfigTree();
-    std::string pathCfg  = cfg.get<std::string>("path");
+    auto pathCfg         = cfg.get<std::string>("path");
 
     m_path = core::runtime::getModuleResourceFilePath(pathCfg);
 
@@ -121,6 +116,4 @@ void SImage::updating()
 
 //-----------------------------------------------------------------------------
 
-} // namespace image
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::qt::image

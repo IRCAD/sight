@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::geometry::data
-{
-
-namespace ut
+namespace sight::geometry::data::ut
 {
 
 class PointListTest : public CPPUNIT_NS::TestFixture
@@ -47,20 +44,18 @@ private:
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void computeDistance();
+    static void computeDistance();
 
-    void transform();
+    static void transform();
 
-    void associate();
+    static void associate();
 
-    void removeClosestPointNominal();
+    static void removeClosestPointNominal();
 
-    void removeClosestPointExtreme();
+    static void removeClosestPointExtreme();
 };
 
-} //namespace ut
-
-} //namespace sight::geometry::data
+} // namespace sight::geometry::data::ut

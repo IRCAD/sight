@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "core/config.hpp"
 #include "core/thread/Worker.hpp"
+
 #include <core/mt/types.hpp>
 
 #include <functional>
@@ -50,7 +51,7 @@ public:
     typedef std::chrono::duration<double> TimeDurationType;
     /**  @} */
 
-    CORE_API ~Timer();
+    CORE_API ~Timer() override = default;
 
     /// Starts or restarts the timer.
     CORE_API virtual void start() = 0;

@@ -22,7 +22,7 @@
 
 #include "LineDrawerTest.hpp"
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
@@ -35,10 +35,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::LineDrawerTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -61,7 +58,7 @@ void LineDrawerTest::circleTest()
         const data::Image::Size SIZE       = {{120, 120, 120}};
         const data::Image::Spacing SPACING = {{1., 1., 1.}};
         const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-        const core::tools::Type TYPE       = core::tools::Type::s_INT16;
+        const core::Type TYPE              = core::Type::INT16;
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{20, 20, 20}};
         const double THICKNESS                                 = 0.0001;
@@ -97,15 +94,15 @@ void LineDrawerTest::circleTest()
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), diff.numElements());
         data::Image::IndexType index = (POINT[0] + POINT[1] * SIZE[0] + POINT[2] * SIZE[0] * SIZE[1]);
         CPPUNIT_ASSERT_EQUAL(index, diff.getElement(0).m_index);
-        CPPUNIT_ASSERT_EQUAL(std::int16_t(0), *reinterpret_cast<std::int16_t*>(diff.getElement(0).m_oldValue));
-        CPPUNIT_ASSERT_EQUAL(VALUE, *reinterpret_cast<std::int16_t*>(diff.getElement(0).m_newValue));
+        CPPUNIT_ASSERT_EQUAL(std::int16_t(0), *reinterpret_cast<const std::int16_t*>(diff.getElement(0).m_oldValue));
+        CPPUNIT_ASSERT_EQUAL(VALUE, *reinterpret_cast<const std::int16_t*>(diff.getElement(0).m_newValue));
     }
 
     {
         const data::Image::Size SIZE       = {{120, 120, 120}};
         const data::Image::Spacing SPACING = {{1., 1., 1.}};
         const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-        const core::tools::Type TYPE       = core::tools::Type::s_INT16;
+        const core::Type TYPE              = core::Type::INT16;
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{20, 20, 20}};
 
@@ -246,7 +243,7 @@ void LineDrawerTest::ellipseTest()
         const data::Image::Size SIZE       = {{120, 120, 120}};
         const data::Image::Spacing SPACING = {{1., 4., 1.}};
         const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-        const core::tools::Type TYPE       = core::tools::Type::s_INT16;
+        const core::Type TYPE              = core::Type::INT16;
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{50, 50, 50}};
 
@@ -285,7 +282,7 @@ void LineDrawerTest::ellipseTest()
 
         {
             const double squareRadius = (THICKNESS / 2.) * (THICKNESS / 2.);
-            const double p[3]         = {static_cast<double>(POINT[0]),
+            const std::array p        = {static_cast<double>(POINT[0]),
                                          static_cast<double>(POINT[1]),
                                          static_cast<double>(POINT[2])
             };
@@ -322,13 +319,13 @@ void LineDrawerTest::ellipseTest()
                         CPPUNIT_ASSERT_EQUAL_MESSAGE(
                             "p[" + std::to_string(i) + "][" + std::to_string(j) + "]",
                             VALUE,
-                            *reinterpret_cast<std::int16_t*>(elt.m_newValue)
+                            *reinterpret_cast<const std::int16_t*>(elt.m_newValue)
                         );
 
                         CPPUNIT_ASSERT_EQUAL_MESSAGE(
                             "p[" + std::to_string(i) + "][" + std::to_string(j) + "]",
                             std::int16_t(0),
-                            *reinterpret_cast<std::int16_t*>(elt.m_oldValue)
+                            *reinterpret_cast<const std::int16_t*>(elt.m_oldValue)
                         );
                         ++diffIndex;
                     }
@@ -354,7 +351,7 @@ void LineDrawerTest::borderTest()
         const data::Image::Size SIZE       = {{50, 50, 50}};
         const data::Image::Spacing SPACING = {{2., 4., 8.}};
         const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-        const core::tools::Type TYPE       = core::tools::Type::s_INT16;
+        const core::Type TYPE              = core::Type::INT16;
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{45, 3, 20}};
 
@@ -387,7 +384,7 @@ void LineDrawerTest::borderTest()
 
         {
             const double squareRadius = (THICKNESS / 2.) * (THICKNESS / 2.);
-            const double p[3]         = {static_cast<double>(POINT[0]),
+            const std::array p        = {static_cast<double>(POINT[0]),
                                          static_cast<double>(POINT[1]),
                                          static_cast<double>(POINT[2])
             };
@@ -431,7 +428,7 @@ void LineDrawerTest::roiTest()
         const data::Image::Size SIZE       = {{150, 150, 150}};
         const data::Image::Spacing SPACING = {{2., 4., 8.}};
         const data::Image::Origin ORIGIN   = {{0., 0., 0.}};
-        const core::tools::Type TYPE       = core::tools::Type::s_INT16;
+        const core::Type TYPE              = core::Type::INT16;
 
         const filter::image::LineDrawer::CoordinatesType POINT = {{45, 45, 40}};
 
@@ -497,7 +494,7 @@ void LineDrawerTest::roiTest()
 
         {
             const double squareRadius = (THICKNESS / 2.) * (THICKNESS / 2.);
-            const double p[3]         = {static_cast<double>(POINT[0]),
+            const std::array p        = {static_cast<double>(POINT[0]),
                                          static_cast<double>(POINT[1]),
                                          static_cast<double>(POINT[2])
             };
@@ -537,6 +534,4 @@ void LineDrawerTest::roiTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::filter::image
+} // namespace sight::filter::image::ut

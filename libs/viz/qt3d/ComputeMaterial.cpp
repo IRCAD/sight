@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -48,16 +48,15 @@ namespace sight::viz::qt3d
 //------------------------------------------------------------------------------
 
 ComputeMaterial::ComputeMaterial(Qt3DCore::QNode* _parent) :
-    QMaterial(_parent)
+    QMaterial(_parent),
+    m_effect(new Qt3DRender::QEffect),
+    m_computeShader(new Qt3DRender::QShaderProgram),
+    m_computeRenderPass(new Qt3DRender::QRenderPass),
+    m_indexBuffer(new Qt3DRender::QBuffer),
+    m_indexBufferParameter(new Qt3DRender::QParameter),
+    m_computeFilterKey(new Qt3DRender::QFilterKey),
+    m_computeTechnique(new Qt3DRender::QTechnique)
 {
-    m_effect               = new Qt3DRender::QEffect;
-    m_indexBuffer          = new Qt3DRender::QBuffer;
-    m_indexBufferParameter = new Qt3DRender::QParameter;
-    m_computeShader        = new Qt3DRender::QShaderProgram;
-    m_computeRenderPass    = new Qt3DRender::QRenderPass;
-    m_computeFilterKey     = new Qt3DRender::QFilterKey;
-    m_computeTechnique     = new Qt3DRender::QTechnique;
-
     //Initialize shader program
     const auto computeShaderPath = sight::core::runtime::getLibraryResourceFilePath(
         "viz_qt3d/glsl/quadToTriangleMesh_CP.glsl"
@@ -92,8 +91,7 @@ ComputeMaterial::ComputeMaterial(Qt3DCore::QNode* _parent) :
 //------------------------------------------------------------------------------
 
 ComputeMaterial::~ComputeMaterial()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -113,19 +111,19 @@ void ComputeMaterial::setIndexBuffer(Qt3DRender::QBuffer* _buffer)
 void ComputeMaterial::updateFrameGraph(viz::qt3d::core::FrameGraph* _frameGraph, int _numberOfCells)
 {
     // Memory barrier to wait for compute shader to finish before rendering the mesh.
-    auto const memBarrier = new Qt3DRender::QMemoryBarrier();
+    auto* const memBarrier = new Qt3DRender::QMemoryBarrier();
     memBarrier->setWaitOperations(Qt3DRender::QMemoryBarrier::VertexAttributeArray);
 
     // Set the memory barrier as a child of framegraph's camera selector.
     _frameGraph->addNode(memBarrier, _frameGraph->getCameraSelector());
 
     // FrameGraph node handling openGL dispatch call.
-    auto const emptyNode = new Qt3DRender::QFrameGraphNode();
+    auto* const emptyNode = new Qt3DRender::QFrameGraphNode();
     {
-        auto const computeTechFilter = new Qt3DRender::QTechniqueFilter(emptyNode);
+        auto* const computeTechFilter = new Qt3DRender::QTechniqueFilter(emptyNode);
         computeTechFilter->addMatch(m_computeFilterKey);
         {
-            auto const dispatch = new Qt3DRender::QDispatchCompute(computeTechFilter);
+            auto* const dispatch = new Qt3DRender::QDispatchCompute(computeTechFilter);
             dispatch->setWorkGroupX(_numberOfCells);
         }
     }

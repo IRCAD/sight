@@ -38,10 +38,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::MeshTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -78,38 +75,38 @@ void MeshTest::insertion()
         mesh->pushCell(1, 3, 4);
         mesh->pushCell(1, 2, 5);
 
-        data::Mesh::point_t p[3] = {3, 6, 5};
-        mesh->pushCell(p, 3);
+        std::array<data::Mesh::point_t, 3> p = {3, 6, 5};
+        mesh->pushCell(std::vector(p.begin(), p.end()));
 
-        data::Mesh::point_t p2[3] = {1, 3, 5};
-        mesh->pushCell(p2, 3);
+        std::array<data::Mesh::point_t, 3> p2 = {1, 3, 5};
+        mesh->pushCell(std::vector(p2.begin(), p2.end()));
 
-        data::Mesh::point_t p3[3] = {7, 2, 5};
-        mesh->pushCell(p3, 3);
+        std::array<data::Mesh::point_t, 3> p3 = {7, 2, 5};
+        mesh->pushCell(std::vector(p3.begin(), p3.end()));
 
         CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(8), mesh->numPoints());
         CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(6), mesh->numCells());
 
         auto it = mesh->cbegin<data::iterator::point::xyz>();
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(10.f, it->x, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(20.f, it->y, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(30.f, it->z, EPSILON);
+        CPPUNIT_ASSERT_EQUAL(10.F, it->x);
+        CPPUNIT_ASSERT_EQUAL(20.F, it->y);
+        CPPUNIT_ASSERT_EQUAL(30.F, it->z);
         it += 2;
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(20.f, it->x, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(21.f, it->y, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(10.f, it->z, EPSILON);
+        CPPUNIT_ASSERT_EQUAL(20.F, it->x);
+        CPPUNIT_ASSERT_EQUAL(21.F, it->y);
+        CPPUNIT_ASSERT_EQUAL(10.F, it->z);
         it += 5;
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(27.f, it->x, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(83.f, it->y, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(52.f, it->z, EPSILON);
+        CPPUNIT_ASSERT_EQUAL(27.F, it->x);
+        CPPUNIT_ASSERT_EQUAL(83.F, it->y);
+        CPPUNIT_ASSERT_EQUAL(52.F, it->z);
         --it;
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(20.f, it->x, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(63.f, it->y, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(17.f, it->z, EPSILON);
+        CPPUNIT_ASSERT_EQUAL(20.F, it->x);
+        CPPUNIT_ASSERT_EQUAL(63.F, it->y);
+        CPPUNIT_ASSERT_EQUAL(17.F, it->z);
         it -= 2;
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(15.f, it->x, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(20.f, it->y, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(35.f, it->z, EPSILON);
+        CPPUNIT_ASSERT_EQUAL(15.F, it->x);
+        CPPUNIT_ASSERT_EQUAL(20.F, it->y);
+        CPPUNIT_ASSERT_EQUAL(35.F, it->z);
 
         auto cell_it = mesh->cbegin<data::iterator::cell::triangle>();
         CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::point_t>(1), cell_it->pt[0]);
@@ -153,9 +150,9 @@ void MeshTest::insertion()
         mesh->setPoint(4, 45, 59, 48);
         auto itPt = mesh->begin<data::iterator::point::xyz>();
         itPt += 4;
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(45), itPt->x, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(59), itPt->y, EPSILON);
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(48), itPt->z, EPSILON);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(45), itPt->x);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(59), itPt->y);
+        CPPUNIT_ASSERT_EQUAL(static_cast<float>(48), itPt->z);
     }
 
     {
@@ -177,9 +174,9 @@ void MeshTest::insertion()
 
         for(std::size_t i = 0 ; i < NB_POINTS ; ++i)
         {
-            const std::uint8_t val                                = static_cast<uint8_t>(i);
+            const auto val                                        = static_cast<uint8_t>(i);
             const std::array<data::Mesh::color_t, 4> color        = {val, val, val, val};
-            const float floatVal                                  = static_cast<float>(i);
+            const auto floatVal                                   = static_cast<float>(i);
             const std::array<data::Mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
             const std::array<data::Mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
             const std::size_t value                               = 3 * i;
@@ -197,9 +194,9 @@ void MeshTest::insertion()
         {
             const auto id = mesh->pushCell(i, i + 1, i + 2);
 
-            const data::Mesh::color_t val                         = static_cast<data::Mesh::color_t>(i);
+            const auto val                                        = static_cast<data::Mesh::color_t>(i);
             const std::array<data::Mesh::color_t, 4> color        = {val, val, val, val};
-            const float floatVal                                  = static_cast<float>(i);
+            const auto floatVal                                   = static_cast<float>(i);
             const std::array<data::Mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
             const std::array<data::Mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
             mesh->setCellColor(id, color);
@@ -227,13 +224,13 @@ void MeshTest::insertion()
 
         mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE, EXTRA_ARRAY);
         const auto lock                               = mesh->dump_lock();
-        const std::size_t pointNormalsAllocatedSize   = NB_POINTS * 3 * sizeof(data::Mesh::normal_t);
-        const std::size_t pointColorsAllocatedSize    = NB_POINTS * 4 * sizeof(data::Mesh::color_t);
-        const std::size_t pointTexCoordsAllocatedSize = NB_POINTS * 2 * sizeof(data::Mesh::texcoord_t);
-        const std::size_t pointPositionAllocatedSize  = NB_POINTS * 3 * sizeof(data::Mesh::position_t);
+        const std::size_t pointNormalsAllocatedSize   = NB_POINTS * 3LL * sizeof(data::Mesh::normal_t);
+        const std::size_t pointColorsAllocatedSize    = NB_POINTS * 4LL * sizeof(data::Mesh::color_t);
+        const std::size_t pointTexCoordsAllocatedSize = NB_POINTS * 2LL * sizeof(data::Mesh::texcoord_t);
+        const std::size_t pointPositionAllocatedSize  = NB_POINTS * 3LL * sizeof(data::Mesh::position_t);
 
         // data::Mesh::CellType::POINT;
-        const std::size_t cellDataAllocatedSize = NB_CELLS * 1 * sizeof(data::Mesh::cell_t);
+        const std::size_t cellDataAllocatedSize = NB_CELLS * 1LL * sizeof(data::Mesh::cell_t);
 
         const std::size_t pointSize = pointPositionAllocatedSize + cellDataAllocatedSize
                                       + pointNormalsAllocatedSize + pointColorsAllocatedSize
@@ -245,9 +242,9 @@ void MeshTest::insertion()
         );
         for(std::size_t i = 0 ; i < 1001 ; ++i)
         {
-            const std::uint8_t val                                = static_cast<uint8_t>(i);
+            const auto val                                        = static_cast<uint8_t>(i);
             const std::array<data::Mesh::color_t, 4> color        = {val, val, val, val};
-            const float floatVal                                  = static_cast<float>(i);
+            const auto floatVal                                   = static_cast<float>(i);
             const std::array<data::Mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
             const std::array<data::Mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
             const std::size_t value                               = 3 * i;
@@ -261,23 +258,23 @@ void MeshTest::insertion()
             mesh->setPointTexCoord(id, texCoords);
         }
 
-        using namespace data::iterator;
+        namespace point = iterator::point;
         {
             auto range = mesh->czip_range<point::xyz, point::nxyz, point::rgba, point::uv>();
 
             data::Mesh::size_t count = 0;
             for(const auto& [p, n, c, uv] : range)
             {
-                const float fValue = static_cast<float>(3 * count);
+                const auto fValue = static_cast<float>(3 * count);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue, p.x, EPSILON);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue + 1, p.y, EPSILON);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue + 2, p.z, EPSILON);
-                const data::Mesh::color_t cVal = static_cast<data::Mesh::color_t>(count);
+                const auto cVal = static_cast<data::Mesh::color_t>(count);
                 CPPUNIT_ASSERT_EQUAL(cVal, c.r);
                 CPPUNIT_ASSERT_EQUAL(cVal, c.g);
                 CPPUNIT_ASSERT_EQUAL(cVal, c.b);
                 CPPUNIT_ASSERT_EQUAL(cVal, c.a);
-                const data::Mesh::normal_t fVal = static_cast<data::Mesh::normal_t>(count);
+                const auto fVal = static_cast<data::Mesh::normal_t>(count);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, n.nx, EPSILON);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, n.ny, EPSILON);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, n.nz, EPSILON);
@@ -318,13 +315,13 @@ void MeshTest::insertion()
         data::Mesh::sptr mesh = data::Mesh::New();
         mesh->reserve(NB_POINTS, NB_CELLS, CELL_TYPE1, ATTRIBUTES_ARRAY);
         const auto lock                               = mesh->dump_lock();
-        const std::size_t pointNormalsAllocatedSize   = NB_POINTS * 3 * sizeof(data::Mesh::normal_t);
-        const std::size_t pointColorsAllocatedSize    = NB_POINTS * 4 * sizeof(data::Mesh::color_t);
-        const std::size_t pointTexCoordsAllocatedSize = NB_POINTS * 2 * sizeof(data::Mesh::texcoord_t);
-        const std::size_t pointPositionAllocatedSize  = NB_POINTS * 3 * sizeof(data::Mesh::position_t);
+        const std::size_t pointNormalsAllocatedSize   = NB_POINTS * 3LL * sizeof(data::Mesh::normal_t);
+        const std::size_t pointColorsAllocatedSize    = NB_POINTS * 4LL * sizeof(data::Mesh::color_t);
+        const std::size_t pointTexCoordsAllocatedSize = NB_POINTS * 2LL * sizeof(data::Mesh::texcoord_t);
+        const std::size_t pointPositionAllocatedSize  = NB_POINTS * 3LL * sizeof(data::Mesh::position_t);
 
         // data::Mesh::CellType::TRIANGLE;
-        const std::size_t cellDataAllocatedSize = NB_CELLS * 3 * sizeof(data::Mesh::cell_t);
+        const std::size_t cellDataAllocatedSize = NB_CELLS * 3LL * sizeof(data::Mesh::cell_t);
 
         const std::size_t pointSize = pointPositionAllocatedSize + cellDataAllocatedSize
                                       + pointNormalsAllocatedSize + pointColorsAllocatedSize
@@ -339,9 +336,9 @@ void MeshTest::insertion()
         {
             const auto id = mesh->pushCell(i, i + 1, i + 2);
 
-            const data::Mesh::color_t val                         = static_cast<data::Mesh::color_t>(i);
+            const auto val                                        = static_cast<data::Mesh::color_t>(i);
             const std::array<data::Mesh::color_t, 4> color        = {val, val, val, val};
-            const float floatVal                                  = static_cast<float>(i);
+            const auto floatVal                                   = static_cast<float>(i);
             const std::array<data::Mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
             const std::array<data::Mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
             mesh->setCellColor(id, color);
@@ -349,7 +346,7 @@ void MeshTest::insertion()
             mesh->setCellTexCoord(id, texCoords);
         }
 
-        using namespace data::iterator;
+        namespace cell = iterator::cell;
         {
             const auto range = mesh->czip_range<cell::triangle, cell::nxyz, cell::rgba, cell::uv>();
 
@@ -360,13 +357,13 @@ void MeshTest::insertion()
                 CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(count + 1), p.pt[1]);
                 CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(count + 2), p.pt[2]);
 
-                const data::Mesh::color_t cVal = static_cast<data::Mesh::color_t>(count);
+                const auto cVal = static_cast<data::Mesh::color_t>(count);
                 CPPUNIT_ASSERT_EQUAL(cVal, c.r);
                 CPPUNIT_ASSERT_EQUAL(cVal, c.g);
                 CPPUNIT_ASSERT_EQUAL(cVal, c.b);
                 CPPUNIT_ASSERT_EQUAL(cVal, c.a);
 
-                const data::Mesh::normal_t fVal = static_cast<data::Mesh::normal_t>(count);
+                const auto fVal = static_cast<data::Mesh::normal_t>(count);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, n.nx, EPSILON);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, n.ny, EPSILON);
                 CPPUNIT_ASSERT_DOUBLES_EQUAL(fVal, n.nz, EPSILON);
@@ -420,14 +417,14 @@ void MeshTest::copy()
     mesh->pushCell(1, 3, 4, 5);
     mesh->pushCell(1, 2, 5, 4);
 
-    data::Mesh::cell_t pt1[4] = {3, 6, 5, 1};
-    mesh->pushCell(pt1, 4);
+    std::array<data::Mesh::cell_t, 4> pt1 = {3, 6, 5, 1};
+    mesh->pushCell(std::vector(pt1.begin(), pt1.end()));
 
-    data::Mesh::cell_t pt2[4] = {1, 3, 5, 7};
-    mesh->pushCell(pt2, 4);
+    std::array<data::Mesh::cell_t, 4> pt2 = {1, 3, 5, 7};
+    mesh->pushCell(std::vector(pt2.begin(), pt2.end()));
 
-    data::Mesh::cell_t pt3[4] = {7, 2, 5, 4};
-    mesh->pushCell(pt3, 4);
+    std::array<data::Mesh::cell_t, 4> pt3 = {7, 2, 5, 4};
+    mesh->pushCell(std::vector(pt3.begin(), pt3.end()));
 
     mesh->resize(
         mesh->numPoints(),
@@ -436,7 +433,25 @@ void MeshTest::copy()
         data::Mesh::Attributes::POINT_COLORS | data::Mesh::Attributes::POINT_TEX_COORDS
     );
 
-    using namespace data::iterator;
+    for(data::Mesh::size_t i = 0 ; i < mesh->numPoints() ; ++i)
+    {
+        mesh->setPointColor(
+            data::Mesh::point_t(i),
+            data::Mesh::color_t(i + 1),
+            data::Mesh::color_t(i + 2),
+            data::Mesh::color_t(i + 3),
+            data::Mesh::color_t(i + 4)
+        );
+
+        mesh->setPointTexCoord(
+            data::Mesh::point_t(i),
+            1.0F / (data::Mesh::texcoord_t(i) + 1.0F),
+            1.0F / (data::Mesh::texcoord_t(i) + 2.0F)
+        );
+    }
+
+    namespace point = data::iterator::point;
+    namespace cell  = data::iterator::cell;
 
     // check deep copy
     {
@@ -455,9 +470,9 @@ void MeshTest::copy()
 
         for( ; pointItr != pointEnd ; ++pointItr, ++pointItrCopyMesh)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointItr->x, pointItrCopyMesh->x, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointItr->y, pointItrCopyMesh->y, EPSILON);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(pointItr->z, pointItrCopyMesh->z, EPSILON);
+            CPPUNIT_ASSERT_EQUAL(pointItr->x, pointItrCopyMesh->x);
+            CPPUNIT_ASSERT_EQUAL(pointItr->y, pointItrCopyMesh->y);
+            CPPUNIT_ASSERT_EQUAL(pointItr->z, pointItrCopyMesh->z);
         }
 
         const sight::data::Mesh::csptr mesh3 = mesh; // copy into a const pointer to explicit test const begin()
@@ -500,7 +515,7 @@ void MeshTest::copy()
 
             const auto& [i1, c1, t1] = *cellItr;
             const auto& [i2, c2, t2] = *cellItrCopyMesh;
-            CPPUNIT_ASSERT_EQUAL(&i1.pt[0], &i2.pt[0]);
+            CPPUNIT_ASSERT_EQUAL((i1.pt).data(), (i2.pt).data());
             CPPUNIT_ASSERT_EQUAL(&c1.r, &c2.r);
             CPPUNIT_ASSERT_EQUAL(&t1.u, &t2.u);
         }
@@ -524,7 +539,7 @@ void MeshTest::allocationTest()
     CPPUNIT_ASSERT_EQUAL(static_cast<data::Mesh::size_t>(1), mesh->numCells());
 
     CPPUNIT_ASSERT_EQUAL(
-        std::size_t(3 * 3 * sizeof(data::Mesh::position_t) + 3 * sizeof(data::Mesh::cell_t)),
+        std::size_t(3LL * 3 * sizeof(data::Mesh::position_t) + 3 * sizeof(data::Mesh::cell_t)),
         mesh->getDataSizeInBytes()
     );
 
@@ -532,8 +547,8 @@ void MeshTest::allocationTest()
     data::Mesh::size_t cellSize  = 2000;
     mesh->reserve(pointSize, cellSize, data::Mesh::CellType::TRIANGLE);
 
-    const std::size_t pointPositionAllocatedSize = pointSize * 3 * sizeof(data::Mesh::position_t);
-    const std::size_t cellDataAllocatedSize      = cellSize * 3 * sizeof(data::Mesh::cell_t);
+    const std::size_t pointPositionAllocatedSize = pointSize * 3LL * sizeof(data::Mesh::position_t);
+    const std::size_t cellDataAllocatedSize      = cellSize * 3LL * sizeof(data::Mesh::cell_t);
 
     CPPUNIT_ASSERT_EQUAL(
         pointPositionAllocatedSize + cellDataAllocatedSize,
@@ -559,9 +574,9 @@ void MeshTest::allocationTest()
         | data::Mesh::Attributes::POINT_COLORS | data::Mesh::Attributes::POINT_TEX_COORDS
     );
 
-    const std::size_t pointNormalsAllocatedSize   = pointSize * 3 * sizeof(data::Mesh::normal_t);
-    const std::size_t pointColorsAllocatedSize    = pointSize * 4 * sizeof(data::Mesh::color_t);
-    const std::size_t pointTexCoordsAllocatedSize = pointSize * 2 * sizeof(data::Mesh::texcoord_t);
+    const std::size_t pointNormalsAllocatedSize   = pointSize * 3LL * sizeof(data::Mesh::normal_t);
+    const std::size_t pointColorsAllocatedSize    = pointSize * 4LL * sizeof(data::Mesh::color_t);
+    const std::size_t pointTexCoordsAllocatedSize = pointSize * 2LL * sizeof(data::Mesh::texcoord_t);
     CPPUNIT_ASSERT_EQUAL(
         pointPositionAllocatedSize + cellDataAllocatedSize
         + pointNormalsAllocatedSize + pointColorsAllocatedSize + pointTexCoordsAllocatedSize,
@@ -652,12 +667,12 @@ void MeshTest::iteratorTest()
 
     for(data::Mesh::size_t i = 0 ; i < NB_POINTS ; ++i)
     {
-        const std::uint8_t val                                = static_cast<uint8_t>(i);
+        const auto val                                        = static_cast<uint8_t>(i);
         const std::array<data::Mesh::color_t, 4> color        = {val, val, val, val};
-        const float floatVal                                  = static_cast<float>(i);
+        const auto floatVal                                   = static_cast<float>(i);
         const std::array<data::Mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
         const std::array<data::Mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
-        const std::size_t value                               = 3 * i;
+        const std::size_t value                               = std::size_t(3) * i;
         mesh->setPoint(i, static_cast<float>(value), static_cast<float>(value + 1), static_cast<float>(value + 2));
         mesh->setPointColor(i, color);
         mesh->setPointNormal(i, normal);
@@ -668,9 +683,9 @@ void MeshTest::iteratorTest()
     {
         mesh->setCell(i, i, i + 1, i + 2);
 
-        const data::Mesh::color_t val                         = static_cast<data::Mesh::color_t>(i);
+        const auto val                                        = static_cast<data::Mesh::color_t>(i);
         const std::array<data::Mesh::color_t, 4> color        = {val, val, val, val};
-        const float floatVal                                  = static_cast<float>(i);
+        const auto floatVal                                   = static_cast<float>(i);
         const std::array<data::Mesh::normal_t, 3> normal      = {floatVal, floatVal, floatVal};
         const std::array<data::Mesh::texcoord_t, 2> texCoords = {floatVal, floatVal};
         mesh->setCellColor(i, color);
@@ -678,25 +693,26 @@ void MeshTest::iteratorTest()
         mesh->setCellTexCoord(i, texCoords);
     }
 
-    using namespace data::iterator;
+    namespace point = iterator::point;
+    namespace cell  = iterator::cell;
     {
         auto range = mesh->czip_range<point::xyz, point::nxyz, point::rgba, point::uv>();
 
         data::Mesh::size_t count = 0;
         for(const auto& [p, n, c, uv] : range)
         {
-            const float fValue = static_cast<float>(3 * count);
+            const auto fValue = static_cast<float>(3 * count);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue, p.x, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue + 1, p.y, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue + 2, p.z, EPSILON);
 
-            const data::Mesh::color_t cVal = static_cast<data::Mesh::color_t>(count);
+            const auto cVal = static_cast<data::Mesh::color_t>(count);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.r);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.g);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.b);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.a);
 
-            const data::Mesh::normal_t fVal = static_cast<data::Mesh::normal_t>(count);
+            const auto fVal = static_cast<data::Mesh::normal_t>(count);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nx, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.ny, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nz, EPSILON);
@@ -721,28 +737,28 @@ void MeshTest::iteratorTest()
             begin,
             end,
             [&](const auto& it)
-                {
-                    const auto& [p, n, c, uv] = it;
-                    --count;
-                    const float fValue = static_cast<float>(3 * count);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fValue, p.x, EPSILON);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fValue + 1, p.y, EPSILON);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fValue + 2, p.z, EPSILON);
+            {
+                const auto& [p, n, c, uv] = it;
+                --count;
+                const auto fValue = static_cast<float>(3 * count);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fValue, p.x, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fValue + 1, p.y, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fValue + 2, p.z, EPSILON);
 
-                    const data::Mesh::color_t cVal = static_cast<data::Mesh::color_t>(count);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.r);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.g);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.b);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.a);
+                const auto cVal = static_cast<data::Mesh::color_t>(count);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.r);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.g);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.b);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.a);
 
-                    const data::Mesh::normal_t fVal = static_cast<data::Mesh::normal_t>(count);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nx, EPSILON);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.ny, EPSILON);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nz, EPSILON);
+                const auto fVal = static_cast<data::Mesh::normal_t>(count);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nx, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.ny, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nz, EPSILON);
 
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.u, EPSILON);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.v, EPSILON);
-                });
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.u, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.v, EPSILON);
+            });
 
         CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(0), count);
     }
@@ -757,13 +773,13 @@ void MeshTest::iteratorTest()
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), static_cast<data::Mesh::size_t>(count + 1), p.pt[1]);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), static_cast<data::Mesh::size_t>(count + 2), p.pt[2]);
 
-            const data::Mesh::color_t cVal = static_cast<data::Mesh::color_t>(count);
+            const auto cVal = static_cast<data::Mesh::color_t>(count);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.r);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.g);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.b);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.a);
 
-            const data::Mesh::normal_t fVal = static_cast<data::Mesh::normal_t>(count);
+            const auto fVal = static_cast<data::Mesh::normal_t>(count);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nx, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.ny, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nz, EPSILON);
@@ -787,40 +803,40 @@ void MeshTest::iteratorTest()
             begin,
             end,
             [&](const auto& it)
-                {
-                    const auto& [p, n, c, uv] = it;
+            {
+                const auto& [p, n, c, uv] = it;
 
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                        msg(count),
-                        static_cast<data::Mesh::size_t>(NB_CELLS - 1 - count),
-                        p.pt[0]
-                    );
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                        msg(count),
-                        static_cast<data::Mesh::size_t>(NB_CELLS - 1 - count + 1),
-                        p.pt[1]
-                    );
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                        msg(count),
-                        static_cast<data::Mesh::size_t>(NB_CELLS - 1 - count + 2),
-                        p.pt[2]
-                    );
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(
+                    msg(count),
+                    static_cast<data::Mesh::size_t>(NB_CELLS - 1 - count),
+                    p.pt[0]
+                );
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(
+                    msg(count),
+                    static_cast<data::Mesh::size_t>(NB_CELLS - 1 - count + 1),
+                    p.pt[1]
+                );
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(
+                    msg(count),
+                    static_cast<data::Mesh::size_t>(NB_CELLS - 1 - count + 2),
+                    p.pt[2]
+                );
 
-                    const data::Mesh::color_t cVal = static_cast<data::Mesh::color_t>(NB_CELLS - 1 - count);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.r);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.g);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.b);
-                    CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.a);
+                const auto cVal = static_cast<data::Mesh::color_t>(NB_CELLS - 1 - count);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.r);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.g);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.b);
+                CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.a);
 
-                    const data::Mesh::normal_t fVal = static_cast<data::Mesh::normal_t>(NB_CELLS - 1 - count);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nx, EPSILON);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.ny, EPSILON);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nz, EPSILON);
+                const auto fVal = static_cast<data::Mesh::normal_t>(NB_CELLS - 1 - count);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nx, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.ny, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nz, EPSILON);
 
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.u, EPSILON);
-                    CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.v, EPSILON);
-                    ++count;
-                });
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.u, EPSILON);
+                CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, uv.v, EPSILON);
+                ++count;
+            });
 
         CPPUNIT_ASSERT_EQUAL(mesh->numCells(), count);
     }
@@ -864,13 +880,13 @@ void MeshTest::iteratorTest()
                 p.pt[2]
             );
 
-            const data::Mesh::color_t cVal = static_cast<data::Mesh::color_t>(NB_CELLS - 1 - count);
+            const auto cVal = static_cast<data::Mesh::color_t>(NB_CELLS - 1 - count);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.r);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.g);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.b);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), cVal, c.a);
 
-            const data::Mesh::normal_t fVal =
+            const auto fVal =
                 static_cast<data::Mesh::normal_t>(NB_CELLS - 1 - count);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.nx, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), fVal, n.ny, EPSILON);
@@ -950,7 +966,7 @@ void MeshTest::iteratorTest()
         data::Mesh::size_t count = 0;
         for(const auto& [p, n, c, uv] : range)
         {
-            const float fValue = static_cast<float>(3 * count);
+            const auto fValue = static_cast<float>(3 * count);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue, p.x, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue + 1, p.y, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL(fValue + 2, p.z, EPSILON);
@@ -960,12 +976,12 @@ void MeshTest::iteratorTest()
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), 4 * count + 2, static_cast<data::Mesh::size_t>(c.b));
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), 4 * count + 3, static_cast<data::Mesh::size_t>(c.a));
 
-            const data::Mesh::normal_t nVal = static_cast<data::Mesh::normal_t>(3 * count);
+            const auto nVal = static_cast<data::Mesh::normal_t>(3 * count);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), nVal + 1, n.nx, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), nVal + 2, n.ny, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), nVal + 3, n.nz, EPSILON);
 
-            const data::Mesh::normal_t uvVal = static_cast<data::Mesh::normal_t>(2 * count);
+            const auto uvVal = static_cast<data::Mesh::normal_t>(2 * count);
 
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uvVal, uv.u, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uvVal + 1, uv.v, EPSILON);
@@ -991,12 +1007,12 @@ void MeshTest::iteratorTest()
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), 4 * count + 2, static_cast<data::Mesh::size_t>(c.b));
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), 4 * count + 3, static_cast<data::Mesh::size_t>(c.a));
 
-            const data::Mesh::normal_t nVal = static_cast<data::Mesh::normal_t>(3 * count);
+            const auto nVal = static_cast<data::Mesh::normal_t>(3 * count);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), nVal + 1, n.nx, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), nVal + 2, n.ny, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), nVal + 3, n.nz, EPSILON);
 
-            const data::Mesh::normal_t uvVal = static_cast<data::Mesh::normal_t>(2 * count);
+            const auto uvVal = static_cast<data::Mesh::normal_t>(2 * count);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uvVal, uv.u, EPSILON);
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uvVal + 1, uv.v, EPSILON);
 
@@ -1028,7 +1044,8 @@ void MeshTest::iteratorCopyTest()
 
     const auto lock = mesh->dump_lock();
 
-    using namespace data::iterator;
+    namespace point = iterator::point;
+    namespace cell  = iterator::cell;
     {
         //fill the mesh
         auto range = mesh->zip_range<point::xyz, point::nxyz, point::rgba, point::uv, cell::point, cell::nxyz,
@@ -1039,35 +1056,35 @@ void MeshTest::iteratorCopyTest()
         {
             // point
             p.x = static_cast<float>(count);
-            p.y = static_cast<float>(count) + 0.6f;
-            p.z = static_cast<float>(count) + 0.8f;
+            p.y = static_cast<float>(count) + 0.6F;
+            p.z = static_cast<float>(count) + 0.8F;
 
-            n.nx = static_cast<float>(count) + 0.1f;
-            n.ny = static_cast<float>(count) + 0.2f;
-            n.nz = static_cast<float>(count) + 0.3f;
+            n.nx = static_cast<float>(count) + 0.1F;
+            n.ny = static_cast<float>(count) + 0.2F;
+            n.nz = static_cast<float>(count) + 0.3F;
 
             c.r = static_cast<std::uint8_t>(4 * count);
             c.g = static_cast<std::uint8_t>(4 * count + 1);
             c.b = static_cast<std::uint8_t>(4 * count + 2);
             c.a = static_cast<std::uint8_t>(4 * count + 3);
 
-            uv.u = static_cast<float>(count) + 0.7f;
-            uv.v = static_cast<float>(count) + 0.9f;
+            uv.u = static_cast<float>(count) + 0.7F;
+            uv.v = static_cast<float>(count) + 0.9F;
 
             // cell
             cell.pt = count;
 
-            cn.nx = static_cast<float>(count) + 0.11f;
-            cn.ny = static_cast<float>(count) + 0.22f;
-            cn.nz = static_cast<float>(count) + 0.33f;
+            cn.nx = static_cast<float>(count) + 0.11F;
+            cn.ny = static_cast<float>(count) + 0.22F;
+            cn.nz = static_cast<float>(count) + 0.33F;
 
             cc.r = static_cast<std::uint8_t>(4 * count + 1);
             cc.g = static_cast<std::uint8_t>(4 * count + 2);
             cc.b = static_cast<std::uint8_t>(4 * count + 3);
             cc.a = static_cast<std::uint8_t>(4 * count + 4);
 
-            cuv.u = static_cast<float>(count) + 0.77f;
-            cuv.v = static_cast<float>(count) + 0.99f;
+            cuv.u = static_cast<float>(count) + 0.77F;
+            cuv.v = static_cast<float>(count) + 0.99F;
 
             ++count;
         }
@@ -1085,12 +1102,12 @@ void MeshTest::iteratorCopyTest()
         {
             // point
             CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count), p.x, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.6f, p.y, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.8f, p.z, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.6F, p.y, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.8F, p.z, 0.00001);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.1f, n.nx, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.2f, n.ny, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.3f, n.nz, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.1F, n.nx, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.2F, n.ny, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.3F, n.nz, 0.00001);
 
             CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(4 * count), c.r);
             CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(4 * count + 1), c.g);
@@ -1103,9 +1120,9 @@ void MeshTest::iteratorCopyTest()
             // cell
             CPPUNIT_ASSERT_EQUAL(count, cell.pt);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.11f, cn.nx, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.22f, cn.ny, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.33f, cn.nz, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.11F, cn.nx, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.22F, cn.ny, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL(static_cast<float>(count) + 0.33F, cn.nz, 0.00001);
 
             CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(4 * count + 1), cc.r);
             CPPUNIT_ASSERT_EQUAL(static_cast<std::uint8_t>(4 * count + 2), cc.g);
@@ -1163,35 +1180,35 @@ void MeshTest::iteratorCopyTest()
             const auto& [p2, n2, c2, uv2, cell2, cn2, cc2, cuv2] = pt2;
 
             // point
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), p1.x, p2.x, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), p1.y, p2.y, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), p1.z, p2.z, 0.00001);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), p1.x, p2.x);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), p1.y, p2.y);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), p1.z, p2.z);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n1.nx, n2.nx, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n1.ny, n2.ny, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n1.nz, n2.nz, 0.00001);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), n1.nx, n2.nx);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), n1.ny, n2.ny);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), n1.nz, n2.nz);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.r, c2.r);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.g, c2.g);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.b, c2.b);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.a, c2.a);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uv1.u, uv2.u, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uv1.v, uv2.v, 0.00001);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), uv1.u, uv2.u);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), uv1.v, uv2.v);
 
             // cell
             CPPUNIT_ASSERT_EQUAL(cell1.pt, cell2.pt);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cn1.nx, cn2.nx, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cn1.ny, cn2.ny, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cn1.nz, cn2.nz, 0.00001);
+            CPPUNIT_ASSERT_EQUAL(cn1.nx, cn2.nx);
+            CPPUNIT_ASSERT_EQUAL(cn1.ny, cn2.ny);
+            CPPUNIT_ASSERT_EQUAL(cn1.nz, cn2.nz);
 
             CPPUNIT_ASSERT_EQUAL(cc1.r, cc2.r);
             CPPUNIT_ASSERT_EQUAL(cc1.g, cc2.g);
             CPPUNIT_ASSERT_EQUAL(cc1.b, cc2.b);
             CPPUNIT_ASSERT_EQUAL(cc1.a, cc2.a);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cuv1.u, cuv2.u, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cuv1.v, cuv2.v, 0.00001);
+            CPPUNIT_ASSERT_EQUAL(cuv1.u, cuv2.u);
+            CPPUNIT_ASSERT_EQUAL(cuv1.v, cuv2.v);
 
             ++count;
         }
@@ -1206,14 +1223,14 @@ void MeshTest::iteratorCopyTest()
                                      cell::point, cell::nxyz, cell::rgba, cell::uv>();
 
         auto point = boost::make_tuple(
-            data::iterator::point::xyz({1.0f, 1.1f, 1.2f}),
-            data::iterator::point::nxyz({1.f, 0.f, 0.f}),
+            data::iterator::point::xyz({1.0F, 1.1F, 1.2F}),
+            data::iterator::point::nxyz({1.F, 0.F, 0.F}),
             data::iterator::point::rgba({25, 15, 18, 32}),
-            data::iterator::point::uv({0.5f, 1.f}),
+            data::iterator::point::uv({0.5F, 1.F}),
             data::iterator::cell::point({0}),
-            data::iterator::cell::nxyz({0.f, 1.f, 0.f}),
+            data::iterator::cell::nxyz({0.F, 1.F, 0.F}),
             data::iterator::cell::rgba({20, 13, 10, 37}),
-            data::iterator::cell::uv({0.2f, 0.8f})
+            data::iterator::cell::uv({0.2F, 0.8F})
         );
         std::fill(range.begin(), range.end(), point);
 
@@ -1224,35 +1241,35 @@ void MeshTest::iteratorCopyTest()
         for(const auto& [p1, n1, c1, uv1, cell1, cn1, cc1, cuv1] : range)
         {
             // point
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), p1.x, p2.x, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), p1.y, p2.y, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), p1.z, p2.z, 0.00001);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), p1.x, p2.x);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), p1.y, p2.y);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), p1.z, p2.z);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n1.nx, n2.nx, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n1.ny, n2.ny, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), n1.nz, n2.nz, 0.00001);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), n1.nx, n2.nx);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), n1.ny, n2.ny);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), n1.nz, n2.nz);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.r, c2.r);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.g, c2.g);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.b, c2.b);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), c1.a, c2.a);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uv1.u, uv2.u, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), uv1.v, uv2.v, 0.00001);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), uv1.u, uv2.u);
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), uv1.v, uv2.v);
 
             // cell
             CPPUNIT_ASSERT_EQUAL(cell1.pt, cell2.pt);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cn1.nx, cn2.nx, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cn1.ny, cn2.ny, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cn1.nz, cn2.nz, 0.00001);
+            CPPUNIT_ASSERT_EQUAL(cn1.nx, cn2.nx);
+            CPPUNIT_ASSERT_EQUAL(cn1.ny, cn2.ny);
+            CPPUNIT_ASSERT_EQUAL(cn1.nz, cn2.nz);
 
             CPPUNIT_ASSERT_EQUAL(cc1.r, cc2.r);
             CPPUNIT_ASSERT_EQUAL(cc1.g, cc2.g);
             CPPUNIT_ASSERT_EQUAL(cc1.b, cc2.b);
             CPPUNIT_ASSERT_EQUAL(cc1.a, cc2.a);
 
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cuv1.u, cuv2.u, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(cuv1.v, cuv2.v, 0.00001);
+            CPPUNIT_ASSERT_EQUAL(cuv1.u, cuv2.u);
+            CPPUNIT_ASSERT_EQUAL(cuv1.v, cuv2.v);
 
             ++count;
         }
@@ -1267,11 +1284,11 @@ void MeshTest::iteratorCopyTest()
         {
             // point
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count), p.x, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.6f, p.y, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.8f, p.z, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.1f, n.nx, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.2f, n.ny, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.3f, n.nz, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.6F, p.y, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.8F, p.z, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.1F, n.nx, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.2F, n.ny, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.3F, n.nz, 0.00001);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), static_cast<std::uint8_t>(4 * count), c.r);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), static_cast<std::uint8_t>(4 * count + 1), c.g);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), static_cast<std::uint8_t>(4 * count + 2), c.b);
@@ -1281,9 +1298,9 @@ void MeshTest::iteratorCopyTest()
 
             // cell
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), count, cell.pt);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.11f, cn.nx, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.22f, cn.ny, 0.00001);
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.33f, cn.nz, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.11F, cn.nx, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.22F, cn.ny, 0.00001);
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(msg(count), static_cast<float>(count) + 0.33F, cn.nz, 0.00001);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), static_cast<std::uint8_t>(4 * count + 1), cc.r);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), static_cast<std::uint8_t>(4 * count + 2), cc.g);
             CPPUNIT_ASSERT_EQUAL_MESSAGE(msg(count), static_cast<std::uint8_t>(4 * count + 3), cc.b);
@@ -1322,26 +1339,26 @@ void MeshTest::benchmarkIterator()
     auto fn2 = [](const auto& tuple)
                {
                    auto& [p, n] = tuple;
-                   p.x          = p.x > 2.f ? 5.f : 1.f;
-                   p.y          = 2.f;
-                   p.z          = 3.f;
-                   n.nx         = -1.f;
-                   n.ny         = -1.f;
-                   n.nz         = 1.f;
+                   p.x          = std::intptr_t(&p) % std::intptr_t(&n) == 0 ? 5.F : 1.F;
+                   p.y          = 2.F;
+                   p.z          = 3.F;
+                   n.nx         = -1.F;
+                   n.ny         = -1.F;
+                   n.nz         = 1.F;
                };
 
     auto fn3 = [](auto& p)
                {
-                   p.x = p.x > 2.f ? 5.f : 1.f;
-                   p.y = 2.f;
-                   p.z = 3.f;
+                   p.x = std::intptr_t(&p) % 2 == 0 ? 5.F : 1.F;
+                   p.y = 2.F;
+                   p.z = 3.F;
                };
 
     auto fn4 = [](auto& n)
                {
-                   n.nx = n.ny > 2.f ? 5.f : 1.f;
-                   n.ny = -1.f;
-                   n.nz = 1.f;
+                   n.nx = std::intptr_t(&n) % 2 == 0 ? 5.F : 1.F;
+                   n.ny = -1.F;
+                   n.nz = 1.F;
                };
 
     {
@@ -1372,18 +1389,16 @@ void MeshTest::benchmarkIterator()
             {
                 for(auto&& [p, n] : z)
                 {
-                    p.x  = p.x > 2.f ? 5.f : 1.f;
-                    p.y  = 2.f;
-                    p.z  = 3.f;
-                    n.nx = -1.f;
-                    n.ny = -1.f;
-                    n.nz = 1.f;
+                    p.x  = p.x > 2.F ? 5.F : 1.F;
+                    p.y  = 2.F;
+                    p.z  = 3.F;
+                    n.nx = -1.F;
+                    n.ny = -1.F;
+                    n.nz = 1.F;
                 }
             }
         }
     }
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

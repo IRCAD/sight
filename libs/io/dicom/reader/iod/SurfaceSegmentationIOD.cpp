@@ -39,13 +39,10 @@
 #include <gdcmSurfaceHelper.h>
 #include <gdcmSurfaceReader.h>
 
-namespace sight::io::dicom
-{
+#include <memory>
+#include <utility>
 
-namespace reader
-{
-
-namespace iod
+namespace sight::io::dicom::reader::iod
 {
 
 //------------------------------------------------------------------------------
@@ -64,8 +61,7 @@ SurfaceSegmentationIOD::SurfaceSegmentationIOD(
 //------------------------------------------------------------------------------
 
 SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -75,7 +71,7 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
     SIGHT_ASSERT("ModelSeries should not be null.", modelSeries);
 
     // Create GDCM Reader
-    SPTR(gdcm::SurfaceReader) reader = std::shared_ptr<gdcm::SurfaceReader>(new gdcm::SurfaceReader);
+    SPTR(gdcm::SurfaceReader) reader = std::make_shared<gdcm::SurfaceReader>();
 
     // Dicom container
     data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
@@ -104,15 +100,16 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
     );
 
     // Create Information Entity helpers
-    io::dicom::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient(), m_logger,
+    io::dicom::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                              m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series->getStudy(), m_logger,
+    io::dicom::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                          m_progressCallback, m_cancelRequestedCallback);
     io::dicom::reader::ie::Series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                            m_progressCallback, m_cancelRequestedCallback);
     // Use Image as frame of reference
-    io::dicom::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series->getEquipment(), m_logger,
+    io::dicom::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                                  m_progressCallback, m_cancelRequestedCallback);
+
     io::dicom::reader::ie::Surface surfaceIE(m_dicomSeries, reader, m_instance, modelSeries, m_logger,
                                              m_progressCallback, m_cancelRequestedCallback);
 
@@ -162,8 +159,4 @@ void SurfaceSegmentationIOD::read(data::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-} // namespace iod
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::iod

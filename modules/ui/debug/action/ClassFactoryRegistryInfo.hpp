@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,7 @@
 #include <QDialog>
 #include <QTreeWidget>
 
-namespace sight::module::ui::debug
-{
-
-namespace action
+namespace sight::module::ui::debug::action
 {
 
 /**
@@ -49,7 +46,7 @@ public:
     MODULE_UI_DEBUG_API ClassFactoryRegistryInfo() noexcept;
 
     /// Does nothing
-    MODULE_UI_DEBUG_API virtual ~ClassFactoryRegistryInfo() noexcept;
+    MODULE_UI_DEBUG_API ~ClassFactoryRegistryInfo() noexcept override;
 
 protected:
 
@@ -68,12 +65,10 @@ protected:
 private:
 
     /// Dialog shown on update method
-    QDialog* m_dialog;
+    QDialog* m_dialog {};
 
     /// Widget used to show association ( service impl , data impl )
-    QTreeWidget* m_tree;
+    QTreeWidget* m_tree {};
 };
 
-} // namespace action
-
-} // namespace sight::module::ui::debug
+} // namespace sight::module::ui::debug::action

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "data/config.hpp"
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
-#include <stdint.h>
+#include <cstdint>
 
 namespace sight::data::dicom
 {
@@ -49,11 +49,11 @@ public:
      * @param[in] rescaleIntercept Rescale intercept
      */
     DATA_API Image(
-        unsigned short samplesPerPixel,
-        unsigned short bitsAllocated,
-        unsigned short bitsStored,
-        unsigned short highBit,
-        unsigned short pixelRepresentation,
+        std::uint16_t samplesPerPixel,
+        std::uint16_t bitsAllocated,
+        std::uint16_t bitsStored,
+        std::uint16_t highBit,
+        std::uint16_t pixelRepresentation,
         double rescaleSlope,
         double rescaleIntercept
     );
@@ -62,30 +62,30 @@ public:
     DATA_API virtual ~Image();
 
     /// Find Image Type
-    DATA_API core::tools::Type findImageTypeFromMinMaxValues() const;
+    [[nodiscard]] DATA_API core::Type findImageTypeFromMinMaxValues() const;
 
 protected:
 
     /// Return minimum possible value of the pixel
-    DATA_API int64_t getPixelMin() const;
+    [[nodiscard]] DATA_API int64_t getPixelMin() const;
 
     /// Return maximum possible value of the pixel
-    DATA_API int64_t getPixelMax() const;
+    [[nodiscard]] DATA_API int64_t getPixelMax() const;
 
     /// Samples per pixel
-    unsigned short m_samplesPerPixel;
+    std::uint16_t m_samplesPerPixel;
 
     /// Bits allocated
-    unsigned short m_bitsAllocated;
+    std::uint16_t m_bitsAllocated;
 
     /// Bits stored
-    unsigned short m_bitsStored;
+    std::uint16_t m_bitsStored;
 
     /// High bit
-    unsigned short m_highBit;
+    std::uint16_t m_highBit;
 
     /// Pixel representation
-    unsigned short m_pixelRepresentation;
+    std::uint16_t m_pixelRepresentation;
 
     /// Rescale slope
     double m_rescaleSlope;
@@ -94,4 +94,4 @@ protected:
     double m_rescaleIntercept;
 };
 
-} //fwDicomTools
+} // namespace sight::data::dicom

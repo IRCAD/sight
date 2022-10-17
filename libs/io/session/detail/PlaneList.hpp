@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,23 +27,20 @@
 #include <data/PlaneList.hpp>
 #include <data/Point.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::PlaneList
+namespace sight::io::session::detail::PlaneList
 {
 
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto planeList = Helper::safeCast<data::PlaneList>(object);
+    const auto planeList = Helper::safe_cast<data::PlaneList>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::PlaneList>(tree, 1);
@@ -59,15 +56,15 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::PlaneList::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto planeList = Helper::safeCast<data::PlaneList>(object);
+    auto planeList = Helper::cast_or_create<data::PlaneList>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::PlaneList>(tree, 0, 1);
@@ -93,6 +90,4 @@ inline static data::PlaneList::sptr deserialize(
     return planeList;
 }
 
-} // namespace detail::PlaneList
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::PlaneList

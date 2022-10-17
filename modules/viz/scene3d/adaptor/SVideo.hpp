@@ -25,9 +25,9 @@
 #include "modules/viz/scene3d/config.hpp"
 
 #include <data/PointList.hpp>
-#include <data/TransferFunction.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/Texture.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
 
 #include <OGRE/OgreTexture.h>
@@ -135,10 +135,10 @@ private:
     void updatePL();
 
     /// SLOTS: whether to use or not bilinear filtering
-    void setFiltering(bool);
+    void setFiltering(bool /*filtering*/);
 
     /// SLOTS: whether to scale or not the video to occupy the whole viewport
-    void scale(bool);
+    void scale(bool /*value*/);
 
     /// Updates the current texture filtering option
     void updateTextureFiltering();
@@ -147,7 +147,7 @@ private:
     void clearEntity();
 
     /// Contains the Ogre texture used to store the image.
-    Ogre::TexturePtr m_texture;
+    sight::viz::scene3d::Texture::sptr m_texture;
 
     /// Contains the Ogre material used to display the video plane.
     Ogre::MaterialPtr m_material;
@@ -180,7 +180,7 @@ private:
     int m_previousViewportHeight {0};
 
     /// Defines the previous image type.
-    core::tools::Type m_previousType;
+    core::Type m_previousType;
 
     /// Contains the pointlist in the video space coordinates.
     data::PointList::sptr m_pointList {nullptr};
@@ -189,10 +189,10 @@ private:
     sight::viz::scene3d::IAdaptor::sptr m_pointListAdaptor {nullptr};
 
     /// Defines material's name used by the point list.
-    std::string m_materialTemplateName {""};
+    std::string m_materialTemplateName;
 
     /// Defines the attached texture adaptor UID used by the point list.
-    std::string m_textureName {""};
+    std::string m_textureName;
 
     /// Defines whether of not the video texture will use bilinear filtering
     bool m_filtering {false};
@@ -204,28 +204,28 @@ private:
     bool m_forcePlaneUpdate {false};
 
     /// Defines the billboards radius.
-    std::string m_radius {""};
+    std::string m_radius;
 
     /// Defines if label numbers are displayed.
-    std::string m_displayLabel {""};
+    std::string m_displayLabel;
 
     /// Defines the RGB color for the label point color.
-    std::string m_labelColor {""};
+    std::string m_labelColor;
 
     /// Defines the color of points.
-    std::string m_color {""};
+    std::string m_color;
 
     /// Defines if billboard will have a fixed size in screen space.
-    std::string m_fixedSize {""};
+    std::string m_fixedSize;
 
     /// Defines the mask for picking requests in the point list.
-    std::string m_queryFlags {""};
+    std::string m_queryFlags;
 
     /// Defines the TrueType font source file.
-    std::string m_fontSource {""};
+    std::string m_fontSource;
 
     /// Defines the font size in points.
-    std::string m_fontSize {""};
+    std::string m_fontSize;
 
     static constexpr std::string_view s_IMAGE_INPUT = "image";
     static constexpr std::string_view s_TF_INPUT    = "tf";

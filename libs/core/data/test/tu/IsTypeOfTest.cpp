@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,10 +34,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::IsTypeOfTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -115,6 +112,4 @@ void IsTypeOfTest::checkType()
     CPPUNIT_ASSERT(!dataTransferFunction->isA("sight::data::Image"));
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,10 @@
 
 #include <core/TimeStamp.hpp>
 
-#include <boost/preprocessor.hpp>
+#include <boost/preprocessor/cat.hpp>
+#include <boost/preprocessor/facilities/is_empty_variadic.hpp>
+#include <boost/preprocessor/if.hpp>
+#include <boost/preprocessor/variadic/elem.hpp>
 
 #include <chrono>
 #include <thread>

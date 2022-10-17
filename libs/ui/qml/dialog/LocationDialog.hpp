@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@
 #include <QString>
 #include <QUrl>
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 /**
@@ -80,7 +77,7 @@ private:
     std::vector<std::pair<std::string, std::string> > m_filters;
 
     /// helper to transform m_filters into qml encoding ("BMP and GIF files (*.bmp *.gif);;PNG files (*.png)"
-    const QStringList fileFilters();
+    QStringList fileFilters();
 
     std::string m_wildcard;
     core::location::ILocation::sptr m_location;
@@ -94,6 +91,4 @@ private:
     bool eventFilter(QObject* watched, QEvent* event) override;
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

@@ -22,9 +22,7 @@
 
 #include "Image.hpp"
 
-#include <core/tools/Combinatory.hpp>
 #include <core/tools/Dispatcher.hpp>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
 namespace sight::filter::image
 {
@@ -47,8 +45,8 @@ struct RoiApplier
     template<typename ROI_TYPE>
     void operator()(RoiApplierParam& p)
     {
-        typedef IMAGE_TYPE ImgType;
-        typedef ROI_TYPE RoiType;
+        using ImgType = IMAGE_TYPE;
+        using RoiType = ROI_TYPE;
 
         SIGHT_ASSERT("Null image pointer", p.img && p.roi);
 
@@ -95,8 +93,6 @@ void applyRoi(data::Image::sptr image, data::Image::sptr roi)
     SIGHT_ASSERT("Null image pointers", image && roi);
     SIGHT_ASSERT("Images have different size", image->getSize() == roi->getSize());
 
-    using namespace boost;
-
     RoiApplierParam param;
     param.img = image;
     param.roi = roi;
@@ -115,7 +111,7 @@ struct RoiTesterParam
     data::Image::sptr img;
     data::Image::sptr imgRoiApplied;
     data::Image::sptr roi;
-    bool result;
+    bool result {};
 };
 
 //------------------------------------------------------------------------------
@@ -131,8 +127,8 @@ struct RoiTester
         bool& result = p.result;
         result = true;
 
-        typedef IMAGE_TYPE ImgType;
-        typedef ROI_TYPE RoiType;
+        using ImgType = IMAGE_TYPE;
+        using RoiType = ROI_TYPE;
 
         const auto imgDumpLock           = p.img->dump_lock();
         const auto imgRoiAppliedDumpLock = p.imgRoiApplied->dump_lock();

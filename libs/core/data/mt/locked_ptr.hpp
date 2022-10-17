@@ -30,10 +30,7 @@
 
 #include <type_traits>
 
-namespace sight::data
-{
-
-namespace mt
+namespace sight::data::mt
 {
 
 template<class DATATYPE>
@@ -46,139 +43,166 @@ class weak_ptr;
 template<class DATATYPE>
 class locked_ptr final
 {
+using Lock = std::conditional_t<std::is_const_v<DATATYPE>, core::mt::ReadLock, core::mt::WriteLock>;
+
 public:
 
     /// Constructor
-    explicit inline locked_ptr(const std::shared_ptr<DATATYPE>& data) noexcept :
-        m_data(data),
-        m_dump_locks(data)
+    explicit constexpr locked_ptr(const std::shared_ptr<DATATYPE>& data) noexcept :
+        m_data(data)
     {
         if(m_data)
         {
-            m_locker = std::conditional_t<std::is_const<DATATYPE>::value, core::mt::ReadLock,
-                                          core::mt::WriteLock>(data->getMutex());
+            m_locker = Lock(m_data->getMutex());
+
+            if constexpr(std::is_base_of_v<core::memory::IBuffered, DATATYPE>)
+            {
+                m_dump_locks = m_data->dump_lock();
+            }
+            else if(const auto& buffered = std::dynamic_pointer_cast<const core::memory::IBuffered>(m_data); buffered)
+            {
+                m_dump_locks = buffered->dump_lock();
+            }
+
+            if constexpr(!std::is_const<DATATYPE>::value)
+            {
+                m_data->setModified();
+            }
         }
     }
 
     /// Constructor
-    explicit inline locked_ptr(const std::weak_ptr<DATATYPE>& data) noexcept :
+    explicit constexpr locked_ptr(const std::weak_ptr<DATATYPE>& data) noexcept :
         locked_ptr(data.lock())
     {
     }
 
     /// Constructor
-    explicit inline locked_ptr(const weak_ptr<DATATYPE>& data) noexcept :
+    explicit constexpr locked_ptr(const weak_ptr<DATATYPE>& data) noexcept :
         locked_ptr(data.lock())
     {
     }
 
     /// Assignment operator
-    inline locked_ptr& operator=(const std::shared_ptr<DATATYPE>& data) noexcept
+    constexpr locked_ptr& operator=(const std::shared_ptr<DATATYPE>& data) noexcept
     {
         if(data != m_data)
         {
-            if(m_data)
+            if(data)
             {
-                m_locker.unlock();
+                if constexpr(std::is_base_of_v<core::memory::IBuffered, DATATYPE>)
+                {
+                    m_dump_locks = data->dump_lock();
+                }
+                else if(const auto& buffered = std::dynamic_pointer_cast<const core::memory::IBuffered>(data); buffered)
+                {
+                    m_dump_locks = buffered->dump_lock();
+                }
+                else
+                {
+                    m_dump_locks.clear();
+                }
+
+                m_locker = Lock(data->getMutex());
+            }
+            else
+            {
+                m_dump_locks.clear();
+                m_locker.reset();
             }
 
             m_data = data;
-            if(m_data)
-            {
-                m_locker = std::conditional_t<std::is_const<DATATYPE>::value, core::mt::ReadLock,
-                                              core::mt::WriteLock>(data->getMutex());
-            }
-
-            m_dump_locks = dump_locks<DATATYPE>(data);
         }
 
         return *this;
     }
 
     /// Assignment operator
-    inline locked_ptr& operator=(const std::weak_ptr<DATATYPE>& data) noexcept
+    constexpr locked_ptr& operator=(const std::weak_ptr<DATATYPE>& data) noexcept
     {
-        return this->operator=(data.lock());
+        this->operator=(data.lock());
+        return *this;
     }
 
     /// Assignment operator
-    inline locked_ptr& operator=(const weak_ptr<DATATYPE>& data) noexcept
+    constexpr locked_ptr& operator=(const weak_ptr<DATATYPE>& data) noexcept
     {
-        return this->operator=(data.lock());
+        this->operator=(data.lock());
+        return *this;
     }
 
     /// Default constructors, destructor and assignment operators
-    locked_ptr()                             = default;
-    locked_ptr(const locked_ptr&)            = default;
-    locked_ptr(locked_ptr&&)                 = default;
-    locked_ptr& operator=(const locked_ptr&) = default;
-    locked_ptr& operator=(locked_ptr&&)      = default;
-    ~locked_ptr()                            = default;
+    constexpr locked_ptr()                             = default;
+    constexpr locked_ptr(const locked_ptr&)            = default;
+    constexpr locked_ptr(locked_ptr&&)                 = default;
+    constexpr locked_ptr& operator=(const locked_ptr&) = default;
+    constexpr locked_ptr& operator=(locked_ptr&&)      = default;
+    inline ~locked_ptr()                               = default;
 
     /// Returns the internal shared pointer
-    inline std::shared_ptr<DATATYPE> get_shared() const noexcept
+    [[nodiscard]] constexpr std::shared_ptr<DATATYPE> get_shared() const noexcept
     {
         return m_data;
     }
 
     /// Returns a pointer to the hold data
-    inline DATATYPE* get() const noexcept
+    [[nodiscard]] constexpr DATATYPE* get() const noexcept
     {
         return m_data.get();
     }
 
     /// Returns a reference to the hold data
-    inline DATATYPE& operator*() const noexcept
+    constexpr DATATYPE& operator*() const noexcept
     {
-        return *(this->get());
+        return *(get());
     }
 
     /// Returns a pointer to the hold data
-    inline DATATYPE* operator->() const noexcept
+    constexpr DATATYPE* operator->() const noexcept
     {
-        return this->get();
+        return get();
     }
 
     /// Checks if *this stores a non-null pointer, i.e. whether get() != nullptr
-    inline explicit operator bool() const noexcept
+    constexpr explicit operator bool() const noexcept
     {
         return m_data.operator bool();
     }
 
     /// Allows to compare pointer address
-    inline bool operator==(const locked_ptr<DATATYPE>& data) const noexcept
+    constexpr bool operator==(const locked_ptr<DATATYPE>& data) const noexcept
     {
-        return this->get() == data.get();
+        return get() == data.get();
     }
 
     /// Allows to compare pointer address
-    inline bool operator!=(const locked_ptr<DATATYPE>& data) const noexcept
+    constexpr bool operator!=(const locked_ptr<DATATYPE>& data) const noexcept
     {
-        return this->get() != data.get();
+        return get() != data.get();
     }
 
     /// Allows to compare pointer address
-    inline bool operator==(const std::shared_ptr<DATATYPE>& data) const noexcept
+    constexpr bool operator==(const std::shared_ptr<DATATYPE>& data) const noexcept
     {
-        return this->get() == data.get();
+        return get() == data.get();
     }
 
     /// Allows to compare pointer address
-    inline bool operator!=(const std::shared_ptr<DATATYPE>& data) const noexcept
+    constexpr bool operator!=(const std::shared_ptr<DATATYPE>& data) const noexcept
     {
-        return this->get() != data.get();
+        return get() != data.get();
     }
 
     /// Allows to compare pointer address
-    inline bool operator==(const DATATYPE* data) const noexcept
+    constexpr bool operator==(const DATATYPE* data) const noexcept
     {
-        return this->get() == data;
+        return get() == data;
     }
 
     /// Allows to compare pointer address
-    inline bool operator!=(const DATATYPE* data) const noexcept
+    constexpr bool operator!=(const DATATYPE* data) const noexcept
     {
-        return this->get() != data;
+        return get() != data;
     }
 
 private:
@@ -187,43 +211,9 @@ private:
     std::shared_ptr<DATATYPE> m_data;
 
     /// Read lock if the data is const, write lock otherwise
-    typename std::conditional_t<std::is_const<DATATYPE>::value, core::mt::ReadLock,
-                                core::mt::WriteLock> m_locker;
+    Lock m_locker;
 
-    template<class C, class = void>
-    class dump_locks final
-    {
-    };
-
-    template<class C>
-    class dump_locks<C, typename std::enable_if_t<std::is_base_of_v<core::memory::IBuffered, C> > > final
-    {
-    friend locked_ptr;
-
-    inline explicit dump_locks(const std::shared_ptr<C>& data)
-    {
-        if(data)
-        {
-            m_Locks = data->dump_lock();
-        }
-    }
-
-    std::vector<core::memory::BufferObject::Lock> m_Locks;
-    };
-
-    template<class C>
-    class dump_locks<C, typename std::enable_if_t<!std::is_base_of_v<core::memory::IBuffered, C> > >
-    {
-    friend locked_ptr;
-
-    inline explicit dump_locks(const std::shared_ptr<C>&)
-    {
-    }
-    };
-
-    dump_locks<DATATYPE> m_dump_locks;
+    std::vector<core::memory::BufferObject::Lock> m_dump_locks;
 };
 
-} // namespace mt
-
-} // namespace sight::data
+} // namespace sight::data::mt

@@ -28,16 +28,13 @@
 #include <activity/extension/Activity.hpp>
 
 #include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 
+#include <data/Series.hpp>
 #include <data/Vector.hpp>
 
 #include <ui/base/IAction.hpp>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 /**
@@ -51,11 +48,11 @@ namespace activity
  * signals and launches the activity in a new tab.
  *
  * @section Slots Slots
- * - \b launchSeries(data::Series::sptr) : This slot allows to launch the series. If series is an
- *      ActivitySeries, it is launched, otherwise it launches the first available activity for this series or used
- *      m_quickLaunch information if a default association is defined for this series type. It sends the
- *      signal 'activityLaunched' with all the activity information.
- * - \b launchActivitySeries(data::ActivitySeries::sptr) : This slot allows to launch the given activity series.
+ * - \b launchSeries(data::Series::sptr) : This slot launches the first available activity for this series or uses
+ *   m_quickLaunch information if a default association is defined for this series type. It sends the signal
+ *   'activityLaunched' with all the activity information.
+ *
+ * - \b launchActivity(data::Activity::sptr) : This slot allows to launch the given activity.
  *   It sends the signal 'activityLaunched' with all the activity information.
  *
  * - \b updateState() : Updates action state (enable if activities are available for current selection).
@@ -74,7 +71,7 @@ namespace activity
                  Immediate mode starts and stop immediately the activity's config -->
             <mode>immediate</mode>
             <parameters>
-                <parameter replace="SERIESDB" by="medicalData" />
+                <parameter replace="SERIES_SET" by="medicalData" />
             </parameters>
 
             <!-- Filter mode 'include' allows all given activity id-s.
@@ -101,8 +98,7 @@ namespace activity
  * - \b mode (optional): there are two mode: "message" and "immediate"
  *    - \b message (used by default): the action send a signal containing the information needed to launch the
  *      chosen activity. The service '::module::ui::qt::editor::SDynamicView' allows to launch the activity in a new
- * tab. For
- *      that, it must listen the action signal.
+ *      tab. For that, it must listen the action signal.
  *    - \b immediate: the activity is automatically started et stopped by this action. It is used to run a process
  *      without creating a new tab, for example, to save the selected data.
  * - \b parameters (optional): list of the parameters used to launch the activity, it is the parameters for the
@@ -137,7 +133,7 @@ public:
      * @{
      */
     MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_LAUNCH_SERIES_SLOT;
-    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SERIES_SLOT;
+    MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_LAUNCH_ACTIVITY_SLOT;
     MODULE_UI_QT_API static const core::com::Slots::SlotKeyType s_UPDATE_STATE_SLOT;
 
     /// @}
@@ -193,8 +189,8 @@ protected:
 private:
 
     /**
-     * @brief Launches activity series if only ActivitySeries are selected.
-     * @return Returns true if only ActivitySeries are selected.
+     * @brief Launches activity if only Activity are selected.
+     * @return Returns true if only Activity are selected.
      */
     bool launchAS(const data::Vector::csptr& selection);
 
@@ -202,16 +198,16 @@ private:
      * @brief Slots to launch the given series.
      * @param series the activity is launched on this series.
      *
-     * If series is an ActivitySeries, it is launched, otherwise it launches the first available activity for
+     * If series is an Activity, it is launched, otherwise it launches the first available activity for
      * this series or used m_quickLaunch information if a default association is defined for this series type.
      */
     void launchSeries(data::Series::sptr series);
 
     /**
-     * @brief Slots to launch the given activity series.
-     * @param series the activity series to launch.
+     * @brief Slots to launch the given activity.
+     * @param series the activity to launch.
      */
-    void launchActivitySeries(data::ActivitySeries::sptr series);
+    void launchActivity(data::Activity::sptr activity);
 
     /**
      * @brief Send message to launch new tab view
@@ -233,7 +229,7 @@ private:
     typedef sight::activity::extension::Activity::ActivitiesType ActivityInfoContainer;
 
     /// Show custom dialog box
-    sight::activity::extension::ActivityInfo show(const ActivityInfoContainer& infos);
+    static sight::activity::extension::ActivityInfo show(const ActivityInfoContainer& infos);
 
     /// Returns enabled activity infos according to activity filter.
     ActivityInfoContainer getEnabledActivities(const ActivityInfoContainer& infos);
@@ -263,6 +259,4 @@ private:
     data::ptr<data::Vector, sight::data::Access::in> m_series {this, s_SERIES};
 };
 
-} //action
-
-} // gui
+} // namespace sight::module::ui::qt::activity

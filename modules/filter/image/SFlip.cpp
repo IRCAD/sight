@@ -47,8 +47,7 @@ SFlip::SFlip()
 //------------------------------------------------------------------------------
 
 SFlip::~SFlip()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -120,11 +119,10 @@ void SFlip::flipAxisZ()
 
 service::IService::KeyConnectionsMap SFlip::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
+    return {
+        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT}
+    };
 }
 
 } // namespace sight::module::filter::image

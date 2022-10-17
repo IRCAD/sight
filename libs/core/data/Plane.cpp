@@ -38,8 +38,7 @@ const core::com::Signals::SignalKeyType Plane::s_SELECTED_SIG = "selected";
 
 //------------------------------------------------------------------------------
 
-Plane::Plane(data::Object::Key) :
-    m_isIntersection(true)
+Plane::Plane(data::Object::Key /*unused*/)
 {
     m_vPoints[0] = data::Point::New();
     m_vPoints[1] = data::Point::New();
@@ -50,42 +49,42 @@ Plane::Plane(data::Object::Key) :
 
 //------------------------------------------------------------------------------
 
-Plane::~Plane()
+void Plane::shallowCopy(const Object::csptr& source)
 {
-}
+    const auto& other = dynamicConstCast(source);
 
-//------------------------------------------------------------------------------
-
-void Plane::shallowCopy(const Object::csptr& _source)
-{
-    Plane::csptr other = Plane::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
+
     m_vPoints = other->m_vPoints;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Plane::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Plane::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Plane::csptr other = Plane::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
+
     m_vPoints[0] = data::Object::copy(other->m_vPoints[0], cache);
     m_vPoints[1] = data::Object::copy(other->m_vPoints[1], cache);
     m_vPoints[2] = data::Object::copy(other->m_vPoints[2], cache);
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -108,7 +107,7 @@ bool Plane::operator==(const Plane& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

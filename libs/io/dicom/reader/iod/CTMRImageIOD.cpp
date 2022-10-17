@@ -33,13 +33,10 @@
 
 #include <gdcmImageReader.h>
 
-namespace sight::io::dicom
-{
+#include <memory>
+#include <utility>
 
-namespace reader
-{
-
-namespace iod
+namespace sight::io::dicom::reader::iod
 {
 
 //------------------------------------------------------------------------------
@@ -51,16 +48,14 @@ CTMRImageIOD::CTMRImageIOD(
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    io::dicom::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel),
-    m_enableBufferRotation(true)
+    io::dicom::reader::iod::InformationObjectDefinition(dicomSeries, instance, logger, progress, cancel)
 {
 }
 
 //------------------------------------------------------------------------------
 
 CTMRImageIOD::~CTMRImageIOD()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -71,7 +66,7 @@ void CTMRImageIOD::read(data::Series::sptr series)
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
     // Create GDCM reader
-    SPTR(gdcm::ImageReader) reader = std::shared_ptr<gdcm::ImageReader>(new gdcm::ImageReader);
+    SPTR(gdcm::ImageReader) reader = std::make_shared<gdcm::ImageReader>();
 
     // Read the first file
     const core::memory::BufferObject::sptr bufferObj         = m_dicomSeries->getDicomContainer().begin()->second;
@@ -90,16 +85,16 @@ void CTMRImageIOD::read(data::Series::sptr series)
     );
 
     // Create Information Entity helpers
-    io::dicom::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series->getPatient(), m_logger,
+    io::dicom::reader::ie::Patient patientIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                              m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series->getStudy(), m_logger,
+    io::dicom::reader::ie::Study studyIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                          m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger,
-                                           m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series->getEquipment(), m_logger,
+    io::dicom::reader::ie::Series seriesIE(m_dicomSeries, reader, m_instance, series, m_logger, m_progressCallback,
+                                           m_cancelRequestedCallback);
+    io::dicom::reader::ie::Equipment equipmentIE(m_dicomSeries, reader, m_instance, series, m_logger,
                                                  m_progressCallback, m_cancelRequestedCallback);
-    io::dicom::reader::ie::Image imageIE(m_dicomSeries, reader, m_instance, imageSeries->getImage(), m_logger,
-                                         m_progressCallback, m_cancelRequestedCallback);
+    io::dicom::reader::ie::Image imageIE(m_dicomSeries, reader, m_instance, imageSeries, m_logger, m_progressCallback,
+                                         m_cancelRequestedCallback);
     imageIE.setBufferRotationEnabled(m_enableBufferRotation);
 
     // Read Patient Module - PS 3.3 C.7.1.1
@@ -157,8 +152,4 @@ void CTMRImageIOD::read(data::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-} // namespace iod
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::iod

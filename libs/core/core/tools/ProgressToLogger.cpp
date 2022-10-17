@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,19 +24,19 @@
 
 #include <core/base.hpp>
 
+#include <utility>
+
 namespace sight::core::tools
 {
 
-ProgressToLogger::ProgressToLogger(const std::string& prefix, const std::string& postfix) :
-    m_prefix(prefix),
-    m_postfix(postfix)
+ProgressToLogger::ProgressToLogger(std::string prefix, std::string postfix) :
+    m_prefix(std::move(prefix)),
+    m_postfix(std::move(postfix))
 {
 }
 
 ProgressToLogger::~ProgressToLogger()
-{
-    // TODO Auto-generated destructor stub
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -50,4 +50,4 @@ void ProgressToLogger::operator()(float percent, const std::string& msg)
     SIGHT_INFO(m_prefix << msg << " " << (int) (percent * 100) << m_postfix);
 }
 
-}
+} // namespace sight::core::tools

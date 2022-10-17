@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,11 @@
 
 #include <data/Camera.hpp>
 
-#include <openvslam/camera/perspective.h>
-
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::navigation::openvslam
-{
+#include <openvslam/camera/perspective.h>
 
-namespace ut
+namespace sight::navigation::openvslam::ut
 {
 
 /**
@@ -50,22 +47,20 @@ public:
 
 public:
 
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void toSight();
-    void fromSight();
-    void createConfig();
-    void writeReadConfig();
+    static void toSight();
+    static void fromSight();
+    static void createConfig();
+    static void writeReadConfig();
 
     /// Comparision of camera, set _sightExpected to true if the expected values are sight camera, false otherwise.
-    void compareCam(
+    static void compareCam(
         const data::Camera& _sightCam,
         const ::openvslam::camera::perspective& _ovsCam,
         bool _sightExpected = true
     );
 };
 
-}
-
-} // namespace sight::navigation::openvslam
+} // namespace sight::navigation::openvslam::ut

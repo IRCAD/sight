@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,11 +26,11 @@
 
 #include <geometry/data/Matrix4.hpp>
 
+#include <ui/qt/container/QtContainer.hpp>
+
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/quaternion.hpp>
 #include <glm/mat4x4.hpp>
-
-#include <ui/qt/container/QtContainer.hpp>
 
 #include <QHBoxLayout>
 #include <QLabel>
@@ -58,9 +58,8 @@ STransformEditor::STransformEditor() noexcept :
 
 //------------------------------------------------------------------------------
 
-STransformEditor::~STransformEditor() noexcept
-{
-}
+STransformEditor::~STransformEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -121,20 +120,20 @@ void STransformEditor::configuring()
 
 void STransformEditor::starting()
 {
-    const char* description[] = {"Translation X", "Translation Y", "Translation Z",
-                                 "Rotation X", "Rotation Y", "Rotation Z"
+    const std::array description {"Translation X", "Translation Y", "Translation Z",
+                                  "Rotation X", "Rotation Y", "Rotation Z"
     };
 
     this->create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
 
     qtContainer->setLayout(layout);
 
     for(unsigned int i = 0 ; i < MAX_SLIDER_INDEX ; i++)
     {
-        QHBoxLayout* sliderLayout = new QHBoxLayout();
+        auto* sliderLayout = new QHBoxLayout();
 
         m_sliders[i].m_sliderValue     = new QLineEdit();
         m_sliders[i].m_labelMin        = new QLabel();
@@ -164,7 +163,7 @@ void STransformEditor::starting()
         m_sliders[i].m_slider->setRange(m_translationRange[0], m_translationRange[1]);
     }
 
-    const char axes[] = {"xyzxyz"};
+    const std::string axes = "xyzxyz";
 
     for(unsigned int i = POSITION_X ; i <= POSITION_Z ; i++)
     {
@@ -229,11 +228,11 @@ service::IService::KeyConnectionsMap STransformEditor::getAutoConnections() cons
 
 //------------------------------------------------------------------------------
 
-void STransformEditor::onSliderChanged(int)
+void STransformEditor::onSliderChanged(int /*unused*/)
 {
-    const double rx = glm::radians<double>(m_sliders[ROTATION_X].m_slider->value());
-    const double ry = glm::radians<double>(m_sliders[ROTATION_Y].m_slider->value());
-    const double rz = glm::radians<double>(m_sliders[ROTATION_Z].m_slider->value());
+    const auto rx = glm::radians<double>(m_sliders[ROTATION_X].m_slider->value());
+    const auto ry = glm::radians<double>(m_sliders[ROTATION_Y].m_slider->value());
+    const auto rz = glm::radians<double>(m_sliders[ROTATION_Z].m_slider->value());
 
     const double tx = m_sliders[POSITION_X].m_slider->value();
     const double ty = m_sliders[POSITION_Y].m_slider->value();
@@ -293,12 +292,12 @@ void STransformEditor::updateFromMatrix()
 
     for(glm::length_t i = POSITION_X, j = 0 ; i <= POSITION_Z ; i++, ++j)
     {
-        m_sliders[i].m_slider->setValue(static_cast<int>(translation[j]));
+        m_sliders[unsigned(i)].m_slider->setValue(static_cast<int>(translation[j]));
     }
 
     for(glm::length_t i = ROTATION_X, j = 0 ; i <= ROTATION_Z ; i++, ++j)
     {
-        m_sliders[i].m_slider->setValue(static_cast<int>(glm::degrees<double>(angles[j])));
+        m_sliders[unsigned(i)].m_slider->setValue(static_cast<int>(glm::degrees<double>(angles[j])));
     }
 
     for(unsigned int i = 0 ; i < MAX_SLIDER_INDEX ; i++)

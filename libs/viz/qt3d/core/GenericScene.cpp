@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,30 +32,27 @@
 
 #include <Qt3DExtras/QOrbitCameraController>
 
-namespace sight::viz::qt3d
-{
-
-namespace core
+namespace sight::viz::qt3d::core
 {
 
 GenericScene::GenericScene(bool _isQml, Qt3DCore::QNode* _parent) :
-    QEntity(_parent)
+    QEntity(_parent),
+    m_camera(new Qt3DRender::QCamera(this)),
+    m_cameraController(new Qt3DExtras::QOrbitCameraController(this)),
+    m_frameGraph(new FrameGraph())
 {
     // Defines the camera that will be used to render the scene.
-    m_camera = new Qt3DRender::QCamera(this);
-    m_camera->lens()->setPerspectiveProjection(45.0f, 16.0f / 9.0f, 0.1f, 10000.0f);
-    m_camera->setPosition(QVector3D(0.f, 0.f, 0.f));
-    m_camera->setViewCenter(QVector3D(0.f, 0.f, 0.f));
+    m_camera->lens()->setPerspectiveProjection(45.0F, 16.0F / 9.0F, 0.1F, 10000.0F);
+    m_camera->setPosition(QVector3D(0.F, 0.F, 0.F));
+    m_camera->setViewCenter(QVector3D(0.F, 0.F, 0.F));
 
     // Defines a camera controller allowing user to control camera with the mouse
     // and sets it as a child of the scene entity.
-    m_cameraController = new Qt3DExtras::QOrbitCameraController(this);
     m_cameraController->setCamera(m_camera);
-    m_cameraController->setLinearSpeed(500.0f);
-    m_cameraController->setLookSpeed(480.0f);
+    m_cameraController->setLinearSpeed(500.0F);
+    m_cameraController->setLookSpeed(480.0F);
 
     // Defines a default framegraph.
-    m_frameGraph = new FrameGraph();
     m_frameGraph->setCamera(m_camera);
     m_frameGraph->setBuffersToClear(Qt3DRender::QClearBuffers::AllBuffers);
 
@@ -75,8 +72,7 @@ GenericScene::GenericScene(bool _isQml, Qt3DCore::QNode* _parent) :
 //------------------------------------------------------------------------------
 
 GenericScene::~GenericScene()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -151,6 +147,4 @@ void GenericScene::setFrameGraph(FrameGraph* _frameGraph)
     m_frameGraph = _frameGraph;
 }
 
-} // namespace core.
-
-} // namespace sight::viz::qt3d.
+} // namespace sight::viz::qt3d::core

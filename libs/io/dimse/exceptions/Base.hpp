@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <core/Exception.hpp>
 
-namespace sight::io::dimse
-{
-
-namespace exceptions
+namespace sight::io::dimse::exceptions
 {
 
 /**
@@ -46,9 +43,7 @@ public:
     IO_DIMSE_API Base(const std::string& message);
 
     /// Destructor
-    IO_DIMSE_API virtual ~Base() noexcept;
+    IO_DIMSE_API ~Base() noexcept override;
 };
 
-} //exceptions
-
-} //fwPacsIO
+} // namespace sight::io::dimse::exceptions

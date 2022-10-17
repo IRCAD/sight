@@ -31,43 +31,37 @@
 #include <boost/iostreams/stream.hpp>
 
 #include <filesystem>
+#include <utility>
 
-namespace sight::io::igtl::detail
-{
-
-namespace archiver
+namespace sight::io::igtl::detail::archiver
 {
 
 MemoryArchiveSink::MemoryArchiveSink(
     struct archive* archive,
-    const std::filesystem::path& path
+    std::filesystem::path path
 ) :
     m_archive(archive),
-    m_path(path)
+    m_path(std::move(path))
 {
 }
 
 //-----------------------------------------------------------------------------
 
 MemoryArchiveSink::~MemoryArchiveSink()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 void MemoryArchiveSink::archive()
 {
-    std::size_t size;
-    boost::posix_time::ptime now = boost::date_time::not_a_date_time;
-
-    struct archive_entry* entry = archive_entry_new();
-    now = boost::posix_time::microsec_clock::universal_time();
+    struct archive_entry* entry  = archive_entry_new();
+    boost::posix_time::ptime now = boost::posix_time::microsec_clock::universal_time();
     archive_entry_set_pathname(entry, m_path.string().c_str());
     archive_entry_set_filetype(entry, AE_IFREG);
     archive_entry_set_perm(entry, 0444);
-    archive_entry_set_size(entry, m_buffer.size());
-    const time_t seconds   = now.time_of_day().total_seconds();
-    const long nanoseconds = static_cast<long>(now.time_of_day().total_nanoseconds());
+    archive_entry_set_size(entry, la_int64_t(m_buffer.size()));
+    const time_t seconds           = now.time_of_day().total_seconds();
+    const std::int64_t nanoseconds = static_cast<std::int64_t>(now.time_of_day().total_nanoseconds());
     archive_entry_set_atime(entry, seconds, nanoseconds);
     archive_entry_set_birthtime(entry, seconds, nanoseconds);
     archive_entry_set_ctime(entry, seconds, nanoseconds);
@@ -78,17 +72,17 @@ void MemoryArchiveSink::archive()
     }
 
     archive_entry_free(entry);
-    for(int i = 0 ; i < m_buffer.size() ; i += MemoryArchiveSink::s_WRITE_BUFFER_SIZE)
+    for(std::size_t i = 0 ; i < m_buffer.size() ; i += MemoryArchiveSink::s_WRITE_BUFFER_SIZE)
     {
-        size = MemoryArchiveSink::s_WRITE_BUFFER_SIZE;
-        if(i + MemoryArchiveSink::s_WRITE_BUFFER_SIZE > m_buffer.size())
+        std::size_t size = MemoryArchiveSink::s_WRITE_BUFFER_SIZE;
+        if(std::size_t(i + MemoryArchiveSink::s_WRITE_BUFFER_SIZE) > m_buffer.size())
         {
             size = m_buffer.size() - i;
         }
 
         if(archive_write_data(m_archive, &m_buffer[i], size) < 0)
         {
-            io::zip::exception::Write("Cannot write data in archive");
+            throw io::zip::exception::Write("Cannot write data in archive");
         }
     }
 }
@@ -103,25 +97,25 @@ std::streamsize MemoryArchiveSink::write(const char* buf, std::streamsize n)
 
 //-----------------------------------------------------------------------------
 
-int MemoryWriteArchive::open(struct archive* archive, void* client_data)
+int MemoryWriteArchive::open(struct archive* /*archive*/, void* /*client_data*/)
 {
     return ARCHIVE_OK;
 }
 
 //-----------------------------------------------------------------------------
 
-ssize_t MemoryWriteArchive::write(struct archive* a, void* client_data, const void* buff, std::size_t size)
+ssize_t MemoryWriteArchive::write(struct archive* /*a*/, void* client_data, const void* buff, std::size_t size)
 {
-    std::vector<char>* bytes = reinterpret_cast<std::vector<char>*>(client_data);
+    auto* bytes              = reinterpret_cast<std::vector<char>*>(client_data);
     const char* bytesToWrite = reinterpret_cast<const char*>(buff);
 
     bytes->insert(bytes->end(), bytesToWrite, bytesToWrite + size);
-    return size;
+    return ssize_t(size);
 }
 
 //-----------------------------------------------------------------------------
 
-int MemoryWriteArchive::close(struct archive* archive, void* client_data)
+int MemoryWriteArchive::close(struct archive* /*archive*/, void* /*client_data*/)
 {
     return 0;
 }
@@ -129,12 +123,12 @@ int MemoryWriteArchive::close(struct archive* archive, void* client_data)
 //-----------------------------------------------------------------------------
 
 MemoryWriteArchive::MemoryWriteArchive(std::vector<char>& buffer) :
+    m_archive(archive_write_new()),
     m_buffer(buffer)
 {
-    int ret;
-    void* userData;
+    int ret        = 0;
+    void* userData = nullptr;
 
-    m_archive = archive_write_new();
     archive_write_add_filter_none(m_archive);
     archive_write_set_format_ustar(m_archive);
     archive_write_set_bytes_in_last_block(m_archive, 1);
@@ -155,8 +149,7 @@ MemoryWriteArchive::MemoryWriteArchive(std::vector<char>& buffer) :
 //-----------------------------------------------------------------------------
 
 MemoryWriteArchive::~MemoryWriteArchive()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -176,7 +169,7 @@ void MemoryWriteArchive::writeArchive()
 
 //-----------------------------------------------------------------------------
 
-bool MemoryWriteArchive::createDir(const std::filesystem::path& path)
+bool MemoryWriteArchive::createDir(const std::filesystem::path& /*path*/)
 {
     return true;
 }
@@ -216,11 +209,9 @@ void MemoryWriteArchive::putFile(
 
 //-----------------------------------------------------------------------------
 
-const std::filesystem::path MemoryWriteArchive::getArchivePath() const
+std::filesystem::path MemoryWriteArchive::getArchivePath() const
 {
     return m_archivePath;
 }
 
-} // namespace archiver
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::archiver

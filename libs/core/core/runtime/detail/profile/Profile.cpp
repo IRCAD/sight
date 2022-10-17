@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,6 @@
 
 #include "core/runtime/detail/Module.hpp"
 #include "core/runtime/detail/profile/Activater.hpp"
-#include "core/runtime/detail/profile/Initializer.hpp"
-#include "core/runtime/detail/profile/Starter.hpp"
-#include "core/runtime/detail/profile/Stopper.hpp"
-#include "core/runtime/detail/profile/Uninitializer.hpp"
 #include "core/runtime/detail/Runtime.hpp"
 #include "core/runtime/Extension.hpp"
 
@@ -35,44 +31,20 @@
 #include <cstring>
 #include <functional>
 
-namespace sight::core::runtime
+namespace sight::core::runtime::detail::profile
 {
-
-namespace detail
-{
-
-namespace profile
-{
-
-namespace
-{
-
-template<typename E>
-struct Apply
-{
-    //------------------------------------------------------------------------------
-
-    void operator()(E e)
-    {
-        e->apply();
-    }
-};
-
-}
 
 //------------------------------------------------------------------------------
 
 Profile::Profile() :
-    m_checkSingleInstance(false)
+    m_run(defaultRun)
 {
-    m_run = std::bind(&Profile::defaultRun, this);
 }
 
 //------------------------------------------------------------------------------
 
 Profile::~Profile()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -83,53 +55,57 @@ void Profile::add(SPTR(Activater)activater)
 
 //------------------------------------------------------------------------------
 
-void Profile::add(SPTR(Starter)starter)
+void Profile::addStarter(const std::string& identifier)
 {
-    m_starters.push_back(starter);
+    const detail::Runtime& runtime = detail::Runtime::get();
+    auto module                    = std::dynamic_pointer_cast<detail::Module>(runtime.findModule(identifier));
+    m_starters.insert({module->priority(), identifier});
 }
 
 //------------------------------------------------------------------------------
 
-void Profile::add(SPTR(Stopper)stopper)
+void Profile::addStopper(const std::string& identifier, int priority)
 {
-    m_stoppers.push_back(stopper);
-}
-
-//------------------------------------------------------------------------------
-
-void Profile::add(SPTR(Initializer)initializer)
-{
-    m_initializers.push_back(initializer);
-}
-
-//------------------------------------------------------------------------------
-
-void Profile::add(SPTR(Uninitializer)uninitializer)
-{
-    m_uninitializers.push_back(uninitializer);
+    m_stoppers.insert({priority, identifier});
 }
 
 //------------------------------------------------------------------------------
 
 void Profile::start()
 {
-    std::for_each(m_activaters.begin(), m_activaters.end(), Apply<ActivaterContainer::value_type>());
+    std::for_each(m_activaters.begin(), m_activaters.end(), [](auto& activater){activater->apply();});
 
     // Check validity of extension
 
     detail::Runtime& runtime = detail::Runtime::get();
-    for(auto& extension : runtime.getExtensions())
+    for(const auto& extension : runtime.getExtensions())
     {
-        auto bundle = std::dynamic_pointer_cast<detail::Module>(extension->getModule());
+        auto bundle        = std::dynamic_pointer_cast<detail::Module>(extension->getModule());
+        auto extensionImpl = std::dynamic_pointer_cast<detail::Extension>(extension);
 
         SIGHT_FATAL_IF(
             "Validation not ok for bundle = '" << extension->getModule()->getIdentifier()
             << "'  (extension id = '" << extension->getIdentifier() << "' )",
-            bundle->isEnabled() && extension->validate() == Extension::Invalid
+            bundle->isEnabled() && extensionImpl->validate() == Extension::Invalid
         );
     }
 
-    std::for_each(m_starters.begin(), m_starters.end(), Apply<StarterContainer::value_type>());
+    std::ranges::for_each(
+        m_starters,
+        [](auto& s)
+        {
+            auto identifier = s.second;
+            auto module     = detail::Runtime::get().findEnabledModule(identifier);
+            SIGHT_FATAL_IF("Unable to start module " + identifier + ": not found.", module == nullptr);
+            try
+            {
+                module->start();
+            }
+            catch(const std::exception& e)
+            {
+                SIGHT_FATAL("Unable to start module " + identifier + ". " + e.what());
+            }
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -137,7 +113,7 @@ void Profile::start()
 int Profile::run()
 {
     SIGHT_ASSERT("the 'run' callback is missing", m_run);
-    int result;
+    int result = 0;
     result = m_run();
     return result;
 }
@@ -146,8 +122,6 @@ int Profile::run()
 
 int Profile::defaultRun()
 {
-    this->setup();
-    this->cleanup();
     return 0;
 }
 
@@ -162,25 +136,27 @@ void Profile::setRunCallback(RunCallbackType callback)
 
 void Profile::stop()
 {
-    std::for_each(m_stoppers.rbegin(), m_stoppers.rend(), Apply<StopperContainer::value_type>());
-}
-
-//------------------------------------------------------------------------------
-
-void Profile::setup()
-{
-    InitializerContainer initializers;
-    initializers = m_initializers;
-    m_initializers.clear();
-    std::for_each(initializers.begin(), initializers.end(), Apply<InitializerContainer::value_type>());
-}
-
-//------------------------------------------------------------------------------
-
-void Profile::cleanup()
-{
-    std::for_each(m_uninitializers.rbegin(), m_uninitializers.rend(), Apply<UninitializerContainer::value_type>());
-    m_uninitializers.clear();
+    std::for_each(
+        m_stoppers.rbegin(),
+        m_stoppers.rend(),
+        [](auto& s)
+        {
+            auto identifier = s.second;
+            auto module     = detail::Runtime::get().findEnabledModule(identifier);
+            SIGHT_FATAL_IF(
+                "Unable to stop module " + identifier + ". Not found.",
+                module == nullptr
+            );
+            try
+            {
+                SIGHT_INFO("Stopping module : " + identifier);
+                module->stop();
+            }
+            catch(const std::exception& e)
+            {
+                SIGHT_ERROR("Unable to stop module " + identifier + ". " + e.what());
+            }
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -203,8 +179,4 @@ Profile::sptr getCurrentProfile()
 
 //------------------------------------------------------------------------------
 
-} // namespace profile
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail::profile

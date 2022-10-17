@@ -25,7 +25,7 @@
 #include "modules/io/realsense/config.hpp"
 
 #include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 #include <data/Mesh.hpp>
 
 #include <io/base/service/IRGBDGrabber.hpp>
@@ -108,7 +108,7 @@ namespace sight::module::io::realsense
         <inout key="depthTL" uid="..." />
         <inout key="frameTL" uid="..." />
         <out key="pointcloud" uid="..." />
-        <inout key="cameraSeries" uid="..." />
+        <inout key="cameraSet" uid="..." />
         <config fps="30" colorW="1280" colorH="720" depthW="1280" depthH="720" switchToIR="true/false" preset="..."
  * alignTo="Color"/>
         <recordFile>/path/to/the/file.bag</recordFile>
@@ -117,7 +117,7 @@ namespace sight::module::io::realsense
  * @subsection In-Out In-Out
  * - \b depthTL [sight::data::FrameTL]: Frame timeline of the depth video.
  * - \b frameTL [sight::data::FrameTL]: Frame timeline of the color video.
- * - \b cameraSeries [sight::data::CameraSeries]: Camera series that will contain device camera information.
+ * - \b cameraSet [sight::data::CameraSet]: Camera series that will contain device camera information.
  *
  * @subsection Output Output
  * - \b pointcloud [sight::data::Mesh]: pointcloud computed from depth map. (optional)
@@ -268,7 +268,7 @@ private:
         // spacial filter settings
         std::uint8_t spacialMagnitude {2}; ///<  Number of filter iterations [1-5]
         /// Alpha factor in an exponential moving average with Alpha=1 - no filter. Alpha = 0 - infinite filter [0.25-1]
-        float spacialSmoothAlpha {0.5f};
+        float spacialSmoothAlpha {0.5F};
 
         /// Step-size boundary. Establishes the threshold used to preserve "edges" [1-50]
         std::uint8_t spacialSmoothDelta {20};
@@ -280,7 +280,7 @@ private:
 
         // temporal filter settings
         /// Alpha factor in an exponential moving average with Alpha=1 - no filter . Alpha = 0 - infinite filter [0-1]
-        float temporalSmoothAlpha {0.4f};
+        float temporalSmoothAlpha {0.4F};
 
         /// Step-size boundary. Establishes the threshold used to preserve surfaces (edges) [1-100]
         std::uint8_t temporalSmoothDelta {20};
@@ -319,7 +319,7 @@ private:
     }
 
     /// Does nothing (re-implemented from IGrabber)
-    void setPosition(int64_t) override
+    void setPosition(int64_t /*position*/) override
     {
     }
 
@@ -338,7 +338,7 @@ private:
      * @todo This function should be merged in module::io::qt::SCamera, or in a more generic "camera selector".
      * @return a string containing the serial number of selected camera.
      */
-    std::string selectDevice();
+    static std::string selectDevice();
 
     /**
      * @brief initialize is called at "startCamera" and will do the initialization of sight data.
@@ -393,20 +393,20 @@ private:
     // Slots
 
     ///SLOT: When "boolean" parameter changes
-    void setBoolParameter(bool, std::string);
+    void setBoolParameter(bool /*_value*/, std::string /*_key*/);
 
     /// SLOT: When "enum" parameter changes
-    void setEnumParameter(std::string, std::string);
+    void setEnumParameter(std::string /*_value*/, std::string /*_key*/);
 
     ///SLOT: When "int" parameter changes
-    void setIntParameter(int, std::string);
+    void setIntParameter(int /*_value*/, std::string /*_key*/);
 
     ///SLOT: When "double" parameter changes
-    void setDoubleParameter(double, std::string);
+    void setDoubleParameter(double /*_value*/, std::string /*_key*/);
 
     /// Pop a message dialog to the user with _message.
     /// Title is set to "RealSense Error".
-    void popMessageDialog(const std::string& _message);
+    static void popMessageDialog(const std::string& _message);
 
     // Members
 
@@ -419,7 +419,7 @@ private:
     std::thread m_thread;
 
     /// Determine depth value corresponding to one meter.
-    float m_depthScale = 0.f;
+    float m_depthScale = 0.F;
 
     /// Handle on which frame the pointcloud is mapped.
     PointcloudColormapEnumType m_pointcloudColorMap = PointcloudColormap::COLOR;
@@ -471,8 +471,8 @@ private:
 
     data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT, false, true};
 
-    static constexpr std::string_view s_CAMERA_SERIES_INOUT = "cameraSeries";
-    data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, s_CAMERA_SERIES_INOUT, false, true};
+    static constexpr std::string_view s_CAMERA_SET_INOUT = "cameraSet";
+    data::ptr<data::CameraSet, data::Access::inout> m_camera_set {this, s_CAMERA_SET_INOUT, false, true};
 
     static constexpr std::string_view s_POINTCLOUD_OUTPUT = "pointcloud";
     data::ptr<data::Mesh, data::Access::out> m_pointCloudOutput {this, s_POINTCLOUD_OUTPUT, false, true};

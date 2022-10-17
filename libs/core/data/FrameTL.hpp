@@ -28,7 +28,7 @@
 #include "data/timeline/GenericObject.hpp"
 #include "data/timeline/GenericObject.hxx"
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/factory/new.hpp>
 
@@ -38,11 +38,11 @@ namespace sight::data
 /**
  * @brief   This class defines a timeline of images.
  */
-class DATA_CLASS_API FrameTL : public GenericTL<uint8_t>
+class DATA_CLASS_API FrameTL final : public GenericTL<uint8_t>
 {
 public:
 
-    SIGHT_DECLARE_CLASS(FrameTL, TimeLine, factory::New<FrameTL>);
+    SIGHT_DECLARE_CLASS(FrameTL, GenericTL<uint8_t>, factory::New<FrameTL>);
 
     /// Frame format
     enum class PixelFormat
@@ -62,13 +62,14 @@ public:
     DATA_API FrameTL(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~FrameTL();
+    DATA_API ~FrameTL() noexcept override = default;
+
     /// Initializes the size of the pool buffer.
     DATA_API void initPoolSize(
         std::size_t width,
         std::size_t height,
-        const core::tools::Type& type,
-        const PixelFormat format,
+        const core::Type& type,
+        PixelFormat format,
         unsigned int maxElementNum = 1
     );
 
@@ -91,7 +92,7 @@ public:
     }
 
     /// Returns the type of the frame pixel
-    core::tools::Type getType() const
+    core::Type getType() const
     {
         return m_type;
     }
@@ -108,10 +109,19 @@ public:
     DATA_API bool operator!=(const FrameTL& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 
 private:
 
@@ -119,16 +129,16 @@ private:
     DATA_API void initPoolSize(unsigned int maxElementNum) override;
 
     /// frame width
-    std::size_t m_width;
+    std::size_t m_width {0};
 
     /// frame height
-    std::size_t m_height;
+    std::size_t m_height {0};
 
     /// number of components
-    std::size_t m_numberOfComponents;
+    std::size_t m_numberOfComponents {3};
 
     /// type of frame pixel
-    core::tools::Type m_type;
+    core::Type m_type;
 
     /// Frame format
     PixelFormat m_pixelFormat {PixelFormat::UNDEFINED};

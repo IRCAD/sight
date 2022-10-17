@@ -3,9 +3,12 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="camera" />
-        <param name="videoGrabber" />
         <param name="grabberProxyGuiTitle" default="ARCalibration" />
         <param name="cameraModifiedChannel" default="cameraModified" />
+        <param name="videoStartedChannel" />
+        <param name="videoStoppedChannel" />
+        <param name="videoPausedChannel" />
+        <param name="videoLoopedChannel" />
         <param name="videoPositionChangedChannel" default="videoPositionChanged" />
         <param name="videoPositionModifiedChannel" default="videoPositionModified" />
         <param name="videoDurationModifiedChannel" default="videoDurationModified" />
@@ -50,11 +53,7 @@
 
         <!-- ************************************* Action ************************************ -->
 
-        <service uid="editionAct" type="sight::module::ui::base::com::SSlotCaller">
-            <slots>
-                <slot>intrinsicEditionSrv/update</slot>
-            </slots>
-        </service>
+        <service uid="editionAct" type="sight::module::ui::base::SAction" />
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
@@ -74,7 +73,7 @@
 
         <!-- ************************************* Services ************************************ -->
 
-        <service uid="${videoGrabber}" type="sight::module::io::video::SGrabberProxy">
+        <service uid="videoGrabberSrv" type="sight::module::io::video::SGrabberProxy">
             <in key="camera" uid="${camera}" />
             <inout key="frameTL" uid="timeLine" />
             <config>
@@ -99,6 +98,27 @@
 
         <!-- ******************************* Connections ***************************************** -->
 
+        <connect channel="${videoStartedChannel}">
+            <slot>videoGrabberSrv/startCamera</slot>
+        </connect>
+
+        <connect channel="${videoStoppedChannel}">
+            <slot>videoGrabberSrv/stopCamera</slot>
+        </connect>
+
+        <connect channel="${videoPausedChannel}">
+            <slot>videoGrabberSrv/pauseCamera</slot>
+        </connect>
+
+        <connect channel="${videoLoopedChannel}">
+            <slot>videoGrabberSrv/loopVideo</slot>
+        </connect>
+
+        <connect>
+            <signal>editionAct/clicked</signal>
+            <slot>intrinsicEditionSrv/update</slot>
+        </connect>
+
         <connect>
             <signal>videoSelectorSrv/configuredCameras</signal>
             <slot>videoGrabberSrv/reconfigure</slot>
@@ -108,8 +128,8 @@
             <signal>videoGrabberSrv/cameraStarted</signal>
             <slot>pauseVideoAct/show</slot>
             <slot>startVideoAct/hide</slot>
-            <slot>stopVideoAct/setExecutable</slot>
-            <slot>loopVideoAct/setExecutable</slot>
+            <slot>stopVideoAct/enable</slot>
+            <slot>loopVideoAct/enable</slot>
         </connect>
 
         <connect>
@@ -119,30 +139,30 @@
 
         <connect>
             <signal>${camera}/modified</signal>
-            <slot>startVideoAct/setExecutable</slot>
+            <slot>startVideoAct/enable</slot>
             <slot>stopVideoAct/update</slot>
         </connect>
 
         <connect channel="${cameraModifiedChannel}">
-            <slot>${videoGrabber}/stopCamera</slot>
+            <slot>videoGrabberSrv/stopCamera</slot>
         </connect>
 
         <connect channel="${videoPositionChangedChannel}">
-            <slot>${videoGrabber}/setPositionVideo</slot>
+            <slot>videoGrabberSrv/setPositionVideo</slot>
         </connect>
 
         <connect channel="${videoPositionModifiedChannel}">
-            <signal>${videoGrabber}/positionModified</signal>
+            <signal>videoGrabberSrv/positionModified</signal>
         </connect>
 
         <connect channel="${videoDurationModifiedChannel}">
-            <signal>${videoGrabber}/durationModified</signal>
+            <signal>videoGrabberSrv/durationModified</signal>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainView" />
-        <start uid="${videoGrabber}" />
+        <start uid="videoGrabberSrv" />
         <start uid="frameSynchronizerSrv" />
         <start uid="intrinsicEditionSrv" />
         <start uid="videoAdp" />

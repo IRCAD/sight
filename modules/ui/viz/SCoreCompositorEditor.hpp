@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <viz/scene3d/Layer.hpp>
-
 #include <ui/base/IEditor.hpp>
+
+#include <viz/scene3d/Layer.hpp>
 
 #include <QLabel>
 #include <QObject>
@@ -64,7 +64,7 @@ public:
     MODULE_UI_VIZ_API SCoreCompositorEditor() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_UI_VIZ_API virtual ~SCoreCompositorEditor() noexcept;
+    MODULE_UI_VIZ_API ~SCoreCompositorEditor() noexcept override;
 
 protected:
 
@@ -108,19 +108,19 @@ private:
     QPointer<QComboBox> m_layersBox;
     QPointer<QSlider> m_transparencyDepthSlider;
     QPointer<QComboBox> m_comboBox;
-    QRadioButton* m_buttonDefault;
-    QRadioButton* m_buttonDepthPeeling;
-    QRadioButton* m_buttonDualDepthPeeling;
-    QRadioButton* m_buttonWeightedBlendedOIT;
-    QRadioButton* m_buttonHybridTransparency;
-    QRadioButton* m_buttonCelShadingDepthPeeling;
-    QLabel* m_labelDefault;
-    QLabel* m_labelDepthPeeling;
-    QLabel* m_labelDualDepthPeeling;
-    QLabel* m_labelWeightedBlendedOIT;
-    QLabel* m_labelHybridTransparency;
-    QLabel* m_labelCelShadingDepthPeeling;
-    bool m_isLayerSelected;
+    QRadioButton* m_buttonDefault {};
+    QRadioButton* m_buttonDepthPeeling {};
+    QRadioButton* m_buttonDualDepthPeeling {};
+    QRadioButton* m_buttonWeightedBlendedOIT {};
+    QRadioButton* m_buttonHybridTransparency {};
+    QRadioButton* m_buttonCelShadingDepthPeeling {};
+    QLabel* m_labelDefault {};
+    QLabel* m_labelDepthPeeling {};
+    QLabel* m_labelDualDepthPeeling {};
+    QLabel* m_labelWeightedBlendedOIT {};
+    QLabel* m_labelHybridTransparency {};
+    QLabel* m_labelCelShadingDepthPeeling {};
+    bool m_isLayerSelected {};
 };
 
-} // uiVisuOgre
+} // namespace sight::module::ui::viz

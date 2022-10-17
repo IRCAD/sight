@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,8 +39,7 @@ RuntimeException::RuntimeException(const std::string& message) noexcept :
     SIGHT_WARN(this->what());
 }
 
-RuntimeException::~RuntimeException() noexcept
-{
-}
+RuntimeException::~RuntimeException() noexcept =
+    default;
 
 } // namespace sight::core::runtime

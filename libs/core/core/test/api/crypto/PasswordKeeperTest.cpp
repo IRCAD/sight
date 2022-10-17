@@ -27,10 +27,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::crypto::ut::PasswordKeeperTest);
 
-namespace sight::core::crypto
-{
-
-namespace ut
+namespace sight::core::crypto::ut
 {
 
 //------------------------------------------------------------------------------
@@ -56,7 +53,7 @@ void PasswordKeeperTest::globalTest()
     {
         // Set a dummy "abc" global password
         const core::crypto::PasswordKeeper globalKeeper;
-        globalKeeper.set_global_password("abc");
+        core::crypto::PasswordKeeper::set_global_password("abc");
 
         // Verify the hash as "abc" have a well known sha256 hash (so never use abc as a password..)
         const core::crypto::secure_string sha256_abc("ba7816bf8f01cfea414140de5dae2223b00361a396177a9cb410ff61f20015ad");
@@ -96,6 +93,4 @@ void PasswordKeeperTest::localTest()
     }
 }
 
-} // namespace ut
-
-} // namespace sight::core::crypto
+} // namespace sight::core::crypto::ut

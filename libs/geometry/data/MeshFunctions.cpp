@@ -28,6 +28,7 @@
 
 #include <glm/glm.hpp>
 
+#include <cmath>
 #include <list>
 #include <map>
 #include <set>
@@ -50,7 +51,11 @@ bool intersect_triangle(
 {
     const double Epsilon = 0.000001;
 
-    fwVec3d edge1, edge2, tvec, pvec, qvec;
+    fwVec3d edge1;
+    fwVec3d edge2;
+    fwVec3d tvec;
+    fwVec3d pvec;
+    fwVec3d qvec;
 
     /* find vectors for two edges sharing vert0 */
     edge1 = _vert1 - _vert0;
@@ -98,7 +103,9 @@ bool intersect_triangle(
 
 bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _vertexIndex, const fwVec3d& _p)
 {
-    const unsigned int X = 0, Y = 1, Z = 2;
+    const unsigned int X         = 0;
+    const unsigned int Y         = 1;
+    const unsigned int Z         = 2;
     const std::size_t ElementNbr = _vertexIndex.size();
     if(ElementNbr == 0)
     {
@@ -111,11 +118,17 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
     {
         // get triangle vertices.
         const fwVec3d P1 =
-        {_vertex[_vertexIndex[i][0]][0], _vertex[_vertexIndex[i][0]][1], _vertex[_vertexIndex[i][0]][2]};
+        {_vertex[std::size_t(_vertexIndex[i][0])][0], _vertex[std::size_t(_vertexIndex[i][0])][1],
+         _vertex[std::size_t(_vertexIndex[i][0])][2]
+        };
         const fwVec3d P2 =
-        {_vertex[_vertexIndex[i][1]][0], _vertex[_vertexIndex[i][1]][1], _vertex[_vertexIndex[i][1]][2]};
+        {_vertex[std::size_t(_vertexIndex[i][1])][0], _vertex[std::size_t(_vertexIndex[i][1])][1],
+         _vertex[std::size_t(_vertexIndex[i][1])][2]
+        };
         const fwVec3d P3 =
-        {_vertex[_vertexIndex[i][2]][0], _vertex[_vertexIndex[i][2]][1], _vertex[_vertexIndex[i][2]][2]};
+        {_vertex[std::size_t(_vertexIndex[i][2])][0], _vertex[std::size_t(_vertexIndex[i][2])][1],
+         _vertex[std::size_t(_vertexIndex[i][2])][2]
+        };
 
         // remove all triangles above point.
         if(!(P1[Z] > _p[Z] && P2[Z] > _p[Z] && P3[Z] > _p[Z])) //trianglePotentiallyWellPositionned
@@ -130,13 +143,13 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
                 const double Delta2 = P2[axe] - _p[axe];
                 const double Delta3 = P3[axe] - _p[axe];
 
-                if(Delta1 >= 0.f && Delta2 >= 0.f && Delta3 >= 0.f)
+                if(Delta1 >= 0.F && Delta2 >= 0.F && Delta3 >= 0.F)
                 {
                     stop = true;
                     break;
                 }
 
-                if(Delta1 < 0.f && Delta2 < 0.f && Delta3 < 0.f)
+                if(Delta1 < 0.F && Delta2 < 0.F && Delta3 < 0.F)
                 {
                     stop = true;
                     break;
@@ -147,15 +160,17 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
             {
                 fwVec3d orig = {_p[0], _p[1], _p[2]};
 
-                fwVec3d dir = {0.f, 0.f, 1.f};
+                fwVec3d dir   = {0.F, 0.F, 1.F};
                 fwVec3d vert0 = {P1[0], P1[1], P1[2]};
                 fwVec3d vert1 = {P2[0], P2[1], P2[2]};
                 fwVec3d vert2 = {P3[0], P3[1], P3[2]};
-                double t, u, v;
+                double t      = NAN;
+                double u      = NAN;
+                double v      = NAN;
                 if(intersect_triangle(orig, dir, vert0, vert1, vert2, t, u, v))
                 {
                     // We only keep points below _p (following Oz axis).
-                    if(t < 0.f)
+                    if(t < 0.F)
                     {
                         ++intersectionNbr;
                     }
@@ -171,8 +186,8 @@ bool IsInclosedVolume(const fwVertexPosition& _vertex, const fwVertexIndex& _ver
 
 bool isBorderlessSurface(const fwVertexIndex& _vertexIndex)
 {
-    typedef std::pair<int, int> Edge; // always Edge.first < Edge.second !!
-    typedef boost::unordered_map<Edge, int> EdgeHistogram;
+    using Edge          = std::pair<int, int>; // always Edge.first < Edge.second !!
+    using EdgeHistogram = boost::unordered_map<Edge, int>;
     EdgeHistogram edgesHistogram;
     bool isBorderless = true;
 
@@ -201,12 +216,11 @@ bool isBorderlessSurface(const fwVertexIndex& _vertexIndex)
 // container of connected component
 void findBorderEdges(
     const fwVertexIndex& _vertexIndex,
-    std::vector<std::vector<std::pair<int, int> > >& contours
+    std::vector<std::vector<std::pair<std::size_t, std::size_t> > >& contours
 )
 {
-    typedef std::pair<int, int> Edge;
-    typedef std::vector<Edge> Contour; // at Border
-    typedef std::vector<Contour> Contours;
+    using Edge    = std::pair<std::size_t, std::size_t>;
+    using Contour = std::vector<Edge>; // at Border
 
     std::map<Edge, int> edgesHistogram;
     for(fwVertexIndex::value_type vertex : _vertexIndex)
@@ -263,9 +277,9 @@ void findBorderEdges(
 
 bool closeSurface(fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex)
 {
-    typedef std::pair<int, int> Edge;
-    typedef std::vector<Edge> Contour; // at Border
-    typedef std::vector<Contour> Contours;
+    using Edge     = std::pair<std::size_t, std::size_t>;
+    using Contour  = std::vector<Edge>; // at Border
+    using Contours = std::vector<Contour>;
 
     Contours contours;
     findBorderEdges(_vertexIndex, contours);
@@ -279,7 +293,7 @@ bool closeSurface(fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex)
 
         for(const Contour::value_type& edge : contour)
         {
-            for(int i = 0 ; i < 3 ; ++i)
+            for(std::size_t i = 0 ; i < 3 ; ++i)
             {
                 massCenter[i] += _vertex[edge.first][i];
                 massCenter[i] += _vertex[edge.second][i];
@@ -287,15 +301,15 @@ bool closeSurface(fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex)
 
             // create new Triangle
             std::vector<int> triangleIndex(3);
-            triangleIndex[0] = edge.first;
-            triangleIndex[1] = edge.second;
-            triangleIndex[2] = newVertexIndex;
+            triangleIndex[0] = int(edge.first);
+            triangleIndex[1] = int(edge.second);
+            triangleIndex[2] = int(newVertexIndex);
             _vertexIndex.push_back(triangleIndex); // TEST
         }
 
-        for(int i = 0 ; i < 3 ; ++i)
+        for(std::size_t i = 0 ; i < 3 ; ++i)
         {
-            massCenter[i] /= contour.size() * 2;
+            massCenter[i] /= float(contour.size() * 2);
         }
 
         _vertex.push_back(massCenter); // normalize barycenter
@@ -331,7 +345,7 @@ bool removeOrphanVertices(fwVertexPosition& _vertex, fwVertexIndex& _vertexIndex
         for(int indexPt : indexPointToKeep)
         {
             translate[indexPt] = idx++;
-            newVertex.push_back(_vertex[indexPt]);
+            newVertex.push_back(_vertex[std::size_t(indexPt)]);
         }
 
         for(fwVertexIndex::value_type& vertex : _vertexIndex)

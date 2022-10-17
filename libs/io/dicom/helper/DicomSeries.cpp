@@ -32,9 +32,6 @@
 #include <core/spyLog.hpp>
 
 #include <data/DicomSeries.hpp>
-#include <data/Equipment.hpp>
-#include <data/Patient.hpp>
-#include <data/Study.hpp>
 
 #include <boost/algorithm/string.hpp>
 
@@ -44,10 +41,7 @@
 #include <algorithm>
 #include <filesystem>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 // Series
@@ -87,9 +81,9 @@ std::string getStringValue(
     const gdcm::Tag& tag
 )
 {
-    std::string result = "";
-    const char* value  = scanner.GetValue(filename.c_str(), tag);
-    if(value)
+    std::string result;
+    const char* value = scanner.GetValue(filename.c_str(), tag);
+    if(value != nullptr)
     {
         // Trim buffer
         result = gdcm::LOComp::Trim(value);
@@ -105,7 +99,7 @@ std::string getStringValue(
     const gdcm::Tag& tag
 )
 {
-    std::string result = "";
+    std::string result;
     if(dataset.FindDataElement(tag))
     {
         const gdcm::DataElement& dataElement = dataset.GetDataElement(tag);
@@ -114,7 +108,7 @@ std::string getStringValue(
         {
             // Retrieve buffer
             const gdcm::ByteValue* bv = dataElement.GetByteValue();
-            if(bv)
+            if(bv != nullptr)
             {
                 std::string buffer(bv->GetPointer(), bv->GetLength());
 
@@ -129,32 +123,23 @@ std::string getStringValue(
 
 // ----------------------------------------------------------------------------
 
-DicomSeries::DicomSeries()
-{
-}
-
-// ----------------------------------------------------------------------------
-
-DicomSeries::~DicomSeries()
-{
-}
-
-// ----------------------------------------------------------------------------
-
 DicomSeries::DicomSeriesContainerType DicomSeries::read(
     FilenameContainerType& filenames,
     const SPTR(core::jobs::Observer)& readerObserver,
     const SPTR(core::jobs::Observer)& completeSeriesObserver
 )
 {
-    DicomSeriesContainerType seriesDB = DicomSeries::splitFiles(filenames, readerObserver);
-    DicomSeries::fillSeries(seriesDB, completeSeriesObserver);
-    return seriesDB;
+    DicomSeriesContainerType seriesContainer = DicomSeries::splitFiles(filenames, readerObserver);
+    DicomSeries::fillSeries(seriesContainer, completeSeriesObserver);
+    return seriesContainer;
 }
 
 //------------------------------------------------------------------------------
 
-void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(core::jobs::Observer)& completeSeriesObserver)
+void DicomSeries::complete(
+    DicomSeriesContainerType& seriesContainer,
+    const SPTR(core::jobs::Observer)& completeSeriesObserver
+)
 {
     std::set<gdcm::Tag> selectedtags;
     selectedtags.insert(s_SpecificCharacterSetTag);
@@ -167,7 +152,7 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(core::
     selectedtags.insert(s_SOPClassUIDTag);
     selectedtags.insert(s_SOPInstanceUIDTag);
 
-    for(const auto& series : seriesDB)
+    for(const auto& series : seriesContainer)
     {
         if(series->getDicomContainer().empty())
         {
@@ -199,32 +184,26 @@ void DicomSeries::complete(DicomSeriesContainerType& seriesDB, const SPTR(core::
 
         //Date
         std::string seriesDate = getStringValue(dataset, s_SeriesDateTag);
-        series->setDate(seriesDate);
+        series->setSeriesDate(seriesDate);
 
         //Time
         std::string seriesTime = getStringValue(dataset, s_SeriesTimeTag);
-        series->setTime(seriesTime);
+        series->setSeriesTime(seriesTime);
 
         //Description
         std::string seriesDescription = getStringValue(dataset, s_SeriesDescriptionTag);
-        series->setDescription(seriesDescription);
+        series->setSeriesDescription(seriesDescription);
 
         //Performing Physicians Name
-        std::string performingPhysicianNamesStr = getStringValue(dataset, s_PerformingPhysicianNameTag);
-
-        if(!performingPhysicianNamesStr.empty())
-        {
-            data::DicomValuesType performingPhysicianNames;
-            boost::split(performingPhysicianNames, performingPhysicianNamesStr, boost::is_any_of("\\"));
-            series->setPerformingPhysiciansName(performingPhysicianNames);
-        }
+        std::string performingPhysicianName = getStringValue(dataset, s_PerformingPhysicianNameTag);
+        series->setPerformingPhysicianName(performingPhysicianName);
 
         // Add the SOPClassUID to the series
         const std::string& sopClassUID = getStringValue(dataset, s_SOPClassUIDTag);
         series->getSOPClassUIDs().insert(sopClassUID);
     }
 
-    this->fillSeries(seriesDB, completeSeriesObserver);
+    DicomSeries::fillSeries(seriesContainer, completeSeriesObserver);
 }
 
 //------------------------------------------------------------------------------
@@ -249,7 +228,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
     readerObserver->doneWork(0);
 
     std::vector<std::string> fileVec;
-    for(auto file : filenames)
+    for(const auto& file : filenames)
     {
         fileVec.push_back(file.string());
     }
@@ -261,7 +240,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
 
     unsigned int progress = 0;
 
-    DicomSeriesContainerType seriesDB;
+    DicomSeriesContainerType seriesContainer;
 
     //Loop through every files available in the scanner
     std::map<std::string, std::filesystem::path> orderedFilenames;
@@ -301,7 +280,7 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
            && mediaStorageSopClassUID
            != gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::MediaStorageDirectoryStorage))
         {
-            this->createSeries(seriesDB, seriesScanner, dicomFile.second);
+            sight::io::dicom::helper::DicomSeries::createSeries(seriesContainer, seriesScanner, dicomFile.second);
             previousSOPInstanceUIDs.insert(sopInstanceUID);
         }
 
@@ -310,23 +289,19 @@ DicomSeries::DicomSeriesContainerType DicomSeries::splitFiles(
             break;
         }
 
-        readerObserver->doneWork(static_cast<std::uint64_t>(++progress * 100 / keys.size()));
+        readerObserver->doneWork(static_cast<std::uint64_t>(++progress * 100LL / keys.size()));
     }
 
-    return seriesDB;
+    return seriesContainer;
 }
 
 //------------------------------------------------------------------------------
 
 void DicomSeries::fillSeries(
-    DicomSeriesContainerType& seriesDB,
+    DicomSeriesContainerType& seriesContainer,
     const core::jobs::Observer::sptr& completeSeriesObserver
 )
 {
-    m_patientMap.clear();
-    m_studyMap.clear();
-    m_equipmentMap.clear();
-
     std::set<gdcm::Tag> selectedtags;
     selectedtags.insert(s_SpecificCharacterSetTag);
     selectedtags.insert(s_PatientIDTag);
@@ -345,13 +320,13 @@ void DicomSeries::fillSeries(
     std::uint64_t progress = 0;
 
     // Fill series
-    for(const data::DicomSeries::sptr& series : seriesDB)
+    for(const data::DicomSeries::sptr& series : seriesContainer)
     {
         // Compute number of instances
         const std::size_t size = series->getDicomContainer().size();
         series->setNumberOfInstances(size);
 
-        if(!size)
+        if(size == 0U)
         {
             SIGHT_ERROR("The DicomSeries doesn't contain any instance.");
             break;
@@ -376,19 +351,51 @@ void DicomSeries::fillSeries(
 
         const gdcm::DataSet& dataset = reader.GetFile().GetDataSet();
 
-        // Create data objects from first instance
-        data::Patient::sptr patient     = this->createPatient(dataset);
-        data::Study::sptr study         = this->createStudy(dataset);
-        data::Equipment::sptr equipment = this->createEquipment(dataset);
-
         // Fill series
-        series->setPatient(patient);
-        series->setStudy(study);
-        series->setEquipment(equipment);
+        // Equipment Module
+        const auto& institutionName = getStringValue(dataset, s_InstitutionNameTag);
+        series->setInstitutionName(institutionName);
+
+        // Patient Module
+        const auto& patientID = getStringValue(dataset, s_PatientIDTag);
+        series->setPatientID(patientID);
+
+        const auto& patientName = getStringValue(dataset, s_PatientNameTag);
+        series->setPatientName(patientName);
+
+        const auto& patientBirthDate = getStringValue(dataset, s_PatientBirthDateTag);
+        series->setPatientBirthDate(patientBirthDate);
+
+        const auto& patientSex = getStringValue(dataset, s_PatientSexTag);
+        series->setPatientSex(patientSex);
+
+        // Study Module
+        const auto& studyInstanceUID = getStringValue(dataset, s_StudyInstanceUIDTag);
+        series->setStudyInstanceUID(studyInstanceUID);
+
+        //Study Date
+        const auto& studyDate = getStringValue(dataset, s_StudyDateTag);
+        series->setStudyDate(studyDate);
+
+        //Study Time
+        const auto& studyTime = getStringValue(dataset, s_StudyTimeTag);
+        series->setStudyTime(studyTime);
+
+        //Referring Physician Name
+        const auto& referringPhysicianName = getStringValue(dataset, s_ReferringPhysicianNameTag);
+        series->setReferringPhysicianName(referringPhysicianName);
+
+        //Study Description
+        const auto& studyDescription = getStringValue(dataset, s_StudyDescriptionTag);
+        series->setStudyDescription(studyDescription);
+
+        //Study Patient Age
+        const auto& patientAge = getStringValue(dataset, s_PatientAgeTag);
+        series->setPatientAge(patientAge);
 
         if(completeSeriesObserver)
         {
-            completeSeriesObserver->doneWork(static_cast<std::uint64_t>(++progress * 100 / seriesDB.size()));
+            completeSeriesObserver->doneWork(static_cast<std::uint64_t>(++progress * 100 / seriesContainer.size()));
 
             if(completeSeriesObserver->cancelRequested())
             {
@@ -401,7 +408,7 @@ void DicomSeries::fillSeries(
 //------------------------------------------------------------------------------
 
 void DicomSeries::createSeries(
-    DicomSeriesContainerType& seriesDB,
+    DicomSeriesContainerType& seriesContainer,
     const gdcm::Scanner& scanner,
     const std::filesystem::path& filename
 )
@@ -414,9 +421,9 @@ void DicomSeries::createSeries(
     std::string seriesInstanceUID = getStringValue(scanner, stringFilename, s_SeriesInstanceUIDTag);
 
     // Check if the series already exists
-    for(data::DicomSeries::sptr dicomSeries : seriesDB)
+    for(const auto& dicomSeries : seriesContainer)
     {
-        if(dicomSeries->getInstanceUID() == seriesInstanceUID)
+        if(dicomSeries->getSeriesInstanceUID() == seriesInstanceUID)
         {
             series = dicomSeries;
             break;
@@ -428,10 +435,10 @@ void DicomSeries::createSeries(
     {
         series = data::DicomSeries::New();
 
-        seriesDB.push_back(series);
+        seriesContainer.push_back(series);
 
         //Instance UID
-        series->setInstanceUID(seriesInstanceUID);
+        series->setSeriesInstanceUID(seriesInstanceUID);
 
         //Modality
         std::string modality = getStringValue(scanner, stringFilename, s_ModalityTag);
@@ -439,25 +446,19 @@ void DicomSeries::createSeries(
 
         //Date
         std::string seriesDate = getStringValue(scanner, stringFilename, s_SeriesDateTag);
-        series->setDate(seriesDate);
+        series->setSeriesDate(seriesDate);
 
         //Time
         std::string seriesTime = getStringValue(scanner, stringFilename, s_SeriesTimeTag);
-        series->setTime(seriesTime);
+        series->setSeriesTime(seriesTime);
 
         //Description
         std::string seriesDescription = getStringValue(scanner, stringFilename, s_SeriesDescriptionTag);
-        series->setDescription(seriesDescription);
+        series->setSeriesDescription(seriesDescription);
 
         //Performing Physicians Name
-        std::string performingPhysicianNamesStr = getStringValue(scanner, stringFilename, s_PerformingPhysicianNameTag);
-
-        if(!performingPhysicianNamesStr.empty())
-        {
-            data::DicomValuesType performingPhysicianNames;
-            boost::split(performingPhysicianNames, performingPhysicianNamesStr, boost::is_any_of("\\"));
-            series->setPerformingPhysiciansName(performingPhysicianNames);
-        }
+        std::string performingPhysicianName = getStringValue(scanner, stringFilename, s_PerformingPhysicianNameTag);
+        series->setPerformingPhysicianName(performingPhysicianName);
     }
 
     // Add the SOPClassUID to the series
@@ -471,121 +472,4 @@ void DicomSeries::createSeries(
     series->addDicomPath(series->getDicomContainer().size(), filename);
 }
 
-//------------------------------------------------------------------------------
-
-data::Patient::sptr DicomSeries::createPatient(const gdcm::DataSet& dataset)
-{
-    data::Patient::sptr result;
-
-    // Get Patient ID
-    std::string patientID = getStringValue(dataset, s_PatientIDTag);
-
-    // Check if the patient already exists
-    if(m_patientMap.find(patientID) == m_patientMap.end())
-    {
-        result                  = data::Patient::New();
-        m_patientMap[patientID] = result;
-
-        //Patient ID
-        result->setPatientId(patientID);
-
-        //Patient Name
-        std::string patientName = getStringValue(dataset, s_PatientNameTag);
-        result->setName(patientName);
-
-        //Patient Birthdate
-        std::string patientBirthDate = getStringValue(dataset, s_PatientBirthDateTag);
-        result->setBirthdate(patientBirthDate);
-
-        //Patient Sex
-        std::string patientSex = getStringValue(dataset, s_PatientSexTag);
-        result->setSex(patientSex);
-    }
-    else
-    {
-        result = data::Patient::New();
-        result->deepCopy(m_patientMap[patientID]);
-    }
-
-    return result;
-}
-
-//------------------------------------------------------------------------------
-
-data::Study::sptr DicomSeries::createStudy(const gdcm::DataSet& dataset)
-{
-    data::Study::sptr result;
-
-    // Get Study ID
-    std::string studyInstanceUID = getStringValue(dataset, s_StudyInstanceUIDTag);
-
-    // Check if the study already exists
-    if(m_studyMap.find(studyInstanceUID) == m_studyMap.end())
-    {
-        result                       = data::Study::New();
-        m_studyMap[studyInstanceUID] = result;
-
-        //Study ID
-        result->setInstanceUID(studyInstanceUID);
-
-        //Study Date
-        std::string studyDate = getStringValue(dataset, s_StudyDateTag);
-        result->setDate(studyDate);
-
-        //Study Time
-        std::string studyTime = getStringValue(dataset, s_StudyTimeTag);
-        result->setTime(studyTime);
-
-        //Referring Physician Name
-        std::string referringPhysicianName = getStringValue(dataset, s_ReferringPhysicianNameTag);
-        result->setReferringPhysicianName(referringPhysicianName);
-
-        //Study Description
-        std::string studyDescription = getStringValue(dataset, s_StudyDescriptionTag);
-        result->setDescription(studyDescription);
-
-        //Study Patient Age
-        std::string patientAge = getStringValue(dataset, s_PatientAgeTag);
-        result->setPatientAge(patientAge);
-    }
-    else
-    {
-        result = data::Study::New();
-        result->deepCopy(m_studyMap[studyInstanceUID]);
-    }
-
-    return result;
-}
-
-//------------------------------------------------------------------------------
-
-data::Equipment::sptr DicomSeries::createEquipment(const gdcm::DataSet& dataset)
-{
-    data::Equipment::sptr result;
-
-    // Get Institution Name
-    std::string institutionName = getStringValue(dataset, s_InstitutionNameTag);
-
-    // Check if the equipment already exists
-    if(m_equipmentMap.find(institutionName) == m_equipmentMap.end())
-    {
-        result                          = data::Equipment::New();
-        m_equipmentMap[institutionName] = result;
-
-        //Institution Name
-        result->setInstitutionName(institutionName);
-    }
-    else
-    {
-        result = data::Equipment::New();
-        result->deepCopy(m_equipmentMap[institutionName]);
-    }
-
-    return result;
-}
-
-//------------------------------------------------------------------------------
-
-} //helper
-
-} //fwGdcmIO
+} // namespace sight::io::dicom::helper

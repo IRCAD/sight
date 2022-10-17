@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,15 +29,13 @@
 namespace sight::module::ui::base
 {
 
-SFrame::SFrame() noexcept
-{
-}
+SFrame::SFrame() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-SFrame::~SFrame() noexcept
-{
-}
+SFrame::~SFrame() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -63,7 +61,7 @@ void SFrame::stopping()
 
 //-----------------------------------------------------------------------------
 
-void SFrame::info(std::ostream&)
+void SFrame::info(std::ostream& /*_sstream*/)
 {
 }
 
@@ -75,4 +73,4 @@ void SFrame::updating()
 
 //-----------------------------------------------------------------------------
 
-}
+} // namespace sight::module::ui::base

@@ -28,10 +28,7 @@
 #include <thread>
 #include <vector>
 
-namespace sight::data
-{
-
-namespace thread
+namespace sight::data::thread
 {
 
 class RegionThreader
@@ -52,20 +49,20 @@ public:
     //------------------------------------------------------------------------------
 
     template<typename T>
-    void operator()(T func, const std::size_t dataSize)
+    void operator()(T func, const std::ptrdiff_t dataSize)
     {
-        std::vector<std::thread*> threads;
+        std::vector<std::thread> threads;
 
-        const std::size_t step  = (dataSize / m_nbThread) + 1;
-        std::size_t regionBegin = 0;
-        std::size_t threadId    = 0;
+        const std::ptrdiff_t step = (dataSize / static_cast<std::ptrdiff_t>(m_nbThread)) + 1;
 
         if(m_nbThread > 1)
         {
+            std::ptrdiff_t regionBegin = 0;
+            std::size_t threadId       = 0;
             for( ; regionBegin < dataSize ; regionBegin += step, ++threadId)
             {
                 threads.push_back(
-                    new std::thread(
+                    std::thread(
                         func,
                         regionBegin,
                         std::min(dataSize, regionBegin + step),
@@ -74,10 +71,9 @@ public:
                 );
             }
 
-            for(std::thread* thread : threads)
+            for(auto& thread : threads)
             {
-                thread->join();
-                delete thread;
+                thread.join();
             }
 
             threads.clear();
@@ -90,7 +86,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    std::size_t numberOfThread()
+    [[nodiscard]] std::size_t numberOfThread() const
     {
         return m_nbThread;
     }
@@ -100,6 +96,4 @@ protected:
     const std::size_t m_nbThread;
 };
 
-} // namespace thread
-
-} // namespace sight::data
+} // namespace sight::data::thread

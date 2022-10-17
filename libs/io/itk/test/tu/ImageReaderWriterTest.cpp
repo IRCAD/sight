@@ -27,9 +27,13 @@
 #include <core/base.hpp>
 #include <core/tools/System.hpp>
 
-#include <io/itk/ImageReader.hpp>
-#include <io/itk/ImageWriter.hpp>
+#include <io/itk/InrImageReader.hpp>
+#include <io/itk/InrImageWriter.hpp>
+#include <io/itk/JpgImageWriter.hpp>
+#include <io/itk/NiftiImageReader.hpp>
+#include <io/itk/NiftiImageWriter.hpp>
 
+#include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
 
 #include <filesystem>
@@ -37,11 +41,10 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::ImageReaderWriterTest);
 
-namespace sight::io::itk
+namespace sight::io::itk::ut
 {
 
-namespace ut
-{
+static const double epsilon = 0.00001;
 
 //------------------------------------------------------------------------------
 
@@ -57,64 +60,237 @@ void ImageReaderWriterTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void ImageReaderWriterTest::testSaveLoadInr()
+void ImageReaderWriterTest::inrReadWriteTest()
 {
     // create Image
     data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::tools::Type::create("int16"));
-    this->checkSaveLoadInr(image);
+    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
+    sight::io::itk::ut::ImageReaderWriterTest::inrReadWriteCheck(image);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageReaderWriterTest::stressTestInr()
+void ImageReaderWriterTest::inrStressTest()
 {
-    core::tools::Type type = core::tools::Type::create<std::int8_t>();
-//    this->stressTestInrWithType(type, 5);
+    core::Type type = core::Type::UINT8;
+    sight::io::itk::ut::ImageReaderWriterTest::inrStressTestWithType(type, 5);
 
-    type = core::tools::Type::create<std::uint8_t>();
-    this->stressTestInrWithType(type, 5);
+    type = core::Type::INT16;
+    sight::io::itk::ut::ImageReaderWriterTest::inrStressTestWithType(type, 5);
 
-    type = core::tools::Type::create<std::int16_t>();
-    this->stressTestInrWithType(type, 5);
+    type = core::Type::UINT16;
+    sight::io::itk::ut::ImageReaderWriterTest::inrStressTestWithType(type, 5);
 
-    type = core::tools::Type::create<std::uint16_t>();
-    this->stressTestInrWithType(type, 5);
+    type = core::Type::INT32;
+    sight::io::itk::ut::ImageReaderWriterTest::inrStressTestWithType(type, 5);
 
-    type = core::tools::Type::create<std::int32_t>();
-    this->stressTestInrWithType(type, 5);
+    type = core::Type::UINT32;
+    sight::io::itk::ut::ImageReaderWriterTest::inrStressTestWithType(type, 5);
 
-    type = core::tools::Type::create<std::uint32_t>();
-    this->stressTestInrWithType(type, 5);
-
-//    type = core::tools::Type::create< std::int64_t >();
-//    this->stressTestInrWithType(type, 5);
-
-//    type = core::tools::Type::create< std::uint64_t >();
-//    this->stressTestInrWithType(type, 5);
-
-    type = core::tools::Type::create<float>();
-    this->stressTestInrWithType(type, 5);
-
-//    type = core::tools::Type::create< double >();
-//    this->stressTestInrWithType(type, 5);
+    type = core::Type::FLOAT;
+    sight::io::itk::ut::ImageReaderWriterTest::inrStressTestWithType(type, 5);
 }
 
 //------------------------------------------------------------------------------
 
-void ImageReaderWriterTest::stressTestInrWithType(core::tools::Type type, int nbTest)
+void ImageReaderWriterTest::niftiReadTest()
 {
-    for(int nb = 0 ; nb < nbTest ; ++nb)
+    //cspell: ignore 3Dkidney
+    const std::filesystem::path sightImagePath(utestData::Data::dir() / "sight/image/nii/3Dkidney.nii");
+
+    CPPUNIT_ASSERT_MESSAGE(
+        "The file '" + sightImagePath.string() + "' does not exist",
+        std::filesystem::exists(sightImagePath)
+    );
+
+    // load Image
+    data::Image::sptr sightImage                     = data::Image::New();
+    io::itk::NiftiImageReader::sptr sightImageReader = io::itk::NiftiImageReader::New();
+    sightImageReader->setObject(sightImage);
+    sightImageReader->setFile(sightImagePath);
+    sightImageReader->read();
+
+    niftiReadCheck(
+        sightImage,
+        core::Type::UINT8,
+        3,
+        {0.744924, 0.744924, 0.744924},
+        {0, 0, 0},
+        {481, 362, 478
+        });
+
+    const std::filesystem::path externalImagePath(utestData::Data::dir() / "sight/image/nii/brain.nii");
+
+    CPPUNIT_ASSERT_MESSAGE(
+        "The file '" + externalImagePath.string() + "' does not exist",
+        std::filesystem::exists(externalImagePath)
+    );
+
+    // load Image
+    data::Image::sptr externalImage                     = data::Image::New();
+    io::itk::NiftiImageReader::sptr externalImageReader = io::itk::NiftiImageReader::New();
+    externalImageReader->setObject(externalImage);
+    externalImageReader->setFile(externalImagePath);
+    externalImageReader->read();
+
+    niftiReadCheck(
+        externalImage,
+        core::Type::UINT8,
+        3,
+        {0.5, 0.5, 0.5},
+        {75, 107, -69.5},
+        {301, 370, 316
+        });
+}
+
+//------------------------------------------------------------------------------
+
+void ImageReaderWriterTest::niftiReadCheck(
+    const data::Image::sptr& imageToTest,
+    const core::Type& expectedType,
+    const std::size_t expectedDim,
+    const data::Image::Spacing& expectedSpacing,
+    const data::Image::Origin& expectedOrigin,
+    const data::Image::Size& expectedSize
+)
+{
+    CPPUNIT_ASSERT_EQUAL_MESSAGE(
+        "test on sight/image/nii/3Dkidney.nii failed ",
+        imageToTest->getType(),
+        expectedType
+    );
+
+    CPPUNIT_ASSERT_EQUAL(
+        static_cast<std::size_t>(imageToTest->numDimensions()),
+        expectedDim
+    );
+
+    for(std::size_t i = 0 ; i < expectedDim ; ++i)
     {
-        data::Image::sptr image = data::Image::New();
-        utestData::generator::Image::generateRandomImage(image, type);
-        this->checkSaveLoadInr(image);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(
+            static_cast<data::Image::Spacing::value_type>(imageToTest->getSpacing()[i]),
+            static_cast<data::Image::Spacing::value_type>(expectedSpacing[i]),
+            epsilon
+        );
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(
+            static_cast<data::Image::Origin::value_type>(imageToTest->getOrigin()[i]),
+            static_cast<data::Image::Origin::value_type>(expectedOrigin[i]),
+            epsilon
+        );
+        CPPUNIT_ASSERT_EQUAL(
+            static_cast<data::Image::Size::value_type>(imageToTest->getSize()[i]),
+            static_cast<data::Image::Size::value_type>(expectedSize[i])
+        );
     }
 }
 
 //------------------------------------------------------------------------------
 
-void ImageReaderWriterTest::checkSaveLoadInr(data::Image::sptr image)
+void ImageReaderWriterTest::niftiWriteTest()
+{
+    // create Image
+    data::Image::sptr image = data::Image::New();
+    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
+
+    // WARNING!
+    // There is a conversion subtlety. Nifti stores the data as float, and convert them.
+    // The writing/reading generates a conversion double => float => double.
+    // This leads to several errors.
+    // To prevent this, the spacing and origin used for the test are set as float, converted to double, to be able to
+    // test the direct equality.
+    const data::Image::Spacing spacingD = {0.5F, 0.001F, 1.25F};
+    const data::Image::Origin originD   = {0.5F, 0.25F, 0.25F};
+    image->setSpacing(spacingD);
+    image->setOrigin(originD);
+
+    // save image in nifti
+    const std::filesystem::path filename = core::tools::System::getTemporaryFolder() / "imageNiftiTest/image.nii";
+    std::filesystem::create_directories(filename.parent_path());
+    io::itk::NiftiImageWriter::sptr myWriter = io::itk::NiftiImageWriter::New();
+
+    myWriter->setObject(image);
+    myWriter->setFile(filename);
+    myWriter->write();
+
+    CPPUNIT_ASSERT_MESSAGE(
+        "test on imageNiftiTest/image.nii failed ",
+        std::filesystem::exists(filename)
+    );
+
+    // load Image
+    data::Image::sptr image2 = data::Image::New();
+    image2->setWindowCenter(image->getWindowCenter());
+    image2->setWindowWidth(image->getWindowWidth());
+
+    io::itk::NiftiImageReader::sptr myReader = io::itk::NiftiImageReader::New();
+    myReader->setObject(image2);
+    myReader->setFile(filename);
+    myReader->read();
+
+    std::filesystem::remove(filename);
+
+    CPPUNIT_ASSERT(*image == *image2);
+}
+
+//------------------------------------------------------------------------------
+
+void ImageReaderWriterTest::jpegWriteTest()
+{
+    // create Image
+    data::Image::sptr image = data::Image::New();
+    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
+
+    // save image in inr
+    const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "imageJPG";
+    std::filesystem::create_directories(PATH);
+    io::itk::JpgImageWriter::sptr myWriter = io::itk::JpgImageWriter::New();
+    myWriter->setObject(image);
+    myWriter->setFolder(PATH);
+    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
+}
+
+//------------------------------------------------------------------------------
+
+void ImageReaderWriterTest::inrReadJpegWriteTest()
+{
+    // create Image
+    std::filesystem::path pathInr = utestData::Data::dir() / "sight/image/inr/image.inr.gz";
+
+    CPPUNIT_ASSERT_MESSAGE(
+        "The file '" + pathInr.string() + "' does not exist",
+        std::filesystem::exists(pathInr)
+    );
+
+    data::Image::sptr image                = data::Image::New();
+    io::itk::InrImageReader::sptr myReader = io::itk::InrImageReader::New();
+    myReader->setObject(image);
+    myReader->setFile(pathInr);
+    myReader->read();
+
+    // save image in inr
+    const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "imageJPG";
+    std::filesystem::create_directories(PATH);
+    io::itk::JpgImageWriter::sptr myWriter = io::itk::JpgImageWriter::New();
+    myWriter->setObject(image);
+    myWriter->setFolder(PATH);
+    CPPUNIT_ASSERT_NO_THROW(myWriter->write());
+}
+
+//------------------------------------------------------------------------------
+
+void ImageReaderWriterTest::inrStressTestWithType(core::Type type, int nbTest)
+{
+    for(int nb = 0 ; nb < nbTest ; ++nb)
+    {
+        data::Image::sptr image = data::Image::New();
+        utestData::generator::Image::generateRandomImage(image, type);
+        sight::io::itk::ut::ImageReaderWriterTest::inrReadWriteCheck(image);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ImageReaderWriterTest::inrReadWriteCheck(data::Image::sptr image)
 {
     // inr only support image origin (0,0,0)
     const data::Image::Origin origin = {0., 0., 0.};
@@ -123,14 +299,14 @@ void ImageReaderWriterTest::checkSaveLoadInr(data::Image::sptr image)
     // save image in inr
     const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
     std::filesystem::create_directories(PATH.parent_path());
-    io::itk::ImageWriter::sptr myWriter = io::itk::ImageWriter::New();
+    io::itk::InrImageWriter::sptr myWriter = io::itk::InrImageWriter::New();
     myWriter->setObject(image);
     myWriter->setFile(PATH);
     myWriter->write();
 
     // load Image
-    data::Image::sptr image2            = data::Image::New();
-    io::itk::ImageReader::sptr myReader = io::itk::ImageReader::New();
+    data::Image::sptr image2               = data::Image::New();
+    io::itk::InrImageReader::sptr myReader = io::itk::InrImageReader::New();
     myReader->setObject(image2);
     myReader->setFile(PATH);
     myReader->read();
@@ -147,6 +323,4 @@ void ImageReaderWriterTest::checkSaveLoadInr(data::Image::sptr image)
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::io::itk
+} // namespace sight::io::itk::ut

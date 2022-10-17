@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ namespace sight::core::thread
 
 class Worker;
 
-}
+} // namespace sight::core::thread
 
 namespace sight::core::com
 {
@@ -61,6 +61,9 @@ public:
     /// Constructor, does nothing
     CORE_API Slots();
 
+    /// Copy constructor forbidden
+    Slots& operator=(const Slots&) = delete;
+
     /// Constructor, check if all slots are disconnected
     CORE_API virtual ~Slots();
 
@@ -75,10 +78,6 @@ public:
         return this->operator()(key, slotBase);
     }
 
-    /// Creates in intern a new slot from function and registers it in m_slots
-    template<typename F, typename ... A>
-    Slots& operator()(const SlotKeyType& key, F f, A ... a);
-
     /// Returns the SlotBase associated to the key, if key does not exist, the ptr is null
     CORE_API SPTR(SlotBase) operator[](const SlotKeyType& key) const;
 
@@ -86,15 +85,12 @@ public:
     CORE_API void setWorker(const SPTR(core::thread::Worker)& worker);
 
     /// Returns all SlotKeyType registered in m_slots
-    CORE_API SlotKeyContainerType getSlotKeys() const;
+    [[nodiscard]] CORE_API SlotKeyContainerType getSlotKeys() const;
 
 protected:
 
     /// Copy constructor forbidden
-    Slots(const Slots&);
-
-    /// Copy constructor forbidden
-    Slots& operator=(const Slots&);
+    Slots(const Slots& /*unused*/);
 
     /// Association < key , SPTR( SlotBase ) >
     SlotMapType m_slots;

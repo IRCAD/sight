@@ -27,10 +27,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::tools::ut::RandomTest);
 
-namespace sight::core::tools
-{
-
-namespace ut
+namespace sight::core::tools::ut
 {
 
 //------------------------------------------------------------------------------
@@ -51,11 +48,13 @@ void RandomTest::tearDown()
 
 void RandomTest::generatorTest()
 {
-    float minF = 10.f, maxF = 20.f;
+    float minF  = 10.F;
+    float maxF  = 20.F;
     float randF = core::tools::random::getValue(minF, maxF);
     CPPUNIT_ASSERT_MESSAGE("Generate random number not in good interval.", randF >= minF && randF <= maxF);
 
-    int minI = 10, maxI = 12;
+    int minI  = 10;
+    int maxI  = 12;
     int randI = core::tools::random::getValue(minI, maxI);
     CPPUNIT_ASSERT_MESSAGE("Generate random number not in good interval.", randI >= minI && randI <= maxI);
 }
@@ -64,15 +63,17 @@ void RandomTest::generatorTest()
 
 void RandomTest::randomListTest()
 {
-    float minF = 10.f, maxF = 20.f;
+    float minF = 10.F;
+    float maxF = 20.F;
     std::vector<float> randF(10);
     core::tools::random::fillContainer(minF, maxF, randF);
-    for(std::size_t i = 0 ; i < randF.size() ; ++i)
+    for(float i : randF)
     {
-        CPPUNIT_ASSERT_MESSAGE("Generate random number not in good interval.", randF[i] >= minF && randF[i] <= maxF);
+        CPPUNIT_ASSERT_MESSAGE("Generate random number not in good interval.", i >= minF && i <= maxF);
     }
 
-    int minI = 10, maxI = 20;
+    int minI = 10;
+    int maxI = 20;
     std::vector<int> randI(10);
     core::tools::random::fillContainer(minI, maxI, randI);
     for(std::size_t i = 0 ; i < randF.size() ; ++i)
@@ -87,13 +88,15 @@ void RandomTest::seedTest()
 {
     std::uint32_t seedVal = 42;
 
-    float minF = 10.f, maxF = 20.f;
+    float minF   = 10.F;
+    float maxF   = 20.F;
     float randF1 = core::tools::random::getValue(minF, maxF, seedVal);
     CPPUNIT_ASSERT_MESSAGE("Generate random number not in good interval.", randF1 >= minF && randF1 <= maxF);
     float randF2 = core::tools::random::getValue(minF, maxF, seedVal);
     CPPUNIT_ASSERT_EQUAL(randF1, randF2);
 
-    int minI = 10, maxI = 20;
+    int minI = 10;
+    int maxI = 20;
     std::vector<int> randI1(10);
     std::vector<int> randI2(10);
     core::tools::random::fillContainer(minI, maxI, randI1, seedVal);
@@ -104,6 +107,4 @@ void RandomTest::seedTest()
     }
 }
 
-} // namespace ut
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::ut

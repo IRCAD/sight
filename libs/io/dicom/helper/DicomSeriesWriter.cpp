@@ -37,16 +37,13 @@
 
 SIGHT_REGISTER_IO_WRITER(sight::io::dicom::helper::DicomSeriesWriter);
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 //------------------------------------------------------------------------------
 
-DicomSeriesWriter::DicomSeriesWriter(io::base::writer::IObjectWriter::Key) :
-    m_writeCount(0),
+DicomSeriesWriter::DicomSeriesWriter(io::base::writer::IObjectWriter::Key /*unused*/) :
+
     m_job(core::jobs::Observer::New("Writing DICOM files"))
 {
 }
@@ -121,7 +118,7 @@ void DicomSeriesWriter::processWrite()
     // Create folder
     std::filesystem::path folder = this->getFolder();
 
-    if(m_writeCount)
+    if(m_writeCount != 0)
     {
         std::stringstream ss;
         ss << "fwGdcmIO" << std::setfill('0') << std::setw(3) << m_writeCount;
@@ -165,7 +162,7 @@ void DicomSeriesWriter::processWrite()
         std::ofstream fs(dest_file, std::ios::binary | std::ios::trunc);
         SIGHT_THROW_IF("Can't open '" << dest_file.string() << "' for write.", !fs.good());
 
-        this->processStream(*(stream.get()), fs);
+        this->processStream(*(stream), fs);
 
         m_job->doneWork(++count);
     }
@@ -208,7 +205,7 @@ void DicomSeriesWriter::processWriteArchive()
         SPTR(std::ostream) fs = m_archive->createFile(dest_file);
         SIGHT_THROW_IF("Can't open '" << dest_file.string() << "' for write.", !fs->good());
 
-        this->processStream(*(stream.get()), *fs);
+        this->processStream(*(stream), *fs);
 
         m_job->doneWork(++count);
     }
@@ -234,6 +231,4 @@ SPTR(core::jobs::IJob) DicomSeriesWriter::getJob() const
 
 //------------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

@@ -25,16 +25,14 @@
 #include <core/base.hpp>
 #include <core/jobs/Observer.hpp>
 
+#include <array>
 #include <fstream>
 
 /**
  * Do not mark `DICM` as incorrect.
  * cspell:ignore DICM
  */
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 //------------------------------------------------------------------------------
@@ -43,10 +41,10 @@ bool isDICOM(const std::filesystem::path& filepath)
 {
     std::ifstream ifs(filepath, std::ios::binary);
     ifs.seekg(128);
-    char DICOM[5] = {0};
-    ifs.read(DICOM, 4);
+    std::array<char, 5> DICOM {};
+    ifs.read(DICOM.data(), 4);
     ifs.close();
-    return strcmp(DICOM, "DICM") == 0;
+    return strcmp(DICOM.data(), "DICM") == 0;
 }
 
 //------------------------------------------------------------------------------
@@ -69,7 +67,7 @@ void DicomSearch::searchRecursively(
         }
 
         std::uint64_t progress = 0;
-        for(auto file : fileVect)
+        for(const auto& file : fileVect)
         {
             if(readerObserver)
             {
@@ -135,7 +133,7 @@ void DicomSearch::checkFilenameExtension(
 
                 if(stem != "dicomdir")
                 {
-                    dicomFiles.push_back(path.string());
+                    dicomFiles.emplace_back(path.string());
                 }
             }
         }
@@ -144,6 +142,4 @@ void DicomSearch::checkFilenameExtension(
 
 //------------------------------------------------------------------------------
 
-} //namespace helper
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

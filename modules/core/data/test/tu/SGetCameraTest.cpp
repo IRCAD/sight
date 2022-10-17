@@ -26,7 +26,7 @@
 #include <core/service/base.hpp>
 
 #include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 
 #include <service/IService.hpp>
 
@@ -38,10 +38,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::data::ut::SGetCameraTest);
 
-namespace sight::module::data
-{
-
-namespace ut
+namespace sight::module::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -61,10 +58,10 @@ void SGetCameraTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void SGetCameraTest::extractsCameraFromCameraSeries()
+void SGetCameraTest::extractsCameraFromCameraSet()
 {
     // Create a camera series.
-    sight::data::CameraSeries::sptr cameraSeries = sight::data::CameraSeries::New();
+    sight::data::CameraSet::sptr camera_set = sight::data::CameraSet::New();
     // create service
     sight::service::IService::sptr getCameraSrv = sight::service::add("sight::module::data::SGetCamera");
     // ------------------ create a matrix ----------------------
@@ -74,11 +71,11 @@ void SGetCameraTest::extractsCameraFromCameraSeries()
     // -- Camera 2 --
     sight::data::Camera::sptr camera2 = sight::data::Camera::New();
 
-    cameraSeries->addCamera(camera1);
-    cameraSeries->addCamera(camera2);
-    CPPUNIT_ASSERT_EQUAL(cameraSeries->numCameras(), std::size_t(2));
+    camera_set->add_camera(camera1);
+    camera_set->add_camera(camera2);
+    CPPUNIT_ASSERT_EQUAL(camera_set->size(), std::size_t(2));
     // -------------Set extrinsic Matrix-----------------
-    cameraSeries->setExtrinsicMatrix(0, matrix);
+    camera_set->set_extrinsic_matrix(0, matrix);
 
     service::IService::ConfigType config;
     std::stringstream config_string;
@@ -93,7 +90,7 @@ void SGetCameraTest::extractsCameraFromCameraSeries()
     boost::property_tree::read_xml(config_string, config);
 
     getCameraSrv->setConfiguration(config);
-    getCameraSrv->setInput(cameraSeries, "cameraSeries");
+    getCameraSrv->setInput(camera_set, "cameraSet");
     getCameraSrv->configure();
     getCameraSrv->start().wait();
 
@@ -108,7 +105,7 @@ void SGetCameraTest::extractsCameraFromCameraSeries()
 
 //------------------------------------------------------------------------------
 
-void SGetCameraTest::extractsInvalidCameraSeries()
+void SGetCameraTest::extractsInvalidCameraSet()
 {
     // create service
     sight::service::IService::sptr getCameraSrv = sight::service::add("sight::module::data::SGetCamera");
@@ -125,7 +122,7 @@ void SGetCameraTest::extractsInvalidCameraSeries()
     boost::property_tree::read_xml(config_string, config);
 
     getCameraSrv->setConfiguration(config);
-    getCameraSrv->setInput(nullptr, "cameraSeries");
+    getCameraSrv->setInput(nullptr, "cameraSet");
     getCameraSrv->configure();
     getCameraSrv->start().wait();
 
@@ -139,16 +136,16 @@ void SGetCameraTest::extractsInvalidCameraSeries()
 void SGetCameraTest::extractsValidExtrinsic()
 {
     // // Create a camera series.
-    sight::data::CameraSeries::sptr cameraSeries = sight::data::CameraSeries::New();
+    sight::data::CameraSet::sptr camera_set = sight::data::CameraSet::New();
     // create service
     sight::service::IService::sptr getCameraSrv = sight::service::add("sight::module::data::SGetCamera");
     // -- Camera 1 --
     sight::data::Camera::sptr camera1 = sight::data::Camera::New();
     // -- Camera 2 --
     sight::data::Camera::sptr camera2 = sight::data::Camera::New();
-    cameraSeries->addCamera(camera1);
-    cameraSeries->addCamera(camera2);
-    CPPUNIT_ASSERT_EQUAL(cameraSeries->numCameras(), std::size_t(2));
+    camera_set->add_camera(camera1);
+    camera_set->add_camera(camera2);
+    CPPUNIT_ASSERT_EQUAL(camera_set->size(), std::size_t(2));
 
     service::IService::ConfigType config;
     std::stringstream config_string;
@@ -160,7 +157,7 @@ void SGetCameraTest::extractsValidExtrinsic()
     boost::property_tree::read_xml(config_string, config);
 
     getCameraSrv->setConfiguration(config);
-    getCameraSrv->setInput(cameraSeries, "cameraSeries");
+    getCameraSrv->setInput(camera_set, "cameraSet");
     getCameraSrv->configure();
     getCameraSrv->start().wait();
 
@@ -176,7 +173,7 @@ void SGetCameraTest::extractsValidExtrinsic()
 void SGetCameraTest::extractsValidExtrinsic1()
 {
     // // Create a camera series.
-    sight::data::CameraSeries::sptr cameraSeries = sight::data::CameraSeries::New();
+    sight::data::CameraSet::sptr camera_set = sight::data::CameraSet::New();
     // create service
     sight::service::IService::sptr getCameraSrv = sight::service::add("sight::module::data::SGetCamera");
     // -- Camera 1 --
@@ -186,10 +183,10 @@ void SGetCameraTest::extractsValidExtrinsic1()
     // ------------------ create a matrix ----------------------
     sight::data::Matrix4::sptr matrix = sight::data::Matrix4::New();
 
-    cameraSeries->addCamera(camera1);
-    cameraSeries->addCamera(camera2);
-    CPPUNIT_ASSERT_EQUAL(cameraSeries->numCameras(), std::size_t(2));
-    cameraSeries->setExtrinsicMatrix(0, matrix);
+    camera_set->add_camera(camera1);
+    camera_set->add_camera(camera2);
+    CPPUNIT_ASSERT_EQUAL(camera_set->size(), std::size_t(2));
+    camera_set->set_extrinsic_matrix(0, matrix);
     service::IService::ConfigType config;
     std::stringstream config_string;
     config_string
@@ -200,7 +197,7 @@ void SGetCameraTest::extractsValidExtrinsic1()
     boost::property_tree::read_xml(config_string, config);
 
     getCameraSrv->setConfiguration(config);
-    getCameraSrv->setInput(cameraSeries, "cameraSeries");
+    getCameraSrv->setInput(camera_set, "cameraSet");
     getCameraSrv->configure();
     getCameraSrv->start().wait();
 
@@ -216,17 +213,17 @@ void SGetCameraTest::extractsValidExtrinsic1()
 void SGetCameraTest::extractsCameraOutOfBoundIndex()
 {
     // Create a camera series.
-    sight::data::CameraSeries::sptr cameraSeries = sight::data::CameraSeries::New();
+    auto camera_set = sight::data::CameraSet::New();
     // create service
-    sight::service::IService::sptr getCameraSrv = sight::service::add("sight::module::data::SGetCamera");
+    auto getCameraSrv = sight::service::add("sight::module::data::SGetCamera");
     // -- Camera 1 --
-    sight::data::Camera::sptr camera1 = sight::data::Camera::New();
+    auto camera1 = sight::data::Camera::New();
     // -- Camera 2 --
-    sight::data::Camera::sptr camera2 = sight::data::Camera::New();
+    auto camera2 = sight::data::Camera::New();
 
-    cameraSeries->addCamera(camera1);
-    cameraSeries->addCamera(camera2);
-    CPPUNIT_ASSERT_EQUAL(cameraSeries->numCameras(), std::size_t(2));
+    camera_set->add_camera(camera1);
+    camera_set->add_camera(camera2);
+    CPPUNIT_ASSERT_EQUAL(camera_set->size(), std::size_t(2));
 
     service::IService::ConfigType config;
     std::stringstream config_string;
@@ -241,11 +238,11 @@ void SGetCameraTest::extractsCameraOutOfBoundIndex()
     boost::property_tree::read_xml(config_string, config);
 
     getCameraSrv->setConfiguration(config);
-    getCameraSrv->setInput(cameraSeries, "cameraSeries");
+    getCameraSrv->setInput(camera_set, "cameraSet");
     getCameraSrv->configure();
     getCameraSrv->start().wait();
 
-    CPPUNIT_ASSERT_THROW(getCameraSrv->update().get(), core::Exception);
+    CPPUNIT_ASSERT_THROW(getCameraSrv->update().get(), std::out_of_range);
     getCameraSrv->stop().wait();
     sight::service::remove(getCameraSrv);
 }
@@ -255,7 +252,7 @@ void SGetCameraTest::extractsCameraOutOfBoundIndex()
 void SGetCameraTest::extractsExtrinsicOutOfBoundIndex()
 {
     // Create a camera series.
-    sight::data::CameraSeries::sptr cameraSeries = sight::data::CameraSeries::New();
+    sight::data::CameraSet::sptr camera_set = sight::data::CameraSet::New();
     // create service
     sight::service::IService::sptr getCameraSrv = sight::service::add("sight::module::data::SGetCamera");
 
@@ -263,9 +260,9 @@ void SGetCameraTest::extractsExtrinsicOutOfBoundIndex()
     sight::data::Camera::sptr camera1 = sight::data::Camera::New();
     // -- Camera 2 --
     sight::data::Camera::sptr camera2 = sight::data::Camera::New();
-    cameraSeries->addCamera(camera1);
-    cameraSeries->addCamera(camera2);
-    CPPUNIT_ASSERT_EQUAL(cameraSeries->numCameras(), std::size_t(2));
+    camera_set->add_camera(camera1);
+    camera_set->add_camera(camera2);
+    CPPUNIT_ASSERT_EQUAL(camera_set->size(), std::size_t(2));
 
     service::IService::ConfigType config;
     std::stringstream config_string;
@@ -280,11 +277,11 @@ void SGetCameraTest::extractsExtrinsicOutOfBoundIndex()
     boost::property_tree::read_xml(config_string, config);
 
     getCameraSrv->setConfiguration(config);
-    getCameraSrv->setInput(cameraSeries, "cameraSeries");
+    getCameraSrv->setInput(camera_set, "cameraSet");
     getCameraSrv->configure();
     getCameraSrv->start().wait();
 
-    CPPUNIT_ASSERT_THROW(getCameraSrv->update().get(), core::Exception);
+    CPPUNIT_ASSERT_THROW(getCameraSrv->update().get(), std::out_of_range);
     getCameraSrv->stop().wait();
     sight::service::remove(getCameraSrv);
 }
@@ -294,7 +291,7 @@ void SGetCameraTest::extractsExtrinsicOutOfBoundIndex()
 void SGetCameraTest::extractsInvalidExtrinsic()
 {
     // Create a camera series.
-    sight::data::CameraSeries::sptr cameraSeries = sight::data::CameraSeries::New();
+    sight::data::CameraSet::sptr camera_set = sight::data::CameraSet::New();
     // create service
     sight::service::IService::sptr getCameraSrv = sight::service::add("sight::module::data::SGetCamera");
     // -- Camera 1 --
@@ -302,9 +299,9 @@ void SGetCameraTest::extractsInvalidExtrinsic()
     // -- Camera 2 --
     sight::data::Camera::sptr camera2 = sight::data::Camera::New();
 
-    cameraSeries->addCamera(camera1);
-    cameraSeries->addCamera(camera2);
-    CPPUNIT_ASSERT_EQUAL(cameraSeries->numCameras(), std::size_t(2));
+    camera_set->add_camera(camera1);
+    camera_set->add_camera(camera2);
+    CPPUNIT_ASSERT_EQUAL(camera_set->size(), std::size_t(2));
 
     service::IService::ConfigType config;
     std::stringstream config_string;
@@ -320,7 +317,7 @@ void SGetCameraTest::extractsInvalidExtrinsic()
     boost::property_tree::read_xml(config_string, config);
 
     getCameraSrv->setConfiguration(config);
-    getCameraSrv->setInput(cameraSeries, "cameraSeries");
+    getCameraSrv->setInput(camera_set, "cameraSet");
     getCameraSrv->configure();
     getCameraSrv->start().wait();
 
@@ -334,6 +331,4 @@ void SGetCameraTest::extractsInvalidExtrinsic()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::data
+} // namespace sight::module::data::ut

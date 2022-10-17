@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -19,6 +19,8 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+
+// cspell:ignore NOLINT hicpp
 
 #include "core/memory/BufferAllocationPolicy.hpp"
 
@@ -39,7 +41,7 @@ void BufferMallocPolicy::allocate(
     {
         try
         {
-            buffer = malloc(size);
+            buffer = malloc(size); // NOLINT(cppcoreguidelines-no-malloc,hicpp-no-malloc)
         }
         catch(...)
         {
@@ -64,18 +66,18 @@ void BufferMallocPolicy::reallocate(
     BufferAllocationPolicy::SizeType size
 )
 {
-    BufferType newBuffer;
+    BufferType newBuffer = nullptr;
     if(size > 0)
     {
-        newBuffer = realloc(buffer, size);
+        newBuffer = realloc(buffer, size); // NOLINT(cppcoreguidelines-no-malloc,hicpp-no-malloc)
     }
     else
     {
-        free(buffer);
-        newBuffer = NULL;
+        free(buffer); // NOLINT(cppcoreguidelines-no-malloc,hicpp-no-malloc)
+        newBuffer = nullptr;
     }
 
-    if(newBuffer == NULL && size > 0)
+    if(newBuffer == nullptr && size > 0)
     {
         SIGHT_THROW_EXCEPTION_MSG(
             core::memory::exception::Memory,
@@ -91,8 +93,8 @@ void BufferMallocPolicy::reallocate(
 
 void BufferMallocPolicy::destroy(BufferType& buffer)
 {
-    free(buffer);
-    buffer = 0;
+    free(buffer); // NOLINT(cppcoreguidelines-no-malloc,hicpp-no-malloc)
+    buffer = nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -145,7 +147,7 @@ void BufferNewPolicy::reallocate(
 void BufferNewPolicy::destroy(BufferType& buffer)
 {
     delete[] static_cast<char*>(buffer);
-    buffer = 0;
+    buffer = nullptr;
 }
 
 //------------------------------------------------------------------------------

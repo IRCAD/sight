@@ -29,10 +29,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::FloatTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -53,8 +50,8 @@ void FloatTest::tearDown()
 
 void FloatTest::methode1()
 {
-    const float VALUES[]     = {-3.141592f, 0.f, 2.04f, 10, std::numeric_limits<float>::infinity()};
-    const float NAN_VALUES[] = {
+    const std::array VALUES     = {-3.141592F, 0.F, 2.04F, 10.F, std::numeric_limits<float>::infinity()};
+    const std::array NAN_VALUES = {
         std::numeric_limits<float>::quiet_NaN(),
         std::numeric_limits<float>::signaling_NaN()
     };
@@ -105,6 +102,4 @@ void FloatTest::methode1()
     }
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

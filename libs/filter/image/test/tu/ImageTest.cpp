@@ -22,7 +22,7 @@
 
 #include "ImageTest.hpp"
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <filter/image/Image.hpp>
 
@@ -33,10 +33,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::ImageTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -54,24 +51,19 @@ void ImageTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void TestRoiApply(const std::string& imageTypeName, const std::string& roiTypeName)
+void testRoiApply(const core::Type imageType, const core::Type roiType)
 {
-    std::stringstream ss;
-    ss
-    << "Test failed with types : img : " << imageTypeName
-    << ", roi : " << roiTypeName;
-    const std::string message = ss.str();
-    const core::tools::Type imageType(imageTypeName);
-    const core::tools::Type roiType(roiTypeName);
+    const std::string message = "Test failed with types : img : " + imageType.name()
+                                + ", roi : " + roiType.name();
     data::Image::sptr imageRef;
-    data::Image::sptr image = data::Image::New();
-    data::Image::sptr roi   = data::Image::New();
+    data::Image::sptr imgRoiApplied = data::Image::New();
+    data::Image::sptr roi           = data::Image::New();
 
     // generate a random image
-    utestData::generator::Image::generateRandomImage(image, imageType);
-    const data::Image::Size size       = image->getSize();
-    const data::Image::Spacing spacing = image->getSpacing();
-    const data::Image::Origin origin   = image->getOrigin();
+    utestData::generator::Image::generateRandomImage(imgRoiApplied, imageType);
+    const data::Image::Size size       = imgRoiApplied->getSize();
+    const data::Image::Spacing spacing = imgRoiApplied->getSpacing();
+    const data::Image::Origin origin   = imgRoiApplied->getOrigin();
     utestData::generator::Image::generateImage(
         roi,
         size,
@@ -81,70 +73,65 @@ void TestRoiApply(const std::string& imageTypeName, const std::string& roiTypeNa
         data::Image::PixelFormat::GRAY_SCALE
     );
 
-    imageRef = data::Object::copy(image);
+    imageRef = data::Object::copy(imgRoiApplied);
 
     // fill roi with random values
     utestData::generator::Image::randomizeImage(roi);
 
-    const auto dumpLock    = roi->dump_lock();
-    auto begin             = roi->begin();
-    const auto end         = roi->end();
-    const std::size_t part = (end - begin) / 3;
+    const auto dumpLock = roi->dump_lock();
+    auto begin          = roi->begin();
+    const auto end      = roi->end();
+    const auto part     = std::int64_t((end - begin) / 3);
 
     // keep random values in 1/3 of the image (else fill with 0)
     std::fill(begin, begin + part, 0);
     std::fill(end - part, end, 0);
 
     // apply roi and check
-    filter::image::applyRoi(image, roi);
-    CPPUNIT_ASSERT_MESSAGE(message, filter::image::isRoiApplied(imageRef, roi, image));
+    filter::image::applyRoi(imgRoiApplied, roi);
+    CPPUNIT_ASSERT_MESSAGE(message, filter::image::isRoiApplied(imageRef, roi, imgRoiApplied));
 }
 
 //------------------------------------------------------------------------------
 
 void ImageTest::roiApplyTest()
 {
-    TestRoiApply("int8", "int8");
-    TestRoiApply("int8", "int16");
-    TestRoiApply("int8", "int32");
-    TestRoiApply("int8", "uint8");
-    TestRoiApply("int8", "uint16");
-    TestRoiApply("int8", "uint32");
-
-    TestRoiApply("int16", "int8");
-    TestRoiApply("int16", "int16");
-    TestRoiApply("int16", "int32");
-    TestRoiApply("int16", "uint8");
-    TestRoiApply("int16", "uint16");
-    TestRoiApply("int16", "uint32");
-
-    TestRoiApply("int32", "int8");
-    TestRoiApply("int32", "int16");
-    TestRoiApply("int32", "int32");
-    TestRoiApply("int32", "uint8");
-    TestRoiApply("int32", "uint16");
-    TestRoiApply("int32", "uint32");
-
-    TestRoiApply("uint8", "int8");
-    TestRoiApply("uint8", "int16");
-    TestRoiApply("uint8", "int32");
-    TestRoiApply("uint8", "uint8");
-    TestRoiApply("uint8", "uint16");
-    TestRoiApply("uint8", "uint32");
-
-    TestRoiApply("uint16", "int8");
-    TestRoiApply("uint16", "int16");
-    TestRoiApply("uint16", "int32");
-    TestRoiApply("uint16", "uint8");
-    TestRoiApply("uint16", "uint16");
-    TestRoiApply("uint16", "uint32");
-
-    TestRoiApply("uint32", "int8");
-    TestRoiApply("uint32", "int16");
-    TestRoiApply("uint32", "int32");
-    TestRoiApply("uint32", "uint8");
-    TestRoiApply("uint32", "uint16");
-    TestRoiApply("uint32", "uint32");
+    testRoiApply(core::Type::INT8, core::Type::INT8);
+    testRoiApply(core::Type::INT8, core::Type::INT16);
+    testRoiApply(core::Type::INT8, core::Type::INT32);
+    testRoiApply(core::Type::INT8, core::Type::UINT8);
+    testRoiApply(core::Type::INT8, core::Type::UINT16);
+    testRoiApply(core::Type::INT8, core::Type::UINT32);
+    testRoiApply(core::Type::INT16, core::Type::INT8);
+    testRoiApply(core::Type::INT16, core::Type::INT16);
+    testRoiApply(core::Type::INT16, core::Type::INT32);
+    testRoiApply(core::Type::INT16, core::Type::UINT8);
+    testRoiApply(core::Type::INT16, core::Type::UINT16);
+    testRoiApply(core::Type::INT16, core::Type::UINT32);
+    testRoiApply(core::Type::INT32, core::Type::INT8);
+    testRoiApply(core::Type::INT32, core::Type::INT16);
+    testRoiApply(core::Type::INT32, core::Type::INT32);
+    testRoiApply(core::Type::INT32, core::Type::UINT8);
+    testRoiApply(core::Type::INT32, core::Type::UINT16);
+    testRoiApply(core::Type::INT32, core::Type::UINT32);
+    testRoiApply(core::Type::UINT8, core::Type::INT8);
+    testRoiApply(core::Type::UINT8, core::Type::INT16);
+    testRoiApply(core::Type::UINT8, core::Type::INT32);
+    testRoiApply(core::Type::UINT8, core::Type::UINT8);
+    testRoiApply(core::Type::UINT8, core::Type::UINT16);
+    testRoiApply(core::Type::UINT8, core::Type::UINT32);
+    testRoiApply(core::Type::UINT16, core::Type::INT8);
+    testRoiApply(core::Type::UINT16, core::Type::INT16);
+    testRoiApply(core::Type::UINT16, core::Type::INT32);
+    testRoiApply(core::Type::UINT16, core::Type::UINT8);
+    testRoiApply(core::Type::UINT16, core::Type::UINT16);
+    testRoiApply(core::Type::UINT16, core::Type::UINT32);
+    testRoiApply(core::Type::UINT32, core::Type::INT8);
+    testRoiApply(core::Type::UINT32, core::Type::INT16);
+    testRoiApply(core::Type::UINT32, core::Type::INT32);
+    testRoiApply(core::Type::UINT32, core::Type::UINT8);
+    testRoiApply(core::Type::UINT32, core::Type::UINT16);
+    testRoiApply(core::Type::UINT32, core::Type::UINT32);
 
 // float and double disabled : randomization generate some <nan>
 
@@ -224,6 +211,4 @@ void ImageTest::roiApplyTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::filter::image
+} // namespace sight::filter::image::ut

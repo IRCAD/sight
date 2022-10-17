@@ -24,13 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace ut
+namespace sight::core::runtime::detail::ut
 {
 
 /**
@@ -54,20 +48,16 @@ public:
     RuntimeTest();
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
 #if defined(__unix__)
-    void testPosix();
+    static void testPosix();
 #endif
 #if defined(WIN32)
     void testWin32();
 #endif
-    void testRuntime();
+    static void testRuntime();
 };
 
-} // namespace ut
-
-} // namespace detail
-
-} // namespace fwRuntime
+} // namespace sight::core::runtime::detail::ut

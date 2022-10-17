@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,7 @@
 #include "filter/dicom/config.hpp"
 #include "filter/dicom/splitter/TagValueSplitter.hpp"
 
-namespace sight::filter::dicom
-{
-
-namespace splitter
+namespace sight::filter::dicom::splitter
 {
 
 /**
@@ -44,7 +41,7 @@ public:
     FILTER_DICOM_API ImageTypeSplitter(filter::dicom::IFilter::Key key);
 
     /// Destructor
-    FILTER_DICOM_API virtual ~ImageTypeSplitter();
+    FILTER_DICOM_API ~ImageTypeSplitter() override;
 
     /// Return the name of the filter
     FILTER_DICOM_API std::string getName() const override;
@@ -64,6 +61,4 @@ protected:
     static const std::string s_FILTER_DESCRIPTION;
 };
 
-} // namespace splitter
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::splitter

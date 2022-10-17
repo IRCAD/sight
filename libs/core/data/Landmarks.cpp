@@ -46,7 +46,7 @@ const core::com::Signals::SignalKeyType Landmarks::s_POINT_DESELECTED_SIG = "poi
 
 //------------------------------------------------------------------------------
 
-Landmarks::Landmarks(data::Object::Key)
+Landmarks::Landmarks(data::Object::Key /*unused*/)
 {
     newSignal<GroupAddedSignalType>(s_GROUP_ADDED_SIG);
     newSignal<GroupRemovedSignalType>(s_GROUP_REMOVED_SIG);
@@ -62,42 +62,40 @@ Landmarks::Landmarks(data::Object::Key)
 
 //------------------------------------------------------------------------------
 
-Landmarks::~Landmarks()
+void Landmarks::shallowCopy(const Object::csptr& source)
 {
+    const auto& other = dynamicConstCast(source);
+
+    SIGHT_THROW_EXCEPTION_IF(
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
+        ),
+        !bool(other)
+    );
+
+    m_landmarks = other->m_landmarks;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Landmarks::shallowCopy(const Object::csptr& _source)
+void Landmarks::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Landmarks::csptr other = Landmarks::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     m_landmarks = other->m_landmarks;
-}
 
-//------------------------------------------------------------------------------
-
-void Landmarks::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
-{
-    Landmarks::csptr other = Landmarks::dynamicConstCast(_source);
-    SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
-        ),
-        !bool(other)
-    );
-    this->fieldDeepCopy(_source, cache);
-
-    m_landmarks = other->m_landmarks;
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -118,7 +116,7 @@ void Landmarks::addGroup(
 
 //------------------------------------------------------------------------------
 
-const Landmarks::GroupNameContainer Landmarks::getGroupNames() const
+Landmarks::GroupNameContainer Landmarks::getGroupNames() const
 {
     Landmarks::GroupNameContainer names;
 
@@ -298,16 +296,11 @@ std::size_t Landmarks::numPoints(const std::string& name) const
 
 bool Landmarks::LandmarksGroup::operator==(const LandmarksGroup& other) const noexcept
 {
-    if(!core::tools::is_equal(m_color, other.m_color)
-       || !core::tools::is_equal(m_size, other.m_size)
-       || m_shape != other.m_shape
-       || m_visibility != other.m_visibility
-       || !core::tools::is_equal(m_points, other.m_points))
-    {
-        return false;
-    }
-
-    return true;
+    return !(!core::tools::is_equal(m_color, other.m_color)
+             || !core::tools::is_equal(m_size, other.m_size)
+             || m_shape != other.m_shape
+             || m_visibility != other.m_visibility
+             || !core::tools::is_equal(m_points, other.m_points));
 }
 
 //------------------------------------------------------------------------------
@@ -327,7 +320,7 @@ bool Landmarks::operator==(const Landmarks& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <filesystem>
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 class DicomDirTest : public CPPUNIT_NS::TestFixture
@@ -41,13 +38,11 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // Interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     // Test functions
-    void readDicomDir();
+    static void readDicomDir();
 };
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

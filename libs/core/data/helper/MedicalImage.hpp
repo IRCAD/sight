@@ -26,26 +26,17 @@
 
 #include <core/tools/Dispatcher.hpp>
 #include <core/tools/NumericRoundCast.hxx>
-#include <core/tools/TypeKeyTypeMapping.hpp>
 
-#include <data/Composite.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/PointList.hpp>
+#include <data/thread/RegionThreader.hpp>
+#include <data/TransferFunction.hpp>
 #include <data/Vector.hpp>
 
 #include <optional>
 
-namespace sight::data
-{
-
-namespace helper
-{
-
-/**
- * @brief   Helpers for medical image.
- */
-namespace MedicalImage
+namespace sight::data::helper::MedicalImage
 {
 
 typedef enum
@@ -97,7 +88,7 @@ DATA_API bool checkImageSliceIndex(data::Image::sptr _pImg);
  * @param len unsigned int length, as begin+len.
  * @return boolean, true if null, false otherwise.
  */
-DATA_API bool isBufNull(const data::Image::BufferType* buf, const unsigned int len);
+DATA_API bool isBufNull(const data::Image::BufferType* buf, unsigned int len);
 
 /**
  * @brief Return a buffer of image type's size, containing 'value' casted to image data type
@@ -116,7 +107,7 @@ SPTR(data::Image::BufferType) getPixelInImageSpace(data::Image::sptr image, T & 
  * @param[out] _max : maximum value
  */
 template<typename MINMAXTYPE>
-void getMinMax(const data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
+void getMinMax(data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
 
 /**
  * @brief Check if the image has a transfer function pool
@@ -126,7 +117,7 @@ void getMinMax(const data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max
  * If the image has not transfer functions, the pool is
  * created and a grey level transfer function is added.
  */
-DATA_API bool checkTransferFunctionPool(const data::Image::sptr& _img);
+DATA_API bool updateDefaultTransferFunction(data::Image& _img);
 
 // Getter/Setter for specific image fields
 
@@ -256,7 +247,7 @@ DATA_API void setLabel(data::Image& _image, const std::string& _label);
  * @param _image : input image reference.
  * @return data::Composite::sptr containing transfer function, can be null.
  */
-DATA_API data::Composite::sptr getTransferFunction(const data::Image& _image);
+DATA_API data::TransferFunction::sptr getTransferFunction(const data::Image& _image);
 
 /**
  * @brief Helper function to set transfer function on medical image.
@@ -265,7 +256,7 @@ DATA_API data::Composite::sptr getTransferFunction(const data::Image& _image);
  * @param _cmp : data::Composite::sptr containing transfer function.
  * @return DATA_API
  */
-DATA_API void setTransferFunction(data::Image& _image, const data::Composite::sptr& _cmp);
+DATA_API void setTransferFunction(data::Image& _image, const data::TransferFunction::sptr& _cmp);
 
 // ------------------------------------------------------------------------------
 
@@ -297,9 +288,9 @@ public:
     {
         unsigned char imageTypeSize = sizeof(IMAGE);
 
-        IMAGE val = core::tools::numericRoundCast<IMAGE>(param.value);
+        auto val = core::tools::numericRoundCast<IMAGE>(param.value);
 
-        data::Image::BufferType* buf = reinterpret_cast<data::Image::BufferType*>(&val);
+        auto* buf = reinterpret_cast<data::Image::BufferType*>(&val);
 
         SPTR(data::Image::BufferType) res(new data::Image::BufferType[imageTypeSize]);
         std::copy(buf, buf + imageTypeSize, res.get());
@@ -337,7 +328,7 @@ public:
     template<typename IMAGE>
     void operator()(Param& param)
     {
-        IMAGE* buffer                 = static_cast<IMAGE*>(param.image->getBuffer());
+        auto* buffer                  = static_cast<IMAGE*>(param.image->getBuffer());
         const INT_INDEX& p            = param.point;
         const data::Image::Size& size = param.image->getSize();
         const int& sx                 = size[0];
@@ -357,50 +348,10 @@ SPTR(data::Image::BufferType) getPixelInImageSpace(
 {
     typename PixelCastAndSetFunctor<T>::Param param(value);
 
-    core::tools::Type type = image->getType();
+    core::Type type = image->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, PixelCastAndSetFunctor<T> >::invoke(type, param);
     return param.res;
 }
-
-// ------------------------------------------------------------------------------
-
-template<typename INT_INDEX>
-class [[deprecated("sight 22.0")]] CastAndCheckFunctor
-{
-public:
-
-    class Param
-    {
-    public:
-
-        typedef INT_INDEX PointType;
-
-        Param(PointType& p, bool& b) :
-            point(p),
-            isNull(b)
-        {
-        }
-
-        data::Image::sptr image;
-        const PointType& point;
-        bool& isNull;
-    };
-
-    // ------------------------------------------------------------------------------
-
-    template<typename IMAGE>
-    void operator()(Param& param)
-    {
-        const auto dumpLock = param.image->lock();
-        IMAGE* buffer       = static_cast<IMAGE*>(param.image->getBuffer());
-        const INT_INDEX& p  = param.point;
-        const auto& size    = param.image->getSize();
-        const int& sx       = size[0];
-        const int& sy       = size[1];
-        const int& offset   = p[0] + sx * p[1] + p[2] * sx * sy;
-        param.isNull = (*(buffer + offset) == 0);
-    }
-};
 
 // ------------------------------------------------------------------------------
 
@@ -425,29 +376,30 @@ public:
         T& max;
     };
 
-    // ------------------------------------------------------------------------------
+    using result_vector_t = std::vector<T>;
+
+    //------------------------------------------------------------------------------
 
     template<typename IMAGE>
-    void operator()(Param& param)
+    static void getMinMax(
+        const data::Image::const_iterator<IMAGE>& imgBegin,
+        result_vector_t& minRes,
+        result_vector_t& maxRes,
+        std::ptrdiff_t regionMin,
+        std::ptrdiff_t regionMax,
+        std::size_t i
+)
     {
-        const data::Image::csptr image = param.image;
-        const auto dumpLock            = image->dump_lock();
-
-        auto itr       = image->begin<IMAGE>();
-        const auto end = image->end<IMAGE>();
-
-        T& min = param.min;
-        T& max = param.max;
+        const data::Image::const_iterator<IMAGE> begin = imgBegin + regionMin;
+        const data::Image::const_iterator<IMAGE> end   = imgBegin + regionMax;
 
         typedef std::numeric_limits<IMAGE> ImgLimits;
         IMAGE imin = ImgLimits::max();
         IMAGE imax = ImgLimits::lowest();
 
-        IMAGE currentVoxel;
-
-        for( ; itr != end ; ++itr)
+        for(auto itr = begin ; itr != end ; ++itr)
         {
-            currentVoxel = *itr;
+            IMAGE currentVoxel = *itr;
 
             if(currentVoxel < imin)
             {
@@ -460,11 +412,48 @@ public:
         }
 
         typedef std::numeric_limits<T> TLimits;
-        T minT = TLimits::lowest();
-        T maxT = TLimits::max();
+        constexpr T minT = TLimits::lowest();
+        constexpr T maxT = TLimits::max();
 
-        min = (static_cast<T>(imin) < minT) ? minT : static_cast<T>(imin);
-        max = (static_cast<T>(imax) > maxT) ? maxT : static_cast<T>(imax);
+        const T min = (static_cast<T>(imin) < minT) ? minT : static_cast<T>(imin);
+        const T max = (static_cast<T>(imax) > maxT) ? maxT : static_cast<T>(imax);
+
+        minRes[i] = min;
+        maxRes[i] = max;
+    }
+
+    // ------------------------------------------------------------------------------
+
+    template<typename IMAGE>
+    void operator()(Param& param)
+    {
+        const data::Image::csptr image = param.image;
+        const auto dumpLock            = image->dump_lock();
+
+        result_vector_t min_result;
+        result_vector_t max_result;
+
+        sight::data::thread::RegionThreader rt;
+        min_result.resize(rt.numberOfThread());
+        max_result.resize(rt.numberOfThread());
+        rt(
+            [capture0 = image->cbegin<IMAGE>(), &min_result, &max_result](std::ptrdiff_t PH1, std::ptrdiff_t PH2,
+                                                                          std::size_t PH3, auto&& ...)
+            {
+                return MinMaxFunctor::getMinMax<IMAGE>(
+                    capture0,
+                    min_result,
+                    max_result,
+                    PH1,
+                    PH2,
+                    PH3
+                );
+            },
+            image->cend<IMAGE>() - image->cbegin<IMAGE>()
+        );
+
+        param.min = *std::min_element(min_result.begin(), min_result.end());
+        param.max = *std::max_element(max_result.begin(), max_result.end());
     }
 };
 
@@ -475,12 +464,8 @@ void getMinMax(const data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max
 {
     typename MinMaxFunctor<MINMAXTYPE>::Param param(_img, _min, _max);
 
-    core::tools::Type type = _img->getType();
+    core::Type type = _img->getType();
     core::tools::Dispatcher<core::tools::SupportedDispatcherTypes, MinMaxFunctor<MINMAXTYPE> >::invoke(type, param);
 }
 
-} // namespace MedicalImage
-
-} // namespace helper
-
-} // namespace sight::data
+} // namespace sight::data::helper::MedicalImage

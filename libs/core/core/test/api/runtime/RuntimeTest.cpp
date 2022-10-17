@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,24 +22,20 @@
 
 #include "RuntimeTest.hpp"
 
-#include <core/runtime/detail/ExtensionPoint.hpp>
-#include <core/runtime/detail/Module.hpp>
-#include <core/runtime/detail/Runtime.hpp>
 #include <core/runtime/Extension.hpp>
 #include <core/runtime/helper.hpp>
+#include <core/runtime/Module.hpp>
 #include <core/runtime/operations.hpp>
 #include <core/runtime/Plugin.hpp>
 #include <core/runtime/profile/Profile.hpp>
+#include <core/runtime/Runtime.hpp>
 
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::runtime::ut::RuntimeTest);
 
-namespace sight::core::runtime
-{
-
-namespace ut
+namespace sight::core::runtime::ut
 {
 
 //------------------------------------------------------------------------------
@@ -89,7 +85,7 @@ void RuntimeTest::testModule()
     CPPUNIT_ASSERT_EQUAL(false, module->hasParameter("test"));
     CPPUNIT_ASSERT_EQUAL(std::string(), module->getParameterValue("test"));
 
-    auto runtime           = core::runtime::Runtime::getDefault();
+    auto* runtime          = core::runtime::Runtime::getDefault();
     const auto libLocation = runtime->getWorkingPath() / MODULE_LIB_PREFIX;
     CPPUNIT_ASSERT_EQUAL(libLocation, module->getLibraryLocation());
     const auto rcLocation = runtime->getWorkingPath() / MODULE_RC_PREFIX;
@@ -184,7 +180,7 @@ void RuntimeTest::testPropertyTree()
 
         CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value<int>(config, "test.real", 23), core::Exception);
         CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value<int>(config, "test.string", 23), core::Exception);
-        CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value<float>(config, "test.string", 23.f), core::Exception);
+        CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value<float>(config, "test.string", 23.F), core::Exception);
         CPPUNIT_ASSERT_THROW(core::runtime::get_ptree_value<double>(config, "test.string", 23.), core::Exception);
 
         int value = core::runtime::get_ptree_value(config, "test.int", 23);
@@ -206,6 +202,4 @@ void RuntimeTest::testPropertyTree()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::ut

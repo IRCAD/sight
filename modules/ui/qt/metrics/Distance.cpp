@@ -59,9 +59,8 @@ Distance::Distance() noexcept
 
 //------------------------------------------------------------------------------
 
-Distance::~Distance() noexcept
-{
-}
+Distance::~Distance() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -82,7 +81,7 @@ void Distance::starting()
     m_distButton = new QPushButton(imageDist, tr(""));
     m_distButton->setToolTip(tr("Distance"));
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     layout->addWidget(m_distButton, 1);
     layout->setContentsMargins(0, 0, 0, 0);
     QObject::connect(m_distButton, SIGNAL(clicked()), this, SLOT(onDistanceButton()));

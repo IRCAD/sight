@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,11 +25,7 @@
 namespace sight::core::memory
 {
 
-BufferInfo::BufferInfo() :
-    size(0),
-    loaded(true),
-    userStreamFactory(false),
-    fileFormat(core::memory::OTHER)
+BufferInfo::BufferInfo()
 {
     this->lastAccess.modified();
 }

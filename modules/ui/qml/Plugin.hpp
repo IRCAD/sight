@@ -25,14 +25,6 @@
 #include "modules/ui/qml/config.hpp"
 
 #include <core/runtime/Plugin.hpp>
-
-namespace sight::core::thread
-{
-
-class Worker;
-
-} //namespace thread
-
 namespace sight::module::ui::qml
 {
 
@@ -46,15 +38,15 @@ public:
     /**
      * @brief   destructor
      */
-    MODULE_UI_QML_API ~Plugin() noexcept;
+    MODULE_UI_QML_API ~Plugin() noexcept override;
 
     // Overrides
-    MODULE_UI_QML_API void start();
+    MODULE_UI_QML_API void start() override;
 
     // Overrides
-    MODULE_UI_QML_API void stop() noexcept;
+    MODULE_UI_QML_API void stop() noexcept override;
 
-    MODULE_UI_QML_API int run() noexcept;
+    static MODULE_UI_QML_API int run() noexcept;
 };
 
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qml

@@ -36,15 +36,9 @@ namespace sight::data
 
 class Point;
 
-}
+} // namespace sight::data
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 /**
@@ -78,7 +72,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Document();
+    IO_DICOM_API ~Document() override;
 
     /**
      * @brief Read the Structured Report
@@ -87,8 +81,4 @@ public:
     IO_DICOM_API void readSR();
 };
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

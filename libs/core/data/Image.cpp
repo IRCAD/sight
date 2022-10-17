@@ -44,7 +44,7 @@ auto pixelFormatToNumComponents =
     {
         static const std::array<std::size_t, Image::PixelFormat::_SIZE> s_pixelFormatToNumComponents =
         {
-            ~0ul,
+            ~0UL,
             3,
             4,
             3,
@@ -55,21 +55,19 @@ auto pixelFormatToNumComponents =
         return s_pixelFormatToNumComponents[format];
     };
 
-const core::com::Signals::SignalKeyType Image::s_BUFFER_MODIFIED_SIG       = "bufferModified";
-const core::com::Signals::SignalKeyType Image::s_LANDMARK_ADDED_SIG        = "landmarkAdded";
-const core::com::Signals::SignalKeyType Image::s_LANDMARK_REMOVED_SIG      = "landmarkRemoved";
-const core::com::Signals::SignalKeyType Image::s_LANDMARK_DISPLAYED_SIG    = "landmarkDisplayed";
-const core::com::Signals::SignalKeyType Image::s_DISTANCE_ADDED_SIG        = "distanceAdded";
-const core::com::Signals::SignalKeyType Image::s_DISTANCE_REMOVED_SIG      = "distanceRemoved";
-const core::com::Signals::SignalKeyType Image::s_DISTANCE_DISPLAYED_SIG    = "distanceDisplayed";
-const core::com::Signals::SignalKeyType Image::s_SLICE_INDEX_MODIFIED_SIG  = "sliceIndexModified";
-const core::com::Signals::SignalKeyType Image::s_SLICE_TYPE_MODIFIED_SIG   = "sliceTypeModified";
-const core::com::Signals::SignalKeyType Image::s_VISIBILITY_MODIFIED_SIG   = "visibilityModified";
-const core::com::Signals::SignalKeyType Image::s_TRANSPARENCY_MODIFIED_SIG = "transparencyModified";
+const core::com::Signals::SignalKeyType Image::s_BUFFER_MODIFIED_SIG      = "bufferModified";
+const core::com::Signals::SignalKeyType Image::s_LANDMARK_ADDED_SIG       = "landmarkAdded";
+const core::com::Signals::SignalKeyType Image::s_LANDMARK_REMOVED_SIG     = "landmarkRemoved";
+const core::com::Signals::SignalKeyType Image::s_LANDMARK_DISPLAYED_SIG   = "landmarkDisplayed";
+const core::com::Signals::SignalKeyType Image::s_DISTANCE_ADDED_SIG       = "distanceAdded";
+const core::com::Signals::SignalKeyType Image::s_DISTANCE_REMOVED_SIG     = "distanceRemoved";
+const core::com::Signals::SignalKeyType Image::s_DISTANCE_DISPLAYED_SIG   = "distanceDisplayed";
+const core::com::Signals::SignalKeyType Image::s_SLICE_INDEX_MODIFIED_SIG = "sliceIndexModified";
+const core::com::Signals::SignalKeyType Image::s_SLICE_TYPE_MODIFIED_SIG  = "sliceTypeModified";
 
 //------------------------------------------------------------------------------
 
-Image::Image(data::Object::Key) :
+Image::Image(data::Object::Key /*unused*/) :
     m_dataArray(data::Array::New())
 {
     newSignal<BufferModifiedSignalType>(s_BUFFER_MODIFIED_SIG);
@@ -81,72 +79,70 @@ Image::Image(data::Object::Key) :
     newSignal<DistanceRemovedSignalType>(s_DISTANCE_REMOVED_SIG);
     newSignal<SliceIndexModifiedSignalType>(s_SLICE_INDEX_MODIFIED_SIG);
     newSignal<SliceTypeModifiedSignalType>(s_SLICE_TYPE_MODIFIED_SIG);
-    newSignal<VisibilityModifiedSignalType>(s_VISIBILITY_MODIFIED_SIG);
-    newSignal<TransparencyModifiedSignalType>(s_TRANSPARENCY_MODIFIED_SIG);
 
     auto pl = data::PointList::New();
     data::helper::MedicalImage::setLandmarks(*this, pl);
-}
 
-//------------------------------------------------------------------------------
-
-Image::~Image() noexcept
-{
+    sight::data::helper::MedicalImage::updateDefaultTransferFunction(*this);
 }
 
 //-----------------------------------------------------------------------------
 
-void Image::shallowCopy(const Object::csptr& _source)
+void Image::shallowCopy(const Object::csptr& source)
 {
-    Image::csptr other = Image::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     // Assign
     copyInformation(other);
 
     m_dataArray = other->m_dataArray;
+
+    BaseClass::shallowCopy(other);
 }
 
 //-----------------------------------------------------------------------------
 
-void Image::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Image::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Image::csptr other = Image::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !other
     );
-    this->fieldDeepCopy(_source, cache);
 
     // Assign
     this->copyInformation(other);
 
     if(other->m_dataArray)
     {
-        m_dataArray->cachedDeepCopy(other->m_dataArray, cache);
+        m_dataArray = Object::copy(other->m_dataArray, cache);
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t Image::resize(const Size& size, const core::tools::Type& type, PixelFormat format)
+std::size_t Image::resize(const Size& size, const core::Type& type, PixelFormat format)
 {
     return this->_resize(size, type, format, true);
 }
 
 //------------------------------------------------------------------------------
 
-std::size_t Image::_resize(const Size& size, const core::tools::Type& type, PixelFormat format, bool realloc)
+std::size_t Image::_resize(const Size& size, const core::Type& type, PixelFormat format, bool realloc)
 {
     m_size          = size;
     m_type          = type;
@@ -178,7 +174,7 @@ std::size_t Image::_resize(const Size& size, const core::tools::Type& type, Pixe
 
 //------------------------------------------------------------------------------
 
-core::tools::Type Image::getType() const
+core::Type Image::getType() const
 {
     return m_type;
 }
@@ -191,8 +187,8 @@ void Image::copyInformation(Image::csptr _source)
     m_spacing       = _source->m_spacing;
     m_origin        = _source->m_origin;
     m_type          = _source->m_type;
-    m_windowCenter  = _source->m_windowCenter;
-    m_windowWidth   = _source->m_windowWidth;
+    m_windowCenters = _source->m_windowCenters;
+    m_windowWidths  = _source->m_windowWidths;
     m_numComponents = _source->m_numComponents;
     m_pixelFormat   = _source->m_pixelFormat;
 }
@@ -229,8 +225,8 @@ std::size_t Image::getSizeInBytes() const
         size = std::accumulate(
             m_size.begin(),
             m_size.begin() + dims,
-            static_cast<std::size_t>(m_type.sizeOf()) * m_numComponents,
-            std::multiplies<std::size_t>()
+            static_cast<std::size_t>(m_type.size()) * m_numComponents,
+            std::multiplies<>()
         );
     }
 
@@ -276,8 +272,8 @@ const void* Image::getBuffer() const
 
 void* Image::getPixel(IndexType index)
 {
-    const std::size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
-    BufferType* buf                  = static_cast<BufferType*>(this->getBuffer());
+    const std::size_t imagePixelSize = m_type.size() * m_numComponents;
+    auto* buf                        = static_cast<BufferType*>(this->getBuffer());
     const IndexType bufIndex         = index * imagePixelSize;
     return buf + bufIndex;
 }
@@ -286,25 +282,25 @@ void* Image::getPixel(IndexType index)
 
 const void* Image::getPixel(IndexType index) const
 {
-    const std::size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
-    const BufferType* buf            = static_cast<const BufferType*>(this->getBuffer());
+    const std::size_t imagePixelSize = m_type.size() * m_numComponents;
+    const auto* buf                  = static_cast<const BufferType*>(this->getBuffer());
     const IndexType bufIndex         = index * imagePixelSize;
     return buf + bufIndex;
 }
 
 //------------------------------------------------------------------------------
 
-void Image::setPixel(IndexType index, Image::BufferType* pixBuf)
+void Image::setPixel(IndexType index, const Image::BufferType* pixBuf)
 {
-    const std::size_t imagePixelSize = m_type.sizeOf() * m_numComponents;
-    BufferType* buf                  = static_cast<BufferType*>(this->getPixel(index));
+    const std::size_t imagePixelSize = m_type.size() * m_numComponents;
+    auto* buf                        = static_cast<BufferType*>(this->getPixel(index));
 
     std::copy(pixBuf, pixBuf + imagePixelSize, buf);
 }
 
 //------------------------------------------------------------------------------
 
-const std::string Image::getPixelAsString(
+std::string Image::getPixelAsString(
     IndexType x,
     IndexType y,
     IndexType z
@@ -318,7 +314,7 @@ const std::string Image::getPixelAsString(
 
 Image::iterator<char> Image::begin()
 {
-    return iterator<char>(static_cast<char*>(getBuffer()));
+    return {static_cast<char*>(getBuffer())};
 }
 
 //------------------------------------------------------------------------------
@@ -334,7 +330,7 @@ Image::iterator<char> Image::end()
 
 Image::const_iterator<char> Image::begin() const
 {
-    return const_iterator<char>(static_cast<const char*>(getBuffer()));
+    return {static_cast<const char*>(getBuffer())};
 }
 
 //------------------------------------------------------------------------------
@@ -375,7 +371,7 @@ std::size_t Image::numElements() const
 void Image::setBuffer(
     void* buf,
     bool takeOwnership,
-    const core::tools::Type& type,
+    const core::Type& type,
     const data::Image::Size& size,
     PixelFormat format,
     core::memory::BufferAllocationPolicy::sptr policy
@@ -403,7 +399,7 @@ void Image::setBuffer(void* buf, bool takeOwnership, core::memory::BufferAllocat
         oldBufferObject->swap(newBufferObject);
     }
 
-    m_dataArray->getBufferObject()->setBuffer(buf, (buf == NULL) ? 0 : m_dataArray->getSizeInBytes(), policy);
+    m_dataArray->getBufferObject()->setBuffer(buf, (buf == nullptr) ? 0 : m_dataArray->getSizeInBytes(), policy);
     m_dataArray->setIsBufferOwner(takeOwnership);
 }
 
@@ -429,8 +425,8 @@ bool Image::operator==(const Image& other) const noexcept
        || !core::tools::is_equal(m_spacing, other.m_spacing)
        || !core::tools::is_equal(m_origin, other.m_origin)
        || m_type != other.m_type
-       || !core::tools::is_equal(m_windowCenter, other.m_windowCenter)
-       || !core::tools::is_equal(m_windowWidth, other.m_windowWidth)
+       || !core::tools::is_equal(m_windowCenters, other.m_windowCenters)
+       || !core::tools::is_equal(m_windowWidths, other.m_windowWidths)
        || m_numComponents != other.m_numComponents
        || m_pixelFormat != other.m_pixelFormat
        || !core::tools::is_equal(m_dataArray, other.m_dataArray))
@@ -439,7 +435,7 @@ bool Image::operator==(const Image& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

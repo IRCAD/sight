@@ -66,7 +66,7 @@ namespace sight::module::geometry::base
  * - \b label (optional, bool, default=false): add an ID label to added points.
  * - \b tolerance (optional, float, default=10.0): the tolerance used to remove a point.
  */
-class MODULE_GEOMETRY_BASE_CLASS_API SManagePointList : public service::IController
+class MODULE_GEOMETRY_BASE_CLASS_API SManagePointList final : public service::IController
 {
 public:
 
@@ -77,21 +77,21 @@ public:
     MODULE_GEOMETRY_BASE_API SManagePointList() noexcept;
 
     /// Destroys the service.
-    MODULE_GEOMETRY_BASE_API virtual ~SManagePointList() noexcept final;
+    MODULE_GEOMETRY_BASE_API ~SManagePointList() noexcept final;
 
 private:
 
     /// Configures the service.
-    virtual void configuring() final;
+    void configuring() final;
 
     /// Does nothing.
-    virtual void starting() final;
+    void starting() final;
 
     /// Does nothing.
-    virtual void updating() final;
+    void updating() final;
 
     /// Does nothing.
-    virtual void stopping() final;
+    void stopping() final;
 
     /**
      * @brief SLOT: Add or remove a point from picking information.
@@ -123,10 +123,10 @@ private:
     /// Allows to add an ID label the points.
     bool m_label {false};
 
-    float m_tolerance {10.f};
+    float m_tolerance {10.F};
 
     data::ptr<data::Matrix4, sight::data::Access::in> m_transform {this, "matrix", false, true};
     data::ptr<data::PointList, sight::data::Access::inout> m_pointList {this, "pointList", false};
 };
 
-} // ctrlPicking
+} // namespace sight::module::geometry::base

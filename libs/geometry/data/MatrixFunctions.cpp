@@ -64,10 +64,13 @@ fwMatrix4x4 getInverse(const fwMatrix4x4& matrix)
 
     glm::dmat4x4 matInv = glm::inverse(mat);
 
-    fwMatrix4x4 inverse = {matInv[0][0], matInv[1][0], matInv[2][0], matInv[3][0],
-                           matInv[0][1], matInv[1][1], matInv[2][1], matInv[3][1],
-                           matInv[0][2], matInv[1][2], matInv[2][2], matInv[3][2],
-                           matInv[0][3], matInv[1][3], matInv[2][3], matInv[3][3]
+    fwMatrix4x4 inverse = {{{{matInv[0][0], matInv[1][0], matInv[2][0], matInv[3][0]}},
+        {{matInv[0][1], matInv[1][1], matInv[2][1], matInv[3][1]}},
+        {{matInv[0][2], matInv[1][2], matInv[2][2], matInv[3][2]}},
+        {{matInv[0][3], matInv[1][3], matInv[2][3], matInv[3][3]
+        }
+        }
+    }
     };
     return inverse;
 }
@@ -118,7 +121,7 @@ fwMatrix4x4 getRotationMatrix(const fwVec3d& _vecNorm)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::geometry
+} // namespace sight::geometry::data
 
 //------------------------------------------------------------------------------
 
@@ -136,10 +139,13 @@ fwMatrix4x4 operator*(const fwMatrix4x4& matrix1, const fwMatrix4x4& matrix2)
 
     glm::dmat4x4 prod = mat1 * mat2;
 
-    fwMatrix4x4 product = {prod[0][0], prod[1][0], prod[2][0], prod[3][0],
-                           prod[0][1], prod[1][1], prod[2][1], prod[3][1],
-                           prod[0][2], prod[1][2], prod[2][2], prod[3][2],
-                           prod[0][3], prod[1][3], prod[2][3], prod[3][3]
+    fwMatrix4x4 product = {{{{prod[0][0], prod[1][0], prod[2][0], prod[3][0]}},
+        {{prod[0][1], prod[1][1], prod[2][1], prod[3][1]}},
+        {{prod[0][2], prod[1][2], prod[2][2], prod[3][2]}},
+        {{prod[0][3], prod[1][3], prod[2][3], prod[3][3]
+        }
+        }
+    }
     };
 
     return product;

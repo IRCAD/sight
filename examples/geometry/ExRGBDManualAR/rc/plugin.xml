@@ -12,10 +12,10 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="cameraSeries" type="sight::data::CameraSeries" />
+            <object uid="cameraSet" type="sight::data::CameraSet" />
             <object uid="cameraRGB" type="sight::data::Camera" src="deferred" />
             <object uid="cameraDepth" type="sight::data::Camera" src="deferred" />
-            <object uid="seriesDB" type="sight::data::SeriesDB" />
+            <object uid="seriesSet" type="sight::data::SeriesSet" />
             <object uid="frameTL" type="sight::data::FrameTL" />
             <object uid="maskTL" type="sight::data::FrameTL" />
             <object uid="videoImage" type="sight::data::Image" />
@@ -142,73 +142,33 @@
             <!-- ************************************* Action ************************************ -->
 
             <service uid="quitAct" type="sight::module::ui::base::SQuit" />
-
-            <service uid="loadCalibAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>calibrationReaderSrv/update</slot>
-                </slots>
-            </service>
-
-            <service uid="loadTransformationAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>transformReaderSrv/update</slot>
-                </slots>
-            </service>
-
-            <service uid="loadMeshAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>meshReaderSrv/update</slot>
-                </slots>
-            </service>
+            <service uid="loadCalibAct" type="sight::module::ui::base::SAction" />
+            <service uid="loadTransformationAct" type="sight::module::ui::base::SAction" />
+            <service uid="loadMeshAct" type="sight::module::ui::base::SAction" />
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/startCamera</slot>
-                </slots>
-                <state executable="false" />
+            <service uid="startVideoAct" type="sight::module::ui::base::SAction" >
+                <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/pauseCamera</slot>
-                    <slot>resumeVideoAct/show</slot>
-                    <slot>pauseVideoAct/hide</slot>
-                </slots>
+            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" >
                 <state visible="false" />
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/pauseCamera</slot>
-                    <slot>resumeVideoAct/hide</slot>
-                    <slot>pauseVideoAct/show</slot>
-                </slots>
+            <service uid="resumeVideoAct" type="sight::module::ui::base::SAction" >
                 <state visible="false" />
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/stopCamera</slot>
-                    <slot>startVideoAct/show</slot>
-                    <slot>resumeVideoAct/hide</slot>
-                    <slot>pauseVideoAct/hide</slot>
-                    <slot>stopVideoAct/setInexecutable</slot>
-                    <slot>loopVideoAct/setInexecutable</slot>
-                    <slot>loopVideoAct/deactivate</slot>
-                </slots>
-                <state executable="false" />
+            <service uid="stopVideoAct" type="sight::module::ui::base::SAction" >
+                <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/loopVideo</slot>
-                </slots>
-                <state executable="false" />
+            <service uid="loopVideoAct" type="sight::module::ui::base::SAction" >
+                <state enabled="false" />
             </service>
 
             <service uid="organManagerAct" type="sight::module::ui::base::SConfigLauncher" >
@@ -217,20 +177,20 @@
                 <parameter replace="ICON_PATH" by="ExRGBDManualAR/app.ico" />
             </service>
 
-            <service uid="learnBackgroundAct" type="sight::module::ui::base::com::SSlotCaller" >
+            <service uid="learnBackgroundAct" type="sight::module::ui::base::SAction" >
                 <slots>
                     <slot>extractForegroundSrv/setBackground</slot>
                 </slots>
             </service>
 
-            <service uid="learnForegroundAct" type="sight::module::ui::base::com::SSlotCaller" >
+            <service uid="learnForegroundAct" type="sight::module::ui::base::SAction" >
                 <slots>
                     <slot>extractForegroundSrv/setForeground</slot>
                 </slots>
             </service>
 
             <service uid="segmentationParametersAct" type="sight::module::ui::base::SModifyLayout" >
-                <state active="false" />
+                <state checked="false" />
                 <config>
                     <show_or_hide sid="noiseLevelSrv" />
                     <show_or_hide sid="bgComponentsSrv" />
@@ -315,11 +275,11 @@
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector" >
-                <inout key="data" uid="seriesDB" />
+                <inout key="data" uid="seriesSet" />
                 <type mode="reader" />
             </service>
             <service uid="extractModelSeriesSrv" type="sight::module::data::SGetSeries" >
-               <in key="seriesDB" uid="seriesDB"/>
+               <in key="seriesSet" uid="seriesSet"/>
                <out group="series" >
                    <key index="0" uid="modelSeries" />
                </out>
@@ -327,7 +287,7 @@
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="calibrationReaderSrv" type="sight::module::io::vision::SOpenCVReader" >
-                <inout key="data" uid="cameraSeries" />
+                <inout key="data" uid="cameraSet" />
             </service>
 
             <!-- Matrix (trf format) reader -->
@@ -339,9 +299,9 @@
                 <addSelection service="sight::module::io::matrix::Matrix4ReaderService" />
             </service>
 
-            <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::CameraSeries -->
+            <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::CameraSet -->
             <service uid="cameraExtractorSrv" type="sight::module::data::SGetCamera" >
-                <inout key="cameraSeries" uid="cameraSeries" />
+                <inout key="cameraSet" uid="cameraSet" />
                 <!-- destination -->
                 <out group="camera" >
                     <key index="0" uid="cameraDepth" />
@@ -435,6 +395,56 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
+                <signal>loadCalibAct/clicked</signal>
+                <slot>calibrationReaderSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>loadTransformationAct/clicked</signal>
+                <slot>transformReaderSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>loadMeshAct/clicked</signal>
+                <slot>meshReaderSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>startVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/startCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>pauseVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>resumeVideoAct/show</slot>
+                <slot>pauseVideoAct/hide</slot>
+            </connect>
+
+            <connect>
+                <signal>resumeVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>resumeVideoAct/hide</slot>
+                <slot>pauseVideoAct/show</slot>
+            </connect>
+
+            <connect>
+                <signal>stopVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/stopCamera</slot>
+                <slot>startVideoAct/show</slot>
+                <slot>resumeVideoAct/hide</slot>
+                <slot>pauseVideoAct/hide</slot>
+                <slot>stopVideoAct/disable</slot>
+                <slot>loopVideoAct/disable</slot>
+                <slot>loopVideoAct/uncheck</slot>
+            </connect>
+
+            <connect>
+                <signal>loopVideoAct/clicked</signal>
+                <slot>videoGrabberSrv/loopVideo</slot>
+            </connect>
+
+            <connect>
                 <signal>videoSelectorSrv/configuredFile</signal>
                 <signal>videoSelectorSrv/configuredStream</signal>
                 <signal>videoSelectorSrv/configuredDevice</signal>
@@ -445,8 +455,8 @@
                 <signal>videoGrabberSrv/cameraStarted</signal>
                 <slot>pauseVideoAct/show</slot>
                 <slot>startVideoAct/hide</slot>
-                <slot>stopVideoAct/setExecutable</slot>
-                <slot>loopVideoAct/setExecutable</slot>
+                <slot>stopVideoAct/enable</slot>
+                <slot>loopVideoAct/enable</slot>
             </connect>
 
             <connect>
@@ -456,19 +466,19 @@
 
             <connect>
                 <signal>cameraRGB/modified</signal>
-                <slot>startVideoAct/setExecutable</slot>
+                <slot>startVideoAct/enable</slot>
                 <slot>stopVideoAct/update</slot>
             </connect>
 
             <!-- Extract the model series when it is added to SDB -->
             <connect>
-                <signal>seriesDB/modified</signal>
-                <signal>seriesDB/addedSeries</signal>
+                <signal>seriesSet/modified</signal>
+                <signal>seriesSet/addedObjects</signal>
                 <slot>extractModelSeriesSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>cameraSeries/addedCamera</signal>
+                <signal>cameraSet/addedCamera</signal>
                 <slot>cameraExtractorSrv/update</slot>
             </connect>
 

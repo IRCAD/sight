@@ -25,7 +25,7 @@
 #include "modules/geometry/vision/config.hpp"
 
 #include <data/CalibrationInfo.hpp>
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 #include <data/Matrix4.hpp>
 
 #include <geometry/vision/ICalibration.hpp>
@@ -45,7 +45,7 @@ namespace sight::module::geometry::vision
         <service type="sight::module::geometry::vision::SOpenCVExtrinsic">
             <in key="calibrationInfo1" uid="..." />
             <in key="calibrationInfo2" uid="..." />
-            <inout key="cameraSeries" uid="..." />
+            <inout key="cameraSet" uid="..." />
             <out key="matrix" uid="..." />
             <camIndex>...</camIndex>
             <board width="CHESSBOARD_WIDTH" height="CHESSBOARD_HEIGHT" squareSize="CHESSBOARD_SQUARE_SIZE" />
@@ -55,11 +55,11 @@ namespace sight::module::geometry::vision
  * - \b calibrationInfo1 [sight::data::CalibrationInfo]: Data of the first camera used to compute the calibration.
  * - \b calibrationInfo2 [sight::data::CalibrationInfo]: Data of the second camera used to compute the calibration.
  * @subsection In-Out In-Out:
- * - \b camera [sight::data::CameraSeries]: Output calibration.
+ * - \b camera [sight::data::CameraSet]: Output calibration.
  *  @subsection Output Output:
  * - \b matrix [sight::data::Matrix4]: Extrinsic matrix (for export purpose) (optional).
  * @subsection Configuration Configuration:
- * - \b camIndex (optional, default: 1): index of the camera in \b cameraSeries used to compute extrinsic matrix
+ * - \b camIndex (optional, default: 1): index of the camera in \b cameraSet used to compute extrinsic matrix
  *      (from camera[0] to camera[index]).
  * - \b board : preference key to retrieve the number of square in 2 dimensions of the chessboard.
  */
@@ -76,7 +76,7 @@ public:
     MODULE_GEOMETRY_VISION_API SOpenCVExtrinsic() noexcept;
 
     /// Destructor.
-    MODULE_GEOMETRY_VISION_API virtual ~SOpenCVExtrinsic() noexcept;
+    MODULE_GEOMETRY_VISION_API ~SOpenCVExtrinsic() noexcept override;
 
 protected:
 
@@ -115,20 +115,20 @@ private:
     std::string m_squareSizeKey;
 
     /// Width of the chessboard used for calibration
-    unsigned int m_width;
+    unsigned int m_width {11};
 
     /// Height of the chessboard used for calibration
-    unsigned int m_height;
+    unsigned int m_height {8};
 
     /// Size of the chessboard'square used for calibration
-    float m_squareSize;
+    float m_squareSize {20.0};
 
-    /// Index of the camera in cameraSeries used to compute extrinsic matrix (from camera[0] to camera[index]).
-    std::size_t m_camIndex;
+    /// Index of the camera in cameraSet used to compute extrinsic matrix (from camera[0] to camera[index]).
+    std::size_t m_camIndex {1};
 
     data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo1 {this, "calibrationInfo1"};
     data::ptr<data::CalibrationInfo, data::Access::in> m_calibrationInfo2 {this, "calibrationInfo2"};
-    data::ptr<data::CameraSeries, data::Access::inout> m_cameraSeries {this, "cameraSeries"};
+    data::ptr<data::CameraSet, data::Access::inout> m_camera_set {this, "cameraSet"};
     data::ptr<data::Matrix4, data::Access::out> m_matrix {this, "matrix"};
 };
 

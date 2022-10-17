@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ public:
     /// @param format the format of the archive. @see sight::io::zip::Archive::ArchiveFormat
     IO_ZIP_API static ArchiveWriter::uptr get(
         const std::filesystem::path& archive_path,
-        const ArchiveFormat format = ArchiveFormat::DEFAULT
+        ArchiveFormat format = ArchiveFormat::DEFAULT
     );
 
     /// Returns an std::ostream to read an archived file
@@ -85,12 +85,12 @@ public:
     IO_ZIP_API virtual std::unique_ptr<std::ostream> openFile(
         const std::filesystem::path& file_path,
         const core::crypto::secure_string& password = "",
-        const Method method                         = Method::DEFAULT,
-        const Level level                           = Level::DEFAULT
+        Method method                               = Method::DEFAULT,
+        Level level                                 = Level::DEFAULT
     )                                               = 0;
 
     /// Returns true for raw archive
-    IO_ZIP_API virtual bool isRaw() const = 0;
+    [[nodiscard]] IO_ZIP_API virtual bool isRaw() const = 0;
 
 protected:
 

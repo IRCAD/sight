@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ public:
     MODULE_VIZ_SAMPLE_API SMesh() noexcept;
 
     /// Destroys the service.
-    MODULE_VIZ_SAMPLE_API virtual ~SMesh() noexcept;
+    MODULE_VIZ_SAMPLE_API ~SMesh() noexcept override;
 
 private:
 

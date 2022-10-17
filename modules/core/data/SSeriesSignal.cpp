@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "SSeriesSignal.hpp"
 
 #include <core/com/Signal.hpp>
@@ -30,7 +32,7 @@
 #include <core/runtime/Convert.hpp>
 #include <core/runtime/operations.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 
 #include <service/macros.hpp>
 
@@ -47,18 +49,16 @@ const core::com::Signals::SignalKeyType SSeriesSignal::s_SERIES_ADDED_SIG = "ser
 
 //------------------------------------------------------------------------------
 
-SSeriesSignal::SSeriesSignal() noexcept
+SSeriesSignal::SSeriesSignal() noexcept :
+    m_sigSeriesAdded(newSignal<SeriesAddedSignalType>(s_SERIES_ADDED_SIG))
 {
-    m_sigSeriesAdded = newSignal<SeriesAddedSignalType>(s_SERIES_ADDED_SIG);
-
-    newSlot(s_REPORT_SERIES_SLOT, &SSeriesSignal::reportSeries, this);
+    newSlot(s_REPORT_SERIES_SLOT, &SSeriesSignal::reportSeriesSlot, this);
 }
 
 //------------------------------------------------------------------------------
 
-SSeriesSignal::~SSeriesSignal() noexcept
-{
-}
+SSeriesSignal::~SSeriesSignal() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -83,13 +83,14 @@ void SSeriesSignal::configuring()
         const service::IService::ConfigType& configFilter = srvconfig.get_child("filter");
         SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
-        const std::string mode = configFilter.get<std::string>("mode");
+        const auto mode = configFilter.get<std::string>("mode");
         SIGHT_ASSERT(
             "'" + mode + "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
             mode == "include" || mode == "exclude"
         );
         m_filterMode = mode;
 
+        // NOLINTNEXTLINE(bugprone-branch-clone)
         BOOST_FOREACH(const ConfigType::value_type& v, configFilter.equal_range("type"))
         {
             m_types.push_back(v.second.get<std::string>(""));
@@ -101,20 +102,16 @@ void SSeriesSignal::configuring()
 
 //------------------------------------------------------------------------------
 
-void SSeriesSignal::reportSeries(sight::data::SeriesDB::ContainerType addedSeries)
+template<typename T>
+void SSeriesSignal::reportSeries(const T& addedSeries)
 {
-    for(const sight::data::Series::sptr& series : addedSeries)
-    {
-        const bool isIncludeMode = m_filterMode == "include";
+    const bool isIncludeMode = m_filterMode == "include";
 
-        std::string classname     = series->getClassname();
-        TypesType::iterator keyIt = std::find(m_types.begin(), m_types.end(), classname);
+    for(const auto& series : addedSeries)
+    {
+        const auto keyIt = std::find(m_types.cbegin(), m_types.cend(), series->getClassname());
 
         if(keyIt != m_types.end() && isIncludeMode)
-        {
-            m_sigSeriesAdded->asyncEmit(series);
-        }
-        else if(keyIt == m_types.end() && !isIncludeMode)
         {
             m_sigSeriesAdded->asyncEmit(series);
         }
@@ -123,22 +120,29 @@ void SSeriesSignal::reportSeries(sight::data::SeriesDB::ContainerType addedSerie
 
 //------------------------------------------------------------------------------
 
+void SSeriesSignal::reportSeriesSlot(sight::data::SeriesSet::container_type addedSeries)
+{
+    reportSeries(addedSeries);
+}
+
+//------------------------------------------------------------------------------
+
 void SSeriesSignal::updating()
 {
-    const auto seriesDB = m_seriesDB.lock();
-    SIGHT_ASSERT("input '" << s_SERIES_DB_INPUT << "' does not exist.", seriesDB);
+    const auto series_set = m_series_set.lock();
+    SIGHT_ASSERT("input '" << s_SERIES_SET_INPUT << "' does not exist.", series_set);
 
-    this->reportSeries(seriesDB->getContainer());
+    reportSeries(*series_set);
 }
 
 //------------------------------------------------------------------------------
 
 service::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_SERIES_DB_INPUT, sight::data::SeriesDB::s_ADDED_SERIES_SIG, s_REPORT_SERIES_SLOT);
-    connections.push(s_SERIES_DB_INPUT, sight::data::SeriesDB::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {
+        {s_SERIES_SET_INPUT, sight::data::SeriesSet::s_ADDED_OBJECTS_SIG, s_REPORT_SERIES_SLOT},
+        {s_SERIES_SET_INPUT, sight::data::SeriesSet::s_MODIFIED_SIG, s_UPDATE_SLOT}
+    };
 }
 
 //------------------------------------------------------------------------------

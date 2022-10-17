@@ -29,11 +29,11 @@
 #include <boost/iostreams/stream.hpp>
 
 #include <algorithm>
+#include <array>
+#include <memory>
+#include <utility>
 
-namespace sight::io::igtl::detail
-{
-
-namespace archiver
+namespace sight::io::igtl::detail::archiver
 {
 
 /**
@@ -43,23 +43,21 @@ class MemoryArchiveSource
 {
 public:
 
-    typedef char char_type;
-    typedef boost::iostreams::source_tag category;
+    using char_type = char;
+    using category  = boost::iostreams::source_tag;
 
     /**
      * @brief constructor
      * @param[in] content readable content it correspond to a data of a entry in archive
      */
-    MemoryArchiveSource(BufferCSPtr content) :
-        m_readIndex(0),
-        m_content(content)
+    explicit MemoryArchiveSource(BufferCSPtr content) :
+        m_content(std::move(content))
     {
     }
 
     /// destructor
     ~MemoryArchiveSource()
-    {
-    }
+    = default;
 
     /**
      * @brief implement read method for boost::iostreams
@@ -67,12 +65,12 @@ public:
      * @param[in] n maximum number of bytes to read
      * @return number of bytes of content it was read
      */
-    std::streamsize read(char* buffer, std::streamsize n);
+    std::streamsize read(char* s, std::streamsize n);
 
 private:
 
     /// read index for position in content buffer
-    std::size_t m_readIndex;
+    std::size_t m_readIndex {0};
 
     /// content data
     BufferCSPtr m_content;
@@ -82,35 +80,35 @@ private:
 
 std::streamsize MemoryArchiveSource::read(char* s, std::streamsize n)
 {
-    std::size_t oldReadIndex;
-    std::size_t endIndex;
+    std::size_t oldReadIndex = 0;
+    std::size_t endIndex     = 0;
 
-    endIndex = m_readIndex + n;
+    endIndex = std::size_t(std::int64_t(m_readIndex) + n);
     if(endIndex > m_content->size())
     {
         endIndex = m_content->size();
     }
 
-    std::copy(m_content->begin() + m_readIndex, m_content->begin() + endIndex, s);
+    std::copy(m_content->begin() + std::int64_t(m_readIndex), m_content->begin() + std::int64_t(endIndex), s);
     oldReadIndex = m_readIndex;
     m_readIndex  = endIndex;
-    return endIndex - oldReadIndex;
+    return std::int64_t(endIndex - oldReadIndex);
 }
 
 //-----------------------------------------------------------------------------
 
 MemoryReadArchive::MemoryReadArchive(const char* buffer, const std::size_t size) :
     m_SIZE(size),
-    m_BUFFER(buffer)
+    m_BUFFER(buffer),
+    m_archive(archive_read_new())
 {
     SPTR(boost::iostreams::stream<MemoryArchiveSource>) is;
     std::string filename;
-    struct archive_entry* entry;
+    struct archive_entry* entry = nullptr;
     BufferSPtr fileContent;
 
-    m_archive = archive_read_new();
     archive_read_support_format_all(m_archive);
-    if(archive_read_open_memory(m_archive, const_cast<char*>(buffer), size) != ARCHIVE_OK)
+    if(archive_read_open_memory(m_archive, buffer, size) != ARCHIVE_OK)
     {
         throw io::zip::exception::Read(
                   "Error when open memory archive : " + std::string(
@@ -120,16 +118,14 @@ MemoryReadArchive::MemoryReadArchive(const char* buffer, const std::size_t size)
                   )
         );
     }
-    else
+
+    while((archive_read_next_header(m_archive, &entry)) == ARCHIVE_OK)
     {
-        while((archive_read_next_header(m_archive, &entry)) == ARCHIVE_OK)
-        {
-            fileContent = BufferSPtr(new std::vector<char>);
-            filename    = std::string(archive_entry_pathname(entry));
-            this->readEntry(fileContent);
-            is                  = std::make_shared<boost::iostreams::stream<MemoryArchiveSource> >(fileContent);
-            m_streams[filename] = is;
-        }
+        fileContent = std::make_shared<std::vector<char> >();
+        filename    = std::string(archive_entry_pathname(entry));
+        this->readEntry(fileContent);
+        is                  = std::make_shared<boost::iostreams::stream<MemoryArchiveSource> >(fileContent);
+        m_streams[filename] = is;
     }
 
     if(archive_read_free(m_archive) != ARCHIVE_OK)
@@ -145,20 +141,19 @@ MemoryReadArchive::MemoryReadArchive(const char* buffer, const std::size_t size)
 
 void MemoryReadArchive::readEntry(BufferSPtr content)
 {
-    std::int64_t ret;
-    char buffer[MemoryReadArchive::s_BUFFER_READ_SIZE];
+    std::int64_t ret = 0;
+    std::array<char, MemoryReadArchive::s_BUFFER_READ_SIZE> buffer {};
 
-    while((ret = archive_read_data(m_archive, buffer, MemoryReadArchive::s_BUFFER_READ_SIZE)) > 0)
+    while((ret = archive_read_data(m_archive, buffer.data(), MemoryReadArchive::s_BUFFER_READ_SIZE)) > 0)
     {
-        content->insert(content->end(), buffer, buffer + ret);
+        content->insert(content->end(), buffer.data(), buffer.data() + ret);
     }
 }
 
 //-----------------------------------------------------------------------------
 
 MemoryReadArchive::~MemoryReadArchive()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -174,11 +169,9 @@ SPTR(std::istream) MemoryReadArchive::getFile(const std::filesystem::path& path)
 
 //-----------------------------------------------------------------------------
 
-const std::filesystem::path MemoryReadArchive::getArchivePath() const
+std::filesystem::path MemoryReadArchive::getArchivePath() const
 {
-    return std::filesystem::path("./");
+    return {"./"};
 }
 
-} // namespace archiver
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::archiver

@@ -34,25 +34,8 @@ namespace sight::data::dicom
 data::ImageSeries::sptr Series::convertToImageSeries(const data::DicomSeries::csptr& series)
 {
     data::ImageSeries::sptr result = data::ImageSeries::New();
+    result->data::Series::deepCopy(series);
 
-    // Copy values of patient, study & equipment, since it returns const pointer.
-    data::Patient::sptr patient     = data::Patient::New();
-    data::Study::sptr study         = data::Study::New();
-    data::Equipment::sptr equipment = data::Equipment::New();
-
-    patient->deepCopy(series->getPatient());
-    study->deepCopy(series->getStudy());
-    equipment->deepCopy(series->getEquipment());
-
-    result->setPatient(patient);
-    result->setStudy(study);
-    result->setEquipment(equipment);
-    result->setInstanceUID(series->getInstanceUID());
-    result->setModality(series->getModality());
-    result->setDate(series->getDate());
-    result->setTime(series->getTime());
-    result->setDescription(series->getDescription());
-    result->setPerformingPhysiciansName(series->getPerformingPhysiciansName());
     return result;
 }
 
@@ -61,28 +44,11 @@ data::ImageSeries::sptr Series::convertToImageSeries(const data::DicomSeries::cs
 data::ModelSeries::sptr Series::convertToModelSeries(const data::DicomSeries::csptr& series)
 {
     data::ModelSeries::sptr result = data::ModelSeries::New();
+    result->data::Series::deepCopy(series);
 
-    // Copy values of patient, study & equipment, since it returns const pointer.
-    data::Patient::sptr patient     = data::Patient::New();
-    data::Study::sptr study         = data::Study::New();
-    data::Equipment::sptr equipment = data::Equipment::New();
-
-    patient->deepCopy(series->getPatient());
-    study->deepCopy(series->getStudy());
-    equipment->deepCopy(series->getEquipment());
-
-    result->setPatient(patient);
-    result->setStudy(study);
-    result->setEquipment(equipment);
-    result->setInstanceUID(series->getInstanceUID());
-    result->setModality(series->getModality());
-    result->setDate(series->getDate());
-    result->setTime(series->getTime());
-    result->setDescription(series->getDescription());
-    result->setPerformingPhysiciansName(series->getPerformingPhysiciansName());
     return result;
 }
 
 // ----------------------------------------------------------------------------
 
-} //fwDicomTools
+} // namespace sight::data::dicom

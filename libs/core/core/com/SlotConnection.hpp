@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,9 +75,9 @@ struct CORE_CLASS_API SlotConnection<void(A ...)>: SlotConnectionBase
     );
 
     /// Disconnect the related slot.
-    void disconnect();
+    void disconnect() override;
 
-    ~SlotConnection();
+    ~SlotConnection() override;
 
     /// Build a new connection with the given signal and slot.
     SlotConnection(const SignalSptrType& signal, const SlotRunSptrType& slot);
@@ -95,7 +95,7 @@ struct CORE_CLASS_API SlotConnection<void(A ...)>: SlotConnectionBase
         friend struct Signal;
 
         /// Connect the related Signal and Slot together.
-        void connectNoLock();
+        void connectNoLock() override;
 
         /// *NOT THREAD SAFE* Disconnect the related signal.
         void disconnectSignalNoLock(const SignalSptrType& sig);
@@ -104,13 +104,13 @@ struct CORE_CLASS_API SlotConnection<void(A ...)>: SlotConnectionBase
         void disconnectSlotNoLock(const SPTR(SlotBase)& slot);
 
         /// *NOT THREAD SAFE* Disconnect the related slot and signal.
-        void disconnectWeakLock();
+        void disconnectWeakLock() override;
 
         /**
          * @brief Returns a blocker on the connection.
          * The connection is blocked until the returned shared pointer dies.
          */
-        SlotConnectionBase::BlockerSptrType getBlocker();
+        SlotConnectionBase::BlockerSptrType getBlocker() override;
 
         /// Unblock this connection.
         void unblock();

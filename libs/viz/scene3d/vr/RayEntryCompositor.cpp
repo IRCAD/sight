@@ -31,11 +31,9 @@
 #include <OgreCompositorManager.h>
 
 #include <mutex>
+#include <utility>
 
-namespace sight::viz::scene3d
-{
-
-namespace vr
+namespace sight::viz::scene3d::vr
 {
 
 // Mutex to avoid concurrent compositor manager calls.
@@ -44,12 +42,12 @@ static std::mutex s_compositorManagerLock;
 //------------------------------------------------------------------------------
 
 RayEntryCompositor::RayEntryCompositor(
-    const std::string& _compositorName,
+    std::string _compositorName,
     std::uint8_t _rqGroup,
     compositor::Core::StereoModeType _stereoMode,
     bool _enableMixedRendering
 ) :
-    m_compositorName(_compositorName)
+    m_compositorName(std::move(_compositorName))
 {
     auto& cm = Ogre::CompositorManager::getSingleton();
     std::lock_guard<std::mutex> guard(s_compositorManagerLock);
@@ -63,7 +61,7 @@ RayEntryCompositor::RayEntryCompositor(
         auto* compTech = m_compositor->createTechnique();
 
         std::uint8_t nbViewpoints = 1;
-        float heightFactor        = 1.f;
+        float heightFactor        = 1.F;
         float widthFactor         = 1.F;
 
         switch(_stereoMode)
@@ -73,19 +71,19 @@ RayEntryCompositor::RayEntryCompositor(
 
             case compositor::Core::StereoModeType::STEREO:
                 nbViewpoints = 2;
-                heightFactor = 0.5f;
+                heightFactor = 0.5F;
                 break;
 
             case compositor::Core::StereoModeType::AUTOSTEREO_5:
                 nbViewpoints = 5;
-                heightFactor = 0.5f;
-                widthFactor  = 0.6f;
+                heightFactor = 0.5F;
+                widthFactor  = 0.6F;
                 break;
 
             case compositor::Core::StereoModeType::AUTOSTEREO_8:
                 nbViewpoints = 8;
-                heightFactor = 0.5f;
-                widthFactor  = 0.375f;
+                heightFactor = 0.5F;
+                widthFactor  = 0.375F;
                 break;
         }
 
@@ -109,10 +107,10 @@ RayEntryCompositor::RayEntryCompositor(
             auto* clearPass = backFacesTargetPass->createPass();
             clearPass->setType(Ogre::CompositionPass::PT_CLEAR);
             clearPass->setClearBuffers(Ogre::FBT_COLOUR | Ogre::FBT_DEPTH);
-            clearPass->setClearColour(Ogre::ColourValue(0.f, 1.f, 1.f, 1.f));
+            clearPass->setClearColour(Ogre::ColourValue(0.F, 1.F, 1.F, 1.F));
 
             auto* backFacesPass = backFacesTargetPass->createPass();
-            backFacesPass->setMaterialScheme(schemePrefix + "_BackFaces" + schemeSuffix);
+            backFacesPass->setMaterialScheme(std::string(schemePrefix) + "_BackFaces" + schemeSuffix);
             backFacesPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
             backFacesPass->setFirstRenderQueue(_rqGroup);
             backFacesPass->setLastRenderQueue(_rqGroup);
@@ -122,7 +120,7 @@ RayEntryCompositor::RayEntryCompositor(
             frontFacesTargetPass->setOutputName(texTargetName);
 
             auto* frontFacesPass = frontFacesTargetPass->createPass();
-            frontFacesPass->setMaterialScheme(schemePrefix + "_FrontFaces" + schemeSuffix);
+            frontFacesPass->setMaterialScheme(std::string(schemePrefix) + "_FrontFaces" + schemeSuffix);
             frontFacesPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
             frontFacesPass->setFirstRenderQueue(_rqGroup);
             frontFacesPass->setLastRenderQueue(_rqGroup);
@@ -132,7 +130,7 @@ RayEntryCompositor::RayEntryCompositor(
             backFacesMaxTargetPass->setOutputName(texTargetName);
 
             auto* backFacesMaxPass = backFacesMaxTargetPass->createPass();
-            backFacesMaxPass->setMaterialScheme(schemePrefix + "_BackFacesMax" + schemeSuffix);
+            backFacesMaxPass->setMaterialScheme(std::string(schemePrefix) + "_BackFacesMax" + schemeSuffix);
             backFacesMaxPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
             backFacesMaxPass->setFirstRenderQueue(_rqGroup);
             backFacesMaxPass->setLastRenderQueue(_rqGroup);
@@ -144,9 +142,11 @@ RayEntryCompositor::RayEntryCompositor(
                 frontFacesMinTargetPass->setOutputName(texTargetName);
 
                 auto* frontFacesMinPass = frontFacesMinTargetPass->createPass();
-                frontFacesMinPass->setMaterialScheme(schemePrefix + "_FrontFacesMin" + schemeSuffix);
+                frontFacesMinPass->setMaterialScheme(
+                    std::string(schemePrefix) + "_FrontFacesMin" + schemeSuffix
+                );
                 frontFacesMinPass->setType(Ogre::CompositionPass::PT_RENDERSCENE);
-                frontFacesMinPass->setLastRenderQueue(compositor::Core::s_SURFACE_RQ_GROUP_ID);
+                frontFacesMinPass->setLastRenderQueue(viz::scene3d::rq::s_SURFACE_ID);
             }
         }
 
@@ -178,6 +178,4 @@ const std::string& RayEntryCompositor::getName() const
 
 //------------------------------------------------------------------------------
 
-} // namespace vr
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::vr

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 
 #include <data/DicomSeries.hpp>
 
-namespace sight::filter::dicom
-{
-
-namespace modifier
+namespace sight::filter::dicom::modifier
 {
 
 /**
@@ -47,10 +44,10 @@ public:
     FILTER_DICOM_API SliceThicknessModifier(filter::dicom::IFilter::Key key);
 
     /// Destructor
-    FILTER_DICOM_API virtual ~SliceThicknessModifier();
+    FILTER_DICOM_API ~SliceThicknessModifier() override;
 
     /// Override
-    FILTER_DICOM_API virtual DicomSeriesContainerType apply(
+    FILTER_DICOM_API DicomSeriesContainerType apply(
         const data::DicomSeries::sptr& series,
         const core::log::Logger::sptr& logger
     ) const override;
@@ -83,6 +80,4 @@ protected:
     static const std::string s_FILTER_DESCRIPTION;
 };
 
-} // namespace modifier
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::modifier

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,7 +80,7 @@ public:
     MODULE_UI_QML_API SModelSeriesList() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QML_API virtual ~SModelSeriesList() noexcept;
+    MODULE_UI_QML_API ~SModelSeriesList() noexcept override;
 
 protected:
 
@@ -135,11 +135,11 @@ private:
     /// Signal emitted when we clean the list
     EmptiedSelectionSignalType::sptr m_sigEmptiedSelection;
 
-    OrganListModel* m_listModel;
+    OrganListModel* m_listModel {nullptr};
 
     /// Model series data
     static constexpr std::string_view s_MODEL_SERIES_INOUT = "modelSeries";
     data::ptr<data::ModelSeries, data::Access::inout> m_modelSeries {this, s_MODEL_SERIES_INOUT, true};
 };
 
-} // uiMedDataQml
+} // namespace sight::module::ui::qml::model

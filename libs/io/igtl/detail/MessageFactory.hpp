@@ -46,6 +46,9 @@ public:
     typedef boost::function< ::igtl::MessageBase::Pointer()> CreatorType;
     typedef std::map<std::string, CreatorType> CreatorContainer;
 
+    MessageFactory()  = delete;
+    ~MessageFactory() = delete;
+
     /**
      * @brief initFactory initialize the factory
      * @return the map of equivalence between a string device type igtl and a
@@ -106,11 +109,6 @@ public:
             return ::igtl::MessageBase::Pointer(msg);
         }
     };
-
-private:
-
-    MessageFactory();
-    ~MessageFactory();
 };
 
 } //namespace sight::io::igtl::detail

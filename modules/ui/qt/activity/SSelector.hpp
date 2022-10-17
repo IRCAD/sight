@@ -33,10 +33,7 @@
 #include <QObject>
 #include <QPointer>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 /**
@@ -45,7 +42,7 @@ namespace activity
  * This editor proposes all the available activities according to the given configuration.
  * It sends a signal with the activity identifier when a button is pushed.
  *
- * It should work with the module::ui::qt::editor::SWizard that creates or updates the activitySeries.
+ * It should work with the module::ui::qt::editor::SWizard that creates or updates the activity.
  *
  * @section Signals Signals
  * - \b activityIDSelected(std::string) : This signal is emitted when the activity is selected, it
@@ -121,10 +118,10 @@ private Q_SLOTS:
 private:
 
     /**
-     * @brief Slots to launch the given activitySeries.
-     * @param activitySeries the activity is launched on this series.
+     * @brief Slots to launch the given activity.
+     * @param activity the activity to be launched.
      */
-    void launchActivity(data::ActivitySeries::sptr activitySeries);
+    void launchActivity(data::Activity::sptr activity);
 
     typedef sight::activity::extension::Activity::ActivitiesType ActivityInfoContainer;
 
@@ -147,6 +144,4 @@ private:
     QPointer<QButtonGroup> m_buttonGroup;
 };
 
-} // namespace activity
-
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::activity

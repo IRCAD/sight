@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <memory>
 
-namespace sight::viz::scene2d
-{
-
-namespace data
+namespace sight::viz::scene2d::data
 {
 
 /**
@@ -48,27 +45,23 @@ public:
     /**
      * @brief Constructor, set origin to 0, scale to 1 and type to LINEAR.
      */
-    Axis() :
-        m_origin(0.f),
-        m_scale(1.f),
-        m_scaleType(LINEAR)
-    {
-    }
+    Axis()
+    = default;
 
     /// Get m_origin attribute.
-    float getOrigin() const;
+    [[nodiscard]] double getOrigin() const;
 
     /// Set m_origin attribute.
-    void setOrigin(float origin);
+    void setOrigin(double origin);
 
     /// Get m_scale attribute.
-    float getScale() const;
+    [[nodiscard]] double getScale() const;
 
     /// Set m_scale attribute.
-    void setScale(float scale);
+    void setScale(double scale);
 
     /// Get m_scaleType attribute.
-    ScaleType getScaleType() const;
+    [[nodiscard]] ScaleType getScaleType() const;
 
     /// Set m_scaleType attribute.
     void setScaleType(ScaleType scaleType);
@@ -76,36 +69,36 @@ public:
 private:
 
     /// The origin and scale.
-    float m_origin, m_scale;
+    double m_origin {0.F}, m_scale {1.F};
 
     /// The scaleType (LINEAR/LOG).
-    ScaleType m_scaleType;
+    ScaleType m_scaleType {LINEAR};
 };
 
 //-----------------------------------------------------------------------------
 
-inline float Axis::getOrigin() const
+inline double Axis::getOrigin() const
 {
     return m_origin;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Axis::setOrigin(float origin)
+inline void Axis::setOrigin(double origin)
 {
     m_origin = origin;
 }
 
 //-----------------------------------------------------------------------------
 
-inline float Axis::getScale() const
+inline double Axis::getScale() const
 {
     return m_scale;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Axis::setScale(float scale)
+inline void Axis::setScale(double scale)
 {
     m_scale = scale;
 }
@@ -126,6 +119,4 @@ inline void Axis::setScaleType(ScaleType scaleType)
 
 //-----------------------------------------------------------------------------
 
-} // namespace data
-
-} // namespace sight::viz::scene2d
+} // namespace sight::viz::scene2d::data

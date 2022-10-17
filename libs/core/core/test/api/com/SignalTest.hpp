@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::com
-{
-
-namespace ut
+namespace sight::core::com::ut
 {
 
 class SignalTest : public CPPUNIT_NS::TestFixture
@@ -48,19 +45,17 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void buildTest();
-    void connectTest();
-    void emitTest();
-    void autoSlotDisconnectTest();
-    void blockTest();
-    void argumentLossTest();
-    void asyncEmitTest();
-    void asyncArgumentLossTest();
+    static void buildTest();
+    static void connectTest();
+    static void emitTest();
+    static void autoSlotDisconnectTest();
+    static void blockTest();
+    static void argumentLossTest();
+    static void asyncEmitTest();
+    static void asyncArgumentLossTest();
 };
 
-} //namespace ut
-
-} //namespace sight::core::com
+} // namespace sight::core::com::ut

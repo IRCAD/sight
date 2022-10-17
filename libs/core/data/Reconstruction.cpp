@@ -44,38 +44,30 @@ const core::com::Signals::SignalKeyType Reconstruction::s_VISIBILITY_MODIFIED_SI
 
 //------------------------------------------------------------------------------
 
-Reconstruction::Reconstruction(data::Object::Key) :
-    m_bIsVisible(false),
-    m_sOrganName(""),
-    m_sStructureType(""),
+Reconstruction::Reconstruction(data::Object::Key /*unused*/) :
+
     m_material(data::factory::New<data::Material>()),
-    m_computedMaskVolume(Reconstruction::s_NO_COMPUTED_MASK_VOLUME)
+    m_computedMaskVolume(Reconstruction::s_NO_COMPUTED_MASK_VOLUME),
+    m_sigMeshChanged(MeshChangedSignalType::New()),
+    m_sigVisibilityModified(VisibilityModifiedSignalType::New())
 {
-    m_sigMeshChanged        = MeshChangedSignalType::New();
-    m_sigVisibilityModified = VisibilityModifiedSignalType::New();
     m_signals(s_MESH_CHANGED_SIG, m_sigMeshChanged)
         (s_VISIBILITY_MODIFIED_SIG, m_sigVisibilityModified);
 }
 
 //------------------------------------------------------------------------------
 
-Reconstruction::~Reconstruction()
+void Reconstruction::shallowCopy(const Object::csptr& source)
 {
-}
+    const auto& other = dynamicConstCast(source);
 
-//------------------------------------------------------------------------------
-
-void Reconstruction::shallowCopy(const Object::csptr& _source)
-{
-    Reconstruction::csptr other = Reconstruction::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     m_bIsVisible     = other->m_bIsVisible;
     m_sOrganName     = other->m_sOrganName;
@@ -86,21 +78,23 @@ void Reconstruction::shallowCopy(const Object::csptr& _source)
     m_mesh     = other->m_mesh;
 
     m_computedMaskVolume = other->m_computedMaskVolume;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void Reconstruction::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void Reconstruction::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    Reconstruction::csptr other = Reconstruction::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
 
     m_bIsVisible     = other->m_bIsVisible;
     m_sOrganName     = other->m_sOrganName;
@@ -111,6 +105,8 @@ void Reconstruction::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheT
     m_mesh     = data::Object::copy(other->m_mesh, cache);
 
     m_computedMaskVolume = other->m_computedMaskVolume;
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -129,7 +125,7 @@ bool Reconstruction::operator==(const Reconstruction& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

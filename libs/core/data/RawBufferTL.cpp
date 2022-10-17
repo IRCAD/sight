@@ -27,9 +27,6 @@
 #include <data/Exception.hpp>
 #include <data/registry/macros.hpp>
 
-#include <boost/bind.hpp>
-#include <boost/pool/pool.hpp>
-
 #include <functional>
 
 SIGHT_REGISTER_DATA(sight::data::RawBufferTL);
@@ -46,33 +43,36 @@ RawBufferTL::RawBufferTL(data::Object::Key key) :
 
 //------------------------------------------------------------------------------
 
-RawBufferTL::~RawBufferTL()
+void RawBufferTL::shallowCopy(const Object::csptr& /*source*/)
 {
+    SIGHT_FATAL("shallowCopy not implemented for : " + this->getClassname());
 }
 
 //------------------------------------------------------------------------------
 
-void RawBufferTL::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
+void RawBufferTL::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    RawBufferTL::csptr other = RawBufferTL::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source);
 
     this->clearTimeline();
     this->allocPoolSize(other->m_pool->get_requested_size());
 
-    for(TimelineType::value_type elt : other->m_timeline)
+    for(const TimelineType::value_type& elt : other->m_timeline)
     {
         SPTR(data::timeline::RawBuffer) tlObj = this->createBuffer(elt.first);
         tlObj->deepCopy(*elt.second);
         m_timeline.insert(TimelineType::value_type(elt.first, tlObj));
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -114,10 +114,9 @@ SPTR(data::timeline::RawBuffer) RawBufferTL::createBuffer(core::HiResClock::HiRe
 {
     return std::make_shared<data::timeline::RawBuffer>(
         timestamp,
-        (data::timeline::Buffer::BufferDataType) m_pool->malloc(),
+        reinterpret_cast<data::timeline::Buffer::BufferDataType>(m_pool->malloc()),
         m_pool->get_requested_size(),
-        boost::bind(&boost::pool<>::free, m_pool, _1)
-    );
+        [ObjectPtr = m_pool](auto&& PH1, auto&& ...){ObjectPtr->free(std::forward<decltype(PH1)>(PH1));});
 }
 
 //------------------------------------------------------------------------------
@@ -126,7 +125,7 @@ bool RawBufferTL::isObjectValid(const CSPTR(data::timeline::Object)& obj) const
 {
     CSPTR(data::timeline::RawBuffer) srcObj =
         std::dynamic_pointer_cast<const data::timeline::RawBuffer>(obj);
-    return srcObj != NULL;
+    return srcObj != nullptr;
 }
 
 //------------------------------------------------------------------------------

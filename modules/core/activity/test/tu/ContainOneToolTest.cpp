@@ -33,10 +33,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::activity::validator::ut::ContainOneToolTest);
 
-namespace sight::module::activity::validator
-{
-
-namespace ut
+namespace sight::module::activity::validator::ut
 {
 
 namespace factory = sight::activity::validator::factory;
@@ -116,7 +113,6 @@ void ContainOneToolTest::testValidator()
         vect_rec.push_back(rec3);
         modelSeries->setReconstructionDB(vect_rec);
         validation = objValidator->validate(modelSeries);
-        validation = objValidator->validate(modelSeries);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "ModelSeries with three reconstructions (only one Tool) should be valid",
             true,
@@ -195,7 +191,7 @@ void ContainOneToolTest::testValidatorWithVector()
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Empty Vector series should be valid", true, validation.first);
     }
     {
-        vector->getContainer().push_back(modelSeries1);
+        vector->push_back(modelSeries1);
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Vector with one ModelSeries (without Tool) should NOT be valid",
@@ -223,7 +219,7 @@ void ContainOneToolTest::testValidatorWithVector()
     }
     {
         rec12->setStructureType("Bones");
-        vector->getContainer().push_back(modelSeries2);
+        vector->push_back(modelSeries2);
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Vector with two ModelSeries (one without Tool) should be NOT valid",
@@ -252,7 +248,7 @@ void ContainOneToolTest::testValidatorWithVector()
     }
     {
         rec22->setStructureType("Bone");
-        vector->getContainer().push_back(modelSeries3);
+        vector->push_back(modelSeries3);
         validation = objValidator->validate(vector);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Vector with three ModelSeries (two with one Tool and one without skin) should NOT "
@@ -414,6 +410,4 @@ void ContainOneToolTest::testValidatorWithComposite()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::activity::validator
+} // namespace sight::module::activity::validator::ut

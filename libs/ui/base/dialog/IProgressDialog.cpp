@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,27 +24,18 @@
 
 #include <core/base.hpp>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 const IProgressDialog::FactoryRegistryKeyType IProgressDialog::REGISTRY_KEY = "::ui::base::dialog::ProgressDialog";
 
-IProgressDialog::IProgressDialog() :
-    m_canceled(false),
-    m_raise(true),
-    m_value(0),
-    m_processUserEvents(true)
-{
-}
+IProgressDialog::IProgressDialog()
+= default;
 
 //-----------------------------------------------------------------------------
 
 IProgressDialog::~IProgressDialog()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -58,7 +49,7 @@ void IProgressDialog::setCancelCallback(CancelCallbackType callback)
 void IProgressDialog::cancelPressed()
 {
     m_canceled = true;
-    if(m_cancelCallback)
+    if(m_cancelCallback != nullptr)
     {
         m_cancelCallback();
     }
@@ -70,6 +61,4 @@ void IProgressDialog::cancelPressed()
 
 //-----------------------------------------------------------------------------
 
-} // namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

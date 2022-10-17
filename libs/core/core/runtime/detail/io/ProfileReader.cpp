@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include "core/runtime/detail/io/Validator.hpp"
 #include "core/runtime/detail/profile/Activater.hpp"
 #include "core/runtime/detail/profile/Profile.hpp"
-#include "core/runtime/detail/profile/Starter.hpp"
 #include "core/runtime/operations.hpp"
 #include "core/runtime/profile/Profile.hpp"
 #include "core/runtime/Runtime.hpp"
@@ -40,10 +39,7 @@
 namespace sight::core::runtime
 {
 
-namespace detail
-{
-
-namespace io
+namespace detail::io
 {
 
 std::string ProfileReader::ID("id");
@@ -69,7 +65,7 @@ std::shared_ptr<profile::Profile> ProfileReader::createProfile(const std::filesy
     std::filesystem::path normalizedPath(std::filesystem::weakly_canonical(path));
 
     // Asserts that the repository is a valid directory path.
-    if(std::filesystem::exists(normalizedPath) == false || std::filesystem::is_directory(normalizedPath) == true)
+    if(!std::filesystem::exists(normalizedPath) || std::filesystem::is_directory(normalizedPath))
     {
         throw RuntimeException("'" + normalizedPath.string() + "': not a a file.");
     }
@@ -79,7 +75,7 @@ std::shared_ptr<profile::Profile> ProfileReader::createProfile(const std::filesy
 
     Validator validator(profileXSDLocation);
 
-    if(validator.validate(normalizedPath) == false)
+    if(!validator.validate(normalizedPath))
     {
         throw RuntimeException(validator.getErrorLog());
     }
@@ -110,7 +106,7 @@ std::shared_ptr<profile::Profile> ProfileReader::createProfile(const std::filesy
 
         std::string sName(pName);
         std::string sVersion(pVersion);
-        bool checkSingleInstance = pChkInst && std::string(pChkInst) == "true";
+        bool checkSingleInstance = (pChkInst != nullptr) && std::string(pChkInst) == "true";
 
         xmlFree(pName);
         xmlFree(pVersion);
@@ -130,10 +126,10 @@ std::shared_ptr<profile::Profile> ProfileReader::createProfile(const std::filesy
         xmlFreeDoc(document);
         return profile;
     }
-    catch(std::exception& exception)
+    catch(std::exception& /*exception*/)
     {
         xmlFreeDoc(document);
-        throw exception;
+        throw;
     }
 }
 
@@ -141,13 +137,10 @@ std::shared_ptr<profile::Profile> ProfileReader::createProfile(const std::filesy
 
 std::shared_ptr<profile::Profile> ProfileReader::processProfile(xmlNodePtr node)
 {
-    using namespace profile;
-
     auto profile = std::dynamic_pointer_cast<detail::profile::Profile>(core::runtime::getCurrentProfile());
 
     // Process child nodes.
-    xmlNodePtr curChild = node->children;
-    for(curChild = node->children ; curChild != nullptr ; curChild = curChild->next)
+    for(xmlNodePtr curChild = node->children ; curChild != nullptr ; curChild = curChild->next)
     {
         if(xmlStrcmp(curChild->name, reinterpret_cast<const xmlChar*>(ACTIVATE.c_str())) == 0)
         {
@@ -157,7 +150,7 @@ std::shared_ptr<profile::Profile> ProfileReader::processProfile(xmlNodePtr node)
 
         if(xmlStrcmp(curChild->name, reinterpret_cast<const xmlChar*>(START.c_str())) == 0)
         {
-            profile->add(processStarter(curChild));
+            profile->addStarter(processStarter(curChild));
             continue;
         }
     }
@@ -167,10 +160,10 @@ std::shared_ptr<profile::Profile> ProfileReader::processProfile(xmlNodePtr node)
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<profile::Starter> ProfileReader::processStarter(xmlNodePtr node)
+std::string ProfileReader::processStarter(xmlNodePtr node)
 {
     // Processes all attributes.
-    xmlAttrPtr curAttr;
+    xmlAttrPtr curAttr = nullptr;
     std::string identifier;
     std::string version;
     for(curAttr = node->properties ; curAttr != nullptr ; curAttr = curAttr->next)
@@ -188,10 +181,7 @@ std::shared_ptr<profile::Starter> ProfileReader::processStarter(xmlNodePtr node)
         }
     }
 
-    // Creates the activater object.
-    using detail::profile::Starter;
-    std::shared_ptr<Starter> starter(new Starter(identifier));
-    return starter;
+    return identifier;
 }
 
 //------------------------------------------------------------------------------
@@ -199,7 +189,7 @@ std::shared_ptr<profile::Starter> ProfileReader::processStarter(xmlNodePtr node)
 std::shared_ptr<detail::profile::Activater> ProfileReader::processActivater(xmlNodePtr node)
 {
     // Processes all attributes.
-    xmlAttrPtr curAttr;
+    xmlAttrPtr curAttr = nullptr;
     std::string identifier;
     std::string version;
     for(curAttr = node->properties ; curAttr != nullptr ; curAttr = curAttr->next)
@@ -221,8 +211,7 @@ std::shared_ptr<detail::profile::Activater> ProfileReader::processActivater(xmlN
     auto activater = std::make_shared<detail::profile::Activater>(identifier, version);
 
     // Processes child node that are the parameters
-    xmlNodePtr curChild = node->children;
-    for(curChild = node->children ; curChild != nullptr ; curChild = curChild->next)
+    for(xmlNodePtr curChild = node->children ; curChild != nullptr ; curChild = curChild->next)
     {
         if(xmlStrcmp(curChild->name, reinterpret_cast<const xmlChar*>(PARAM.c_str())) == 0)
         {
@@ -252,7 +241,7 @@ std::shared_ptr<detail::profile::Activater> ProfileReader::processActivater(xmlN
 void ProfileReader::processActivaterParam(xmlNodePtr node, std::shared_ptr<detail::profile::Activater> activater)
 {
     // Processes all attributes.
-    xmlAttrPtr curAttr;
+    xmlAttrPtr curAttr = nullptr;
     std::string identifier;
     std::string value;
     for(curAttr = node->properties ; curAttr != nullptr ; curAttr = curAttr->next)
@@ -282,7 +271,7 @@ void ProfileReader::processActivaterDisableExtensionPoint(
 )
 {
     // Processes all attributes.
-    xmlAttrPtr curAttr;
+    xmlAttrPtr curAttr = nullptr;
     std::string identifier;
     for(curAttr = node->properties ; curAttr != nullptr ; curAttr = curAttr->next)
     {
@@ -305,7 +294,7 @@ void ProfileReader::processActivaterDisableExtension(
 )
 {
     // Processes all attributes.
-    xmlAttrPtr curAttr;
+    xmlAttrPtr curAttr = nullptr;
     std::string identifier;
     for(curAttr = node->properties ; curAttr != nullptr ; curAttr = curAttr->next)
     {
@@ -322,9 +311,7 @@ void ProfileReader::processActivaterDisableExtension(
 
 //------------------------------------------------------------------------------
 
-} // namespace io
-
-} // namespace detail
+} // namespace detail::io
 
 //------------------------------------------------------------------------------
 

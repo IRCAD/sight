@@ -40,16 +40,15 @@ const service::IService::KeyType s_OBJECTS_GROUP = "objects";
 
 //-----------------------------------------------------------------------------
 
-SServerSender::SServerSender()
+SServerSender::SServerSender() :
+    m_server(std::make_shared<sight::io::igtl::Server>())
 {
-    m_server = std::make_shared<sight::io::igtl::Server>();
 }
 
 //-----------------------------------------------------------------------------
 
 SServerSender::~SServerSender()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -86,7 +85,7 @@ void SServerSender::starting()
 
         m_server->start(port);
 
-        m_serverFuture = std::async(std::launch::async, std::bind(&sight::io::igtl::Server::runServer, m_server));
+        m_serverFuture = std::async(std::launch::async, [this](auto&& ...){m_server->runServer();});
         m_sigConnected->asyncEmit();
     }
     catch(core::Exception& e)

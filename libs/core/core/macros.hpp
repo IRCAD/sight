@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,9 +27,9 @@
 #pragma once
 
 #include "core/Demangler.hpp"
-#include "core/macros-legacy.hpp"
 
 #include <boost/preprocessor/cat.hpp>
+#include <boost/preprocessor/facilities/empty.hpp>
 #include <boost/preprocessor/facilities/overload.hpp>
 
 #include <memory>
@@ -222,10 +222,7 @@
         { \
             return true; \
         } \
-        else \
-        { \
-            return BaseClass::isTypeOf(type); \
-        } \
+        return BaseClass::isTypeOf(type); \
     } \
     bool isA(const std::string& type) const override \
     { \

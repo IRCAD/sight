@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::http
-{
-
-namespace ut
+namespace sight::io::http::ut
 {
 
 class SeriesTest : public CPPUNIT_NS::TestFixture
@@ -42,9 +39,9 @@ public:
 
     // Interface
     // Creates a JSON
-    void setUp();
+    void setUp() override;
     // Does nothing
-    void tearDown();
+    void tearDown() override;
 
     // Test functions
     // Tests the Series helper API
@@ -56,6 +53,4 @@ private:
     QJsonObject m_json;
 };
 
-} // namespace ut
-
-} // namespace sight::io::http
+} // namespace sight::io::http::ut

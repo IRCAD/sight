@@ -56,12 +56,12 @@ public:
      * @param handleMtlName          material used to display the widget handles.
      */
     VIZ_SCENE3D_API ClippingBox(
-        const std::string& id,
+        std::string id,
         Ogre::SceneNode* parentSceneNode,
         Ogre::Camera* camera,
         Ogre::SceneManager* sceneManager,
         const Ogre::Matrix4& clippingMatrix,
-        const ClippingUpdateCallbackType& clippingUpdateCallback,
+        ClippingUpdateCallbackType clippingUpdateCallback,
         const std::string& boxMtlName    = "BasicAmbient",
         const std::string& handleMtlName = "BasicPhong"
     );
@@ -70,7 +70,7 @@ public:
     VIZ_SCENE3D_API virtual ~ClippingBox();
 
     /// Find out if a movable object belongs to this widget.
-    bool belongsToWidget(const Ogre::MovableObject* const _object) const;
+    bool belongsToWidget(const Ogre::MovableObject* _object) const;
 
     /**
      * @brief Drags a widget toward a screen position.
@@ -110,16 +110,16 @@ public:
     VIZ_SCENE3D_API bool scaleClippingBox(int x, int y, int dy);
 
     /// Returns whether the widgets are visible or hidden.
-    VIZ_SCENE3D_API bool getVisibility() const;
+    [[nodiscard]] VIZ_SCENE3D_API bool getVisibility() const;
 
     /// Hides or shows the widget.
     VIZ_SCENE3D_API void setVisibility(bool visibility);
 
     /// Returns the axis aligned coordinates of the clipping widget in volume image space.
-    VIZ_SCENE3D_API Ogre::AxisAlignedBox getClippingBox() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::AxisAlignedBox getClippingBox() const;
 
     /// Returns the clipping box transform in world space.
-    VIZ_SCENE3D_API Ogre::Matrix4 getClippingTransform() const;
+    [[nodiscard]] VIZ_SCENE3D_API Ogre::Matrix4 getClippingTransform() const;
 
     /// Sets the clipping cube from the input transform.
     VIZ_SCENE3D_API void updateFromTransform(const Ogre::Matrix4& _clippingMx);
@@ -135,13 +135,13 @@ private:
     } m_selectionMode {NONE};
 
     /// Get the face's image positions.
-    std::array<Ogre::Vector3, 4> getFacePositions(vr::IVolumeRenderer::CubeFace _faceName) const;
+    [[nodiscard]] std::array<Ogre::Vector3, 4> getFacePositions(vr::IVolumeRenderer::CubeFace _faceName) const;
 
     /// Get the center of a clipping box face.
-    Ogre::Vector3 getFaceCenter(vr::IVolumeRenderer::CubeFace _faceName) const;
+    [[nodiscard]] Ogre::Vector3 getFaceCenter(vr::IVolumeRenderer::CubeFace _faceName) const;
 
     /// Returns the clipping box's image space positions.
-    std::array<Ogre::Vector3, 8> getClippingBoxPositions() const;
+    [[nodiscard]] std::array<Ogre::Vector3, 8> getClippingBoxPositions() const;
 
     /// Creates the widget objects and scene nodes.
     void initWidgets();

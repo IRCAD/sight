@@ -47,7 +47,7 @@ public:
     SessionWriterImpl& operator=(SessionWriterImpl&&)      = delete;
 
     /// Constructor
-    inline SessionWriterImpl(SessionWriter* const sessionWriter) :
+    inline explicit SessionWriterImpl(SessionWriter* const sessionWriter) :
         m_sessionWriter(sessionWriter),
         m_password(std::make_unique<PasswordKeeper>()),
         m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT),
@@ -91,7 +91,7 @@ public:
     Archive::ArchiveFormat m_archiveFormat;
 };
 
-SessionWriter::SessionWriter(base::writer::IObjectWriter::Key) :
+SessionWriter::SessionWriter(base::writer::IObjectWriter::Key /*unused*/) :
     m_pimpl(std::make_unique<SessionWriterImpl>(this))
 {
 }

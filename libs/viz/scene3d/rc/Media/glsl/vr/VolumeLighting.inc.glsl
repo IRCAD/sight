@@ -16,7 +16,9 @@ vec3 computeLighting(in vec3 _f3SampleColor, in vec3 _f3SamplePos_Ms, in sampler
 {
     vec3 sampleNormal_MsN = gradientNormal(_f3SamplePos_Ms, _s3Image);
 
-    vec3 shadedSampleColor = lightingBlinnPhong(sampleNormal_MsN, _f3SamplePos_Ms, _f3SampleColor);
+    vec3 shadedSampleColor = (length(sampleNormal_MsN) > 0)
+                             ? lightingBlinnPhong(sampleNormal_MsN, _f3SamplePos_Ms, _f3SampleColor)
+                             : _f3SampleColor;
 
 #if defined(AMBIENT_OCCLUSION) || defined(COLOR_BLEEDING)
     vec4 volumeIllumination = texture(u_s3IlluminationVolume, _f3SamplePos_Ms);

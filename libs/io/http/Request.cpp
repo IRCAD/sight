@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,16 @@
 
 #include "Request.hpp"
 
+#include <utility>
+
 namespace sight::io::http
 {
 
 Request::Request()
-{
-}
+= default;
 
-Request::Request(const std::string& url) :
-    m_url(url)
+Request::Request(std::string url) :
+    m_url(std::move(url))
 {
 }
 

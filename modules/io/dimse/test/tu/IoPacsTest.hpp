@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::io::dimse
-{
-
-namespace ut
+namespace sight::module::io::dimse::ut
 {
 
 /**
@@ -42,12 +39,10 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void pacsConfigurationInitializer();
+    static void pacsConfigurationInitializer();
 };
 
-} //namespace ut
-
-} //namespace sight::module::io::dimse
+} // namespace sight::module::io::dimse::ut

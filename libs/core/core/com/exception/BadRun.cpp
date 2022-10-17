@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,12 +23,10 @@
 #include "core/com/exception/BadRun.hpp"
 
 #include "core/config.hpp"
+
 #include <core/Exception.hpp>
 
-namespace sight::core::com
-{
-
-namespace exception
+namespace sight::core::com::exception
 {
 
 BadRun::BadRun(const std::string& err) :
@@ -36,6 +34,4 @@ BadRun::BadRun(const std::string& err) :
 {
 }
 
-} // namespace exception
-
-} // namespace sight::core::com
+} // namespace sight::core::com::exception

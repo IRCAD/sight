@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,24 +33,19 @@
 #include <QObject>
 #include <QPointer>
 
-namespace sight::ui::qt
-{
-
-namespace container
+namespace sight::ui::qt::container
 {
 
 class QtContainer;
 
-}
-
-}
+} // namespace sight::ui::qt::container
 
 namespace Qt3DExtras
 {
 
 class Qt3DWindow;
 
-}
+} // namespace Qt3DExtras
 
 namespace sight::module::viz::qt3d
 {
@@ -66,7 +61,7 @@ public:
     SIGHT_DECLARE_CLASS(WindowInteractor, sight::viz::qt3d::IWindowInteractor);
 
     /// Initialize members.
-    MODULE_VIZ_QT3D_API WindowInteractor(sight::viz::qt3d::IWindowInteractor::Key);
+    MODULE_VIZ_QT3D_API WindowInteractor(sight::viz::qt3d::IWindowInteractor::Key /*unused*/);
 
     /// Destroys the window container.
     MODULE_VIZ_QT3D_API ~WindowInteractor() final;

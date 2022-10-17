@@ -44,20 +44,18 @@ namespace sight::module::io::igtl
 //-----------------------------------------------------------------------------
 
 STDataListener::STDataListener()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 STDataListener::~STDataListener()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 void STDataListener::configuring()
 {
-    SIGHT_ASSERT("Configuration not found", m_configuration != NULL);
+    SIGHT_ASSERT("Configuration not found", m_configuration != nullptr);
     if(m_configuration->findConfigurationElement("server"))
     {
         const std::string serverInfo = m_configuration->findConfigurationElement("server")->getValue();
@@ -83,7 +81,7 @@ void STDataListener::configuring()
 
         for(const auto& m : matrices)
         {
-            const unsigned long index = boost::lexical_cast<unsigned long>(m->getAttributeValue("index"));
+            const auto index = boost::lexical_cast<std::uint64_t>(m->getAttributeValue("index"));
             m_matrixNameIndex[m->getAttributeValue("name")] = index;
         }
     }
@@ -97,8 +95,6 @@ void STDataListener::configuring()
 
 void STDataListener::runClient()
 {
-    sight::ui::base::dialog::MessageDialog msgDialog;
-
     data::Composite::sptr composite = data::Composite::New();
 
     // 1. Connection
@@ -128,7 +124,7 @@ void STDataListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            msgDialog.show("Connection error", ex.what());
+            sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -162,7 +158,7 @@ void STDataListener::runClient()
         // in this case opening a dialog will result in a deadlock
         if(this->getStatus() == STARTED)
         {
-            msgDialog.show("Error", ex.what());
+            sight::ui::base::dialog::MessageDialog::show("Error", ex.what());
             this->slot(s_STOP_SLOT)->asyncRun();
         }
         else
@@ -181,7 +177,7 @@ void STDataListener::starting()
     matTL->setMaximumSize(10);
     matTL->initPoolSize(static_cast<unsigned int>(m_matrixNameIndex.size()));
 
-    m_clientFuture = std::async(std::launch::async, std::bind(&STDataListener::runClient, this));
+    m_clientFuture = std::async(std::launch::async, [this](auto&& ...){runClient();});
 }
 
 //-----------------------------------------------------------------------------
@@ -201,26 +197,26 @@ void STDataListener::manageTimeline(const data::Composite::sptr& obj, double tim
     SPTR(data::MatrixTL::BufferType) matrixBuf;
     matrixBuf = matTL->createBuffer(timestamp);
 
-    for(const data::Composite::ContainerType::value_type& elt : obj->getContainer())
+    for(const auto& elt : *obj)
     {
         data::Matrix4::csptr transfoMatrix =
             data::Matrix4::dynamicConstCast(elt.second);
 
-        MatrixNameIndexType::const_iterator it = m_matrixNameIndex.find(elt.first);
+        auto it = m_matrixNameIndex.find(elt.first);
 
         if(transfoMatrix && it != m_matrixNameIndex.end())
         {
-            unsigned long index = it->second;
+            std::uint64_t index = it->second;
 
             data::Matrix4::TMCoefArray values;
             values = transfoMatrix->getCoefficients();
-            float matrixValues[16];
+            std::array<float, 16> matrixValues {};
             bool isZero = true;
             for(unsigned int i = 0 ; i < 16 ; ++i)
             {
                 matrixValues[i] = static_cast<float>(values[i]);
                 //Test if matrix contains only '0' except last value (always '1)
-                isZero &= i < 15 ? (matrixValues[i] == 0.f) : true;
+                isZero &= i < 15 ? (matrixValues[i] == 0.F) : true;
             }
 
             //don't push the matrix if it contains only '0'

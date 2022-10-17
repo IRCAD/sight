@@ -39,8 +39,7 @@ ViewportListener::ViewportListener(ViewportOverlaysMapType& _vpLayerMap) :
 //-----------------------------------------------------------------------------
 
 ViewportListener::~ViewportListener()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 

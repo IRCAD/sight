@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 #include <QScrollArea>
 #include <QTabWidget>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qt::TabLayoutManager,
     sight::ui::base::layoutManager::TabLayoutManagerBase::REGISTRY_KEY
 );
@@ -44,24 +44,24 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
-TabLayoutManager::TabLayoutManager(ui::base::GuiBaseObject::Key key)
+TabLayoutManager::TabLayoutManager(ui::base::GuiBaseObject::Key /*key*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 TabLayoutManager::~TabLayoutManager()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
-void TabLayoutManager::createLayout(ui::base::container::fwContainer::sptr parent)
+void TabLayoutManager::createLayout(ui::base::container::fwContainer::sptr parent, const std::string& id)
 {
     m_parentContainer = ui::qt::container::QtContainer::dynamicCast(parent);
     SIGHT_ASSERT("dynamicCast fwContainer to QtContainer failed", m_parentContainer);
+    m_parentContainer->getQtContainer()->setObjectName(QString::fromStdString(id));
 
-    QBoxLayout* layout = new QBoxLayout(QBoxLayout::TopToBottom);
+    auto* layout = new QBoxLayout(QBoxLayout::TopToBottom);
     m_parentContainer->setLayout(layout);
 
     m_tabWidget = new QTabWidget();
@@ -69,12 +69,12 @@ void TabLayoutManager::createLayout(ui::base::container::fwContainer::sptr paren
 
     const std::list<ViewInfo>& views = this->getViewsInfo();
 
-    for(ViewInfo viewInfo : views)
+    for(const ViewInfo& viewInfo : views)
     {
-        int leftBorder;
-        int topBorder;
-        int rightBorder;
-        int bottomBorder;
+        int leftBorder   = 0;
+        int topBorder    = 0;
+        int rightBorder  = 0;
+        int bottomBorder = 0;
         if(viewInfo.m_border != 0)
         {
             leftBorder = topBorder = rightBorder = bottomBorder = viewInfo.m_border;
@@ -87,7 +87,7 @@ void TabLayoutManager::createLayout(ui::base::container::fwContainer::sptr paren
             bottomBorder = viewInfo.m_bottomBorder;
         }
 
-        QWidget* const widget   = new QWidget(m_tabWidget);
+        auto* const widget      = new QWidget(m_tabWidget);
         const int minWidthSize  = std::max(viewInfo.m_minSize.first, 0);
         const int minHeightSize = std::max(viewInfo.m_minSize.second, 0);
         widget->setMinimumSize(minWidthSize, minHeightSize);
@@ -95,13 +95,13 @@ void TabLayoutManager::createLayout(ui::base::container::fwContainer::sptr paren
 
         if(!viewInfo.m_backgroundColor.empty())
         {
-            std::uint8_t rgba[4];
+            std::array<std::uint8_t, 4> rgba {};
             data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
             std::stringstream ss;
-            ss << "QWidget { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
-            << static_cast<short>(rgba[1]) << ','
-            << static_cast<short>(rgba[2]) << ','
-            << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
+            ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
+            << static_cast<std::int16_t>(rgba[1]) << ','
+            << static_cast<std::int16_t>(rgba[2]) << ','
+            << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
             const QString style = QString::fromStdString(ss.str());
             widget->setStyleSheet(style + qApp->styleSheet());
         }
@@ -113,18 +113,18 @@ void TabLayoutManager::createLayout(ui::base::container::fwContainer::sptr paren
         int idx = 0;
         if(viewInfo.m_useScrollBar)
         {
-            QScrollArea* const scrollArea = new QScrollArea(m_tabWidget);
+            auto* const scrollArea = new QScrollArea(m_tabWidget);
             scrollArea->setWidget(widget);
             scrollArea->setWidgetResizable(true);
             if(!viewInfo.m_backgroundColor.empty())
             {
-                std::uint8_t rgba[4];
+                std::array<std::uint8_t, 4> rgba {};
                 data::tools::Color::hexaStringToRGBA(viewInfo.m_backgroundColor, rgba);
                 std::stringstream ss;
-                ss << "QWidget { background-color: rgba(" << static_cast<short>(rgba[0]) << ','
-                << static_cast<short>(rgba[1]) << ','
-                << static_cast<short>(rgba[2]) << ','
-                << (static_cast<float>(rgba[3]) / 255.f) * 100 << "%); } ";
+                ss << "QWidget { background-color: rgba(" << static_cast<std::int16_t>(rgba[0]) << ','
+                << static_cast<std::int16_t>(rgba[1]) << ','
+                << static_cast<std::int16_t>(rgba[2]) << ','
+                << (static_cast<float>(rgba[3]) / 255.F) * 100 << "%); } ";
                 const QString style = QString::fromStdString(ss.str());
                 scrollArea->setStyleSheet(style + qApp->styleSheet());
             }

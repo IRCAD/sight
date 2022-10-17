@@ -22,7 +22,7 @@ Most of the classes inherit from io::base::reader::GenericObjectReader or io::ba
 - **ModelSeriesObjWriter**: writes `ModelSeries` to many `.obj`
 - **ObjMesh[Read|Writ]er**: reads/writes `Mesh` to/from `.obj`.
 - **PlyMesh[Read|Writ]er**: reads/writes `Mesh` to/from `.ply`.
-- **SeriesDBReader**: reads `SeriesDB` from a collection of files. It basically uses other readers depending of the file extension.
+- **series_setReader**: reads `SeriesSet` from a collection of files. It basically uses other readers depending of the file extension.
 - **StlMesh[Read|Writ]er**: reads/writes `Mesh` to/from `.stl`.
 - **VtiImage[Read|Writ]er**: reads/writes `Image` to/from `.vti`.
 - **VtpMesh[Read|Writ]er**: reads/writes `Mesh` to/from `.vtp`.

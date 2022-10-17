@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,13 +27,7 @@
 #include "core/config.hpp"
 #include "core/runtime/detail/dl/Native.hpp"
 
-#ifdef NOMINMAX
 #include <windows.h>
-#else
-#define NOMINMAX
-#include <windows.h>
-#undef NOMINMAX
-#endif
 
 namespace sight::core::runtime
 {

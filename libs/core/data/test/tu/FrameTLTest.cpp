@@ -32,10 +32,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::FrameTLTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -58,12 +55,12 @@ void FrameTLTest::initTest()
 {
     {
         data::FrameTL::sptr timeline = data::FrameTL::New();
-        timeline->initPoolSize(100, 200, core::tools::Type::s_FLOAT, data::FrameTL::PixelFormat::GRAY_SCALE);
+        timeline->initPoolSize(100, 200, core::Type::FLOAT, data::FrameTL::PixelFormat::GRAY_SCALE);
 
         CPPUNIT_ASSERT_EQUAL(std::size_t(200), timeline->getHeight());
         CPPUNIT_ASSERT_EQUAL(std::size_t(100), timeline->getWidth());
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), timeline->numComponents());
-        CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_FLOAT, timeline->getType());
+        CPPUNIT_ASSERT_EQUAL(core::Type::FLOAT, timeline->getType());
         CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::GRAY_SCALE, timeline->getPixelFormat());
 
         data::FrameTL::sptr timeline2 = data::FrameTL::copy(timeline);
@@ -77,12 +74,12 @@ void FrameTLTest::initTest()
     }
     {
         data::FrameTL::sptr timeline = data::FrameTL::New();
-        timeline->initPoolSize(100, 200, core::tools::Type::s_UINT8, data::FrameTL::PixelFormat::RGB);
+        timeline->initPoolSize(100, 200, core::Type::UINT8, data::FrameTL::PixelFormat::RGB);
 
         CPPUNIT_ASSERT_EQUAL(std::size_t(200), timeline->getHeight());
         CPPUNIT_ASSERT_EQUAL(std::size_t(100), timeline->getWidth());
         CPPUNIT_ASSERT_EQUAL(std::size_t(3), timeline->numComponents());
-        CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
+        CPPUNIT_ASSERT_EQUAL(core::Type::UINT8, timeline->getType());
         CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::RGB, timeline->getPixelFormat());
 
         data::FrameTL::sptr timeline2 = data::FrameTL::copy(timeline);
@@ -96,12 +93,12 @@ void FrameTLTest::initTest()
     }
     {
         data::FrameTL::sptr timeline = data::FrameTL::New();
-        timeline->initPoolSize(100, 200, core::tools::Type::s_UINT8, data::FrameTL::PixelFormat::BGR);
+        timeline->initPoolSize(100, 200, core::Type::UINT8, data::FrameTL::PixelFormat::BGR);
 
         CPPUNIT_ASSERT_EQUAL(std::size_t(200), timeline->getHeight());
         CPPUNIT_ASSERT_EQUAL(std::size_t(100), timeline->getWidth());
         CPPUNIT_ASSERT_EQUAL(std::size_t(3), timeline->numComponents());
-        CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
+        CPPUNIT_ASSERT_EQUAL(core::Type::UINT8, timeline->getType());
         CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::BGR, timeline->getPixelFormat());
 
         data::FrameTL::sptr timeline2 = data::FrameTL::copy(timeline);
@@ -115,12 +112,12 @@ void FrameTLTest::initTest()
     }
     {
         data::FrameTL::sptr timeline = data::FrameTL::New();
-        timeline->initPoolSize(100, 200, core::tools::Type::s_UINT8, data::FrameTL::PixelFormat::RGBA);
+        timeline->initPoolSize(100, 200, core::Type::UINT8, data::FrameTL::PixelFormat::RGBA);
 
         CPPUNIT_ASSERT_EQUAL(std::size_t(200), timeline->getHeight());
         CPPUNIT_ASSERT_EQUAL(std::size_t(100), timeline->getWidth());
         CPPUNIT_ASSERT_EQUAL(std::size_t(4), timeline->numComponents());
-        CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
+        CPPUNIT_ASSERT_EQUAL(core::Type::UINT8, timeline->getType());
         CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::RGBA, timeline->getPixelFormat());
 
         data::FrameTL::sptr timeline2 = data::FrameTL::copy(timeline);
@@ -134,12 +131,12 @@ void FrameTLTest::initTest()
     }
     {
         data::FrameTL::sptr timeline = data::FrameTL::New();
-        timeline->initPoolSize(100, 200, core::tools::Type::s_UINT8, data::FrameTL::PixelFormat::BGRA);
+        timeline->initPoolSize(100, 200, core::Type::UINT8, data::FrameTL::PixelFormat::BGRA);
 
         CPPUNIT_ASSERT_EQUAL(std::size_t(200), timeline->getHeight());
         CPPUNIT_ASSERT_EQUAL(std::size_t(100), timeline->getWidth());
         CPPUNIT_ASSERT_EQUAL(std::size_t(4), timeline->numComponents());
-        CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
+        CPPUNIT_ASSERT_EQUAL(core::Type::UINT8, timeline->getType());
         CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::BGRA, timeline->getPixelFormat());
 
         data::FrameTL::sptr timeline2 = data::FrameTL::copy(timeline);
@@ -158,23 +155,23 @@ void FrameTLTest::initTest()
 void FrameTLTest::pushTest()
 {
     data::FrameTL::sptr timeline = data::FrameTL::New();
-    timeline->initPoolSize(10, 20, core::tools::Type::s_UINT8, data::FrameTL::PixelFormat::RGB);
+    timeline->initPoolSize(10, 20, core::Type::UINT8, data::FrameTL::PixelFormat::RGB);
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(20), timeline->getHeight());
     CPPUNIT_ASSERT_EQUAL(std::size_t(10), timeline->getWidth());
     CPPUNIT_ASSERT_EQUAL(std::size_t(3), timeline->numComponents());
-    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
+    CPPUNIT_ASSERT_EQUAL(core::Type::UINT8, timeline->getType());
     CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::RGB, timeline->getPixelFormat());
 
     core::HiResClock::HiResClockType time1 = core::HiResClock::getTimeInMilliSec();
     core::HiResClock::HiResClockType time2 = time1 + 42;
 
     SPTR(data::FrameTL::BufferType) data1 = timeline->createBuffer(time1);
-    core::tools::Type::UInt8Type* bufferData1 = data1->addElement(0);
-    std::fill(bufferData1, bufferData1 + (10 * 20 * 3), 1);
+    std::uint8_t* bufferData1 = data1->addElement(0);
+    std::fill(bufferData1, bufferData1 + (10LL * 20 * 3), 1);
     SPTR(data::FrameTL::BufferType) data2 = timeline->createBuffer(time2);
-    core::tools::Type::UInt8Type* bufferData2 = data2->addElement(0);
-    std::fill(bufferData2, bufferData2 + (10 * 20 * 3), 2);
+    std::uint8_t* bufferData2 = data2->addElement(0);
+    std::fill(bufferData2, bufferData2 + (10LL * 20 * 3), 2);
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
@@ -190,20 +187,20 @@ void FrameTLTest::pushTest()
         std::dynamic_pointer_cast<const data::FrameTL::BufferType>(dataPushed1Bis);
     CPPUNIT_ASSERT(buff);
     CPPUNIT_ASSERT_EQUAL(buff, timeline->getClosestBuffer(time1 + 1.5));
-    const core::tools::Type::UInt8Type* buffData = &buff->getElement(0);
-    CPPUNIT_ASSERT_EQUAL(core::tools::Type::UInt8Type(1), buffData[0]);
-    CPPUNIT_ASSERT_EQUAL(core::tools::Type::UInt8Type(1), buffData[300]);
-    CPPUNIT_ASSERT_EQUAL(core::tools::Type::UInt8Type(1), buffData[599]);
+    const std::uint8_t* buffData = &buff->getElement(0);
+    CPPUNIT_ASSERT_EQUAL(std::uint8_t(1), buffData[0]);
+    CPPUNIT_ASSERT_EQUAL(std::uint8_t(1), buffData[300]);
+    CPPUNIT_ASSERT_EQUAL(std::uint8_t(1), buffData[599]);
 
     CSPTR(data::timeline::Object) dataPushed2Bis = timeline->getNewerObject();
     CPPUNIT_ASSERT(data2 == dataPushed2Bis);
 
     core::HiResClock::HiResClockType time2Pushed = timeline->getNewerTimestamp();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(time2, time2Pushed, 0.00001);
+    CPPUNIT_ASSERT_EQUAL(time2, time2Pushed);
 
     timeline->clearTimeline();
     CSPTR(data::timeline::Object) nullObj = timeline->getNewerObject();
-    CPPUNIT_ASSERT(nullObj == NULL);
+    CPPUNIT_ASSERT(nullObj == nullptr);
 }
 
 //------------------------------------------------------------------------------
@@ -211,23 +208,23 @@ void FrameTLTest::pushTest()
 void FrameTLTest::copyTest()
 {
     data::FrameTL::sptr timeline = data::FrameTL::New();
-    timeline->initPoolSize(11, 22, core::tools::Type::s_UINT8, data::FrameTL::PixelFormat::RGBA);
+    timeline->initPoolSize(11, 22, core::Type::UINT8, data::FrameTL::PixelFormat::RGBA);
 
     CPPUNIT_ASSERT_EQUAL(std::size_t(22), timeline->getHeight());
     CPPUNIT_ASSERT_EQUAL(std::size_t(11), timeline->getWidth());
     CPPUNIT_ASSERT_EQUAL(std::size_t(4), timeline->numComponents());
-    CPPUNIT_ASSERT_EQUAL(core::tools::Type::s_UINT8, timeline->getType());
+    CPPUNIT_ASSERT_EQUAL(core::Type::UINT8, timeline->getType());
     CPPUNIT_ASSERT_EQUAL(data::FrameTL::PixelFormat::RGBA, timeline->getPixelFormat());
 
     core::HiResClock::HiResClockType time1 = core::HiResClock::getTimeInMilliSec();
     core::HiResClock::HiResClockType time2 = time1 + 125;
 
     SPTR(data::FrameTL::BufferType) data1 = timeline->createBuffer(time1);
-    core::tools::Type::UInt8Type* bufferData1 = data1->addElement(0);
-    std::fill(bufferData1, bufferData1 + (11 * 22 * 4), 1);
+    std::uint8_t* bufferData1 = data1->addElement(0);
+    std::fill(bufferData1, bufferData1 + (11LL * 22 * 4), 1);
     SPTR(data::FrameTL::BufferType) data2 = timeline->createBuffer(time2);
-    core::tools::Type::UInt8Type* bufferData2 = data2->addElement(0);
-    std::fill(bufferData2, bufferData2 + (11 * 22 * 4), 2);
+    std::uint8_t* bufferData2 = data2->addElement(0);
+    std::fill(bufferData2, bufferData2 + (11LL * 22 * 4), 2);
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
@@ -247,32 +244,30 @@ void FrameTLTest::copyTest()
     CPPUNIT_ASSERT(copiedBuff);
     CSPTR(data::FrameTL::BufferType) buff =
         std::dynamic_pointer_cast<const data::FrameTL::BufferType>(timeline->getClosestBuffer(time1));
-    const core::tools::Type::UInt8Type* copiedBuffData = &copiedBuff->getElement(0);
-    const core::tools::Type::UInt8Type* buffData       = &buff->getElement(0);
+    const std::uint8_t* copiedBuffData = &copiedBuff->getElement(0);
+    const std::uint8_t* buffData       = &buff->getElement(0);
 
-    for(std::size_t i = 0 ; i < 10 * 20 * 4 ; ++i)
+    for(std::size_t i = 0 ; i < 10LL * 20 * 4 ; ++i)
     {
         CPPUNIT_ASSERT_EQUAL(buffData[i], copiedBuffData[i]);
     }
 
     const core::HiResClock::HiResClockType copiedTime2 = copiedTimeline->getNewerTimestamp();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(time2, copiedTime2, 0.00001);
+    CPPUNIT_ASSERT_EQUAL(time2, copiedTime2);
 
     timeline->clearTimeline();
     CSPTR(data::timeline::Object) nullObj = timeline->getNewerObject();
-    CPPUNIT_ASSERT(nullObj == NULL);
+    CPPUNIT_ASSERT(nullObj == nullptr);
 
     CSPTR(data::timeline::Object) copiedData2 = copiedTimeline->getClosestBuffer(time2);
     CPPUNIT_ASSERT(copiedData2);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(time2, copiedData2->getTimestamp(), 0.00001);
+    CPPUNIT_ASSERT_EQUAL(time2, copiedData2->getTimestamp());
 
     copiedTimeline->clearTimeline();
     CSPTR(data::timeline::Object) nullObj2 = timeline->getNewerObject();
-    CPPUNIT_ASSERT(nullObj == NULL);
+    CPPUNIT_ASSERT(nullObj == nullptr);
 }
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

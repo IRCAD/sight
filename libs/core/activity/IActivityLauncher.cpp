@@ -40,14 +40,12 @@ namespace sight::activity
 //-----------------------------------------------------------------------------
 
 IActivityLauncher::IActivityLauncher()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IActivityLauncher::~IActivityLauncher()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -59,10 +57,10 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
     const auto inoutsCfg = config.equal_range("inout");
     for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
     {
-        const std::string key = itCfg->second.get<std::string>("<xmlattr>.key");
+        const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
         SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
 
-        const std::string uid = itCfg->second.get<std::string>("<xmlattr>.uid");
+        const auto uid = itCfg->second.get<std::string>("<xmlattr>.uid");
         SIGHT_ASSERT("Missing 'uid' tag.", !uid.empty());
 
         const bool optional = itCfg->second.get<bool>("<xmlattr>.optional", false);
@@ -77,7 +75,7 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
         }
         else
         {
-            SIGHT_ASSERT("Object key '" + key + "'with uid '" + uid + "' does not exists.", obj);
+            SIGHT_ASSERT(std::string("Object key '") + key + "'with uid '" + uid + "' does not exists.", obj);
             param.by = obj->getID();
         }
 
@@ -89,8 +87,8 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
     const auto paramsCfg = configParams.equal_range("parameter");
     for(auto itParams = paramsCfg.first ; itParams != paramsCfg.second ; ++itParams)
     {
-        const std::string replace = itParams->second.get<std::string>("<xmlattr>.replace");
-        std::string by            = itParams->second.get<std::string>("<xmlattr>.by", "");
+        const auto replace = itParams->second.get<std::string>("<xmlattr>.replace");
+        std::string by     = itParams->second.get<std::string>("<xmlattr>.by", "");
         if(by.empty())
         {
             by = itParams->second.get<std::string>("<xmlattr>.uid");
@@ -111,23 +109,19 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
 //------------------------------------------------------------------------------
 
 std::pair<bool, std::string> IActivityLauncher::validateActivity(
-    const data::ActivitySeries::csptr& activitySeries
-) const
+    const data::Activity::csptr& activity
+)
 {
     bool isValid = true;
     std::string message;
-    // Applies validator on activity series to check the data
+    // Applies validator on activity to check the data
     activity::extension::ActivityInfo info;
-    info = activity::extension::Activity::getDefault()->getInfo(activitySeries->getActivityConfigId());
+    info = activity::extension::Activity::getDefault()->getInfo(activity->getActivityConfigId());
 
     // load activity module
-    std::shared_ptr<core::runtime::Module> module = core::runtime::findModule(info.bundleId);
-    if(!module->isStarted())
-    {
-        module->start();
-    }
+    core::runtime::startModule(info.bundleId);
 
-    for(std::string validatorImpl : info.validatorsImpl)
+    for(const std::string& validatorImpl : info.validatorsImpl)
     {
         /// Process activity validator
         activity::IValidator::sptr validator = activity::validator::factory::New(validatorImpl);
@@ -136,7 +130,7 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
             activity::IActivityValidator::dynamicCast(validator);
         SIGHT_ASSERT("Validator '" + validatorImpl + "' instantiation failed", activityValidator);
 
-        activity::IValidator::ValidationType validation = activityValidator->validate(activitySeries);
+        activity::IValidator::ValidationType validation = activityValidator->validate(activity);
         if(!validation.first)
         {
             message += "\n" + validation.second;
@@ -146,7 +140,7 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
 
     if(!isValid)
     {
-        message = "The activity '" + info.title + "' can not be launched:\n" + message;
+        message = std::string("The activity '") + info.title + "' can not be launched:\n" + message;
     }
 
     return std::make_pair(isValid, message);
@@ -154,16 +148,16 @@ std::pair<bool, std::string> IActivityLauncher::validateActivity(
 
 //------------------------------------------------------------------------------
 
-data::ActivitySeries::sptr IActivityLauncher::createMainActivity() const
+data::Activity::sptr IActivityLauncher::createMainActivity() const
 {
     activity::extension::ActivityInfo info;
     info = activity::extension::Activity::getDefault()->getInfo(m_mainActivityId);
 
-    data::ActivitySeries::sptr actSeries = data::ActivitySeries::New();
-    if(info.requirements.size() > 0)
+    auto activity = data::Activity::New();
+    if(!info.requirements.empty())
     {
-        data::Composite::sptr data = actSeries->getData();
-        for(activity::extension::ActivityRequirement req : info.requirements)
+        data::Composite::sptr data = activity->getData();
+        for(const auto& req : info.requirements)
         {
             if((req.minOccurs == 0 && req.maxOccurs == 0) || req.create)
             {
@@ -176,15 +170,9 @@ data::ActivitySeries::sptr IActivityLauncher::createMainActivity() const
         }
     }
 
-    actSeries->setModality("OT");
-    actSeries->setInstanceUID("activity." + core::tools::UUID::generateUUID());
+    activity->setActivityConfigId(info.id);
 
-    const boost::posix_time::ptime now = boost::posix_time::second_clock::local_time();
-    actSeries->setDate(core::tools::getDate(now));
-    actSeries->setTime(core::tools::getTime(now));
-    actSeries->setActivityConfigId(info.id);
-
-    return actSeries;
+    return activity;
 }
 
 } // namespace sight::activity

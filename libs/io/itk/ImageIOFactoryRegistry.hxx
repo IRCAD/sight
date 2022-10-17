@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,21 +35,22 @@ namespace sight::io::itk
  * of the instance will call the
  * registration of the factory
  */
-template< class ConcreteImageIOFactory >
+template<class ConcreteImageIOFactory>
 class ImageIOFactoryRegistry
 {
 public:
+
     ImageIOFactoryRegistry()
     {
-        ::itk::ObjectFactoryBase::RegisterFactory( ConcreteImageIOFactory::New() );
+        ::itk::ObjectFactoryBase::RegisterFactory(ConcreteImageIOFactory::New());
     }
 };
 
-}
+} // namespace sight::io::itk
 
 /**
  * @brief a macro helper to register an imageIOFactory
  * @note to be declared outside any namespace
  */
-#define REGISTER_IMAGEIOFACTORY( ConcreteImageIOFactory )   static sight::io::itk::ImageIOFactoryRegistry< \
-        ConcreteImageIOFactory > registry;
+#define REGISTER_IMAGEIOFACTORY(ConcreteImageIOFactory) static sight::io::itk::ImageIOFactoryRegistry< \
+        ConcreteImageIOFactory> registry;

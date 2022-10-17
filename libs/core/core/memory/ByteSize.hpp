@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/config.hpp"
+
 #include <core/base.hpp>
 
 #include <cstdint>
@@ -76,8 +77,7 @@ public:
      */
     CORE_API ByteSize(SizeType size, UnitType unit = Bytes);
     template<typename T>
-    ByteSize(T size, UnitType unit = Bytes) :
-        m_size(0)
+    ByteSize(T size, UnitType unit = Bytes)
     {
         this->setSize(SizeType(size), unit);
     }
@@ -101,7 +101,7 @@ public:
      *
      * @return std::string representing the size
      */
-    CORE_API std::string getSizeAsString(UnitType unit = Bytes);
+    [[nodiscard]] CORE_API std::string getSizeAsString(UnitType unit = Bytes) const;
     /**
      * @brief Convert this size to a human readable string in the required
      * Convert this size to a human readable string in the required standard.
@@ -112,12 +112,12 @@ public:
      *
      * @return std::string representing the size
      */
-    CORE_API std::string getHumanReadableSize(StandardType standard = IEC);
+    [[nodiscard]] CORE_API std::string getHumanReadableSize(StandardType standard = IEC) const;
 
     /**
      * @brief Returns size in bytes.
      */
-    SizeType getSize()
+    [[nodiscard]] SizeType getSize() const
     {
         return m_size;
     }
@@ -154,14 +154,15 @@ public:
     template<typename T>
     ByteSize& operator=(T size)
     {
-        return this->operator=(SizeType(size));
+        this->operator=(SizeType(size));
+        return *this;
     }
 
-    operator SizeType()
+    operator SizeType() const
     {
         return m_size;
     }
-    operator std::string()
+    operator std::string() const
     {
         return getHumanReadableSize();
     }
@@ -171,7 +172,7 @@ public:
 
 protected:
 
-    SizeType m_size;
+    SizeType m_size {};
 };
 
 } //namespace sight::core::memory

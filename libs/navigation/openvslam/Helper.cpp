@@ -42,9 +42,9 @@ namespace sight::navigation::openvslam
     const ::openvslam::camera::setup_type_t cameraType = ::openvslam::camera::setup_type_t::Monocular;
     const ::openvslam::camera::color_order_t colorType = ::openvslam::camera::color_order_t::RGB;
 
-    const unsigned int cols = static_cast<unsigned int>(_sightCam.getWidth());
-    const unsigned int rows = static_cast<unsigned int>(_sightCam.getHeight());
-    const double fps        = static_cast<double>(_sightCam.getMaximumFrameRate());
+    const auto cols = static_cast<unsigned int>(_sightCam.getWidth());
+    const auto rows = static_cast<unsigned int>(_sightCam.getHeight());
+    const auto fps  = static_cast<double>(_sightCam.getMaximumFrameRate());
     // Create a perspective camera (equirectangular and fisheye needs additional information).
     const ::openvslam::camera::perspective oVSlamCamera =
         ::openvslam::camera::perspective(
@@ -83,7 +83,7 @@ data::Camera::sptr Helper::toSight(const ::openvslam::camera::perspective _oVSla
     cam->setCx(_oVSlamCam.cx_);
     cam->setCy(_oVSlamCam.cy_);
 
-    std::array<double, 5> dist;
+    std::array<double, 5> dist {};
 
     dist[0] = _oVSlamCam.k1_; //k1
     dist[1] = _oVSlamCam.k2_; //k2

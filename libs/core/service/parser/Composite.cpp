@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,18 +20,15 @@
  *
  ***********************************************************************/
 
-#include "service/parser/Composite.hpp"
+// cspell:ignore NOLINTNEXTLINE
 
-#include "service/macros.hpp"
+#include "service/parser/Composite.hpp"
 
 #include <data/Composite.hpp>
 
 #include <boost/foreach.hpp>
 
-namespace sight::service
-{
-
-namespace parser
+namespace sight::service::parser
 {
 
 //------------------------------------------------------------------------------
@@ -40,11 +37,9 @@ bool Composite::refObjectValidator(core::runtime::ConfigurationElement::sptr _cf
 {
     bool isOk = true;
 
-    for(core::runtime::ConfigurationElement::Iterator configEltIter = _cfgElement->begin() ;
-        configEltIter != _cfgElement->end() ;
-        ++configEltIter)
+    for(auto& configEltIter : *_cfgElement)
     {
-        std::string subElementName = (*configEltIter)->getName();
+        std::string subElementName = configEltIter->getName();
         if(subElementName != "service"
            && subElementName != "serviceList")
         {
@@ -120,7 +115,7 @@ void Composite::createConfig(core::tools::Object::sptr _obj)
                 );
 
                 // Create and manage object config
-                service::IAppConfigManager::sptr ctm = service::IAppConfigManager::New();
+                auto ctm = service::AppConfigManager::New();
                 ctm->service::IAppConfigManager::setConfig(elem);
 
                 m_ctmContainer.push_back(ctm);
@@ -143,7 +138,7 @@ void Composite::createConfig(core::tools::Object::sptr _obj)
 
 void Composite::startConfig()
 {
-    for(service::IAppConfigManager::sptr ctm : m_ctmContainer)
+    for(const service::IAppConfigManager::sptr& ctm : m_ctmContainer)
     {
         ctm->start();
     }
@@ -153,7 +148,7 @@ void Composite::startConfig()
 
 void Composite::updateConfig()
 {
-    for(service::IAppConfigManager::sptr ctm : m_ctmContainer)
+    for(const service::IAppConfigManager::sptr& ctm : m_ctmContainer)
     {
         ctm->update();
     }
@@ -163,6 +158,7 @@ void Composite::updateConfig()
 
 void Composite::stopConfig()
 {
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_REVERSE_FOREACH(service::IAppConfigManager::sptr ctm, m_ctmContainer)
     {
         ctm->stop();
@@ -173,6 +169,7 @@ void Composite::stopConfig()
 
 void Composite::destroyConfig()
 {
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_REVERSE_FOREACH(service::IAppConfigManager::sptr ctm, m_ctmContainer)
     {
         ctm->destroy();
@@ -182,6 +179,4 @@ void Composite::destroyConfig()
 
 //------------------------------------------------------------------------------
 
-} //namespace parser
-
-} //namespace sight::service
+} // namespace sight::service::parser

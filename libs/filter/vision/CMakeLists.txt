@@ -1,4 +1,4 @@
-sight_add_target(filter_vision TYPE LIBRARY WARNINGS_AS_ERRORS OFF)
+sight_add_target(filter_vision TYPE LIBRARY)
 
 find_package(OpenCV QUIET REQUIRED COMPONENTS opencv_ml opencv_imgproc)
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,13 +31,9 @@
 
 #include <core/com/helper/SigSlotConnection.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 
-namespace sight::service
-{
-
-namespace helper
+namespace sight::service::helper
 {
 
 /**
@@ -91,7 +87,7 @@ public:
      * @brief Gets the running status of the configuration.
      * @return True if the configuration is running.
      */
-    virtual bool configIsRunning() const
+    [[nodiscard]] virtual bool configIsRunning() const
     {
         return m_configIsRunning;
     }
@@ -102,7 +98,7 @@ private:
     activity::extension::ActivityAppConfig m_appConfig;
 
     /// Sets the configuration running state.
-    bool m_configIsRunning;
+    bool m_configIsRunning {false};
 
     /// Stores the config manager.
     service::AppConfigManager::sptr m_appConfigManager;
@@ -117,6 +113,4 @@ private:
     std::map<std::string, std::string> m_optionalInputs;
 };
 
-} // helper
-
-} // fwServices
+} // namespace sight::service::helper

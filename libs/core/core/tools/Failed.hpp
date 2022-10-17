@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ struct CORE_CLASS_API Failed : public core::Exception
     /**
      * @brief   Destructor : do nothing.
      */
-    CORE_API ~Failed() noexcept;
+    CORE_API ~Failed() noexcept override;
 };
 
 } // namespace sight::core::tools

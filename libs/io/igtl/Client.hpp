@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,8 @@
 
 #include "io/igtl/config.hpp"
 #include "io/igtl/INetwork.hpp"
+// Patched header.
+#include "io/igtl/patch/igtlSocket.h"
 
 #include <core/Exception.hpp>
 
@@ -61,7 +63,7 @@ public:
     /**
      * @brief Destructor if a connection is opened the destructor close it
      */
-    IO_IGTL_API ~Client();
+    IO_IGTL_API ~Client() override;
 
     /**
      * @brief method to connect client to a server by using hostname and port
@@ -81,7 +83,7 @@ public:
      *
      * @return a boolean to say if the client is connected or not
      */
-    IO_IGTL_API bool isConnected() const;
+    [[nodiscard]] IO_IGTL_API bool isConnected() const;
 
 private:
 

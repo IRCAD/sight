@@ -44,8 +44,7 @@ SImageExtruder::SImageExtruder()
 //------------------------------------------------------------------------------
 
 SImageExtruder::~SImageExtruder()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -136,8 +135,7 @@ void SImageExtruder::extrudeMesh(const data::Mesh::csptr _mesh, const data::Imag
     sight::filter::image::ImageExtruder::extrude(_image, _mesh);
 
     // Send signals.
-    const auto sig =
-        _image->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
+    const auto sig = _image->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
     sig->asyncEmit();
 
     m_sigComputed->asyncEmit();

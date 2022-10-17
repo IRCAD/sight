@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,23 +27,20 @@
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::PointList
+namespace sight::io::session::detail::PointList
 {
 
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto pointList = Helper::safeCast<data::PointList>(object);
+    const auto pointList = Helper::safe_cast<data::PointList>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::PointList>(tree, 1);
@@ -59,15 +56,15 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::PointList::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto pointList = Helper::safeCast<data::PointList>(object);
+    auto pointList = Helper::cast_or_create<data::PointList>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::PointList>(tree, 0, 1);
@@ -85,12 +82,10 @@ inline static data::PointList::sptr deserialize(
             break;
         }
 
-        pointList->pushBack(Helper::safeCast<data::Point>(it->second));
+        pointList->pushBack(Helper::cast_or_create<data::Point>(it->second));
     }
 
     return pointList;
 }
 
-} // namespace detail::PointList
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::PointList

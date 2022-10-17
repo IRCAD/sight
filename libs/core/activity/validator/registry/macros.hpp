@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,21 +27,11 @@
 
 #include <boost/preprocessor/cat.hpp>
 
-namespace sight::activity
+namespace sight::activity::validator::registry
 {
 
-namespace validator
-{
-
-namespace registry
-{
-
-#define fwActivitiesValidatorRegisterMacro(ValidatorClassname) \
+#define SIGHT_REGISTER_ACTIVITY_VALIDATOR(ValidatorClassname) \
     static sight::activity::IValidator::Registry<ValidatorClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(BOOST_PP_STRINGIZE(ValidatorClassname));
 
-} // end namespace registry
-
-} // end namespace validator
-
-} // end namespace sight::activity
+} // namespace sight::activity::validator::registry

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,64 +29,36 @@
 #include <cstdint>
 #include <string>
 
-namespace sight::core::memory
-{
-
-namespace tools
+namespace sight::core::memory::tools
 {
 
 //------------------------------------------------------------------------------
 
 struct MemInfo
 {
-    std::uint64_t total;
-    std::uint64_t free;
-    std::uint64_t buffered;
-    std::uint64_t cached;
-    std::uint64_t swapcached;
-    std::uint64_t swaptotal;
-    std::uint64_t swapfree;
-
-    MemInfo()
-    {
-        total      = 0;
-        free       = 0;
-        buffered   = 0;
-        cached     = 0;
-        swapcached = 0;
-        swaptotal  = 0;
-        swapfree   = 0;
-    }
+    std::uint64_t total {0};
+    std::uint64_t free {0};
+    std::uint64_t buffered {0};
+    std::uint64_t cached {0};
+    std::uint64_t swapcached {0};
+    std::uint64_t swaptotal {0};
+    std::uint64_t swapfree {0};
 };
 
 //------------------------------------------------------------------------------
 
 struct Status
 {
-    std::uint64_t VmPeak;
-    std::uint64_t VmSize;
-    std::uint64_t VmLck;
-    std::uint64_t VmHWM;
-    std::uint64_t VmRSS;
-    std::uint64_t VmData;
-    std::uint64_t VmStk;
-    std::uint64_t VmExe;
-    std::uint64_t VmLib;
-    std::uint64_t VmPTE;
-
-    Status()
-    {
-        VmPeak = 0;
-        VmSize = 0;
-        VmLck  = 0;
-        VmHWM  = 0;
-        VmRSS  = 0;
-        VmData = 0;
-        VmStk  = 0;
-        VmExe  = 0;
-        VmLib  = 0;
-        VmPTE  = 0;
-    }
+    std::uint64_t VmPeak {0};
+    std::uint64_t VmSize {0};
+    std::uint64_t VmLck {0};
+    std::uint64_t VmHWM {0};
+    std::uint64_t VmRSS {0};
+    std::uint64_t VmData {0};
+    std::uint64_t VmStk {0};
+    std::uint64_t VmExe {0};
+    std::uint64_t VmLib {0};
+    std::uint64_t VmPTE {0};
 };
 
 //------------------------------------------------------------------------------
@@ -97,7 +69,7 @@ public:
 
     CORE_API PosixMemoryMonitorTools();
 
-    CORE_API ~PosixMemoryMonitorTools();
+    CORE_API ~PosixMemoryMonitorTools() = default;
 
     CORE_API static std::uint64_t estimateFreeMem();
 
@@ -117,8 +89,8 @@ public:
 
 private:
 
-    static long s_pageSize;
-    static long s_totalMemory;
+    static std::int64_t s_pageSize;
+    static std::int64_t s_totalMemory;
 
     /* Extract numbers from a string between the start and end indices */
     static std::uint64_t extract_number(char* str, int start, int end);
@@ -132,15 +104,13 @@ private:
 
     static void analyseStatusLine(std::string& line, Status& stat);
 
-    static void getStatusOfPid(unsigned long pid, Status& stat);
+    static void getStatusOfPid(std::uint64_t pid, Status& stat);
 
     static void getAllStatus(Status& allStat);
 
     static void printAllStatus();
 };
 
-} // namespace tools
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::tools
 
 #endif //defined(linux) || defined(__linux)

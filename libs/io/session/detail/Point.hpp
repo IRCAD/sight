@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,10 +26,7 @@
 
 #include <data/Point.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Point
+namespace sight::io::session::detail::Point
 {
 
 constexpr static auto s_X {"X"};
@@ -39,14 +36,14 @@ constexpr static auto s_Z {"Z"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>&,
-    const core::crypto::secure_string& = ""
+    std::map<std::string, data::Object::csptr>& /*unused*/,
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto point = Helper::safeCast<data::Point>(object);
+    const auto point = Helper::safe_cast<data::Point>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Point>(tree, 1);
@@ -60,15 +57,15 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Point::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>&,
+    const std::map<std::string, data::Object::sptr>& /*unused*/,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto point = Helper::safeCast<data::Point>(object);
+    auto point = Helper::cast_or_create<data::Point>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Point>(tree, 0, 1);
@@ -84,6 +81,4 @@ inline static data::Point::sptr deserialize(
     return point;
 }
 
-} // namespace detail::Point
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Point

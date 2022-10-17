@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <data/Matrix4.hpp>
 
-namespace sight::io::base
-{
-
-namespace reader
+namespace sight::io::base::reader
 {
 
 /**
@@ -57,7 +54,7 @@ public:
     IO_BASE_API Matrix4Reader(io::base::reader::IObjectReader::Key key);
 
     /// Destructor. Does nothing.
-    IO_BASE_API virtual ~Matrix4Reader();
+    IO_BASE_API ~Matrix4Reader() override;
 
     /// Reads the file using standard iostream API.
     IO_BASE_API void read() override;
@@ -66,6 +63,4 @@ public:
     IO_BASE_API std::string extension() const override;
 };
 
-}
-
-}
+} // namespace sight::io::base::reader

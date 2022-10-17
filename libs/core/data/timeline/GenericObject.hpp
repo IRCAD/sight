@@ -25,10 +25,7 @@
 #include "data/config.hpp"
 #include "data/timeline/Buffer.hpp"
 
-namespace sight::data
-{
-
-namespace timeline
+namespace sight::data::timeline
 {
 
 /**
@@ -43,25 +40,25 @@ class DATA_CLASS_API GenericObjectBase : public data::timeline::Buffer
 public:
 
     /// Destructor
-    DATA_API virtual ~GenericObjectBase();
+    DATA_API ~GenericObjectBase() override;
 
     /// Return the number of elements present in the object
-    DATA_API unsigned int getPresentElementNum() const;
+    [[nodiscard]] DATA_API unsigned int getPresentElementNum() const;
 
     /// Tell if an element is present at the given index
-    DATA_API bool isPresent(unsigned int index) const;
+    [[nodiscard]] DATA_API bool isPresent(unsigned int index) const;
 
     /// Return the raw presence mask
-    DATA_API uint64_t getMask() const;
+    [[nodiscard]] DATA_API uint64_t getMask() const;
 
     /// Return the maximum number of elements in the buffer
-    DATA_API unsigned int getMaxElementNum() const;
+    [[nodiscard]] DATA_API unsigned int getMaxElementNum() const;
 
     /// Return the size of element in the buffer
-    DATA_API std::size_t getElementSize() const;
+    [[nodiscard]] DATA_API std::size_t getElementSize() const;
 
     /// Make a copy of this buffer
-    DATA_API virtual void deepCopy(const data::timeline::Object& other);
+    DATA_API void deepCopy(const data::timeline::Object& other) override;
 
 protected:
 
@@ -69,15 +66,15 @@ protected:
     DATA_API GenericObjectBase(
         unsigned int maxElementNum,
         core::HiResClock::HiResClockType timestamp = 0,
-        BufferDataType buffer                      = 0,
+        BufferDataType buffer                      = nullptr,
         std::size_t size                           = 0,
-        DeleterType d                              = 0
+        DeleterType d                              = nullptr
     );
 
     /// Number of elements that are actually set
-    unsigned int m_numPresent;
+    unsigned int m_numPresent {0};
     /// Binary mask that indicates which element are set
-    uint64_t m_presenceMask;
+    uint64_t m_presenceMask {0};
     /// Maximum number of elements in an object
     unsigned int m_maxElementNum;
 };
@@ -103,7 +100,7 @@ public:
         void operator++();
 
         /// True if the current element is valid.
-        bool isValid() const
+        [[nodiscard]] bool isValid() const
         {
             return m_currentIndex < m_maxElement;
         }
@@ -120,7 +117,7 @@ public:
         const GenericObjectBase* m_object;
 
         /// Current element
-        unsigned int m_currentIndex;
+        unsigned int m_currentIndex {0};
 
         /// Maximum number of elements in the buffer
         unsigned int m_maxElement;
@@ -134,27 +131,26 @@ public:
     GenericObject(
         unsigned int m_maxElementNum,
         core::HiResClock::HiResClockType timestamp = 0,
-        BufferDataType buffer                      = 0,
+        BufferDataType buffer                      = nullptr,
         std::size_t size                           = 0,
-        DeleterType d                              = 0
+        DeleterType d                              = nullptr
     );
 
     /// Destructor
-    virtual ~GenericObject();
+    ~GenericObject() override;
 
     /// Return the nth element in the buffer
-    const TYPE& getElement(unsigned int index) const;
+    [[nodiscard]] const TYPE& getElement(unsigned int index) const;
 
-    /// Set the nth element in the buffer. Element in parameter will be copied at the given index.
+    /// Set the nth element in the buffer. Element in parameter will be copied at the given index. The method is
+    /// disabled if TYPE isn't TriviallyCopyable because setElement internally uses memcpy.
     void setElement(const ElementType& element, unsigned int index);
 
     /// Add an element and return a pointer on the newly added element
     TYPE* addElement(unsigned int index);
 
     /// Return an iterator on the elements present in the object
-    iterator getPresenceIterator() const;
+    [[nodiscard]] iterator getPresenceIterator() const;
 };
 
-} // namespace timeline
-
-} // namespace sight::data
+} // namespace sight::data::timeline

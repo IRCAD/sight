@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,7 @@
 
 #include "filter/dicom/exceptions/FilterFailure.hpp"
 
-namespace sight::filter::dicom
-{
-
-namespace exceptions
+namespace sight::filter::dicom::exceptions
 {
 
 FilterFailure::FilterFailure(const std::string& message) :
@@ -35,10 +32,7 @@ FilterFailure::FilterFailure(const std::string& message) :
 
 // ----------------------------------------------------------------------------
 
-FilterFailure::~FilterFailure() noexcept
-{
-}
+FilterFailure::~FilterFailure() noexcept =
+    default;
 
-} // namespace exceptions
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::exceptions

@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "Activity.hpp"
 
 #include <core/runtime/ConfigurationElement.hpp>
@@ -29,7 +31,7 @@
 #include <core/runtime/Runtime.hpp>
 #include <core/tools/fwID.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 #include <data/Vector.hpp>
 
 #include <boost/foreach.hpp>
@@ -37,18 +39,15 @@
 #include <limits>
 #include <regex>
 
-namespace sight::activity
-{
-
-namespace extension
+namespace sight::activity::extension
 {
 
 ActivityAppConfigParam::ActivityAppConfigParam(const ConfigType& config) :
-    replace(config.get<std::string>("<xmlattr>.replace"))
-{
+    replace(config.get<std::string>("<xmlattr>.replace")),
     // @deprecated This is no longer necessary to use "uid" to get the prefix replacement, since
     // this is now done in AppConfig. However we keep that code for a while for backward compatibility
-    by = config.get_optional<std::string>("<xmlattr>.uid").get_value_or("");
+    by(config.get_optional<std::string>("<xmlattr>.uid").get_value_or(""))
+{
     if(by.empty())
     {
         by = config.get<std::string>("<xmlattr>.by");
@@ -63,6 +62,7 @@ ActivityAppConfig::ActivityAppConfig(const ConfigType& config) :
     if(config.count("parameters") == 1)
     {
         const ConfigType& configParameters = config.get_child("parameters");
+        // NOLINTNEXTLINE(bugprone-branch-clone)
         BOOST_FOREACH(const ConfigType::value_type& v, configParameters.equal_range("parameter"))
         {
             ActivityAppConfigParam parameter(v.second);
@@ -91,6 +91,7 @@ ActivityRequirement::ActivityRequirement(const ConfigType& config) :
     minOccurs(config.get_optional<unsigned int>("<xmlattr>.minOccurs").get_value_or(1)),
     maxOccurs(config.get_optional<unsigned int>("<xmlattr>.maxOccurs").get_value_or(1))
 {
+    // NOLINTNEXTLINE(bugprone-branch-clone)
     BOOST_FOREACH(const ConfigType::value_type& v, config.equal_range("key"))
     {
         keys.push_back(ActivityRequirementKey(v.second));
@@ -132,11 +133,9 @@ ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
     }
 
     core::runtime::ConfigurationElement::sptr req = ext->findConfigurationElement("requirements");
-    for(core::runtime::ConfigurationElementContainer::Iterator elem = req->begin() ;
-        elem != req->end() ;
-        ++elem)
+    for(auto& elem : *req)
     {
-        ActivityRequirement requirement(core::runtime::Convert::toPropertyTree(*elem).get_child("requirement"));
+        ActivityRequirement requirement(core::runtime::Convert::toPropertyTree(elem).get_child("requirement"));
         requirements.push_back(requirement);
 
         MinMaxType& minMax = m_requirementCount[requirement.type];
@@ -160,7 +159,7 @@ ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
     }
     else
     {
-        builderImpl = "sight::activity::builder::ActivitySeriesInitData";
+        builderImpl = "sight::activity::builder::ActivityInitData";
     }
 
     // backward compatibility
@@ -178,6 +177,7 @@ ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
     if(validatorsCfg)
     {
         auto validators = core::runtime::Convert::toPropertyTree(validatorsCfg).get_child("validators");
+        // NOLINTNEXTLINE(bugprone-branch-clone)
         BOOST_FOREACH(auto const& validator, validators.equal_range("validator"))
         {
             validatorsImpl.push_back(validator.second.get_value<std::string>());
@@ -187,7 +187,7 @@ ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
     // Set Default validator if none is defined
     if(validatorsImpl.empty())
     {
-        validatorsImpl.push_back("sight::activity::validator::DefaultActivity");
+        validatorsImpl.emplace_back("sight::activity::validator::DefaultActivity");
     }
 }
 
@@ -201,12 +201,12 @@ bool ActivityInfo::usableWith(DataCountType dataCounts) const
     {
         for(const RequirementsMinMaxCount::value_type& reqCount : m_requirementCount)
         {
-            const MinMaxType& reqMinMax  = reqCount.second;
-            DataCountType::iterator iter = dataCounts.find(reqCount.first);
+            const MinMaxType& reqMinMax = reqCount.second;
+            auto iter                   = dataCounts.find(reqCount.first);
             if(iter != dataCounts.end())
             {
                 unsigned int dataCount = iter->second;
-                ok = dataCount && reqMinMax.first <= dataCount && dataCount <= reqMinMax.second;
+                ok = (dataCount != 0U) && reqMinMax.first <= dataCount && dataCount <= reqMinMax.second;
                 dataCounts.erase(iter);
             }
             else
@@ -251,8 +251,7 @@ Activity::sptr Activity::getDefault()
 //-----------------------------------------------------------------------------
 
 Activity::~Activity()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -279,8 +278,7 @@ void Activity::parseBundleInformation()
 //-----------------------------------------------------------------------------
 
 Activity::Activity()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -295,7 +293,7 @@ void Activity::clearRegistry()
 bool Activity::hasInfo(const std::string& extensionId) const
 {
     core::mt::ReadLock lock(m_registryMutex);
-    Registry::const_iterator iter = m_reg.find(extensionId);
+    auto iter = m_reg.find(extensionId);
     return iter != m_reg.end();
 }
 
@@ -307,7 +305,7 @@ std::vector<ActivityInfo> Activity::getInfos() const
 
     core::mt::ReadLock lock(m_registryMutex);
 
-    for(Registry::value_type val : m_reg)
+    for(const Registry::value_type& val : m_reg)
     {
         infos.push_back(val.second);
     }
@@ -317,7 +315,7 @@ std::vector<ActivityInfo> Activity::getInfos() const
 
 //-----------------------------------------------------------------------------
 
-ActivityInfo::DataCountType Activity::getDataCount(const data::Vector::csptr& data) const
+ActivityInfo::DataCountType Activity::getDataCount(const data::Vector::csptr& data)
 {
     ActivityInfo::DataCountType dataCount;
 
@@ -358,7 +356,7 @@ std::vector<std::string> Activity::getKeys() const
 
     core::mt::ReadLock lock(m_registryMutex);
 
-    for(Registry::value_type val : m_reg)
+    for(const Registry::value_type& val : m_reg)
     {
         keys.push_back(val.first);
     }
@@ -368,10 +366,10 @@ std::vector<std::string> Activity::getKeys() const
 
 //-----------------------------------------------------------------------------
 
-const ActivityInfo Activity::getInfo(const std::string& extensionId) const
+ActivityInfo Activity::getInfo(const std::string& extensionId) const
 {
     core::mt::ReadLock lock(m_registryMutex);
-    Registry::const_iterator iter = m_reg.find(extensionId);
+    auto iter = m_reg.find(extensionId);
     SIGHT_ASSERT(
         "The id " << extensionId << " is not found in the application configuration parameter registry",
         iter != m_reg.end()
@@ -382,28 +380,28 @@ const ActivityInfo Activity::getInfo(const std::string& extensionId) const
 //-----------------------------------------------------------------------------
 
 std::tuple<ActivityInfo, std::map<std::string, std::string> > Activity::getInfoAndReplacementMap(
-    const data::ActivitySeries& activitySeries,
+    const data::Activity& activity,
     const ActivityAppConfigParamsType& parameters
 ) const
 {
     // Retrieve the activity informations
-    const auto& info = getInfo(activitySeries.getActivityConfigId());
+    const auto& info = getInfo(activity.getActivityConfigId());
 
-    return {info, getReplacementMap(activitySeries, info, parameters)};
+    return {info, getReplacementMap(activity, info, parameters)};
 }
 
 //------------------------------------------------------------------------------
 
 std::map<std::string, std::string> Activity::getReplacementMap(
-    const data::ActivitySeries& activitySeries,
+    const data::Activity& activity,
     const ActivityInfo& info,
     const ActivityAppConfigParamsType& parameters
-) const
+)
 {
     std::map<std::string, std::string> replacement_map;
 
     // Get the composite
-    const auto& composite = activitySeries.getData();
+    const auto& composite = activity.getData();
 
     // First, use requirements to populate replacement map with an object from the root composite
     for(const auto& requirement : info.requirements)
@@ -440,11 +438,9 @@ std::map<std::string, std::string> Activity::getReplacementMap(
     add_parameters(parameters);
 
     // Store the activity UID
-    replacement_map["AS_UID"] = activitySeries.getID();
+    replacement_map["AS_UID"] = activity.getID();
 
     return replacement_map;
 }
 
-} // namespace extension
-
-} // namespace sight::activity
+} // namespace sight::activity::extension

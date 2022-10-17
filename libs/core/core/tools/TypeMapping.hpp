@@ -29,7 +29,7 @@
 #include <boost/mpl/is_sequence.hpp>
 #include <boost/mpl/pop_front.hpp>
 #include <boost/mpl/size.hpp>
-#include <boost/static_assert.hpp>
+#include <boost/mpl/vector.hpp>
 
 #include <iterator>
 #include <stdexcept>
@@ -68,7 +68,7 @@ struct isMappingSingleMPLHelper;
  * @endcode
  */
 template<class TSingle_or_TSEQ, class KeyType_or_KeyTypeContainer>
-bool isMapping(const KeyType_or_KeyTypeContainer& key)
+bool isMapping(const KeyType_or_KeyTypeContainer& type)
 {
     namespace mpl = boost::mpl;
     typedef BOOST_DEDUCED_TYPENAME mpl::if_<
@@ -76,7 +76,7 @@ bool isMapping(const KeyType_or_KeyTypeContainer& key)
             isMappingMultiMPLHelper<TSingle_or_TSEQ, KeyType_or_KeyTypeContainer>,
             isMappingSingleMPLHelper<TSingle_or_TSEQ, KeyType_or_KeyTypeContainer>
     >::type type_x;
-    return type_x::evaluate(key);
+    return type_x::evaluate(type);
 }
 
 /**
@@ -93,7 +93,7 @@ struct isMappingSingleMPLHelper
     static bool evaluate(const KeyType& key)
     {
         SIGHT_NOT_USED(key);
-        BOOST_STATIC_ASSERT(sizeof(T) == 0); // note its a compilator workaround of BOOST_STATIC_ASSERT(false);
+        static_assert(sizeof(T) == 0); // note its a compilator workaround of BOOST_STATIC_ASSERT(false);
         // ** if the compilation trap here its because you have not specialized
         // ** isMapping<MySingleType,MyCorrespondingKeyType>(keytypevalue)
         std::string msg("isMapping<type>(const KEYTYPE &key) not specialized for TYPE and/or KEYTYPE!!!");
@@ -151,7 +151,7 @@ isMappingMultiMPLHelper
     {
         namespace mpl = boost::mpl;
 
-        if(keys.size() != static_cast<unsigned long>(mpl::size<TSEQ>::value))
+        if(keys.size() != static_cast<std::uint64_t>(mpl::size<TSEQ>::value))
         {
             std::string msg("isMappingMulti TypeList & KeyType container does not have the same size !!!");
             throw std::invalid_argument(msg);
@@ -185,7 +185,7 @@ bool isMappingMultiMPLHelper<TSEQ, KeyTypeContainer>::evaluate(
 
     bool firstKeyIsOK = isMapping<Head>(*begin); // call a isMapping with a single key
 
-    if(firstKeyIsOK == false) // OPTIMISATION
+    if(!firstKeyIsOK) // OPTIMISATION
     {
         return false; // the first key doesn't match : do not try to test other
     }

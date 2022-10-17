@@ -34,12 +34,9 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(sight::filter::dicom::modifier::SliceThicknessModifier);
+SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::modifier::SliceThicknessModifier);
 
-namespace sight::filter::dicom
-{
-
-namespace modifier
+namespace sight::filter::dicom::modifier
 {
 
 const std::string SliceThicknessModifier::s_FILTER_NAME        = "Slice thickness modifier";
@@ -49,16 +46,14 @@ const std::string SliceThicknessModifier::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-SliceThicknessModifier::SliceThicknessModifier(filter::dicom::IFilter::Key) :
-    IModifier()
+SliceThicknessModifier::SliceThicknessModifier(filter::dicom::IFilter::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 SliceThicknessModifier::~SliceThicknessModifier()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -79,6 +74,7 @@ std::string SliceThicknessModifier::getDescription() const
 SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
     const data::DicomSeries::sptr& series,
     const core::log::Logger::sptr&
+    /*logger*/
 ) const
 {
     DicomSeriesContainerType result;
@@ -121,7 +117,7 @@ SliceThicknessModifier::DicomSeriesContainerType SliceThicknessModifier::apply(
 double SliceThicknessModifier::getInstanceZPosition(const core::memory::BufferObject::sptr& bufferObj) const
 {
     DcmFileFormat fileFormat;
-    DcmDataset* dataset;
+    DcmDataset* dataset = nullptr;
 
     const std::size_t buffSize = bufferObj->getSize();
     core::memory::BufferObject::Lock lock(bufferObj);
@@ -159,7 +155,7 @@ double SliceThicknessModifier::getInstanceZPosition(const core::memory::BufferOb
     for(unsigned int i = 0 ; i < 3 ; ++i)
     {
         dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationU[i], i);
-        dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationV[i], i + 3);
+        dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationV[i], i + std::size_t(3));
     }
 
     //Compute Z direction (cross product)
@@ -177,7 +173,7 @@ double SliceThicknessModifier::getSliceThickness(const core::memory::BufferObjec
 {
     DcmFileFormat fileFormat;
     OFCondition status;
-    DcmDataset* dataset;
+    DcmDataset* dataset = nullptr;
 
     const std::size_t buffSize = bufferObj->getSize();
     core::memory::BufferObject::Lock lock(bufferObj);
@@ -204,6 +200,4 @@ double SliceThicknessModifier::getSliceThickness(const core::memory::BufferObjec
     return sliceThickness;
 }
 
-} // namespace modifier
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::modifier

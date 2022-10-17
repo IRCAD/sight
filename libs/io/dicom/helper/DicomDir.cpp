@@ -40,10 +40,7 @@
 
 #include <filesystem>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 // ----------------------------------------------------------------------------
@@ -69,7 +66,7 @@ std::filesystem::path DicomDir::findDicomDir(const std::filesystem::path& root)
         current = current.parent_path();
     }
 
-    return std::filesystem::path();
+    return {};
 }
 
 // ----------------------------------------------------------------------------
@@ -124,15 +121,12 @@ void processDirInformation(
     }
 
     // For each root elements
-    typedef std::set<gdcm::DataElement> DataElementSet;
-    typedef DataElementSet::const_iterator ConstIterator;
-
-    for(ConstIterator it = dataset.GetDES().begin() ; it != dataset.GetDES().end() ; ++it)
+    for(const auto& it : dataset.GetDES())
     {
         // Directory Record Sequence
-        if(it->GetTag() == gdcm::Tag(0x0004, 0x1220))
+        if(it.GetTag() == gdcm::Tag(0x0004, 0x1220))
         {
-            gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = it->GetValueAsSQ();
+            gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = it.GetValueAsSQ();
             ptotal += static_cast<double>(sequence->GetNumberOfItems());
 
             for(unsigned int index = 1 ; index <= sequence->GetNumberOfItems() ; ++index)
@@ -188,7 +182,7 @@ void processDirInformation(
                         if(dicomSeriesMap.find(seriesUID) == dicomSeriesMap.end())
                         {
                             data::DicomSeries::sptr series = data::DicomSeries::New();
-                            series->setInstanceUID(seriesUID);
+                            series->setSeriesInstanceUID(seriesUID);
                             dicomSeriesMap[seriesUID] = series;
                         }
 
@@ -197,7 +191,7 @@ void processDirInformation(
 
                     std::replace(refFileID.begin(), refFileID.end(), '\\', '/');
                     auto refFilePath = dicomdir.parent_path() / refFileID;
-                    if(refFileID != "" && std::filesystem::exists(refFilePath))
+                    if(!refFileID.empty() && std::filesystem::exists(refFilePath))
                     {
                         processDirInformation(
                             refFilePath,
@@ -215,7 +209,7 @@ void processDirInformation(
 
                 if(progress)
                 {
-                    progress(++p);
+                    progress(std::size_t(++p));
                 }
 
                 if(cancel && cancel())
@@ -231,7 +225,7 @@ void processDirInformation(
 
 void DicomDir::retrieveDicomSeries(
     const std::filesystem::path& dicomdir,
-    std::vector<SPTR(data::DicomSeries)>& seriesDB,
+    std::vector<SPTR(data::DicomSeries)>& series_set,
     const core::log::Logger::sptr& logger,
     std::function<void(std::uint64_t)> progress,
     std::function<bool()> cancel
@@ -275,21 +269,18 @@ void DicomDir::retrieveDicomSeries(
     }
 
     // For each root elements
-    typedef std::set<gdcm::DataElement> DataElementSet;
-    typedef DataElementSet::const_iterator ConstIterator;
-
     double p      = 0.;
     double ptotal = 0.;
 
     if(progress)
     {
         // Compute total progress
-        for(ConstIterator it = dataset.GetDES().begin() ; it != dataset.GetDES().end() ; ++it)
+        for(const auto& it : dataset.GetDES())
         {
             // Directory Record Sequence
-            if(it->GetTag() == gdcm::Tag(0x0004, 0x1220))
+            if(it.GetTag() == gdcm::Tag(0x0004, 0x1220))
             {
-                gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = it->GetValueAsSQ();
+                gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = it.GetValueAsSQ();
 
                 ptotal += static_cast<double>(sequence->GetNumberOfItems());
             }
@@ -319,24 +310,22 @@ void DicomDir::retrieveDicomSeries(
         return;
     }
 
-    for(auto entry : dicomSeriesMap)
+    for(const auto& entry : dicomSeriesMap)
     {
         auto series            = entry.second;
         const std::size_t size = series->getDicomContainer().size();
-        if(size)
+        if(size != 0U)
         {
             series->setNumberOfInstances(size);
-            seriesDB.push_back(series);
+            series_set.push_back(series);
         }
         else
         {
-            logger->critical("Unable to retrieve instances for this series : " + series->getInstanceUID());
+            logger->critical("Unable to retrieve instances for this series : " + series->getSeriesInstanceUID());
         }
     }
 }
 
 // ----------------------------------------------------------------------------
 
-} //helper
-
-} //fwGdcmIO
+} // namespace sight::io::dicom::helper

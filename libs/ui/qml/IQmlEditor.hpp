@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ public:
     UI_QML_QT_API IQmlEditor() noexcept;
 
     /// Destructor. Do nothing.
-    UI_QML_QT_API virtual ~IQmlEditor() noexcept;
+    UI_QML_QT_API ~IQmlEditor() noexcept override;
 
 Q_SIGNALS:
 

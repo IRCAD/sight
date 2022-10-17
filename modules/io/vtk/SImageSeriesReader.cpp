@@ -34,10 +34,7 @@
 #include <core/tools/Os.hpp>
 #include <core/tools/UUID.hpp>
 
-#include <data/Equipment.hpp>
 #include <data/Image.hpp>
-#include <data/Patient.hpp>
-#include <data/Study.hpp>
 
 #include <io/base/service/ioTypes.hpp>
 #include <io/base/service/IReader.hpp>
@@ -82,14 +79,14 @@ void SImageSeriesReader::openLocationDialog()
     // Initialize the available extensions for BitmapImageReader
     std::vector<std::string> ext;
     sight::io::vtk::BitmapImageReader::getAvailableExtensions(ext);
-    std::string availableExtensions = "";
+    std::string availableExtensions;
 
-    if(ext.size() > 0)
+    if(!ext.empty())
     {
         availableExtensions = "*" + ext.at(0);
         for(std::size_t i = 1 ; i < ext.size() ; i++)
         {
-            availableExtensions = availableExtensions + " *" + ext.at(i);
+            availableExtensions.append(" *").append(ext.at(i));
         }
     }
 
@@ -152,26 +149,27 @@ void initSeries(data::Series::sptr series)
     const std::string time             = core::tools::getTime(now);
 
     series->setModality("OT");
-    series->setDate(date);
-    series->setTime(time);
-    series->setDescription("Image imported with VTK");
-    data::DicomValuesType physicians = series->getPerformingPhysiciansName();
+    series->setSeriesDate(date);
+    series->setSeriesTime(time);
+    series->setSeriesDescription("Image imported with VTK");
+    std::string physicians = series->getPerformingPhysicianName();
     if(physicians.empty())
     {
-        const std::string username = core::tools::os::getEnv("USERNAME", core::tools::os::getEnv("LOGNAME", "Unknown"));
-        physicians.push_back(username);
+        physicians = core::tools::os::getEnv("USERNAME", core::tools::os::getEnv("LOGNAME", "Unknown"));
     }
 
-    series->setPerformingPhysiciansName(physicians);
-    series->getStudy()->setInstanceUID(instanceUID);
-    series->getStudy()->setDate(date);
-    series->getStudy()->setTime(time);
+    series->setPerformingPhysicianName(physicians);
+    series->setStudyInstanceUID(instanceUID);
+    series->setStudyDate(date);
+    series->setStudyTime(time);
 }
 
 //------------------------------------------------------------------------------
 
 void SImageSeriesReader::updating()
 {
+    m_readFailed = true;
+
     if(this->hasLocationDefined())
     {
         // Retrieve dataStruct associated with this service
@@ -187,35 +185,23 @@ void SImageSeriesReader::updating()
             imageSeries
         );
 
-        sight::ui::base::Cursor cursor;
-        cursor.setCursor(ui::base::ICursor::BUSY);
+        sight::ui::base::BusyCursor cursor;
 
-        try
+        if(SImageReader::loadImage(this->getFile(), imageSeries, m_sigJobCreated))
         {
-            auto image = data::Image::New();
+            initSeries(imageSeries);
 
-            if(SImageReader::loadImage(this->getFile(), image, m_sigJobCreated))
+            auto sig = imageSeries->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
             {
-                imageSeries->setImage(image);
-                initSeries(imageSeries);
-
-                auto sig = imageSeries->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-                {
-                    core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
-                    sig->asyncEmit();
-                }
+                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                sig->asyncEmit();
             }
-        }
-        catch(core::tools::Failed& e)
-        {
-            cursor.setDefaultCursor();
-            SIGHT_THROW_EXCEPTION(e);
-        }
 
-        cursor.setDefaultCursor();
+            m_readFailed = false;
+        }
     }
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace ioVtk
+} // namespace sight::module::io::vtk

@@ -34,17 +34,28 @@
 #include <QObject>
 #include <QPointer>
 
-namespace sight::ui::qt
-{
-
-namespace container
+namespace sight::ui::qt::container
 {
 
 class QtContainer;
 
-}
+} // namespace sight::ui::qt::container
 
-}
+class EventDispatcher : public QObject
+{
+Q_OBJECT
+
+public:
+
+    EventDispatcher(QObject* dispatchedTo, const QList<QEvent::Type>& eventsToDispatch);
+
+    bool eventFilter(QObject* obj, QEvent* event) override;
+
+private:
+
+    QObject* m_dispatchedTo;
+    QList<QEvent::Type> m_eventsToDispatch;
+};
 
 namespace sight::module::viz::scene3dQt
 {
@@ -79,7 +90,8 @@ public:
      */
     MODULE_VIZ_SCENE3DQT_API void createContainer(
         ui::base::container::fwContainer::sptr _parent,
-        bool _fullscreen
+        bool _fullscreen,
+        const std::string& serviceID
     ) final;
 
     /// Connects the widget and the SRender signals and slots.
@@ -145,7 +157,7 @@ private:
 inline Ogre::TexturePtr WindowInteractor::getRenderTexture()
 {
     SIGHT_ERROR("'WindowInteractor' doesn't render in a texture.");
-    return Ogre::TexturePtr();
+    return {};
 }
 
 } // namespace sight::module::viz::scene3dQt.

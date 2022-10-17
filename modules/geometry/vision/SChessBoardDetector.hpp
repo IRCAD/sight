@@ -142,7 +142,7 @@ private:
     /// Height of the chessboard we're looking for.
     std::size_t m_height {8};
 
-    float m_scale {1.f};
+    float m_scale {1.F};
 
     /// Last detected chessboard points in each image. Null if detection failed.
     std::vector<data::PointList::sptr> m_pointLists;

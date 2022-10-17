@@ -29,11 +29,19 @@
     </extension>
 
     <extension implements="sight::service::extension::Config" >
-        <id>SightViewer_gdcm_SrvCfg</id>
+        <id>SightViewer_itk_SrvCfg</id>
+        <desc>Nifti or Inr images</desc>
+        <config>
+            <windowTitle>Open an .inr or .nii file</windowTitle>
+        </config>
+    </extension>
+
+    <extension implements="sight::service::extension::Config" >
+        <id>SightViewer_dicom_SrvCfg</id>
         <desc>DICOM</desc>
         <config>
             <windowTitle>Open DICOM directory</windowTitle>
-            <filterType>sight::filter::dicom::custom::DefaultDicomFilter</filterType>
+            <dialog filter="image"/>
         </config>
     </extension>
 
@@ -45,26 +53,23 @@
         </config>
     </extension>
 
+
+
+
     <extension implements="sight::service::extension::AppConfig" >
         <id>SightViewer_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="seriesDB" type="sight::data::SeriesDB" />
+            <object uid="seriesSet" type="sight::data::SeriesSet" />
             <object uid="modelSeries" type="sight::data::ModelSeries" src="deferred" />
-            <object uid="pacsSeriesDB" type="sight::data::SeriesDB" />
+            <object uid="pacsSeriesSet" type="sight::data::SeriesSet" />
             <object uid="image" type="sight::data::Image" src="deferred"/>
-            <object uid="histogram" type="sight::data::Histogram" />
             <object uid="extrudedModelSeries" type="sight::data::ModelSeries" />
             <object uid="landmarks" type="sight::data::Landmarks" />
 
-            <object uid="volumeTFPools" type="sight::data::Composite" />
-            <object uid="volumeCurrentTFPool" type="sight::data::Composite" src="deferred" />
-            <object uid="volumeCurrentTF" type="sight::data::TransferFunction" src="deferred" />
-            <object uid="volumeTF" type="sight::data::TransferFunction" >
-                <colors default="true" />
-            </object>
+            <object uid="volumeTF" type="sight::data::TransferFunction" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -157,11 +162,13 @@
                         <view proportion="0" spacing="0" />
                         <view proportion="0" spacing="0" />
                         <view proportion="0" spacing="0" />
+                        <view proportion="0" spacing="0" />
                     </layout>
                 </gui>
                 <registry>
                     <toolBar sid="parameterToolBarView" start="true" />
                     <view sid="volumeParameterView" start="true" />
+                    <view sid="TFParameterView" start="true"/>
                     <view wid="organsParameterView" />
                     <view sid="landmarksParameterView" start="true" />
                     <view sid="lightParameterView" start="true" />
@@ -169,24 +176,39 @@
                 </registry>
             </service>
 
+            <service uid="TFParameterView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="vertical" />
+                        <view proportion="0" />
+                        <view proportion="0" />
+                        <spacer />
+                    </layout>
+                </gui>
+                <registry>
+                    <view wid="TFCfgParameterView" />
+                    <view sid="transparencyParameterSrv" start="true" />
+                </registry>
+            </service>
+
             <service uid="parameterToolBarView" type="sight::module::ui::base::SToolBar" >
                 <gui>
                     <layout>
                         <menuItem name="Show volume parameters" icon="sight::module::ui::flaticons/Volume.svg" style="check" />
+                        <menuItem name="Show transfer function editor" icon="sight::module::ui::flaticons/TF1.svg" style="check" />
                         <menuItem name="Show organs manager" icon="sight::module::ui::flaticons/Stomach.svg" style="check" />
                         <menuItem name="Show landmarks manager" icon="sight::module::ui::flaticons/YellowLandmarks.svg" style="check" />
                         <menuItem name="Show light manager" icon="sight::module::ui::flaticons/Light.svg" style="check" />
-                        <menuItem name="Show extruded meshes manager" icon="sight::module::ui::flaticons/Extrude.svg" style="check" />
                         <spacer/>
                         <menuItem name="Close parameters" icon="sight::module::ui::flaticons/YellowRightChevron.svg" />
                     </layout>
                 </gui>
                 <registry>
                     <menuItem sid="volumeManagerAct" start="true" />
+                    <menuItem sid="TFManagerAct" start="true" />
                     <menuItem sid="organsManagerAct" start="true" />
                     <menuItem sid="landmarksManagerAct" start="true" />
                     <menuItem sid="lightManagerAct" start="true" />
-                    <menuItem sid="extrudedMeshesManagerAct" start="true" />
                     <menuItem sid="hideParameterAct" start="true" />
                 </registry>
             </service>
@@ -242,8 +264,6 @@
                         <menuItem name="Negato view" icon="sight::module::ui::flaticons/Layers.svg" />
                         <menuItem name="Volume view" icon="sight::module::ui::flaticons/Volume.svg" />
                         <separator/>
-                        <menuItem name="Show/Hide volume TF editor" icon="sight::module::ui::flaticons/TF1.svg" style="check" />
-                        <separator/>
                         <menuItem name="Show/hide mesh" icon="sight::module::ui::flaticons/Stomach.svg" style="check" />
                         <menuItem name="Show/hide volume" icon="sight::module::ui::flaticons/Volume.svg" style="check" />
                         <menuItem name="Show/hide negato" icon="sight::module::ui::flaticons/Layers.svg" style="check" />
@@ -261,11 +281,10 @@
                     </layout>
                 </gui>
                 <registry>
-                    <menuItem sid="openSeriesDBAct" start="true" />
+                    <menuItem sid="openSeriesSetAct" start="true" />
                     <menuItem sid="pacsAct" start="true" />
                     <menuItem sid="negatoViewAct" start="true" />
                     <menuItem sid="volumeViewAct" start="true" />
-                    <menuItem sid="volumeTFAct" start="false" />
                     <menuItem sid="meshVisibilityAct" start="true" />
                     <menuItem sid="volumeVisibilityAct" start="true" />
                     <menuItem sid="negato3DVisibilityAct" start="true" />
@@ -283,13 +302,15 @@
             <!-- ******************************* Actions ****************************************** -->
 
             <!-- Read a series -->
-            <service uid="openSeriesDBAct" type="sight::module::ui::base::io::SSelector" worker="COMPUTING_THREAD" >
-                <inout key="data" uid="seriesDB" />
+            <service uid="openSeriesSetAct" type="sight::module::ui::base::io::SSelector" worker="COMPUTING_THREAD" >
+                <inout key="data" uid="seriesSet" />
                 <selection mode="exclude" />
-                <addSelection service="sight::module::io::dicom::SDicomSeriesDBReader" />
+                <addSelection service="sight::module::io::dicom::SSeriesSetReader" />
+                <addSelection service="sight::module::io::dicom::SDicomSeriesSetReader" />
                 <config id="SightViewer_SightData_SrvCfg" service="sight::module::io::session::SReader" />
-                <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::SSeriesDBReader" />
-                <config id="SightViewer_gdcm_SrvCfg" service="sight::module::io::dicom::SSeriesDBReader" />
+                <config id="SightViewer_vtk_SrvCfg" service="sight::module::io::vtk::SSeriesSetReader" />
+                <config id="SightViewer_itk_SrvCfg" service="sight::module::io::itk::SSeriesSetReader" />
+                <config id="SightViewer_dicom_SrvCfg" service="sight::module::io::dicom::SReader" />
             </service>
 
             <!-- Show the negato/volume view -->
@@ -303,6 +324,18 @@
             <service uid="volumeManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <show sid="volumeParameterView" />
+                    <hide sid="TFParameterView" />
+                    <hide wid="organsParameterView" />
+                    <hide sid="landmarksParameterView" />
+                    <hide sid="lightParameterView" />
+                    <hide wid="extrudedMeshesParameterView" />
+                </config>
+            </service>
+
+            <service uid="TFManagerAct" type="sight::module::ui::base::SModifyLayout" >
+                <config>
+                    <hide sid="volumeParameterView" />
+                    <show sid="TFParameterView" />
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
@@ -313,6 +346,7 @@
             <service uid="organsManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
+                    <hide sid="TFParameterView" />
                     <show wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
@@ -323,6 +357,7 @@
             <service uid="landmarksManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
+                    <hide sid="TFParameterView" />
                     <hide wid="organsParameterView" />
                     <show sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
@@ -333,6 +368,7 @@
             <service uid="lightManagerAct" type="sight::module::ui::base::SModifyLayout" >
                 <config>
                     <hide sid="volumeParameterView" />
+                    <hide sid="TFParameterView" />
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <show sid="lightParameterView" />
@@ -340,44 +376,11 @@
                 </config>
             </service>
 
-            <service uid="extrudedMeshesManagerAct" type="sight::module::ui::base::SModifyLayout" >
-                <config>
-                    <hide sid="volumeParameterView" />
-                    <hide wid="organsParameterView" />
-                    <hide sid="landmarksParameterView" />
-                    <hide sid="lightParameterView" />
-                    <show wid="extrudedMeshesParameterView" />
-                </config>
-            </service>
-
             <!-- Show or hide the parameter view -->
-            <service uid="hideParameterAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <sync>true</sync>
-                <slots>
-                    <slot>parameterView/hide</slot>
-                    <slot>rightToolbarSliderView/show</slot>
-                </slots>
-             </service>
+            <service uid="hideParameterAct" type="sight::module::ui::base::SAction" />
 
-            <service uid="showParameterAct" type="sight::module::ui::base::com::SBooleanSlotCaller" >
-                <slots>
-                    <slot>parameterView/show</slot>
-                    <slot>rightToolbarSliderView/hide</slot>
-                </slots>
-                <state active="true" />
-            </service>
-
-            <!-- TF manager -->
-            <service uid="volumeTFAct" type="sight::module::ui::base::SConfigLauncher" >
-                <appConfig id="TransferFunctionManagerWindow_AppCfg" />
-                <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
-                <parameter replace="WINDOW_ICON" by="SightViewer/Ogre_logo.svg" />
-                <inout key="image" uid="image" />
-                <inout key="histogram" uid="histogram" />
-                <inout key="tfPools" uid="volumeTFPools" />
-                <inout key="currentTFPool" uid="volumeCurrentTFPool" optional="true" />
-                <inout key="currentTF" uid="volumeCurrentTF" optional="true" />
-                <inout key="mergedTF" uid="volumeTF" />
+            <service uid="showParameterAct" type="sight::module::ui::base::SAction" >
+                <state checked="true" />
             </service>
 
             <!-- PACS manager -->
@@ -385,36 +388,36 @@
                 <appConfig id="PACSSelector_AppCfg" />
                 <parameter replace="WINDOW_TITLE" by="PACS" />
                 <parameter replace="WINDOW_ICON" by="SightViewer/Ogre_logo.svg" />
-                <inout key="outputSeriesDB" uid="pacsSeriesDB" />
+                <inout key="outputSeriesSet" uid="pacsSeriesSet" />
             </service>
 
             <!-- Adaptors visibility -->
             <service uid="volumeVisibilityAct" type="sight::module::ui::base::com::SSignal" >
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <service uid="negato3DVisibilityAct" type="sight::module::ui::base::com::SSignal" >
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <service uid="meshVisibilityAct" type="sight::module::ui::base::com::SSignal" >
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <service uid="boxWidgetVisibilityAct" type="sight::module::ui::base::com::SSignal" >
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <service uid="boxWidgetResetAct" type="sight::module::ui::base::com::SSignal" >
-                <state executable="false" />
+                <state enabled="false" />
             </service>
 
             <service uid="shapeExtruderAct" type="sight::module::ui::base::com::SSignal" >
-                <state executable="true" />
+                <state enabled="true" />
             </service>
 
             <service uid="shapeExtruderRevertAct" type="sight::module::ui::base::com::SSignal" >
-                <state executable="true" />
+                <state enabled="true" />
             </service>
 
             <service uid="axisVisibilityAct" type="sight::module::ui::base::com::SSignal" />
@@ -453,11 +456,20 @@
                 <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="AXIS_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="PICKER_SENDER_CHANNEL" by="PICKER_RECEIVER_CHANNEL" />
                 <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
+                <parameter replace="NEGATO3D_TRANSPARENCY_CHANNEL" by="NEGATO3D_TRANSPARENCY_CHANNEL" />
                 <inout key="modelSeries" uid="modelSeries" optional="true"/>
                 <inout key="image" uid="image" optional="true"/>
                 <inout key="volumeTF" uid="volumeTF" />
                 <inout key="extrudedModelSeries" uid="extrudedModelSeries" />
                 <inout key="landmarks" uid="landmarks" />
+            </service>
+
+            <!-- TF manager -->
+            <service uid="TFManagerCfg"  type="sight::service::SConfigController" >
+                <appConfig id="TransferFunctionWidgetCfg" />
+                <parameter replace="WID_PARENT" by="TFCfgParameterView" />
+                <inout key="image" uid="image" />
+                <inout key="currentTF" uid="volumeTF" />
             </service>
 
             <service uid="organManagerCfg"  type="sight::service::SConfigController" >
@@ -478,21 +490,14 @@
 
             <!-- Extract the model or the image from the series -->
             <service uid="extractSeriesSrv" type="sight::module::ui::qt::series::SSelectDialog" >
-                <in key="seriesDB" uid="seriesDB"/>
+                <in key="seriesSet" uid="seriesSet"/>
                 <out key="modelSeries" uid="modelSeries" />
                 <out key="image" uid="image" />
             </service>
 
             <service uid="extractPacsImageSrv" type="sight::module::ui::qt::series::SSelectDialog" >
-                <in key="seriesDB" uid="pacsSeriesDB"/>
+                <in key="seriesSet" uid="pacsSeriesSet"/>
                 <out key="image" uid="image" />
-            </service>
-
-            <!-- Compute the image histogram -->
-            <service uid="computeHistogramSrv" type="sight::module::viz::scene2d::processing::SComputeHistogram" autoConnect="true" worker="COMPUTING_THREAD" >
-                <in key="image" uid="image" />
-                <inout key="histogram" uid="histogram" />
-                <binsWidth>5.0</binsWidth>
             </service>
 
             <!-- Parameters for the volume rendering -->
@@ -524,6 +529,13 @@
             <service uid="lightSelectorSrv" type="sight::module::ui::viz::SLightSelector"  />
 
             <service uid="lightEditorSrv" type="sight::module::ui::viz::SLightEditor" />
+
+            <!-- Transparency for the 3D negato -->
+            <service uid="transparencyParameterSrv" type="sight::module::ui::qt::SParameters" >
+                <parameters>
+                    <param type="double" name="Negatoscope transparency" key="transparency" defaultValue="0.0" min="0.0" max="1.0" reset="false" widget="slider"/>
+                </parameters>
+            </service>
 
             <!-- ******************************* Connections ***************************************** -->
 
@@ -564,7 +576,7 @@
             </connect>
 
             <connect channel="SHAPE_EXTRUDER_TOOL_DISABLED_RECEIVER_CHANNEL" >
-                <slot>shapeExtruderAct/deactivate</slot>
+                <slot>shapeExtruderAct/uncheck</slot>
             </connect>
 
             <connect channel="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" >
@@ -575,46 +587,56 @@
                 <signal>axisVisibilityAct/triggered</signal>
             </connect>
 
-            <connect>
-                <signal>image/visibilityModified</signal>
-                <slot>negato3DVisibilityAct/setIsActive</slot>
+            <connect channel="NEGATO3D_TRANSPARENCY_CHANNEL" >
+                <signal>transparencyParameterSrv/doubleChanged</signal>
             </connect>
 
             <connect>
-                <signal>seriesDB/modified</signal>
+                <signal>hideParameterAct/clicked</signal>
+                <slot>parameterView/hide</slot>
+                <slot>rightToolbarSliderView/show</slot>
+            </connect>
+
+            <connect>
+                <signal>showParameterAct/clicked</signal>
+                <slot>parameterView/show</slot>
+                <slot>rightToolbarSliderView/hide</slot>
+            </connect>
+
+            <connect>
+                <signal>seriesSet/modified</signal>
                 <slot>extractSeriesSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>seriesDB/addedSeries</signal>
+                <signal>seriesSet/addedObjects</signal>
                 <slot>extractSeriesSrv/update</slot>
             </connect>
 
             <connect>
-                <signal>pacsSeriesDB/addedSeries</signal>
+                <signal>pacsSeriesSet/addedObjects</signal>
                 <slot>extractPacsImageSrv/update</slot>
             </connect>
 
             <connect>
                 <signal>extractSeriesSrv/modelSelected</signal>
-                <slot>meshVisibilityAct/setExecutable</slot>
-                <slot>meshVisibilityAct/activate</slot>
+                <slot>meshVisibilityAct/enable</slot>
+                <slot>meshVisibilityAct/check</slot>
             </connect>
 
             <connect>
                 <signal>extractSeriesSrv/imageSelected</signal>
                 <signal>extractPacsImageSrv/updated</signal>
-                <slot>volumeVisibilityAct/setExecutable</slot>
-                <slot>volumeVisibilityAct/activate</slot>
-                <slot>negato3DVisibilityAct/setExecutable</slot>
-                <slot>negato3DVisibilityAct/activate</slot>
-                <slot>boxWidgetVisibilityAct/setExecutable</slot>
-                <slot>shapeExtruderAct/setExecutable</slot>
-                <slot>boxWidgetResetAct/setExecutable</slot>
-                <slot>volumeTFAct/setExecutable</slot>
-                <slot>addDistanceAct/setExecutable</slot>
-                <slot>removeDistanceAct/setExecutable</slot>
-                <slot>hideDistanceAct/setExecutable</slot>
+                <slot>volumeVisibilityAct/enable</slot>
+                <slot>volumeVisibilityAct/check</slot>
+                <slot>negato3DVisibilityAct/enable</slot>
+                <slot>negato3DVisibilityAct/check</slot>
+                <slot>boxWidgetVisibilityAct/enable</slot>
+                <slot>shapeExtruderAct/enable</slot>
+                <slot>boxWidgetResetAct/enable</slot>
+                <slot>addDistanceAct/enable</slot>
+                <slot>removeDistanceAct/enable</slot>
+                <slot>hideDistanceAct/enable</slot>
             </connect>
 
             <connect channel="VOLUME_BASIC_BOOL_SENDER_CHANNEL" >
@@ -634,50 +656,58 @@
                 <slot>lightEditorSrv/editLight</slot>
             </connect>
 
-            <!-- Allow to activate button in the advanced toolbar -->
+            <!-- Allow to check button in the advanced toolbar -->
             <connect>
                 <signal>volumeManagerAct/updated</signal>
-                <slot>volumeManagerAct/activate</slot>
-                <slot>organsManagerAct/deactivate</slot>
-                <slot>landmarksManagerAct/deactivate</slot>
-                <slot>lightManagerAct/deactivate</slot>
-                <slot>extrudedMeshesManagerAct/deactivate</slot>
+                <slot>volumeManagerAct/check</slot>
+                <slot>TFManagerAct/uncheck</slot>
+                <slot>organsManagerAct/uncheck</slot>
+                <slot>landmarksManagerAct/uncheck</slot>
+                <slot>lightManagerAct/uncheck</slot>
+            </connect>
+
+            <connect>
+                <signal>TFManagerAct/updated</signal>
+                <slot>volumeManagerAct/uncheck</slot>
+                <slot>TFManagerAct/check</slot>
+                <slot>organsManagerAct/uncheck</slot>
+                <slot>landmarksManagerAct/uncheck</slot>
+                <slot>lightManagerAct/uncheck</slot>
             </connect>
 
             <connect>
                 <signal>organsManagerAct/updated</signal>
-                <slot>volumeManagerAct/deactivate</slot>
-                <slot>organsManagerAct/activate</slot>
-                <slot>landmarksManagerAct/deactivate</slot>
-                <slot>lightManagerAct/deactivate</slot>
-                <slot>extrudedMeshesManagerAct/deactivate</slot>
+                <slot>volumeManagerAct/uncheck</slot>
+                <slot>TFManagerAct/uncheck</slot>
+                <slot>organsManagerAct/check</slot>
+                <slot>landmarksManagerAct/uncheck</slot>
+                <slot>lightManagerAct/uncheck</slot>
             </connect>
 
             <connect>
                 <signal>landmarksManagerAct/updated</signal>
-                <slot>volumeManagerAct/deactivate</slot>
-                <slot>organsManagerAct/deactivate</slot>
-                <slot>landmarksManagerAct/activate</slot>
-                <slot>lightManagerAct/deactivate</slot>
-                <slot>extrudedMeshesManagerAct/deactivate</slot>
+                <slot>volumeManagerAct/uncheck</slot>
+                <slot>TFManagerAct/uncheck</slot>
+                <slot>organsManagerAct/uncheck</slot>
+                <slot>landmarksManagerAct/check</slot>
+                <slot>lightManagerAct/uncheck</slot>
             </connect>
 
             <connect>
                 <signal>lightManagerAct/updated</signal>
-                <slot>volumeManagerAct/deactivate</slot>
-                <slot>organsManagerAct/deactivate</slot>
-                <slot>landmarksManagerAct/deactivate</slot>
-                <slot>lightManagerAct/activate</slot>
-                <slot>extrudedMeshesManagerAct/deactivate</slot>
+                <slot>volumeManagerAct/uncheck</slot>
+                <slot>TFManagerAct/uncheck</slot>
+                <slot>organsManagerAct/uncheck</slot>
+                <slot>landmarksManagerAct/uncheck</slot>
+                <slot>lightManagerAct/check</slot>
             </connect>
 
             <connect>
-                <signal>extrudedMeshesManagerAct/updated</signal>
-                <slot>volumeManagerAct/deactivate</slot>
-                <slot>organsManagerAct/deactivate</slot>
-                <slot>landmarksManagerAct/deactivate</slot>
-                <slot>lightManagerAct/deactivate</slot>
-                <slot>extrudedMeshesManagerAct/activate</slot>
+                <slot>volumeManagerAct/uncheck</slot>
+                <slot>TFManagerAct/uncheck</slot>
+                <slot>organsManagerAct/uncheck</slot>
+                <slot>landmarksManagerAct/uncheck</slot>
+                <slot>lightManagerAct/uncheck</slot>
             </connect>
 
             <!-- Manage landmarks -->
@@ -693,19 +723,18 @@
 
             <start uid="mainView" />
             <start uid="ogreGenericSceneCfg" />
+            <start uid="TFManagerCfg" />
             <start uid="organManagerCfg" />
             <start uid="extrudedMeshesManagerCfg" />
             <start uid="extractSeriesSrv" />
             <start uid="extractPacsImageSrv" />
-            <start uid="computeHistogramSrv" />
             <start uid="lightSelectorSrv" />
             <start uid="lightEditorSrv" />
             <start uid="addDistanceAct" />
             <start uid="removeDistanceAct" />
             <start uid="hideDistanceAct" />
-            <start uid="volumeTFAct" />
 
-            <update uid="volumeManagerAct" />
+            <update uid="TFManagerAct" />
             <update uid="volumeParameterSrv" />
 
         </config>

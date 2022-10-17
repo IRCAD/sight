@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,14 +29,14 @@
 
 #include <core/base.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 
 namespace sight::data
 {
 
 class Vector;
 
-}
+} // namespace sight::data
 
 namespace sight::activity
 {
@@ -49,7 +49,7 @@ class ACTIVITY_CLASS_API IBuilder : public core::BaseObject
 public:
 
     typedef activity::builder::factory::Key Key;
-    typedef data::ActivitySeries::ConfigIdType ConfigIdType;
+    typedef data::Activity::ConfigIdType ConfigIdType;
 
     /**
      * @brief Class used to register a class factory in factory registry.
@@ -74,12 +74,12 @@ public:
     SIGHT_DECLARE_CLASS(IBuilder, core::BaseObject);
 
     /**
-     * @brief Build an ActivitySeries with required data present in currentSelection and defined in configuration.
+     * @brief Build an Activity with required data present in currentSelection and defined in configuration.
      * @param[in] activityInfo a structure which contains all the Activity configuration
      * @param[in] currentSelection a vector which contains current selected data.
-     * @return specific data ActivitySeries for the specified Activity.
+     * @return specific data Activity for the specified Activity.
      */
-    ACTIVITY_API virtual data::ActivitySeries::sptr buildData(
+    ACTIVITY_API virtual data::Activity::sptr buildData(
         const activity::extension::ActivityInfo& activityInfo,
         const CSPTR(data::Vector)& currentSelection
     ) const = 0;

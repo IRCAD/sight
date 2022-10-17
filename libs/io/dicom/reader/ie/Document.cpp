@@ -27,13 +27,7 @@
 #include "io/dicom/helper/StructuredReport.hpp"
 #include "io/dicom/reader/tid/MeasurementReport.hpp"
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 //------------------------------------------------------------------------------
@@ -55,8 +49,7 @@ Document::Document(
 //------------------------------------------------------------------------------
 
 Document::~Document()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -79,8 +72,4 @@ void Document::readSR()
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

@@ -32,7 +32,7 @@ namespace sight::module::data
 
 void SCopy::configuring()
 {
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
+    using ConfigurationType = core::runtime::ConfigurationElement::sptr;
 
     const ConfigurationType inCfg = m_configuration->findConfigurationElement("in");
     SIGHT_ASSERT("One 'in' tag is required.", inCfg);
@@ -138,14 +138,7 @@ void SCopy::copy()
                 }
             };
 
-        if(source != sourceObject.get_shared())
-        {
-            setOutputData();
-        }
-        else
-        {
-            setOutputData();
-        }
+        setOutputData();
     }
 }
 

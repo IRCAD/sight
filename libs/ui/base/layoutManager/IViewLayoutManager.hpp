@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 /**
@@ -53,7 +50,7 @@ public:
     UI_BASE_API IViewLayoutManager();
 
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~IViewLayoutManager();
+    UI_BASE_API ~IViewLayoutManager() override;
 
     /**
      * @brief Configure the layout before creation.
@@ -65,7 +62,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_BASE_API virtual void createLayout(ui::base::container::fwContainer::sptr parent) = 0;
+    UI_BASE_API virtual void createLayout(ui::base::container::fwContainer::sptr parent, const std::string& id) = 0;
 
     /**
      * @brief Destroy local layout with sub containers.
@@ -89,6 +86,4 @@ protected:
     std::vector<ui::base::container::fwContainer::sptr> m_subViews;
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

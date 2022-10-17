@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,13 +29,16 @@ namespace sight::module::ui::base
 
 SDefaultAction::SDefaultAction() noexcept
 {
+    SIGHT_WARN(
+        "'SDefaultAction' is deprecated and will be removed in Sight 23.0,"
+        " please use 'SAction' instead."
+    );
 }
 
 //-----------------------------------------------------------------------------
 
-SDefaultAction::~SDefaultAction() noexcept
-{
-}
+SDefaultAction::~SDefaultAction() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -71,4 +74,4 @@ void SDefaultAction::info(std::ostream& _sstream)
     _sstream << "Default button" << std::endl;
 }
 
-}
+} // namespace sight::module::ui::base

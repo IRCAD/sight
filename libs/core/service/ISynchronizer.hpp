@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "service/config.hpp"
+
 #include <service/IService.hpp>
 
 namespace sight::service
@@ -45,7 +46,7 @@ public:
     /**
      * @brief Destructor.
      */
-    SERVICE_API virtual ~ISynchronizer() noexcept;
+    SERVICE_API ~ISynchronizer() noexcept override;
 };
 
 } //namespace sight::service

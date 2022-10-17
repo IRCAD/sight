@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,20 +36,21 @@
 #include <QQuickItem>
 #include <QQuickWindow>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qml::dialog::ProgressDialog,
     sight::ui::base::dialog::IProgressDialog::REGISTRY_KEY
 );
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 //------------------------------------------------------------------------------
 
-ProgressDialog::ProgressDialog(ui::base::GuiBaseObject::Key, const std::string& title, const std::string& message)
+ProgressDialog::ProgressDialog(
+    ui::base::GuiBaseObject::Key /*unused*/,
+    const std::string& title,
+    const std::string& message
+)
 {
     // get the qml engine QmlApplicationEngine
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
@@ -59,7 +60,7 @@ ProgressDialog::ProgressDialog(ui::base::GuiBaseObject::Key, const std::string& 
     for(const auto& root : rootObjects)
     {
         toolBar = root->findChild<QObject*>("fwGuiQml_ProgressBar");
-        if(toolBar)
+        if(toolBar != nullptr)
         {
             break;
         }
@@ -67,7 +68,7 @@ ProgressDialog::ProgressDialog(ui::base::GuiBaseObject::Key, const std::string& 
 
     // TODO: find a way to remove the context from rootContext but instead only on the object
     engine->getRootContext()->setContextProperty("progressDialog", this);
-    if(toolBar)
+    if(toolBar != nullptr)
     {
         // get the path of the qml ui file in the 'rc' directory
         const auto& dialogPath =
@@ -75,7 +76,7 @@ ProgressDialog::ProgressDialog(ui::base::GuiBaseObject::Key, const std::string& 
         // load the qml ui component
         m_dialog = engine->createComponent(dialogPath);
         SIGHT_ASSERT("The Qml File ProgressDialog is not found or not loaded", m_dialog);
-        QQuickItem* item = qobject_cast<QQuickItem*>(m_dialog);
+        auto* item = qobject_cast<QQuickItem*>(m_dialog);
         // get ownership to not get Progress qml destroyed
         QQmlEngine::setObjectOwnership(item, QQmlEngine::CppOwnership);
         // set visual parent of progress qml for render
@@ -98,15 +99,15 @@ ProgressDialog::ProgressDialog(ui::base::GuiBaseObject::Key, const std::string& 
     }
 
     m_visible = true;
-    this->setTitle(title);
-    this->setMessage(message);
+    this->ProgressDialog::setTitle(title);
+    this->ProgressDialog::setMessage(message);
 }
 
 //------------------------------------------------------------------------------
 
 ProgressDialog::~ProgressDialog()
 {
-    if(m_window)
+    if(m_window != nullptr)
     {
         m_window->deleteLater();
     }
@@ -124,7 +125,7 @@ void ProgressDialog::operator()(float percent, std::string msg)
     // check if the dialog box has been closed by the user and cancel the progress
     if(!m_visible)
     {
-        if(m_cancelCallback)
+        if(m_cancelCallback != nullptr)
         {
             this->cancelPressed();
         }
@@ -148,7 +149,7 @@ void ProgressDialog::setTitle(const std::string& title)
     SIGHT_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
 
     m_title = QString::fromStdString(title);
-    if(m_window)
+    if(m_window != nullptr)
     {
         Q_EMIT titleChanged();
     }
@@ -161,7 +162,7 @@ void ProgressDialog::setMessage(const std::string& msg)
     SIGHT_ASSERT("The progress dialog is not initialized or has been closed", m_dialog);
     QString message = "";
     QString title   = m_title;
-    if(!title.isEmpty() && !this->m_window)
+    if(!title.isEmpty() && (this->m_window == nullptr))
     {
         message += title;
         message += " - ";
@@ -191,6 +192,4 @@ void ProgressDialog::cancelPressed()
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

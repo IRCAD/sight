@@ -28,6 +28,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+#include <data/Composite.hpp>
 
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
@@ -76,10 +77,9 @@ static const core::com::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObject
 
 //-----------------------------------------------------------------------------
 
-SRender::SRender() noexcept
+SRender::SRender() noexcept :
+    m_ogreRoot(viz::scene3d::Utils::getOgreRoot())
 {
-    m_ogreRoot = viz::scene3d::Utils::getOgreRoot();
-
     newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
     m_fullscreenSetSig = newSignal<FullscreenSetSignalType>(s_FULLSCREEN_SET_SIG);
 
@@ -145,8 +145,8 @@ void SRender::configuring()
     auto adaptorConfigs = sceneCfg.equal_range("adaptor");
     for(auto it = adaptorConfigs.first ; it != adaptorConfigs.second ; ++it)
     {
-        const std::string uid = it->second.get<std::string>("<xmlattr>.uid");
-        auto& registry        = viz::scene3d::registry::getAdaptorRegistry();
+        const auto uid = it->second.get<std::string>("<xmlattr>.uid");
+        auto& registry = viz::scene3d::registry::getAdaptorRegistry();
         registry[uid] = this->getID();
     }
 }
@@ -203,24 +203,25 @@ void SRender::starting()
         ogreLayer->setBackgroundColor("#000000", "#000000");
         ogreLayer->setBackgroundScale(0, 0.5);
         ogreLayer->setHasDefaultLight(false);
-        ogreLayer->setViewportConfig({0.f, 0.f, 1.f, 1.f});
+        ogreLayer->setViewportConfig({0.F, 0.F, 1.F, 1.F});
 
         m_layers[s_OGREBACKGROUNDID] = ogreLayer;
     }
 
+    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
     if(m_offScreen)
     {
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = viz::scene3d::IWindowInteractor::createOffscreenManager(m_width, m_height);
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer(nullptr, m_fullscreen);
+        m_interactorManager->createContainer(nullptr, m_fullscreen, serviceID);
     }
     else
     {
         // Instantiate the manager that help to communicate between this service and the widget
         m_interactorManager = viz::scene3d::IWindowInteractor::createManager();
         m_interactorManager->setRenderService(this->getSptr());
-        m_interactorManager->createContainer(this->getContainer(), m_fullscreen);
+        m_interactorManager->createContainer(this->getContainer(), m_fullscreen, serviceID);
     }
 
     // Initialize resources to load overlay scripts.
@@ -228,7 +229,7 @@ void SRender::starting()
 
     m_interactorManager->getRenderTarget()->addListener(&m_viewportListener);
 
-    for(auto it : m_layers)
+    for(const auto& it : m_layers)
     {
         viz::scene3d::Layer::sptr layer = it.second;
         layer->setRenderTarget(m_interactorManager->getRenderTarget());
@@ -251,7 +252,7 @@ void SRender::stopping()
     m_interactorManager->getRenderTarget()->removeAllListeners();
     m_viewportOverlaysMap.clear();
 
-    for(auto it : m_layers)
+    for(const auto& it : m_layers)
     {
         viz::scene3d::Layer::sptr layer = it.second;
         layer->destroyScene();
@@ -363,29 +364,29 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg)
     ogreLayer->setWorker(m_associatedWorker);
     ogreLayer->setHasDefaultLight(false);
 
-    if(attributes.count("color"))
+    if(attributes.count("color") != 0U)
     {
-        const std::string color = attributes.get<std::string>("color");
+        const auto color = attributes.get<std::string>("color");
         ogreLayer->setBackgroundColor(color, color);
     }
-    else if(attributes.count("topColor") && attributes.count("bottomColor"))
+    else if((attributes.count("topColor") != 0U) && (attributes.count("bottomColor") != 0U))
     {
-        const std::string topColor = attributes.get<std::string>("topColor");
-        const std::string botColor = attributes.get<std::string>("bottomColor");
+        const auto topColor = attributes.get<std::string>("topColor");
+        const auto botColor = attributes.get<std::string>("bottomColor");
 
         ogreLayer->setBackgroundColor(topColor, botColor);
     }
 
-    if(attributes.count("topScale") && attributes.count("bottomScale"))
+    if((attributes.count("topScale") != 0U) && (attributes.count("bottomScale") != 0U))
     {
-        const float topScaleVal = attributes.get<float>("topScale");
-        const float botScaleVal = attributes.get<float>("bottomScale");
+        const auto topScaleVal = attributes.get<float>("topScale");
+        const auto botScaleVal = attributes.get<float>("bottomScale");
 
         ogreLayer->setBackgroundScale(topScaleVal, botScaleVal);
     }
     else
     {
-        ogreLayer->setBackgroundScale(0.5f, 0.5f);
+        ogreLayer->setBackgroundScale(0.5F, 0.5F);
     }
 
     m_layers[s_OGREBACKGROUNDID] = ogreLayer;
@@ -395,27 +396,27 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg)
 
 Layer::ViewportConfigType SRender::configureLayerViewport(const service::IService::ConfigType& _cfg)
 {
-    Layer::ViewportConfigType cfgType {0.f, 0.f, 1.f, 1.f};
+    Layer::ViewportConfigType cfgType {0.F, 0.F, 1.F, 1.F};
     const auto _vpConfig = _cfg.get_child_optional("viewport.<xmlattr>");
     if(_vpConfig.has_value())
     {
-        const auto cfg = _vpConfig.get();
+        const auto& cfg = _vpConfig.get();
 
-        float xPos = cfg.get<float>("hOffset", 0.f);
-        float yPos = cfg.get<float>("vOffset", 0.f);
+        float xPos = cfg.get<float>("hOffset", 0.F);
+        float yPos = cfg.get<float>("vOffset", 0.F);
 
-        const float width  = cfg.get<float>("width");
-        const float height = cfg.get<float>("height");
+        const auto width  = cfg.get<float>("width");
+        const auto height = cfg.get<float>("height");
 
         const std::map<std::string, float> horizAlignToX {
             {"left", xPos},
-            {"center", 0.5f - width * 0.5f + xPos},
-            {"right", 1.f - width - xPos}
+            {"center", 0.5F - width * 0.5F + xPos},
+            {"right", 1.F - width - xPos}
         };
 
         const std::map<std::string, float> vertAlignToY {
-            {"bottom", 1.f - height - yPos},
-            {"center", 0.5f - height * 0.5f + yPos},
+            {"bottom", 1.F - height - yPos},
+            {"center", 0.5F - height * 0.5F + yPos},
             {"top", yPos}
         };
 
@@ -479,7 +480,7 @@ void SRender::resetCameraCoordinates(const std::string& _layerId)
 
 void SRender::resetCameras()
 {
-    for(auto layer : m_layers)
+    for(const auto& layer : m_layers)
     {
         layer.second->resetCameraCoordinates();
     }
@@ -491,7 +492,7 @@ void SRender::resetCameras()
 
 void SRender::computeCameraClipping()
 {
-    for(auto it : m_layers)
+    for(const auto& it : m_layers)
     {
         viz::scene3d::Layer::sptr layer = it.second;
         layer->resetCameraClippingRange();

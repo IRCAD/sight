@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "FrameTL.hpp"
 
 #include "io/opencv/Type.hpp"
@@ -45,7 +47,8 @@ static void toCv(
 
     cv::Size cvSize(static_cast<int>(_timeline->getWidth()), static_cast<int>(_timeline->getHeight()));
 
-    auto buffer = static_cast<void*>(const_cast<data::FrameTL::BufferType::ElementType*>(_buffer));
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+    auto* buffer = static_cast<void*>(const_cast<data::FrameTL::BufferType::ElementType*>(_buffer));
     if(_copy)
     {
         cv::Mat mat = cv::Mat(cvSize, cvType, buffer);
@@ -70,7 +73,7 @@ void FrameTL::moveToCv(
 
 //------------------------------------------------------------------------------
 
-const cv::Mat FrameTL::moveToCv(
+cv::Mat FrameTL::moveToCv(
     const data::FrameTL::csptr& _timeline,
     const data::FrameTL::BufferType::ElementType* _buffer
 )
@@ -109,7 +112,7 @@ void FrameTL::copyFromCv(
         SIGHT_ERROR("Cannot copy OpenCV image into this timeline buffer because their format or size differ.");
     }
 
-    const std::size_t size = _timeline->getWidth() * _timeline->getHeight() * imageComp * imageType.sizeOf();
+    const std::size_t size = _timeline->getWidth() * _timeline->getHeight() * imageComp * imageType.size();
     std::copy(_cvImage.data, _cvImage.data + size, _buffer);
 }
 

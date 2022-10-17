@@ -26,13 +26,7 @@
 
 #include <data/DicomSeries.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 //------------------------------------------------------------------------------
@@ -41,21 +35,20 @@ Equipment::Equipment(
     const data::DicomSeries::csptr& dicomSeries,
     const SPTR(gdcm::Reader)& reader,
     const io::dicom::container::DicomInstance::sptr& instance,
-    const data::Equipment::sptr& equipment,
+    const data::Series::sptr& series,
     const core::log::Logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    io::dicom::reader::ie::InformationEntity<data::Equipment>(dicomSeries, reader, instance, equipment,
-                                                              logger, progress, cancel)
+    io::dicom::reader::ie::InformationEntity<data::Series>(dicomSeries, reader, instance, series,
+                                                           logger, progress, cancel)
 {
 }
 
 //------------------------------------------------------------------------------
 
 Equipment::~Equipment()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -84,8 +77,4 @@ void Equipment::readGeneralEquipmentModule()
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

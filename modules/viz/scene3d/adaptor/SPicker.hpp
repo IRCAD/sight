@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,6 @@
 
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/interactor/MeshPickerInteractor.hpp>
-#include <viz/scene3d/picker/IPicker.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {

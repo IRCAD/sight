@@ -1,4 +1,4 @@
-<plugin id="Tuto06SceneQt3DCpp" library="true" >
+<plugin id="Tuto06SceneQt3DCpp" library="true" autostart="true">
 
     <requirement id="sight::module::viz::qt3d" />
     <requirement id="sight::module::ui::base" />

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,12 +31,9 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(sight::filter::dicom::sorter::InstanceNumberSorter);
+SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::sorter::InstanceNumberSorter);
 
-namespace sight::filter::dicom
-{
-
-namespace sorter
+namespace sight::filter::dicom::sorter
 {
 
 const std::string InstanceNumberSorter::s_FILTER_NAME        = "Instance number sorter";
@@ -54,8 +51,7 @@ InstanceNumberSorter::InstanceNumberSorter(filter::dicom::IFilter::Key key) :
 //-----------------------------------------------------------------------------
 
 InstanceNumberSorter::~InstanceNumberSorter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -78,6 +74,4 @@ bool InstanceNumberSorter::isConfigurationRequired() const
     return false;
 }
 
-} // namespace sorter
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::sorter

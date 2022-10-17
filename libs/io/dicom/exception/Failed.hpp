@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <core/Exception.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace exception
+namespace sight::io::dicom::exception
 {
 
 /**
@@ -43,6 +40,4 @@ struct IO_DICOM_CLASS_API Failed : core::Exception
     }
 };
 
-} // namespace exception
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::exception

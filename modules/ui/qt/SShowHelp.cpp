@@ -49,45 +49,42 @@ class HelpBrowser : public QTextBrowser
 {
 public:
 
-    HelpBrowser(QHelpEngine* helpEngine, QWidget* parent = 0) :
+    explicit HelpBrowser(QHelpEngine* helpEngine, QWidget* parent = nullptr) :
         QTextBrowser(parent),
-        helpEngine(helpEngine)
+        m_helpEngine(helpEngine)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    QVariant loadResource(int type, const QUrl& url)
+    QVariant loadResource(int type, const QUrl& url) override
     {
         if(url.scheme() == "qthelp")
         {
-            return QVariant(helpEngine->fileData(url));
+            return {m_helpEngine->fileData(url)};
         }
-        else
-        {
-            return QTextBrowser::loadResource(type, url);
-        }
+
+        return QTextBrowser::loadResource(type, url);
     }
 
 private:
 
-    QHelpEngine* helpEngine;
+    QHelpEngine* m_helpEngine;
 };
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 
 SShowHelp::SShowHelp() noexcept :
-    m_bServiceIsConfigured(false),
+
     m_fsHelpPath("")
 {
 }
 
 //------------------------------------------------------------------------------
 
-SShowHelp::~SShowHelp() noexcept
-{
-}
+SShowHelp::~SShowHelp() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -122,9 +119,9 @@ void SShowHelp::updating()
 {
     SIGHT_ASSERT("The Help service isn't configured properly.", m_bServiceIsConfigured);
 
-    QDialog* dialog = new QDialog(qApp->activeWindow());
+    auto* dialog = new QDialog(qApp->activeWindow());
     dialog->setWindowTitle(QString("Help"));
-    QHelpEngine* helpEngine = new QHelpEngine(QString::fromStdString(m_fsHelpPath.string()), dialog);
+    auto* helpEngine = new QHelpEngine(QString::fromStdString(m_fsHelpPath.string()), dialog);
     if(!helpEngine->setupData())
     {
         SIGHT_ERROR("HelpEngine error: " << helpEngine->error().toStdString());
@@ -139,13 +136,13 @@ void SShowHelp::updating()
     }
     else
     {
-        QSplitter* helpPanel     = new QSplitter(Qt::Horizontal);
-        HelpBrowser* helpBrowser = new HelpBrowser(helpEngine, dialog);
+        auto* helpPanel   = new QSplitter(Qt::Horizontal);
+        auto* helpBrowser = new HelpBrowser(helpEngine, dialog);
         helpPanel->insertWidget(0, helpEngine->contentWidget());
         helpPanel->insertWidget(1, helpBrowser);
         helpPanel->setStretchFactor(1, 1);
 
-        QHBoxLayout* h_layout = new QHBoxLayout();
+        auto* h_layout = new QHBoxLayout();
         h_layout->addWidget(helpPanel);
         dialog->setLayout(h_layout);
         QObject::connect(

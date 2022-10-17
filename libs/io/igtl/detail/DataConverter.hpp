@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,12 +75,12 @@ public:
      * @brief convert a data::Object to a ::igtl::MessageBase
      * @return a ::igtl::MessageBase smart pointer
      */
-    IO_IGTL_API ::igtl::MessageBase::Pointer fromFwObject(data::Object::csptr src) const;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer fromFwObject(data::Object::csptr src) const;
 
     /**
      * @brief convert a ::igtl::MessageBase to a data::Object
      */
-    IO_IGTL_API data::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
+    [[nodiscard]] IO_IGTL_API data::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const;
 
     /**
      * @brief get status message
@@ -91,18 +91,18 @@ public:
      *
      * @return igtl message smart pointer
      */
-    IO_IGTL_API ::igtl::MessageBase::Pointer getStatusMessage(
+    static IO_IGTL_API ::igtl::MessageBase::Pointer getStatusMessage(
         int igtlCode,
         int igtlSubCode,
         const std::string& errMsg
-    ) const;
+    );
 
     /**
      * @brief get capability message
      *
      * @return igtl message smart pointer contain igtl::CapabilityMessage with all supported types
      */
-    IO_IGTL_API ::igtl::MessageBase::Pointer getCapabilitiesMessage() const;
+    [[nodiscard]] IO_IGTL_API ::igtl::MessageBase::Pointer getCapabilitiesMessage() const;
 
 private:
 

@@ -150,7 +150,7 @@ public:
     VIZ_SCENE3D_API IWindowInteractor();
 
     /// Destructor. Do nothing.
-    VIZ_SCENE3D_API virtual ~IWindowInteractor();
+    VIZ_SCENE3D_API ~IWindowInteractor() override;
 
     /// Call Ogre Widget render immediately
     VIZ_SCENE3D_API virtual void renderNow() = 0;
@@ -161,7 +161,8 @@ public:
     /// Creates an interactor and installs it in window.
     VIZ_SCENE3D_API virtual void createContainer(
         ui::base::container::fwContainer::sptr _parent,
-        bool fullscreen
+        bool fullscreen,
+        const std::string& id
     ) = 0;
 
     /// Connects widget and SRender signals and slots.

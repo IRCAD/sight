@@ -1,8 +1,0 @@
-<profile name="ProcessingTest" version="0.1">
-
-    <activate id="sight::module::service" version="0.1" />
-    <activate id="sight::module::viz::scene2d" version="0.1" />
-
-    <start id="sight::module::viz::scene2d" />
-    
-</profile>

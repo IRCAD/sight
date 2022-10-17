@@ -2,12 +2,12 @@
     <id>DicomPreview</id>
     <parameters>
         <param name="ICON_PATH" />
-        <param name="SERIESDB" />
+        <param name="SERIES_SET" />
         <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" /><!-- defined by SConfigLauncher -->
     </parameters>
     <config>
 
-        <object type="sight::data::SeriesDB" uid="${SERIESDB}" src="ref" />
+        <object type="sight::data::SeriesSet" uid="${SERIES_SET}" src="ref" />
         <object type="sight::data::Vector" uid="dicomSelection" />
 
         <!-- ******************************* UI declaration *********************************** -->
@@ -42,7 +42,7 @@
         <!-- DICOM SELECTION -->
         <service uid="dicomSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
             <inout key="selection" uid="dicomSelection" />
-            <inout key="seriesDB" uid="${SERIESDB}" />
+            <inout key="seriesSet" uid="${SERIES_SET}" />
         </service>
 
         <service uid="dicomViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">

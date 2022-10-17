@@ -34,13 +34,7 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-ROITraits::ROITraits(data::Object::Key)
-{
-}
-
-//------------------------------------------------------------------------------
-
-ROITraits::~ROITraits()
+ROITraits::ROITraits(data::Object::Key /*unused*/)
 {
 }
 
@@ -102,42 +96,46 @@ data::StructureTraits::csptr ROITraits::getStructureTraits() const
 
 //------------------------------------------------------------------------------
 
-void ROITraits::shallowCopy(const Object::csptr& _source)
+void ROITraits::shallowCopy(const Object::csptr& source)
 {
-    ROITraits::csptr other = ROITraits::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     m_identifier      = other->m_identifier;
     m_evaluatedExp    = other->m_evaluatedExp;
     m_maskOpNode      = other->m_maskOpNode;
     m_structureTraits = other->m_structureTraits;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void ROITraits::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache)
+void ROITraits::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    ROITraits::csptr other = ROITraits::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, cache);
 
     m_identifier      = other->m_identifier;
     m_evaluatedExp    = other->m_evaluatedExp;
     m_maskOpNode      = data::Object::copy(other->m_maskOpNode, cache);
     m_structureTraits = data::Object::copy(other->m_structureTraits, cache);
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -153,7 +151,7 @@ bool ROITraits::operator==(const ROITraits& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

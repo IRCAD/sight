@@ -34,10 +34,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::data::ut::Matrix4Test);
 
-namespace sight::geometry::data
-{
-
-namespace ut
+namespace sight::geometry::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -63,7 +60,7 @@ void Matrix4Test::identityMatrixTest()
     sight::data::Matrix4 tm3;
     sight::data::Matrix4 tm4;
 
-    auto p1 = sight::data::Point::New(1.0f, 2.3f, 5.1f);
+    auto p1 = sight::data::Point::New(1.0F, 2.3F, 5.1F);
     auto p2 = sight::data::Point::New();
 
     bool shouldBeTrue = geometry::data::isIdentity(tm1);
@@ -150,16 +147,16 @@ void Matrix4Test::matrixTest()
     geometry::data::identity(tm2);
 
     sight::data::Matrix4::TMCoefArray tm1Coefs;
-    for(int i = 0 ; i < 16 ; ++i)
+    for(std::size_t i = 0 ; i < 16 ; ++i)
     {
-        tm1Coefs[i] = i + 1;
+        tm1Coefs[i] = double(i + 1);
     }
 
-    for(int i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        for(int j = 0 ; j < 4 ; ++j)
+        for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            tm2.setCoefficient(i, j, fabs(static_cast<double>(i - j)) + 1);
+            tm2.setCoefficient(i, j, fabs(double(i) - double(j)) + 1);
         }
     }
 
@@ -230,7 +227,7 @@ void Matrix4Test::matrixTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.0124903619956978, tm4.getCoefficient(3, 3), 0.0001);
 
     // Test matrix-vector multiplication
-    auto p1 = sight::data::Point::New(1.0f, 2.3f, 5.1f);
+    auto p1 = sight::data::Point::New(1.0F, 2.3F, 5.1F);
     auto p2 = sight::data::Point::New();
 
     geometry::data::multiply(tm1, *p1, *p2);
@@ -278,18 +275,18 @@ void Matrix4Test::glmGetterSetterTest()
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_EQUAL(glmMat[i][j], coefs[i + j * 4]);
+            CPPUNIT_ASSERT_EQUAL(glmMat[int(i)][int(j)], coefs[i + j * 4]);
         }
     }
 
     // Test setter
-    double coefs2[] = {11, -2, -.3, -.74,
-                       .214, 82.9, 9.2, -5.2,
-                       17.8, -2.1, 2.3, 1.2,
-                       .13, 0.1, -0.1, 0.2
+    std::array coefs2 = {11., -2., -.3, -.74,
+                         .214, 82.9, 9.2, -5.2,
+                         17.8, -2.1, 2.3, 1.2,
+                         .13, 0.1, -0.1, 0.2
     };
 
-    glmMat = glm::make_mat4<double>(coefs2);
+    glmMat = glm::make_mat4<double>(coefs2.data());
 #ifndef FW_PROFILING_DISABLED
     {
         FW_PROFILE("::geometry::data::setTF3DFromMatrix");
@@ -313,6 +310,4 @@ void Matrix4Test::glmGetterSetterTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::geometry::data
+} // namespace sight::geometry::data::ut

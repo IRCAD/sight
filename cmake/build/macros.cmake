@@ -131,13 +131,15 @@ macro(init_project PRJ_NAME PRJ_TYPE)
     file(GLOB_RECURSE HEADERS "${PRJ_SOURCE_DIR}/*.hpp" "${PRJ_SOURCE_DIR}/*.h" "${PRJ_SOURCE_DIR}/*.hxx")
     file(GLOB_RECURSE SOURCES "${PRJ_SOURCE_DIR}/*.cpp" "${PRJ_SOURCE_DIR}/*.c" "${PRJ_SOURCE_DIR}/*.cxx")
 
-    if(NOT "${PRJ_TYPE}" STREQUAL "TEST")
+    if(NOT "${PRJ_TYPE}" STREQUAL "TEST" AND NOT "${PRJ_TYPE}" STREQUAL "GUI_TEST")
         list(FILTER SOURCES EXCLUDE REGEX "/test/api")
         list(FILTER SOURCES EXCLUDE REGEX "/test/detail")
         list(FILTER SOURCES EXCLUDE REGEX "/test/tu")
+        list(FILTER SOURCES EXCLUDE REGEX "/test/ui")
         list(FILTER HEADERS EXCLUDE REGEX "/test/api")
         list(FILTER HEADERS EXCLUDE REGEX "/test/detail")
         list(FILTER HEADERS EXCLUDE REGEX "/test/tu")
+        list(FILTER HEADERS EXCLUDE REGEX "/test/ui")
     endif()
 
     list(APPEND ${SIGHT_TARGET}_HEADERS ${HEADERS})
@@ -305,7 +307,7 @@ macro(fw_exec SIGHT_TARGET)
                        "rem Check if we have elevated privileges\n"
                        "whoami /all | findstr S-1-16-12288 > nul\n"
                        "rem if we do not have those, restart the script as Admin\n"
-                       "if %errorlevel%==1 (powershell start -verb runas '%0' & exit /b)\n"
+                       "if %errorlevel%==1 (powershell start -verb runas '%0' %* & exit /b)\n"
             )
         endif()
 
@@ -335,8 +337,8 @@ macro(fw_exec SIGHT_TARGET)
     set_target_properties(${SIGHT_TARGET} PROPERTIES FOLDER "exec")
 endmacro()
 
-# Create a test target
-macro(fw_test SIGHT_TARGET)
+# Generic operations for a test based on the CppUnit framework
+macro(sight_generic_test SIGHT_TARGET)
     set(options)
     set(oneValueArgs REQUIRE_X)
     set(multiValueArgs)
@@ -349,13 +351,25 @@ macro(fw_test SIGHT_TARGET)
         set(${SIGHT_TARGET}_PCH_LIB $<TARGET_OBJECTS:${${SIGHT_TARGET}_PCH_TARGET}_PCH_OBJ>)
     endif()
 
+    string(REGEX REPLACE "Test$" "" DIRNAME "${SIGHT_TARGET}")
+    set(TU_NAME "tu_exec_${DIRNAME}")
+
+    set(BASE_TARGET "${DIRNAME}")
+
+    if(TARGET ${BASE_TARGET})
+        get_target_property(TARGET_TYPE ${BASE_TARGET} SIGHT_TARGET_TYPE)
+        if("${TARGET_TYPE}" STREQUAL "MODULE")
+            string(REPLACE "_" "::" BASE_MODULE ${BASE_TARGET})
+
+            # This variable is used in cppunit_main.cpp to automatically load the module of the test
+            set(TESTED_MODULE "${PROJECT_NAME}::${BASE_MODULE}")
+        endif()
+    endif()
+
     configure_file(
         "${FWCMAKE_RESOURCE_PATH}/build/cppunit_main.cpp" "${CMAKE_CURRENT_BINARY_DIR}/src/cppunit_main.cpp" IMMEDIATE
         @ONLY
     )
-
-    string(REGEX REPLACE "Test$" "" DIRNAME "${SIGHT_TARGET}")
-    set(TU_NAME "tu_exec_${DIRNAME}")
 
     add_executable(
         ${SIGHT_TARGET}
@@ -390,11 +404,6 @@ macro(fw_test SIGHT_TARGET)
         set(TEST_RC_DIR "${PRJ_SOURCE_DIR}/rc")
     endif()
     if(TEST_RC_DIR)
-        if(EXISTS "${TEST_RC_DIR}/profile.xml")
-            target_compile_definitions(
-                ${SIGHT_TARGET} PRIVATE -DMODULE_TEST_PROFILE=\"${SIGHT_MODULE_RC_PREFIX}/${TU_NAME}/profile.xml\"
-            )
-        endif()
         set(${SIGHT_TARGET}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${TU_NAME}")
 
         create_resources_target(${SIGHT_TARGET}_rc "${TEST_RC_DIR}" "${${SIGHT_TARGET}_RC_BUILD_DIR}")
@@ -440,20 +449,6 @@ macro(fw_test SIGHT_TARGET)
             WORLD_EXECUTE
     )
 
-    # Set test command
-    if(TESTS_XML_OUTPUT)
-        add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT} --xml"
-                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-        )
-    else()
-        add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT}"
-                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
-        )
-    endif()
-
-    # Cleanup
-    unset(SIGHT_TEST_SCRIPT)
-
     # Adds project into folder test
     set_target_properties(${SIGHT_TARGET} PROPERTIES FOLDER "test")
 
@@ -474,6 +469,61 @@ macro(fw_test SIGHT_TARGET)
             target_compile_options(${SIGHT_TARGET} PRIVATE "-fPIC")
         endif()
     endif()
+endmacro()
+
+# Create a GUI test
+macro(sight_gui_test SIGHT_TARGET)
+    sight_generic_test(${SIGHT_TARGET} REQUIRE_X ON)
+    target_link_libraries(${SIGHT_TARGET} PUBLIC guiTest)
+
+    # Set test command
+    if(UNIX)
+        set(SCRIPT_SUFFIX "sh")
+    else()
+        set(SCRIPT_SUFFIX "bat")
+    endif()
+    add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND ${CMAKE_BINARY_DIR}/bin/exec_gui_tests.${SCRIPT_SUFFIX}
+                                                 ${SIGHT_TEST_SCRIPT} WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+    )
+    unset(SCRIPT_SUFFIX)
+    unset(SIGHT_TEST_SCRIPT)
+endmacro()
+
+# Create a unit test
+macro(fw_test SIGHT_TARGET)
+    set(options)
+    set(oneValueArgs
+        TYPE
+        PCH
+        START
+        PRIORITY
+        CONSOLE
+        OBJECT_LIBRARY
+        WARNINGS_AS_ERRORS
+        UNIQUE
+        FAST_DEBUG
+        REQUIRE_X
+    )
+    set(multiValueArgs)
+    cmake_parse_arguments(SIGHT_CPPUNIT "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
+
+    if(EXISTS "${${SIGHT_TARGET}_DIR}/ui")
+        list(FILTER ${SIGHT_TARGET}_HEADERS EXCLUDE REGEX "/ui/")
+        list(FILTER ${SIGHT_TARGET}_SOURCES EXCLUDE REGEX "/ui/")
+    endif()
+    sight_generic_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_CPPUNIT_REQUIRE_X})
+
+    # Set test command
+    if(TESTS_XML_OUTPUT)
+        add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT} --xml"
+                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        )
+    else()
+        add_test(NAME "${SIGHT_TEST_SCRIPT}" COMMAND "${CMAKE_BINARY_DIR}/bin/${SIGHT_TEST_SCRIPT}"
+                 WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/bin"
+        )
+    endif()
+    unset(SIGHT_TEST_SCRIPT)
 endmacro()
 
 # Create a library target
@@ -770,7 +820,7 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
                            "rem Check if we have elevated privileges\n"
                            "whoami /all | findstr S-1-16-12288 > nul\n"
                            "rem if we do not have those, restart the script as Admin\n"
-                           "if %errorlevel%==1 (powershell start -verb runas '%0' & exit /b)\n"
+                           "if %errorlevel%==1 (powershell start -verb runas '%0' %* & exit /b)\n"
                 )
             endif()
 
@@ -828,7 +878,7 @@ endmacro()
 
 # Return the precompiled header target from a target
 function(
-    getPchTarget
+    get_pch_target
     TARGET
     TARGET_DIR
     TYPE
@@ -854,11 +904,7 @@ function(
         if(FAST_DEBUG AND "${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
             set(PCH_SUFFIX "Og")
         endif()
-        if(TYPE STREQUAL "MODULE")
-            set(${TARGET_NAME}_PCH_TARGET pchService${PCH_SUFFIX} PARENT_SCOPE)
-        else()
-            set(${TARGET_NAME}_PCH_TARGET pchCore${PCH_SUFFIX} PARENT_SCOPE)
-        endif()
+        set(${TARGET_NAME}_PCH_TARGET pchCore${PCH_SUFFIX} PARENT_SCOPE)
     endif()
 
 endfunction()
@@ -872,8 +918,6 @@ macro(sight_add_target)
     set(oneValueArgs
         TYPE
         PCH
-        START
-        PRIORITY
         CONSOLE
         OBJECT_LIBRARY
         WARNINGS_AS_ERRORS
@@ -907,7 +951,7 @@ macro(sight_add_target)
 
     # Get the pch target, test the existence of type variable to exclude unbuilt projects
     if(SIGHT_ENABLE_PCH AND SIGHT_TARGET_TYPE AND SIGHT_TARGET_PCH)
-        getpchtarget(
+        get_pch_target(
             ${NAME} ${CMAKE_CURRENT_SOURCE_DIR} ${SIGHT_TARGET_TYPE} ${SIGHT_TARGET_PCH} ${SIGHT_TARGET_OBJECT_LIBRARY}
             ${SIGHT_TARGET_FAST_DEBUG}
         )
@@ -926,24 +970,20 @@ macro(sight_add_target)
         fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE} OFF)
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "TEST")
         fw_test(${SIGHT_TARGET} REQUIRE_X ${SIGHT_TARGET_REQUIRE_X} "${OPTIONS}")
+    elseif("${SIGHT_TARGET_TYPE}" STREQUAL "GUI_TEST")
+        sight_gui_test(${SIGHT_TARGET} "${OPTIONS}")
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "APP")
         if(${SIGHT_TARGET_REQUIRE_ADMIN})
             fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE} ON)
         else()
             fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE} OFF)
         endif()
-    endif()
-
-    if("${SIGHT_TARGET_TYPE}" STREQUAL "APP")
-        if(NOT DEFINED SIGHT_TARGET_UNIQUE)
-            set(SIGHT_TARGET_UNIQUE FALSE)
+        if(NOT SIGHT_TARGET_UNIQUE)
+            set(SIGHT_TARGET_UNIQUE "false")
+        else()
+            set(SIGHT_TARGET_UNIQUE "true")
         endif()
-        set(SIGHT_TARGET_UNIQUE FALSE)
         set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_UNIQUE "${SIGHT_TARGET_UNIQUE}")
-    endif()
-
-    if("${SIGHT_TARGET_TYPE}" STREQUAL "MODULE" OR "${SIGHT_TARGET_TYPE}" STREQUAL "APP" AND SIGHT_TARGET_START)
-        set_target_properties(${SIGHT_TARGET} PROPERTIES SIGHT_START "${SIGHT_TARGET_START}")
     endif()
 
     if(NOT DEFINED SIGHT_TARGET_WARNINGS_AS_ERRORS OR SIGHT_TARGET_WARNINGS_AS_ERRORS)
@@ -1274,31 +1314,6 @@ function(order_components SIGHT_UNORDERED_COMPONENTS SIGHT_ORDERED_COMPONENTS)
 
     set(SIGHT_ORDERED_COMPONENTS ${ordered_components} PARENT_SCOPE)
 endfunction()
-
-# Copy Ogre plugins in the build folder.
-# It is necessary for applications to run from the build directory.
-# For packaged applications, we use install_plugins.cmake
-macro(copy_ogre_plugins)
-    # Fixup VCPKG paths
-    if(WIN32)
-        if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
-            if(EXISTS "${OGRE_PLUGIN_DIR}/../debug/bin")
-                get_filename_component(OGRE_PLUGIN_DIR "${OGRE_PLUGIN_DIR}/../debug/bin" ABSOLUTE)
-            endif()
-        endif()
-
-        file(GLOB OGRE_PLUGINS "${OGRE_PLUGIN_DIR}/*RenderSystem*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-             "${OGRE_PLUGIN_DIR}/*Plugin_*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-             "${OGRE_PLUGIN_DIR}/*Codec_*${CMAKE_SHARED_LIBRARY_SUFFIX}*"
-        )
-
-        set(FW_OGRE_PLUGINS_DIR "${CMAKE_BINARY_DIR}/ogreplugins/")
-
-        # This copies the plugins into the build directory
-        file(INSTALL ${OGRE_PLUGINS} DESTINATION "${FW_OGRE_PLUGINS_DIR}")
-        message(STATUS "Copying Ogre Plugins ['${OGRE_PLUGINS}'] to: '${FW_OGRE_PLUGINS_DIR}'")
-    endif()
-endmacro()
 
 # Check if something links against a module
 function(sight_forbid_module_link _targets)

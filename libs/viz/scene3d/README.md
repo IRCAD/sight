@@ -83,10 +83,6 @@ Contains interface and classes for interactions, clippingBox, trackball interact
 
 - **ViewportListener**: listens to render events triggered for a given viewport and activates the overlays enabled for that viewport.
 
-### picker
-
-- **IPicker**: interface for pickers.
-
 ### rc
 
 Contains all resources needed by Ogre3d, such as GLSL, materials and compositors scripts, some meshes and textures ...

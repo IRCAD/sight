@@ -29,10 +29,7 @@
 
 #include <igtlTrackingDataMessage.h>
 
-namespace sight::io::igtl::detail
-{
-
-namespace converter
+namespace sight::io::igtl::detail::converter
 {
 
 const std::string CompositeConverter::s_IGTL_TYPE          = "TDATA";
@@ -41,14 +38,12 @@ const std::string CompositeConverter::s_FWDATA_OBJECT_TYPE = data::Composite::cl
 converterRegisterMacro(io::igtl::detail::converter::CompositeConverter);
 
 CompositeConverter::CompositeConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 CompositeConverter::~CompositeConverter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -57,7 +52,7 @@ CompositeConverter::~CompositeConverter()
     ::igtl::TrackingDataMessage::Pointer trackingMsg = ::igtl::TrackingDataMessage::New();
 
     data::Composite::csptr composite = data::Composite::dynamicConstCast(src);
-    for(const data::Composite::ContainerType::value_type& elt : composite->getContainer())
+    for(const auto& elt : *composite)
     {
         data::Matrix4::csptr transfoMatrix =
             data::Matrix4::dynamicConstCast(elt.second);
@@ -73,7 +68,7 @@ CompositeConverter::~CompositeConverter()
             {
                 for(std::size_t j = 0 ; j < 4 ; ++j)
                 {
-                    matrix[i][j] = transfoMatrix->getCoefficient(i, j);
+                    matrix[i][j] = float(transfoMatrix->getCoefficient(i, j));
                 }
             }
 
@@ -82,7 +77,7 @@ CompositeConverter::~CompositeConverter()
         }
     }
 
-    return ::igtl::MessageBase::Pointer(trackingMsg.GetPointer());
+    return {trackingMsg.GetPointer()};
 }
 
 //-----------------------------------------------------------------------------
@@ -107,11 +102,11 @@ data::Object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase
 
         ::igtl::Matrix4x4 matrix;
         trackElement->GetMatrix(matrix);
-        for(int i = 0 ; i < 4 ; ++i)
+        for(std::size_t i2 = 0 ; i2 < 4 ; ++i2)
         {
-            for(int j = 0 ; j < 4 ; ++j)
+            for(std::size_t j = 0 ; j < 4 ; ++j)
             {
-                transfoMatrix->setCoefficient(i, j, matrix[i][j]);
+                transfoMatrix->setCoefficient(i2, j, matrix[i2][j]);
             }
         }
     }
@@ -140,6 +135,4 @@ std::string const& CompositeConverter::getFwDataObjectType() const
     return CompositeConverter::s_FWDATA_OBJECT_TYPE;
 }
 
-} // namespace converter
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::converter

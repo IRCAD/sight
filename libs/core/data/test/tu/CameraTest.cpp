@@ -22,7 +22,6 @@
 
 #include "CameraTest.hpp"
 
-#include <core/tools/NumericRoundCast.hxx>
 #include <core/tools/random/Generator.hpp>
 
 #include <data/Camera.hpp>
@@ -30,10 +29,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::CameraTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 using core::tools::random::safeRand;
@@ -54,16 +50,16 @@ void CameraTest::tearDown()
 
 data::Camera::sptr initCamera()
 {
-    const double CX                             = safeRand() % 10000 / 100;
-    const double CY                             = safeRand() % 10000 / 100;
-    const double FX                             = safeRand() % 10000 / 100;
-    const double FY                             = safeRand() % 10000 / 100;
-    const double SKEW                           = safeRand() % 10000 / 100;
-    const double K1                             = safeRand() % 10000 / 100;
-    const double K2                             = safeRand() % 10000 / 100;
-    const double P1                             = safeRand() % 10000 / 100;
-    const double P2                             = safeRand() % 10000 / 100;
-    const double K3                             = safeRand() % 10000 / 100;
+    const double CX                             = safeRand() % 10000 / 100.;
+    const double CY                             = safeRand() % 10000 / 100.;
+    const double FX                             = safeRand() % 10000 / 100.;
+    const double FY                             = safeRand() % 10000 / 100.;
+    const double SKEW                           = safeRand() % 10000 / 100.;
+    const double K1                             = safeRand() % 10000 / 100.;
+    const double K2                             = safeRand() % 10000 / 100.;
+    const double P1                             = safeRand() % 10000 / 100.;
+    const double P2                             = safeRand() % 10000 / 100.;
+    const double K3                             = safeRand() % 10000 / 100.;
     const bool IS_CALIBRATED                    = true;
     const std::string DESC                      = "My camera";
     const std::string CAM_ID                    = "CAM_461384568";
@@ -71,7 +67,7 @@ data::Camera::sptr initCamera()
     const std::size_t HEIGHT                    = 800;
     const data::Camera::SourceType CAMERASOURCE = data::Camera::DEVICE;
     const std::string CAMERAID                  = "/dev/video0";
-    const float MAXIMUMFRAMERATE                = 30.f;
+    const float MAXIMUMFRAMERATE                = 30.F;
     const data::Camera::PixelFormat PIXELFORMAT = data::Camera::RGBA32;
     const std::string VIDEOFILE                 = "/tmp/video.mp4";
     const std::string STREAMURL                 = "rtsp://192.168.0.1/h264.sdp";
@@ -103,16 +99,16 @@ data::Camera::sptr initCamera()
 
 void CameraTest::paramTest()
 {
-    const double CX                             = safeRand() % 10000 / 100;
-    const double CY                             = safeRand() % 10000 / 100;
-    const double FX                             = safeRand() % 10000 / 100;
-    const double FY                             = safeRand() % 10000 / 100;
-    const double SKEW                           = safeRand() % 10000 / 100;
-    const double K1                             = safeRand() % 10000 / 100;
-    const double K2                             = safeRand() % 10000 / 100;
-    const double P1                             = safeRand() % 10000 / 100;
-    const double P2                             = safeRand() % 10000 / 100;
-    const double K3                             = safeRand() % 10000 / 100;
+    const double CX                             = safeRand() % 10000 / 100.;
+    const double CY                             = safeRand() % 10000 / 100.;
+    const double FX                             = safeRand() % 10000 / 100.;
+    const double FY                             = safeRand() % 10000 / 100.;
+    const double SKEW                           = safeRand() % 10000 / 100.;
+    const double K1                             = safeRand() % 10000 / 100.;
+    const double K2                             = safeRand() % 10000 / 100.;
+    const double P1                             = safeRand() % 10000 / 100.;
+    const double P2                             = safeRand() % 10000 / 100.;
+    const double K3                             = safeRand() % 10000 / 100.;
     const bool IS_CALIBRATED                    = true;
     const std::string DESC                      = "My camera";
     const std::string CAM_ID                    = "CAM_461384568";
@@ -120,7 +116,7 @@ void CameraTest::paramTest()
     const std::size_t HEIGHT                    = 800;
     const data::Camera::SourceType CAMERASOURCE = data::Camera::DEVICE;
     const std::string CAMERAID                  = "/dev/video0";
-    const float MAXIMUMFRAMERATE                = 30.f;
+    const float MAXIMUMFRAMERATE                = 30.F;
     const data::Camera::PixelFormat PIXELFORMAT = data::Camera::RGBA32;
     const std::string VIDEOFILE                 = "/tmp/video.mp4";
     const std::string STREAMURL                 = "rtsp://192.168.0.1/h264.sdp";
@@ -146,18 +142,18 @@ void CameraTest::paramTest()
     camera->setStreamUrl(STREAMURL);
     camera->setScale(SCALE);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(CX, camera->getCx(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(CY, camera->getCy(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(FX, camera->getFx(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(FY, camera->getFy(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(SKEW, camera->getSkew(), 0.00001);
+    CPPUNIT_ASSERT_EQUAL(CX, camera->getCx());
+    CPPUNIT_ASSERT_EQUAL(CY, camera->getCy());
+    CPPUNIT_ASSERT_EQUAL(FX, camera->getFx());
+    CPPUNIT_ASSERT_EQUAL(FY, camera->getFy());
+    CPPUNIT_ASSERT_EQUAL(SKEW, camera->getSkew());
 
     data::Camera::DistArrayType dist = camera->getDistortionCoefficient();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(K1, dist[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(K2, dist[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(P1, dist[2], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(P2, dist[3], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(K3, dist[4], 0.00001);
+    CPPUNIT_ASSERT_EQUAL(K1, dist[0]);
+    CPPUNIT_ASSERT_EQUAL(K2, dist[1]);
+    CPPUNIT_ASSERT_EQUAL(P1, dist[2]);
+    CPPUNIT_ASSERT_EQUAL(P2, dist[3]);
+    CPPUNIT_ASSERT_EQUAL(K3, dist[4]);
 
     CPPUNIT_ASSERT_EQUAL(IS_CALIBRATED, camera->getIsCalibrated());
     CPPUNIT_ASSERT_EQUAL(DESC, camera->getDescription());
@@ -185,19 +181,19 @@ void CameraTest::shallowCopyTest()
 
     CPPUNIT_ASSERT(*camera == *camera2);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getCx(), camera2->getCx(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getCy(), camera2->getCy(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getFx(), camera2->getFx(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getFy(), camera2->getFy(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(camera->getSkew(), camera2->getSkew(), 0.00001);
+    CPPUNIT_ASSERT_EQUAL(camera->getCx(), camera2->getCx());
+    CPPUNIT_ASSERT_EQUAL(camera->getCy(), camera2->getCy());
+    CPPUNIT_ASSERT_EQUAL(camera->getFx(), camera2->getFx());
+    CPPUNIT_ASSERT_EQUAL(camera->getFy(), camera2->getFy());
+    CPPUNIT_ASSERT_EQUAL(camera->getSkew(), camera2->getSkew());
 
     data::Camera::DistArrayType dist  = camera->getDistortionCoefficient();
     data::Camera::DistArrayType dist2 = camera2->getDistortionCoefficient();
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[0], dist2[0], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[1], dist2[1], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[2], dist2[2], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[3], dist2[3], 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(dist[4], dist2[4], 0.00001);
+    CPPUNIT_ASSERT_EQUAL(dist[0], dist2[0]);
+    CPPUNIT_ASSERT_EQUAL(dist[1], dist2[1]);
+    CPPUNIT_ASSERT_EQUAL(dist[2], dist2[2]);
+    CPPUNIT_ASSERT_EQUAL(dist[3], dist2[3]);
+    CPPUNIT_ASSERT_EQUAL(dist[4], dist2[4]);
 
     CPPUNIT_ASSERT_EQUAL(camera->getIsCalibrated(), camera2->getIsCalibrated());
     CPPUNIT_ASSERT_EQUAL(camera->getDescription(), camera2->getDescription());
@@ -222,6 +218,4 @@ void CameraTest::deepCopyTest()
     CPPUNIT_ASSERT(*camera == *camera2);
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

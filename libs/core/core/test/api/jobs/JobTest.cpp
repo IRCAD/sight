@@ -39,10 +39,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::jobs::ut::JobTest);
 
-namespace sight::core::jobs
-{
-
-namespace ut
+namespace sight::core::jobs::ut
 {
 
 //------------------------------------------------------------------------------
@@ -92,8 +89,8 @@ void JobTest::APIAndStateTest()
 {
     {
         core::jobs::Job job("Job", [](core::jobs::Job&)
-                    {
-                    });
+                {
+                });
         CPPUNIT_ASSERT_EQUAL(core::jobs::IJob::WAITING, job.getState());
 
         CPPUNIT_ASSERT_THROW(job.wait(), core::jobs::exception::Waiting);
@@ -114,9 +111,9 @@ void JobTest::APIAndStateTest()
 
     {
         core::jobs::Job job("Job", [](core::jobs::Job& runningJob)
-                    {
+                {
                             CPPUNIT_ASSERT_EQUAL(core::jobs::IJob::RUNNING, runningJob.getState());
-                    });
+                });
         CPPUNIT_ASSERT_EQUAL(core::jobs::IJob::WAITING, job.getState());
 
         CPPUNIT_ASSERT_THROW(job.wait(), core::jobs::exception::Waiting);
@@ -132,10 +129,10 @@ void JobTest::APIAndStateTest()
     {
         core::thread::Worker::sptr worker = core::thread::Worker::New();
         core::jobs::Job job("Job", [](core::jobs::Job& runningJob)
-                    {
+                {
                             std::this_thread::sleep_for(std::chrono::milliseconds(30));
                             CPPUNIT_ASSERT_EQUAL(core::jobs::IJob::CANCELING, runningJob.getState());
-                    }, worker);
+                }, worker);
         CPPUNIT_ASSERT_EQUAL(core::jobs::IJob::WAITING, job.getState());
 
         CPPUNIT_ASSERT_THROW(job.wait(), core::jobs::exception::Waiting);
@@ -157,19 +154,19 @@ void JobTest::APIAndStateTest()
 
         auto future = std::async(
             [&job]() -> bool
+            {
+                bool except = true;
+                try
                 {
-                    bool except = true;
-                    try
-                    {
-                        job.wait();
-                        except = false;
-                    }
-                    catch(core::jobs::exception::Waiting&)
-                    {
-                        except = true;
-                    }
-                    return except;
-                });
+                    job.wait();
+                    except = false;
+                }
+                catch(core::jobs::exception::Waiting&)
+                {
+                    except = true;
+                }
+                return except;
+            });
 
         CPPUNIT_ASSERT_EQUAL(false, job.cancelRequested());
         CPPUNIT_ASSERT_EQUAL(false, job.cancelRequestedCallback()());
@@ -249,13 +246,13 @@ void JobTest::GenericCallbackTest()
             loops = 1 << 30;
             core::jobs::Job job("GenericCallbackJob",
                                 [loops](core::jobs::Job& runningJob)
-                        {
+                    {
                                 algoMockGenericCallback(
                                     loops,
                                     runningJob.progressCallback(),
                                     runningJob.cancelRequestedCallback()
                                 );
-                        },
+                    },
                                 worker);
             job.setTotalWorkUnits(std::uint64_t(loops));
             job.run();
@@ -516,8 +513,12 @@ void JobTest::AggregationTest()
                        };
 
         std::uint64_t norm = 100;
-        std::uint64_t wu1 = 55, wu2 = 444, wu3 = 9999;
-        double w1 = 2, w2 = 42, w3 = 0.5;
+        std::uint64_t wu1  = 55;
+        std::uint64_t wu2  = 444;
+        std::uint64_t wu3  = 9999;
+        double w1          = 2;
+        double w2          = 42;
+        double w3          = 0.5;
 
         auto job1 = core::jobs::Job::New("GenericCallbackJob1", funcGen());
         auto job2 = core::jobs::Observer::New("GenericCallbackJob2", wu2);
@@ -529,7 +530,7 @@ void JobTest::AggregationTest()
         auto jobs1 = core::jobs::Aggregator::New("Aggregator1");
         auto jobs2 = core::jobs::Aggregator::New("Aggregator2");
 
-        const double fNorm = static_cast<double>(norm);
+        const auto fNorm = static_cast<double>(norm);
         jobs1->add(job1, w1);
         CPPUNIT_ASSERT_EQUAL(std::uint64_t(w1 * fNorm), jobs1->getTotalWorkUnits());
 
@@ -570,26 +571,21 @@ public:
     virtual void progressNotify(double p) = 0;
     virtual bool canceled()               = 0;
     virtual ~ProgressObserver()
-    {
-    }
+    = default;
 };
 
-class algoMockObserver
+class AlgoMockObserver
 {
 public:
 
-    algoMockObserver(ProgressObserver* obs) :
-        m_obs(obs),
-        m_canceled(false)
+    explicit AlgoMockObserver(ProgressObserver* obs) :
+        m_obs(obs)
     {
     }
 
-    ~algoMockObserver()
+    ~AlgoMockObserver()
     {
-        if(m_obs)
-        {
-            delete m_obs;
-        }
+        delete m_obs;
     }
 
     //------------------------------------------------------------------------------
@@ -599,7 +595,7 @@ public:
         for(int i = 0 ; i < n ; i++)
         {
             // algo ...
-            if(m_obs)
+            if(m_obs != nullptr)
             {
                 m_obs->progressNotify(((double) (i + 1)) / n);
 
@@ -623,29 +619,29 @@ public:
         m_canceled = true;
     }
 
-protected:
+private:
 
     ProgressObserver* m_obs;
-    bool m_canceled;
+    bool m_canceled {false};
 };
 
 struct JobObserver : public ProgressObserver
 {
-    JobObserver(std::function<void(double)> func) :
-        m_callback(func)
+    explicit JobObserver(std::function<void(double)> func) :
+        m_callback(std::move(func))
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void progressNotify(double p)
+    void progressNotify(double p) override
     {
         m_callback(p);
     }
 
     //------------------------------------------------------------------------------
 
-    bool canceled()
+    bool canceled() override
     {
         return false;
     }
@@ -655,15 +651,15 @@ struct JobObserver : public ProgressObserver
 
 struct JobObserverCanceler : public JobObserver
 {
-    JobObserverCanceler(std::function<void(double)> func, const bool& canceled = false) :
-        JobObserver(func),
+    explicit JobObserverCanceler(std::function<void(double)> func, const bool& canceled = false) :
+        JobObserver(std::move(func)),
         m_canceled(canceled)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    bool canceled()
+    bool canceled() override
     {
         return m_canceled;
     }
@@ -676,7 +672,7 @@ struct JobObserverCanceler : public JobObserver
 void JobTest::ObserverTest()
 {
     const std::uint64_t progress(100);
-    const double fProgress = static_cast<double>(progress);
+    const auto fProgress = static_cast<double>(progress);
     for(int i = 0 ; i < 10 ; ++i)
     {
         int loops = 100;
@@ -687,7 +683,7 @@ void JobTest::ObserverTest()
                      {
                          job.doneWork(std::uint64_t(d * fProgress));
                      };
-            algoMockObserver algo(new JobObserver(f));
+            AlgoMockObserver algo(new JobObserver(f));
 
             algo.run(loops);
             job.finish();
@@ -698,14 +694,14 @@ void JobTest::ObserverTest()
         {
             core::jobs::Job job("GenericCallbackJob",
                                 [ = ](core::jobs::Job& job)
-                        {
+                    {
                                 auto f = [ =, &job](double d)
-                            {
+                        {
                                          job.doneWork(std::uint64_t(d * fProgress));
-                            };
-                                algoMockObserver algo(new JobObserver(f));
+                        };
+                                AlgoMockObserver algo(new JobObserver(f));
                                 algo.run(loops);
-                        });
+                    });
             job.run();
             CPPUNIT_ASSERT_EQUAL(progress, job.getDoneWorkUnits());
         }
@@ -716,19 +712,19 @@ void JobTest::ObserverTest()
             loops = 1 << 30;
             core::jobs::Job job("GenericCallbackJob",
                                 [ = ](core::jobs::Job& runningJob)
-                        {
+                    {
                                 auto f = [ =, &runningJob](double d)
-                            {
+                        {
                                          runningJob.doneWork(std::uint64_t(d * fProgress));
-                            };
-                                algoMockObserver algo(new JobObserver(f));
+                        };
+                                AlgoMockObserver algo(new JobObserver(f));
                                 runningJob.addSimpleCancelHook(
                                     [&]()
-                            {
+                        {
                                     algo.cancel();
-                            });
+                        });
                                 algo.run(loops);
-                        },
+                    },
                                 worker
             );
             job.setTotalWorkUnits(std::uint64_t(loops));
@@ -745,14 +741,14 @@ void JobTest::ObserverTest()
             loops = 1 << 30;
             core::jobs::Job job("GenericCallbackJob",
                                 [ = ](core::jobs::Job& runningJob)
-                        {
+                    {
                                 auto f = [ =, &runningJob](double d)
-                            {
+                        {
                                          runningJob.doneWork(std::uint64_t(d * fProgress));
-                            };
-                                algoMockObserver algo(new JobObserverCanceler(f, runningJob.cancelRequested()));
+                        };
+                                AlgoMockObserver algo(new JobObserverCanceler(f, runningJob.cancelRequested()));
                                 algo.run(loops);
-                        },
+                    },
                                 worker
             );
             job.setTotalWorkUnits(std::uint64_t(loops));
@@ -779,9 +775,9 @@ void JobTest::LogTest()
             job.progressCallback(),
             job.cancelRequestedCallback(),
             [&job](const std::string& message)
-                {
-                    job.log(message);
-                });
+            {
+                job.log(message);
+            });
 
         job.finish();
     }
@@ -794,9 +790,9 @@ void JobTest::LogTest()
                                              runningJob.progressCallback(),
                                              runningJob.cancelRequestedCallback(),
                                              [&runningJob](const std::string message)
-                    {
-                        runningJob.log(message);
-                    });
+                {
+                    runningJob.log(message);
+                });
                                      };
         core::jobs::Job job("GenericCallbackJob2", func);
 
@@ -813,9 +809,9 @@ void JobTest::LogTest()
                                              runningJob.progressCallback(),
                                              runningJob.cancelRequestedCallback(),
                                              [&runningJob](const std::string message)
-                    {
-                        runningJob.log(message);
-                    });
+                {
+                    runningJob.log(message);
+                });
                                      };
         auto job1 = core::jobs::Job::New("GenericCallbackJob1", func);
         auto job2 = core::jobs::Job::New("GenericCallbackJob2", func);
@@ -854,6 +850,4 @@ void JobTest::LogTest()
     }
 }
 
-} //namespace ut
-
-} //namespace sight::core::jobs
+} // namespace sight::core::jobs::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,9 +68,8 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~SDecomposeMatrix() noexcept
-    {
-    }
+    ~SDecomposeMatrix() noexcept override =
+        default;
 
 protected:
 

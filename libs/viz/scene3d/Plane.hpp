@@ -22,12 +22,11 @@
 
 #pragma once
 
-#include "core/tools/fwID.hpp"
-
 #include "viz/scene3d/config.hpp"
 
 #include <data/helper/MedicalImage.hpp>
 
+#include <viz/scene3d/Texture.hpp>
 #include <viz/scene3d/TransferFunction.hpp>
 
 #include <OGRE/OgreMaterial.h>
@@ -44,7 +43,7 @@ namespace Ogre
 
 class SceneNode;
 
-}
+} // namespace Ogre
 
 namespace sight::viz::scene3d
 {
@@ -56,20 +55,20 @@ class VIZ_SCENE3D_CLASS_API Plane
 {
 public:
 
-    typedef data::helper::MedicalImage::orientation_t OrientationMode;
+    using OrientationMode = data::helper::MedicalImage::orientation_t;
 
     /// Defines the texture filtering mode.
-    typedef enum FilteringEnum
+    enum class filter_t : std::uint8_t
     {
         NONE,
         LINEAR,
         ANISOTROPIC
-    } FilteringEnumType;
+    };
 
     using sptr = std::shared_ptr<Plane>;
 
     /**
-     * @brief Creates a plane, instantiates its material. Call @ref Plane::initializePlane() to create its geometry.
+     * @brief Creates a plane, instantiates its material. Call @ref Plane::update() to create its geometry.
      * @param _negatoId unique identifier of the negato.
      * @param _parentSceneNode parent node where attach the plane.
      * @param _sceneManager the Ogre scene manager.
@@ -82,18 +81,25 @@ public:
         const core::tools::fwID::IDType& _negatoId,
         Ogre::SceneNode* _parentSceneNode,
         Ogre::SceneManager* _sceneManager,
-        OrientationMode _orientation,
-        Ogre::TexturePtr _tex,
-        FilteringEnumType _filtering,
-        float _entityOpacity = 1.0f,
-        bool _displayBorder  = true
+        viz::scene3d::Texture::sptr _tex,
+        filter_t _filtering,
+        bool _displayBorder  = true,
+        float _entityOpacity = 1.0F
     );
 
     /// Cleans ogre resources.
-    VIZ_SCENE3D_API virtual ~Plane();
+    VIZ_SCENE3D_API ~Plane();
 
-    /// Instantiates the plane mesh and entity.
-    VIZ_SCENE3D_API void initializePlane();
+    /**
+     * @brief Instantiates the plane mesh and entity.
+     * @param _enableTransparency used true to enable the opacity.
+     */
+    VIZ_SCENE3D_API void update(
+        OrientationMode _orientation,
+        const Ogre::Vector3& _spacing,
+        const Ogre::Vector3& _origin,
+        bool _enableTransparency
+    );
 
     /**
      * @brief Handles the slice plane move.
@@ -102,30 +108,6 @@ public:
      * @param _sliceIndex the image slice index used to move the plane.
      */
     VIZ_SCENE3D_API void changeSlice(float _sliceIndex);
-
-    /**
-     * @brief Sets the image axis orthogonal to the plane.
-     * @param _newMode the new orientation.
-     */
-    VIZ_SCENE3D_API void setOrientationMode(OrientationMode _newMode);
-
-    /**
-     * @brief Sets whether the negato's opacity is taken into account.
-     * @param _enable used true to enable the opacity.
-     */
-    VIZ_SCENE3D_API void enableAlpha(bool _enable);
-
-    /**
-     * @brief Sets the real world image's origin.
-     * @param _origPos the image origin.
-     */
-    VIZ_SCENE3D_API void setOriginPosition(const Ogre::Vector3& _origPos);
-
-    /**
-     * @brief Sets the real world size of a voxel.
-     * @param _spacing the image spacing.
-     */
-    VIZ_SCENE3D_API void setVoxelSpacing(const Ogre::Vector3& _spacing);
 
     /**
      * @brief Sets the plane's opacity.
@@ -147,32 +129,11 @@ public:
      */
     VIZ_SCENE3D_API void setTFData(const viz::scene3d::TransferFunction& _tfTexture);
 
-    /**
-     * @brief Sets whether or not the transfer function uses thresholding.
-     * @param _threshold use true to enable the treshold.
-     */
-    VIZ_SCENE3D_API void switchThresholding(bool _threshold);
-
-    /// Gets the plane's width in model space.
-    VIZ_SCENE3D_API Ogre::Real getWidth() const;
-
-    /// Gets the plane's height in model space.
-    VIZ_SCENE3D_API Ogre::Real getHeight() const;
-
-    /// Moves the scene node to m_originPosition point
-    VIZ_SCENE3D_API void moveToOriginPosition();
-
-    /// Gets the x, y or z world position of the plane scene node according to the current orientation mode
-    VIZ_SCENE3D_API double getSliceWorldPosition() const;
-
     /// Gets the image axis orthogonal to the plane.
-    VIZ_SCENE3D_API OrientationMode getOrientationMode() const;
-
-    /// Gets the material used to render the plane.
-    VIZ_SCENE3D_API Ogre::MaterialPtr getMaterial();
+    [[nodiscard]] VIZ_SCENE3D_API OrientationMode getOrientationMode() const;
 
     /// Gets the movable object created by this class.
-    VIZ_SCENE3D_API const Ogre::MovableObject* getMovableObject() const;
+    [[nodiscard]] VIZ_SCENE3D_API const Ogre::MovableObject* getMovableObject() const;
 
     /**
      * @brief Sets the picking flags.
@@ -183,31 +144,25 @@ public:
     /// Sets this object's render queue group and render priority.
     VIZ_SCENE3D_API void setRenderQueuerGroupAndPriority(std::uint8_t _groupId, std::uint16_t _priority);
 
+    /// Compute two cross lines that intersect at the given position, according to the plane orientation.
+    VIZ_SCENE3D_API std::array<Ogre::Vector3, 4> computeCross(
+        const Ogre::Vector3& _center,
+        const Ogre::Vector3& _imageOrigin
+    ) const;
+
 private:
 
     /// Sets the plane's original position.
-    void initializePosition();
-
-    /// Creates a material for the mesh plane with the negato texture.
-    void initializeMaterial();
-
-    /// Sets the relativePosition.
-    void setRelativePosition(float _relativePosition);
-
-    /// Moves plane along its Normal.
-    void moveAlongAxis();
+    void updatePosition();
 
     /// Sets the dimensions for the related members, and also creates a movable plane to instantiate the entity.
-    Ogre::MovablePlane setDimensions();
-
-    /// Indicates whether whe want to threshold instead of windowing.
-    bool m_threshold {false};
+    Ogre::MovablePlane setDimensions(const Ogre::Vector3& _spacing);
 
     /// Defines the filtering type for this plane.
-    FilteringEnumType m_filtering {FilteringEnum::ANISOTROPIC};
+    filter_t m_filtering {filter_t::ANISOTROPIC};
 
     /// Defines the orientation mode of the plane.
-    OrientationMode m_orientation;
+    OrientationMode m_orientation {OrientationMode::X_AXIS};
 
     /// Contains the plane on which we will apply a texture.
     Ogre::MeshPtr m_slicePlane;
@@ -216,7 +171,7 @@ private:
     Ogre::ManualObject* m_border {nullptr};
 
     /// Defines the origin position of the slice plane according to the source image's origin.
-    Ogre::Vector3 m_originPosition {Ogre::Vector3::ZERO};
+    Ogre::Vector3 m_origin {Ogre::Vector3::ZERO};
 
     /// Contains the plane material.
     Ogre::MaterialPtr m_texMaterial {nullptr};
@@ -225,7 +180,7 @@ private:
     Ogre::MaterialPtr m_borderMaterial {nullptr};
 
     /// Contains the texture.
-    Ogre::TexturePtr m_texture;
+    viz::scene3d::Texture::sptr m_texture;
 
     /// Contains the scenemanager containing the plane.
     Ogre::SceneManager* m_sceneManager {nullptr};
@@ -246,33 +201,20 @@ private:
     Ogre::SceneNode* m_parentSceneNode {nullptr};
 
     /// Defines the entity's width.
-    Ogre::Real m_width {0.f};
+    Ogre::Real m_width {0.F};
 
     /// Defines the entity's height.
-    Ogre::Real m_height {0.f};
+    Ogre::Real m_height {0.F};
 
     /// Defines the entity's depth.
-    Ogre::Real m_depth {0.f};
-
-    /// Defines the spacing in the texture 3d image file.
-    Ogre::Vector3 m_spacing {Ogre::Vector3::ZERO};
-
-    /// Defines the depth range.
-    float m_relativePosition {0.8f};
-
-    /// Defines the opacity applied to the entity.
-    float m_entityOpacity {1.f};
+    Ogre::Real m_depth {0.F};
 
     /// Defines if the border is displayed.
     bool m_displayBorder {true};
+
+    /// Defines the opacity applied to the entity.
+    float m_entityOpacity {1.F};
 };
-
-//------------------------------------------------------------------------------
-
-inline void Plane::setOriginPosition(const Ogre::Vector3& _origPos)
-{
-    m_originPosition = _origPos;
-}
 
 //------------------------------------------------------------------------------
 
@@ -283,25 +225,4 @@ inline Plane::OrientationMode Plane::getOrientationMode() const
 
 //------------------------------------------------------------------------------
 
-inline Ogre::MaterialPtr Plane::getMaterial()
-{
-    return m_texMaterial;
-}
-
-//------------------------------------------------------------------------------
-
-inline Ogre::Real Plane::getWidth() const
-{
-    return m_width;
-}
-
-//------------------------------------------------------------------------------
-
-inline Ogre::Real Plane::getHeight() const
-{
-    return m_height;
-}
-
-//------------------------------------------------------------------------------
-
-} // Namespace fwRenderOgre.
+} // namespace sight::viz::scene3d

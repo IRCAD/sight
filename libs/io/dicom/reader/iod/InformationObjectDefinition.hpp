@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,13 +34,7 @@
 
 #include <cstdint>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace iod
+namespace sight::io::dicom::reader::iod
 {
 
 /**
@@ -62,11 +56,11 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API InformationObjectDefinition(
-        const data::DicomSeries::csptr& dicomSeries,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const core::log::Logger::sptr& logger = nullptr,
-        ProgressCallback progress             = nullptr,
-        CancelRequestedCallback cancel        = nullptr
+        data::DicomSeries::csptr dicomSeries,
+        SPTR(io::dicom::container::DicomInstance)instance,
+        core::log::Logger::sptr logger = nullptr,
+        ProgressCallback progress      = nullptr,
+        CancelRequestedCallback cancel = nullptr
     );
 
     /// Destructor
@@ -97,8 +91,4 @@ protected:
     CancelRequestedCallback m_cancelRequestedCallback;
 };
 
-} // namespace iod
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::iod

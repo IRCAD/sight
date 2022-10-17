@@ -31,13 +31,7 @@
 #include <data/PointList.hpp>
 #include <data/String.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 //------------------------------------------------------------------------------
@@ -59,8 +53,7 @@ SpatialFiducials::SpatialFiducials(
 //------------------------------------------------------------------------------
 
 SpatialFiducials::~SpatialFiducials()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -103,7 +96,7 @@ void SpatialFiducials::readLandmark(const gdcm::DataSet& fiducialDataset)
         int frameNumber =
             io::dicom::helper::DicomDataReader::getTagValue<0x0008, 0x1160, int>(referencedImageDataset);
         double zCoordinate =
-            io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(m_object, frameNumber);
+            io::dicom::helper::DicomDataTools::convertFrameNumberToZCoordinate(m_object, std::size_t(frameNumber));
 
         data::Point::sptr point = data::Point::New(
             static_cast<double>(pointValues[0]),
@@ -117,8 +110,4 @@ void SpatialFiducials::readLandmark(const gdcm::DataSet& fiducialDataset)
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

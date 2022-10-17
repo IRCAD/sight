@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,23 +37,18 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::qt3dTest::ut::MaterialTest);
 
-namespace sight::viz::qt3dTest
-{
-
-namespace ut
+namespace sight::viz::qt3dTest::ut
 {
 
 //------------------------------------------------------------------------------
 
 MaterialTest::MaterialTest()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 MaterialTest::~MaterialTest()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -74,7 +69,7 @@ void MaterialTest::initializeMaterial()
     TestApplication app;
 
     auto sightMaterial = data::Material::New();
-    auto qt3dMaterial  = new viz::qt3d::data::Material();
+    auto* qt3dMaterial = new viz::qt3d::data::Material();
 
     // Initializes qt3dMaterial according to sightMaterial.
     qt3dMaterial->updatePolygonMode(sightMaterial->getRepresentationMode());
@@ -86,52 +81,52 @@ void MaterialTest::initializeMaterial()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
         static_cast<float>(sightMaterial->ambient()->red()),
         qt3dMaterial->getAmbient().redF(),
-        0.01f
+        0.01F
     );
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
         static_cast<float>(sightMaterial->ambient()->green()),
         qt3dMaterial->getAmbient().greenF(),
-        0.01f
+        0.01F
     );
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
         static_cast<float>(sightMaterial->ambient()->blue()),
         qt3dMaterial->getAmbient().blueF(),
-        0.01f
+        0.01F
     );
 
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
         static_cast<float>(sightMaterial->diffuse()->red()),
         qt3dMaterial->getDiffuse().redF(),
-        0.01f
+        0.01F
     );
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
         static_cast<float>(sightMaterial->diffuse()->green()),
         qt3dMaterial->getDiffuse().greenF(),
-        0.01f
+        0.01F
     );
     CPPUNIT_ASSERT_DOUBLES_EQUAL(
         static_cast<float>(sightMaterial->diffuse()->blue()),
         qt3dMaterial->getDiffuse().blueF(),
-        0.01f
+        0.01F
     );
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2f, qt3dMaterial->getSpecular().x(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2f, qt3dMaterial->getSpecular().y(), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2f, qt3dMaterial->getSpecular().z(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3dMaterial->getSpecular().x(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3dMaterial->getSpecular().y(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.2F, qt3dMaterial->getSpecular().z(), 0.00001);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(25.0f, qt3dMaterial->getShininess(), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(25.0F, qt3dMaterial->getShininess(), 0.00001);
 
     CPPUNIT_ASSERT_EQUAL(1, qt3dMaterial->effect()->techniques().size());
-    auto tech = qt3dMaterial->effect()->techniques()[0];
+    auto* tech = qt3dMaterial->effect()->techniques()[0];
 
     CPPUNIT_ASSERT_EQUAL(4, tech->renderPasses().size());
     CPPUNIT_ASSERT_EQUAL(3, tech->parameters().size());
 
     // Asserts qt3dMaterial and sightMaterial rendering options are equals.
-    auto normalPass     = tech->renderPasses()[0];
-    auto cellNormalPass = tech->renderPasses()[1];
-    auto renderPass     = tech->renderPasses()[2];
-    auto edgeRenderPass = tech->renderPasses()[3];
+    auto* normalPass     = tech->renderPasses()[0];
+    auto* cellNormalPass = tech->renderPasses()[1];
+    auto* renderPass     = tech->renderPasses()[2];
+    auto* edgeRenderPass = tech->renderPasses()[3];
 
     // Default polygonMode must be set to SURFACE.
     CPPUNIT_ASSERT_EQUAL(
@@ -155,6 +150,4 @@ void MaterialTest::initializeMaterial()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut.
-
-} // namespace sight::viz::qt3dTest.
+} // namespace sight::viz::qt3dTest::ut

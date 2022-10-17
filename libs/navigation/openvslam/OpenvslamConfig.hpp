@@ -35,7 +35,7 @@ struct NAVIGATION_OPENVSLAM_CLASS_API OrbParams
     /// Maximum number of key points.
     unsigned int maxNumKeyPts = 2000;
     ///
-    float scaleFactor = 1.2f;
+    float scaleFactor = 1.2F;
     /// Number of levels
     unsigned int numLevels = 8;
     ///

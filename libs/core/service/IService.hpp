@@ -57,6 +57,13 @@
 #include <cstdint>
 #include <optional>
 
+namespace sight::core::thread
+{
+
+class Worker;
+
+} // namespace sight::core::thread
+
 namespace sight::service
 {
 
@@ -65,19 +72,13 @@ namespace registry
 
 class ObjectService;
 
-}
-namespace thread
-{
-
-class Worker;
-
-}
+} // namespace registry
 namespace helper
 {
 
 class Config;
 
-}
+} // namespace helper
 
 #define KEY_GROUP_NAME(key, \
                        index) (std::string(key) + "#" + std::to_string(index))
@@ -92,9 +93,7 @@ class Config;
  * - \b started() : Emitted when the service has started.
  * - \b updated() : Emitted when the service has updated.
  * - \b stopped() : Emitted when the service has stopped.
- * - \b infoNotified(std::string _message): Emitted when the service wants to pop an info notification.
- * - \b successNotified(std::string _message): Emitted when the service wants to pop a success notification.
- * - \b failureNotified(std::string _message): Emitted when the service wants to pop a failure notification.
+ * - \b notified(NotificationType _type, std::string _message): Emitted when the service wants to pop a notification.
  *
  * @section Slots Slots
  * - \b start() : Start the service.
@@ -140,7 +139,7 @@ public:
         std::string m_uid;
 
         /// Object access (INPUT, INOUT, OUTPUT)
-        data::Access m_access;
+        data::Access m_access {data::Access::INOUT};
 
         /// True if the service is autoConnected this object according to the auto-connection map
         bool m_autoConnect {false};
@@ -218,6 +217,15 @@ public:
 
     //@}
 
+    /// Defines Notification type, default is INFO.
+    enum class NotificationType
+    {
+        SUCCESS,
+        INFO,
+        FAILURE,
+        DEFAULT = INFO
+    };
+
     /**
      * @name Signal API
      */
@@ -235,10 +243,9 @@ public:
     SERVICE_API static const core::com::Signals::SignalKeyType s_STOPPED_SIG;
     typedef core::com::Signal<void ()> StoppedSignalType;
 
-    using NotifSignalType = core::com::Signal<void (std::string)>;
-    SERVICE_API static const core::com::Signals::SignalKeyType s_INFO_NOTIFIED_SIG;
-    SERVICE_API static const core::com::Signals::SignalKeyType s_SUCCESS_NOTIFIED_SIG;
-    SERVICE_API static const core::com::Signals::SignalKeyType s_FAILURE_NOTIFIED_SIG;
+    /// Single signal for notifications.
+    using notification_signal_type = core::com::Signal<void (NotificationType, std::string)>;
+    SERVICE_API static const core::com::Signals::SignalKeyType s_NOTIFIED_SIG;
 
     //@}
 
@@ -480,6 +487,20 @@ public:
     {
     public:
 
+        using KeyConnectionsMapType = std::map<std::string_view, KeyConnectionsType>;
+
+        KeyConnectionsMap() = default;
+        KeyConnectionsMap(
+            std::initializer_list<std::tuple<const std::string_view, core::com::Signals::SignalKeyType,
+                                             core::com::Slots::SlotKeyType> > init
+        )
+        {
+            for(const auto& [key, sig, slot] : init)
+            {
+                m_keyConnectionsMap[key].push_back(std::make_pair(sig, slot));
+            }
+        }
+
         //------------------------------------------------------------------------------
 
         void push(
@@ -491,32 +512,30 @@ public:
             m_keyConnectionsMap[key].push_back(std::make_pair(sig, slot));
         }
 
-        typedef std::map<std::string_view, KeyConnectionsType> KeyConnectionsMapType;
-
         //------------------------------------------------------------------------------
 
-        KeyConnectionsMapType::const_iterator find(std::string_view key) const
+        [[nodiscard]] KeyConnectionsMapType::const_iterator find(std::string_view key) const
         {
             return m_keyConnectionsMap.find(key);
         }
 
         //------------------------------------------------------------------------------
 
-        KeyConnectionsMapType::const_iterator end() const
+        [[nodiscard]] KeyConnectionsMapType::const_iterator end() const
         {
             return m_keyConnectionsMap.cend();
         }
 
         //------------------------------------------------------------------------------
 
-        bool empty() const
+        [[nodiscard]] bool empty() const
         {
             return m_keyConnectionsMap.empty();
         }
 
         //------------------------------------------------------------------------------
 
-        std::size_t size() const
+        [[nodiscard]] std::size_t size() const
         {
             return m_keyConnectionsMap.size();
         }
@@ -590,8 +609,8 @@ public:
     SERVICE_API void setInput(
         data::Object::csptr obj,
         std::string_view key,
-        const bool autoConnect,
-        const bool optional              = false,
+        bool autoConnect,
+        bool optional                    = false,
         std::optional<std::size_t> index = std::nullopt
     );
 
@@ -621,8 +640,8 @@ public:
     SERVICE_API void setInOut(
         data::Object::sptr obj,
         std::string_view key,
-        const bool autoConnect,
-        const bool optional              = false,
+        bool autoConnect,
+        bool optional                    = false,
         std::optional<std::size_t> index = std::nullopt
     );
 
@@ -657,8 +676,8 @@ public:
         std::string_view key,
         std::optional<std::size_t> index,
         data::Access access,
-        const bool autoConnect,
-        const bool optional
+        bool autoConnect,
+        bool optional
     );
 
     /**
@@ -699,27 +718,19 @@ public:
         const std::string& objId,
         std::string_view key,
         data::Access access,
-        const bool autoConnect           = false,
-        const bool optional              = false,
+        bool autoConnect                 = false,
+        bool optional                    = false,
         std::optional<std::size_t> index = std::nullopt
     );
 
     /// Return true if all the non-optional object required by the service are present
     SERVICE_API bool hasAllRequiredObjects() const;
 
-    /// Defines Notification type, default is INFO.
-    enum class NotificationType
-    {
-        SUCCESS, ///< to emit 's_SUCCESS_NOTIFIED_SIG'
-        INFO,    ///< to emit 's_INFO_NOTIFIED_SIG'
-        FAILURE  ///< to emit 's_FAILURE_NOTIFIED_SIG'
-    };
-
     /**
-     * @brief Emit notification signal with 'message' base on Notification 'type' provided
+     * @brief Emits notification signal with 'message' and Notification 'type' provided
      *
      * @param[in] type type of the notification to emit @see Notification enum class.
-     * @param[in] message message to send in the signal std::string.
+     * @param[in] message message as std::string.
      */
     SERVICE_API void notify(NotificationType type, const std::string& message) const;
 
@@ -779,7 +790,7 @@ protected:
      * @todo This method must be pure virtual
      * @todo This method must have in parameter the new object or the old ?
      */
-    virtual void swapping(std::string_view)
+    virtual void swapping(std::string_view /*unused*/)
     {
     }
 
@@ -890,18 +901,18 @@ private:
     /// @copydoc sight::data::IHasData::_registerObject
     SERVICE_API void _registerObject(
         std::string_view key,
-        const data::Access access,
+        data::Access access,
         std::optional<std::size_t> index,
-        const bool autoConnect,
-        const bool optional = false
+        bool autoConnect,
+        bool optional = false
     ) override;
 
     /// @copydoc sight::data::IHasData::_registerObjectGroup
     SERVICE_API void _registerObjectGroup(
         std::string_view key,
-        const data::Access access,
-        const bool autoConnect,
-        const bool optional
+        data::Access access,
+        bool autoConnect,
+        bool optional
     ) override;
 
     // Slot: start the service
@@ -933,7 +944,7 @@ private:
     void _autoDisconnect();
 
     /// Add a known connection from the appConfig
-    void _addProxyConnection(const helper::ProxyConnections& info);
+    void _addProxyConnection(const helper::ProxyConnections& proxy);
 
     /// Return the information about the required object
     std::optional<std::tuple<const std::string&, std::optional<std::size_t>,
@@ -963,17 +974,17 @@ private:
     /**
      * @brief Defines the current global status of the service.
      */
-    GlobalStatus m_globalState;
+    GlobalStatus m_globalState {STOPPED};
 
     /**
      * @brief Defines if the service is updating.
      */
-    UpdatingStatus m_updatingState;
+    UpdatingStatus m_updatingState {NOTUPDATING};
 
     /**
      * @brief Defines if the service is configured or not.
      */
-    ConfigurationStatus m_configurationState;
+    ConfigurationStatus m_configurationState {UNCONFIGURED};
 
     /**
      * @brief Defines the configuration of the objects. Used for autoConnect.

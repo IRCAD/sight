@@ -47,15 +47,13 @@ static const std::string s_READER_CONFIG       = "readerConfig";
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept
-{
-}
+SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept
-{
-}
+SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -81,12 +79,12 @@ void SSliceIndexDicomEditor::starting()
     m_requestWorker = core::thread::Worker::New();
 
     // Create the DICOM reader.
-    m_seriesDB = data::SeriesDB::New();
+    m_series_set = data::SeriesSet::New();
 
     m_dicomReader = this->registerService<sight::io::base::service::IReader>(m_dicomReaderImplementation);
     SIGHT_ASSERT("Unable to create a reader of type '" + m_dicomReaderImplementation + "'", m_dicomReader);
     m_dicomReader->setWorker(m_requestWorker);
-    m_dicomReader->setInOut(m_seriesDB, "data");
+    m_dicomReader->setInOut(m_series_set, "data");
 
     if(!m_readerConfig.empty())
     {
@@ -122,7 +120,7 @@ void SSliceIndexDicomEditor::starting()
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QHBoxLayout* layout = new QHBoxLayout();
+    auto* layout = new QHBoxLayout();
 
     m_slider = new QSlider(Qt::Horizontal);
     layout->addWidget(m_slider, 1);
@@ -222,13 +220,13 @@ void SSliceIndexDicomEditor::retrieveSlice()
 {
     // Check if the slice already exists.
     const auto dicomSeries               = m_series.lock();
-    const std::size_t selectedSliceIndex = m_slider->value() + dicomSeries->getFirstInstanceNumber();
+    const std::size_t selectedSliceIndex = std::size_t(m_slider->value()) + dicomSeries->getFirstInstanceNumber();
     const bool isInstanceAvailable       = dicomSeries->isInstanceAvailable(selectedSliceIndex);
 
     // If the slice is not pulled, pull it.
     if(!isInstanceAvailable)
     {
-        m_requestWorker->post(std::bind(&SSliceIndexDicomEditor::pullSlice, this, selectedSliceIndex));
+        m_requestWorker->post([this, selectedSliceIndex](auto&& ...){pullSlice(selectedSliceIndex);});
     }
     else
     {
@@ -270,7 +268,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     // Get selected slice.
     try
     {
-        const std::string seriesInstanceUID = dicomSeries->getInstanceUID();
+        const std::string seriesInstanceUID = dicomSeries->getSeriesInstanceUID();
         const std::string sopInstanceUID    =
             seriesEnquirer->findSOPInstanceUID(seriesInstanceUID, static_cast<unsigned int>(_selectedSliceIndex));
 
@@ -365,25 +363,24 @@ void SSliceIndexDicomEditor::readSlice(
         return;
     }
 
-    fs.write(buffer, bufferSize);
+    fs.write(buffer, std::streamsize(bufferSize));
     fs.close();
 
     // Read the image.
     m_dicomReader->setFolder(tmpPath);
     m_dicomReader->update().wait();
 
-    if(!m_dicomReader->hasFailed() && m_seriesDB->getContainer().size() > 0)
+    if(!m_dicomReader->hasFailed() && !m_series_set->empty())
     {
         // Copy the read series to the image.
-        const auto imageSeries           = data::ImageSeries::dynamicCast(*(m_seriesDB->getContainer().begin()));
-        const data::Image::sptr newImage = imageSeries->getImage();
+        const auto imageSeries = data::ImageSeries::dynamicCast(m_series_set->front());
 
         const auto image = m_image.lock();
-        image->deepCopy(newImage);
+        image->deepCopy(imageSeries);
 
         data::Integer::sptr axialIndex    = data::Integer::New(0);
-        data::Integer::sptr frontalIndex  = data::Integer::New(image->getSize()[0] / 2);
-        data::Integer::sptr sagittalIndex = data::Integer::New(image->getSize()[1] / 2);
+        data::Integer::sptr frontalIndex  = data::Integer::New(static_cast<std::int64_t>(image->getSize()[0] / 2));
+        data::Integer::sptr sagittalIndex = data::Integer::New(static_cast<std::int64_t>(image->getSize()[1] / 2));
 
         data::helper::MedicalImage::setSliceIndex(
             *image,

@@ -281,4 +281,4 @@ void SModelSeriesReader::loadMesh(const std::filesystem::path& _file, data::Mesh
 
 //------------------------------------------------------------------------------
 
-} // namespace ioVtk
+} // namespace sight::module::io::vtk

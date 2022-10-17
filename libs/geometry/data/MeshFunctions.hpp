@@ -97,10 +97,8 @@ std::pair<T, U> makeOrderedPair(const T first, const U second)
     {
         return std::pair<T, U>(first, second);
     }
-    else
-    {
-        return std::pair<T, U>(second, first);
-    }
+
+    return std::pair<T, U>(second, first);
 }
 
 //-----------------------------------------------------------------------------
@@ -159,4 +157,4 @@ bool isBorderlessSurface(
     return isBorderless;
 }
 
-} // namespace sight::geometry
+} // namespace sight::geometry::data

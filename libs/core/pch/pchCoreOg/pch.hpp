@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
- * Copyright (C) 2017-2019 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,34 +19,4 @@
  *
  ***********************************************************************/
 
-#include <core/base.hpp>
-#include <core/Demangler.hpp>
-#include <core/FactoryRegistry.hpp>
-
-#include <boost/graph/named_graph.hpp>
-#include <boost/lexical_cast.hpp>
-#include <boost/mpl/accumulate.hpp>
-#include <boost/mpl/apply.hpp>
-#include <boost/mpl/back_inserter.hpp>
-#include <boost/mpl/copy.hpp>
-#include <boost/mpl/empty.hpp>
-#include <boost/mpl/eval_if.hpp>
-#include <boost/mpl/if.hpp>
-#include <boost/mpl/placeholders.hpp>
-#include <boost/mpl/push_front.hpp>
-#include <boost/mpl/transform.hpp>
-#include <boost/mpl/vector.hpp>
-#include <boost/type_traits.hpp>
-
-#include <cstdint>
-#include <exception>
-#include <filesystem>
-#include <functional>
-#include <future>
-#include <iostream>
-#include <iterator>
-#include <map>
-#include <string>
-#include <typeinfo>
-#include <unordered_map>
-#include <vector>
+#include "../pchCore/pch.hpp"

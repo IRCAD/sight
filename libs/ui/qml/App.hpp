@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ public:
 public Q_SLOTS:
 
     void aboutToQuit();
-    void onExit();
+    static void onExit();
 };
 
 } // namespace sight::ui::qml

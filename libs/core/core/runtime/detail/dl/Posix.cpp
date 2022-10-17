@@ -26,49 +26,41 @@
 
 #include "core/runtime/Module.hpp"
 
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace dl
+namespace sight::core::runtime::detail::dl
 {
 
 //------------------------------------------------------------------------------
 
 Posix::Posix(const std::filesystem::path& modulePath) noexcept :
-    Native(modulePath),
-    m_handle(0)
+    Native(modulePath)
 {
 }
 
 //------------------------------------------------------------------------------
 
-Posix::~Posix() noexcept
-{
-}
+Posix::~Posix() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
 bool Posix::isLoaded() const noexcept
 {
-    return m_handle != 0;
+    return m_handle != nullptr;
 }
 
 //------------------------------------------------------------------------------
 
 void* Posix::getSymbol(const std::string& name) const
 {
-    void* result = 0;
-    if(isLoaded() == true)
+    void* result = nullptr;
+    if(isLoaded())
     {
         dlerror(); /* Clear existing error */
         result = dlsym(m_handle, name.c_str());
-        if(result == 0) /* Check for possible errors */
+        if(result == nullptr) /* Check for possible errors */
         {
             std::string message(dlerror());
-            if(message.empty() == false)
+            if(!message.empty())
             {
                 throw RuntimeException("Symbol retrieval failed. " + message);
             }
@@ -82,11 +74,11 @@ void* Posix::getSymbol(const std::string& name) const
 
 void Posix::load()
 {
-    if(m_handle == 0)
+    if(m_handle == nullptr)
     {
         // Opens the dynamic library.
         m_handle = dlopen(getFullPath().string().c_str(), RTLD_LAZY | RTLD_GLOBAL);
-        if(m_handle == 0)
+        if(m_handle == nullptr)
         {
             std::string message(dlerror());
             throw RuntimeException("Module load failed. " + message);
@@ -98,9 +90,9 @@ void Posix::load()
 
 void Posix::unload()
 {
-    if(m_handle != 0)
+    if(m_handle != nullptr)
     {
-        int result;
+        int result = 0;
         result = dlclose(m_handle);
         if(result != 0)
         {
@@ -108,16 +100,12 @@ void Posix::unload()
             throw RuntimeException("Module unload failed. " + message);
         }
 
-        m_handle = 0;
+        m_handle = nullptr;
     }
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace dl
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail::dl
 
 #endif // #if defined(__unix__)

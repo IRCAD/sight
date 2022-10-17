@@ -198,9 +198,8 @@ inline SlotConnectionBase::BlockerSptrType SlotConnection<void(A ...)>::getBlock
         if(!blocker)
         {
             blocker = SlotConnectionBase::BlockerSptrType(
-                (void*) NULL,
-                std::bind(&SlotConnection<void(A ...)>::unblock, this)
-            );
+                (void*) nullptr,
+                [this](auto&& ...){unblock();});
             m_weakBlocker = blocker;
 
             // signal has to be locked : signal got a pointer on m_pair

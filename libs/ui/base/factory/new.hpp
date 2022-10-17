@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,8 +48,7 @@ template<typename CLASSNAME>
 friend SPTR(CLASSNAME) New();
 
 Key()
-{
-}
+= default;
 };
 
 UI_BASE_API SPTR(sight::ui::base::GuiBaseObject) New(const sight::ui::base::registry::KeyType& classname);

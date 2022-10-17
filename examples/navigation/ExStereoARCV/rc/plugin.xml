@@ -12,7 +12,7 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="cameraSeries" type="sight::data::CameraSeries" />
+            <object uid="cameraSet" type="sight::data::CameraSet" />
             <object uid="camera1" type="sight::data::Camera" src="deferred" />
             <object uid="camera2" type="sight::data::Camera" src="deferred" />
             <object uid="frameTL1" type="sight::data::FrameTL" />
@@ -217,48 +217,13 @@
                 </config>
             </service>
 
-            <service uid="loadCalibAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>calibrationReaderSrv/update</slot>
-                </slots>
-            </service>
-
-            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabber1Srv/startCamera</slot>
-                    <slot>videoGrabber2Srv/startCamera</slot>
-                </slots>
-            </service>
-
-            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabber1Srv/stopCamera</slot>
-                    <slot>videoGrabber2Srv/stopCamera</slot>
-                </slots>
-            </service>
-
-            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabber1Srv/pauseCamera</slot>
-                    <slot>videoGrabber2Srv/pauseCamera</slot>
-                </slots>
-            </service>
-
-            <service uid="startRecordAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>matricesWriterSrv/startRecord</slot>
-                    <slot>startRecordAct/hide</slot>
-                    <slot>stopRecordAct/show</slot>
-                </slots>
-            </service>
-
-            <service uid="stopRecordAct" type="sight::module::ui::base::com::SSlotCaller" >
+            <service uid="loadCalibAct" type="sight::module::ui::base::SAction" />
+            <service uid="startVideoAct" type="sight::module::ui::base::SAction" />
+            <service uid="stopVideoAct" type="sight::module::ui::base::SAction" />
+            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" />
+            <service uid="startRecordAct" type="sight::module::ui::base::SAction" />
+            <service uid="stopRecordAct" type="sight::module::ui::base::SAction" >
                 <state visible="false" />
-                <slots>
-                    <slot>matricesWriterSrv/stopRecordAct</slot>
-                    <slot>stopRecordAct/hide</slot>
-                    <slot>startRecordAct/show</slot>
-                </slots>
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
@@ -322,12 +287,12 @@
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="calibrationReaderSrv" type="sight::module::io::vision::SOpenCVReader" >
-                <inout key="data" uid="cameraSeries" />
+                <inout key="data" uid="cameraSet" />
             </service>
 
-            <!-- extract a sight::data::Camera from the sight::data::CameraSeries -->
+            <!-- extract a sight::data::Camera from the sight::data::CameraSet -->
             <service uid="cameraExtractorSrv" type="sight::module::data::SGetCamera" >
-                <inout key="source" uid="cameraSeries" />
+                <inout key="source" uid="cameraSet" />
                 <out group="camera" >
                     <key index="0" uid="camera1" />
                     <key index="1" uid="camera2" />
@@ -552,14 +517,46 @@
                 <inout key="output" uid="rightMat" />
             </service>
 
-            <service uid="hideAxisSrv" type="sight::module::ui::base::com::SBooleanSlotCaller" >
-                <slots>
-                    <slot>LAxisAdp/updateVisibility</slot>
-                    <slot>RAxisAdp/updateVisibility</slot>
-                </slots>
-            </service>
+            <service uid="hideAxisSrv" type="sight::module::ui::base::SAction" />
 
             <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>loadCalibAct/clicked</signal>
+                <slot>calibrationReaderSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>startVideoAct/clicked</signal>
+                <slot>videoGrabber1Srv/startCamera</slot>
+                <slot>videoGrabber2Srv/startCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>stopVideoAct/clicked</signal>
+                <slot>videoGrabber1Srv/stopCamera</slot>
+                <slot>videoGrabber2Srv/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>pauseVideoAct/clicked</signal>
+                <slot>videoGrabber1Srv/pauseCamera</slot>
+                <slot>videoGrabber2Srv/pauseCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>startRecordAct/clicked</signal>
+                <slot>matricesWriterSrv/startRecord</slot>
+                <slot>startRecordAct/hide</slot>
+                <slot>stopRecordAct/show</slot>
+            </connect>
+
+            <connect>
+                <signal>stopRecordAct/clicked</signal>
+                <slot>matricesWriterSrv/stopRecord</slot>
+                <slot>stopRecordAct/hide</slot>
+                <slot>startRecordAct/show</slot>
+            </connect>
 
             <connect>
                 <signal>reprojectionParamsSrv/colorChanged</signal>
@@ -617,7 +614,7 @@
             </connect>
 
             <connect>
-                <signal>cameraSeries/addedCamera</signal>
+                <signal>cameraSet/addedCamera</signal>
                 <slot>cameraExtractorSrv/update</slot>
             </connect>
 
@@ -646,6 +643,12 @@
             <connect>
                 <signal>synchroParamsSrv/intChanged</signal>
                 <slot>frameMatrixSynchronizerSrv/setFrameDelay</slot>
+            </connect>
+
+            <connect>
+                <signal>hideAxisSrv/isChecked</signal>
+                <slot>LAxisAdp/updateVisibility</slot>
+                <slot>RAxisAdp/updateVisibility</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

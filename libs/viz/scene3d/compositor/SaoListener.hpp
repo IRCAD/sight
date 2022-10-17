@@ -33,12 +33,9 @@ namespace Ogre
 
 class Viewport;
 
-}
+} // namespace Ogre
 
-namespace sight::viz::scene3d
-{
-
-namespace compositor
+namespace sight::viz::scene3d::compositor
 {
 
 // Here we add the class derivated from the Ogre Listener
@@ -54,13 +51,11 @@ public:
     }
 
     /// Method called before a render_target operation involving a material to set dynamically the material parameters.
-    VIZ_SCENE3D_API void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& mat);
+    VIZ_SCENE3D_API void notifyMaterialRender(Ogre::uint32 pass_id, Ogre::MaterialPtr& mat) override;
 
 private:
 
     Ogre::Viewport* m_viewport;
 };
 
-} // namespace compositor.
-
-} // namespace sight::viz::scene3d.
+} // namespace sight::viz::scene3d::compositor

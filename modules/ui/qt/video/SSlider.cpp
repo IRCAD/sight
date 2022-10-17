@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,10 +38,7 @@
 
 #include <chrono>
 
-namespace sight::module::ui::qt
-{
-
-namespace video
+namespace sight::module::ui::qt::video
 {
 
 const core::com::Signals::SignalKeyType SSlider::s_POSITION_CHANGED_SIG = "positionChanged";
@@ -62,14 +59,13 @@ QString convertMSecToHHMMSS(int64_t milliseconds)
     ms -= minutes;
     std::chrono::seconds seconds = std::chrono::duration_cast<std::chrono::seconds>(ms);
 
-    QTime time(hours.count(), minutes.count(), static_cast<std::int32_t>(seconds.count()));
+    QTime time(int(hours.count()), int(minutes.count()), static_cast<std::int32_t>(seconds.count()));
     return time.toString("hh:mm:ss");
 }
 
 //------------------------------------------------------------------------------
 
-SSlider::SSlider() noexcept :
-    m_sliderPressed(false)
+SSlider::SSlider() noexcept
 {
     /// Slot to change the position of the slider
     newSlot(s_SET_POSITION_SLIDER_SLOT, &SSlider::setPosition, this);
@@ -81,9 +77,8 @@ SSlider::SSlider() noexcept :
 
 //------------------------------------------------------------------------------
 
-SSlider::~SSlider() noexcept
-{
-}
+SSlider::~SSlider() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -198,6 +193,4 @@ void SSlider::setDuration(int64_t duration)
 
 //------------------------------------------------------------------------------
 
-} //namespace video
-
-} //namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::video

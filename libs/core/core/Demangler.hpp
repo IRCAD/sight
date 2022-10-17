@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ public:
      *
      * @param s string to demangle
      */
-    CORE_API Demangler(const std::string& s);
+    CORE_API Demangler(std::string s);
 
     /**
      * @brief Constructor from any type
@@ -80,14 +80,14 @@ public:
      *
      * @return demangled class name only
      */
-    CORE_API std::string getLeafClassname() const;
+    [[nodiscard]] CORE_API std::string getLeafClassname() const;
 
     /**
      * @brief Returns "::some::long::namespace::Object" from "::some::long::namespace::Object"
      *
      * @return demangled class name with all namespaces from root
      */
-    CORE_API std::string getClassname() const;
+    [[nodiscard]] CORE_API std::string getClassname() const;
 
 protected:
 
@@ -101,7 +101,7 @@ protected:
      *
      * @return demangled string
      */
-    std::string demangle() const;
+    [[nodiscard]] std::string demangle() const;
 };
 
 /**

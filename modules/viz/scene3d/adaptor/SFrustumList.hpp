@@ -121,11 +121,14 @@ private:
     /// SLOT: adds a frustum in the list and displays it.
     void addFrustum();
 
+    /// Transform the data::Transform into position / oriention of the scene node.
+    void setTransfromToNode(Ogre::SceneNode* _node);
+
     /// Defines the near clipping distance.
-    float m_near {1.f};
+    float m_near {1.F};
 
     /// Defines the far clipping distance.
-    float m_far {20.f};
+    float m_far {20.F};
 
     /// Defines the color of frustum.
     std::string m_color {"#0000FF"};
@@ -133,8 +136,10 @@ private:
     /// Defines the maximum capacity of frustum list.
     unsigned int m_capacity {50};
 
+    using frustum_t = std::pair<Ogre::ManualObject*, Ogre::SceneNode*>;
+
     /// Stores a circular list of frustum adaptors.
-    boost::circular_buffer<Ogre::Camera*> m_frustumList {};
+    boost::circular_buffer<frustum_t> m_frustumList {};
 
     /// Uses to generate unique ID for each Ogre::Camera.
     std::size_t m_currentCamIndex {0};
@@ -144,9 +149,6 @@ private:
 
     /// Contains the material data.
     data::Material::sptr m_material {nullptr};
-
-    /// Contains the scene node where all frustums are attached.
-    Ogre::SceneNode* m_sceneNode {nullptr};
 
     static constexpr std::string_view s_TRANSFORM_INPUT = "transform";
 

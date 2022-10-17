@@ -40,13 +40,10 @@ typedef SSIZE_T ssize_t;
 
 #include <archive.h>
 
-#include <ctype.h>
+#include <cctype>
 #include <vector>
 
-namespace sight::io::igtl::detail
-{
-
-namespace archiver
+namespace sight::io::igtl::detail::archiver
 {
 
 /**
@@ -66,7 +63,7 @@ public:
      * @param[in] archive archive instance
      * @param[in] path virtual path in archive if file exist it get the stat of file otherwise create fake stat
      */
-    MemoryArchiveSink(struct archive* archive, const std::filesystem::path& path);
+    MemoryArchiveSink(struct archive* archive, std::filesystem::path path);
 
     /// Destructor
     ~MemoryArchiveSink();
@@ -110,7 +107,7 @@ public:
     IO_IGTL_API MemoryWriteArchive(std::vector<char>& buffer);
 
     /// Destructor
-    IO_IGTL_API ~MemoryWriteArchive();
+    IO_IGTL_API ~MemoryWriteArchive() override;
 
     /**
      * @brief create new entry in archive and return output stream for this memory file
@@ -142,7 +139,7 @@ public:
     /**
      * @return archive path
      */
-    IO_IGTL_API const std::filesystem::path getArchivePath() const override;
+    [[nodiscard]] IO_IGTL_API std::filesystem::path getArchivePath() const override;
 
     /**
      * @brief write all data stored in archive
@@ -168,7 +165,7 @@ public:
      * @param[in] n number of byte to write
      * @return number of byte have been written
      */
-    static ssize_t write(struct archive* archive, void* client_data, const void* buff, std::size_t n);
+    static ssize_t write(struct archive* archive, void* client_data, const void* buff, std::size_t size);
 
     /**
      * @brief close callback for archive instance
@@ -196,6 +193,4 @@ protected:
     std::vector<StreamSPtr> m_sinks;
 };
 
-} // namespace archiver
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::archiver

@@ -28,7 +28,6 @@
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/tools/NumericRoundCast.hxx>
 
 #include <geometry/data/Matrix4.hpp>
 
@@ -42,6 +41,7 @@
 #include <QVBoxLayout>
 #include <QWidget>
 
+#include <cmath>
 #include <random>
 
 namespace sight::module::ui::qt::metrics
@@ -52,17 +52,16 @@ namespace sight::module::ui::qt::metrics
 static const char* s_GROUP_PROPERTY_NAME = "group";
 static const int s_GROUP_NAME_ROLE       = Qt::UserRole + 1;
 
-static const core::com::Slots::SlotKeyType s_ADD_PICKED_POINT_SLOT = "addPickedPoint";
-static const core::com::Slots::SlotKeyType s_PICK_SLOT             = "pick";
-static const core::com::Slots::SlotKeyType s_ADD_POINT_SLOT        = "addPoint";
-static const core::com::Slots::SlotKeyType s_MODIFY_POINT_SLOT     = "modifyPoint";
-static const core::com::Slots::SlotKeyType s_SELECT_POINT_SLOT     = "selectPoint";
-static const core::com::Slots::SlotKeyType s_DESELECT_POINT_SLOT   = "deselectPoint";
-static const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT     = "removePoint";
-static const core::com::Slots::SlotKeyType s_ADD_GROUP_SLOT        = "addGroup";
-static const core::com::Slots::SlotKeyType s_REMOVE_GROUP_SLOT     = "removeGroup";
-static const core::com::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup";
-static const core::com::Slots::SlotKeyType s_RENAME_GROUP_SLOT     = "renameGroup";
+static const core::com::Slots::SlotKeyType s_PICK_SLOT           = "pick";
+static const core::com::Slots::SlotKeyType s_ADD_POINT_SLOT      = "addPoint";
+static const core::com::Slots::SlotKeyType s_MODIFY_POINT_SLOT   = "modifyPoint";
+static const core::com::Slots::SlotKeyType s_SELECT_POINT_SLOT   = "selectPoint";
+static const core::com::Slots::SlotKeyType s_DESELECT_POINT_SLOT = "deselectPoint";
+static const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT   = "removePoint";
+static const core::com::Slots::SlotKeyType s_ADD_GROUP_SLOT      = "addGroup";
+static const core::com::Slots::SlotKeyType s_REMOVE_GROUP_SLOT   = "removeGroup";
+static const core::com::Slots::SlotKeyType s_MODIFY_GROUP_SLOT   = "modifyGroup";
+static const core::com::Slots::SlotKeyType s_RENAME_GROUP_SLOT   = "renameGroup";
 
 static const std::string s_SIZE_CONFIG     = "size";
 static const std::string s_OPACITY_CONFIG  = "opacity";
@@ -75,7 +74,6 @@ const core::com::Signals::SignalKeyType SLandmarks::s_SEND_WORLD_COORD = "sendWo
 
 SLandmarks::SLandmarks() noexcept
 {
-    newSlot(s_ADD_PICKED_POINT_SLOT, &SLandmarks::addPickedPoint, this);
     newSlot(s_PICK_SLOT, &SLandmarks::pick, this);
     newSlot(s_ADD_POINT_SLOT, &SLandmarks::addPoint, this);
     newSlot(s_MODIFY_POINT_SLOT, &SLandmarks::modifyPoint, this);
@@ -92,9 +90,8 @@ SLandmarks::SLandmarks() noexcept
 
 //------------------------------------------------------------------------------
 
-SLandmarks::~SLandmarks() noexcept
-{
-}
+SLandmarks::~SLandmarks() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -107,13 +104,13 @@ void SLandmarks::configuring()
     m_defaultLandmarkSize = config.get<float>(s_SIZE_CONFIG, m_defaultLandmarkSize);
     SIGHT_FATAL_IF(
         "'size' value must be a positive number greater than 0 (current value: " << m_defaultLandmarkSize << ")",
-        m_defaultLandmarkSize <= 0.f
+        m_defaultLandmarkSize <= 0.F
     );
 
     m_defaultLandmarkOpacity = config.get<float>(s_OPACITY_CONFIG, m_defaultLandmarkOpacity);
     SIGHT_FATAL_IF(
         "'opacity' value must be a number between 0.0 and 1.0 (current value: " << m_defaultLandmarkOpacity << ")",
-        m_defaultLandmarkOpacity<0.f || m_defaultLandmarkOpacity>1.f
+        m_defaultLandmarkOpacity<0.F || m_defaultLandmarkOpacity>1.F
     );
 
     m_advancedMode = config.get<bool>(s_ADVANCED_CONFIG, false);
@@ -127,29 +124,41 @@ void SLandmarks::starting()
 {
     this->sight::ui::base::IGuiContainer::create();
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer()
     );
+    qtContainer->getQtContainer()->setObjectName(serviceID);
 
-    QVBoxLayout* const layout     = new QVBoxLayout();
-    QGridLayout* const gridLayout = new QGridLayout();
+    auto* const layout     = new QVBoxLayout();
+    auto* const gridLayout = new QGridLayout();
 
     m_visibilityCheckbox = new QCheckBox();
-    QLabel* const visibilityLabel = new QLabel(QString("Visibility"));
+    auto* const visibilityLabel = new QLabel(QString("Visibility"));
+    m_visibilityCheckbox->setObjectName(serviceID + "/" + visibilityLabel->text());
     m_sizeSlider = new QSlider(Qt::Horizontal);
     m_sizeSlider->setMinimum(1);
     m_sizeSlider->setMaximum(100);
-    QLabel* const sizeLabel = new QLabel(QString("Size"));
+    auto* const sizeLabel = new QLabel(QString("Size"));
+    m_sizeSlider->setObjectName(serviceID + "/" + sizeLabel->text());
     m_opacitySlider = new QSlider(Qt::Horizontal);
-    QLabel* const opacityLabel = new QLabel("Opacity");
+    auto* const opacityLabel = new QLabel("Opacity");
+    m_opacitySlider->setObjectName(serviceID + "/" + opacityLabel->text());
     m_shapeSelector = new QComboBox();
     m_shapeSelector->addItem(QString("Cube"));
     m_shapeSelector->addItem(QString("Sphere"));
-    QLabel* const shapeLabel = new QLabel("Shape");
+    auto* const shapeLabel = new QLabel("Shape");
+    m_shapeSelector->setObjectName(serviceID + "/" + shapeLabel->text());
 
-    m_newGroupButton = m_advancedMode ? new QPushButton("New Group") : nullptr;
+    if(m_advancedMode)
+    {
+        m_newGroupButton = new QPushButton("New Group");
+        m_newGroupButton->setObjectName(serviceID + "/" + m_newGroupButton->text());
+    }
 
     m_removeButton = new QPushButton("Delete");
+    m_removeButton->setObjectName(serviceID + "/" + m_removeButton->text());
     m_removeButton->setShortcut(QKeySequence::Delete);
 
     gridLayout->addWidget(visibilityLabel, 0, 0);
@@ -168,7 +177,7 @@ void SLandmarks::starting()
     m_treeWidget = new QTreeWidget();
     if(!m_text.empty())
     {
-        QLabel* helperTextLabel = new QLabel(QString::fromStdString(m_text));
+        auto* helperTextLabel = new QLabel(QString::fromStdString(m_text));
         layout->addWidget(helperTextLabel);
     }
 
@@ -267,11 +276,11 @@ void SLandmarks::onColorButton()
     QWidget* const container = qtContainer->getQtContainer();
     SIGHT_ASSERT("container not instanced", container);
 
-    const QColor oldColor = sender->property("color").value<QColor>();
-    const QColor colorQt  = QColorDialog::getColor(oldColor, container, "Select Color", QColorDialog::ShowAlphaChannel);
+    const auto oldColor  = sender->property("color").value<QColor>();
+    const QColor colorQt = QColorDialog::getColor(oldColor, container, "Select Color", QColorDialog::ShowAlphaChannel);
     if(colorQt.isValid())
     {
-        QPushButton* const colorButton = dynamic_cast<QPushButton*>(sender);
+        auto* const colorButton = dynamic_cast<QPushButton*>(sender);
         colorButton->setProperty("color", colorQt);
 
         setColorButtonIcon(colorButton, colorQt);
@@ -279,8 +288,8 @@ void SLandmarks::onColorButton()
         const std::string groupName = colorButton->property(s_GROUP_PROPERTY_NAME).value<QString>().toStdString();
 
         data::Landmarks::ColorType color = {{
-            colorQt.red() / 255.f, colorQt.green() / 255.f,
-            colorQt.blue() / 255.f, colorQt.alpha() / 255.f
+            float(colorQt.red()) / 255.F, float(colorQt.green()) / 255.F,
+            float(colorQt.blue()) / 255.F, float(colorQt.alpha()) / 255.F
         }
         };
 
@@ -295,7 +304,7 @@ void SLandmarks::onColorButton()
             sig = landmarks->signal<data::Landmarks::GroupModifiedSignalType>(data::Landmarks::s_GROUP_MODIFIED_SIG);
         }
 
-        m_opacitySlider->setValue(static_cast<int>(color[3] * m_opacitySlider->maximum()));
+        m_opacitySlider->setValue(static_cast<int>(color[3] * float(m_opacitySlider->maximum())));
 
         {
             core::com::Connection::Blocker block(sig->getConnection(this->slot(s_MODIFY_GROUP_SLOT)));
@@ -369,7 +378,7 @@ void SLandmarks::onGroupNameEdited(QTreeWidgetItem* _item, int _column)
 
 void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* _previous)
 {
-    if(_previous)
+    if(_previous != nullptr)
     {
         const auto landmarks = m_landmarks.lock();
         SIGHT_ASSERT("inout '" << s_LANDMARKS_INOUT << "' does not exist.", landmarks);
@@ -388,7 +397,7 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
             {
                 const std::string& groupName = previousParent->text(0).toStdString();
 
-                const std::size_t index = static_cast<std::size_t>(previousParent->indexOfChild(_previous));
+                const auto index = static_cast<std::size_t>(previousParent->indexOfChild(_previous));
 
                 SIGHT_ASSERT(
                     "index must be inferior to the number of points in '" + groupName + "'.",
@@ -406,12 +415,12 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
         }
     }
 
-    if(_current)
+    if(_current != nullptr)
     {
-        int size;
-        bool visible;
+        int size     = 0;
+        bool visible = false;
         QString shapeText;
-        float opacity;
+        float opacity = NAN;
         {
             const auto landmarks = m_landmarks.lock();
             SIGHT_ASSERT("inout '" << s_LANDMARKS_INOUT << "' does not exist.", landmarks);
@@ -430,7 +439,7 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
                 {
                     groupName = currentParent->text(0).toStdString();
 
-                    const std::size_t index = static_cast<std::size_t>(currentParent->indexOfChild(_current));
+                    const auto index = static_cast<std::size_t>(currentParent->indexOfChild(_current));
 
                     SIGHT_ASSERT(
                         "index must be inferior to the number of points in '" + groupName + "'.",
@@ -465,7 +474,7 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
         m_sizeSlider->setValue(size);
         m_visibilityCheckbox->setChecked(visible);
         m_shapeSelector->setCurrentText(shapeText);
-        m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
+        m_opacitySlider->setValue(static_cast<int>(opacity * float(m_opacitySlider->maximum())));
     }
 
     m_groupEditorWidget->setDisabled(_current == nullptr);
@@ -473,9 +482,9 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::onLandmarkDoubleClicked(QTreeWidgetItem* _item, int) const
+void SLandmarks::onLandmarkDoubleClicked(QTreeWidgetItem* _item, int /*unused*/) const
 {
-    if(_item)
+    if(_item != nullptr)
     {
         // Exclude top level item
         if(_item->childCount() != 0)
@@ -483,10 +492,11 @@ void SLandmarks::onLandmarkDoubleClicked(QTreeWidgetItem* _item, int) const
             return;
         }
 
-        QString index[3];
-        index[0] = _item->text(0);
-        index[1] = _item->text(1);
-        index[2] = _item->text(2);
+        std::array<QString, 3> index {
+            _item->text(0),
+            _item->text(1),
+            _item->text(2)
+        };
 
         if(index[0].isEmpty() || index[1].isEmpty() || index[2].isEmpty())
         {
@@ -495,11 +505,12 @@ void SLandmarks::onLandmarkDoubleClicked(QTreeWidgetItem* _item, int) const
         }
 
         // Convert to double
-        double world_coord[3];
-        bool check[3] = {false, false, false};
-        world_coord[0] = index[0].toDouble(&check[0]);
-        world_coord[1] = index[1].toDouble(&check[1]);
-        world_coord[2] = index[2].toDouble(&check[2]);
+        std::array check = {false, false, false};
+        std::array world_coord {
+            index[0].toDouble(check.data()),
+            index[1].toDouble(&check[1]),
+            index[2].toDouble(&check[2])
+        };
 
         // Check that conversion to double performed well.
         if(!check[0] || !check[1] || !check[2])
@@ -533,7 +544,7 @@ void SLandmarks::onLandmarkDoubleClicked(QTreeWidgetItem* _item, int) const
 
 void SLandmarks::onSizeChanged(int _newSize)
 {
-    const data::Landmarks::SizeType realSize = static_cast<data::Landmarks::SizeType>(_newSize);
+    const auto realSize = static_cast<data::Landmarks::SizeType>(_newSize);
 
     std::string groupName;
     if(currentSelection(groupName))
@@ -557,7 +568,7 @@ void SLandmarks::onSizeChanged(int _newSize)
 
 void SLandmarks::onOpacityChanged(int _newOpacity)
 {
-    const float sliderSize = static_cast<float>(m_opacitySlider->maximum() - m_opacitySlider->minimum());
+    const auto sliderSize = static_cast<float>(m_opacitySlider->maximum() - m_opacitySlider->minimum());
 
     const float realOpacity = static_cast<float>(_newOpacity) / sliderSize;
 
@@ -574,10 +585,10 @@ void SLandmarks::onOpacityChanged(int _newOpacity)
 
         landmarks->setGroupColor(groupName, newGroupColor);
 
-        QTreeWidgetItem* const item    = getGroupItem(groupName);
-        QPushButton* const colorButton = dynamic_cast<QPushButton*>(m_treeWidget->itemWidget(item, 1));
+        QTreeWidgetItem* const item = getGroupItem(groupName);
+        auto* const colorButton     = dynamic_cast<QPushButton*>(m_treeWidget->itemWidget(item, 1));
 
-        QColor currentColor = colorButton->property("color").value<QColor>();
+        auto currentColor = colorButton->property("color").value<QColor>();
         currentColor.setAlphaF(realOpacity);
         colorButton->setProperty("color", currentColor);
 
@@ -681,7 +692,7 @@ void SLandmarks::onRemoveSelection()
         {
             QTreeWidgetItem* const itemParent = item->parent();
 
-            const std::size_t index      = static_cast<std::size_t>(itemParent->indexOfChild(item));
+            const auto index             = static_cast<std::size_t>(itemParent->indexOfChild(item));
             const std::string& groupName = itemParent->text(0).toStdString();
 
             landmarks->removePoint(groupName, index);
@@ -722,26 +733,15 @@ void SLandmarks::onRemoveSelection()
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::addPickedPoint(data::tools::PickingInfo _pickingInfo)
-{
-    FW_DEPRECATED_MSG(
-        "sight::module::ui::qt::metrics::addPickedPoint is no longer supported, the methods have been moved to module::ui::qt::metrics::pick",
-        "22.0"
-    )
-    this->pick(_pickingInfo);
-}
-
-//------------------------------------------------------------------------------
-
 void SLandmarks::pick(data::tools::PickingInfo _info)
 {
-    if(_info.m_modifierMask & data::tools::PickingInfo::CTRL)
+    if((_info.m_modifierMask & data::tools::PickingInfo::CTRL) != 0)
     {
         // Adds a new landmark.
         if(_info.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_UP)
         {
-            const double* const pickedPos       = _info.m_worldPos;
-            data::Landmarks::PointType newPoint = {{pickedPos[0], pickedPos[1], pickedPos[2]}};
+            const std::array<double, 3>& pickedPos = _info.m_worldPos;
+            data::Landmarks::PointType newPoint    = {{pickedPos[0], pickedPos[1], pickedPos[2]}};
 
             {
                 const auto matrix = m_matrix.lock();
@@ -812,15 +812,15 @@ void SLandmarks::pick(data::tools::PickingInfo _info)
         }
         else if(_info.m_eventId == data::tools::PickingInfo::Event::MOUSE_RIGHT_UP)
         {
-            const double* const pickedPos = _info.m_worldPos;
+            const std::array<double, 3>& pickedPos = _info.m_worldPos;
 
             auto landmarks = m_landmarks.lock();
             SIGHT_ASSERT("inout '" << s_LANDMARKS_INOUT << "' does not exist.", landmarks);
 
             // Find closest landmarks.
-            double closest             = std::numeric_limits<double>::max();
-            std::size_t foundIndex     = 0;
-            std::string foundGroupname = "";
+            double closest         = std::numeric_limits<double>::max();
+            std::size_t foundIndex = 0;
+            std::string foundGroupname;
 
             for(const std::string& groupName : landmarks->getGroupNames())
             {
@@ -894,13 +894,13 @@ void SLandmarks::addPoint(std::string _groupName)
 
         QTreeWidgetItem* const item = getGroupItem(_groupName);
 
-        const std::size_t nbChilds = static_cast<std::size_t>(item->childCount());
+        const auto nbChilds        = static_cast<std::size_t>(item->childCount());
         const std::size_t nbPoints = landmarks->numPoints(_groupName);
         for(std::size_t idx = nbChilds ; idx < nbPoints ; ++idx)
         {
             const data::Landmarks::PointType& newPoint = landmarks->getPoint(_groupName, idx);
 
-            QTreeWidgetItem* const pt = new QTreeWidgetItem();
+            auto* const pt = new QTreeWidgetItem();
             for(int i = 0 ; i < 3 ; ++i)
             {
                 pt->setText(i, QString::fromStdString(std::to_string(newPoint[static_cast<std::size_t>(i)])));
@@ -927,14 +927,14 @@ void SLandmarks::addGroup(std::string _name)
         color = convertToQColor(group.m_color);
     }
 
-    QTreeWidgetItem* const item = new QTreeWidgetItem();
+    auto* const item = new QTreeWidgetItem();
     item->setFlags(item->flags() | Qt::ItemIsEditable);
     item->setData(0, s_GROUP_NAME_ROLE, QString::fromStdString(_name));
 
     m_treeWidget->addTopLevelItem(item);
 
     item->setText(0, QString::fromStdString(_name));
-    QPushButton* const button = new QPushButton();
+    auto* const button = new QPushButton();
 
     setColorButtonIcon(button, color);
     button->setProperty("color", color);
@@ -947,7 +947,7 @@ void SLandmarks::addGroup(std::string _name)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::removeGroup(std::string _name)
+void SLandmarks::removeGroup(std::string _name) const
 {
     try
     {
@@ -971,7 +971,7 @@ void SLandmarks::removeGroup(std::string _name)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::removePoint(std::string _groupName, std::size_t _index)
+void SLandmarks::removePoint(std::string _groupName, std::size_t _index) const
 {
     m_treeWidget->blockSignals(true);
 
@@ -986,7 +986,7 @@ void SLandmarks::removePoint(std::string _groupName, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::renameGroup(std::string _oldName, std::string _newName)
+void SLandmarks::renameGroup(std::string _oldName, std::string _newName) const
 {
     m_treeWidget->blockSignals(true);
 
@@ -1013,7 +1013,7 @@ void SLandmarks::modifyGroup(std::string _name)
 
     const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_name);
 
-    QPushButton* const colorButton = dynamic_cast<QPushButton*>(m_treeWidget->itemWidget(item, 1));
+    auto* const colorButton = dynamic_cast<QPushButton*>(m_treeWidget->itemWidget(item, 1));
 
     const QColor color = convertToQColor(group.m_color);
 
@@ -1039,7 +1039,7 @@ void SLandmarks::modifyGroup(std::string _name)
         m_shapeSelector->setCurrentText(shapeText);
 
         const float opacity = group.m_color[3];
-        m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
+        m_opacitySlider->setValue(static_cast<int>(opacity * float(m_opacitySlider->maximum())));
     }
 }
 
@@ -1094,10 +1094,10 @@ void SLandmarks::selectPoint(std::string _groupName, std::size_t _index)
 
     m_treeWidget->setCurrentItem(currentItem);
 
-    int size;
-    bool visible;
+    int size     = 0;
+    bool visible = false;
     QString shapeText;
-    float opacity;
+    float opacity = NAN;
     {
         const auto landmarks = m_landmarks.lock();
         SIGHT_ASSERT("inout '" << s_LANDMARKS_INOUT << "' does not exist.", landmarks);
@@ -1114,7 +1114,7 @@ void SLandmarks::selectPoint(std::string _groupName, std::size_t _index)
     m_sizeSlider->setValue(size);
     m_visibilityCheckbox->setChecked(visible);
     m_shapeSelector->setCurrentText(shapeText);
-    m_opacitySlider->setValue(static_cast<int>(opacity * m_opacitySlider->maximum()));
+    m_opacitySlider->setValue(static_cast<int>(opacity * float(m_opacitySlider->maximum())));
 
     m_groupEditorWidget->setEnabled(true);
     m_treeWidget->blockSignals(false);
@@ -1122,7 +1122,7 @@ void SLandmarks::selectPoint(std::string _groupName, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::deselectPoint(std::string, std::size_t)
+void SLandmarks::deselectPoint(std::string /*unused*/, std::size_t /*unused*/) const
 {
     m_treeWidget->blockSignals(true);
     m_treeWidget->setCurrentItem(nullptr);
@@ -1196,12 +1196,12 @@ bool SLandmarks::currentSelection(std::string& _selection) const
 
 QColor SLandmarks::convertToQColor(const data::Landmarks::ColorType& _color)
 {
-    return QColor(
+    return {
         static_cast<int>(_color[0] * 255),
         static_cast<int>(_color[1] * 255),
         static_cast<int>(_color[2] * 255),
         static_cast<int>(_color[3] * 255)
-    );
+    };
 }
 
 //------------------------------------------------------------------------------

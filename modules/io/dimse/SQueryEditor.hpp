@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <core/thread/Worker.hpp>
 
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
@@ -45,13 +45,13 @@ namespace sight::module::io::dimse
 /**
  * @brief This editor allows to perform queries on a pacs.
  *
- * Queries results are stored in a SeriesDB where each Series is a DicomSeries.
+ * Queries results are stored in a SeriesSet where each Series is a DicomSeries.
  *
  * @section XML XML Configuration
  * @code{.xml}
         <service type="sight::module::io::dimse::SQueryEditor">
             <in key="pacsConfig" uid="..." />
-            <inout key="seriesDB" uid="..." />
+            <inout key="seriesSet" uid="..." />
             <config icon="..." />
        </service>
    @endcode
@@ -60,7 +60,7 @@ namespace sight::module::io::dimse
  * - \b pacsConfig [sight::io::dimse::data::PacsConfiguration]: PACS configuration data.
  *
  * @subsection In-Out In-Out:
- * - \b seriesDB [sight::data::Object]: seriesDB where to push the queried data.
+ * - \b seriesSet [sight::data::Object]: SeriesSet where to push the queried data.
  *
  * @subsection Configuration Configuration:
  * - \b advanced (optional, bool, default=true): define if advanced fields are displayed.
@@ -83,14 +83,14 @@ public:
     MODULE_IO_DIMSE_API SQueryEditor() noexcept;
 
     /// Destroyes the service.
-    MODULE_IO_DIMSE_API virtual ~SQueryEditor() noexcept;
+    MODULE_IO_DIMSE_API ~SQueryEditor() noexcept override;
 
 protected:
 
     /// Configures the editor.
     MODULE_IO_DIMSE_API void configuring() override;
 
-    /// Creates the GUI and connects widget to updateSeriesDB(const data::SeriesDB::ContainerType&).
+    /// Creates the GUI and connects widget to updateSeriesSet(const data::SeriesSet::container_type&).
     MODULE_IO_DIMSE_API void starting() override;
 
     /// Executes a query with last settings.
@@ -101,14 +101,14 @@ protected:
 
 private:
 
-    /// Executes a query and fills the result in the series DB.
+    /// Executes a query and fills the result in the series set.
     void executeQuery();
 
     /**
-     * @brief Adds series in the series DB.
+     * @brief Adds series in the series set.
      * @param _series series to add.
      */
-    void updateSeriesDB(const data::SeriesDB::ContainerType& _series);
+    void updateSeriesSet(const data::SeriesSet::container_type& _series);
 
     /// Contains the worker of the series enquire thread.
     core::thread::Worker::sptr m_requestWorker {nullptr};
@@ -160,7 +160,7 @@ private:
 
 private Q_SLOTS:
 
-    /// Executes a query and fills the result in the series DB.
+    /// Executes a query and fills the result in the series set.
     void executeQueryAsync();
 
     /**
@@ -172,7 +172,7 @@ private Q_SLOTS:
 private:
 
     data::ptr<sight::io::dimse::data::PacsConfiguration, data::Access::in> m_config {this, "pacsConfig"};
-    data::ptr<sight::data::SeriesDB, data::Access::inout> m_seriesDB {this, "seriesDB"};
+    data::ptr<sight::data::SeriesSet, data::Access::inout> m_series_set {this, "seriesSet"};
 };
 
 } // namespace sight::module::io::dimse.

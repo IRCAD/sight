@@ -25,6 +25,7 @@
 #include "core/runtime/ConfigurationElement.hpp"
 
 #include <algorithm>
+#include <utility>
 
 namespace sight::core::runtime
 {
@@ -40,8 +41,8 @@ namespace
  */
 struct HasName
 {
-    HasName(const std::string& name) :
-        m_name(name)
+    explicit HasName(std::string name) :
+        m_name(std::move(name))
     {
     }
 
@@ -57,7 +58,7 @@ struct HasName
         std::string m_name;
 };
 
-}
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -91,17 +92,17 @@ const ConfigurationElementContainer::Container& ConfigurationElementContainer::g
 
 bool ConfigurationElementContainer::hasConfigurationElement(const std::string& name) const
 {
-    Container::const_iterator found = std::find_if(m_elements.begin(), m_elements.end(), HasName(name));
+    auto found = std::ranges::find_if(m_elements, HasName(name));
     return found != m_elements.end();
 }
 
 //-----------------------------------------------------------------------------
 
-const std::shared_ptr<ConfigurationElement> ConfigurationElementContainer::findConfigurationElement(
+std::shared_ptr<ConfigurationElement> ConfigurationElementContainer::findConfigurationElement(
     const std::string& name
 ) const
 {
-    Container::const_iterator found = std::find_if(m_elements.begin(), m_elements.end(), HasName(name));
+    auto found = std::ranges::find_if(m_elements, HasName(name));
 
     return (found == m_elements.end()) ? std::shared_ptr<ConfigurationElement>() : *found;
 }
@@ -113,13 +114,11 @@ const
 {
     ConfigurationElementContainer container;
 
-    for(Container::const_iterator itCfgElem = m_elements.begin() ;
-        itCfgElem != m_elements.end() ;
-        ++itCfgElem)
+    for(const auto& m_element : m_elements)
     {
-        if((*itCfgElem)->getName() == _name)
+        if(m_element->getName() == _name)
         {
-            container.addConfigurationElement((*itCfgElem));
+            container.addConfigurationElement(m_element);
         }
     }
 

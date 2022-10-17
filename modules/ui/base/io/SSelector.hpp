@@ -32,10 +32,7 @@
 
 #include <ui/base/IDialogEditor.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace io
+namespace sight::module::ui::base::io
 {
 
 /**
@@ -104,7 +101,7 @@ public:
     MODULE_UI_BASE_API SSelector();
 
     /// Destructor. Do nothing.
-    MODULE_UI_BASE_API virtual ~SSelector() noexcept;
+    MODULE_UI_BASE_API ~SSelector() noexcept override;
 
     /**
      * @brief This method allows to configure the service in reader or writer mode (set SSelector::m_mode).
@@ -141,10 +138,10 @@ private:
     void forwardJob(core::jobs::IJob::sptr iJob);
 
     /// Configure the service as writer or reader.
-    IOMode m_mode;
+    IOMode m_mode {READER_MODE};
 
     /// Configure if selected services are included or excluded.
-    bool m_servicesAreExcluded;
+    bool m_servicesAreExcluded {true};
 
     /**
      * @brief List of services to be included or excluded.
@@ -168,6 +165,4 @@ private:
     data::ptr<data::Object, data::Access::inout> m_data {this, sight::io::base::service::s_DATA_KEY};
 };
 
-} // namespace io
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::io

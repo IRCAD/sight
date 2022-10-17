@@ -1,9 +1,0 @@
-<profile name="UiVisuOgreTest" version="0.1">
-
-    <activate id="sight::module::service" version="0.1" />
-    <activate id="sight::module::ui::base" version="0.1" />
-    <activate id="sight::module::ui::viz" version="0.1" />
-
-    <start id="sight::module::ui::viz" />
-
-</profile>

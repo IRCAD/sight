@@ -41,7 +41,7 @@ namespace sight::data
 
 class Camera;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::video
 {
@@ -114,7 +114,7 @@ public:
     MODULE_IO_VIDEO_API SFrameGrabber() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_IO_VIDEO_API virtual ~SFrameGrabber() noexcept;
+    MODULE_IO_VIDEO_API ~SFrameGrabber() noexcept override;
 
 protected:
 
@@ -178,16 +178,16 @@ private:
     void grabImage();
 
     /// State of the loop mode.
-    bool m_loopVideo;
+    bool m_loopVideo {false};
 
     /// State of the timeline initialization.
-    bool m_isInitialized;
+    bool m_isInitialized {false};
 
     /// Fps used to read the video.
-    unsigned int m_fps;
+    unsigned int m_fps {30};
 
     /// Counter used by the image reader.
-    std::size_t m_imageCount;
+    std::size_t m_imageCount {0};
 
     core::thread::Timer::sptr m_timer;
 
@@ -207,28 +207,28 @@ private:
     mutable core::mt::Mutex m_mutex;
 
     /// Frame -by-frame mode (true if enabled, false otherwise).
-    bool m_oneShot;
+    bool m_oneShot {false};
 
     /// If true: create a new timestamp when reading image, if false: use the name of the image file as timestamp.
-    bool m_createNewTS;
+    bool m_createNewTS {false};
 
     /// If true: the difference between two image's timestamps will be use as timer duration.
-    bool m_useTimelapse;
+    bool m_useTimelapse {true};
 
     /// If true: the grabber is paused.
-    bool m_isPaused;
+    bool m_isPaused {false};
 
     /// If timestamp cannot be deduced from filename use the default duration (5000ms).
-    double m_defaultDuration;
+    double m_defaultDuration {5000};
 
     /// Step between two images when calling nexImage()/previousImage() slots
-    unsigned long m_step;
+    std::uint64_t m_step {1};
 
     /// Step value updated in setStep() slot used to compute a shift value when calling nextImage()/previousImage()
-    unsigned long m_stepChanged;
+    std::uint64_t m_stepChanged {1};
 
     /// Total number of frames in a video file.
-    std::size_t m_videoFramesNb;
+    std::size_t m_videoFramesNb {0};
 
     data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
 };

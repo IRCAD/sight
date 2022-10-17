@@ -24,21 +24,15 @@
 
 #include "io/dicom/writer/ie/InformationEntity.hpp"
 
-#include <data/Study.hpp>
+#include <data/Series.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 /**
  * @brief Study Information Entity class
  */
-class IO_DICOM_CLASS_API Study : public io::dicom::writer::ie::InformationEntity<data::Study>
+class IO_DICOM_CLASS_API Study : public io::dicom::writer::ie::InformationEntity<data::Series>
 {
 public:
 
@@ -54,14 +48,14 @@ public:
     IO_DICOM_API Study(
         const SPTR(gdcm::Writer)& writer,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::Study::csptr& study,
+        const data::Series::csptr& series,
         const core::log::Logger::sptr& logger = nullptr,
         ProgressCallback progress             = nullptr,
         CancelRequestedCallback cancel        = nullptr
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Study();
+    IO_DICOM_API ~Study() override;
 
     /**
      * @brief Write General Study Module tags
@@ -76,8 +70,4 @@ public:
     IO_DICOM_API virtual void writePatientStudyModule();
 };
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

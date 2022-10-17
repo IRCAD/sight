@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,14 +23,12 @@
 #pragma once
 
 #include "service/config.hpp"
-#include <service/IXMLParser.hpp>
 
 #include <core/tools/Object.hpp>
 
-namespace sight::service
-{
+#include <service/IXMLParser.hpp>
 
-namespace parser
+namespace sight::service::parser
 {
 
 /**
@@ -55,13 +53,11 @@ public:
 
     /// Does nothing.
     SERVICE_API Color()
-    {
-    }
+    = default;
 
     /// Does nothing.
-    SERVICE_API virtual ~Color()
-    {
-    }
+    SERVICE_API ~Color() override
+    = default;
 
 private:
 
@@ -72,6 +68,4 @@ private:
     void createConfig(core::tools::Object::sptr _obj) override;
 };
 
-} // namespace parser.
-
-} // namespace sight::service.
+} // namespace sight::service::parser

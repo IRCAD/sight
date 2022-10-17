@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,12 +30,9 @@
 #include <QGuiApplication>
 #include <QObject>
 
-fwGuiRegisterMacro(sight::ui::qml::dialog::InputDialog, sight::ui::base::dialog::IInputDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qml::dialog::InputDialog, sight::ui::base::dialog::IInputDialog::REGISTRY_KEY);
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 static auto enumRegistered =
@@ -47,15 +44,14 @@ static auto enumRegistered =
 
 //------------------------------------------------------------------------------
 
-InputDialog::InputDialog(ui::base::GuiBaseObject::Key)
+InputDialog::InputDialog(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 InputDialog::~InputDialog()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -107,7 +103,7 @@ std::string InputDialog::getInput()
     Q_EMIT titleChanged();
     Q_EMIT messageChanged();
     Q_EMIT inputChanged();
-    QObject* dialog = window->findChild<QObject*>("dialog");
+    auto* dialog = window->findChild<QObject*>("dialog");
     SIGHT_ASSERT("The dialog is not found inside the window", dialog);
     m_input = "";
 
@@ -140,6 +136,4 @@ void InputDialog::resultDialog(const QVariant& msg, bool isOk)
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

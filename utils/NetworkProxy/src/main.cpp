@@ -61,13 +61,13 @@
 /**
  * @brief The configuration struct to handle message parameters
  */
-struct configuration
+struct Configuration
 {
     sight::io::igtl::Server::sptr server;
     std::string deviceIn;
     std::string deviceOut;
     std::string deviceType;
-    std::uint16_t port;
+    std::uint16_t port {};
     sight::core::thread::Worker::sptr worker;
 };
 
@@ -76,7 +76,7 @@ struct configuration
  * @param path to configFile
  * @return  a map
  */
-std::map<std::string, configuration> initialize(std::string configFile)
+std::map<std::string, Configuration> initialize(std::string configFile)
 {
     SIGHT_INFO("Reading parameters...");
 
@@ -84,7 +84,7 @@ std::map<std::string, configuration> initialize(std::string configFile)
     std::vector<std::string> deviceInTab;
     std::vector<std::string> deviceOutTab;
     std::vector<std::uint16_t> portTab;
-    std::map<std::string, configuration> association;
+    std::map<std::string, Configuration> association;
 
     std::ifstream fileStream;
     fileStream.open(configFile.c_str(), std::ios::in);
@@ -106,9 +106,9 @@ std::map<std::string, configuration> initialize(std::string configFile)
                 std::back_inserter<std::vector<std::string> >(words)
             );
 
-            SIGHT_FATAL_IF("Configuration file empty ", words.size() == 0);
+            SIGHT_FATAL_IF("Configuration file empty ", words.empty());
 
-            if(words[0].find("#") == std::string::npos)
+            if(words[0].find('#') == std::string::npos)
             {
                 SIGHT_FATAL_IF("Error in configuration file line: '" << i << "'.", words.size() != 4);
 
@@ -132,7 +132,7 @@ std::map<std::string, configuration> initialize(std::string configFile)
     for(unsigned int i = 0 ; i < messageType.size() ; i++)
     {
         //check if port num for this config isn't used
-        std::map<std::string, configuration>::iterator it;
+        std::map<std::string, Configuration>::iterator it;
         auto server               = std::make_shared<sight::io::igtl::Server>();
         auto worker               = sight::core::thread::Worker::New();
         bool serverAlreadyStarted = false;
@@ -152,7 +152,7 @@ std::map<std::string, configuration> initialize(std::string configFile)
             }
         }
 
-        configuration config;
+        Configuration config;
         config.deviceIn   = deviceInTab[i];
         config.deviceOut  = deviceOutTab[i];
         config.deviceType = messageType[i];
@@ -164,7 +164,7 @@ std::map<std::string, configuration> initialize(std::string configFile)
         {
             config.server->start(config.port);
 
-            std::function<void()> task = std::bind(&sight::io::igtl::Server::runServer, config.server);
+            std::function<void()> task = [ObjectPtr = config.server](auto&& ...){ObjectPtr->runServer();};
             config.worker->post(task);
         }
 
@@ -191,18 +191,18 @@ int main(int argc, char** argv)
         exit(0);
     }
 
-    std::uint16_t port = boost::lexical_cast<std::uint16_t>(argv[1]);
+    auto port = boost::lexical_cast<std::uint16_t>(argv[1]);
     std::string configFile(argv[2]);
 
     //Initialization of parameters
-    std::map<std::string, configuration> associationDeviceServer = initialize(configFile);
+    std::map<std::string, Configuration> associationDeviceServer = initialize(configFile);
 
     auto receiveServer = std::make_shared<sight::io::igtl::Server>();
     auto worker        = sight::core::thread::Worker::New();
     try
     {
         receiveServer->start(port);
-        std::function<void()> task = std::bind(&sight::io::igtl::Server::runServer, receiveServer);
+        std::function<void()> task = [receiveServer](auto&& ...){receiveServer->runServer();};
         worker->post(task);
     }
     catch(std::exception const& err)
@@ -213,7 +213,7 @@ int main(int argc, char** argv)
     SIGHT_INFO("server started on port: " << port);
 
     //main loop
-    while(1)
+    while(true)
     {
         // Create a message buffer to receive header
         ::igtl::MessageHeader::Pointer headerMsg;
@@ -238,7 +238,7 @@ int main(int argc, char** argv)
 
                 if(associationDeviceServer.find(deviceName) != associationDeviceServer.end())
                 {
-                    configuration config = associationDeviceServer.find(deviceName)->second;
+                    Configuration config = associationDeviceServer.find(deviceName)->second;
                     SIGHT_INFO("Received a '" << deviceType << "' named '" << deviceName);
 
                     sendingServer = config.server;
@@ -286,7 +286,7 @@ int main(int argc, char** argv)
     receiveServer->stop();
     worker->stop();
 
-    for(auto s : associationDeviceServer)
+    for(const auto& s : associationDeviceServer)
     {
         s.second.server->stop();
         s.second.worker->stop();

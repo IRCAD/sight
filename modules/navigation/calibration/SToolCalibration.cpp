@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,15 +35,13 @@ static const service::IService::KeyType s_MATRICES_VECTOR_INPUT     = "matricesV
 
 // -----------------------------------------------------------------------------
 
-SToolCalibration::SToolCalibration() noexcept
-{
-}
+SToolCalibration::SToolCalibration() noexcept =
+    default;
 
 // -----------------------------------------------------------------------------
 
-SToolCalibration::~SToolCalibration() noexcept
-{
-}
+SToolCalibration::~SToolCalibration() noexcept =
+    default;
 
 // -----------------------------------------------------------------------------
 
@@ -53,7 +51,7 @@ void SToolCalibration::configuring()
     const auto outputs    = configTree.equal_range("out");
     for(auto it = outputs.first ; it != outputs.second ; ++it)
     {
-        const std::string key = it->second.get<std::string>("<xmlattr>.key");
+        const auto key = it->second.get<std::string>("<xmlattr>.key");
         if(key == s_MATRIX_CENTER_OUTPUT)
         {
             m_hasOutputCenter = true;
@@ -86,7 +84,7 @@ void SToolCalibration::updating()
 
 // -----------------------------------------------------------------------------
 
-void SToolCalibration::computeRegistration(core::HiResClock::HiResClockType)
+void SToolCalibration::computeRegistration(core::HiResClock::HiResClockType /*timestamp*/)
 {
     const auto matricesVector = m_matricesVector.lock();
 
@@ -104,4 +102,4 @@ void SToolCalibration::computeRegistration(core::HiResClock::HiResClockType)
     }
 }
 
-} // trackingCalibration
+} // namespace sight::module::navigation::calibration

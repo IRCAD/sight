@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,7 @@
 
 #include "io/http/exceptions/ContentNotFound.hpp"
 
-namespace sight::io::http
-{
-
-namespace exceptions
+namespace sight::io::http::exceptions
 {
 
 ContentNotFound::ContentNotFound(const std::string& message) :
@@ -33,10 +30,7 @@ ContentNotFound::ContentNotFound(const std::string& message) :
 {
 }
 
-ContentNotFound::~ContentNotFound() noexcept
-{
-}
+ContentNotFound::~ContentNotFound() noexcept =
+    default;
 
-} /* namespace exceptions */
-
-} /* namespace sight::io::http */
+} // namespace sight::io::http::exceptions

@@ -46,10 +46,7 @@ SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STest1Inp
 SIGHT_REGISTER_SERVICE(sight::service::ut::ISTest, sight::service::ut::STestOut);
 SIGHT_REGISTER_SERVICE(sight::service::IService, sight::service::ut::TestServiceWithData);
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 const core::com::Signals::SignalKeyType ISTest::s_MSG_SENT_SIG = "msgSent";
@@ -123,6 +120,4 @@ void TestServiceWithData::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::service
+} // namespace sight::service::ut

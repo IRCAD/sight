@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 
 #include <ui/base/dialog/LocationDialog.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace io
+namespace sight::module::ui::base::io
 {
 
 const core::com::Signals::SignalKeyType SFolderSelector::s_FOLDER_SELECTED_SIG = "folderSelected";
@@ -46,9 +43,8 @@ SFolderSelector::SFolderSelector() noexcept
 
 //------------------------------------------------------------------------------
 
-SFolderSelector::~SFolderSelector() noexcept
-{
-}
+SFolderSelector::~SFolderSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -92,6 +88,4 @@ void SFolderSelector::stopping()
 //------------------------------------------------------------------------------
 //
 
-} // namespace io
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::io

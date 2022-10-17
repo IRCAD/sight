@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ public:
 
     MODULE_IO_ITK_API SImageSeriesWriter() noexcept;
 
-    MODULE_IO_ITK_API virtual ~SImageSeriesWriter() noexcept;
+    MODULE_IO_ITK_API ~SImageSeriesWriter() noexcept override;
 
 protected:
 

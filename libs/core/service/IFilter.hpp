@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,9 +51,9 @@ protected:
     SERVICE_API IFilter();
 
     /// IFilter destructor.
-    SERVICE_API virtual ~IFilter();
+    SERVICE_API ~IFilter() override;
 
     ComputedSignalType::sptr m_sigComputed; ///< Signal emitted when operator is computed.
 };
 
-}
+} // namespace sight::service

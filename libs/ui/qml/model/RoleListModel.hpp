@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <QAbstractListModel>
 
-namespace sight::ui::qml
-{
-
-namespace model
+namespace sight::ui::qml::model
 {
 
 /**
@@ -61,13 +58,13 @@ public:
     bool isEmpty() noexcept;
 
     /// override
-    int rowCount(const QModelIndex& parent = QModelIndex()) const Q_DECL_OVERRIDE;
+    [[nodiscard]] int rowCount(const QModelIndex& parent = QModelIndex()) const Q_DECL_OVERRIDE;
 
     /// override
-    QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
+    [[nodiscard]] QVariant data(const QModelIndex& index, int role = Qt::DisplayRole) const Q_DECL_OVERRIDE;
 
     /// override
-    QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
+    [[nodiscard]] QHash<int, QByteArray> roleNames() const Q_DECL_OVERRIDE;
 
 private:
 
@@ -77,6 +74,4 @@ private:
     QList<QHash<QByteArray, QVariant> > m_data;
 };
 
-} // namespace model
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::model

@@ -22,10 +22,7 @@
 
 #include "data/timeline/RawBuffer.hpp"
 
-namespace sight::data
-{
-
-namespace timeline
+namespace sight::data::timeline
 {
 
 //-----------------------------------------------------------------------------
@@ -43,8 +40,7 @@ RawBuffer::RawBuffer(
 //-----------------------------------------------------------------------------
 
 RawBuffer::~RawBuffer()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -53,6 +49,4 @@ void RawBuffer::setBufferValues(BufferDataType values)
     memcpy(m_buffer, values, m_size);
 }
 
-} // namespace timeline
-
-} // namespace sight::data
+} // namespace sight::data::timeline

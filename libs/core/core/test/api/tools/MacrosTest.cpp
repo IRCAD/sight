@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "MacrosTest.hpp"
 
 #include <core/base.hpp>
@@ -28,10 +30,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::tools::ut::MacrosTest);
 
-namespace sight::core::tools
-{
-
-namespace ut
+namespace sight::core::tools::ut
 {
 
 class ClassTest
@@ -42,37 +41,35 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static sptr New()
+    static sptr New() // NOLINT(readability-identifier-naming)
     {
         return std::make_shared<ClassTest>();
     }
 
     //------------------------------------------------------------------------------
 
-    static sptr New(int num)
+    static sptr New(int num) // NOLINT(readability-identifier-naming)
     {
         return std::make_shared<ClassTest>(num);
     }
 
     //------------------------------------------------------------------------------
 
-    int getNum()
+    [[nodiscard]] int getNum() const
     {
         return m_num;
     }
 
     ClassTest()
-    {
-    }
+    = default;
 
-    ClassTest(int num) :
+    explicit ClassTest(int num) :
         m_num(num)
     {
     }
 
     virtual ~ClassTest()
-    {
-    }
+    = default;
 
 private:
 
@@ -104,12 +101,10 @@ void MacrosTest::factoryMacroTest()
     ClassTest::sptr classTest3 = ClassTest::New(NUM);
     ClassTest::sptr classTest4 = ClassTest::New();
 
-    CPPUNIT_ASSERT(classTest1 == NULL);
+    CPPUNIT_ASSERT(classTest1 == nullptr);
     CPPUNIT_ASSERT_EQUAL(classTest2->getNum(), 1);
     CPPUNIT_ASSERT_EQUAL(classTest3->getNum(), NUM);
     CPPUNIT_ASSERT_EQUAL(classTest4->getNum(), 1);
 }
 
-} // namespace ut
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::ut

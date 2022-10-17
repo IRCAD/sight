@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,9 @@
 
 #include "geometry/glm/mesh.hpp"
 
-#include <glm/glm.hpp>
-
 #include <core/spyLog.hpp>
+
+#include <glm/glm.hpp>
 
 #include <string>
 
@@ -34,17 +34,17 @@ namespace sight::geometry::glm
 //-----------------------------------------------------------------------------
 
 ::glm::dvec3 toBarycentricCoord(
-    const ::glm::dvec3& _P,
-    const ::glm::dvec3& _A,
-    const ::glm::dvec3& _B,
-    const ::glm::dvec3& _C
+    const ::glm::dvec3& P,
+    const ::glm::dvec3& A,
+    const ::glm::dvec3& B,
+    const ::glm::dvec3& C
 )
 {
     ::glm::dvec3 baryCoord;
 
-    const ::glm::dvec3 v0 = _B - _A; // AB Vector
-    const ::glm::dvec3 v1 = _C - _A; // AC Vector
-    const ::glm::dvec3 v2 = _P - _A; // AP Vector
+    const ::glm::dvec3 v0 = B - A; // AB Vector
+    const ::glm::dvec3 v1 = C - A; // AC Vector
+    const ::glm::dvec3 v2 = P - A; // AP Vector
 
     // Precompute some dot products.
     const double d00 = ::glm::dot(v0, v0);
@@ -76,11 +76,11 @@ namespace sight::geometry::glm
 //-----------------------------------------------------------------------------
 
 ::glm::dvec4 toBarycentricCoord(
-    const ::glm::dvec3& _P,
-    const ::glm::dvec3& _A,
-    const ::glm::dvec3& _B,
-    const ::glm::dvec3& _C,
-    const ::glm::dvec3& _D
+    const ::glm::dvec3& P,
+    const ::glm::dvec3& A,
+    const ::glm::dvec3& B,
+    const ::glm::dvec3& C,
+    const ::glm::dvec3& D
 )
 {
     /*
@@ -102,11 +102,11 @@ namespace sight::geometry::glm
 
     ::glm::dvec4 baryCoord;
 
-    const ::glm::dvec3 vab = _B - _A; // AB Vector
-    const ::glm::dvec3 vac = _C - _A; // AC Vector
-    const ::glm::dvec3 vad = _D - _A; // AD Vector
+    const ::glm::dvec3 vab = B - A; // AB Vector
+    const ::glm::dvec3 vac = C - A; // AC Vector
+    const ::glm::dvec3 vad = D - A; // AD Vector
 
-    const ::glm::dvec3 vap = _P - _A; // AP Vector
+    const ::glm::dvec3 vap = P - A; // AP Vector
 
     const double volumeB = ::glm::dot(vap, ::glm::cross(vac, vad));
     const double volumeC = ::glm::dot(vap, ::glm::cross(vad, vab));
@@ -138,9 +138,9 @@ namespace sight::geometry::glm
 
 ::glm::dvec3 fromBarycentricCoord(
     const ::glm::dvec3& _baryCoord,
-    const ::glm::dvec3& _A,
-    const ::glm::dvec3& _B,
-    const ::glm::dvec3& _C
+    const ::glm::dvec3& A,
+    const ::glm::dvec3& B,
+    const ::glm::dvec3& C
 )
 {
     ::glm::dvec3 worldCoordinates;
@@ -159,7 +159,7 @@ namespace sight::geometry::glm
         sum<1. + 10e-9 && sum>1. - 10e-9
     );
 
-    worldCoordinates = u * _A + v * _B + w * _C;
+    worldCoordinates = u * A + v * B + w * C;
 
     return worldCoordinates;
 }
@@ -168,10 +168,10 @@ namespace sight::geometry::glm
 
 ::glm::dvec3 fromBarycentricCoord(
     const ::glm::dvec4& _baryCoord,
-    const ::glm::dvec3& _A,
-    const ::glm::dvec3& _B,
-    const ::glm::dvec3& _C,
-    const ::glm::dvec3& _D
+    const ::glm::dvec3& A,
+    const ::glm::dvec3& B,
+    const ::glm::dvec3& C,
+    const ::glm::dvec3& D
 )
 {
     /*
@@ -196,17 +196,17 @@ namespace sight::geometry::glm
         sum<1. + 10e-9 && sum>1. - 10e-9
     );
 
-    return u * _A + v * _B + w * _C + h * _D;
+    return u * A + v * B + w * C + h * D;
 }
 
 //------------------------------------------------------------------------------
 
 bool isInsideTetrahedron(
-    const ::glm::dvec3& _P,
-    const ::glm::dvec3& _A,
-    const ::glm::dvec3& _B,
-    const ::glm::dvec3& _C,
-    const ::glm::dvec3& _D
+    const ::glm::dvec3& P,
+    const ::glm::dvec3& A,
+    const ::glm::dvec3& B,
+    const ::glm::dvec3& C,
+    const ::glm::dvec3& D
 )
 {
     /*
@@ -216,7 +216,7 @@ bool isInsideTetrahedron(
           are
           in between 0 and 1.
      */
-    const ::glm::dvec4 barycentricCoord = toBarycentricCoord(_P, _A, _B, _C, _D);
+    const ::glm::dvec4 barycentricCoord = toBarycentricCoord(P, A, B, C, D);
     return isInsideTetrahedron(barycentricCoord);
 }
 

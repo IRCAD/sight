@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,12 +36,9 @@ namespace sight::core::log
 
 class Logger;
 
-}
+} // namespace sight::core::log
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 /**
@@ -81,7 +78,7 @@ public:
     IO_DICOM_API bool readSegmentedPropertyRegistryFile(
         const std::filesystem::path& filepath,
         bool omitFirstLine                    = false,
-        const SPTR(core::log::Logger)& logger = 0
+        const SPTR(core::log::Logger)& logger = nullptr
     );
 
     /**
@@ -101,14 +98,14 @@ public:
     IO_DICOM_API bool readSegmentedPropertyRegistryFile(
         std::istream& csvStream,
         bool omitFirstLine                    = false,
-        const SPTR(core::log::Logger)& logger = 0
+        const SPTR(core::log::Logger)& logger = nullptr
     );
 
     /// Returns whether the registry is empty or not
-    IO_DICOM_API bool empty() const;
+    [[nodiscard]] IO_DICOM_API bool empty() const;
 
     /// Returns the number of entries
-    IO_DICOM_API std::size_t count() const;
+    [[nodiscard]] IO_DICOM_API std::size_t count() const;
 
     /// Clear the registry
     IO_DICOM_API void clear();
@@ -117,23 +114,23 @@ public:
      * @brief Check if there is an entry for the corresponding structure type
      * @param[in] structureType Structure type
      */
-    IO_DICOM_API bool hasEntry(const std::string& structureType) const;
+    [[nodiscard]] IO_DICOM_API bool hasEntry(const std::string& structureType) const;
 
     /**
      * @brief Returns matching entry for the corresponding structure type
      * @param[in] structureType Structure type
      */
-    IO_DICOM_API EntryType getEntry(const std::string& structureType) const;
+    [[nodiscard]] IO_DICOM_API EntryType getEntry(const std::string& structureType) const;
 
     /**
      * @brief Getters for entry's attributes
      * @param[in] structureType Structure type
      * @{ */
-    IO_DICOM_API std::string getPropertyType(const std::string& structureType) const;
-    IO_DICOM_API std::string getPropertyCategory(const std::string& structureType) const;
-    IO_DICOM_API std::string getPropertyTypeModifiers(const std::string& structureType) const;
-    IO_DICOM_API std::string getAnatomicRegion(const std::string& structureType) const;
-    IO_DICOM_API std::string getAnatomicRegionModifiers(const std::string& structureType) const;
+    [[nodiscard]] IO_DICOM_API std::string getPropertyType(const std::string& structureType) const;
+    [[nodiscard]] IO_DICOM_API std::string getPropertyCategory(const std::string& structureType) const;
+    [[nodiscard]] IO_DICOM_API std::string getPropertyTypeModifiers(const std::string& structureType) const;
+    [[nodiscard]] IO_DICOM_API std::string getAnatomicRegion(const std::string& structureType) const;
+    [[nodiscard]] IO_DICOM_API std::string getAnatomicRegionModifiers(const std::string& structureType) const;
     /**  @} */
 
     /**
@@ -145,7 +142,7 @@ public:
      * @param[in] anatomicRegion Anatomic Region
      * @param[in] anatomicRegionModifiers Anatomic Region Modifiers
      */
-    IO_DICOM_API std::string getStructureType(
+    [[nodiscard]] IO_DICOM_API std::string getStructureType(
         const std::string& propertyType,
         const std::string& propertyCategory,
         const std::string& propertyTypeModifiers,
@@ -154,6 +151,8 @@ public:
     ) const;
 
 private:
+
+    std::string getEntryValue(std::size_t index, const std::string& structureType) const;
 
     /// Entry registry type
     typedef std::map<std::string, EntryType> EntryRegistryType;
@@ -165,6 +164,4 @@ private:
     EntryRegistryType m_registry;
 };
 
-} //namespace helper
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

@@ -27,10 +27,7 @@
 
 #include <functional>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 //-----------------------------------------------------------------------------
@@ -41,33 +38,40 @@ bool LoggerDialog::showLoggerDialog(
     const core::log::Logger::sptr& logger
 )
 {
-    ui::base::dialog::LoggerDialog dialog(title, message, logger);
-    return dialog.show();
+    // The construction itself must be run in the main thread, since it creates widgets.
+    return core::thread::getDefaultWorker()->postTask<bool>(
+        [title, message, logger]
+        {
+            ui::base::dialog::LoggerDialog dialog(title, message, logger);
+            return dialog.show();
+        }).get();
 }
 
 //-----------------------------------------------------------------------------
 
 LoggerDialog::LoggerDialog()
 {
-    ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ILoggerDialog::REGISTRY_KEY);
-    m_implementation = ui::base::dialog::ILoggerDialog::dynamicCast(guiObj);
-}
-
-//-----------------------------------------------------------------------------
-
-LoggerDialog::~LoggerDialog()
-{
+    core::thread::getDefaultWorker()->postTask<void>(
+        [this]
+        {
+            ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ILoggerDialog::REGISTRY_KEY);
+            m_implementation                     = ui::base::dialog::ILoggerDialog::dynamicCast(guiObj);
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 LoggerDialog::LoggerDialog(const std::string& title, const std::string& message, const core::log::Logger::sptr& logger)
 {
-    ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ILoggerDialog::REGISTRY_KEY);
-    m_implementation = ui::base::dialog::ILoggerDialog::dynamicCast(guiObj);
-    m_implementation->setTitle(title);
-    m_implementation->setMessage(message);
-    m_implementation->setLogger(logger);
+    core::thread::getDefaultWorker()->postTask<void>(
+        [title, message, logger, this]
+        {
+            ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ILoggerDialog::REGISTRY_KEY);
+            m_implementation                     = ui::base::dialog::ILoggerDialog::dynamicCast(guiObj);
+            m_implementation->setTitle(title);
+            m_implementation->setMessage(message);
+            m_implementation->setLogger(logger);
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -95,20 +99,13 @@ void LoggerDialog::setLogger(const core::log::Logger::sptr& logger)
 
 bool LoggerDialog::show()
 {
-    if(m_implementation)
-    {
-        std::function<bool()> func = std::bind(&ILoggerDialog::show, m_implementation);
-        std::shared_future<bool> f = core::thread::getDefaultWorker()->postTask<bool>(func);
-        f.wait();
-
-        return f.get();
-    }
-
-    return false;
+    return core::thread::getDefaultWorker()->postTask<bool>(
+        [this]
+        {
+            return m_implementation->show();
+        }).get();
 }
 
 //-----------------------------------------------------------------------------
 
-} //namespace dialog
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::dialog

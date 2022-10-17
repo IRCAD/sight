@@ -30,23 +30,19 @@
 
 SIGHT_REGISTER_IO_READER(sight::io::base::reader::GzArrayReader);
 
-namespace sight::io::base
-{
-
-namespace reader
+namespace sight::io::base::reader
 {
 
 //------------------------------------------------------------------------------
 
-GzArrayReader::GzArrayReader(io::base::reader::IObjectReader::Key)
+GzArrayReader::GzArrayReader(io::base::reader::IObjectReader::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 GzArrayReader::~GzArrayReader()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -63,7 +59,7 @@ void GzArrayReader::read()
     void* buff = array->getBuffer();
 
     gzFile rawFile = gzopen(file.string().c_str(), "rb");
-    if(rawFile == 0)
+    if(rawFile == nullptr)
     {
         gzclose(rawFile);
         std::string str = "Unable to open ";
@@ -90,6 +86,4 @@ std::string GzArrayReader::extension() const
 
 //------------------------------------------------------------------------------
 
-} // namespace reader
-
-} // namespace sight::io::base
+} // namespace sight::io::base::reader

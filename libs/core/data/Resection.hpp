@@ -38,7 +38,7 @@ namespace sight::data
 /**
  * @brief This class defines a resection.
  */
-class DATA_CLASS_API Resection : public Object
+class DATA_CLASS_API Resection final : public Object
 {
 public:
 
@@ -54,10 +54,7 @@ public:
     DATA_API Resection(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Resection();
-
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    DATA_API ~Resection() noexcept override = default;
 
     /**
      * @{
@@ -91,7 +88,7 @@ public:
      * @brief Get/Set value of the IsSafePart.
      */
     bool getIsSafePart() const;
-    void setIsSafePart(const bool _isSafePart);
+    void setIsSafePart(bool _isSafePart);
     /// @}
 
     /**
@@ -108,7 +105,7 @@ public:
      * @brief Get/Set value of the IsVisible.
      */
     bool getIsVisible() const;
-    void setIsVisible(const bool _isVisible);
+    void setIsVisible(bool _isVisible);
     /// @}
 
     /**
@@ -116,7 +113,7 @@ public:
      * @brief Get/Set value of the IsValid.
      */
     bool getIsValid() const;
-    void setIsValid(const bool _isValid);
+    void setIsValid(bool _isValid);
     /// @}
 
     /***
@@ -145,10 +142,21 @@ public:
     DATA_API bool operator!=(const Resection& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     //! Resection name
     std::string m_name;
@@ -163,13 +171,13 @@ protected:
     ResectionOutputs m_vOutputs;
 
     //! flag if the part is safe
-    bool m_isSafePart;
+    bool m_isSafePart {true};
 
     //! flag if the resection is valid
-    bool m_isValid;
+    bool m_isValid {false};
 
     //! flag if the resection is visible
-    bool m_isVisible;
+    bool m_isVisible {true};
 
 private:
 

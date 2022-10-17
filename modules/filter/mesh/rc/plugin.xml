@@ -8,13 +8,6 @@
          <desc>This service generates meshes from an ImageSeries using VTK library.</desc>
     </extension>
 
-
-    <extension implements="sight::service::extension::Factory">
-         <type>sight::ui::base::IAction</type>
-         <service>sight::module::filter::mesh::action::SMeshCreation</service>
-         <desc>Action to create a mesh from an image using VTK library</desc>
-    </extension>
-
     <extension implements="sight::service::extension::Factory">
           <type>sight::service::IGenerator</type>
           <service>sight::module::filter::mesh::generator::SNeedle</service>

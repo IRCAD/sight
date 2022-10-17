@@ -28,9 +28,9 @@
             <!-- ******************************* Objects declaration ****************************** -->
 
             <!-- Series of camera calibration -->
-            <object uid="cameraSeries" type="sight::data::CameraSeries" />
+            <object uid="cameraSet" type="sight::data::CameraSet" />
             <!-- Camera calibration, deferred because it is extracted from the series -->
-            <object uid="camera" type="sight::data::Camera" src="deferred" />
+            <object uid="camera" type="sight::data::Camera" src="deferred"/>
             <!-- Frame timeline used to buffer the output of the video grabber -->
             <object uid="frameTL" type="sight::data::FrameTL" />
             <!-- Video frame that is used for the current iteration -->
@@ -157,105 +157,47 @@
                 </config>
             </service>
 
-            <service uid="loadCalibAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>calibrationReaderSrv/update</slot>
-                </slots>
-            </service>
+            <service uid="loadCalibAct" type="sight::module::ui::base::SAction" />
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/startCamera</slot>
-                </slots>
-                <state executable="false" />
+            <service uid="startVideoAct" type="sight::module::ui::base::SAction" >
+                <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/pauseCamera</slot>
-                    <slot>resumeVideoAct/show</slot>
-                    <slot>pauseVideoAct/hide</slot>
-                </slots>
+            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" >
                 <state visible="false" />
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/pauseCamera</slot>
-                    <slot>resumeVideoAct/hide</slot>
-                    <slot>pauseVideoAct/show</slot>
-                </slots>
+            <service uid="resumeVideoAct" type="sight::module::ui::base::SAction" >
                 <state visible="false" />
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/stopCamera</slot>
-                    <slot>startVideoAct/show</slot>
-                    <slot>resumeVideoAct/hide</slot>
-                    <slot>pauseVideoAct/hide</slot>
-                    <slot>stopVideoAct/setInexecutable</slot>
-                    <slot>loopVideoAct/setInexecutable</slot>
-                    <slot>loopVideoAct/deactivate</slot>
-                </slots>
-                <state executable="false" />
+            <service uid="stopVideoAct" type="sight::module::ui::base::SAction" >
+                <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>videoGrabberSrv/loopVideo</slot>
-                </slots>
-                <state executable="false" />
+            <service uid="loopVideoAct" type="sight::module::ui::base::SAction" >
+                <state enabled="false" />
             </service>
 
-            <service uid="startUndistortAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>undistortAdp/show</slot>
-                    <slot>startDistortAct/setInexecutable</slot>
-                    <slot>startUndistortAct/hide</slot>
-                    <slot>stopUndistortAct/show</slot>
-                </slots>
-            </service>
+            <service uid="startUndistortAct" type="sight::module::ui::base::SAction" />
 
-            <service uid="stopUndistortAct" type="sight::module::ui::base::com::SSlotCaller" >
+            <service uid="stopUndistortAct" type="sight::module::ui::base::SAction" >
                 <state visible="false" />
-                <slots>
-                    <slot>undistortAdp/hide</slot>
-                    <slot>startDistortAct/setExecutable</slot>
-                    <slot>startUndistortAct/show</slot>
-                    <slot>stopUndistortAct/hide</slot>
-                </slots>
             </service>
 
-            <service uid="startDistortAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>distortAdp/show</slot>
-                    <slot>startUndistortAct/setInexecutable</slot>
-                    <slot>startDistortAct/hide</slot>
-                    <slot>stopDistortAct/show</slot>
-                </slots>
-            </service>
+            <service uid="startDistortAct" type="sight::module::ui::base::SAction" />
 
-            <service uid="stopDistortAct" type="sight::module::ui::base::com::SSlotCaller" >
+            <service uid="stopDistortAct" type="sight::module::ui::base::SAction" >
                 <state visible="false" />
-                <slots>
-                    <slot>distortAdp/hide</slot>
-                    <slot>startUndistortAct/setExecutable</slot>
-                    <slot>startDistortAct/show</slot>
-                    <slot>stopDistortAct/hide</slot>
-                </slots>
             </service>
 
-            <service uid="showMeshAct" type="sight::module::ui::base::com::SBooleanSlotCaller" >
-                <slots>
-                    <slot>cubeAdp/updateVisibility</slot>
-                </slots>
-                <state active="true" />
+            <service uid="showMeshAct" type="sight::module::ui::base::SAction" >
+                <state checked="true" />
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
@@ -326,20 +268,16 @@
             </service>
 
             <!-- hide axis adaptor until a marker is found -->
-            <service uid="hideAxisSrv" type="sight::module::ui::base::com::SBooleanSlotCaller" >
-                <slots>
-                    <slot>axisAdp/updateVisibility</slot>
-                </slots>
-            </service>
+            <service uid="hideAxisSrv" type="sight::module::ui::base::SAction" />
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
             <service uid="calibrationReaderSrv" type="sight::module::io::vision::SOpenCVReader" >
-                <inout key="data" uid="cameraSeries" />
+                <inout key="data" uid="cameraSet" />
             </service>
 
-            <!-- extract the first sight::data::Camera from the sight::data::CameraSeries -->
+            <!-- extract the first sight::data::Camera from the sight::data::CameraSet -->
             <service uid="extractCameraSrv" type="sight::module::data::SGetCamera" >
-                <inout key="source" uid="cameraSeries" />
+                <inout key="cameraSet" uid="cameraSet" />
                 <out group="camera" >
                     <key index="0" uid="camera" />
                 </out>
@@ -511,6 +449,16 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
+                <signal>showMeshAct/isChecked</signal>
+                <slot>cubeAdp/updateVisibility</slot>
+            </connect>
+
+            <connect>
+                <signal>hideAxisSrv/isChecked</signal>
+                <slot>axisAdp/updateVisibility</slot>
+            </connect>
+
+            <connect>
                 <signal>videoSelectorSrv/configuredFile</signal>
                 <signal>videoSelectorSrv/configuredStream</signal>
                 <signal>videoSelectorSrv/configuredDevice</signal>
@@ -521,8 +469,8 @@
                 <signal>videoGrabberSrv/cameraStarted</signal>
                 <slot>pauseVideoAct/show</slot>
                 <slot>startVideoAct/hide</slot>
-                <slot>stopVideoAct/setExecutable</slot>
-                <slot>loopVideoAct/setExecutable</slot>
+                <slot>stopVideoAct/enable</slot>
+                <slot>loopVideoAct/enable</slot>
             </connect>
 
             <connect>
@@ -532,7 +480,7 @@
 
             <connect>
                 <signal>camera/modified</signal>
-                <slot>startVideoAct/setExecutable</slot>
+                <slot>startVideoAct/enable</slot>
                 <slot>stopVideoAct/update</slot>
             </connect>
 
@@ -568,7 +516,7 @@
             </connect>
 
             <connect>
-                <signal>cameraSeries/modified</signal>
+                <signal>cameraSet/modified</signal>
                 <slot>extractCameraSrv/update</slot>
                 <slot>errorSrv/update</slot>
             </connect>
@@ -584,6 +532,78 @@
                 <signal>syncGenericSceneSrv/allReceived</signal>
                 <slot>genericSceneSrv/requestRender</slot>
                 <slot>frameUpdaterSrv/synchronize</slot>
+            </connect>
+
+            <connect>
+                <signal>loadCalibAct/updated</signal>
+                <slot>calibrationReaderSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>startVideoAct/updated</signal>
+                <slot>videoGrabberSrv/startCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>pauseVideoAct/updated</signal>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>resumeVideoAct/show</slot>
+                <slot>pauseVideoAct/hide</slot>
+            </connect>
+
+            <connect>
+                <signal>resumeVideoAct/updated</signal>
+                <slot>videoGrabberSrv/pauseCamera</slot>
+                <slot>resumeVideoAct/hide</slot>
+                <slot>pauseVideoAct/show</slot>
+            </connect>
+
+            <connect>
+                <signal>stopVideoAct/updated</signal>
+                <slot>videoGrabberSrv/stopCamera</slot>
+                <slot>startVideoAct/show</slot>
+                <slot>resumeVideoAct/hide</slot>
+                <slot>pauseVideoAct/hide</slot>
+                <slot>stopVideoAct/disable</slot>
+                <slot>loopVideoAct/disable</slot>
+                <slot>loopVideoAct/uncheck</slot>
+            </connect>
+
+            <connect>
+                <signal>loopVideoAct/updated</signal>
+                <slot>videoGrabberSrv/loopVideo</slot>
+            </connect>
+
+            <connect>
+                <signal>startUndistortAct/updated</signal>
+                <slot>undistortAdp/show</slot>
+                <slot>startDistortAct/disable</slot>
+                <slot>startUndistortAct/hide</slot>
+                <slot>stopUndistortAct/show</slot>
+            </connect>
+
+            <connect>
+                <signal>stopUndistortAct/updated</signal>
+                <slot>undistortAdp/hide</slot>
+                <slot>startDistortAct/enable</slot>
+                <slot>startUndistortAct/show</slot>
+                <slot>stopUndistortAct/hide</slot>
+            </connect>
+
+            <connect>
+                <signal>startDistortAct/updated</signal>
+                <slot>distortAdp/show</slot>
+                <slot>startUndistortAct/disable</slot>
+                <slot>startDistortAct/hide</slot>
+                <slot>stopDistortAct/show</slot>
+            </connect>
+
+            <connect>
+                <signal>stopDistortAct/updated</signal>
+                <slot>distortAdp/hide</slot>
+                <slot>startUndistortAct/enable</slot>
+                <slot>startDistortAct/show</slot>
+                <slot>stopDistortAct/hide</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

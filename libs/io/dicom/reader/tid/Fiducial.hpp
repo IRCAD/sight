@@ -28,13 +28,7 @@
 #include <data/DicomSeries.hpp>
 #include <data/Image.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace tid
+namespace sight::io::dicom::reader::tid
 {
 
 /**
@@ -62,7 +56,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Fiducial();
+    IO_DICOM_API ~Fiducial() override;
 
     /**
      * @brief Read a fiducial node
@@ -82,8 +76,4 @@ protected:
     void addLandmark(double x, double y, double z, const std::string& label);
 };
 
-} // namespace tid
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::tid

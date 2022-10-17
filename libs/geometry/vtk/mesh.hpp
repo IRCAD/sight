@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace sight::geometry::vtk
  */
 GEOMETRY_VTK_API data::Point::sptr computeCenterOfMass(
     const data::Mesh::csptr mesh,
-    const bool useScalarAsWeights = false
+    bool useScalarAsWeights = false
 );
 
 } // namespace sight::geometry::vtk

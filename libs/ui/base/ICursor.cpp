@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,14 +30,12 @@ const ICursor::FactoryRegistryKeyType ICursor::REGISTRY_KEY = "::ui::base::Curso
 //-----------------------------------------------------------------------------
 
 ICursor::ICursor()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 ICursor::~ICursor()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 

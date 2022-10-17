@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,23 +26,19 @@
 #include <QMenu>
 #include <QToolBar>
 
-namespace sight::ui::qt
-{
-
-namespace container
+namespace sight::ui::qt::container
 {
 
 //-----------------------------------------------------------------------------
 
-QtToolBarContainer::QtToolBarContainer(ui::base::GuiBaseObject::Key key) noexcept
+QtToolBarContainer::QtToolBarContainer(ui::base::GuiBaseObject::Key /*key*/) noexcept
 {
 }
 
 //-----------------------------------------------------------------------------
 
-QtToolBarContainer::~QtToolBarContainer() noexcept
-{
-}
+QtToolBarContainer::~QtToolBarContainer() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -78,6 +74,4 @@ QToolBar* QtToolBarContainer::getQtToolBar()
 
 //-----------------------------------------------------------------------------
 
-} // namespace container
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::container

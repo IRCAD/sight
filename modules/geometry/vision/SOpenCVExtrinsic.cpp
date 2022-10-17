@@ -31,7 +31,7 @@
 
 #include <data/CalibrationInfo.hpp>
 #include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 #include <data/Matrix4.hpp>
 #include <data/PointList.hpp>
 
@@ -53,11 +53,7 @@ static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG      = "erro
 
 // ----------------------------------------------------------------------------
 
-SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept :
-    m_width(11),
-    m_height(8),
-    m_squareSize(20.0),
-    m_camIndex(1)
+SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept
 {
     newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
     newSlot(s_UPDATE_CHESSBOARD_SIZE_SLOT, &SOpenCVExtrinsic::updateChessboardSize, this);
@@ -65,9 +61,8 @@ SOpenCVExtrinsic::SOpenCVExtrinsic() noexcept :
 
 // ----------------------------------------------------------------------------
 
-SOpenCVExtrinsic::~SOpenCVExtrinsic() noexcept
-{
-}
+SOpenCVExtrinsic::~SOpenCVExtrinsic() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -132,12 +127,11 @@ void SOpenCVExtrinsic::updating()
         {
             for(unsigned int x = 0 ; x < m_width - 1 ; ++x)
             {
-                points.push_back(
-                    cv::Point3f(
-                        static_cast<float>(x) * m_squareSize,
-                        static_cast<float>(y) * m_squareSize,
-                        0
-                    )
+                points.emplace_back(
+                    static_cast<float>(x) * m_squareSize,
+                    static_cast<float>(y) * m_squareSize,
+                    0.F
+
                 );
             }
         }
@@ -157,30 +151,28 @@ void SOpenCVExtrinsic::updating()
 
             for( ; itr1 != itrEnd1 && itr2 != itrEnd2 ; ++itr1, ++itr2)
             {
-                data::PointList::csptr ptList1 = *itr1;
-                data::PointList::csptr ptList2 = *itr2;
+                const data::PointList::csptr& ptList1 = *itr1;
+                const data::PointList::csptr& ptList2 = *itr2;
                 std::vector<cv::Point2f> imgPoint1;
                 std::vector<cv::Point2f> imgPoint2;
 
                 for(data::Point::csptr point : ptList1->getPoints())
                 {
                     SIGHT_ASSERT("point is null", point);
-                    imgPoint1.push_back(
-                        cv::Point2f(
-                            static_cast<float>(point->getCoord()[0]),
-                            static_cast<float>(point->getCoord()[1])
-                        )
+                    imgPoint1.emplace_back(
+                        static_cast<float>(point->getCoord()[0]),
+                        static_cast<float>(point->getCoord()[1])
+
                     );
                 }
 
                 for(data::Point::csptr point : ptList2->getPoints())
                 {
                     SIGHT_ASSERT("point is null", point);
-                    imgPoint2.push_back(
-                        cv::Point2f(
-                            static_cast<float>(point->getCoord()[0]),
-                            static_cast<float>(point->getCoord()[1])
-                        )
+                    imgPoint2.emplace_back(
+                        static_cast<float>(point->getCoord()[0]),
+                        static_cast<float>(point->getCoord()[1])
+
                     );
                 }
 
@@ -201,18 +193,18 @@ void SOpenCVExtrinsic::updating()
         cv::Mat essentialMatrix;
         cv::Mat fundamentalMatrix;
 
-        const auto camSeries = m_cameraSeries.lock();
+        const auto camSeries = m_camera_set.lock();
 
         SIGHT_ASSERT(
-            "camera index must be > 0 and < camSeries->numCameras()",
-            m_camIndex > 0 && m_camIndex < camSeries->numCameras()
+            "camera index must be > 0 and < camSeries->size()",
+            m_camIndex > 0 && m_camIndex < camSeries->size()
         );
 
         data::Image::csptr img = calInfo1->getImageContainer().front();
         cv::Size2i imgsize(static_cast<int>(img->getSize()[0]), static_cast<int>(img->getSize()[1]));
         {
-            data::Camera::csptr cam1 = camSeries->getCamera(0);
-            data::Camera::csptr cam2 = camSeries->getCamera(m_camIndex);
+            data::Camera::csptr cam1 = camSeries->get_camera(0);
+            data::Camera::csptr cam2 = camSeries->get_camera(m_camIndex);
 
             data::mt::locked_ptr cam1Lock(cam1);
             data::mt::locked_ptr cam2Lock(cam2);
@@ -263,12 +255,12 @@ void SOpenCVExtrinsic::updating()
         io::opencv::Matrix::copyFromCv(cv4x4, matrix);
 
         {
-            camSeries->setExtrinsicMatrix(m_camIndex, matrix);
+            camSeries->set_extrinsic_matrix(m_camIndex, matrix);
         }
 
-        data::CameraSeries::ExtrinsicCalibratedSignalType::sptr sig;
-        sig = camSeries->signal<data::CameraSeries::ExtrinsicCalibratedSignalType>(
-            data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG
+        data::CameraSet::extrinsic_calibrated_signal_t::sptr sig;
+        sig = camSeries->signal<data::CameraSet::extrinsic_calibrated_signal_t>(
+            data::CameraSet::s_EXTRINSIC_CALIBRATED_SIG
         );
 
         sig->asyncEmit();

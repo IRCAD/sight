@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <core/com/Signal.hxx>
 
-#include <data/SeriesDB.hpp>
+#include <data/ActivitySet.hpp>
 
 #include <service/base.hpp>
 #include <service/extension/Config.hpp>
@@ -35,7 +35,7 @@
 namespace sight::module::ui::qml::activity
 {
 
-static const service::IService::KeyType s_SERIESDB_INOUT = "seriesDB";
+static const service::IService::KeyType s_ACTIVITY_SET_INOUT = "activitySet";
 
 static const std::string s_ACTIVITY_CREATED_CHANNEL = "activityCreatedChannel";
 static const std::string s_GO_TO_CHANNEL            = "GoToChannel";
@@ -43,15 +43,14 @@ static const std::string s_VALIDATION_CHANNEL       = "validationChannel";
 
 //------------------------------------------------------------------------------
 
-ActivityLauncherManager::ActivityLauncherManager() noexcept
-{
-}
+ActivityLauncherManager::ActivityLauncherManager() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
 ActivityLauncherManager::~ActivityLauncherManager() noexcept
 {
-    this->uninitialize();
+    this->ActivityLauncherManager::uninitialize();
 }
 
 //------------------------------------------------------------------------------
@@ -60,9 +59,9 @@ void ActivityLauncherManager::initialize()
 {
     this->create();
 
-    m_seriesDB = data::factory::New<data::SeriesDB>();
+    m_activity_set = data::factory::New<data::ActivitySet>();
 
-    this->addObject(m_seriesDB, this->getInputID(s_SERIESDB_INOUT));
+    this->addObject(m_activity_set, this->getInputID(s_ACTIVITY_SET_INOUT));
 
     auto addActivityViewParam = [&](const std::string& replace)
                                 {
@@ -71,7 +70,7 @@ void ActivityLauncherManager::initialize()
                                     parameterViewConfig.add("<xmlattr>.by", this->getInputID(replace));
                                     m_activityViewConfig.add_child("parameters.parameter", parameterViewConfig);
                                 };
-    addActivityViewParam(s_SERIESDB_INOUT);
+    addActivityViewParam(s_ACTIVITY_SET_INOUT);
     addActivityViewParam(s_VALIDATION_CHANNEL);
 
     this->startServices();
@@ -107,7 +106,7 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
         {
             // create the services;
             m_activitySequencer = srv;
-            m_activitySequencer->setInOut(m_seriesDB, "seriesDB", true);
+            m_activitySequencer->setInOut(m_activity_set, "activitySet", true);
 
             // connect to launch the activity when it is created/updated.
             service::helper::ProxyConnections activityCreatedCnt(this->getInputID(s_ACTIVITY_CREATED_CHANNEL));
@@ -134,9 +133,9 @@ void ActivityLauncherManager::onServiceCreated(const QVariant& obj)
 
 void ActivityLauncherManager::open()
 {
-    const auto& seriesDB = data::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
-    auto reader          = service::add("sight::module::ui::base::io::SSelector");
-    reader->setInOut(seriesDB, "data");
+    const auto& activity_set = data::ActivitySet::dynamicCast(this->getObject(this->getInputID(s_ACTIVITY_SET_INOUT)));
+    auto reader              = service::add("sight::module::ui::base::io::SSelector");
+    reader->setInOut(activity_set, "data");
     const auto srvCfgFactory = service::extension::Config::getDefault();
     const auto cfgElem       = srvCfgFactory->getServiceConfig(
         "ActivityReaderConfig",
@@ -150,7 +149,7 @@ void ActivityLauncherManager::open()
     reader->stop();
     service::remove(reader);
 
-    auto sig = seriesDB->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+    auto sig = activity_set->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     sig->asyncEmit();
 }
 
@@ -158,9 +157,9 @@ void ActivityLauncherManager::open()
 
 void ActivityLauncherManager::save()
 {
-    const auto& seriesDB = data::SeriesDB::dynamicCast(this->getObject(this->getInputID(s_SERIESDB_INOUT)));
-    auto writer          = service::add("sight::module::ui::base::io::SSelector");
-    writer->setInOut(seriesDB, "data");
+    const auto& activity_set = data::ActivitySet::dynamicCast(this->getObject(this->getInputID(s_ACTIVITY_SET_INOUT)));
+    auto writer              = service::add("sight::module::ui::base::io::SSelector");
+    writer->setInOut(activity_set, "data");
     const auto srvCfgFactory = service::extension::Config::getDefault();
     const auto cfgElem       = srvCfgFactory->getServiceConfig(
         "ActivityWriterConfig",

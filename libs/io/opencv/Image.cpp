@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "Image.hpp"
 
 #include "io/opencv/Type.hpp"
@@ -61,11 +63,13 @@ static cv::Mat toCv(const data::Image::csptr& _image, bool _copy)
     cv::Mat cvImage;
     if(_copy)
     {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
         cv::Mat mat = cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
         cvImage = mat.clone();
     }
     else
     {
+        // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
         cvImage = cv::Mat(cvSize, cvType, const_cast<void*>(_image->getBuffer()));
     }
 
@@ -81,7 +85,7 @@ cv::Mat Image::moveToCv(data::Image::sptr& _image)
 
 //------------------------------------------------------------------------------
 
-const cv::Mat Image::moveToCv(const data::Image::csptr& _image)
+cv::Mat Image::moveToCv(const data::Image::csptr& _image)
 {
     return toCv(_image, false);
 }
@@ -103,24 +107,24 @@ void Image::copyFromCv(data::Image& _image, const cv::Mat& _cvImage)
 
     if(_cvImage.dims == 1)
     {
-        imageSize[0] = _cvImage.size[0];
+        imageSize[0] = std::size_t(_cvImage.size[0]);
     }
     else if(_cvImage.dims == 2 && _cvImage.rows == 1)
     {
         // This means this is actually a 1D image so remove the first dimension (==1)
-        imageSize[0] = _cvImage.size[1];
+        imageSize[0] = std::size_t(_cvImage.size[1]);
         imageSize[1] = 0;
     }
     else if(_cvImage.dims == 2)
     {
-        imageSize[0] = _cvImage.size[1];
-        imageSize[1] = _cvImage.size[0];
+        imageSize[0] = std::size_t(_cvImage.size[1]);
+        imageSize[1] = std::size_t(_cvImage.size[0]);
     }
     else // 3D
     {
-        imageSize[0] = _cvImage.size[2];
-        imageSize[1] = _cvImage.size[1];
-        imageSize[2] = _cvImage.size[0];
+        imageSize[0] = std::size_t(_cvImage.size[2]);
+        imageSize[1] = std::size_t(_cvImage.size[1]);
+        imageSize[2] = std::size_t(_cvImage.size[0]);
     }
 
     const auto prevImageSize = _image.getSize();

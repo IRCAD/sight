@@ -1,0 +1,65 @@
+<extension implements="sight::service::extension::AppConfig" >
+    <id>TransferFunctionWindowCfg</id>
+    <parameters>
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
+        <param name="WINDOW_TITLE" />
+        <param name="WINDOW_ICON" />
+        <param name="image" />
+        <param name="currentTF" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${image}" type="sight::data::Image" src="ref" />
+        <object uid="${currentTF}" type="sight::data::TransferFunction" src="ref" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="sight::module::ui::base::SFrame" >
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>${WINDOW_TITLE}</name>
+                    <icon>${WINDOW_ICON}</icon>
+                    <minSize width="720" height="390" />
+                    <style mode="STAY_ON_TOP" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="transferFunctionEditorView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="transferFunctionEditorView" type="sight::module::ui::base::SView" >
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="tfView" />
+            </registry>
+        </service>
+
+        <!-- TF manager -->
+        <service uid="TFManagerCfg"  type="sight::service::SConfigController" >
+            <appConfig id="TransferFunctionWidgetCfg" />
+            <parameter replace="WID_PARENT" by="tfView" />
+            <inout key="image" uid="${image}" />
+            <inout key="currentTF" uid="${currentTF}" />
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect channel="${CLOSE_CONFIG_CHANNEL}" >
+            <signal>mainView/closed</signal>
+        </connect>
+
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="mainView" />
+        <start uid="TFManagerCfg" />
+    </config>
+</extension>

@@ -45,8 +45,8 @@ public:
     /// Computes the deformation or sets and initializes the algorithm if necessary.
     TUTO04MESHGENERATORCPP_API void computeDeformation(
         sight::data::Mesh::sptr _mesh,
-        const unsigned int _nbStep,
-        const unsigned int _amplitude
+        unsigned int _nbStep,
+        unsigned int _amplitude
     );
 
 private:
@@ -59,8 +59,8 @@ private:
      */
     void setParam(
         sight::data::Mesh::sptr _mesh,
-        const unsigned int _nbStep,
-        const unsigned int _amplitude
+        unsigned int _nbStep,
+        unsigned int _amplitude
     );
 
     /// Initializes the simulated acquisition.

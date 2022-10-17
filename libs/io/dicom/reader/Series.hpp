@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <core/log/Logger.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
+namespace sight::io::dicom::reader
 {
 
 /**
@@ -58,7 +55,7 @@ public:
     IO_DICOM_API data::Series::sptr read(const data::DicomSeries::csptr& dicomSeries);
 
     /// Get Logger
-    const core::log::Logger::sptr& getLogger() const
+    [[nodiscard]] const core::log::Logger::sptr& getLogger() const
     {
         return m_logger;
     }
@@ -118,9 +115,7 @@ protected:
     CancelRequestedCallback m_cancelRequestedCallback;
 
     /// Enable buffer rotation
-    bool m_enableBufferRotation;
+    bool m_enableBufferRotation {true};
 };
 
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader

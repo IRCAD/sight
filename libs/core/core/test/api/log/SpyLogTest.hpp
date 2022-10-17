@@ -26,10 +26,7 @@
 
 #include <sstream>
 
-namespace sight::core::log
-{
-
-namespace ut
+namespace sight::core::log::ut
 {
 
 class SpyLogTest : public CPPUNIT_NS::TestFixture
@@ -42,20 +39,18 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     void logMessageTest();
     void threadSafetyTest();
 
 private:
 
-    std::vector<std::string> logToVector(const std::stringstream& logsStream);
-    void checkLog(const std::vector<std::string>& logMessagesRef, const std::vector<std::string>& logMessages);
+    static std::vector<std::string> logToVector(const std::stringstream& logsStream);
+    static void checkLog(const std::vector<std::string>& logMessagesRef, const std::vector<std::string>& logMessages);
 
     std::stringstream m_ostream;
 };
 
-} //namespace ut
-
-} //namespace sight::core::log
+} // namespace sight::core::log::ut

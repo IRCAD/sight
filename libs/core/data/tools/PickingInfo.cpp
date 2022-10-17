@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2021 IRCAD France
+ * Copyright (C) 2015-2022 IRCAD France
  * Copyright (C) 2015-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,4 +32,4 @@ PickingInfo::PickingInfo()
     m_worldPos[2] = 0.;
 }
 
-}
+} // namespace sight::data::tools

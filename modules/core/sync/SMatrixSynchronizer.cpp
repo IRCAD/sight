@@ -47,8 +47,7 @@ const core::com::Slots::SlotKeyType SMatrixSynchronizer::s_UPDATE_MATRIX_SLOT = 
 
 // ----------------------------------------------------------------------------
 
-SMatrixSynchronizer::SMatrixSynchronizer() noexcept :
-    m_lastTimestamp(0)
+SMatrixSynchronizer::SMatrixSynchronizer() noexcept
 {
     m_slotUpdateMatrix = core::com::newSlot(&SMatrixSynchronizer::updateMatrix, this);
 
@@ -88,13 +87,13 @@ void SMatrixSynchronizer::updateMatrix(core::HiResClock::HiResClockType timestam
         SIGHT_ASSERT("Buffer not found with timestamp " << currentTimestamp, buffer);
         m_lastTimestamp = currentTimestamp;
 
-        const float* values = buffer->getElement(0);
+        const std::array<float, 16> values = buffer->getElement(0);
 
         for(unsigned int i = 0 ; i < 4 ; ++i)
         {
             for(unsigned int j = 0 ; j < 4 ; ++j)
             {
-                matrix3D->setCoefficient(i, j, values[i * 4 + j]);
+                matrix3D->setCoefficient(i, j, values[i * std::size_t(4) + j]);
             }
         }
 

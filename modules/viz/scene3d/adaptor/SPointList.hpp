@@ -41,13 +41,13 @@ namespace sight::data
 
 class Material;
 
-}
+} // namespace sight::data
 namespace sight::data
 {
 
 class Mesh;
 
-}
+} // namespace sight::data
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -169,13 +169,12 @@ private:
 
     /**
      * @brief Instantiates a new material adaptor.
-     * @param _materialSuffix suffix use for the material name.
      */
-    module::viz::scene3d::adaptor::SMaterial::sptr createMaterialService(const std::string& _materialSuffix = "");
+    module::viz::scene3d::adaptor::SMaterial::sptr createMaterialService(const std::string& _meshId);
 
     /// Associates a new SMaterial to the managed SPointList.
     /// With this method, SPointList is responsible for creating a SMaterial.
-    void updateMaterialAdaptor();
+    void updateMaterialAdaptor(const std::string& _meshId);
 
     /**
      * @brief Attaches a node in the scene graph.
@@ -220,7 +219,7 @@ private:
     sight::viz::scene3d::Mesh::sptr m_meshGeometry {nullptr};
 
     /// Defines the billboards radius.
-    float m_radius {1.f};
+    float m_radius {1.F};
 
     /// Defines if label numbers are displayed.
     bool m_displayLabel {false};
@@ -257,7 +256,7 @@ private:
 
 inline bool SPointList::getVisibility() const
 {
-    return m_entity ? m_entity->getVisible() : m_isVisible;
+    return m_entity != nullptr ? m_entity->getVisible() : m_isVisible;
 }
 
 } // namespace sight::module::viz::scene3d::adaptor.

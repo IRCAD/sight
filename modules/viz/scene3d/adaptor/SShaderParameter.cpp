@@ -40,15 +40,13 @@ static const std::string s_MATERIAL_NAME_CONFIG = "materialName";
 
 //------------------------------------------------------------------------------
 
-SShaderParameter::SShaderParameter() noexcept
-{
-}
+SShaderParameter::SShaderParameter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SShaderParameter::~SShaderParameter() noexcept
-{
-}
+SShaderParameter::~SShaderParameter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -92,10 +92,10 @@ private:
     void revert();
 
     /// Defines the initial viewport dimensions.
-    sight::viz::scene3d::Layer::ViewportConfigType m_previousViewportDimensions {0.f, 0.f, 1.f, 1.f};
+    sight::viz::scene3d::Layer::ViewportConfigType m_previousViewportDimensions {0.F, 0.F, 1.F, 1.F};
 
     /// Defines the configured viewport dimensions.
-    sight::viz::scene3d::Layer::ViewportConfigType m_newViewportDimensions {0.f, 0.f, 1.f, 1.f};
+    sight::viz::scene3d::Layer::ViewportConfigType m_newViewportDimensions {0.F, 0.F, 1.F, 1.F};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

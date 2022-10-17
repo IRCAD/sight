@@ -22,17 +22,14 @@
 
 #include "ImageSeriesTest.hpp"
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <utestData/generator/Image.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ImageSeriesTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -57,17 +54,12 @@ void ImageSeriesTest::imageTest()
 {
     CPPUNIT_ASSERT(m_series);
 
-    auto img = data::Image::New();
-    utestData::generator::Image::generateRandomImage(img, core::tools::Type("float"));
-    CPPUNIT_ASSERT(img);
-
-    m_series->setImage(img);
-    CPPUNIT_ASSERT_EQUAL(img, m_series->getImage());
+    utestData::generator::Image::generateRandomImage(m_series, core::Type::FLOAT);
 
     auto series2 = data::ImageSeries::New();
     CPPUNIT_ASSERT(*series2 != *m_series);
 
-    series2->setImage(img);
+    series2->shallowCopy(m_series);
     CPPUNIT_ASSERT(*series2 == *m_series);
 }
 
@@ -85,14 +77,14 @@ void ImageSeriesTest::equalityTest()
     series2->setModality(series1->getModality());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setInstanceUID("2");
+    series1->setSeriesInstanceUID("2");
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setInstanceUID(series1->getInstanceUID());
+    series2->setSeriesInstanceUID(series1->getSeriesInstanceUID());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setNumber("3");
+    series1->setSeriesNumber(3);
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setNumber(series1->getNumber());
+    series2->setSeriesNumber(series1->getSeriesNumber());
     CPPUNIT_ASSERT(*series1 == *series2);
 
     series1->setLaterality("4");
@@ -100,19 +92,19 @@ void ImageSeriesTest::equalityTest()
     series2->setLaterality(series1->getLaterality());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setDate("5");
+    series1->setSeriesDate("5");
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setDate(series1->getDate());
+    series2->setSeriesDate(series1->getSeriesDate());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setTime("6");
+    series1->setSeriesTime("6");
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setTime(series1->getTime());
+    series2->setSeriesTime(series1->getSeriesTime());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setPerformingPhysiciansName({"7", "8", "9"});
+    series1->setPerformingPhysicianName("7\\8\\9");
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setPerformingPhysiciansName(series1->getPerformingPhysiciansName());
+    series2->setPerformingPhysicianName(series1->getPerformingPhysicianName());
     CPPUNIT_ASSERT(*series1 == *series2);
 
     series1->setProtocolName("10");
@@ -120,9 +112,9 @@ void ImageSeriesTest::equalityTest()
     series2->setProtocolName(series1->getProtocolName());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setDescription("11");
+    series1->setSeriesDescription("11");
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setDescription(series1->getDescription());
+    series2->setSeriesDescription(series1->getSeriesDescription());
     CPPUNIT_ASSERT(*series1 == *series2);
 
     series1->setBodyPartExamined("12");
@@ -170,95 +162,87 @@ void ImageSeriesTest::equalityTest()
     series2->setPerformedProcedureStepDescription(series1->getPerformedProcedureStepDescription());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setPerformedProcedureComments("21");
+    series1->setCommentsOnThePerformedProcedureStep("21");
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setPerformedProcedureComments(series1->getPerformedProcedureComments());
+    series2->setCommentsOnThePerformedProcedureStep(series1->getCommentsOnThePerformedProcedureStep());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    auto patient = data::Patient::New();
-    patient->setPatientId("22");
-    series1->setPatient(patient);
+    series1->setPatientID("22");
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setPatient(series1->getPatient());
+    series2->setPatientID(series1->getPatientID());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    auto study = data::Study::New();
-    study->setInstanceUID("23");
-    series1->setStudy(study);
+    series1->setStudyInstanceUID("23");
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setStudy(series1->getStudy());
+    series2->setStudyInstanceUID(series1->getStudyInstanceUID());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    auto equipment = data::Equipment::New();
-    equipment->setInstitutionName("24");
-    series1->setEquipment(equipment);
+    series1->setInstitutionName("24");
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setEquipment(series1->getEquipment());
+    series2->setInstitutionName(series1->getInstitutionName());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    auto image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::tools::Type("float"));
-    series1->setImage(image);
+    utestData::generator::Image::generateRandomImage(series1, core::Type::FLOAT);
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setImage(image);
+    series2->shallowCopy(series1);
     CPPUNIT_ASSERT(*series1 == *series2);
 
     auto dicomSeries = data::DicomSeries::New();
-    dicomSeries->setInstanceUID("25");
+    dicomSeries->setSeriesInstanceUID("25");
     dicomSeries->setNumberOfInstances(1);
     series1->setDicomReference(dicomSeries);
     CPPUNIT_ASSERT(*series1 != *series2);
     series2->setDicomReference(dicomSeries);
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setContrastAgent("26");
+    series1->setContrastBolusAgent("26");
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setContrastAgent(series1->getContrastAgent());
+    series2->setContrastBolusAgent(series1->getContrastBolusAgent());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setContrastRoute("27");
+    series1->setContrastBolusRoute("27");
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setContrastRoute(series1->getContrastRoute());
+    series2->setContrastBolusRoute(series1->getContrastBolusRoute());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setContrastVolume("28");
+    series1->setContrastBolusVolume(28.0);
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setContrastVolume(series1->getContrastVolume());
+    series2->setContrastBolusVolume(series1->getContrastBolusVolume());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setContrastStartTime("29");
+    series1->setContrastBolusStartTime("29");
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setContrastStartTime(series1->getContrastStartTime());
+    series2->setContrastBolusStartTime(series1->getContrastBolusStartTime());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setContrastStopTime("30");
+    series1->setContrastBolusStopTime("30");
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setContrastStopTime(series1->getContrastStopTime());
+    series2->setContrastBolusStopTime(series1->getContrastBolusStopTime());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setContrastTotalDose("31");
+    series1->setContrastBolusTotalDose(31.0);
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setContrastTotalDose(series1->getContrastTotalDose());
+    series2->setContrastBolusTotalDose(series1->getContrastBolusTotalDose());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setContrastFlowRate("32");
+    series1->setContrastFlowRate("32.0\\32.1\\32.2");
     CPPUNIT_ASSERT(*series1 != *series2);
     series2->setContrastFlowRate(series1->getContrastFlowRate());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setContrastFlowDuration("33");
+    series1->setContrastFlowDuration("33.0\\33.1\\33.2");
     CPPUNIT_ASSERT(*series1 != *series2);
     series2->setContrastFlowDuration(series1->getContrastFlowDuration());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setContrastIngredient("34");
+    series1->setContrastBolusIngredient("34");
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setContrastIngredient(series1->getContrastIngredient());
+    series2->setContrastBolusIngredient(series1->getContrastBolusIngredient());
     CPPUNIT_ASSERT(*series1 == *series2);
 
-    series1->setContrastIngredientConcentration("35");
+    series1->setContrastBolusIngredientConcentration(35.0);
     CPPUNIT_ASSERT(*series1 != *series2);
-    series2->setContrastIngredientConcentration(series1->getContrastIngredientConcentration());
+    series2->setContrastBolusIngredientConcentration(series1->getContrastBolusIngredientConcentration());
     CPPUNIT_ASSERT(*series1 == *series2);
 
     series1->setAcquisitionDate("36");
@@ -279,6 +263,4 @@ void ImageSeriesTest::equalityTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

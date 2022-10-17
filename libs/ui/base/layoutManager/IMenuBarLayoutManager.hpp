@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,10 +33,7 @@
 
 #include <core/runtime/ConfigurationElement.hpp>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 /**
@@ -57,7 +54,7 @@ public:
     UI_BASE_API IMenuBarLayoutManager();
 
     /// Destructor. Do nothing.
-    UI_BASE_API virtual ~IMenuBarLayoutManager();
+    UI_BASE_API ~IMenuBarLayoutManager() override;
 
     /**
      * @brief Returns the vector of fwMenu managed by this layout.
@@ -97,7 +94,7 @@ public:
      * @pre LayoutManager must be initialized before.
      * @pre parent menuBar must be instanced.
      */
-    UI_BASE_API virtual void createLayout(ui::base::container::fwMenuBar::sptr parent) = 0;
+    UI_BASE_API virtual void createLayout(ui::base::container::fwMenuBar::sptr parent, const std::string& id) = 0;
 
     /**
      * @brief Destroy local menus.
@@ -129,6 +126,4 @@ protected:
     std::vector<std::string> m_menuNames;
 };
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

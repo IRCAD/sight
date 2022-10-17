@@ -36,9 +36,10 @@ namespace sight::module::ui::qt
  * SNotifier needs to be connected to [Success/Failure/Info]Notified signals implemented in IService.
  *
  * @section Slots Slots
- * - \b popInfo(): Adds an INFO popup in the queue & display it.
- * - \b popFailure(): Adds a FAILURE popup in the queue & display it.
- * - \b popSuccess():Adds a SUCCESS popup in the queue & display it.
+ * - \b pop(): Adds a popup in the queue & display it.
+ * - \b popInfo(): Adds an INFO popup in the queue & display it (deprecated).
+ * - \b popFailure(): Adds a FAILURE popup in the queue & display it (deprecated).
+ * - \b popSuccess():Adds a SUCCESS popup in the queue & display it (deprecated).
  * - \b setEnumParameter(std::string value, std::string key): Changes the position of notifications (key "position"),
  * accepted values are the same than the "position" tag in the XML configuration.
  *
@@ -115,22 +116,12 @@ private:
     void setEnumParameter(std::string _val, std::string _key);
 
     /**
-     * @brief Slot: pop info notification
-     * @param _message text of the notification
+     * @brief Slot: pops a notification.
+     *
+     * @param _type type of the notification.
+     * @param _message text of the notification.
      */
-    void popInfo(std::string _message);
-
-    /**
-     * @brief Slot: pop success notification
-     * @param _message text of the notification
-     */
-    void popSuccess(std::string _message);
-
-    /**
-     * @brief Slot: pop failure notification
-     * @param _message text of the notification
-     */
-    void popFailure(std::string _message);
+    void pop(service::IService::NotificationType _type, std::string _message);
 
     /**
      * @brief Queue the notification and display it (called by popInfo/Success/Failure Slot).

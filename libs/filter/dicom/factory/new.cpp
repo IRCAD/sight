@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include "filter/dicom/IFilter.hpp"
 
-namespace sight::filter::dicom
-{
-
-namespace factory
+namespace sight::filter::dicom::factory
 {
 
 //------------------------------------------------------------------------------
@@ -37,6 +34,4 @@ filter::dicom::IFilter::sptr New(const filter::dicom::registry::KeyType& classna
     return filter::dicom::registry::get()->create(classname);
 }
 
-} // namespace factory
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::factory

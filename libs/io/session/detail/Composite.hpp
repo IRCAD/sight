@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,53 +26,47 @@
 
 #include <data/Composite.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Composite
+namespace sight::io::session::detail::Composite
 {
 
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto composite = Helper::safeCast<data::Composite>(object);
+    const auto composite = Helper::safe_cast<data::Composite>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Composite>(tree, 1);
 
     // Composite is map of child object..
-    const auto& container = composite->getContainer();
-    children = std::map<std::string, data::Object::csptr>(container.cbegin(), container.cend());
+    children = std::map<std::string, data::Object::csptr>(composite->cbegin(), composite->cend());
 }
 
 //------------------------------------------------------------------------------
 
 inline static data::Composite::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto composite = Helper::safeCast<data::Composite>(object);
+    auto composite = Helper::cast_or_create<data::Composite>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Composite>(tree, 0, 1);
 
-    composite->setContainer(children);
+    composite->operator=(children);
 
     return composite;
 }
 
-} // namespace detail::Composite
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Composite

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,7 +39,7 @@ public:
     SIGHT_DECLARE_CLASS(ILocation);
 
     /// String serialization function
-    inline virtual std::string toString() const = 0;
+    [[nodiscard]] inline virtual std::string toString() const = 0;
 
 protected:
 
@@ -53,7 +53,7 @@ protected:
 /// Default noop implementation
 inline std::string ILocation::toString() const
 {
-    return std::string();
+    return {};
 }
 
-} // namespace sight::io::base::location
+} // namespace sight::core::location

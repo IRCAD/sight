@@ -26,7 +26,7 @@
 
 #include <data/Vector.hpp>
 
-#include <service/IAppConfigManager.hpp>
+#include <service/AppConfigManager.hpp>
 #include <service/IController.hpp>
 
 #include <map>
@@ -75,7 +75,7 @@ public:
     MODULE_UI_QT_API SViewer();
 
     /// Destructor
-    MODULE_UI_QT_API virtual ~SViewer() noexcept;
+    MODULE_UI_QT_API ~SViewer() noexcept override;
 
 protected:
 

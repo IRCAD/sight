@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -76,7 +76,7 @@ void SMaterialOpacityEditor::starting()
 void SMaterialOpacityEditor::updating()
 {
     auto material = m_material.lock();
-    const int a   = static_cast<int>(material->diffuse()->alpha() * 100.f);
+    const int a   = static_cast<int>(material->diffuse()->alpha() * 100.F);
     m_opacitySlider->setValue(a);
 }
 
@@ -85,7 +85,7 @@ void SMaterialOpacityEditor::updating()
 void SMaterialOpacityEditor::onOpacitySlider(int _value)
 {
     auto material = m_material.lock();
-    material->diffuse()->alpha() = static_cast<float>(_value) / 100.f;
+    material->diffuse()->alpha() = static_cast<float>(_value) / 100.F;
     std::stringstream ss;
     ss << _value << "%";
     m_opacityValue->setText(QString::fromStdString(ss.str()));
@@ -102,4 +102,4 @@ void SMaterialOpacityEditor::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::qt

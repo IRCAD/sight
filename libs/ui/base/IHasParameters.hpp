@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -103,4 +103,4 @@ protected:
     UI_BASE_API virtual void setEnumParameter(std::string val, std::string key);
 };
 
-}
+} // namespace sight::ui::base

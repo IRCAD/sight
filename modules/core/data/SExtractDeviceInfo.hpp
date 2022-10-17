@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "modules/data/config.hpp"
 
-#include <data/Camera.hpp>
-
 #include <core/base.hpp>
+
+#include <data/Camera.hpp>
 
 #include <service/IController.hpp>
 #include <service/macros.hpp>
@@ -86,7 +86,7 @@ public:
     MODULE_DATA_API SExtractDeviceInfo();
 
     /// Destructor
-    MODULE_DATA_API ~SExtractDeviceInfo();
+    MODULE_DATA_API ~SExtractDeviceInfo() override;
 
 protected:
 

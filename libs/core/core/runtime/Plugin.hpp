@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "core/config.hpp"
 #include "core/runtime/IPlugin.hpp"
+
 #include <core/macros.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
@@ -40,8 +41,8 @@ class CORE_CLASS_API Plugin : public IPlugin
 {
 public:
 
-    CORE_API std::shared_ptr<Module> getModule() const noexcept override;
-    CORE_API virtual void setInitializationData(const SPTR(ConfigurationElement)configuration) noexcept
+    [[nodiscard]] CORE_API std::shared_ptr<Module> getModule() const noexcept override;
+    CORE_API void setInitializationData(SPTR(ConfigurationElement) configuration) noexcept
     override;
 
 protected:

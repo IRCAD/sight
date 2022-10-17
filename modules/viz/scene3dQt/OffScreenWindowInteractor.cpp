@@ -38,7 +38,7 @@
 
 //-----------------------------------------------------------------------------
 
-fwRenderOgreRegisterOffscreenMgrMacro(
+SIGHT_REGISTER_SCENE3D_OFFSCREEN(
     sight::module::viz::scene3dQt::OffScreenWindowInteractor,
     sight::viz::scene3d::IWindowInteractor::OFFSCREEN_REGISTRY_KEY
 );
@@ -51,7 +51,7 @@ int OffScreenWindowInteractor::m_counter = 0;
 //-----------------------------------------------------------------------------
 
 OffScreenWindowInteractor::OffScreenWindowInteractor(
-    sight::viz::scene3d::IWindowInteractor::OffscreenMgrKey,
+    sight::viz::scene3d::IWindowInteractor::OffscreenMgrKey /*unused*/,
     unsigned int _width,
     unsigned int _height
 ) :
@@ -64,8 +64,7 @@ OffScreenWindowInteractor::OffScreenWindowInteractor(
 //-----------------------------------------------------------------------------
 
 OffScreenWindowInteractor::~OffScreenWindowInteractor()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -83,7 +82,11 @@ void OffScreenWindowInteractor::requestRender()
 
 //-----------------------------------------------------------------------------
 
-void OffScreenWindowInteractor::createContainer(sight::ui::base::container::fwContainer::sptr, bool)
+void OffScreenWindowInteractor::createContainer(
+    sight::ui::base::container::fwContainer::sptr /*_parent*/,
+    bool /*fullscreen*/,
+    const std::string& /*id*/
+)
 {
     m_ogreRoot = sight::viz::scene3d::Utils::getOgreRoot();
 
@@ -112,7 +115,7 @@ void OffScreenWindowInteractor::createContainer(sight::ui::base::container::fwCo
         false,
         &parameters
     );
-    mgr->registerWindow(m_ogreRenderWindow);
+    mgr->add(m_ogreRenderWindow);
 
     m_ogreRenderWindow->setHidden(true);
     m_ogreRenderWindow->setAutoUpdated(false);
@@ -143,10 +146,10 @@ void OffScreenWindowInteractor::disconnectInteractor()
 {
     m_ogreRenderTarget = nullptr;
 
-    if(m_ogreRenderWindow)
+    if(m_ogreRenderWindow != nullptr)
     {
         sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
-        mgr->unregisterWindow(m_ogreRenderWindow);
+        mgr->remove(m_ogreRenderWindow);
         m_ogreRenderWindow = nullptr;
     }
 
@@ -168,11 +171,11 @@ void OffScreenWindowInteractor::makeCurrent()
     {
         m_glContext->makeCurrent(m_offscreenSurface.get());
 
-        if(m_ogreRenderWindow)
+        if(m_ogreRenderWindow != nullptr)
         {
             Ogre::RenderSystem* renderSystem = m_ogreRoot->getRenderSystem();
 
-            if(renderSystem)
+            if(renderSystem != nullptr)
             {
                 // This allows to set the current OpenGL context in Ogre internal state
                 renderSystem->_setRenderTarget(m_ogreRenderTarget);

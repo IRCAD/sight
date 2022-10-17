@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "io/dicom/config.hpp"
 #include "io/dicom/helper/DicomAnonymizer.hpp"
 #include "io/dicom/helper/DicomSeriesWriter.hpp"
-#include "io/dicom/reader/SeriesDB.hpp"
+#include "io/dicom/reader/SeriesSet.hpp"
 
 #include <data/DicomSeries.hpp>
 
@@ -35,12 +35,9 @@ namespace sight::core::jobs
 class IJob;
 class Aggregator;
 
-}
+} // namespace sight::core::jobs
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 /**
@@ -75,7 +72,7 @@ public:
     );
 
     /// Get job observer
-    IO_DICOM_API SPTR(core::jobs::Aggregator) getJob() const;
+    [[nodiscard]] IO_DICOM_API SPTR(core::jobs::Aggregator) getJob() const;
 
 protected:
 
@@ -86,12 +83,10 @@ protected:
     io::dicom::helper::DicomAnonymizer m_anonymizer;
 
     /// Dicom Reader
-    io::dicom::reader::SeriesDB::sptr m_reader;
+    io::dicom::reader::SeriesSet::sptr m_reader;
 
     /// Job observer
     SPTR(core::jobs::Aggregator) m_job;
 };
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

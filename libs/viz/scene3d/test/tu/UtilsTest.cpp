@@ -36,10 +36,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::viz::scene3d::ut::UtilsTest);
 
-namespace sight::viz::scene3d
-{
-
-namespace ut
+namespace sight::viz::scene3d::ut
 {
 
 //------------------------------------------------------------------------------
@@ -59,7 +56,7 @@ void UtilsTest::tearDown()
 void UtilsTest::convertOgreColorToFwColor()
 {
     data::Color::sptr refColor = data::Color::New();
-    refColor->setRGBA(1.f, 1.f, 1.f, 1.f);
+    refColor->setRGBA(1.F, 1.F, 1.F, 1.F);
 
     data::Color::sptr resultColor = viz::scene3d::Utils::convertOgreColorToFwColor(Ogre::ColourValue());
     CPPUNIT_ASSERT(static_cast<int>(resultColor->red()) == static_cast<int>(refColor->red()));
@@ -72,11 +69,8 @@ void UtilsTest::convertOgreColorToFwColor()
 
 void UtilsTest::convertOgreMatrixToTM3D()
 {
-    std::mt19937 rng;
-    rng.seed(std::random_device()());
+    std::mt19937 rng {std::random_device {}()};
     std::uniform_real_distribution<float> dist(-10., 10.);
-
-    const double epsilon = 1e-7; // matrices are cast from double to float meaning that some precision could be lost.
 
     // Convert from Sight to ogre and back to Sight.
     {
@@ -93,7 +87,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(mat0->getCoefficient(l, c), ogreMat0[l][c], epsilon);
+                CPPUNIT_ASSERT_EQUAL(mat0->getCoefficient(l, c), double(ogreMat0[l][c]));
             }
         }
 
@@ -106,8 +100,8 @@ void UtilsTest::convertOgreMatrixToTM3D()
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(mat0->getCoefficient(l, c), mat0Copy->getCoefficient(l, c), epsilon);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(ogreMat0[l][c], mat0Copy->getCoefficient(l, c), epsilon);
+                CPPUNIT_ASSERT_EQUAL(mat0->getCoefficient(l, c), mat0Copy->getCoefficient(l, c));
+                CPPUNIT_ASSERT_EQUAL(double(ogreMat0[l][c]), mat0Copy->getCoefficient(l, c));
             }
         }
     }
@@ -130,7 +124,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(ogreMat1[l][c], mat1Copy->getCoefficient(l, c), epsilon);
+                CPPUNIT_ASSERT_EQUAL(double(ogreMat1[l][c]), mat1Copy->getCoefficient(l, c));
             }
         }
 
@@ -140,8 +134,8 @@ void UtilsTest::convertOgreMatrixToTM3D()
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(ogreMat1[l][c], ogreMat1Copy[l][c], epsilon);
-                CPPUNIT_ASSERT_DOUBLES_EQUAL(mat1Copy->getCoefficient(l, c), ogreMat1Copy[l][c], epsilon);
+                CPPUNIT_ASSERT_EQUAL(ogreMat1[l][c], ogreMat1Copy[l][c]);
+                CPPUNIT_ASSERT_EQUAL(mat1Copy->getCoefficient(l, c), double(ogreMat1Copy[l][c]));
             }
         }
     }
@@ -164,7 +158,7 @@ void UtilsTest::worldToSliceTest()
         {40, 40, 40},
         {1., 1., 1.},
         {0., 0., 0.},
-        core::tools::Type::s_UINT8,
+        core::Type::UINT8,
         data::Image::PixelFormat::GRAY_SCALE
     );
 
@@ -181,6 +175,4 @@ void UtilsTest::worldToSliceTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::ut

@@ -252,18 +252,18 @@ void ObjectService::unregisterServiceOutput(
 {
     core::mt::WriteLock writeLock(m_containerMutex);
 
-    auto key = std::make_pair(std::string(objKey), index);
+    const auto key = std::make_pair(std::string(objKey), index);
 
-    data::Object::wptr obj = service->m_outputsMap[key].get_shared();
+    auto obj = service->m_outputsMap[key].get_shared();
+
+    service->m_outputsMap.erase(key);
 
     if(service->hasObjectId(objKey, index))
     {
         const auto id = service->getObjectId(objKey, index);
         auto sig      = this->signal<RegisterSignalType>(s_UNREGISTERED_SIG);
-        sig->asyncEmit(obj.lock(), id);
+        sig->asyncEmit(obj, id);
     }
-
-    service->m_outputsMap.erase(key);
 }
 
 //------------------------------------------------------------------------------

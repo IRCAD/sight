@@ -20,6 +20,10 @@
  *
  ***********************************************************************/
 
+#ifdef WIN32
+    #pragma warning(disable:4701)
+#endif
+
 #include "AutomaticRegistration.hpp"
 
 #include "filter/image/ItkImageCaster.hpp"
@@ -42,7 +46,7 @@
 namespace sight::filter::image
 {
 
-typedef typename itk::Image<float, 3> RegisteredImageType;
+using RegisteredImageType = typename itk::Image<float, 3>;
 
 //------------------------------------------------------------------------------
 
@@ -50,9 +54,9 @@ class RegistrationObserver : public itk::Command
 {
 public:
 
-    typedef  RegistrationObserver Self;
-    typedef itk::Command Superclass;
-    typedef itk::SmartPointer<Self> Pointer;
+    using Self       = RegistrationObserver;
+    using Superclass = itk::Command;
+    using Pointer    = itk::SmartPointer<Self>;
     itkNewMacro(Self)
 
     /// Command to be executed. Updates the progress bar.
@@ -63,7 +67,7 @@ public:
     }
 
     /// Const overload of the above method.
-    void Execute(const itk::Object*, const itk::EventObject& event) override
+    void Execute(const itk::Object* /*caller*/, const itk::EventObject& event) override
     {
         {
             if(itk::IterationEvent().CheckEvent(&event))
@@ -84,8 +88,7 @@ private:
 
     /// Constructor, initializes progress dialog and sets the user cancel callback.
     RegistrationObserver()
-    {
-    }
+    = default;
 
     std::function<void()> m_iterationCallback;
 };
@@ -100,7 +103,7 @@ void AutomaticRegistration::registerImage(
     const MultiResolutionParametersType& _multiResolutionParameters,
     RealType _samplingPercentage,
     double _minStep,
-    unsigned long _maxIterations,
+    std::uint64_t _maxIterations,
     IterationCallbackType _callback
 )
 {
@@ -225,7 +228,7 @@ void AutomaticRegistration::registerImage(
 
     // Number of registration stages
     SIGHT_ASSERT("255 is the maximum number of steps.", _multiResolutionParameters.size() < 256);
-    const std::uint8_t numberOfLevels = std::uint8_t(_multiResolutionParameters.size());
+    const auto numberOfLevels = std::uint8_t(_multiResolutionParameters.size());
 
     RegistrationMethodType::ShrinkFactorsArrayType shrinkFactorsPerLevel;
     shrinkFactorsPerLevel.SetSize(numberOfLevels);
@@ -279,7 +282,7 @@ void AutomaticRegistration::registerImage(
 
 void AutomaticRegistration::stopRegistration()
 {
-    if(m_optimizer && m_registrator)
+    if((m_optimizer != nullptr) && (m_registrator != nullptr))
     {
         // Stop registration by removing all levels.
         m_registrator->SetNumberOfLevels(0);
@@ -348,7 +351,7 @@ itk::SizeValueType filter::image::AutomaticRegistration::getCurrentLevel() const
 void AutomaticRegistration::getCurrentMatrix(const data::Matrix4::sptr& _trf) const
 {
     SIGHT_ASSERT("No registration process running.", m_registrator);
-    auto itkMatrix = m_registrator->GetTransform();
+    const auto* itkMatrix = m_registrator->GetTransform();
     this->convertToF4sMatrix(itkMatrix, _trf);
 }
 
@@ -388,12 +391,17 @@ double AutomaticRegistration::computeVolume(const data::Image::csptr& _img)
 
     SIGHT_ASSERT("Degenerated image. Spacing and size should be of the same dimension.", spacing.size() == size.size());
 
-    const double voxelVolume   = std::accumulate(spacing.begin(), spacing.end(), 1., std::multiplies<double>());
-    const std::size_t nbVoxels = std::accumulate(size.begin(), size.end(), 1, std::multiplies<std::size_t>());
+    const double voxelVolume   = std::accumulate(spacing.begin(), spacing.end(), 1., std::multiplies<>());
+    const std::size_t nbVoxels = std::accumulate(
+        size.begin(),
+        size.end(),
+        std::size_t(1),
+        std::multiplies<>()
+    );
 
     return voxelVolume * static_cast<double>(nbVoxels);
 }
 
 //------------------------------------------------------------------------------
 
-} // itkRegistrationOp
+} // namespace sight::filter::image

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,11 @@
 
 #pragma once
 
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/runtime/profile/Profile.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::ui::base
-{
-
-namespace ut
+namespace sight::ui::base::ut
 {
 
 /**
@@ -42,6 +38,7 @@ CPPUNIT_TEST_SUITE(PreferencesTest);
 CPPUNIT_TEST(runtimeTest);
 CPPUNIT_TEST(simpleTest);
 CPPUNIT_TEST(delimeterTest);
+CPPUNIT_TEST(parsedGetTest);
 CPPUNIT_TEST(encryptedTest);
 CPPUNIT_TEST(forcedEncryptionTest);
 CPPUNIT_TEST_SUITE_END();
@@ -49,12 +46,13 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     void runtimeTest();
     void simpleTest();
-    void delimeterTest();
+    static void delimeterTest();
+    static void parsedGetTest();
     void encryptedTest();
     void forcedEncryptionTest();
 
@@ -65,6 +63,4 @@ private:
     std::filesystem::path m_encryptedPath;
 };
 
-} //namespace ut
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::ut

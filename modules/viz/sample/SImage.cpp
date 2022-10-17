@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,15 +34,13 @@ static const std::string s_IMAGE_INPUT = "image";
 
 //------------------------------------------------------------------------------
 
-SImage::SImage() noexcept
-{
-}
+SImage::SImage() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SImage::~SImage() noexcept
-{
-}
+SImage::~SImage() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -90,19 +88,23 @@ void SImage::starting()
     m_interactorSrv->setID(this->getID() + "interactorAdaptor");
     m_interactorSrv->configure();
 
+    // Create default transfer function
+    m_tf = data::TransferFunction::createDefaultTF();
+
     auto image = m_image.lock();
     service::IService::ConfigType negatoConfig;
     negatoConfig.put("config.<xmlattr>.layer", "default");
     negatoConfig.put("config.<xmlattr>.interactive", "true");
     m_negatoSrv = service::add("sight::module::viz::scene3d::adaptor::SNegato3D");
     m_negatoSrv->setConfiguration(negatoConfig);
-    m_negatoSrv->setInOut(std::const_pointer_cast<data::Image>(image->getConstSptr()), "image", true);
+    m_negatoSrv->setInput(image.get_shared(), "image", true);
+    m_negatoSrv->setInOut(m_tf, "tf", true);
     m_negatoSrv->setID(this->getID() + "negato3DAdaptor");
     m_negatoSrv->configure();
 
-    m_renderSrv->slot("start")->asyncRun();
-    m_interactorSrv->slot("start")->asyncRun();
-    m_negatoSrv->slot("start")->asyncRun();
+    m_renderSrv->start().wait();
+    m_interactorSrv->start().wait();
+    m_negatoSrv->start().wait();
 }
 
 //------------------------------------------------------------------------------
@@ -140,6 +142,7 @@ void SImage::stopping()
     m_negatoSrv.reset();
     m_interactorSrv.reset();
     m_renderSrv.reset();
+    m_tf.reset();
 
     this->destroy();
 }

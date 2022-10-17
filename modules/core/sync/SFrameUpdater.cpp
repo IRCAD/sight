@@ -47,9 +47,7 @@ const core::com::Signals::SignalKeyType SFrameUpdater::s_RENDER_REQUESTED_SIG = 
 
 //-----------------------------------------------------------------------------
 
-SFrameUpdater::SFrameUpdater() noexcept :
-    m_lastTimestamp(0),
-    m_imageInitialized(false)
+SFrameUpdater::SFrameUpdater() noexcept
 {
     newSignal<RenderRequestedSignalType>(s_RENDER_REQUESTED_SIG);
 
@@ -59,24 +57,17 @@ SFrameUpdater::SFrameUpdater() noexcept :
 
 //-----------------------------------------------------------------------------
 
-SFrameUpdater::~SFrameUpdater() noexcept
-{
-}
+SFrameUpdater::~SFrameUpdater() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
 service::IService::KeyConnectionsMap SFrameUpdater::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-
-    connections.push(
-        "frameTL",
-        data::TimeLine::s_OBJECT_PUSHED_SIG,
-        module::sync::SFrameUpdater::s_UPDATE_FRAME_SLOT
-    );
-    connections.push("frameTL", data::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT);
-
-    return connections;
+    return {
+        {"frameTL", data::TimeLine::s_OBJECT_PUSHED_SIG, module::sync::SFrameUpdater::s_UPDATE_FRAME_SLOT},
+        {"frameTL", data::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT}
+    };
 }
 
 //-----------------------------------------------------------------------------
@@ -127,7 +118,7 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
 
             if(!m_imageInitialized)
             {
-                data::Image::PixelFormat format;
+                data::Image::PixelFormat format {data::Image::PixelFormat::UNDEFINED};
                 // FIXME currently, frameTL doesn't manage formats, so we assume that the frame are GrayScale, RGB or
                 // RGBA
                 switch(frameTL->numComponents())
@@ -154,8 +145,8 @@ void SFrameUpdater::updateFrame(core::HiResClock::HiResClockType timestamp)
                 image->setOrigin(origin);
                 const data::Image::Spacing spacing = {1., 1., 0.};
                 image->setSpacing(spacing);
-                image->setWindowWidth(1);
-                image->setWindowCenter(0);
+                image->setWindowWidth({1});
+                image->setWindowCenter({0});
                 m_imageInitialized = true;
 
                 //Notify

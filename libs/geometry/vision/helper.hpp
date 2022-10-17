@@ -33,13 +33,7 @@
 
 #include <vector>
 
-namespace sight::geometry::vision
-{
-
-/**
- * @brief helper contains useful functions related to calibration or 3d reconstruction.
- */
-namespace helper
+namespace sight::geometry::vision::helper
 {
 
 typedef std::pair<double, std::vector<cv::Point2f> > ErrorAndPointsType;
@@ -78,7 +72,7 @@ GEOMETRY_VISION_API cv::Matx44f cameraPoseMonocular(
     const std::vector<cv::Point2f>& _imagePoints,
     const cv::Mat _cameraMatrix,
     const cv::Mat& _distCoeffs,
-    const int _flag = cv::SOLVEPNP_ITERATIVE
+    int _flag = cv::SOLVEPNP_ITERATIVE
 );
 
 /**
@@ -121,21 +115,6 @@ GEOMETRY_VISION_API void calibratePointingTool(
 );
 
 /**
- * @brief generateArucoDictionary generates an Aruco Dictionary regarding the number of marker wanted
- * ((width * height)/2) and marker size in bits (4, 5, 6 or 7)
- * @param _width: width of charuco board
- * @param _height: height of charuco board
- * @param _markerSizeInBits : bits size of marker (can be 4, 5, 6 or 7)
- * @return a cv::Ptr of cv::aruco::Dictionary.
- * @throw std::invalid_argument if _markerSizeInBits != [4, 5, 6, 7]
- */
-GEOMETRY_VISION_API cv::Ptr<cv::aruco::Dictionary> generateArucoDictionary(
-    const std::size_t _width,
-    const std::size_t _height,
-    const int _markerSizeInBits
-);
-
-/**
  * @brief Tries to detect a chessboard with the given dimensions in the image.
  *
  * @param[in] _img Image in which to search for a chessboard.
@@ -154,6 +133,4 @@ GEOMETRY_VISION_API sight::data::PointList::sptr detectChessboard(
     float _scale
 );
 
-}
-
-} //namespace sight::geometry::vision
+} // namespace sight::geometry::vision::helper

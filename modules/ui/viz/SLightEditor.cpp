@@ -59,9 +59,8 @@ SLightEditor::SLightEditor() noexcept
 
 //------------------------------------------------------------------------------
 
-SLightEditor::~SLightEditor() noexcept
-{
-}
+SLightEditor::~SLightEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -76,9 +75,12 @@ void SLightEditor::starting()
 {
     this->create();
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     const auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(
         this->getContainer()
     );
+    qtContainer->getQtContainer()->setObjectName(serviceID);
 
     m_lightNameLabel = new QLabel("No light selected");
     m_lightNameLabel->setAlignment(Qt::AlignHCenter);
@@ -92,98 +94,113 @@ void SLightEditor::starting()
     m_lightTypeBox->setEnabled(false);
 
     m_visualFeedback = new QPushButton("Feedback");
+    m_visualFeedback->setObjectName(serviceID + "/" + m_visualFeedback->text());
     m_visualFeedback->setCheckable(true);
     m_visualFeedback->setEnabled(false);
 
     m_diffuseColorBtn = new QPushButton("Diffuse color");
+    m_diffuseColorBtn->setObjectName(serviceID + "/" + m_diffuseColorBtn->text());
     m_diffuseColorBtn->setEnabled(false);
 
     m_specularColorBtn = new QPushButton("Specular color");
+    m_specularColorBtn->setObjectName(serviceID + "/" + m_specularColorBtn->text());
     m_specularColorBtn->setEnabled(false);
 
     m_thetaSlider = new QSlider(Qt::Horizontal);
+    m_thetaSlider = new QSlider(Qt::Horizontal);
+    m_thetaSlider->setObjectName(serviceID + "/thetaSlider");
     m_thetaSlider->setMinimum(0);
     m_thetaSlider->setMaximum(ILight::s_OFFSET_RANGE);
     m_thetaSlider->setEnabled(false);
 
     m_phiSlider = new QSlider(Qt::Horizontal);
+    m_phiSlider->setObjectName(serviceID + "/phiSlider");
     m_phiSlider->setMinimum(0);
     m_phiSlider->setMaximum(ILight::s_OFFSET_RANGE);
     m_phiSlider->setEnabled(false);
 
     m_xTranslation = new QSlider(Qt::Horizontal);
+    m_xTranslation->setObjectName(serviceID + "/xTranslation");
     m_xTranslation->setMinimum(-2000);
     m_xTranslation->setMaximum(2000);
     m_xTranslation->setEnabled(false);
 
     m_yTranslation = new QSlider(Qt::Horizontal);
+    m_yTranslation->setObjectName(serviceID + "/yTranslation");
     m_yTranslation->setMinimum(-2000);
     m_yTranslation->setMaximum(2000);
     m_yTranslation->setEnabled(false);
 
     m_zTranslation = new QSlider(Qt::Horizontal);
+    m_zTranslation->setObjectName(serviceID + "/zTranslation");
     m_zTranslation->setMinimum(-2000);
     m_zTranslation->setMaximum(2000);
     m_zTranslation->setEnabled(false);
 
     m_xLabel = new QLineEdit("X: 0");
+    m_xLabel->setObjectName(serviceID + "/xLabel");
     m_xLabel->setReadOnly(true);
     m_xLabel->setMaximumWidth(70);
     m_yLabel = new QLineEdit("Y: 0");
+    m_yLabel->setObjectName(serviceID + "/yLabel");
     m_yLabel->setReadOnly(true);
     m_yLabel->setMaximumWidth(70);
     m_zLabel = new QLineEdit("Z: 0");
+    m_zLabel->setObjectName(serviceID + "/zLabel");
     m_zLabel->setReadOnly(true);
     m_zLabel->setMaximumWidth(70);
 
     m_xReset = new QPushButton("Reset");
+    m_xReset->setObjectName(serviceID + "/xReset");
     m_xReset->setEnabled(false);
     m_yReset = new QPushButton("Reset");
+    m_yReset->setObjectName(serviceID + "/yReset");
     m_yReset->setEnabled(false);
     m_zReset = new QPushButton("Reset");
+    m_zReset->setObjectName(serviceID + "/zReset");
     m_zReset->setEnabled(false);
 
     // Name of the selected light and its type
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     layout->addWidget(m_lightNameLabel);
 
-    QHBoxLayout* const typeLayout = new QHBoxLayout();
+    auto* const typeLayout = new QHBoxLayout();
     typeLayout->addWidget(m_lightTypeBox);
     typeLayout->addWidget(m_visualFeedback);
     layout->addLayout(typeLayout);
 
     // Diffuse and specular colors
-    QHBoxLayout* const colorLayout = new QHBoxLayout();
+    auto* const colorLayout = new QHBoxLayout();
     colorLayout->addWidget(m_diffuseColorBtn);
     colorLayout->addWidget(m_specularColorBtn);
     layout->addLayout(colorLayout);
 
     // Theta offset
-    QHBoxLayout* const thetaLayout = new QHBoxLayout();
+    auto* const thetaLayout = new QHBoxLayout();
     thetaLayout->addWidget(new QLabel("Theta offset :"));
     thetaLayout->addWidget(m_thetaSlider);
     layout->addLayout(thetaLayout);
 
     // Phi offset
-    QHBoxLayout* const phiLayout = new QHBoxLayout();
+    auto* const phiLayout = new QHBoxLayout();
     phiLayout->addWidget(new QLabel("Phi offset :"));
     phiLayout->addWidget(m_phiSlider);
     layout->addLayout(phiLayout);
 
     // Translations;
-    QHBoxLayout* const xTransformationLayout = new QHBoxLayout();
+    auto* const xTransformationLayout = new QHBoxLayout();
     xTransformationLayout->addWidget(m_xLabel, 0);
     xTransformationLayout->addWidget(m_xTranslation, 1);
     xTransformationLayout->addWidget(m_xReset, 0);
     layout->addLayout(xTransformationLayout);
 
-    QHBoxLayout* const yTransformationLayout = new QHBoxLayout();
+    auto* const yTransformationLayout = new QHBoxLayout();
     yTransformationLayout->addWidget(m_yLabel, 0);
     yTransformationLayout->addWidget(m_yTranslation, 1);
     yTransformationLayout->addWidget(m_yReset, 0);
     layout->addLayout(yTransformationLayout);
 
-    QHBoxLayout* const zTransformationLayout = new QHBoxLayout();
+    auto* const zTransformationLayout = new QHBoxLayout();
     zTransformationLayout->addWidget(m_zLabel, 0);
     zTransformationLayout->addWidget(m_zTranslation, 1);
     zTransformationLayout->addWidget(m_zReset, 0);
@@ -243,7 +260,7 @@ void SLightEditor::stopping()
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::onEditDiffuseColor(bool)
+void SLightEditor::onEditDiffuseColor(bool /*unused*/)
 {
     Ogre::ColourValue newDiffuseColor = this->editColor(
         m_currentLight->getDiffuseColor(),
@@ -255,7 +272,7 @@ void SLightEditor::onEditDiffuseColor(bool)
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::onEditSpecularColor(bool)
+void SLightEditor::onEditSpecularColor(bool /*unused*/)
 {
     Ogre::ColourValue newSpecularColor = this->editColor(
         m_currentLight->getSpecularColor(),
@@ -269,14 +286,14 @@ void SLightEditor::onEditSpecularColor(bool)
 
 void SLightEditor::onEditThetaOffset(int _value)
 {
-    m_currentLight->setThetaOffset(static_cast<float>(_value - ILight::s_OFFSET_RANGE / 2));
+    m_currentLight->setThetaOffset(static_cast<float>(_value - ILight::s_OFFSET_RANGE / 2.));
 }
 
 //------------------------------------------------------------------------------
 
 void SLightEditor::onEditPhiOffset(int _value)
 {
-    m_currentLight->setPhiOffset(static_cast<float>(_value - ILight::s_OFFSET_RANGE / 2));
+    m_currentLight->setPhiOffset(static_cast<float>(_value - ILight::s_OFFSET_RANGE / 2.));
 }
 
 //------------------------------------------------------------------------------
@@ -368,11 +385,11 @@ void SLightEditor::onEditZTranslation(int _value)
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::onResetXTranslation(bool)
+void SLightEditor::onResetXTranslation(bool /*unused*/)
 {
     Ogre::Node* const lightNode    = this->getLightNode();
     const Ogre::Vector3 currentPos = lightNode->getPosition();
-    lightNode->setPosition(Ogre::Vector3(0.f, currentPos[1], currentPos[2]));
+    lightNode->setPosition(Ogre::Vector3(0.F, currentPos[1], currentPos[2]));
     m_currentLight->getRenderService()->requestRender();
 
     m_xLabel->setText("X: 0");
@@ -381,11 +398,11 @@ void SLightEditor::onResetXTranslation(bool)
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::onResetYTranslation(bool)
+void SLightEditor::onResetYTranslation(bool /*unused*/)
 {
     Ogre::Node* const lightNode    = this->getLightNode();
     const Ogre::Vector3 currentPos = lightNode->getPosition();
-    lightNode->setPosition(Ogre::Vector3(currentPos[0], 0.f, currentPos[2]));
+    lightNode->setPosition(Ogre::Vector3(currentPos[0], 0.F, currentPos[2]));
     m_currentLight->getRenderService()->requestRender();
 
     m_yLabel->setText("Y: 0");
@@ -394,11 +411,11 @@ void SLightEditor::onResetYTranslation(bool)
 
 //------------------------------------------------------------------------------
 
-void SLightEditor::onResetZTranslation(bool)
+void SLightEditor::onResetZTranslation(bool /*unused*/)
 {
     Ogre::Node* const lightNode    = this->getLightNode();
     const Ogre::Vector3 currentPos = lightNode->getPosition();
-    lightNode->setPosition(Ogre::Vector3(currentPos[0], currentPos[1], 0.f));
+    lightNode->setPosition(Ogre::Vector3(currentPos[0], currentPos[1], 0.F));
     m_currentLight->getRenderService()->requestRender();
 
     m_zLabel->setText("Z: 0");
@@ -470,11 +487,11 @@ void SLightEditor::editLight(ILight::sptr _lightAdaptor)
 
         m_thetaSlider->setValue(
             static_cast<int>(m_currentLight->getThetaOffset()
-                             + ILight::s_OFFSET_RANGE / 2)
+                             + float(ILight::s_OFFSET_RANGE / 2.))
         );
         m_phiSlider->setValue(
             static_cast<int>(m_currentLight->getPhiOffset()
-                             + ILight::s_OFFSET_RANGE / 2)
+                             + float(ILight::s_OFFSET_RANGE / 2.))
         );
 
         Ogre::SceneNode* const root       = m_currentLight->getLayer()->getSceneManager()->getRootSceneNode();

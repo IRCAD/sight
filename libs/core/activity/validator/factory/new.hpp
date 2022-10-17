@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@ namespace sight::activity
 
 class IValidator;
 
-namespace validator
-{
-
-namespace factory
+namespace validator::factory
 {
 
 template<class CLASSNAME>
@@ -51,8 +48,7 @@ template<typename CLASSNAME>
 friend SPTR(CLASSNAME) activity::validator::factory::New();
 
 Key()
-{
-}
+= default;
 };
 
 ACTIVITY_API SPTR(activity::IValidator) New(
@@ -67,8 +63,6 @@ SPTR(CLASSNAME)  New()
     return validator;
 }
 
-} // namespace factory
-
-} // namespace validator
+} // namespace validator::factory
 
 } // namespace sight::activity

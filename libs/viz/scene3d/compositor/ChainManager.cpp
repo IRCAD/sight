@@ -42,10 +42,7 @@
 
 #include <regex>
 
-namespace sight::viz::scene3d
-{
-
-namespace compositor
+namespace sight::viz::scene3d::compositor
 {
 
 //-----------------------------------------------------------------------------
@@ -57,7 +54,6 @@ const ChainManager::CompositorIdType ChainManager::FINAL_CHAIN_COMPOSITOR = "Fin
 ChainManager::ChainManager(Ogre::Viewport* _viewport) :
     m_ogreViewport(_viewport)
 {
-    m_adaptorsObjectsOwner = data::Composite::New();
 }
 
 //-----------------------------------------------------------------------------
@@ -216,11 +212,11 @@ void ChainManager::updateCompositorAdaptors(
     std::vector<Ogre::CompositionTargetPass*> targetPasses = tech->getTargetPasses();
     targetPasses.push_back(tech->getOutputTargetPass());
 
-    for(const auto targetPass : targetPasses)
+    for(auto* const targetPass : targetPasses)
     {
         const auto& passes = targetPass->getPasses();
 
-        for(const auto pass : passes)
+        for(auto* const pass : passes)
         {
             // We retrieve the parameters of the base material in a temporary material
             const Ogre::MaterialPtr material = pass->getMaterial();
@@ -249,8 +245,7 @@ void ChainManager::updateCompositorAdaptors(
 
                     // Naming convention for shader parameters
                     const core::tools::fwID::IDType id = _renderService->getID() + _layerId + "_" + shaderTypeStr
-                                                         + "-"
-                                                         + constantName;
+                                                         + "-" + constantName;
 
                     if(_isEnabled && this->getRegisteredService(id) == nullptr)
                     {
@@ -284,16 +279,13 @@ void ChainManager::updateCompositorAdaptors(
                             shaderParamService->configure();
                             shaderParamService->start();
 
-                            (*m_adaptorsObjectsOwner)[constantName] = obj;
+                            m_adaptorsObjectsOwner.insert_or_assign(constantName, obj);
                         }
                     }
                     else
                     {
                         this->unregisterService(id);
-                        if(m_adaptorsObjectsOwner->at<data::Object>(constantName) != nullptr)
-                        {
-                            m_adaptorsObjectsOwner->getContainer().erase(constantName);
-                        }
+                        m_adaptorsObjectsOwner.erase(constantName);
                     }
                 }
             }
@@ -303,6 +295,4 @@ void ChainManager::updateCompositorAdaptors(
 
 //-----------------------------------------------------------------------------
 
-} // namespace compositor
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::compositor

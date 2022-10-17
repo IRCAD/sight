@@ -25,10 +25,7 @@
 #include "data/config.hpp"
 #include "data/timeline/Object.hpp"
 
-namespace sight::data
-{
-
-namespace timeline
+namespace sight::data::timeline
 {
 
 /**
@@ -44,19 +41,19 @@ public:
     /// Constructor
     DATA_API Buffer(
         core::HiResClock::HiResClockType timestamp = 0,
-        BufferDataType buffer                      = 0,
+        BufferDataType buffer                      = nullptr,
         std::size_t size                           = 0,
-        DeleterType d                              = 0
+        DeleterType d                              = nullptr
     );
 
     /// Destructor
-    DATA_API virtual ~Buffer();
+    DATA_API ~Buffer() override;
 
     /// Makes a copy of this buffer
-    DATA_API virtual void deepCopy(const Object& other);
+    DATA_API void deepCopy(const Object& other) override;
 
     /// Returns size
-    std::size_t getSize() const
+    [[nodiscard]] std::size_t getSize() const
     {
         return m_size;
     }
@@ -79,6 +76,4 @@ protected:
     DeleterType m_deleter;
 };
 
-} // namespace timeline
-
-} // namespace sight::data
+} // namespace sight::data::timeline

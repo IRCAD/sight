@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace com
+namespace sight::module::ui::base::com
 {
 
 //-----------------------------------------------------------------------------
@@ -42,18 +39,15 @@ static const core::com::Signals::SignalKeyType s_CANCELLED_SIG = "cancelled";
 //-----------------------------------------------------------------------------
 
 SSignal::SSignal() noexcept :
-    m_sigTriggered(TriggeredSignalType::New()),
-    m_sigCancelled(TriggeredSignalType::New())
+    m_sigTriggered(newSignal<TriggeredSignalType>(s_TRIGGERED_SIG)),
+    m_sigCancelled(newSignal<TriggeredSignalType>(s_CANCELLED_SIG))
 {
-    m_sigTriggered = newSignal<TriggeredSignalType>(s_TRIGGERED_SIG);
-    m_sigCancelled = newSignal<TriggeredSignalType>(s_CANCELLED_SIG);
 }
 
 //-----------------------------------------------------------------------------
 
-SSignal::~SSignal() noexcept
-{
-}
+SSignal::~SSignal() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -89,16 +83,14 @@ void SSignal::updating()
 {
     if(this->confirmAction())
     {
-        m_sigTriggered->asyncEmit(this->getIsActive());
+        m_sigTriggered->asyncEmit(this->checked());
     }
     else
     {
-        m_sigCancelled->asyncEmit(this->getIsActive());
+        m_sigCancelled->asyncEmit(this->checked());
     }
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace com
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::com

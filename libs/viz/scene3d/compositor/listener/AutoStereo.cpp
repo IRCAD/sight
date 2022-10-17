@@ -35,13 +35,7 @@
 #include <OGRE/OgrePass.h>
 #include <OGRE/OgreTechnique.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace compositor
-{
-
-namespace listener
+namespace sight::viz::scene3d::compositor::listener
 {
 
 //-----------------------------------------------------------------------------
@@ -72,10 +66,10 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
 
         const Ogre::Material::Techniques techniques = mtl->getTechniques();
 
-        std::vector<unsigned short> removeTechniqueVector;
+        std::vector<std::uint16_t> removeTechniqueVector;
 
-        unsigned short index = 0;
-        for(const auto technique : techniques)
+        std::uint16_t index = 0;
+        for(auto* const technique : techniques)
         {
             if(tech == technique)
             {
@@ -86,20 +80,23 @@ AutoStereoCompositorListener::~AutoStereoCompositorListener()
         }
 
         // Remove in inverse order otherwise the index we stored becomes invalid ;-)
-        for(auto it = removeTechniqueVector.rbegin() ; it != removeTechniqueVector.rend() ; ++it)
-        {
-            mtl->removeTechnique(*it);
-        }
+        std::for_each(
+            removeTechniqueVector.rbegin(),
+            removeTechniqueVector.rend(),
+            [mtl](auto techId)
+            {
+                mtl->removeTechnique(techId);
+            });
     }
 }
 
 //------------------------------------------------------------------------------
 
 Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(
-    unsigned short /*_schemeIndex*/,
+    std::uint16_t /*_schemeIndex*/,
     const Ogre::String& _schemeName,
     Ogre::Material* _originalMaterial,
-    unsigned short /*_lodIndex*/,
+    std::uint16_t /*_lodIndex*/,
     const Ogre::Renderable* /*_renderable*/
 )
 {
@@ -113,7 +110,7 @@ Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(
         if(Ogre::StringUtil::startsWith(_schemeName, "VolumeEntries"))
         {
             // Volume entries technique names follow this pattern : VolumeEntries<AutoStereo>_<technique><viewport>
-            const std::size_t techNamePos  = _schemeName.find("_") + 1;
+            const std::size_t techNamePos  = _schemeName.find('_') + 1;
             const std::size_t techNameSize = _schemeName.size() - 1 - techNamePos;
             const std::string techName     = _schemeName.substr(techNamePos, techNameSize);
 
@@ -128,14 +125,14 @@ Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(
 
         newTech = viz::scene3d::helper::Technique::copyToMaterial(matchingTech, _schemeName, _originalMaterial);
 
-        const auto pass = newTech->getPass(0);
+        auto* const pass = newTech->getPass(0);
         {
             const auto vpBaseName       = pass->getVertexProgramName();
             const auto vpSourceFileName = pass->getVertexProgram()->getSourceFile();
             const auto vpNewName        = vpBaseName + "+AutoStereo";
 
             viz::scene3d::helper::Shading::GpuProgramParametersType parameters;
-            parameters.push_back(std::make_pair<std::string, std::string>("preprocessor_defines", "AUTOSTEREO=1"));
+            parameters.push_back(std::make_pair("preprocessor_defines", "AUTOSTEREO=1"));
 
             viz::scene3d::helper::Shading::createProgramFrom(
                 vpNewName,
@@ -173,7 +170,7 @@ Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(
             const auto fpNewName        = fpBaseName + "+AutoStereo";
 
             viz::scene3d::helper::Shading::GpuProgramParametersType parameters;
-            parameters.push_back(std::make_pair<std::string, std::string>("preprocessor_defines", "AUTOSTEREO=1"));
+            parameters.push_back(std::make_pair("preprocessor_defines", "AUTOSTEREO=1"));
 
             viz::scene3d::helper::Shading::createProgramFrom(
                 fpNewName,
@@ -219,10 +216,10 @@ Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(
             texUnitState->setContentType(Ogre::TextureUnitState::CONTENT_COMPOSITOR);
 
             const auto compName = "VolumeEntries" + std::to_string(m_viewpointNumber);
-            texUnitState->setCompositorReference(compName, compName + "Texture" + passIdStr);
+            texUnitState->setCompositorReference(compName, std::string(compName) + "Texture" + passIdStr);
         }
 
-        m_createdTechniques.push_back(std::make_pair(newTech, _originalMaterial->getName()));
+        m_createdTechniques.emplace_back(newTech, _originalMaterial->getName());
     }
 
     return newTech;
@@ -230,8 +227,4 @@ Ogre::Technique* AutoStereoCompositorListener::handleSchemeNotFound(
 
 //------------------------------------------------------------------------------
 
-} // namespace listener
-
-} // namespace compositor
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::compositor::listener

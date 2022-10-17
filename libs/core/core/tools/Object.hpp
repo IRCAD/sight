@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include "core/config.hpp"
 #include "core/tools/fwID.hpp"
+
 #include <core/base.hpp>
 namespace sight::core::tools
 {
@@ -52,18 +53,18 @@ public:
     using core::tools::fwID::resetID;
 
     CORE_API Object() = default;
-    CORE_API virtual ~Object();
+    CORE_API ~Object() override;
 
     /// Returns the uuid of the current instance
     CORE_API std::string getUUID() const;
 
     /// Sets the uuid of the current instance
     /// @param force force use of new uuid even if already used.
-    CORE_API void setUUID(const std::string& uuid, const bool force = false);
+    CORE_API void setUUID(const std::string& uuid, bool force = false);
 
     /// Retrieves the object associated with an uuid
     /// @param uuid the uuid of the object to retrieve
     CORE_API static Object::sptr fromUUID(const std::string& uuid);
 };
 
-}
+} // namespace sight::core::tools

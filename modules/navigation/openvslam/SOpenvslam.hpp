@@ -56,9 +56,9 @@ namespace publish
 class map_publisher;
 class frame_publisher;
 
-}
+} // namespace publish
 
-}
+} // namespace openvslam
 
 /// The module openvslamTracker contains SOpenvslam service to manage instance of OpenVSLAM.
 namespace sight::module::navigation::openvslam
@@ -142,7 +142,7 @@ namespace sight::module::navigation::openvslam
  *   started and to save it when tracking is stopped. If this option is not specified or if the file is not found when
  *   starting the tracking, an empty map will be created instead.
  */
-class MODULE_NAVIGATION_OPENVSLAM_CLASS_API SOpenvslam : public service::ITracker
+class MODULE_NAVIGATION_OPENVSLAM_CLASS_API SOpenvslam final : public service::ITracker
 {
 public:
 
@@ -196,7 +196,7 @@ private:
     void stopTracking() final;
 
     /// Slot: called to enable/disable localization mode (stop/(re)start mapping thread).
-    void enableLocalization(bool);
+    void enableLocalization(bool _enable);
 
     /// Slot: called to enable localization mode.
     void activateLocalization();
@@ -205,16 +205,16 @@ private:
     void deactivateLocalization();
 
     /// Slot: called when a integer value is changed.
-    void setIntParameter(int, std::string);
+    void setIntParameter(int _val, std::string _key);
 
     /// Slot: called when a double value is changed.
-    void setDoubleParameter(double, std::string);
+    void setDoubleParameter(double _val, std::string _key);
 
     /// Slot: called when a bool value is changed.
-    void setBoolParameter(bool, std::string);
+    void setBoolParameter(bool _val, std::string _key);
 
     /// Slot: called when an enum value is changed.
-    void setEnumParameter(std::string, std::string);
+    void setEnumParameter(std::string _val, std::string _key);
 
     /// Slot: Load Openvslam map file.
     void loadMap();
@@ -232,7 +232,7 @@ private:
     void resetPointCloud();
 
     /// Slot: call openvslam with the new frame.
-    void tracking(core::HiResClock::HiResClockType&) final;
+    void tracking(core::HiResClock::HiResClockType& timestamp) final;
     /** @} */
 
     /**
@@ -278,9 +278,6 @@ private:
 
     /// Start the tracking with the path of the _mapFile.
     void startTracking(const std::string& _mapFile);
-
-    /// Load Vocabulary file using the path _mapFile.
-    void loadVocabulary(const std::string& _mapfile);
 
     /// Update pointcloud from openvslam's map.
     void updatePointCloud();
@@ -362,4 +359,4 @@ private:
     sight::data::ptr<sight::data::Float, sight::data::Access::in> m_scale {this, s_SCALE_INPUT, false, true};
 };
 
-} // openvslamTracker
+} // namespace sight::module::navigation::openvslam

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,7 +73,7 @@ public:
     MODULE_UI_QT_API STransformEditor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~STransformEditor() noexcept;
+    MODULE_UI_QT_API ~STransformEditor() noexcept override;
 
 protected:
 
@@ -132,7 +132,7 @@ private:
     };
 
     /// Array containing the different structs to regulate the transformation matrix entries.
-    SliderWidget m_sliders[MAX_SLIDER_INDEX];
+    std::array<SliderWidget, MAX_SLIDER_INDEX> m_sliders;
 
     /// Contains a string identifying which axes [xyz] are displayed for rotation
     std::string m_rotation;
@@ -141,10 +141,10 @@ private:
     std::string m_translation;
 
     /// Range of translation sliders
-    int m_translationRange[2];
+    std::array<int, 2> m_translationRange {};
 
     /// Range of rotation sliders
-    int m_rotationRange[2];
+    std::array<int, 2> m_rotationRange {};
 
     static constexpr std::string_view s_MATRIX_INOUT = "matrix";
     data::ptr<data::Matrix4, sight::data::Access::inout> m_matrix {this, s_MATRIX_INOUT, true};

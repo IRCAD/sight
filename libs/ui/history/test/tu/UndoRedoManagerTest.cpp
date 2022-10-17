@@ -27,22 +27,20 @@
 #include <algorithm>
 #include <memory>
 #include <string>
+#include <utility>
 #include <vector>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::history::ut::UndoRedoManagerTest);
 
-namespace sight::ui::history
-{
-
-namespace ut
+namespace sight::ui::history::ut
 {
 
 struct CommandInfo
 {
-    CommandInfo(const std::string& cmdName, const std::string& actName) :
-        commandName(cmdName),
-        actionName(actName)
+    CommandInfo(std::string cmdName, std::string actName) :
+        commandName(std::move(cmdName)),
+        actionName(std::move(actName))
     {
     }
 
@@ -50,14 +48,14 @@ struct CommandInfo
     std::string actionName;
 };
 
-typedef std::vector<CommandInfo> CommandLog;
+using CommandLog = std::vector<CommandInfo>;
 
 class BogusCommand : public ICommand
 {
 public:
 
-    BogusCommand(const std::string& description, CommandLog& cmdLog, std::size_t size = 0) :
-        m_description(description),
+    BogusCommand(std::string description, CommandLog& cmdLog, std::size_t size = 0) :
+        m_description(std::move(description)),
         m_cmdLog(cmdLog),
         m_size(size)
     {
@@ -65,14 +63,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual std::size_t getSize() const
+    [[nodiscard]] std::size_t getSize() const override
     {
         return m_size;
     }
 
     //------------------------------------------------------------------------------
 
-    virtual bool redo()
+    bool redo() override
     {
         m_cmdLog.push_back(CommandInfo(m_description, "redo"));
 
@@ -81,7 +79,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    virtual bool undo()
+    bool undo() override
     {
         m_cmdLog.push_back(CommandInfo(m_description, "undo"));
 
@@ -298,6 +296,4 @@ void UndoRedoManagerTest::managerClearQueueTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace registrationOp
+} // namespace sight::ui::history::ut

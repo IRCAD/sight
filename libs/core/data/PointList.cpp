@@ -39,7 +39,7 @@ const core::com::Signals::SignalKeyType PointList::s_POINT_REMOVED_SIG = "pointR
 
 //------------------------------------------------------------------------------
 
-PointList::PointList(data::Object::Key)
+PointList::PointList(data::Object::Key /*unused*/)
 {
     newSignal<PointAddedSignalType>(s_POINT_ADDED_SIG);
     newSignal<PointRemovedSignalType>(s_POINT_REMOVED_SIG);
@@ -47,48 +47,44 @@ PointList::PointList(data::Object::Key)
 
 //------------------------------------------------------------------------------
 
-PointList::~PointList()
+void PointList::shallowCopy(const Object::csptr& source)
 {
-}
+    const auto& other = dynamicConstCast(source);
 
-//------------------------------------------------------------------------------
-
-void PointList::shallowCopy(const Object::csptr& _source)
-{
-    PointList::csptr other = PointList::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     m_vPoints = other->m_vPoints;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void PointList::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache)
+void PointList::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    PointList::csptr other = PointList::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, _cache);
 
     m_vPoints.clear();
     for(const PointListContainer::value_type& point : other->m_vPoints)
     {
-        Point::sptr newPoint = Point::New();
-        newPoint = data::Object::copy(point, _cache);
-        m_vPoints.push_back(newPoint);
+        m_vPoints.push_back(data::Object::copy(point, cache));
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -101,7 +97,7 @@ bool PointList::operator==(const PointList& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ class fwContainer;
 class fwMenuBar;
 class fwToolBar;
 
-}
+} // namespace container
 
 namespace registry
 {
@@ -63,10 +63,10 @@ public:
     }
 
     /// Constructor.
-    UI_BASE_API View(const std::string& sid);
+    UI_BASE_API View(std::string sid);
 
     /// Destructor. Do nothing
-    UI_BASE_API virtual ~View();
+    UI_BASE_API ~View() override;
 
     UI_BASE_API virtual SPTR(ui::base::container::fwContainer) getParent();
 

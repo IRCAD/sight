@@ -78,7 +78,7 @@ public:
     MODULE_IO_DIMSE_API SPacsConfigurationInitializer() noexcept;
 
     /// Destroyes the service.
-    MODULE_IO_DIMSE_API virtual ~SPacsConfigurationInitializer() noexcept;
+    MODULE_IO_DIMSE_API ~SPacsConfigurationInitializer() noexcept override;
 
 protected:
 
@@ -119,10 +119,12 @@ private:
     std::string m_SCPHostName;
 
     /// Defines the SCP port (server port).
-    unsigned short m_SCPPort {0};
+    std::uint16_t m_SCPPort {0};
 
     /// Defines the request mode, GET or MOVE. Usually, most SCU use the C-MOVE method.
-    sight::io::dimse::data::PacsConfiguration::RETRIEVE_METHOD m_retrieveMethod;
+    sight::io::dimse::data::PacsConfiguration::RETRIEVE_METHOD m_retrieveMethod {sight::io::dimse::data::
+                                                                                 PacsConfiguration::MOVE_RETRIEVE_METHOD
+    };
 
     /**
      * @brief Defines the move AET. This AET is used to receive C-MOVE responses.
@@ -135,7 +137,7 @@ private:
     std::string m_moveAppEntityTitle;
 
     /// Defines the move port. This port is use to receive C-MOVE responses.
-    unsigned short m_movePort {0};
+    std::uint16_t m_movePort {0};
 
     /// Defines the key to save/load preferences.
     std::string m_preferenceKey;

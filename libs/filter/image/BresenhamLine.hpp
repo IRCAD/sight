@@ -49,10 +49,10 @@ public:
 
     /// Computes a Bresenham line in a 3D image slice.
     FILTER_IMAGE_API static PathType draw(
-        const Orientation orientation,
+        Orientation orientation,
         const CoordinatesType& startCoord,
         const CoordinatesType& endCoord
     );
 };
 
-}
+} // namespace sight::filter::image

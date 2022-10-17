@@ -24,10 +24,7 @@
 
 #include <stack>
 
-namespace sight::viz::scene3d
-{
-
-namespace helper
+namespace sight::viz::scene3d::helper
 {
 
 //------------------------------------------------------------------------------
@@ -68,6 +65,4 @@ Ogre::SceneNode* Scene::getNodeById(
 
 //-----------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::helper

@@ -65,7 +65,7 @@ void copyIndices(
 
     if(type == data::Mesh::CellType::TRIANGLE)
     {
-        for(auto& cell : _mesh.crange<data::iterator::cell::triangle>())
+        for(const auto& cell : _mesh.crange<data::iterator::cell::triangle>())
         {
             *cells++ = static_cast<T>(cell.pt[0]);
             *cells++ = static_cast<T>(cell.pt[1]);
@@ -74,7 +74,7 @@ void copyIndices(
     }
     else if(type == data::Mesh::CellType::QUAD)
     {
-        for(auto& cell : _mesh.crange<data::iterator::cell::quad>())
+        for(const auto& cell : _mesh.crange<data::iterator::cell::quad>())
         {
             *cells++ = static_cast<T>(cell.pt[0]);
             *cells++ = static_cast<T>(cell.pt[1]);
@@ -84,7 +84,7 @@ void copyIndices(
     }
     else if(type == data::Mesh::CellType::LINE)
     {
-        for(auto& cell : _mesh.crange<data::iterator::cell::line>())
+        for(const auto& cell : _mesh.crange<data::iterator::cell::line>())
         {
             *cells++ = static_cast<T>(cell.pt[0]);
             *cells++ = static_cast<T>(cell.pt[1]);
@@ -92,7 +92,7 @@ void copyIndices(
     }
     else if(type == data::Mesh::CellType::TETRA)
     {
-        for(auto& cell : _mesh.crange<data::iterator::cell::tetra>())
+        for(const auto& cell : _mesh.crange<data::iterator::cell::tetra>())
         {
             *cells++ = static_cast<T>(cell.pt[0]);
             *cells++ = static_cast<T>(cell.pt[1]);
@@ -106,8 +106,6 @@ void copyIndices(
 
 Mesh::Mesh(const std::string& _name)
 {
-    m_subMesh = nullptr;
-
     m_binding[POSITION_NORMAL] = 0;
     m_binding[COLOUR]          = 0xFFFF;
     m_binding[TEXCOORD]        = 0xFFFF;
@@ -157,9 +155,9 @@ void Mesh::bindLayer(
     Ogre::VertexDeclaration* vtxDecl = m_ogreMesh->sharedVertexData->vertexDeclaration;
 
     // Create the buffer semantic if it does not exist.
-    if(!vtxDecl->findElementBySemantic(_semantic))
+    if(vtxDecl->findElementBySemantic(_semantic) == nullptr)
     {
-        m_binding[_binding] = static_cast<unsigned short>(bind->getBindings().size());
+        m_binding[_binding] = static_cast<std::uint16_t>(bind->getBindings().size());
 
         vtxDecl->addElement(m_binding[_binding], 0, _type, _semantic);
     }
@@ -197,7 +195,7 @@ void Mesh::bindLayer(
 
 void Mesh::setVisible(bool _visible)
 {
-    if(m_r2vbEntity)
+    if(m_r2vbEntity != nullptr)
     {
         m_r2vbEntity->setVisible(_visible);
     }
@@ -227,7 +225,7 @@ void Mesh::updateMesh(const data::Mesh::csptr& _mesh, bool _pointsOnly)
     //------------------------------------------
 
     // Create vertex data structure for all vertices shared between submeshes
-    if(!m_ogreMesh->sharedVertexData)
+    if(m_ogreMesh->sharedVertexData == nullptr)
     {
         m_ogreMesh->sharedVertexData = new Ogre::VertexData();
     }
@@ -309,8 +307,6 @@ void Mesh::updateMesh(const data::Mesh::csptr& _mesh, bool _pointsOnly)
     const bool indices32Bits     = numVertices >= (1 << 16);
     const bool indicesPrev32Bits = prevNumVertices >= (1 << 16);
     const bool hasPrimitiveColor = _mesh->has<data::Mesh::Attributes::CELL_COLORS>();
-
-    void* indexBuffer;
     {
         FW_PROFILE_AVG("REALLOC INDEX", 5);
 
@@ -321,7 +317,7 @@ void Mesh::updateMesh(const data::Mesh::csptr& _mesh, bool _pointsOnly)
                                  || m_hasPrimitiveColor != hasPrimitiveColor;
 
         // Destroy the submesh if it has been created before - a submesh with 0 index would be invalid
-        if(destroyMesh && m_subMesh)
+        if(destroyMesh && (m_subMesh != nullptr))
         {
             std::string name = std::to_string(static_cast<int>(prevCellType));
             if((prevCellType == data::Mesh::CellType::TRIANGLE && hasPrimitiveColor)
@@ -339,7 +335,7 @@ void Mesh::updateMesh(const data::Mesh::csptr& _mesh, bool _pointsOnly)
 
         if(_mesh->numCells() > 0)
         {
-            if(!m_subMesh)
+            if(m_subMesh == nullptr)
             {
                 // Create one submesh
                 const std::string name = std::to_string(static_cast<int>(cellType));
@@ -372,6 +368,10 @@ void Mesh::updateMesh(const data::Mesh::csptr& _mesh, bool _pointsOnly)
                     // Use r2vb pipeline to generate quads or tetrahedrons
                     m_subMesh                = m_r2vbMesh->createSubMesh(name);
                     m_subMesh->operationType = Ogre::RenderOperation::OT_LINE_LIST_ADJ;
+                }
+                else
+                {
+                    SIGHT_ASSERT("invalid cell type", false);
                 }
 
                 m_subMesh->useSharedVertices     = true;
@@ -414,7 +414,7 @@ void Mesh::updateMesh(const data::Mesh::csptr& _mesh, bool _pointsOnly)
                 SIGHT_DEBUG("Index #" << m_subMesh->indexData->indexCount);
 
                 // Lock index data, we are going to write into it in the next loop
-                indexBuffer = ibuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
+                void* indexBuffer = ibuf->lock(Ogre::HardwareBuffer::HBL_DISCARD);
 
                 if(indices32Bits)
                 {
@@ -427,7 +427,7 @@ void Mesh::updateMesh(const data::Mesh::csptr& _mesh, bool _pointsOnly)
             }
         }
 
-        if(m_subMesh->indexData->indexBuffer)
+        if(m_subMesh != nullptr && m_subMesh->indexData->indexBuffer)
         {
             m_subMesh->indexData->indexBuffer->unlock();
         }
@@ -454,7 +454,7 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
     //------------------------------------------
 
     // Create vertex data structure for all vertices shared between submeshes
-    if(!m_ogreMesh->sharedVertexData)
+    if(m_ogreMesh->sharedVertexData == nullptr)
     {
         m_ogreMesh->sharedVertexData = new Ogre::VertexData();
     }
@@ -505,7 +505,7 @@ void Mesh::updateMesh(const data::PointList::csptr& _pointList)
 
     if(m_subMesh == nullptr)
     {
-        const std::size_t pointType = static_cast<std::size_t>(data::Mesh::CellType::POINT);
+        const auto pointType = static_cast<std::size_t>(data::Mesh::CellType::POINT);
         m_cellType               = data::Mesh::CellType::POINT;
         m_subMesh                = m_ogreMesh->createSubMesh(std::to_string(pointType));
         m_subMesh->operationType = Ogre::RenderOperation::OT_POINT_LIST;
@@ -535,7 +535,7 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(
     const bool bTetra            = m_cellType == data::Mesh::CellType::TETRA;
     if(bQuad || bTetra || hasPrimitiveColor)
     {
-        if(!m_r2vbMesh->sharedVertexData)
+        if(m_r2vbMesh->sharedVertexData == nullptr)
         {
             m_r2vbMesh->sharedVertexData = new Ogre::VertexData();
         }
@@ -548,7 +548,7 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(
         m_r2vbMesh->_setBoundingSphereRadius(m_ogreMesh->getBoundingSphereRadius());
 
         // Add mesh to Ogre Root Scene Node if it doesn't exist yet
-        if(!m_r2vbEntity)
+        if(m_r2vbEntity == nullptr)
         {
             m_r2vbEntity = _sceneMgr.createEntity(m_r2vbMesh);
             // Never attach it to the scene manager otherwise it will be computed all the time
@@ -558,8 +558,8 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(
         const std::size_t numSubEntities = m_r2vbEntity->getNumSubEntities();
         for(std::size_t i = 0 ; i < numSubEntities ; ++i)
         {
-            const auto subEntity = m_r2vbEntity->getSubEntity(i);
-            const auto subMesh   = subEntity->getSubMesh();
+            auto* const subEntity = m_r2vbEntity->getSubEntity(i);
+            auto* const subMesh   = subEntity->getSubMesh();
 
             const data::Mesh::CellType cellType = bQuad ? data::Mesh::CellType::QUAD
                                                         : bTetra ? data::Mesh::CellType::TETRA
@@ -599,7 +599,7 @@ std::pair<bool, std::vector<R2VBRenderable*> > Mesh::updateR2VB(
 
         m_r2vbObject.clear();
 
-        if(m_r2vbEntity)
+        if(m_r2vbEntity != nullptr)
         {
             _sceneMgr.destroyEntity(m_r2vbEntity);
             m_r2vbEntity = nullptr;
@@ -633,8 +633,8 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
         uiStrideFloat += 3;
     }
 
-    typedef data::Mesh::position_t position_t;
-    typedef data::Mesh::normal_t normal_t;
+    using position_t = data::Mesh::position_t;
+    using normal_t   = data::Mesh::normal_t;
 
     // Copy position and normal of each vertices
     // Compute bounding box (for culling)
@@ -664,7 +664,7 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
     }
     {
         FW_PROFILE_AVG("UPDATE POS AND NORMALS", 5);
-        position_t* __restrict pPos = static_cast<position_t*>(pVertex);
+        auto* __restrict pPos = static_cast<position_t*>(pVertex);
         for(const auto& p : _mesh->crange<data::iterator::point::xyz>())
         {
             memcpy(pPos, &p.x, 3 * sizeof(position_t));
@@ -698,7 +698,7 @@ void Mesh::updateVertices(const data::Mesh::csptr& _mesh)
         m_ogreMesh->_setBounds(Ogre::AxisAlignedBox(xMin, yMin, zMin, xMax, yMax, zMax));
 
         // Check again the bounds, since ogre may add some extent that could give infinite bounds
-        const bool valid = this->areBoundsValid(m_ogreMesh);
+        const bool valid = sight::viz::scene3d::Mesh::areBoundsValid(m_ogreMesh);
         SIGHT_ASSERT("Invalid bounds found...", valid);
 
         if(valid)
@@ -745,7 +745,7 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
     // Update Ogre Mesh with data::Mesh
     const std::size_t uiStrideFloat = 3;
 
-    typedef data::Point::PointCoordType PointType;
+    using PointType = data::Point::PointCoordType;
 
     // Copy position and normal of each vertices
     // Compute bounding box (for culling)
@@ -778,7 +778,7 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
         }
     }
     {
-        float* __restrict pPos = static_cast<float*>(pVertex);
+        auto* __restrict pPos = static_cast<float*>(pVertex);
         FW_PROFILE_AVG("UPDATE POS", 5);
         for(std::size_t i = 0 ; i < numPoints ; ++i)
         {
@@ -800,17 +800,17 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
        && yMax > std::numeric_limits<PointType>::lowest()
        && zMax > std::numeric_limits<PointType>::lowest())
     {
-        const float xMinF = static_cast<float>(xMin);
-        const float yMinF = static_cast<float>(yMin);
-        const float zMinF = static_cast<float>(zMin);
-        const float xMaxF = static_cast<float>(xMax);
-        const float yMaxF = static_cast<float>(yMax);
-        const float zMaxF = static_cast<float>(zMax);
+        const auto xMinF = static_cast<float>(xMin);
+        const auto yMinF = static_cast<float>(yMin);
+        const auto zMinF = static_cast<float>(zMin);
+        const auto xMaxF = static_cast<float>(xMax);
+        const auto yMaxF = static_cast<float>(yMax);
+        const auto zMaxF = static_cast<float>(zMax);
 
         m_ogreMesh->_setBounds(Ogre::AxisAlignedBox(xMinF, yMinF, zMinF, xMaxF, yMaxF, zMaxF));
 
         // Check again the bounds, since ogre may add some extent that could give infinite bounds
-        const bool valid = this->areBoundsValid(m_ogreMesh);
+        const bool valid = sight::viz::scene3d::Mesh::areBoundsValid(m_ogreMesh);
         SIGHT_ASSERT("Invalid bounds found...", valid);
 
         if(valid)
@@ -824,7 +824,7 @@ void Mesh::updateVertices(const data::PointList::csptr& _pointList)
                     Ogre::Math::Sqr(xLenF)
                     + Ogre::Math::Sqr(yLenF)
                     + Ogre::Math::Sqr(zLenF)
-                ) / 2.0f
+                ) / 2.0F
             );
         }
         else
@@ -876,7 +876,7 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
     {
         unsigned int numIndicesTotal = 0;
 
-        if(m_subMesh)
+        if(m_subMesh != nullptr)
         {
             if(_mesh->getCellType() == data::Mesh::CellType::TRIANGLE)
             {
@@ -899,8 +899,8 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
             );
         }
 
-        const std::size_t width  = std::min(s_maxTextureSize, numIndicesTotal);
-        const std::size_t height = static_cast<std::size_t>(std::floor(numIndicesTotal / s_maxTextureSize) + 1);
+        const std::size_t width = std::min(s_maxTextureSize, numIndicesTotal);
+        const auto height       = static_cast<std::size_t>(std::floor(numIndicesTotal / s_maxTextureSize) + 1);
 
         if(m_perPrimitiveColorTexture->getWidth() != width || m_perPrimitiveColorTexture->getHeight() != height)
         {
@@ -936,7 +936,7 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
     {
         // Source points
         Ogre::HardwareVertexBufferSharedPtr vertex_buffer = bind->getBuffer(m_binding[COLOUR]);
-        Ogre::RGBA* pColor                                =
+        auto* pColor                                      =
             static_cast<Ogre::RGBA*>(vertex_buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD));
 
         // Destination
@@ -955,7 +955,7 @@ void Mesh::updateColors(const data::Mesh::csptr& _mesh)
         Ogre::HardwarePixelBufferSharedPtr pixelBuffer = m_perPrimitiveColorTexture->getBuffer();
         pixelBuffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
         const Ogre::PixelBox& pixelBox = pixelBuffer->getCurrentLock();
-        Ogre::RGBA* pColorDest         = reinterpret_cast<Ogre::RGBA*>(pixelBox.data);
+        auto* pColorDest               = reinterpret_cast<Ogre::RGBA*>(pixelBox.data);
 
         // Destination
         const std::uint8_t* colors = &(_mesh->cbegin<data::iterator::cell::rgba>())->r;
@@ -993,7 +993,7 @@ void Mesh::updateTexCoords(const data::Mesh::csptr& _mesh)
         Ogre::VertexBufferBinding* bind               = m_ogreMesh->sharedVertexData->vertexBufferBinding;
         Ogre::HardwareVertexBufferSharedPtr uv_buffer = bind->getBuffer(m_binding[TEXCOORD]);
         void* pBuf                                    = uv_buffer->lock(Ogre::HardwareBuffer::HBL_DISCARD);
-        float* pUV                                    = static_cast<float*>(pBuf);
+        auto* pUV                                     = static_cast<float*>(pBuf);
 
         // Copy UV coordinates for each mesh point
         for(const auto& uv : _mesh->crange<data::iterator::point::uv>())
@@ -1016,7 +1016,7 @@ void Mesh::clearMesh(Ogre::SceneManager& _sceneMgr)
 {
     // Destroy all the submeshes, but keep the two meshes alive
 
-    if(m_subMesh)
+    if(m_subMesh != nullptr)
     {
         const data::Mesh::CellType cellType = m_cellType;
         const std::string name              = std::to_string(static_cast<int>(cellType));
@@ -1040,7 +1040,7 @@ void Mesh::clearMesh(Ogre::SceneManager& _sceneMgr)
 
     m_r2vbObject.clear();
 
-    if(m_r2vbEntity)
+    if(m_r2vbEntity != nullptr)
     {
         _sceneMgr.destroyEntity(m_r2vbEntity);
         m_r2vbEntity = nullptr;
@@ -1072,7 +1072,7 @@ void Mesh::updateMaterial(Material* _material, bool _isR2VB) const
 
 //------------------------------------------------------------------------------
 
-bool Mesh::hasColorLayerChanged(const data::Mesh::csptr& _mesh)
+bool Mesh::hasColorLayerChanged(const data::Mesh::csptr& _mesh) const
 {
     const bool hasVertexColor    = _mesh->has<data::Mesh::Attributes::POINT_COLORS>();
     const bool hasPrimitiveColor = _mesh->has<data::Mesh::Attributes::CELL_COLORS>();

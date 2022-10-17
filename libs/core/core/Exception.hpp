@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@ public:
 
     CORE_API Exception(const std::string& err);
 
-    CORE_API virtual ~Exception() = default;
+    CORE_API ~Exception() override = default;
 };
 
 } //namespace sight::core

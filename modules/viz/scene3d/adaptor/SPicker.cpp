@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,9 +42,8 @@ SPicker::SPicker() noexcept
 
 //-----------------------------------------------------------------------------
 
-SPicker::~SPicker() noexcept
-{
-}
+SPicker::~SPicker() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 

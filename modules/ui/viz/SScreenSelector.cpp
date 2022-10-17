@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,16 +40,15 @@ static const core::com::Signals::SignalKeyType s_SCREEN_SELECTED_SIG = "screenSe
 
 //------------------------------------------------------------------------------
 
-SScreenSelector::SScreenSelector()
+SScreenSelector::SScreenSelector() :
+    m_screenSelectedSig(newSignal<ScreenSelectedSignalType>(s_SCREEN_SELECTED_SIG))
 {
-    m_screenSelectedSig = newSignal<ScreenSelectedSignalType>(s_SCREEN_SELECTED_SIG);
 }
 
 //------------------------------------------------------------------------------
 
 SScreenSelector::~SScreenSelector()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -81,7 +80,7 @@ void SScreenSelector::updating()
     int screenNum = -1;
     if(m_mode == "select")
     {
-        screenNum = this->selectScreen();
+        screenNum = sight::module::ui::viz::SScreenSelector::selectScreen();
     }
     else
     {
@@ -94,9 +93,12 @@ void SScreenSelector::updating()
             screenNum++;
         }
 
-        if(screenNum >= desktop->screenCount())
+        const auto screens = QGuiApplication::screens();
+        if(screenNum >= QGuiApplication::screens().count())
         {
-            screenNum = desktop->primaryScreen();
+            QScreen* screen = QGuiApplication::primaryScreen();
+            auto it         = std::ranges::find(screens, screen);
+            screenNum = it - screens.begin();
         }
     }
 
@@ -115,7 +117,7 @@ void SScreenSelector::stopping()
 
 //------------------------------------------------------------------------------
 
-int SScreenSelector::selectScreen() const
+int SScreenSelector::selectScreen()
 {
     QStringList screenNames;
     int screenNumber = 0;

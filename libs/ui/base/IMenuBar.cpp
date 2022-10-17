@@ -32,16 +32,13 @@
 namespace sight::ui::base
 {
 
-IMenuBar::IMenuBar() :
-    m_hideMenus(false)
-{
-}
+IMenuBar::IMenuBar()
+= default;
 
 //-----------------------------------------------------------------------------
 
 IMenuBar::~IMenuBar()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -82,11 +79,13 @@ void IMenuBar::create()
     ui::base::container::fwMenuBar::sptr menuBar = m_registry->getParent();
     SIGHT_ASSERT("Parent menuBar is unknown.", menuBar);
 
+    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
+
     core::thread::getDefaultWorker()->postTask<void>(
         std::function<void()>(
             [&]
         {
-            m_layoutManager->createLayout(menuBar);
+            m_layoutManager->createLayout(menuBar, serviceID);
         })
     ).wait();
 
@@ -187,4 +186,4 @@ void IMenuBar::initializeLayoutManager(ConfigurationType layoutConfig)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::ui
+} // namespace sight::ui::base

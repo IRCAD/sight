@@ -54,9 +54,8 @@ SText::SText() noexcept
 
 //----------------------------------------------------------------------------
 
-SText::~SText() noexcept
-{
-}
+SText::~SText() noexcept =
+    default;
 
 //----------------------------------------------------------------------------
 
@@ -92,10 +91,13 @@ void SText::configuring()
     m_position.y = config.get<float>(s_Y_CONFIG, m_position.y);
 
     const auto hexaTextColor = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
-    std::array<std::uint8_t, 4> textColor;
-    data::tools::Color::hexaStringToRGBA(hexaTextColor, textColor.data());
+    std::array<std::uint8_t, 4> textColor {};
+    data::tools::Color::hexaStringToRGBA(hexaTextColor, textColor);
 
-    const auto divideBy255 = std::bind(std::divides<float>(), std::placeholders::_1, 255.f);
+    const auto divideBy255 = [](auto&& PH1, auto&& ...)
+                             {
+                                 return std::divides<>()(std::forward<decltype(PH1)>(PH1), 255.F);
+                             };
     std::transform(textColor.begin(), textColor.end(), m_textColor.ptr(), divideBy255);
 }
 
@@ -180,8 +182,8 @@ void SText::updatePositionFromAlignment()
 
     const std::map<std::string, float> horizAlignToX {
         {"left", m_position.x},
-        {"center", 0.5f + m_position.x},
-        {"right", 1.f - m_position.x}
+        {"center", 0.5F + m_position.x},
+        {"right", 1.F - m_position.x}
     };
 
     const std::map<std::string, Ogre::GuiVerticalAlignment> stringToVertAlignmentMap {
@@ -191,8 +193,8 @@ void SText::updatePositionFromAlignment()
     };
 
     const std::map<std::string, float> vertAlignToY {
-        {"bottom", 1.f - m_position.y},
-        {"center", 0.5f + m_position.y},
+        {"bottom", 1.F - m_position.y},
+        {"center", 0.5F + m_position.y},
         {"top", m_position.y}
     };
 

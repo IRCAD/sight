@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 class FlipTest : public CPPUNIT_NS::TestFixture
@@ -42,13 +39,11 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void flipAlongXAxisTest();
-    void flipAlongYAxisTest();
-    void flipAlongZAxisTest();
-    void flipAlongMultipleAxesTest();
-    void flipEmptyImageTest();
+    static void flipAlongXAxisTest();
+    static void flipAlongYAxisTest();
+    static void flipAlongZAxisTest();
+    static void flipAlongMultipleAxesTest();
+    static void flipEmptyImageTest();
 };
 
-} //namespace ut
-
-} //namespace sight::filter::image
+} // namespace sight::filter::image::ut

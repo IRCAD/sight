@@ -26,16 +26,15 @@
 
 #include <activity/IActivitySequencer.hpp>
 
+#include <data/ActivitySet.hpp>
+
 #include <ui/base/IEditor.hpp>
 
 #include <QObject>
 #include <QPointer>
 #include <QQuickWidget>
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 /**
@@ -44,38 +43,37 @@ namespace activity
  *
  * The order of the activities is given in the configuration.
  *
- * ActivitySeries are created for each activity using the data produced by the previous activities. This activities are
- * stored in the current SeriesDB. By default all the data are stored, you can to backward and forward as you want in
+ * Activity are created for each activity using the data produced by the previous activities. This activities are
+ * stored in the current ActivitySet. By default all the data are stored, you can to backward and forward as you want in
  * the existing activities. Using the tag 'clearActivities', you can remove the last activities when going backward to
  * force the user to re-generate the data.
  *
  * @warning If an activity can not be launched with the existing parameters, the signal 'dataRequired' is emitted. It
  * can be connected to an activity wizard to add the missing data, or you can supplied 'requirementOverrides' composite.
  *
- * @note If the inout SeriesDB already contains activities, their are parsed and the sequencer open on the last
+ * @note If the inout ActivitySet already contains activities, their are parsed and the sequencer open on the last
  * activities. Be careful to store them in the right order.
  *
- * @warning If the SeriesDB contains other series (or unknown activities), they are removed with a simple log error.
- *
  * @section Signal Signal
- * - \b activityCreated(data::ActivitySeries::sptr) : This signal is emitted when an activity is created (using
+ * - \b activityCreated(data::Activity::sptr) : This signal is emitted when an activity is created (using
  *   next() or previous().
  * - \b dataRequired() : This signal is emitted when the activity can not be launch because it requires data.
- * - \b enabledNext(bool): This signal is emitted when the next button is enabled (when the activity is not the last
- *   one)
- * - \b enabledPrevious(bool): This signal is emitted when the previous button is enabled (when the activity is not the
- *   first one)
+ * - \b hasNext(bool): This signal is emitted on sendInfo() slot, with the information if an activity is present after
+ * the current one.
+ * - \b hasPrevious(bool): This signal is emitted on sendInfo() slot, with the information if an activity is present
+ * before the current one.
+ * - \b nextEnabled(bool): This signal is emitted when the next button is enabled and can be launched.
  *
  * @section Slots Slots
- * - \b next() : Create the next activity series
- * - \b previous() : Create the next activity series
- * - \b goTo(int) : Create the activity series at the given index
- * - \b sendInfo() : Send the 'enabledNext' and 'enablePrevious' signals for the current activity
+ * - \b next() : Create the next activity
+ * - \b previous() : Create the next activity
+ * - \b goTo(int) : Create the activity at the given index
+ * - \b sendInfo() : Send the 'hasNext' and 'hasPrevious' signals for the current activity
  *
  * @section XML XML Configuration
  * @code{.xml}
     <service  type="sight::module::ui::qt::activity::SSequencer">
-        <inout key="seriesDB" uid=""  autoConnect="true" />
+        <inout key="activitySet" uid=""  autoConnect="true" />
         <activity id="..." name="..." />
         <activity id="..." name="..." />
         <activity id="..." name="..." />
@@ -95,7 +93,7 @@ namespace activity
  *   data that would normally be passed from an activity to the next.
  *
  * @subsection In-Out In-Out
- * - \b seriesDB [sight::data::SeriesDB]: used to store the ActivitySeries of the managed activities
+ * - \b activity_set [sight::data::ActivitySet]: used to store the Activity of the managed activities
  *
  * @subsection Configuration Configuration
  * - \b activity :
@@ -134,10 +132,9 @@ public:
      * @name Signals API
      * @{
      */
-    typedef core::com::Signal<void (data::ActivitySeries::sptr)> ActivityCreatedSignalType;
-    typedef core::com::Signal<void (data::ActivitySeries::sptr)> DataRequiredSignalType;
-    typedef core::com::Signal<void (bool)> EnabledPreviousSignalType;
-    typedef core::com::Signal<void (bool)> EnabledNextSignalType;
+    using ActivityCreatedSignalType = core::com::Signal<void (data::Activity::sptr)>;
+    using DataRequiredSignalType    = core::com::Signal<void (data::Activity::sptr)>;
+    using BoolSignalType            = core::com::Signal<void (bool)>;
 /**
  * @}
  */
@@ -159,15 +156,15 @@ protected:
     void stopping() override;
 
     /**
-     * @brief Analyse the series contained in the current seriesDB.
+     * @brief Analyse the contained in the current activity_set.
      *
-     * - if the series is not an activity or if it is an unknown activity, it is removed
+     * - if the is an unknown activity, it is removed
      * - else, the activity data is stored in m_requirements
      * - the last activity is launched
      */
     void updating() override;
 
-    /// Connect the service to the SeriesDB signals
+    /// Connect the service to the ActivitySet signals
     KeyConnectionsMap getAutoConnections() const override;
 
 private:
@@ -175,13 +172,13 @@ private:
     /// Slot: Check if the next activities can be enabled
     void checkNext();
 
-    /// Slot: Create the next activity series, emit 'dataRequired' signal if the activity require additional data
+    /// Slot: Create the next activity, emit 'dataRequired' signal if the activity require additional data
     void next();
 
-    /// Slot: Create the previous activity series, emit 'dataRequired' signal if the activity require additional data
+    /// Slot: Create the previous activity, emit 'dataRequired' signal if the activity require additional data
     void previous();
 
-    /// Slot: Send the 'enabledNext' and 'enablePrevious' signals for the current activity
+    /// Slot: Send the 'hasNext' and 'enablePrevious' signals for the current activity
     void sendInfo() const;
 
     /// Invoke 'enableActivity' method in Qml file
@@ -192,8 +189,9 @@ private:
 
     ActivityCreatedSignalType::sptr m_sigActivityCreated;
     DataRequiredSignalType::sptr m_sigDataRequired;
-    EnabledPreviousSignalType::sptr m_sigEnabledPrevious;
-    EnabledNextSignalType::sptr m_sigEnabledNext;
+    BoolSignalType::sptr m_sigHasPrevious;
+    BoolSignalType::sptr m_sigHasNext;
+    BoolSignalType::sptr m_sigNextEnabled;
 
     /// List of the activities
     std::vector<std::string> m_activityNames;
@@ -212,10 +210,8 @@ private:
     std::string m_primary;
     std::string m_elevation;
 
-    static constexpr std::string_view s_SERIESDB_INOUT = "seriesDB";
-    data::ptr<data::SeriesDB, data::Access::inout> m_seriesDB {this, "seriesDB", true};
+    static constexpr std::string_view s_ACTIVITY_SET_INOUT = "activitySet";
+    data::ptr<data::ActivitySet, data::Access::inout> m_activity_set {this, s_ACTIVITY_SET_INOUT, true};
 };
 
-} // namespace activity
-
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::activity

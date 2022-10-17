@@ -35,7 +35,8 @@ BresenhamLine::PathType BresenhamLine::draw(
     const CoordinatesType& endCoord
 )
 {
-    std::size_t dim0 = 0, dim1 = 1;
+    std::size_t dim0 = 0;
+    std::size_t dim1 = 1;
 
     switch(orientation)
     {
@@ -75,7 +76,7 @@ BresenhamLine::PathType BresenhamLine::draw(
     CoordinatesType currentCoord = startCoord;
 
     PathType result;
-    CoordinatesType::value_type pathLength = static_cast<CoordinatesType::value_type>(std::max(dx, dy));
+    auto pathLength = static_cast<CoordinatesType::value_type>(std::max(dx, dy));
     result.reserve(pathLength);
 
     result.push_back(currentCoord);
@@ -83,8 +84,8 @@ BresenhamLine::PathType BresenhamLine::draw(
     while(currentCoord != endCoord)
     {
         const std::int64_t e2 = e * 2;
-        std::int64_t cx       = static_cast<std::int64_t>(currentCoord[dim0]);
-        std::int64_t cy       = static_cast<std::int64_t>(currentCoord[dim1]);
+        auto cx               = static_cast<std::int64_t>(currentCoord[dim0]);
+        auto cy               = static_cast<std::int64_t>(currentCoord[dim1]);
 
         if(e2 > -static_cast<std::int64_t>(dy))
         {

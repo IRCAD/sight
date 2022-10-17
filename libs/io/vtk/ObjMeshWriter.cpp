@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-ObjMeshWriter::ObjMeshWriter(io::base::writer::IObjectWriter::Key) :
+ObjMeshWriter::ObjMeshWriter(io::base::writer::IObjectWriter::Key /*unused*/) :
     m_job(core::jobs::Observer::New("OBJ Mesh writer"))
 {
 }
@@ -66,8 +66,7 @@ ObjMeshWriter::ObjMeshWriter(io::base::writer::IObjectWriter::Key) :
 //------------------------------------------------------------------------------
 
 ObjMeshWriter::~ObjMeshWriter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -112,8 +111,6 @@ void ObjMeshWriter::write()
 
 void ObjMeshWriter::write()
 {
-    using namespace sight::io::vtk::helper;
-
     SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
     [[maybe_unused]] const auto objectLock = m_object.lock();

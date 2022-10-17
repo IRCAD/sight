@@ -45,15 +45,13 @@ namespace sight::module::io::vision
 
 //------------------------------------------------------------------------------
 
-SCalibrationImagesWriter::SCalibrationImagesWriter() noexcept
-{
-}
+SCalibrationImagesWriter::SCalibrationImagesWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SCalibrationImagesWriter::~SCalibrationImagesWriter() noexcept
-{
-}
+SCalibrationImagesWriter::~SCalibrationImagesWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

@@ -29,10 +29,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::activity
-{
-
-namespace ut
+namespace sight::activity::ut
 {
 
 class DefaultActivityTest : public CPPUNIT_NS::TestFixture
@@ -49,15 +46,13 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void requirementsTest();
-    void objectTest();
-    void validatorTest();
-    void bigActivityTest();
+    static void requirementsTest();
+    static void objectTest();
+    static void validatorTest();
+    static void bigActivityTest();
 };
 
-} //namespace ut
-
-} //namespace sight::activity
+} // namespace sight::activity::ut

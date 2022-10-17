@@ -22,42 +22,51 @@
 
 #pragma once
 
-#include <core/runtime/EConfigurationElement.hpp>
-
 #include <data/Image.hpp>
 
 #include <service/macros.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::itk
-{
-
-namespace ut
+namespace sight::io::itk::ut
 {
 
 class ImageReaderWriterTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(ImageReaderWriterTest);
-CPPUNIT_TEST(testSaveLoadInr);
-CPPUNIT_TEST(stressTestInr);
+CPPUNIT_TEST(inrReadWriteTest);
+CPPUNIT_TEST(inrStressTest);
+CPPUNIT_TEST(niftiReadTest);
+CPPUNIT_TEST(niftiWriteTest);
+CPPUNIT_TEST(jpegWriteTest);
+CPPUNIT_TEST(inrReadJpegWriteTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void testSaveLoadInr();
-    void stressTestInr();
+    static void inrReadWriteTest();
+    static void inrStressTest();
+    static void niftiReadTest();
+    static void niftiWriteTest();
+    static void jpegWriteTest();
+    static void inrReadJpegWriteTest();
 
 private:
 
-    void stressTestInrWithType(core::tools::Type type, int nbTest);
-    void checkSaveLoadInr(data::Image::sptr image);
+    static void inrStressTestWithType(core::Type type, int nbTest);
+    static void inrReadWriteCheck(data::Image::sptr image);
+    static void niftiReadCheck(
+        const data::Image::sptr& imageToTest,
+        const core::Type& expectedType,
+        std::size_t expectedDim,
+        const data::Image::Spacing& expectedSpacing,
+        const data::Image::Origin& expectedOrigin,
+        const data::Image::Size& expectedSize
+    );
 };
 
-} //namespace ut
-
-} //namespace sight::io::itk
+} // namespace sight::io::itk::ut

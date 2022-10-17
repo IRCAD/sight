@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "SShaderParameterEditor.hpp"
 
-#include <viz/scene3d/IAdaptor.hpp>
-
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>
@@ -31,6 +29,8 @@
 #include <service/op/Add.hpp>
 
 #include <ui/base/GuiRegistry.hpp>
+
+#include <viz/scene3d/IAdaptor.hpp>
 
 #include <modules/ui/viz/helper/ParameterEditor.hpp>
 
@@ -40,15 +40,13 @@ namespace sight::module::ui::viz
 {
 
 //------------------------------------------------------------------------------
-SShaderParameterEditor::SShaderParameterEditor() noexcept
-{
-}
+SShaderParameterEditor::SShaderParameterEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SShaderParameterEditor::~SShaderParameterEditor() noexcept
-{
-}
+SShaderParameterEditor::~SShaderParameterEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -62,7 +60,10 @@ void SShaderParameterEditor::starting()
 
     this->create();
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
+    qtContainer->getQtContainer()->setObjectName(serviceID);
 
     m_sizer = new QVBoxLayout();
     m_sizer->setContentsMargins(0, 0, 0, 0);
@@ -139,7 +140,7 @@ void SShaderParameterEditor::updateGuiInfo()
     /// Try to find the material adaptor working with the same data::Material
     /// as the one contained by the current reconstruction
     sight::viz::scene3d::IAdaptor::sptr matService;
-    for(auto srv : srvVec)
+    for(const auto& srv : srvVec)
     {
         if(srv->getInOut<data::Object>("material").lock()->getID() == reconstruction->getMaterial()->getID())
         {
@@ -181,7 +182,7 @@ void SShaderParameterEditor::updateGuiInfo()
     auto qtContainer   = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* container = qtContainer->getQtContainer();
 
-    QWidget* p2 = new QWidget(container);
+    auto* p2 = new QWidget(container);
     m_editorInfo.editorPanel = sight::ui::qt::container::QtContainer::New();
     m_editorInfo.editorPanel->setQtContainer(p2);
 
@@ -196,7 +197,7 @@ void SShaderParameterEditor::updateGuiInfo()
     service::IService::ConfigType editorConfig;
 
     // Get all ShaderParameter subservices from the corresponding Material adaptor
-    for(auto wAdaptor : matService->getRegisteredServices())
+    for(const auto& wAdaptor : matService->getRegisteredServices())
     {
         const auto adaptor = wAdaptor.lock();
         if(adaptor->getClassname() == "sight::module::viz::scene3d::adaptor::SShaderParameter")

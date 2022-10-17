@@ -51,9 +51,8 @@ SPointToLandmarkVector::SPointToLandmarkVector() noexcept
 
 // -----------------------------------------------------------------------------
 
-SPointToLandmarkVector::~SPointToLandmarkVector() noexcept
-{
-}
+SPointToLandmarkVector::~SPointToLandmarkVector() noexcept =
+    default;
 
 // -----------------------------------------------------------------------------
 
@@ -85,10 +84,11 @@ void SPointToLandmarkVector::configuring()
 
 void SPointToLandmarkVector::updating()
 {
-    auto transform = m_transform.lock();
+    auto transform         = m_transform.lock();
     auto translationMatrix = m_translationMatrix.lock();
-    const auto landmark = m_landmark.lock();
-    std::array<double, 3> sourcePoint, targetPoint;
+    const auto landmark    = m_landmark.lock();
+    std::array<double, 3> sourcePoint {};
+    std::array<double, 3> targetPoint {};
     if(landmark->getGroup(m_originLabel).m_size >= 1)
     {
         sourcePoint = landmark->getPoint(m_originLabel, 0);
@@ -112,7 +112,7 @@ void SPointToLandmarkVector::updating()
     const glm::dvec3 sourcePt(sourcePoint[0], sourcePoint[1], sourcePoint[2]);
     const glm::dvec3 targetPt(targetPoint[0], targetPoint[1], targetPoint[2]);
     const glm::dvec3 pointToTarget = targetPt - sourcePt;
-    const float length             = static_cast<float>(glm::length(pointToTarget));
+    const auto length              = static_cast<float>(glm::length(pointToTarget));
     this->signal<LengthChangedSignalType>(LENGTH_CHANGED_SIG)->asyncEmit(length);
     const std::string lengthStr = std::to_string(length) + " mm";
     this->signal<LengthStrChangedSignalType>(LENGTH_STR_CHANGED_SIG)->asyncEmit(lengthStr);
@@ -158,11 +158,9 @@ void SPointToLandmarkVector::updating()
 
 service::IService::KeyConnectionsMap SPointToLandmarkVector::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_LANDMARK_INPUT, data::Landmarks::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {{s_LANDMARK_INPUT, data::Landmarks::s_POINT_ADDED_SIG, s_UPDATE_SLOT}};
 }
 
 // -----------------------------------------------------------------------------
 
-} // maths
+} // namespace sight::module::geometry::base

@@ -24,9 +24,6 @@
 
 #include <data/Exception.hpp>
 
-#include <boost/bind.hpp>
-#include <boost/pool/pool.hpp>
-
 namespace sight::data
 {
 
@@ -35,41 +32,44 @@ namespace sight::data
 template<class BUFFER_TYPE>
 GenericTL<BUFFER_TYPE>::GenericTL(data::Object::Key key) :
     BufferTL(key),
-    m_maxElementNum(~0u)
+    m_maxElementNum(~0U)
 {
 }
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-GenericTL<BUFFER_TYPE>::~GenericTL()
+void GenericTL<BUFFER_TYPE>::shallowCopy(const Object::csptr&)
 {
+    SIGHT_FATAL("shallowCopy not implemented for : " + this->getClassname());
 }
 
 //------------------------------------------------------------------------------
 
 template<class BUFFER_TYPE>
-void GenericTL<BUFFER_TYPE>::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType&)
+void GenericTL<BUFFER_TYPE>::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    GenericTL::csptr other = GenericTL::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
 
-    this->fieldDeepCopy(_source);
     this->clearTimeline();
     this->initPoolSize(other->getMaxElementNum());
 
-    for(TimelineType::value_type elt : other->m_timeline)
+    for(const TimelineType::value_type& elt : other->m_timeline)
     {
         SPTR(BufferType) tlObj = this->createBuffer(elt.first);
         tlObj->deepCopy(*elt.second);
         m_timeline.insert(TimelineType::value_type(elt.first, tlObj));
     }
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -124,8 +124,7 @@ GenericTL<BUFFER_TYPE>::createBuffer(core::HiResClock::HiResClockType timestamp)
         timestamp,
         (data::timeline::Buffer::BufferDataType) m_pool->malloc(),
         m_pool->get_requested_size(),
-        boost::bind(&boost::pool<>::free, m_pool, _1)
-    );
+        [ObjectPtr = m_pool](auto&& PH1, auto&& ...){ObjectPtr->free(std::forward<decltype(PH1)>(PH1));});
     return obj;
 }
 
@@ -135,7 +134,7 @@ template<class BUFFER_TYPE>
 bool GenericTL<BUFFER_TYPE>::isObjectValid(const CSPTR(data::timeline::Object)& obj) const
 {
     CSPTR(BufferType) srcObj = std::dynamic_pointer_cast<const BufferType>(obj);
-    return srcObj != NULL;
+    return srcObj != nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -157,7 +156,7 @@ bool GenericTL<BUFFER_TYPE>::operator==(const GenericTL& other) const noexcept
     }
 
     // Super class last
-    return BufferTL::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,23 +22,22 @@
 
 #include "service/SConfigController.hpp"
 
-#include <service/macros.hpp>
+#include "service/macros.hpp"
 
 namespace sight::service
 {
 
 //------------------------------------------------------------------------------
 
-SConfigController::SConfigController() noexcept
+SConfigController::SConfigController() noexcept :
+    m_configLauncher(std::make_unique<service::helper::ConfigLauncher>())
 {
-    m_configLauncher = std::make_unique<service::helper::ConfigLauncher>();
 }
 
 //------------------------------------------------------------------------------
 
-SConfigController::~SConfigController() noexcept
-{
-}
+SConfigController::~SConfigController() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -69,10 +68,10 @@ void SConfigController::updating()
 
 //------------------------------------------------------------------------------
 
-void SConfigController::info(std::ostream&)
+void SConfigController::info(std::ostream& /*_sstream*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-}
+} // namespace sight::service

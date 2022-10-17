@@ -24,16 +24,12 @@
 
 #include "io/igtl/config.hpp"
 
-#include <boost/static_assert.hpp>
 #include <boost/type_traits/is_arithmetic.hpp>
 
 #include <algorithm>
 #include <string>
 
-namespace sight::io::igtl::detail
-{
-
-namespace helper
+namespace sight::io::igtl::detail::helper
 {
 
 namespace detail
@@ -49,7 +45,7 @@ template<typename T>
 union ConvertData
 {
     T scalar;
-    char bytes[sizeof(T)];
+    std::array<char, sizeof(T)> bytes;
 };
 
 } // namespace detail
@@ -74,14 +70,14 @@ public:
      */
     static RawDataType toBytes(T const scalar)
     {
-        io::igtl::detail::helper::detail::ConvertData<T> convertData;
+        io::igtl::detail::helper::detail::ConvertData<T> convertData {};
         RawDataType bytes;
 
-        BOOST_STATIC_ASSERT(boost::is_arithmetic<T>::value);
+        static_assert(std::is_arithmetic<T>::value);
         convertData.scalar = scalar;
         bytes.resize(sizeof(T));
 
-        std::copy(convertData.bytes, convertData.bytes + sizeof(T), bytes.begin());
+        std::copy(convertData.bytes.begin(), convertData.bytes.end(), bytes.begin());
 
         return bytes;
     }
@@ -94,13 +90,11 @@ public:
      */
     static T fromBytes(const char* const bytes)
     {
-        io::igtl::detail::helper::detail::ConvertData<T> convertData;
-        std::copy(bytes, bytes + sizeof(T), convertData.bytes);
+        io::igtl::detail::helper::detail::ConvertData<T> convertData {};
+        std::copy(bytes, bytes + sizeof(T), convertData.bytes.begin());
 
         return convertData.scalar;
     }
 };
 
-} // namespace helper
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::helper

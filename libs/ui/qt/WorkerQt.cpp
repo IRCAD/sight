@@ -45,21 +45,21 @@ class WorkerQtTask : public QEvent
 {
 public:
 
-    WorkerQtTask(const core::thread::Worker::TaskType& handler) :
+    explicit WorkerQtTask(core::thread::Worker::TaskType handler) :
         QEvent(static_cast<QEvent::Type>(s_WORKER_QT_TASK_EVENT_TYPE)),
-        m_handler(handler)
+        m_handler(std::move(handler))
     {
         SIGHT_ASSERT("Application should be instantiated", QCoreApplication::instance());
     }
 
-    ~WorkerQtTask()
+    ~WorkerQtTask() override
     {
         m_handler();
     }
 
     static const int s_WORKER_QT_TASK_EVENT_TYPE;
 
-protected:
+private:
 
     core::thread::Worker::TaskType m_handler;
 };
@@ -75,38 +75,38 @@ public:
 
     WorkerQt();
 
+    /// Copy constructor forbidden
+    WorkerQt(const WorkerQt&) = delete;
+
+    /// Copy operator forbidden
+    WorkerQt& operator=(const WorkerQt&) = delete;
+
     void init(int& argc, char** argv);
 
-    virtual ~WorkerQt();
+    ~WorkerQt() override;
 
-    void stop();
+    void stop() override;
 
-    void post(TaskType handler);
+    void post(TaskType handler) override;
 
     void setApp(QSharedPointer<QCoreApplication> app, const std::string& name, const std::string& version);
 
-    core::thread::Worker::FutureType getFuture();
+    core::thread::Worker::FutureType getFuture() override;
 
-    virtual core::thread::ThreadIdType getThreadId() const;
+    core::thread::ThreadIdType getThreadId() const override;
 
-    virtual void processTasks();
+    void processTasks() override;
 
-    virtual void processTasks(PeriodType maxtime);
+    void processTasks(PeriodType maxtime) override;
 
-protected:
+private:
 
-    int m_argc;
-    char** m_argv;
+    int m_argc {0};
+    char** m_argv {};
 
     QSharedPointer<QCoreApplication> m_app;
 
-    SPTR(core::thread::Timer) createTimer();
-
-    /// Copy constructor forbidden
-    WorkerQt(const WorkerQt&);
-
-    /// Copy operator forbidden
-    WorkerQt& operator=(const WorkerQt&);
+    SPTR(core::thread::Timer) createTimer() override;
 
     core::thread::ThreadIdType m_threadId;
 };
@@ -141,33 +141,39 @@ public:
      */
     TimerQt();
 
-    ~TimerQt();
+    /// Copy constructor forbidden.
+    TimerQt(const TimerQt&) = delete;
+
+    /// Copy operator forbidden.
+    TimerQt& operator=(const TimerQt&) = delete;
+
+    ~TimerQt() override;
 
     /// Starts or restarts the timer.
-    void start();
+    void start() override;
 
     /// Stops the timer and cancel all pending operations.
-    void stop();
+    void stop() override;
 
     /// Sets time duration.
-    void setDuration(TimeDurationType duration);
+    void setDuration(TimeDurationType duration) override;
 
     /// Returns if the timer mode is 'one shot'.
-    bool isOneShot() const
+    bool isOneShot() const override
     {
         core::mt::ScopedLock lock(m_mutex);
         return m_timerQt->isSingleShot();
     }
 
     /// Sets timer mode.
-    void setOneShot(bool oneShot)
+    void setOneShot(bool oneShot) override
     {
         core::mt::ScopedLock lock(m_mutex);
         m_timerQt->setSingleShot(oneShot);
     }
 
     /// Returns true if the timer is currently running.
-    bool isRunning() const
+    bool isRunning() const override
     {
         core::mt::ScopedLock lock(m_mutex);
         return m_timerQt->isActive();
@@ -177,15 +183,9 @@ protected Q_SLOTS:
 
     void call();
 
-protected:
+private:
 
-    /// Copy constructor forbidden.
-    TimerQt(const TimerQt&);
-
-    /// Copy operator forbidden.
-    TimerQt& operator=(const TimerQt&);
-
-    void updatedFunction();
+    void updatedFunction() override;
 
     QPointer<QTimer> m_timerQt;
 
@@ -197,7 +197,7 @@ protected:
 // ---------- WorkerQt private implementation ----------
 
 WorkerQt::WorkerQt() :
-    m_argc(0),
+
     m_app(nullptr),
     m_threadId(core::thread::getCurrentThreadId())
 {
@@ -238,18 +238,18 @@ void WorkerQt::init(int& argc, char** argv)
 
 void WorkerQt::setApp(QSharedPointer<QCoreApplication> app, const std::string& name, const std::string& version)
 {
-    m_app = app;
-    m_app.get()->setOrganizationName("IRCAD");
-    m_app.get()->setOrganizationDomain("https://www.ircad.fr/");
-    m_app.get()->setApplicationName(QString::fromStdString(name));
-    m_app.get()->setApplicationVersion(QString::fromStdString(version));
+    m_app = std::move(app);
+    QCoreApplication::setOrganizationName("IRCAD");
+    QCoreApplication::setOrganizationDomain("https://www.ircad.fr/");
+    QCoreApplication::setApplicationName(QString::fromStdString(name));
+    QCoreApplication::setApplicationVersion(QString::fromStdString(version));
 }
 
 //------------------------------------------------------------------------------
 
 WorkerQt::~WorkerQt()
 {
-    this->stop();
+    this->WorkerQt::stop();
 }
 
 //------------------------------------------------------------------------------
@@ -263,7 +263,7 @@ core::thread::Worker::FutureType WorkerQt::getFuture()
             !m_future.valid() && core::thread::getCurrentThreadId() == this->getThreadId()
         );
 
-        std::packaged_task<ExitReturnType()> task(std::bind(&QCoreApplication::exec));
+        std::packaged_task<ExitReturnType()> task([]{return QCoreApplication::exec();});
 
         std::future<ExitReturnType> future = task.get_future();
 
@@ -307,7 +307,7 @@ void WorkerQt::post(TaskType handler)
 
 void WorkerQt::processTasks()
 {
-    QCoreApplication::sendPostedEvents(0, ui::qt::WorkerQtTask::s_WORKER_QT_TASK_EVENT_TYPE);
+    QCoreApplication::sendPostedEvents(nullptr, ui::qt::WorkerQtTask::s_WORKER_QT_TASK_EVENT_TYPE);
 }
 
 //------------------------------------------------------------------------------
@@ -320,9 +320,9 @@ void WorkerQt::processTasks(PeriodType maxtime)
 // ---------- Timer private implementation ----------
 
 TimerQt::TimerQt() :
-    m_timerQt(new QTimer(QCoreApplication::instance()))
+    m_timerQt(new QTimer(QCoreApplication::instance())),
+    m_qtFunc(new ui::qt::util::FuncSlot())
 {
-    m_qtFunc = new ui::qt::util::FuncSlot();
     QObject::connect(m_timerQt, SIGNAL(timeout()), m_qtFunc, SLOT(trigger()));
 }
 

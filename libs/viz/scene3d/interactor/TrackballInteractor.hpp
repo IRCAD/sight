@@ -62,7 +62,7 @@ public:
      */
     VIZ_SCENE3D_API void mouseMoveEvent(
         MouseButton _button,
-        Modifier,
+        Modifier /*_mods*/,
         int _x,
         int _y,
         int _dx,
@@ -70,16 +70,16 @@ public:
     ) override;
 
     /// Verifies if the button is pressed within the camera's viewport and enables mouse movements if that is the case.
-    VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier, int _x, int _y) override;
+    VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) override;
 
     /// Disables mouse movements.
-    VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier, int, int) override;
+    VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier /*_mods*/, int /*_x*/, int /*_y*/) override;
 
     /**
      * @brief Moves the camera towards or away from the focus point.
      * @param _delta distance that the wheel is rotated, in eighths of a degree.
      */
-    VIZ_SCENE3D_API void wheelEvent(Modifier, int _delta, int, int) override;
+    VIZ_SCENE3D_API void wheelEvent(Modifier /*_mods*/, int _delta, int /*x*/, int /*y*/) override;
 
     /**
      * @brief Defines camera actions when the keyboard is pressed.
@@ -89,12 +89,12 @@ public:
      * @param _mouseX the mouse's width position at the time of the key press.
      * @param _mouseY the mouse's height position at the time of the key press.
      */
-    VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier, int _mouseX, int _mouseY) override;
+    VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int _mouseX, int _mouseY) override;
 
     /**
      * @brief Recomputes the camera's aspect ratio when the render window is resized.
      */
-    VIZ_SCENE3D_API void resizeEvent(int, int) override;
+    VIZ_SCENE3D_API void resizeEvent(int /*_width*/, int /*_height*/) override;
 
     /// Recomputes the mouse's scale and focus point from the updated scene length.
     VIZ_SCENE3D_API void setSceneLength(float _sceneLength) override;
@@ -106,26 +106,26 @@ private:
      * @param dx The mouse's X displacement
      * @param dy The mouse's Y displacement
      */
-    void cameraRotate(int, int);
+    void cameraRotate(int /*dx*/, int /*dy*/);
 
     /**
      * @brief The camera's scene node will translate along its local vertical and horizontal axes.
      * @param dx The horizontal displacement
      * @param dy The vertical displacement
      */
-    void cameraTranslate(int, int);
+    void cameraTranslate(int /*x_move*/, int /*y_move*/);
 
     /// Resets the camera's focal length when the focus point changes.
     void updateCameraFocalLength();
 
     /// Current distance from the camera to the point of interest.
-    float m_lookAtZ {1.f};
+    float m_lookAtZ {1.F};
 
     /// Scale applied to mouse events.
-    float m_mouseScale {1.f};
+    float m_mouseScale {1.F};
 
     /// Current zoom factor.
-    float m_zoom {1.f};
+    float m_zoom {1.F};
 
     /// Default mouse scale factor (used to move the camera)
     static constexpr int MOUSE_SCALE_FACTOR = 200;

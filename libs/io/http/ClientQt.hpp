@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ public:
      * @{
      */
     IO_HTTP_API ClientQt();
-    IO_HTTP_API virtual ~ClientQt();
+    IO_HTTP_API ~ClientQt() override;
     /**  @} */
 
     /**
@@ -89,12 +89,12 @@ public:
 public Q_SLOTS:
 
     /// Slot triggered when an error occurs.
-    void processError(QNetworkReply::NetworkError errorCode);
+    static void processError(QNetworkReply::NetworkError errorCode);
 
 private:
 
     /// Set request headers with given values.
-    void computeHeaders(QNetworkRequest& request, const Request::HeadersType& headers);
+    static void computeHeaders(QNetworkRequest& request, const Request::HeadersType& headers);
 };
 
 } // namespace sight::io::http

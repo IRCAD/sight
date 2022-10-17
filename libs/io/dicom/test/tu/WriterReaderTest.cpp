@@ -34,29 +34,25 @@
 #include <data/PointList.hpp>
 #include <data/Reconstruction.hpp>
 #include <data/Series.hpp>
-#include <data/SeriesDB.hpp>
 #include <data/String.hpp>
 #include <data/Vector.hpp>
 
-#include <io/dicom/reader/SeriesDB.hpp>
+#include <io/dicom/reader/SeriesSet.hpp>
 #include <io/dicom/writer/Series.hpp>
-#include <io/dicom/writer/SeriesDB.hpp>
+#include <io/dicom/writer/SeriesSet.hpp>
 
 #include <utest/Filter.hpp>
 
 #include <utestData/generator/Image.hpp>
 #include <utestData/generator/Object.hpp>
-#include <utestData/generator/SeriesDB.hpp>
+#include <utestData/generator/SeriesSet.hpp>
 
 #include <filesystem>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::WriterReaderTest);
 
-namespace sight::io::dicom
-{
-
-namespace ut
+namespace sight::io::dicom::ut
 {
 
 //-----------------------------------------------------------------------------
@@ -107,7 +103,7 @@ void WriterReaderTest::writeReadImageSeriesTest()
     }
 
     data::ImageSeries::sptr imgSeries;
-    imgSeries = utestData::generator::SeriesDB::createImageSeries();
+    imgSeries = utestData::generator::SeriesSet::createImageSeries();
 
     const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "dicomTest";
 
@@ -119,9 +115,9 @@ void WriterReaderTest::writeReadImageSeriesTest()
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     // load ImageSeries
-    data::SeriesDB::sptr sdb                 = data::SeriesDB::New();
-    io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
-    reader->setObject(sdb);
+    auto series_set = data::SeriesSet::New();
+    auto reader     = io::dicom::reader::SeriesSet::New();
+    reader->setObject(series_set);
     reader->setFolder(PATH);
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
@@ -129,70 +125,29 @@ void WriterReaderTest::writeReadImageSeriesTest()
     std::filesystem::remove_all(PATH);
 
     // check series
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), sdb->getContainer().size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
-    data::Series::sptr series         = sdb->getContainer().front();
-    data::ImageSeries::sptr imgseries = data::ImageSeries::dynamicCast(series);
-    data::Image::sptr image           = imgseries->getImage();
-    roundSpacing(image);
-
-    // FIXME : GDCM reader trim string values so this test cannot pass.
-//    CPPUNIT_ASSERT(utestData::helper::compare(imgSeries, sdb->getContainer().front()));
+    auto series    = series_set->front();
+    auto imgseries = data::ImageSeries::dynamicCast(series);
+    roundSpacing(imgseries);
 }
 
 //------------------------------------------------------------------------------
 
-void WriterReaderTest::writeReadSeriesDBTest()
+data::SeriesSet::sptr WriterReaderTest::createSeriesSet()
 {
-    if(utest::Filter::ignoreSlowTests())
-    {
-        return;
-    }
+    //create SeriesSet
+    auto series_set  = data::SeriesSet::New();
+    auto imgSeries   = utestData::generator::SeriesSet::createImageSeries();
+    auto modelSeries = utestData::generator::SeriesSet::createModelSeries(1);
 
-    data::SeriesDB::sptr seriesDB;
-    seriesDB = this->createSeriesDB();
-
-    const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "dicomTest";
-
-    std::filesystem::create_directories(PATH);
-
-    io::dicom::writer::SeriesDB::sptr writer = io::dicom::writer::SeriesDB::New();
-    writer->setObject(seriesDB);
-    writer->setFolder(PATH);
-    CPPUNIT_ASSERT_NO_THROW(writer->write());
-
-    // load ImageSeries
-    data::SeriesDB::sptr sdb                 = data::SeriesDB::New();
-    io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
-    reader->setObject(sdb);
-    reader->setFolder(PATH);
-
-    CPPUNIT_ASSERT_NO_THROW(reader->read());
-
-    std::filesystem::remove_all(PATH);
-
-    // FIXME : GDCM reader trim string values so this test cannot pass.
-//    CPPUNIT_ASSERT(utestData::helper::compare(seriesDB, sdb));
-}
-
-//------------------------------------------------------------------------------
-
-data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
-{
-    //create SeriesDB
-    data::SeriesDB::sptr sdb            = data::SeriesDB::New();
-    data::ImageSeries::sptr imgSeries   = utestData::generator::SeriesDB::createImageSeries();
-    data::ModelSeries::sptr modelSeries = utestData::generator::SeriesDB::createModelSeries(1);
-
-    sdb->getContainer().push_back(imgSeries);
-    sdb->getContainer().push_back(modelSeries);
-
-    data::Image::sptr image = imgSeries->getImage();
+    series_set->push_back(imgSeries);
+    series_set->push_back(modelSeries);
 
     // Add landmarks
-    data::PointList::sptr landmarks    = data::helper::MedicalImage::getLandmarks(*image);
-    const data::Image::Spacing spacing = image->getSpacing();
-    const data::Image::Origin origin   = image->getOrigin();
+    data::PointList::sptr landmarks    = data::helper::MedicalImage::getLandmarks(*imgSeries);
+    const data::Image::Spacing spacing = imgSeries->getSpacing();
+    const data::Image::Origin origin   = imgSeries->getOrigin();
     const data::Point::sptr point      = data::Point::New(
         2.6 + origin[0],
         1.2 + origin[1],
@@ -207,7 +162,7 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
     );
     point2->setLabel("Label2");
     landmarks->getPoints().push_back(point2);
-    const data::Image::Size size   = image->getSize();
+    const data::Image::Size size   = imgSeries->getSize();
     const data::Point::sptr point3 = data::Point::New(
         1.2 + origin[0],
         2.4 + origin[1],
@@ -227,18 +182,18 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
     pl->getPoints().push_back(pt1);
     pl->getPoints().push_back(pt2);
 
-    data::Vector::sptr vectDist = data::helper::MedicalImage::getDistances(*image);
+    data::Vector::sptr vectDist = data::helper::MedicalImage::getDistances(*imgSeries);
 
     if(!vectDist)
     {
         vectDist = data::Vector::New();
-        data::helper::MedicalImage::setDistances(*image, vectDist);
+        data::helper::MedicalImage::setDistances(*imgSeries, vectDist);
     }
 
-    vectDist->getContainer().push_back(pl);
+    vectDist->push_back(pl);
 
-    data::helper::MedicalImage::setDistanceVisibility(*image, true);
-    data::helper::MedicalImage::setLandmarksVisibility(*image, true);
+    data::helper::MedicalImage::setDistanceVisibility(*imgSeries, true);
+    data::helper::MedicalImage::setLandmarksVisibility(*imgSeries, true);
     // Update Reconstruction
     data::Reconstruction::sptr rec = modelSeries->getReconstructionDB().front();
     data::Mesh::sptr mesh          = rec->getMesh();
@@ -255,11 +210,9 @@ data::SeriesDB::sptr WriterReaderTest::createSeriesDB()
 
     modelSeries->setField("ShowReconstructions", data::Boolean::New(true));
 
-    return sdb;
+    return series_set;
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::ut

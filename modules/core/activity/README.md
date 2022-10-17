@@ -4,11 +4,11 @@ Contains helpers and services allowing to launch activities. Initializes Activit
 
 ## Classes
 
-### validator/CameraSeries
-- **MonoCamera**: checks if the current CameraSeries contains one and only one Camera and is calibrated.
-- **StereoCamera**: checks if the current CameraSeries contains two calibrated cameras and an extrinsic matrix.
+### validator/CameraSet
+- **MonoCamera**: checks if the current CameraSet contains one and only one Camera and is calibrated.
+- **StereoCamera**: checks if the current CameraSet contains two calibrated cameras and an extrinsic matrix.
 
-### validator/CameraSeries
+### validator/ModelSeries
 - **ContainOneSkin**: checks that the ModelSeries contains one and only one Skin.
 - **ContainOneTool**: checks that the ModelSeries contains one and only one Tool.
 -

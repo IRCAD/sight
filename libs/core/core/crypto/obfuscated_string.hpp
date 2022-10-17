@@ -19,6 +19,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE hicpp
+
 #pragma once
 
 #include "core/config.hpp"
@@ -92,7 +94,7 @@ using Count_t = typename Count<s>::type;
 
 // Get a scrambled character of a string
 template<std::uint32_t seed, std::size_t index, std::size_t N>
-constexpr std::uint8_t get_scrambled_char(const char (& a)[N])
+constexpr std::uint8_t get_scrambled_char(const std::array<char, N>& a)
 {
     return static_cast<std::uint8_t>(a[index]) + Generate<seed, index>::value;
 }
@@ -106,7 +108,7 @@ struct cipher_helper<seed, StList<SL ...> >
 {
     //------------------------------------------------------------------------------
 
-    static constexpr std::array<std::uint8_t, sizeof...(SL)> get_array(const char (& a)[sizeof...(SL)])
+    static constexpr std::array<std::uint8_t, sizeof...(SL)> get_array(const std::array<char, sizeof...(SL)>& a)
     {
         return {{get_scrambled_char<seed, SL>(a) ...}};
     }
@@ -115,7 +117,7 @@ struct cipher_helper<seed, StList<SL ...> >
 //------------------------------------------------------------------------------
 
 template<std::uint32_t seed, std::size_t N>
-constexpr std::array<std::uint8_t, N> get_cipher_text(const char (& a)[N])
+constexpr std::array<std::uint8_t, N> get_cipher_text(const std::array<char, N>& a)
 {
     return cipher_helper<seed, Count_t<N> >::get_array(a);
 }
@@ -143,23 +145,18 @@ constexpr std::array<std::uint8_t, N> get_key()
     return noise_helper<seed, Count_t<N> >::get_array();
 }
 
-// Metafunction to get the size of an array
-template<typename T>
-struct array_info;
-
 template<typename T, std::size_t N>
-struct array_info<T [N]>
+// NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
+constexpr std::array<T, N> to_array(const char (& a)[N])
 {
-    using type = T;
-
-    enum
+    std::array<T, N> res {};
+    for(std::size_t i = 0 ; i < N ; i++)
     {
-        size = N
-    };
-};
+        res[i] = a[i];
+    }
 
-template<typename T, std::size_t N>
-struct array_info<const T(&)[N]>: array_info<T [N]> {};
+    return res;
+}
 
 // Scramble a string
 template<std::uint32_t seed, std::size_t N>
@@ -172,7 +169,7 @@ private:
 
 public:
 
-    explicit constexpr obfuscated_string(const char (& a)[N]) :
+    explicit constexpr obfuscated_string( /*const char (& a)[N]*/ const std::array<char, N>& a) :
         cipher_text_(get_cipher_text<seed, N>(a)),
         key_(get_key<seed, N>())
     {
@@ -180,14 +177,14 @@ public:
 
     operator sight::core::crypto::secure_string() const
     {
-        char plain_text[N];
-        for(volatile std::size_t i = 0 ; i < N ; ++i)
+        std::array<char, N> plain_text;
+        for(std::size_t i = 0 ; i < N ; ++i)
         {
-            volatile char temp = static_cast<char>(cipher_text_[i] - key_[i]);
+            const char temp = static_cast<char>(cipher_text_[i] - key_[i]);
             plain_text[i] = temp;
         }
 
-        return sight::core::crypto::secure_string {plain_text, plain_text + N};
+        return sight::core::crypto::secure_string {plain_text.begin(), plain_text.end()};
     }
 };
 
@@ -206,6 +203,7 @@ std::ostream& operator<<(std::ostream& s, const sight::core::crypto::obfuscated_
     + (__LINE__ * 100000)
 
 #define OBFUSCATED_STR(STR) \
-    sight::core::crypto::obfuscated_string<RNG_SEED, sight::core::crypto::array_info<decltype(STR)>::size> {STR}
+    sight::core::crypto::obfuscated_string<RNG_SEED, sizeof(STR)> {sight::core::crypto::to_array<char, sizeof(STR)>(STR) \
+    }
 
-} // sight::core::crypto
+} // namespace sight::core::crypto

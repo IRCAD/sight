@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,10 +46,9 @@
 #include <vtkTriangleFilter.h>
 #include <vtkUnsignedCharArray.h>
 
-namespace sight::module::filter::mesh
-{
+#include <cmath>
 
-namespace generator
+namespace sight::module::filter::mesh::generator
 {
 
 const core::com::Slots::SlotKeyType s_UPDATE_HEIGHT = "updateHeight";
@@ -63,9 +62,8 @@ SNeedle::SNeedle() noexcept
 
 // ------------------------------------------------------------------------------
 
-SNeedle::~SNeedle() noexcept
-{
-}
+SNeedle::~SNeedle() noexcept =
+    default;
 
 // ------------------------------------------------------------------------------
 
@@ -193,14 +191,14 @@ vtkSmartPointer<vtkPolyData> SNeedle::constructNeedle()
     // Number of cylinder regarding their needed length
     const double nbOfCylinders = m_height / m_needleMinorStepsLength;
     // Entire part
-    const int nbOfEntireParts = floor(nbOfCylinders);
+    const int nbOfEntireParts = int(nbOfCylinders);
     // Decimal part
     const double restOfCylinder = m_needleMinorStepsLength * (nbOfCylinders - nbOfEntireParts);
 
     // Appender object to append cylinders, torus and cone to generate a needle
     vtkSmartPointer<vtkAppendPolyData> appender = vtkSmartPointer<vtkAppendPolyData>::New();
 
-    double center;
+    double center = NAN;
     // Sweep the needle along its axis without the tip cylinder that will be replaced by a cone
     for(int cylinderIndex = (nbOfEntireParts - 2) ; cylinderIndex >= 0 ; --cylinderIndex)
     {
@@ -208,7 +206,7 @@ vtkSmartPointer<vtkPolyData> SNeedle::constructNeedle()
 
         // Put a torus every "m_needleMajorSteps" minor steps (for example every 5 minor steps by default) and not on
         // the end of the needle
-        if(((nbOfEntireParts - cylinderIndex) % m_needleMajorSteps) == 0 && cylinderIndex != 0)
+        if((unsigned(nbOfEntireParts - cylinderIndex) % m_needleMajorSteps) == 0 && cylinderIndex != 0)
         {
             // Move the center from half the minor step length to get the torus on the edge of two cylinders
             const double torusCenter              = center - m_needleMinorStepsLength / 2.0;
@@ -247,7 +245,7 @@ vtkSmartPointer<vtkPolyData> SNeedle::constructNeedle()
     // Put the cone in the right direction and remove its bottom cap (avoiding ugly effects because of wrong normal
     // computations)
     cone->SetDirection(0, 1, 0);
-    cone->SetCapping(false);
+    cone->SetCapping(0);
     vtkSmartPointer<vtkPolyData> polyData = filterAndColorSourceObject(cone->GetOutputPort(), m_needleColor);
     appender->AddInputData(polyData);
     appender->Update();
@@ -290,7 +288,7 @@ vtkSmartPointer<T> SNeedle::constructSourceObject(double _height, double _center
 
 vtkSmartPointer<vtkPolyData> SNeedle::filterAndColorSourceObject(
     vtkAlgorithmOutput* _sourceAlgorithm,
-    const unsigned char _rgba[4]
+    const std::array<unsigned char, 4>& _rgba
 )
 {
     // vtkXxxSource give us a polyData with a POLYGON cell type
@@ -319,7 +317,7 @@ vtkSmartPointer<vtkPolyData> SNeedle::filterAndColorSourceObject(
 
 // ------------------------------------------------------------------------------
 
-vtkSmartPointer<vtkPolyData> SNeedle::generateTorus(double _center, const unsigned char _rgba[4])
+vtkSmartPointer<vtkPolyData> SNeedle::generateTorus(double _center, const std::array<unsigned char, 4>& _rgba) const
 {
     vtkSmartPointer<vtkParametricTorus> torus = vtkSmartPointer<vtkParametricTorus>::New();
 
@@ -354,6 +352,4 @@ void SNeedle::updateHeight(double height)
 
 // ------------------------------------------------------------------------------
 
-} // namespace generator
-
-} // namespace sight::module::filter::mesh
+} // namespace sight::module::filter::mesh::generator

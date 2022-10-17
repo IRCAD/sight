@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::TransformTest);
 
-namespace sight::io::itk
-{
-
-namespace ut
+namespace sight::io::itk::ut
 {
 
 //------------------------------------------------------------------------------
@@ -72,7 +69,7 @@ void TransformTest::testConversion()
     {
         for(std::uint8_t j = 0 ; j < 4 ; j++)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(mat(i, j), sightMat->getCoefficient(i, j), 0);
+            CPPUNIT_ASSERT_EQUAL(mat(i, j), sightMat->getCoefficient(i, j));
         }
     }
 
@@ -84,13 +81,11 @@ void TransformTest::testConversion()
     {
         for(std::uint8_t j = 0 ; j < 4 ; j++)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL(mat(i, j), mat2(i, j), 0);
+            CPPUNIT_ASSERT_EQUAL(mat(i, j), mat2(i, j));
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::io::itk
+} // namespace sight::io::itk::ut

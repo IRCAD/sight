@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,32 +24,25 @@
 
 #include "core/com/Slot.hpp"
 #include "core/com/Slot.hxx"
+
 #include <core/thread/Worker.hpp>
 
 namespace sight::core::com
 {
 
 Slots::Slots()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 Slots::~Slots()
-{
-#if 0
-    for(SlotMapType::value_type elem : m_slots)
-    {
-        SIGHT_ASSERT("Slot '" << elem.first << "' has connected signals", elem.second->numConnections() == 0);
-    }
-#endif
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 void Slots::setWorker(const core::thread::Worker::sptr& worker)
 {
-    for(SlotMapType::value_type elem : m_slots)
+    for(const SlotMapType::value_type& elem : m_slots)
     {
         elem.second->setWorker(worker);
     }
@@ -67,14 +60,14 @@ Slots& Slots::operator()(const SlotKeyType& key, const SlotBase::sptr& slot)
 
 SlotBase::sptr Slots::operator[](const SlotKeyType& key) const
 {
-    SlotMapType::const_iterator it = m_slots.find(key);
+    auto it = m_slots.find(key);
 
     if(it != m_slots.end())
     {
         return it->second;
     }
 
-    return SlotBase::sptr();
+    return {};
 }
 
 //-----------------------------------------------------------------------------
@@ -82,7 +75,7 @@ SlotBase::sptr Slots::operator[](const SlotKeyType& key) const
 Slots::SlotKeyContainerType Slots::getSlotKeys() const
 {
     Slots::SlotKeyContainerType slotKeys;
-    for(SlotMapType::value_type elem : m_slots)
+    for(const SlotMapType::value_type& elem : m_slots)
     {
         slotKeys.push_back(elem.first);
     }
@@ -92,15 +85,8 @@ Slots::SlotKeyContainerType Slots::getSlotKeys() const
 
 //-----------------------------------------------------------------------------
 
-Slots::Slots(const Slots&)
+Slots::Slots(const Slots& /*unused*/)
 {
-}
-
-//-----------------------------------------------------------------------------
-
-Slots& Slots::operator=(const Slots&)
-{
-    return *this;
 }
 
 //-----------------------------------------------------------------------------

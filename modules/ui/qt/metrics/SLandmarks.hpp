@@ -47,9 +47,6 @@ namespace sight::module::ui::qt::metrics
  * @brief This service defines a graphical editor to edit landmarks.
  *
  * @section Slots Slots
- * - @deprecated \b addPickedPoint(data::tools::PickingInfo): adds or removes picked landmark. call \b
- * pick(data::tools::PickingInfo) instead.
- *
  * - \b pick(data::tools::PickingInfo): adds or removes picked landmark.
  * - \b addPoint(std::string): adds a point to editor.
  * - \b modifyPoint(std::string, std::size_t): updates the editor when a point has moved.
@@ -212,19 +209,6 @@ public:
      * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new group to add it.
      * - CTRL + right mouse click: removes the landmark at the closest picking position.
      *
-     * @deprecated Uses pick(data::tools::PickingInfo _info) instead.
-     *
-     * @param _pickingInfo Picking information.
-     */
-    void addPickedPoint(data::tools::PickingInfo _pickingInfo);
-
-    /**
-     * @brief SLOT: adds or removes a landmark from picking information.
-     *
-     * Interactions will take place while holding down the button. The following actions are available:
-     * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new group to add it.
-     * - CTRL + right mouse click: removes the landmark at the closest picking position.
-     *
      * @param _info contains picking information.
      */
     void pick(data::tools::PickingInfo _info);
@@ -250,7 +234,7 @@ public:
     void selectPoint(std::string _groupName, std::size_t _index);
 
     /// Slot: deselects the currently selected item.
-    void deselectPoint(std::string, std::size_t);
+    void deselectPoint(std::string /*unused*/, std::size_t /*unused*/) const;
 
     /**
      * @brief Slot: adds a landmark group to the editor.
@@ -262,21 +246,21 @@ public:
      * @brief SLOT: removes a group from the editor.
      * @param _name The group name to remove.
      */
-    void removeGroup(std::string _name);
+    void removeGroup(std::string _name) const;
 
     /**
      * @brief SLOT: removes point from editor
      * @param _groupName the group name of the point the remove.
      * @param _index the index of the point to remove.
      */
-    void removePoint(std::string _groupName, std::size_t _index);
+    void removePoint(std::string _groupName, std::size_t _index) const;
 
     /**
      * @brief SLOT: renames a group in the editor.
      * @param _oldName the old name of the group.
      * @param _newName the new name of the group.
      */
-    void renameGroup(std::string _oldName, std::string _newName);
+    void renameGroup(std::string _oldName, std::string _newName) const;
 
     /**
      * @brief SLOT: updates a group properties in the editor.
@@ -358,10 +342,10 @@ public:
     bool m_advancedMode {false};
 
     /// Sets the default landmark size.
-    float m_defaultLandmarkSize {10.f};
+    float m_defaultLandmarkSize {10.F};
 
     /// Sets the default landmark opacity.
-    float m_defaultLandmarkOpacity {1.f};
+    float m_defaultLandmarkOpacity {1.F};
 
     /// Sets the text displayed at the top of this editor.
     std::string m_text {"Use 'Ctrl+Left Click' to add new landmarks"};
@@ -373,7 +357,7 @@ public:
 
     /// Used to generate random color
     std::uniform_real_distribution<float> m_distributor {0.0F, 1.0F};
-    std::mt19937 m_generator {static_cast<std::uint32_t>(std::time(nullptr))};
+    std::mt19937 m_generator {std::random_device {}()};
 };
 
-} // sight::module::ui::qt::metrics
+} // namespace sight::module::ui::qt::metrics

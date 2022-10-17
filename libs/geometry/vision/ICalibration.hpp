@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ public:
     GEOMETRY_VISION_API ICalibration() noexcept;
 
     /// Destructor.
-    GEOMETRY_VISION_API virtual ~ICalibration() noexcept;
+    GEOMETRY_VISION_API ~ICalibration() noexcept override;
 };
 
 } // namespace sight::geometry::vision

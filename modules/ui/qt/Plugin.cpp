@@ -52,15 +52,15 @@
 // Register all dialog implementation when we do use qt
 namespace base_dialog = sight::ui::base::dialog;
 
-fwGuiRegisterMacro(sight::ui::qt::dialog::InputDialog, base_dialog::IInputDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::LocationDialog, base_dialog::ILocationDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::LoggerDialog, base_dialog::ILoggerDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::MessageDialog, base_dialog::IMessageDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::MultiSelectorDialog, base_dialog::IMultiSelectorDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::NotificationDialog, base_dialog::INotificationDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::ProgressDialog, base_dialog::IProgressDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::PulseProgressDialog, base_dialog::IPulseProgressDialog::REGISTRY_KEY);
-fwGuiRegisterMacro(sight::ui::qt::dialog::SelectorDialog, base_dialog::ISelectorDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::InputDialog, base_dialog::IInputDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::LocationDialog, base_dialog::ILocationDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::LoggerDialog, base_dialog::ILoggerDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::MessageDialog, base_dialog::IMessageDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::MultiSelectorDialog, base_dialog::IMultiSelectorDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::NotificationDialog, base_dialog::INotificationDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::ProgressDialog, base_dialog::IProgressDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::PulseProgressDialog, base_dialog::IPulseProgressDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::dialog::SelectorDialog, base_dialog::ISelectorDialog::REGISTRY_KEY);
 
 namespace sight::module::ui::qt
 {
@@ -71,9 +71,8 @@ SIGHT_REGISTER_PLUGIN("sight::module::ui::qt::Plugin");
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -93,9 +92,9 @@ void Plugin::start()
     auto workerQt = sight::ui::qt::getQtWorker(argc, argv, callback, profile->getName(), profile->getVersion());
     core::thread::setDefaultWorker(workerQt);
 
-    workerQt->post(std::bind(&Plugin::loadStyleSheet, this));
+    workerQt->post([this](auto&& ...){loadStyleSheet();});
 
-    core::runtime::getCurrentProfile()->setRunCallback(std::bind(&Plugin::run, this));
+    core::runtime::getCurrentProfile()->setRunCallback(run);
 }
 
 //-----------------------------------------------------------------------------
@@ -107,20 +106,11 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-void setup()
-{
-    core::runtime::getCurrentProfile()->setup();
-}
-
-//-----------------------------------------------------------------------------
-
 int Plugin::run() noexcept
 {
     auto workerQt = core::thread::getDefaultWorker();
-    workerQt->post(std::bind(&setup));
     workerQt->getFuture().wait(); // This is required to start WorkerQt loop
 
-    core::runtime::getCurrentProfile()->cleanup();
     int result = std::any_cast<int>(workerQt->getFuture().get());
 
     return result;
@@ -135,7 +125,7 @@ void Plugin::loadStyleSheet()
         const std::string resourceFile = this->getModule()->getParameterValue("resource");
         const auto path                = core::runtime::getModuleResourceFilePath(resourceFile);
 
-        const bool resourceLoaded = QResource::registerResource(path.string().c_str());
+        [[maybe_unused]] const bool resourceLoaded = QResource::registerResource(path.string().c_str());
         SIGHT_ASSERT("Cannot load resources '" + resourceFile + "'.", resourceLoaded);
     }
 

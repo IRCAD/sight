@@ -161,7 +161,7 @@ bool SImageWriter::saveImage(
     else if(ext == ".bmp" || ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".tiff")
     {
         // Get image information
-        std::string type = image->getType().string();
+        std::string type = image->getType().name();
         std::size_t noc  = image->numComponents();
 
         // Check type.
@@ -170,7 +170,8 @@ bool SImageWriter::saveImage(
         {
             sight::ui::base::dialog::MessageDialog::show(
                 "Warning",
-                "Unsupported " + type + " format for " + ext + " export.\n The image will not be exported.",
+                std::string("Unsupported ") + type + " format for " + ext
+                + " export.\n The image will not be exported.",
                 sight::ui::base::dialog::IMessageDialog::WARNING
             );
             return false;
@@ -267,4 +268,4 @@ void SImageWriter::updating()
 
 //------------------------------------------------------------------------------
 
-} // namespace ioVtk
+} // namespace sight::module::io::vtk

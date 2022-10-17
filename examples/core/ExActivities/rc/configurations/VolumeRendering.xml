@@ -10,9 +10,7 @@
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${imageSeries}" type="sight::data::ImageSeries" src="ref" />
-        <object uid="image" type="sight::data::Image" src="deferred" />
-        <object uid="TF" type="sight::data::TransferFunction" src="deferred" />
-        <object uid="TFPool" type="sight::data::Composite" />
+        <object uid="tf" type="sight::data::TransferFunction" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -29,7 +27,7 @@
                 <parent wid="${WID_PARENT}" />
                 <view sid="imageScene" />
                 <view sid="tfm" />
-                <toolBar sid="toolBarView" start="true"/>
+                <toolBar sid="toolBarView" start="true" />
             </registry>
         </service>
 
@@ -47,7 +45,7 @@
         <!-- ******************************* Actions ****************************************** -->
 
         <service uid="importAct" type="sight::module::ui::base::io::SSelector">
-            <inout key="data" uid="image" />
+            <inout key="data" uid="${imageSeries}" />
             <type mode="reader" />
             <selection mode="include" />
             <addSelection service="sight::module::io::vtk::SImageReader" />
@@ -69,34 +67,22 @@
         </service>
 
         <service uid="volumeRender" type="sight::module::viz::scene3d::adaptor::SVolumeRender">
-            <inout key="image" uid="image" autoConnect="true" />
-            <inout key="tf" uid="TF" />
+            <in key="image" uid="${imageSeries}" />
+            <in key="tf" uid="tf" />
             <config layer="default" widgets="false" preintegration="false" autoresetcamera="true" />
         </service>
 
         <service uid="tfm" type="sight::module::ui::qt::image::STransferFunction">
-            <inout key="tfPool" uid="TFPool" autoConnect="true" />
-            <out key="tf" uid="TF" />
-        </service>
-
-        <service uid="extractImageSrv" type="sight::module::data::SGetImage">
-            <in key="imageSeries" uid="${imageSeries}" />
-            <out key="image" uid="image" />
+            <inout key="tf" uid="tf" />
         </service>
 
         <!-- ******************************* Start services ***************************************** -->
 
         <start uid="mainView" />
-        <start uid="extractImageSrv" />
         <start uid="imageScene" />
         <start uid="cameraInteractorAdaptor" />
         <start uid="volumeRender" />
         <start uid="tfm" />
         <start uid="importAct" />
-
-        <!-- ******************************* Update services ***************************************** -->
-
-        <update uid="extractImageSrv" />
-
     </config>
 </extension>

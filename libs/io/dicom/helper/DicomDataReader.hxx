@@ -30,10 +30,7 @@
 #include <gdcmAttribute.h>
 #include <gdcmDataSet.h>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 /**
@@ -63,7 +60,7 @@ public:
         const core::log::Logger::sptr& logger = nullptr
 )
     {
-        std::string result = "";
+        std::string result;
 
         const gdcm::Tag tag(GROUP, ELEMENT);
 
@@ -120,10 +117,10 @@ public:
     static std::string getTagValue(
         const std::string& buffer,
         const std::string& charset            = "",
-        const core::log::Logger::sptr& logger = 0
+        const core::log::Logger::sptr& logger = nullptr
 )
     {
-        std::string result = "";
+        std::string result;
 
         const gdcm::Tag tag = gdcm::Attribute<GROUP, ELEMENT>::GetTag();
 
@@ -158,14 +155,12 @@ public:
      * @return The tag value.
      */
     template<std::uint16_t GROUP, std::uint16_t ELEMENT, typename T>
-    static const T getTagValue(const gdcm::DataSet& dataset)
+    static T getTagValue(const gdcm::DataSet& dataset)
     {
-        gdcm::Attribute<GROUP, ELEMENT> attribute;
+        gdcm::Attribute<GROUP, ELEMENT> attribute {};
         attribute.SetFromDataSet(dataset);
         return attribute.GetValue();
     }
 };
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

@@ -1,4 +1,4 @@
-sight_add_target(ui_history TYPE LIBRARY WARNINGS_AS_ERRORS OFF)
+sight_add_target(ui_history TYPE LIBRARY)
 
 target_link_libraries(ui_history PUBLIC core data filter_image)
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,12 +36,9 @@ namespace sight::data
 
 class StructureTraitsDictionary;
 
-}
+} // namespace sight::data
 
-namespace sight::io::base
-{
-
-namespace reader
+namespace sight::io::base::reader
 {
 
 /**
@@ -67,7 +64,7 @@ public:
     IO_BASE_API DictionaryReader(io::base::reader::IObjectReader::Key key);
 
     /// Destructor. Do nothing.
-    IO_BASE_API virtual ~DictionaryReader();
+    IO_BASE_API ~DictionaryReader() override;
 
     /// Read the file with standard iostream API.
     IO_BASE_API void read() override;
@@ -78,6 +75,4 @@ public:
     IO_BASE_API static std::filesystem::path getDefaultDictionaryPath();
 };
 
-} // namespace reader
-
-} // namespace sight::io::base
+} // namespace sight::io::base::reader

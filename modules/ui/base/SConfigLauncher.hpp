@@ -27,7 +27,6 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 
 #include <service/helper/ConfigLauncher.hpp>
@@ -77,10 +76,10 @@ public:
     MODULE_UI_BASE_API SConfigLauncher() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_BASE_API virtual ~SConfigLauncher() noexcept;
+    MODULE_UI_BASE_API ~SConfigLauncher() noexcept override;
 
     /// Set the action service is activated/disable.
-    MODULE_UI_BASE_API void setIsActive(bool isActive) override;
+    MODULE_UI_BASE_API void setChecked(bool isChecked) override;
 
     // Launched signal key
     MODULE_UI_BASE_API static const core::com::Signals::SignalKeyType s_LAUNCHED_SIG;
@@ -116,7 +115,7 @@ protected:
            <config>
                 <appConfig id="Visu2DID" >
                     <parameters>
-                        <parameter replace="SERIESDB" by="medicalData" />
+                        <parameter replace="SERIES_SET" by="medicalData" />
                     </parameters>
                 </appConfig>
             </config>
@@ -139,4 +138,4 @@ protected:
     std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
 };
 
-} // gui
+} // namespace sight::module::ui::base

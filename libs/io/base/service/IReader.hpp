@@ -56,7 +56,7 @@ public:
     /// Enum to define a password policy
     enum class DialogPolicy : uint8_t
     {
-        NEVER   = 0,     /// Never use show the dialog
+        NEVER   = 0,     /// Never show the dialog
         ONCE    = 1,     /// Show only once, store the location as long as the service is started
         ALWAYS  = 2,     /// Always show the location dialog
         DEFAULT = NEVER, /// Default behavior if nothing is set
@@ -194,30 +194,31 @@ public:
         {
             return DialogPolicy::NEVER;
         }
-        else if(constexpr auto ONCE = dialogPolicyToString(DialogPolicy::ONCE); policy == ONCE)
+
+        if(constexpr auto ONCE = dialogPolicyToString(DialogPolicy::ONCE); policy == ONCE)
         {
             return DialogPolicy::ONCE;
         }
-        else if(constexpr auto ALWAYS = dialogPolicyToString(DialogPolicy::ALWAYS); policy == ALWAYS)
+
+        if(constexpr auto ALWAYS = dialogPolicyToString(DialogPolicy::ALWAYS); policy == ALWAYS)
         {
             return DialogPolicy::ALWAYS;
         }
-        else if(policy.empty() || policy == "default")
+
+        if(policy.empty() || policy == "default")
         {
             return DialogPolicy::DEFAULT;
         }
-        else
-        {
-            // Error case
-            return DialogPolicy::INVALID;
-        }
+
+        // Error case
+        return DialogPolicy::INVALID;
     }
 
 protected:
 
     IO_BASE_API IReader() noexcept;
 
-    IO_BASE_API virtual ~IReader() noexcept;
+    IO_BASE_API ~IReader() noexcept override;
 
     /**
      * @brief This method proposes to parse xml configuration to retrieve
@@ -288,9 +289,9 @@ protected:
 private:
 
     /// Slot to read folder
-    void readFolder(std::filesystem::path path);
+    void readFolder(std::filesystem::path folder);
     /// Slot to read file
-    void readFile(std::filesystem::path path);
+    void readFile(std::filesystem::path file);
     /// Slot to read files
     void readFiles(io::base::service::LocationsType files);
 

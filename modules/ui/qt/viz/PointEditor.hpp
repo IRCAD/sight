@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ public:
     MODULE_UI_QT_API PointEditor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~PointEditor() noexcept;
+    MODULE_UI_QT_API ~PointEditor() noexcept override;
 
 protected:
 
@@ -83,4 +83,4 @@ private:
     QPointer<QLineEdit> m_textCtrl_z;
 };
 
-} // uiData
+} // namespace sight::module::ui::qt::viz

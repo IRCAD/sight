@@ -34,42 +34,36 @@
 #include <core/runtime/operations.hpp>
 #include <core/spyLog.hpp>
 
-#include <data/Equipment.hpp>
 #include <data/ModelSeries.hpp>
-#include <data/Patient.hpp>
-#include <data/Study.hpp>
 
 #include <gdcmSurfaceWriter.h>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace iod
+namespace sight::io::dicom::writer::iod
 {
 
 //------------------------------------------------------------------------------
 
 SurfaceSegmentationIOD::SurfaceSegmentationIOD(
     const SPTR(io::dicom::container::DicomInstance)& instance,
-    const SPTR(io::dicom::container::DicomInstance)& imageInstance,
+    SPTR(io::dicom::container::DicomInstance)imageInstance,
     const std::filesystem::path& destinationPath,
     const core::log::Logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    io::dicom::writer::iod::InformationObjectDefinition(instance, destinationPath, logger, progress, cancel),
-    m_imageInstance(imageInstance)
+    io::dicom::writer::iod::InformationObjectDefinition(instance,
+                                                        destinationPath,
+                                                        logger,
+                                                        std::move(progress),
+                                                        std::move(cancel)),
+    m_imageInstance(std::move(imageInstance))
 {
 }
 
 //------------------------------------------------------------------------------
 
 SurfaceSegmentationIOD::~SurfaceSegmentationIOD()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -83,12 +77,12 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
     SPTR(gdcm::SurfaceWriter) writer = std::make_shared<gdcm::SurfaceWriter>();
 
     // Create Information Entity helpers
-    io::dicom::writer::ie::Patient patientIE(writer, m_instance, series->getPatient());
-    io::dicom::writer::ie::Study studyIE(writer, m_instance, series->getStudy());
+    io::dicom::writer::ie::Patient patientIE(writer, m_instance, series);
+    io::dicom::writer::ie::Study studyIE(writer, m_instance, series);
     io::dicom::writer::ie::Series seriesIE(writer, m_instance, series);
     // Use Image as frame of reference
     io::dicom::writer::ie::FrameOfReference frameOfReferenceIE(writer, m_imageInstance, series);
-    io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series->getEquipment());
+    io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series);
     io::dicom::writer::ie::Surface surfaceIE(writer, m_instance, m_imageInstance, modelSeries, m_logger);
 
     // Load Segmented Property Registry
@@ -137,7 +131,7 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
 
     // Write the file
     if((!m_cancelRequestedCallback || !m_cancelRequestedCallback())
-       && (!m_logger || !m_logger->count(core::log::Log::CRITICAL)))
+       && (!m_logger || (m_logger->count(core::log::Log::CRITICAL) == 0U)))
     {
         io::dicom::helper::FileWriter::write(m_destinationPath, writer);
     }
@@ -145,8 +139,4 @@ void SurfaceSegmentationIOD::write(const data::Series::csptr& series)
 
 //------------------------------------------------------------------------------
 
-} // namespace iod
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::iod

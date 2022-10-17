@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@
 
 #include <service/IController.hpp>
 
-namespace sight::module::ui::base
-{
-
-namespace com
+namespace sight::module::ui::base::com
 {
 
 /**
@@ -66,9 +63,8 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~SRecurrentSignal() noexcept
-    {
-    }
+    ~SRecurrentSignal() noexcept override =
+        default;
 
     /**
      * @name Signals API
@@ -98,13 +94,11 @@ protected:
 
 private:
 
-    unsigned int m_timeStep; ///< Time step used for the update
+    unsigned int m_timeStep {100}; ///< Time step used for the update
 
     sight::core::thread::Timer::sptr m_timer; ///< Timer used for the update
 
     RepeatedSignalType::sptr m_sigRepeated; ///< signal to emit the timestamp
 };
 
-} //namespace com
-
-} //namespace sight::module::ui::base
+} // namespace sight::module::ui::base::com

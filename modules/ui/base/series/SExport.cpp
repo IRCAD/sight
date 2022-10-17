@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,137 +22,42 @@
 
 #include "SExport.hpp"
 
-#include <activity/extension/Activity.hpp>
-
-#include <core/base.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
-#include <core/com/Slots.hxx>
 #include <core/tools/Os.hpp>
 
-#include <data/ActivitySeries.hpp>
-#include <data/helper/SeriesDB.hpp>
-#include <data/SeriesDB.hpp>
-
-#include <service/macros.hpp>
-
-#include <ui/base/dialog/InputDialog.hpp>
-
-namespace sight::module::ui::base
+namespace sight::module::ui::base::series
 {
-
-namespace series
-{
-
-//------------------------------------------------------------------------------
-
-const core::com::Slots::SlotKeyType SExport::s_CHECK_ADDED_SERIES_SLOT   = "checkAddedSeries";
-const core::com::Slots::SlotKeyType SExport::s_CHECK_REMOVED_SERIES_SLOT = "CheckRemovesSeries";
-
-//------------------------------------------------------------------------------
-
-SExport::SExport()
-{
-    newSlot(s_CHECK_ADDED_SERIES_SLOT, &SExport::checkAddedSeries, this);
-    newSlot(s_CHECK_REMOVED_SERIES_SLOT, &SExport::checkRemovedSeries, this);
-}
-
-//------------------------------------------------------------------------------
-
-SExport::~SExport() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-service::IService::KeyConnectionsMap SExport::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-    connections.push(s_SERIESDB, data::SeriesDB::s_ADDED_SERIES_SIG, s_CHECK_ADDED_SERIES_SLOT);
-    connections.push(s_SERIESDB, data::SeriesDB::s_REMOVED_SERIES_SIG, s_CHECK_REMOVED_SERIES_SLOT);
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
-void SExport::configuring()
-{
-    this->sight::ui::base::IAction::initialize();
-}
-
-//------------------------------------------------------------------------------
-
-void SExport::starting()
-{
-    this->actionServiceStarting();
-    auto seriesDB = m_seriesDB.lock();
-
-    for(data::Series::sptr series : seriesDB->getContainer())
-    {
-        if(series == this->getSeries())
-        {
-            this->setIsExecutable(false);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SExport::stopping()
-{
-    this->actionServiceStopping();
-}
 
 //------------------------------------------------------------------------------
 
 void SExport::updating()
 {
-    auto seriesDB = m_seriesDB.lock();
-    auto series   = m_series.lock();
+    auto data = m_data.lock();
 
-    std::string description = series->getDescription();
-
-    data::ActivitySeries::sptr activitySeries = data::ActivitySeries::dynamicCast(series.get_shared());
-    if(activitySeries)
-    {
-        activity::extension::Activity::sptr registry = activity::extension::Activity::getDefault();
-        std::string id                               = activitySeries->getActivityConfigId();
-        SIGHT_ASSERT("Activity information not found for" << id, registry->hasInfo(id));
-
-        activity::extension::ActivityInfo activityInfo;
-        activityInfo = registry->getInfo(id);
-
-        description = activitySeries->getDescription();
-        if(description.empty())
-        {
-            description = activityInfo.description;
-        }
-    }
-
-    description = sight::ui::base::dialog::InputDialog::showInputDialog(
-        "Export activity",
+    const std::string description = sight::ui::base::dialog::InputDialog::showInputDialog(
+        "Export series",
         "Enter the series description",
-        description
+        data->getSeriesDescription()
     );
 
     if(!description.empty())
     {
-        data::DicomValuesType physicians = series->getPerformingPhysiciansName();
+        data->setSeriesDescription(description);
+
+        std::string physicians = data->getPerformingPhysicianName();
         if(physicians.empty())
         {
-            std::string username = core::tools::os::getEnv("USERNAME", core::tools::os::getEnv("LOGNAME", "Unknown"));
-            physicians.push_back(username);
+            physicians = core::tools::os::getEnv("USERNAME", core::tools::os::getEnv("LOGNAME", "Unknown"));
         }
 
-        series->setPerformingPhysiciansName(physicians);
-        series->setDescription(description);
+        data->setPerformingPhysicianName(physicians);
 
-        data::helper::SeriesDB seriesDBHelper(*seriesDB);
-        seriesDBHelper.add(series.get_shared());
-        seriesDBHelper.notify();
-        this->setIsExecutable(false);
+        {
+            auto container            = m_container.lock();
+            const auto scoped_emitter = container->scoped_emit();
+            container->push_back(data.get_shared());
+        }
+
+        this->setEnabled(false);
     }
 }
 
@@ -164,42 +69,4 @@ void SExport::info(std::ostream& _sstream)
     _sstream << std::string("SExport");
 }
 
-//------------------------------------------------------------------------------
-
-data::Series::sptr SExport::getSeries()
-{
-    auto series = m_series.lock();
-    return series.get_shared();
-}
-
-//------------------------------------------------------------------------------
-
-void SExport::checkAddedSeries(data::SeriesDB::ContainerType addedSeries)
-{
-    for(data::Series::sptr series : addedSeries)
-    {
-        if(series == this->getSeries())
-        {
-            this->setIsExecutable(false);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SExport::checkRemovedSeries(data::SeriesDB::ContainerType removedSeries)
-{
-    for(data::Series::sptr series : removedSeries)
-    {
-        if(series == this->getSeries())
-        {
-            this->setIsExecutable(true);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-} // namespace series
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::series

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,16 +32,15 @@ static const core::com::Signals::SignalKeyType s_STEREO_ACTIVE_SIG = "stereoActi
 
 //------------------------------------------------------------------------------
 
-SStereoToggler::SStereoToggler()
+SStereoToggler::SStereoToggler() :
+    m_stereoActiveSig(newSignal<StereoActiveSigType>(s_STEREO_ACTIVE_SIG))
 {
-    m_stereoActiveSig = newSignal<StereoActiveSigType>(s_STEREO_ACTIVE_SIG);
 }
 
 //------------------------------------------------------------------------------
 
 SStereoToggler::~SStereoToggler()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -90,10 +89,10 @@ void SStereoToggler::updating()
         service::registry::ObjectService::ServiceVectorType renderers =
             service::OSR::getServices("sight::viz::scene3d::SRender");
 
-        const bool enableStereo = this->getIsActive() && this->getIsExecutable();
+        const bool enableStereo = this->checked() && this->enabled();
         const auto stereoMode   = enableStereo ? m_stereoMode : StereoModeType::NONE;
 
-        for(auto srv : renderers)
+        for(const auto& srv : renderers)
         {
             auto renderSrv = sight::viz::scene3d::SRender::dynamicCast(srv);
             auto layerMap  = renderSrv->getLayers();
@@ -125,4 +124,4 @@ void SStereoToggler::stopping()
 
 //------------------------------------------------------------------------------
 
-} // uiVisuOgre
+} // namespace sight::module::ui::viz

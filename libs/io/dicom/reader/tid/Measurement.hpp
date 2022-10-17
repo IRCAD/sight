@@ -33,15 +33,9 @@ namespace sight::data
 
 class Point;
 
-}
+} // namespace sight::data
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace tid
+namespace sight::io::dicom::reader::tid
 {
 
 /**
@@ -69,7 +63,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Measurement();
+    IO_DICOM_API ~Measurement() override;
 
     /**
      * @brief Read a measurement node
@@ -90,8 +84,4 @@ protected:
     );
 };
 
-} // namespace tid
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::tid

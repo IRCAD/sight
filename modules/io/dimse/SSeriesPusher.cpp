@@ -53,11 +53,10 @@ const core::com::Signals::SignalKeyType SSeriesPusher::s_STOPPED_PROGRESS_SIG = 
 //------------------------------------------------------------------------------
 
 SSeriesPusher::SSeriesPusher() noexcept :
-    m_progressbarId("pushDicomProgressBar"),
-    m_isPushing(false)
+    m_progressbarId("pushDicomProgressBar")
 {
     // Internal slots
-    m_slotDisplayMessage   = newSlot(s_DISPLAY_SLOT, &SSeriesPusher::displayMessage, this);
+    m_slotDisplayMessage   = newSlot(s_DISPLAY_SLOT, &SSeriesPusher::displayMessage);
     m_slotProgressCallback = newSlot(
         sight::io::dimse::SeriesEnquirer::s_PROGRESS_CALLBACK_SLOT,
         &SSeriesPusher::progressCallback,
@@ -72,9 +71,8 @@ SSeriesPusher::SSeriesPusher() noexcept :
 
 //------------------------------------------------------------------------------
 
-SSeriesPusher::~SSeriesPusher() noexcept
-{
-}
+SSeriesPusher::~SSeriesPusher() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -159,7 +157,7 @@ void SSeriesPusher::updating()
         if(pushOK)
         {
             // Push series to the PACS
-            m_pushSeriesWorker->post(std::bind(&module::io::dimse::SSeriesPusher::pushSeries, this));
+            m_pushSeriesWorker->post([this](auto&& ...){pushSeries();});
         }
     }
 }
@@ -181,15 +179,14 @@ bool SSeriesPusher::checkSeriesOnPACS()
         // Connect to PACS
         m_seriesEnquirer->connect();
 
-        data::Vector::ConstIteratorType it = seriesVector->begin();
-        for( ; it != seriesVector->end() ; ++it)
+        for(const auto& object : *seriesVector)
         {
-            data::DicomSeries::csptr series = data::DicomSeries::dynamicCast(*it);
-            SIGHT_ASSERT("The SeriesDB should contain only DicomSeries.", series);
+            auto series = data::Series::dynamicCast(object);
+            SIGHT_ASSERT("The SeriesSet should contain only Series.", series);
 
             // Try to find series on PACS
             OFList<QRResponse*> responses;
-            responses = m_seriesEnquirer->findSeriesByUID(series->getInstanceUID());
+            responses = m_seriesEnquirer->findSeriesByUID(series->getSeriesInstanceUID());
 
             // If the series has been found on the PACS
             if(responses.size() > 1)
@@ -212,7 +209,7 @@ bool SSeriesPusher::checkSeriesOnPACS()
             // Display duplicated Series
             for(const data::Series::csptr& series : duplicateSeriesVector)
             {
-                std::string description = series->getDescription();
+                std::string description = series->getSeriesDescription();
                 description = (description.empty()) ? "[No description]" : description;
                 ss << "- " << description << std::endl;
             }
@@ -267,7 +264,7 @@ void SSeriesPusher::pushSeries()
         for(const auto& series : *seriesVector)
         {
             data::DicomSeries::csptr dicomSeries = data::DicomSeries::dynamicCast(series);
-            SIGHT_ASSERT("The SeriesDB should contain only DicomSeries.", dicomSeries);
+            SIGHT_ASSERT("The SeriesSet should contain only DicomSeries.", dicomSeries);
 
             for(const auto& item : dicomSeries->getDicomContainer())
             {
@@ -297,7 +294,7 @@ void SSeriesPusher::pushSeries()
         }
 
         // Number of instances that must be uploaded
-        m_instanceCount = dicomContainer.size();
+        m_instanceCount = static_cast<std::uint64_t>(dicomContainer.size());
 
         // Connect from PACS
         m_seriesEnquirer->connect();
@@ -329,9 +326,9 @@ void SSeriesPusher::pushSeries()
 //------------------------------------------------------------------------------
 
 void SSeriesPusher::progressCallback(
-    const std::string& seriesInstanceUID,
+    const std::string& /*seriesInstanceUID*/,
     unsigned int instanceNumber,
-    const std::string& filePath
+    const std::string& /*filePath*/
 )
 {
     if(instanceNumber < (m_instanceCount - 1))
@@ -347,7 +344,7 @@ void SSeriesPusher::progressCallback(
 
 //------------------------------------------------------------------------------
 
-void SSeriesPusher::displayMessage(const std::string& message, bool error) const
+void SSeriesPusher::displayMessage(const std::string& message, bool error)
 {
     SIGHT_WARN_IF("Error: " + message, error);
     sight::ui::base::dialog::MessageDialog messageBox;

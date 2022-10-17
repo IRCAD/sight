@@ -38,20 +38,17 @@
 #include <filesystem>
 #include <functional>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qml::dialog::LocationDialog,
     sight::ui::base::dialog::ILocationDialog::REGISTRY_KEY
 );
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 //------------------------------------------------------------------------------
 
-LocationDialog::LocationDialog(ui::base::GuiBaseObject::Key)
+LocationDialog::LocationDialog(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
@@ -84,8 +81,8 @@ core::location::ILocation::sptr LocationDialog::show()
     dialog->setProperty("nameFilters", filter);
 
     // check each option to set the property
-    if((m_style & ui::base::dialog::ILocationDialog::READ)
-       || (m_style & ui::base::dialog::ILocationDialog::FILE_MUST_EXIST))
+    if(((m_style& ui::base::dialog::ILocationDialog::READ) != 0)
+       || ((m_style& ui::base::dialog::ILocationDialog::FILE_MUST_EXIST) != 0))
     {
         dialog->setProperty("selectExisting", true);
     }
@@ -123,7 +120,7 @@ core::location::ILocation::sptr LocationDialog::show()
 
 //------------------------------------------------------------------------------
 
-bool LocationDialog::eventFilter(QObject*, QEvent* event)
+bool LocationDialog::eventFilter(QObject* /*watched*/, QEvent* event)
 {
     return event->type() != QEvent::Paint && event->type() != QEvent::MetaCall && !event->spontaneous();
 }
@@ -133,7 +130,7 @@ bool LocationDialog::eventFilter(QObject*, QEvent* event)
 void LocationDialog::resultDialog(const QVariant& msg)
 {
     // get the list of selected files or folder
-    QList<QUrl> files = msg.value<QList<QUrl> >();
+    auto files = msg.value<QList<QUrl> >();
     m_wildcard = m_filterSelected.toStdString();
     if(!files.isEmpty() && !files.first().isEmpty())
     {
@@ -221,12 +218,12 @@ ui::base::dialog::ILocationDialog& LocationDialog::setOption(ui::base::dialog::I
 
 void LocationDialog::addFilter(const std::string& filterName, const std::string& wildcardList)
 {
-    m_filters.push_back(std::make_pair(filterName, wildcardList));
+    m_filters.emplace_back(filterName, wildcardList);
 }
 
 //------------------------------------------------------------------------------
 
-const QStringList LocationDialog::fileFilters()
+QStringList LocationDialog::fileFilters()
 {
     QStringList result;
     for(const auto& filter : m_filters)
@@ -251,8 +248,8 @@ std::string LocationDialog::getCurrentSelection() const
     {
         const std::string& filterName       = filter.first;
         const std::string& rawWildcards     = filter.second;
-        const std::string& availableFilters = filterName + " (" + rawWildcards + ")";
-        if(!m_wildcard.compare(availableFilters))
+        const std::string& availableFilters = filterName + " (" + rawWildcards + " ";
+        if(m_wildcard == availableFilters)
         {
             extension = &rawWildcards[1];
             break;
@@ -264,6 +261,4 @@ std::string LocationDialog::getCurrentSelection() const
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-
-} //namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

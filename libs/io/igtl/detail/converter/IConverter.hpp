@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@
 
 #include <igtlMessageBase.h>
 
-namespace sight::io::igtl::detail
-{
-
-namespace converter
+namespace sight::io::igtl::detail::converter
 {
 
 /**
@@ -51,38 +48,36 @@ public:
 
     ///destructor
     virtual ~IConverter()
-    {
-    }
+    = default;
 
     /**
      * @brief method to implement conversion igtl message to fwData object
      *
      * @return a data::Object
      */
-    IO_IGTL_API virtual data::Object::sptr fromIgtlMessage(const ::igtl::MessageBase::Pointer src) const = 0;
+    [[nodiscard]] IO_IGTL_API virtual data::Object::sptr fromIgtlMessage(::igtl::MessageBase::Pointer src) const =
+    0;
 
     /**
      * @brief method to implement conversion fwData object to igtl message
      *
      * @return a ::igtl::MessageBase
      */
-    IO_IGTL_API virtual ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const = 0;
+    [[nodiscard]] IO_IGTL_API virtual ::igtl::MessageBase::Pointer fromFwDataObject(data::Object::csptr src) const = 0;
 
     /**
      * @brief get the igtlType supported for conversion
      *
      * @return the igtlType supported for conversion
      */
-    IO_IGTL_API virtual std::string const& getIgtlType() const = 0;
+    [[nodiscard]] IO_IGTL_API virtual std::string const& getIgtlType() const = 0;
 
     /**
      * @brief get the fwData object type supported for conversion
      *
      * @return the fwData Object type supported for conversion
      */
-    IO_IGTL_API virtual std::string const& getFwDataObjectType() const = 0;
+    [[nodiscard]] IO_IGTL_API virtual std::string const& getFwDataObjectType() const = 0;
 };
 
-} // namespace converter
-
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl::detail::converter

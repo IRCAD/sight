@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace ut
+namespace sight::viz::scene3d::ut
 {
 
 class UtilsTest : public CPPUNIT_NS::TestFixture
@@ -41,14 +38,12 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void convertOgreColorToFwColor();
-    void convertOgreMatrixToTM3D();
-    void worldToSliceTest();
+    static void convertOgreColorToFwColor();
+    static void convertOgreMatrixToTM3D();
+    static void worldToSliceTest();
 };
 
-} //namespace ut
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::ut

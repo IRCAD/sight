@@ -13,7 +13,7 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="seriesDB" type="sight::data::SeriesDB" />
+            <object uid="seriesSet" type="sight::data::SeriesSet" />
             <object uid="selections" type="sight::data::Vector" />
 
             <!-- ******************************* UI declaration *********************************** -->
@@ -137,7 +137,7 @@
             <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
             <service uid="openAct" type="sight::module::ui::base::series::SDBMerger" >
-                <inout key="seriesDB" uid="seriesDB" />
+                <inout key="seriesSet" uid="seriesSet" />
                 <IOSelectorSrvConfig name="FullSDBReaderIOSelectorConfig" />
             </service>
 
@@ -166,11 +166,11 @@
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="SDBWriterSrv" type="sight::module::ui::base::io::SSelector" config="SDBSessionWriterIOSelectorConfig" >
-                <inout key="data" uid="seriesDB" />
+                <inout key="data" uid="seriesSet" />
             </service>
 
             <service uid="selectorSrv" type="sight::module::ui::qt::series::SSelector" autoConnect="true" >
-                <inout key="seriesDB" uid="seriesDB" />
+                <inout key="seriesSet" uid="seriesSet" />
                 <inout key="selection" uid="selections" />
             </service>
 

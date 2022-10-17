@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 
 #include <core/base.hpp>
 
-namespace sight::activity
-{
-
-namespace validator
+namespace sight::activity::validator
 {
 
 /**
@@ -52,14 +49,12 @@ public:
     ACTIVITY_API DefaultActivity(activity::IValidator::Key key);
 
     /// Destructor. Do nothing.
-    ACTIVITY_API virtual ~DefaultActivity();
+    ACTIVITY_API ~DefaultActivity() override;
 
     /// Checks if all the required data are present and if the appConfig parameters are found.
-    ACTIVITY_API virtual IValidator::ValidationType validate(
-        const CSPTR(data::ActivitySeries)& activitySeries
+    ACTIVITY_API IValidator::ValidationType validate(
+        const CSPTR(data::Activity)& activity
     ) const override;
 };
 
-} // namespace validator
-
-} // namespace sight::activity
+} // namespace sight::activity::validator

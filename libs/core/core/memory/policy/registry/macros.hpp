@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,20 +27,10 @@
 
 #include <boost/preprocessor/cat.hpp>
 
-namespace sight::core::memory
+namespace sight::core::memory::policy::registry
 {
 
-namespace policy
-{
-
-namespace registry
-{
-
-#define fwMemoryPolicyRegisterMacro(classname) \
+#define SIGHT_REGISTER_MEMORY_POLICY(classname) \
     static core::memory::IPolicy::Registry<classname> s__factory__record__ ## __LINE__;
 
-} // namespace registry
-
-} // namespace policy
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::policy::registry

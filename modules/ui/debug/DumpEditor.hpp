@@ -44,9 +44,9 @@ namespace sight::core::com
 {
 
 template<typename F>
-struct Slot;
+class Slot;
 
-}
+} // namespace sight::core::com
 
 namespace sight::module::ui::debug
 {
@@ -67,7 +67,7 @@ public:
     MODULE_UI_DEBUG_API DumpEditor() noexcept;
 
     /// Destructor. Does nothing.
-    MODULE_UI_DEBUG_API virtual ~DumpEditor() noexcept;
+    MODULE_UI_DEBUG_API ~DumpEditor() noexcept override;
 
 protected:
 
@@ -94,7 +94,7 @@ protected:
 protected Q_SLOTS:
 
     /// This method is called when an item is pressed.
-    void changeStatus(int);
+    void changeStatus(int /*index*/);
 
     /// Slot called when user click on button m_refresh, call updating() method
     void onRefreshButton();
@@ -111,16 +111,16 @@ private:
     std::vector<const void* const*> m_objectsUID;
 
     /// Widget to print some information on managed buffer by system
-    QTableWidget* m_list;
+    QTableWidget* m_list {};
 
     /// Button to force refresh
-    QPushButton* m_refresh;
+    QPushButton* m_refresh {};
 
     /// Editor to manage dump policy
-    QTableView* m_policyEditor;
+    QTableView* m_policyEditor {};
 
     /// Editor to show few memory information
-    QTableView* m_infoEditor;
+    QTableView* m_infoEditor {};
 
     SPTR(UpdateSlotType) m_updateSlot;
 
@@ -131,4 +131,4 @@ private:
     QPointer<QTimer> m_updateTimer;
 };
 
-} // monitorQt
+} // namespace sight::module::ui::debug

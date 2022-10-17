@@ -33,14 +33,12 @@ namespace sight::module::filter::vision
 //------------------------------------------------------------------------------
 
 STransformDepthMap2mm::STransformDepthMap2mm()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 STransformDepthMap2mm::~STransformDepthMap2mm()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -64,10 +62,10 @@ void STransformDepthMap2mm::configuring()
 
 void STransformDepthMap2mm::updating()
 {
-    const auto cameraSeries = m_cameraSeries.lock();
-    SIGHT_ASSERT("missing '" << s_CAMERA_SERIES_INPUT << "' cameraSeries", cameraSeries);
+    const auto camera_set = m_camera_set.lock();
+    SIGHT_ASSERT("missing '" << s_CAMERA_SET_INPUT << "' cameraSet", camera_set);
 
-    data::Camera::csptr depthCamera = cameraSeries->getCamera(0);
+    data::Camera::csptr depthCamera = camera_set->get_camera(0);
 
     const double scale = depthCamera->getScale();
 
@@ -75,7 +73,7 @@ void STransformDepthMap2mm::updating()
     SIGHT_ASSERT("missing '" << s_ORIGIN_FRAME_INPUT << "' image", originFrame);
 
     const auto type = originFrame->getType();
-    if(type != core::tools::Type::s_UINT16)
+    if(type != core::Type::UINT16)
     {
         SIGHT_ERROR("Wrong input depth map format: " << type << ", uint16 is expected.");
         return;
@@ -94,8 +92,8 @@ void STransformDepthMap2mm::updating()
         scaledFrame->setOrigin(origin);
         const data::Image::Spacing spacing = {1., 1., 1.};
         scaledFrame->setSpacing(spacing);
-        scaledFrame->setWindowWidth(1);
-        scaledFrame->setWindowCenter(0);
+        scaledFrame->setWindowWidth({1});
+        scaledFrame->setWindowCenter({0});
     }
 
     const auto origDumpLock   = originFrame->dump_lock();

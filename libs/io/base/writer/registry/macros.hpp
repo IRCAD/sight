@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,20 +24,10 @@
 
 #include "data/registry/detail.hpp"
 
-namespace sight::io::base
-{
-
-namespace writer
-{
-
-namespace registry
+namespace sight::io::base::writer::registry
 {
 
 #define SIGHT_REGISTER_IO_WRITER(classname) \
     static sight::io::base::writer::IObjectWriter::Registry<classname> s__factory__record__ ## __LINE__;
 
-} // end namespace registry
-
-} // end namespace writer
-
-} // end namespace sight::io::base
+} // namespace sight::io::base::writer::registry

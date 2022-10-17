@@ -32,10 +32,7 @@
 
 #include <sstream>
 
-namespace sight::module::debug
-{
-
-namespace action
+namespace sight::module::debug::action
 {
 
 /// Static variable shared by both actions
@@ -51,16 +48,16 @@ void MemoryConsumption::pushNewArray(std::size_t memorySizeInBytes)
     {
         data::Array::sptr buffer = data::Array::New();
         data::Array::SizeType size(1, memorySizeInBytes);
-        buffer->resize(size, core::tools::Type::s_UINT8_TYPENAME, true);
+        buffer->resize(size, core::Type::UINT8, true);
 
-        SIGHT_INFO("Creating a data::array consuming " << memorySizeInBytes / (1024 * 1024) << " Mo ");
+        SIGHT_INFO("Creating a data::array consuming " << memorySizeInBytes / (1024LL * 1024) << " Mo ");
 
         memoryConsumer.push_back(buffer);
     }
     catch(std::exception& e)
     {
         std::stringstream msg;
-        msg << "Cannot allocate buffer (" << memorySizeInBytes / (1024 * 1024) << " Mo) :\n" << e.what() << std::endl;
+        msg << "Cannot allocate buffer (" << memorySizeInBytes / (1024LL * 1024) << " Mo) :\n" << e.what() << std::endl;
         sight::ui::base::dialog::MessageDialog::show(
             "Action increase memory",
             msg.str(),
@@ -72,16 +69,15 @@ void MemoryConsumption::pushNewArray(std::size_t memorySizeInBytes)
 //------------------------------------------------------------------------------
 
 MemoryConsumption::MemoryConsumption() noexcept :
-    m_isIncreaseMode(true),
-    m_memorySizeInBytes(1024 * 1024 * 256) // 256 Mo
+
+    m_memorySizeInBytes(1024LL * 1024 * 256) // 256 Mo
 {
 }
 
 //------------------------------------------------------------------------------
 
-MemoryConsumption::~MemoryConsumption() noexcept
-{
-}
+MemoryConsumption::~MemoryConsumption() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -118,8 +114,8 @@ void MemoryConsumption::configuring()
 
     if(m_isIncreaseMode && consumptionCfg->hasAttribute("value"))
     {
-        std::string value    = consumptionCfg->getAttributeValue("value");
-        std::size_t sizeInMo = boost::lexical_cast<std::size_t>(value);
+        std::string value = consumptionCfg->getAttributeValue("value");
+        auto sizeInMo     = boost::lexical_cast<std::size_t>(value);
         m_memorySizeInBytes = sizeInMo * 1024 * 1024;
     }
 }
@@ -139,6 +135,4 @@ void MemoryConsumption::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace action
-
-} // namespace basicOpCtrl
+} // namespace sight::module::debug::action

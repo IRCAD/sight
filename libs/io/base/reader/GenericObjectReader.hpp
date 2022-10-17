@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,7 @@
 #include "io/base/config.hpp"
 #include "io/base/reader/IObjectReader.hpp"
 
-namespace sight::io::base
-{
-
-namespace reader
+namespace sight::io::base::reader
 {
 
 /**
@@ -40,7 +37,7 @@ namespace reader
  * 'getConcretObject' Returns m_object casted into DataType.
  */
 template<class DATATYPE>
-class GenericObjectReader : virtual public io::base::reader::IObjectReader
+class GenericObjectReader : public io::base::reader::IObjectReader
 {
 public:
 
@@ -50,9 +47,7 @@ public:
     SIGHT_DECLARE_CLASS(GenericObjectReader<DATATYPE>, io::base::reader::IObjectReader);
 
     /// Constructor. Does nothing.
-    GenericObjectReader()
-    {
-    }
+    GenericObjectReader() = default;
 
     //------------------------------------------------------------------------------
 
@@ -62,9 +57,8 @@ public:
     }
 
     /// Destructor. Does nothing.
-    virtual ~GenericObjectReader()
-    {
-    }
+    ~GenericObjectReader() override
+    = default;
 
     /**
      * @brief m_object setter.
@@ -84,12 +78,10 @@ public:
      *
      * This method automatically casts object in the correct DataType.
      */
-    virtual std::shared_ptr<DataType> getConcreteObject()
+    [[nodiscard]] std::shared_ptr<DataType> getConcreteObject() const
     {
         return std::dynamic_pointer_cast<DataType>(getObject());
     }
 };
 
-} // namespace reader
-
-} // namespace sight::io::base
+} // namespace sight::io::base::reader

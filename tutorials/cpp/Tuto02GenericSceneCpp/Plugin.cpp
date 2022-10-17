@@ -24,8 +24,10 @@
 
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>
+#include <data/TransferFunction.hpp>
 
-using namespace sight;
+namespace data    = sight::data;
+namespace service = sight::service;
 
 namespace Tuto02GenericSceneCpp
 {
@@ -34,33 +36,28 @@ SIGHT_REGISTER_PLUGIN("Tuto02GenericSceneCpp::Plugin");
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
 void Plugin::start()
 {
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::initialize()
-{
     m_appManager = std::make_unique<service::AppManager>();
     m_appManager->create();
 
     // Objects declaration.
-    data::Image::sptr image    = data::Image::New();
-    data::Image::sptr texture  = data::Image::New();
-    data::Mesh::sptr mesh      = data::Mesh::New();
-    data::Image::sptr snapshot = data::Image::New();
+    data::Image::sptr image         = data::Image::New();
+    data::Image::sptr texture       = data::Image::New();
+    data::Mesh::sptr mesh           = data::Mesh::New();
+    data::Image::sptr snapshot      = data::Image::New();
+    data::TransferFunction::sptr tf = data::TransferFunction::createDefaultTF();
 
     m_appManager->addObject(image, image->getID());
     m_appManager->addObject(mesh, mesh->getID());
     m_appManager->addObject(texture, texture->getID());
     m_appManager->addObject(snapshot, snapshot->getID());
+    m_appManager->addObject(tf, tf->getID());
 
     // UI declaration.
     auto mainView = m_appManager->addService("sight::module::ui::base::SFrame", true, false);
@@ -314,7 +311,8 @@ void Plugin::initialize()
         false
     );
     {
-        negatoAdp->setInOut(image, "image", true);
+        negatoAdp->setInput(image, "image");
+        negatoAdp->setInOut(tf, "tf");
         service::IService::ConfigType config;
         config.add("config.<xmlattr>.layer", "default");
         config.add("config.<xmlattr>.sliceIndex", "axial");
@@ -501,12 +499,6 @@ void Plugin::initialize()
 //------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::uninitialize()
 {
     m_appManager->destroy();
     m_appManager.reset();

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,12 +42,10 @@ static const core::com::Slots::SlotKeyType s_SET_STRING_PARAMETER_SLOT = "setStr
 
 //-----------------------------------------------------------------------------
 
-STextStatus::STextStatus()
+STextStatus::STextStatus() :
+    m_labelStaticText(new QLabel())
 {
-    m_labelStaticText = new QLabel();
     m_labelStaticText->setStyleSheet("font-weight: bold;");
-    m_labelValue = new QLabel();
-    m_labelValue->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
 
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &STextStatus::setDoubleParameter, this);
     newSlot(s_SET_INT_PARAMETER_SLOT, &STextStatus::setIntParameter, this);
@@ -58,13 +56,18 @@ STextStatus::STextStatus()
 //------------------------------------------------------------------------------
 
 STextStatus::~STextStatus()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 void STextStatus::configuring()
 {
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
+    m_labelValue = new QLabel();
+    m_labelValue->setAlignment(Qt::AlignBottom | Qt::AlignLeft);
+    m_labelValue->setObjectName(serviceID);
+
     this->initialize();
 
     const auto txtCfg = m_configuration->findConfigurationElement("label");
@@ -96,7 +99,7 @@ void STextStatus::starting()
     this->create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
-    QHBoxLayout* const layout = new QHBoxLayout();
+    auto* const layout = new QHBoxLayout();
     layout->addWidget(m_labelStaticText);
     layout->addWidget(m_labelValue);
 

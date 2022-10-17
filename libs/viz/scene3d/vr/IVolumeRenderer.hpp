@@ -31,6 +31,8 @@
 #include "viz/scene3d/Utils.hpp"
 #include "viz/scene3d/vr/PreIntegrationTable.hpp"
 
+#include <viz/scene3d/Texture.hpp>
+
 #include <OGRE/Ogre.h>
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreCamera.h>
@@ -40,10 +42,7 @@
 
 #include <optional>
 
-namespace sight::viz::scene3d
-{
-
-namespace vr
+namespace sight::viz::scene3d::vr
 {
 
 /**
@@ -85,20 +84,10 @@ public:
     };
 
     /// Image local and texture coordinates /!\ The order matters to our intersection algorithm.
-    VIZ_SCENE3D_API static inline const std::array<Ogre::Vector3, 8> s_imagePositions =
-    {
-        Ogre::Vector3(1, 1, 1),
-        Ogre::Vector3(1, 0, 1),
-        Ogre::Vector3(1, 1, 0),
-        Ogre::Vector3(0, 1, 1),
-        Ogre::Vector3(0, 0, 1),
-        Ogre::Vector3(1, 0, 0),
-        Ogre::Vector3(0, 1, 0),
-        Ogre::Vector3(0, 0, 0)
-    };
+    VIZ_SCENE3D_API static const std::array<Ogre::Vector3, 8> s_imagePositions;
 
     /// List of vertex indices pairs that make an edge.
-    VIZ_SCENE3D_API static inline const CubeEdgeList s_cubeEdges =
+    VIZ_SCENE3D_API static constexpr CubeEdgeList s_cubeEdges =
     {
         {
             {0, 1}, {1, 4}, {4, 3}, {3, 0},
@@ -134,55 +123,52 @@ public:
      * @param parentId                  ID of the service using this renderer
      * @param sceneManager              The scene manager being used.
      * @param volumeNode                This object's node.
-     * @param imageTexture (optional)   Texture holding the 3D image to be rendered. Created if not specified.
      * @param buffer (optional)         Enable buffering for the textures updates. Default is false.
      * @param preintegration (optional) Enable preintegration. Default is false.
      */
     VIZ_SCENE3D_API IVolumeRenderer(
-        const std::string& parentId,
-        Ogre::SceneManager* const sceneManager,
-        Ogre::SceneNode* const volumeNode,
-        std::optional<Ogre::TexturePtr> imageTexture = {},
-        bool with_buffer                             = false,
-        bool preintegration                          = false
+        std::string parentId,
+        Ogre::SceneManager* sceneManager,
+        Ogre::SceneNode* volumeNode,
+        sight::data::Image::csptr image,
+        sight::data::TransferFunction::csptr tf,
+        bool with_buffer    = false,
+        bool preintegration = false
     );
 
     /// Destructor, does nothing.
     VIZ_SCENE3D_API virtual ~IVolumeRenderer();
 
     ///@brief Update the renderer. Base implementation only updates the samples.
-    VIZ_SCENE3D_API virtual void update();
+    VIZ_SCENE3D_API virtual void update(const data::TransferFunction::csptr& tf) = 0;
 
     /// Called when the image being rendered is modified.
-    VIZ_SCENE3D_API virtual void imageUpdate(data::Image::sptr image, data::TransferFunction::sptr tf) = 0;
+    VIZ_SCENE3D_API virtual void imageUpdate(data::Image::csptr image, data::TransferFunction::csptr tf) = 0;
 
     /// @brief Loads the 3D texture from a sight::data::Image.
     /// @param source: source image
-    VIZ_SCENE3D_API virtual void loadImage(const std::shared_ptr<data::Image>& source);
+    VIZ_SCENE3D_API virtual void loadImage();
 
     /// Called when the transfer function is updated.
-    VIZ_SCENE3D_API virtual void updateVolumeTF(std::shared_ptr<data::TransferFunction>&);
+    VIZ_SCENE3D_API virtual void updateVolumeTF(const data::TransferFunction::csptr&) = 0;
 
     /// Sets the number of samples per view ray.
-    VIZ_SCENE3D_API virtual void setSampling(uint16_t nbSamples) = 0;
+    VIZ_SCENE3D_API virtual void setSampling(uint16_t nbSamples, const data::TransferFunction::csptr& tf) = 0;
 
     /// Sets/unsets pre-integrated rendering.
     VIZ_SCENE3D_API virtual void setPreIntegratedRendering(bool preIntegratedRendering) = 0;
 
     ///@brief Returns 'true' if preintegration is used, 'false' otherwise.
-    VIZ_SCENE3D_API bool preintegration() const;
+    [[nodiscard]] VIZ_SCENE3D_API bool preintegration() const;
 
     /// Computes image positions.
     VIZ_SCENE3D_API virtual void clipImage(const Ogre::AxisAlignedBox& clippingBox);
 
     /// Returns the sampling rate.
-    VIZ_SCENE3D_API float samplingDistance() const;
+    [[nodiscard]] VIZ_SCENE3D_API float samplingDistance() const;
 
     ///@brief Returns the current camera information in use.
-    VIZ_SCENE3D_API const camera_info_t& cameraInfo() const;
-
-    ///@brief Returns true if a call to update is currently necessary. The class should handle it automatically.
-    VIZ_SCENE3D_API bool updatePending() const;
+    [[nodiscard]] VIZ_SCENE3D_API const camera_info_t& cameraInfo() const;
 
     /// Called when the size of the viewport changes.
     VIZ_SCENE3D_API virtual void resizeViewport(int w, int h);
@@ -202,23 +188,17 @@ protected:
     /// ID of this object's parent.
     const std::string m_parentId;
 
-    ///@brief True if an call to update() is necessary.
-    bool m_update_pending = true;
-
     /// This object's scene manager.
     Ogre::SceneManager* const m_sceneManager;
 
     /// 3D Image texture.
-    Ogre::TexturePtr m_3DOgreTexture {nullptr};
-
-    ///@brief Image of the transfer function on the CPU.
-    std::shared_ptr<data::TransferFunction> m_cpuTF {nullptr}; //Note: this is not the same type as the thing below.
+    Texture::sptr m_3DOgreTexture;
 
     /// TF texture used for rendering.
-    std::shared_ptr<TransferFunction> m_gpuVolumeTF = std::make_shared<sight::viz::scene3d::TransferFunction>();
+    TransferFunction::sptr m_gpuVolumeTF;
 
     /// Contains the buffering texture for the 3D image.
-    Ogre::TexturePtr m_bufferingTexture;
+    Texture::sptr m_bufferingTexture;
 
     /// Prevents from accessing the textures while they are swapped.
     std::mutex m_bufferSwapMutex;
@@ -245,7 +225,7 @@ protected:
     std::uint16_t m_nbSlices = 512;
 
     /// Distance between samples in local space.
-    float m_sampleDistance;
+    float m_sampleDistance {};
 
     /// Intersection between the image and the clipping box.
     std::array<Ogre::Vector3, 8> m_clippedImagePositions;
@@ -272,15 +252,6 @@ inline auto IVolumeRenderer::cameraInfo() const -> const camera_info_t&
     return m_cameraInfo;
 }
 
-//------------------------------------------------------------------------------
-
-inline bool IVolumeRenderer::updatePending() const
-{
-    return m_update_pending;
-}
-
 //-----------------------------------------------------------------------------
 
-} // namespace vr
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::vr

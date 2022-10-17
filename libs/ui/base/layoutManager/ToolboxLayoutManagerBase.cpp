@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,7 @@
 
 #include <core/base.hpp>
 
-namespace sight::ui::base
-{
-
-namespace layoutManager
+namespace sight::ui::base::layoutManager
 {
 
 //-----------------------------------------------------------------------------
@@ -44,14 +41,12 @@ const ToolboxLayoutManagerBase::RegistryKeyType ToolboxLayoutManagerBase::REGIST
 //-----------------------------------------------------------------------------
 
 ToolboxLayoutManagerBase::ToolboxLayoutManagerBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 ToolboxLayoutManagerBase::~ToolboxLayoutManagerBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -62,7 +57,7 @@ void ToolboxLayoutManagerBase::initialize(ConfigurationType configuration)
         configuration->getName() == "layout"
     );
     m_views.clear();
-    for(ConfigurationType view : configuration->getElements())
+    for(const ConfigurationType& view : configuration->getElements())
     {
         if(view->getName() == "view")
         {
@@ -114,6 +109,18 @@ void ToolboxLayoutManagerBase::initialize(ConfigurationType configuration)
             {
                 std::string height = view->getExistingAttributeValue("minHeight");
                 vi.m_minSize.second = std::stoi(height);
+            }
+
+            if(view->hasAttribute("maxWidth"))
+            {
+                const std::string width = view->getExistingAttributeValue("maxWidth");
+                vi.m_maxSize.first = std::stoi(width);
+            }
+
+            if(view->hasAttribute("maxHeight"))
+            {
+                const std::string height = view->getExistingAttributeValue("maxHeight");
+                vi.m_maxSize.second = std::stoi(height);
             }
 
             if(view->hasAttribute("visible"))
@@ -168,6 +175,4 @@ void ToolboxLayoutManagerBase::initialize(ConfigurationType configuration)
 
 //-----------------------------------------------------------------------------
 
-} // namespace layoutManager
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::layoutManager

@@ -49,10 +49,7 @@ static const core::com::Slots::SlotKeyType s_RESET_DRAWING        = "resetDrawin
 //-----------------------------------------------------------------------------
 
 SPropagator::SPropagator() :
-    IHasParameters(m_slots),
-    m_value(1),
-    m_overwrite(true),
-    m_drawing(false)
+    IHasParameters(m_slots)
 {
     newSlot(s_DRAW_SLOT, &SPropagator::draw, this);
     newSlot(s_SET_ORIENTATION_SLOT, &SPropagator::setOrientation, this);
@@ -64,8 +61,7 @@ SPropagator::SPropagator() :
 //-----------------------------------------------------------------------------
 
 SPropagator::~SPropagator()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -376,12 +372,11 @@ sight::filter::image::MinMaxPropagation::SeedsType SPropagator::convertDiffToSee
 
 service::IService::KeyConnectionsMap SPropagator::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SET_ORIENTATION_SLOT);
-    connections.push(s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_RESET_DRAWING);
-
-    return connections;
+    return {
+        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SET_ORIENTATION_SLOT},
+        {s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_RESET_DRAWING}
+    };
 }
 
 } // namespace sight::module::filter::image.

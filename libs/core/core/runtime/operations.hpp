@@ -43,14 +43,14 @@ class Module;
 class Profile;
 
 /**
- * @brief   Initializes Sight runtime and discovers default modules. To be used when building an external application
- *          with Sight.
- *
- * @param   directory   deprecated, path to the directory where Sight is installed. This is now automatically detected.
+ * @brief   Initializes Sight runtime and discovers default modules.
  */
-CORE_API void init([[deprecated("To be removed in Sight 22.0,this is now automatically detected")]]
-                   const std::filesystem::path& directory = std::filesystem::path()
-);
+CORE_API void init();
+
+/**
+ * @brief   Shutdown Sight runtime, which means unload all loaded modules.
+ */
+CORE_API void shutdown();
 
 /**
  * @brief       Creates an executable instance for the specified configuration element.
@@ -72,7 +72,7 @@ T* createExecutableInstance(
 {
     // Retrieves the right configuration element.
     std::shared_ptr<ConfigurationElement> elt(extension->findConfigurationElement(element));
-    if(elt == 0)
+    if(elt == nullptr)
     {
         throw RuntimeException(element + ": configuration element not found in extension.");
     }
@@ -225,11 +225,19 @@ CORE_API void addModules(const std::filesystem::path& directory);
  * @brief   Load a module.
  *
  * @param   identifier  a string containing a module identifier
- * @param   version     a version (none by default)
  *
  * @return  a shared pointer to the found module, or empty when it is not found
  */
 CORE_API std::shared_ptr<Module> loadModule(const std::string& identifier);
+
+/**
+ * @brief   Unload a module.
+ *
+ * @param   identifier  a string containing a module identifier
+ *
+ * @return  a shared pointer to the found module, or empty when it is not found
+ */
+CORE_API void unloadModule(const std::string& identifier);
 
 /**
  * @brief   Load a library.

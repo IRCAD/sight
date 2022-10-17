@@ -114,6 +114,9 @@ private:
     /// Sets Ogre::Camera from data::Camera parameters.
     void setOgreCamFromData();
 
+    /// Contains the manual object of the line.
+    Ogre::ManualObject* m_frustum {nullptr};
+
     /// Contains the Ogre's camera (frustum) representing data::Camera position and parameters.
     Ogre::Camera* m_ogreCamera {nullptr};
 
@@ -121,10 +124,10 @@ private:
     data::Material::sptr m_material {nullptr};
 
     /// Defines the near clipping distance.
-    float m_near {1.f};
+    float m_near {1.F};
 
     /// Defines the far clipping distance.
-    float m_far {20.f};
+    float m_far {20.F};
 
     /// Defines the color of frustum.
     std::string m_color {"#FF0000"};

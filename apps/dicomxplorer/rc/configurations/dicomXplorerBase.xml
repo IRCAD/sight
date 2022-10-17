@@ -6,17 +6,17 @@
         <param name="appVersion" />
     </parameters>
     <config>
-        <object uid="seriesDB" type="sight::data::SeriesDB" />
+        <object uid="seriesSet" type="sight::data::SeriesSet" />
 
         <service uid="action_open" type="sight::module::ui::base::series::SDBMerger">
-            <inout key="seriesDB" uid="seriesDB" />
+            <inout key="seriesSet" uid="seriesSet" />
             <IOSelectorSrvConfig name="SDBSessionReaderIOSelectorConfig" />
         </service>
         <service uid="action_save" type="sight::module::ui::base::com::SStarter">
             <start uid="SDBWriter" />
         </service>
         <service uid="SDBWriter" type="sight::module::ui::base::io::SSelector">
-            <inout key="data" uid="seriesDB" />
+            <inout key="data" uid="seriesSet" />
             <type mode="writer" />
             <selection mode="include" />
             <addSelection service="sight::module::io::session::SWriter" />
@@ -119,7 +119,7 @@
         </service>
 
         <service uid="dynamicView" type="sight::module::ui::qt::activity::SDynamicView">
-            <inout key="SERIESDB" uid="seriesDB" />
+            <inout key="SERIES_SET" uid="seriesSet" />
             <mainActivity id="SDBdicomXplorer" closable="false" />
             <parameters>
                 <parameter replace="ICON_PATH" by="${appIconPath}" />

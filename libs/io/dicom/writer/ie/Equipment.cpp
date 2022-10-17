@@ -26,15 +26,7 @@
 
 #include <core/runtime/profile/Profile.hpp>
 
-#include <data/Equipment.hpp>
-
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 //------------------------------------------------------------------------------
@@ -42,21 +34,20 @@ namespace ie
 Equipment::Equipment(
     const SPTR(gdcm::Writer)& writer,
     const SPTR(io::dicom::container::DicomInstance)& instance,
-    const data::Equipment::csptr& equipment,
+    const data::Series::csptr& series,
     const core::log::Logger::sptr& logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    io::dicom::writer::ie::InformationEntity<data::Equipment>(writer, instance, equipment,
-                                                              logger, progress, cancel)
+    io::dicom::writer::ie::InformationEntity<data::Series>(writer, instance, series,
+                                                           logger, progress, cancel)
 {
 }
 
 //------------------------------------------------------------------------------
 
 Equipment::~Equipment()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -100,8 +91,4 @@ void Equipment::writeEnhancedGeneralEquipmentModule()
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

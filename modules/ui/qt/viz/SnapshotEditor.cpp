@@ -60,9 +60,8 @@ SnapshotEditor::SnapshotEditor() noexcept
 
 //------------------------------------------------------------------------------
 
-SnapshotEditor::~SnapshotEditor() noexcept
-{
-}
+SnapshotEditor::~SnapshotEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -77,7 +76,7 @@ void SnapshotEditor::starting()
     m_snapButton = new QPushButton(icon, "");
     m_snapButton->setToolTip(QObject::tr("Snapshot"));
 
-    QHBoxLayout* h_layout = new QHBoxLayout();
+    auto* h_layout = new QHBoxLayout();
     h_layout->addWidget(m_snapButton);
     h_layout->setContentsMargins(0, 0, 0, 0);
 
@@ -108,7 +107,7 @@ void SnapshotEditor::updating()
 
 //------------------------------------------------------------------------------
 
-void SnapshotEditor::info(std::ostream& _sstream)
+void SnapshotEditor::info(std::ostream& /*_sstream*/)
 {
 }
 
@@ -123,7 +122,7 @@ void SnapshotEditor::onSnapButton()
     SIGHT_ASSERT("container not instanced", container);
     if(container->isVisible())
     {
-        std::string filename = this->requestFileName();
+        std::string filename = sight::module::ui::qt::viz::SnapshotEditor::requestFileName();
 
         if(!filename.empty())
         {
@@ -147,7 +146,7 @@ void SnapshotEditor::onSnapButton()
 std::string SnapshotEditor::requestFileName()
 {
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
-    std::string fileName         = "";
+    std::string fileName;
 
     sight::ui::base::dialog::LocationDialog dialogFile;
     dialogFile.setTitle("Save snapshot as");

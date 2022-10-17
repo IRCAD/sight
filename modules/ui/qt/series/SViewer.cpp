@@ -22,13 +22,10 @@
 
 #include "SViewer.hpp"
 
-#include <core/base.hpp>
-
 #include <data/Series.hpp>
 #include <data/String.hpp>
 
 #include <service/extension/AppConfig.hpp>
-#include <service/macros.hpp>
 
 namespace sight::module::ui::qt::series
 {
@@ -36,14 +33,12 @@ namespace sight::module::ui::qt::series
 //------------------------------------------------------------------------------
 
 SViewer::SViewer()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
-SViewer::~SViewer() noexcept
-{
-}
+SViewer::~SViewer() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -85,9 +80,9 @@ void SViewer::updating()
     SIGHT_ASSERT("The input key '" << s_SERIES << "' is not defined.", vector);
     if(vector->size() == 1)
     {
-        data::Object::sptr obj            = vector->front();
-        std::string classname             = obj->getClassname();
-        SeriesConfigMapType::iterator itr = m_seriesConfigs.find(classname);
+        data::Object::sptr obj = vector->front();
+        std::string classname  = obj->getClassname();
+        auto itr               = m_seriesConfigs.find(classname);
 
         if(itr != m_seriesConfigs.end())
         {
@@ -111,7 +106,7 @@ void SViewer::updating()
             }
 
             // Init manager
-            m_configTemplateManager = service::IAppConfigManager::New();
+            m_configTemplateManager = service::AppConfigManager::New();
             m_configTemplateManager->setConfig(configId, replaceMap);
 
             // Launch config

@@ -5,12 +5,12 @@ Contains services for reading and writing calibration files.
 ## Services
 
 - **SCalibrationImagesWriter**: writes CalibrationInfo 2D images to a folder using OpenCV.
-  
+
 - **SCalibrationInfoReader**: reads calibration input datasets. Loads images of chessboards to fill a calibration info structure.
-  
-- **SOpenCVReader**: reads an xml/yaml file using opencv and fill a `data::CameraSeries`.
-  
-- **SOpenCVWriter**: exports data::CameraSeries in xml/yaml files using openCV.
+
+- **SOpenCVReader**: reads an xml/yaml file using opencv and fill a `data::CameraSet`.
+
+- **SOpenCVWriter**: exports data::CameraSet in xml/yaml files using openCV.
 
 ## How to use it
 

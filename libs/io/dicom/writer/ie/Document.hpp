@@ -27,13 +27,7 @@
 
 #include <data/Image.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 /**
@@ -63,7 +57,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Document();
+    IO_DICOM_API ~Document() override;
 
     /**
      * @brief Write SR Document General Module tags
@@ -94,8 +88,4 @@ protected:
     bool m_use3DSR;
 };
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

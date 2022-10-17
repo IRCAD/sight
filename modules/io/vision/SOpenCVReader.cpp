@@ -26,7 +26,7 @@
 #include <core/location/SingleFile.hpp>
 #include <core/location/SingleFolder.hpp>
 
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 
 #include <io/base/service/ioTypes.hpp>
 
@@ -34,6 +34,7 @@
 
 #include <opencv2/core.hpp>
 
+#include <cmath>
 #include <sstream>
 
 namespace sight::module::io::vision
@@ -42,14 +43,12 @@ namespace sight::module::io::vision
 // ----------------------------------------------------------------------------
 
 SOpenCVReader::SOpenCVReader()
-{
-}
+= default;
 
 // ----------------------------------------------------------------------------
 
 SOpenCVReader::~SOpenCVReader()
-{
-}
+= default;
 
 // ----------------------------------------------------------------------------
 
@@ -127,29 +126,29 @@ void SOpenCVReader::updating()
         }
     }
 
-    cv::FileStorage fs(this->getFile().string().c_str(), cv::FileStorage::READ); // Read the settings
+    cv::FileStorage fs(this->getFile().string(), cv::FileStorage::READ); // Read the settings
     if(!fs.isOpened())
     {
         this->m_readFailed = true;
         SIGHT_ERROR("The file " + this->getFile().string() + " cannot be opened.");
     }
 
-    // Remove all CameraSeries
+    // Remove all CameraSet
     const auto data        = m_data.lock();
-    const auto camSeries   = std::dynamic_pointer_cast<data::CameraSeries>(data.get_shared());
-    const std::size_t cams = camSeries->numCameras();
+    const auto camera_set  = std::dynamic_pointer_cast<data::CameraSet>(data.get_shared());
+    const std::size_t cams = camera_set->size();
 
     for(std::size_t c = 0 ; c < cams ; ++c)
     {
-        data::Camera::csptr cam = camSeries->getCamera(0);
-        camSeries->removeCamera(std::const_pointer_cast<data::Camera>(cam));
+        data::Camera::csptr cam = camera_set->get_camera(0);
+        camera_set->remove_camera(std::const_pointer_cast<data::Camera>(cam));
 
-        auto sig = camSeries->signal<data::CameraSeries::RemovedCameraSignalType>
-                       (data::CameraSeries::s_REMOVED_CAMERA_SIG);
+        auto sig = camera_set->signal<data::CameraSet::removed_camera_signal_t>
+                       (data::CameraSet::s_REMOVED_CAMERA_SIG);
         sig->asyncEmit(std::const_pointer_cast<data::Camera>(cam));
     }
 
-    int nbCameras;
+    int nbCameras = 0;
     fs["nbCameras"] >> nbCameras;
 
     for(int c = 0 ; c < nbCameras ; ++c)
@@ -159,10 +158,13 @@ void SOpenCVReader::updating()
 
         cv::FileNode n = fs[camNum.str()];
 
-        std::string id, desc;
-        int width, height;
-        cv::Mat matrix, dist;
-        double scale;
+        std::string id;
+        std::string desc;
+        int width  = 0;
+        int height = 0;
+        cv::Mat matrix;
+        cv::Mat dist;
+        double scale = NAN;
         n["id"] >> id;
         n["description"] >> desc;
         n["imageWidth"] >> width;
@@ -201,9 +203,9 @@ void SOpenCVReader::updating()
         cam->setScale(scale);
         cam->setIsCalibrated(true);
 
-        camSeries->addCamera(cam);
+        camera_set->add_camera(cam);
 
-        auto sig = camSeries->signal<data::CameraSeries::AddedCameraSignalType>(data::CameraSeries::s_ADDED_CAMERA_SIG);
+        auto sig = camera_set->signal<data::CameraSet::added_camera_signal_t>(data::CameraSet::s_ADDED_CAMERA_SIG);
         sig->asyncEmit(cam);
 
         cv::Mat extrinsic;
@@ -228,16 +230,16 @@ void SOpenCVReader::updating()
                 }
             }
 
-            camSeries->setExtrinsicMatrix(static_cast<std::size_t>(c), extMat);
-            auto sigExtrinsic = camSeries->signal<data::CameraSeries::ExtrinsicCalibratedSignalType>
-                                    (data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG);
+            camera_set->set_extrinsic_matrix(static_cast<std::size_t>(c), extMat);
+            auto sigExtrinsic = camera_set->signal<data::CameraSet::extrinsic_calibrated_signal_t>
+                                    (data::CameraSet::s_EXTRINSIC_CALIBRATED_SIG);
             sigExtrinsic->asyncEmit();
         }
     }
 
     fs.release(); // close file
 
-    auto sig = camSeries->signal<data::CameraSeries::ModifiedSignalType>(data::CameraSeries::s_MODIFIED_SIG);
+    auto sig = camera_set->signal<data::CameraSet::ModifiedSignalType>(data::CameraSet::s_MODIFIED_SIG);
     sig->asyncEmit();
 
     //clear locations only if it was configured through GUI.

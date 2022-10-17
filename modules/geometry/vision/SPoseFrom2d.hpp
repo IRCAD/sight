@@ -86,15 +86,8 @@ public:
 
     typedef std::vector<std::string> VectKeyType;
 
-    /**
-     * @brief Constructor.
-     */
     MODULE_GEOMETRY_VISION_API SPoseFrom2d() noexcept;
-
-    /**
-     * @brief Destructor.
-     */
-    MODULE_GEOMETRY_VISION_API virtual ~SPoseFrom2d() noexcept;
+    MODULE_GEOMETRY_VISION_API ~SPoseFrom2d() noexcept override = default;
 
     /// Connect MarkerTL::s_OBJECT_PUSHED_SIG to s_REGISTER_SLOT
     service::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -163,21 +156,18 @@ private:
      * @param : Marker points in each view
      *
      **/
-    const cv::Matx44f cameraPoseFromStereo(const Marker& _markerCam1, const Marker& _markerCam2) const;
+    cv::Matx44f cameraPoseFromStereo(const Marker& _markerCam1, const Marker& _markerCam2) const;
 
     /**
      * @brief :Compute the camera position from a marker detected in one view
      **/
-    const cv::Matx44f cameraPoseFromMono(const Marker& _markerCam1) const;
+    cv::Matx44f cameraPoseFromMono(const Marker& _markerCam1) const;
 
     /// Last timestamp
-    core::HiResClock::HiResClockType m_lastTimestamp;
+    core::HiResClock::HiResClockType m_lastTimestamp {0};
 
     /// Marker pattern width.
-    double m_patternWidth;
-
-    /// True if the service is initialized (timelines and cameras)
-    bool m_isInitialized;
+    double m_patternWidth {80};
 
     /// 3d model
     std::vector<cv::Point3f> m_3dModel;
@@ -198,7 +188,7 @@ private:
     static constexpr std::string_view s_POINTLIST_INOUT = "pointList";
 
     data::ptr_vector<data::MarkerMap, data::Access::in> m_markerMap {this, s_MARKERMAP_INPUT, true};
-    data::ptr_vector<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
+    data::ptr_vector<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT, true};
     data::ptr<data::Matrix4, data::Access::in> m_extrinsic {this, s_EXTRINSIC_INPUT};
     data::ptr_vector<data::Matrix4, data::Access::inout> m_matrix {this, s_MATRIX_INOUT};
     data::ptr<data::PointList, data::Access::inout> m_pointList {this, s_POINTLIST_INOUT, false, true};

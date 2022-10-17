@@ -23,10 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::data
-{
-
-namespace ut
+namespace sight::module::data::ut
 {
 
 /**
@@ -35,8 +32,8 @@ namespace ut
 class SGetCameraTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(SGetCameraTest);
-CPPUNIT_TEST(extractsCameraFromCameraSeries);
-CPPUNIT_TEST(extractsInvalidCameraSeries);
+CPPUNIT_TEST(extractsCameraFromCameraSet);
+CPPUNIT_TEST(extractsInvalidCameraSet);
 CPPUNIT_TEST(extractsValidExtrinsic);
 CPPUNIT_TEST(extractsValidExtrinsic1);
 CPPUNIT_TEST(extractsInvalidExtrinsic);
@@ -47,18 +44,16 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void extractsCameraFromCameraSeries();
-    void extractsInvalidCameraSeries();
-    void extractsValidExtrinsic();
-    void extractsValidExtrinsic1();
-    void extractsCameraOutOfBoundIndex();
-    void extractsExtrinsicOutOfBoundIndex();
-    void extractsInvalidExtrinsic();
+    static void extractsCameraFromCameraSet();
+    static void extractsInvalidCameraSet();
+    static void extractsValidExtrinsic();
+    static void extractsValidExtrinsic1();
+    static void extractsCameraOutOfBoundIndex();
+    static void extractsExtrinsicOutOfBoundIndex();
+    static void extractsInvalidExtrinsic();
 };
 
-} //namespace ut
-
-} //namespace sight::module::data
+} // namespace sight::module::data::ut

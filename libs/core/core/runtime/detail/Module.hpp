@@ -23,6 +23,7 @@
 #pragma once
 
 #include "core/runtime/detail/dl/Library.hpp"
+#include "core/runtime/detail/Extension.hpp"
 #include "core/runtime/detail/Runtime.hpp"
 #include "core/runtime/Module.hpp"
 
@@ -33,10 +34,7 @@
 #include <set>
 #include <string>
 
-namespace sight::core::runtime
-{
-
-namespace detail
+namespace sight::core::runtime::detail
 {
 
 class ExtensionPoint;
@@ -54,19 +52,15 @@ public:
      * @name    Type definitions
      */
     //@{
-    typedef std::set<SPTR(ExecutableFactory)> ExecutableFactoryContainer; ///< Defines the executable
-    // factory container type.
-    typedef ExecutableFactoryContainer::const_iterator ExecutableFactoryConstIterator; ///< Defines the executable
-    // factory container constant
-    // iterator type.
+    using ExtensionImplContainer = std::set<SPTR(detail::Extension)>;
 
-    typedef std::set<SPTR(ExtensionPoint)> ExtensionPointContainer; ///< Defines the extension point
-    // container type.
-    typedef ExtensionPointContainer::const_iterator ExtensionPointConstIterator; ///< Defines the extension point
-    // container constant iterator type.
+    using ExecutableFactoryContainer     = std::set<SPTR(ExecutableFactory)>;
+    using ExecutableFactoryConstIterator = ExecutableFactoryContainer::const_iterator;
 
-    ///< Defines the extension container constant iterator type.
-    typedef ExtensionContainer::const_iterator ExtensionConstIterator;
+    using ExtensionPointContainer     = std::set<SPTR(ExtensionPoint)>;
+    using ExtensionPointConstIterator = ExtensionPointContainer::const_iterator;
+
+    using ExtensionConstIterator = ExtensionImplContainer::const_iterator;
     //@}
 
     /**
@@ -82,9 +76,17 @@ public:
      */
     Module(
         const std::filesystem::path& location,
-        const std::string& id,
-        const std::string& pluginClass = ""
+        std::string id,
+        std::string c = "",
+        int priority  = 0
     );
+
+    /**
+     * @brief   Assignement operator.
+     *
+     * @remark  Assignement is forbidden for this class.
+     */
+    void operator=(const Module&) = delete;
 
     /**
      * @name    Public API implementation
@@ -110,7 +112,7 @@ public:
      *
      * @return  a path representing the module location, can be empty if no library is set
      */
-    const std::string getLibraryName() const final;
+    std::string getLibraryName() const final;
 
     /**
      * @brief   Retrieves the module location.
@@ -131,7 +133,7 @@ public:
      *
      * @return  a string containing the module's plugin class
      */
-    const std::string getClass() const final;
+    std::string getClass() const final;
 
     /**
      * @brief   Retrieves the plugin instance for the specified module identifier.
@@ -141,13 +143,13 @@ public:
     SPTR(IPlugin) getPlugin() const final;
 
     /** @copydoc core::runtime::Module */
-    const std::string getParameterValue(const std::string& identifier) const final;
+    std::string getParameterValue(const std::string& identifier) const final;
 
     /**
      * @brief   Tells if a parameter exists.
      * @return  true or false
      */
-    bool hasParameter(const std::string& name) const final;
+    bool hasParameter(const std::string& identifier) const final;
 
     /// @copydoc core::runtime::Module::getExtensions
     ExtensionContainer getExtensions() const final;
@@ -230,7 +232,7 @@ public:
      *
      * @param[in]   extension   a shared pointer to the extension to add
      */
-    void addExtension(SPTR(Extension) extension);
+    void addExtension(SPTR(detail::Extension) extension);
 
     /**
      * @brief       Tells if an specific extension exists.
@@ -250,7 +252,7 @@ public:
      * @param[in]   identifier  the extension identifier
      * @param[in]   enable      enable or disable this extension
      */
-    void setEnableExtension(const std::string& identifier, const bool enable);
+    void setEnableExtension(const std::string& identifier, bool enable);
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -307,7 +309,7 @@ public:
      * @param[in]   identifier  the extension point identifier
      * @param[in]   enable      enable or disable this extension point
      */
-    void setEnableExtensionPoint(const std::string& identifier, const bool enable);
+    void setEnableExtensionPoint(const std::string& identifier, bool enable);
 
     /**
      * @brief   Retrieves the iterator on the first item
@@ -348,7 +350,7 @@ public:
      * @remark  It is possible to disable a started module but this
      *          will have no effect.
      */
-    void setEnable(const bool state);
+    void setEnable(bool state);
     //@}
 
     /**
@@ -374,16 +376,16 @@ public:
     void addParameter(const std::string& identifier, const std::string& value);
     //@}
 
-    bool isStarted()
+    bool isStarted() const override
     {
         return m_started;
     }
 
     //------------------------------------------------------------------------------
 
-    bool isInitialized()
+    int priority() const
     {
-        return m_initialized;
+        return m_priority;
     }
 
     static std::string getModuleStr(const std::string& identifier);
@@ -401,7 +403,7 @@ private:
     const std::filesystem::path m_resourcesLocation;  ///< the path to the module resources
     const std::string m_identifier;                   ///< a string containing the module identifier
     const std::string m_class;                        ///< a string containing the module's plugin class name
-    ExtensionContainer m_extensions;                  ///< all extensions
+    ExtensionImplContainer m_extensions;              ///< all extensions
     ExtensionPointContainer m_extensionPoints;        ///< all extension points
     ExecutableFactoryContainer m_executableFactories; ///< all executable factories
     RequirementContainer m_requirements;              ///< all requirements of the module
@@ -411,14 +413,7 @@ private:
 
     bool m_enabled {true}; ///< a boolean telling if the module is enabled or not
     bool m_started {false};
-    bool m_initialized {false};
-
-    /**
-     * @brief   Assignement operator.
-     *
-     * @remark  Assignement is forbidden for this class.
-     */
-    void operator=(const Module&);
+    int m_priority; ///< start order, lower is more favorable
 
     /**
      * @brief   Load module's library in the current process.
@@ -426,7 +421,7 @@ private:
     void loadLibraries();
 
     /**
-     * @brief   load all requirement needed by the module to work
+     * @brief   loads all requirements needed by the module
      */
     void loadRequirements();
 
@@ -436,6 +431,4 @@ private:
     void startPlugin();
 };
 
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail

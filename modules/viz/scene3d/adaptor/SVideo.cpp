@@ -41,7 +41,6 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTechnique.h>
-#include <OGRE/OgreTextureManager.h>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -81,9 +80,8 @@ SVideo::SVideo() noexcept
 
 //------------------------------------------------------------------------------
 
-SVideo::~SVideo() noexcept
-{
-}
+SVideo::~SVideo() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -193,6 +191,11 @@ void SVideo::starting()
 
         SIGHT_ASSERT("SPointList is not started", m_pointListAdaptor->isStarted());
     }
+
+    {
+        const auto image = m_image.lock();
+        m_texture = std::make_shared<sight::viz::scene3d::Texture>(image.get_shared());
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -220,34 +223,23 @@ void SVideo::updating()
 {
     this->getRenderService()->makeCurrent();
 
-    // Getting Sight Image
-    const auto imageSight = m_image.lock();
-
-    auto type = imageSight->getType();
+    const auto&& typeAndSize = [this]
+                               {
+                                   const auto image = m_image.lock();
+                                   return std::make_pair(image->getType(), image->getSize());
+                               }();
+    const auto type = typeAndSize.first;
+    const auto size = typeAndSize.second;
 
     if(!m_isTextureInit || type != m_previousType)
     {
-        // /////////////////////////////////////////////////////////////////////
-        // Create the appropriate material according to the texture format
-        // /////////////////////////////////////////////////////////////////////
-        if(!m_texture)
-        {
-            auto texture = Ogre::TextureManager::getSingletonPtr()->createOrRetrieve(
-                this->getID() + "_VideoTexture",
-                sight::viz::scene3d::RESOURCE_GROUP,
-                true
-            ).first;
-
-            m_texture = Ogre::dynamic_pointer_cast<Ogre::Texture>(texture);
-        }
-
         auto& mtlMgr  = Ogre::MaterialManager::getSingleton();
         const auto tf = m_tf.lock();
 
         Ogre::MaterialPtr defaultMat;
         if(tf)
         {
-            if(type == core::tools::Type::s_FLOAT || type == core::tools::Type::s_DOUBLE)
+            if(type == core::Type::FLOAT || type == core::Type::DOUBLE)
             {
                 defaultMat = mtlMgr.getByName(s_VIDEO_WITH_TF_MATERIAL_NAME, sight::viz::scene3d::RESOURCE_GROUP);
             }
@@ -274,26 +266,17 @@ void SVideo::updating()
         // Set the texture to the main material pass
         this->updateTextureFiltering();
 
-        Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
-        SIGHT_ASSERT("The current pass cannot be retrieved.", pass);
-        Ogre::TextureUnitState* tus = pass->getTextureUnitState("image");
-        SIGHT_ASSERT("The texture unit cannot be retrieved.", tus);
-        tus->setTexture(m_texture);
-
         if(tf)
         {
             // TF texture initialization
-            m_gpuTF = std::make_unique<sight::viz::scene3d::TransferFunction>();
-            m_gpuTF->createTexture(this->getID());
-
+            m_gpuTF = std::make_unique<sight::viz::scene3d::TransferFunction>(tf.get_shared());
             this->updateTF();
         }
 
         m_previousType = type;
     }
 
-    const data::Image::Size size = imageSight->getSize();
-    sight::viz::scene3d::Utils::loadOgreTexture(imageSight.get_shared(), m_texture, Ogre::TEX_TYPE_2D, true);
+    m_texture->update();
 
     const auto layer                     = this->getLayer();
     const Ogre::Viewport* const viewport = layer->getViewport();
@@ -307,6 +290,9 @@ void SVideo::updating()
                || viewport->getActualHeight() != m_previousViewportHeight))
        || m_forcePlaneUpdate)
     {
+        Ogre::Pass* pass = m_material->getTechnique(0)->getPass(0);
+        m_texture->bind(pass, "image");
+
         this->clearEntity();
 
         // /////////////////////////////////////////////////////////////////////
@@ -387,8 +373,8 @@ void SVideo::stopping()
 
     this->clearEntity();
 
-    m_material.reset();
     m_texture.reset();
+    m_material.reset();
     m_gpuTF.reset();
 
     m_isTextureInit = false;
@@ -398,7 +384,7 @@ void SVideo::stopping()
 
 void SVideo::setVisible(bool _visible)
 {
-    if(m_entity)
+    if(m_entity != nullptr)
     {
         m_entity->setVisible(_visible);
 
@@ -410,14 +396,15 @@ void SVideo::setVisible(bool _visible)
 
 void SVideo::updateTF()
 {
-    const auto tf = m_tf.lock();
+    if(m_gpuTF)
+    {
+        m_gpuTF->update();
 
-    m_gpuTF->updateTexture(tf.get_shared());
+        Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
+        m_gpuTF->bind(ogrePass, "tf", ogrePass->getFragmentProgramParameters());
 
-    Ogre::Pass* ogrePass = m_material->getTechnique(0)->getPass(0);
-    m_gpuTF->bind(ogrePass, "tf", ogrePass->getFragmentProgramParameters());
-
-    this->requestRender();
+        this->requestRender();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -432,9 +419,9 @@ void SVideo::updatePL()
     data::PointList::PointListContainer& outPoints = m_pointList->getPoints();
     outPoints.clear();
 
-    for(std::size_t i = 0 ; i < inPoints.size() ; ++i)
+    for(const auto& inPoint : inPoints)
     {
-        const data::Point::PointCoordArrayType& point = inPoints[i]->getCoord();
+        const data::Point::PointCoordArrayType& point = inPoint->getCoord();
         outPoints.push_back(
             data::Point::New(
                 point[0] - static_cast<double>(image->getSize()[0]) * 0.5,
@@ -455,14 +442,14 @@ void SVideo::updatePL()
 
 void SVideo::clearEntity()
 {
-    if(m_entity)
+    if(m_entity != nullptr)
     {
         m_entity->detachFromParent();
         this->getSceneManager()->destroyEntity(m_entity);
         m_entity = nullptr;
     }
 
-    if(m_sceneNode)
+    if(m_sceneNode != nullptr)
     {
         m_sceneNode->removeAndDestroyAllChildren();
         this->getSceneManager()->destroySceneNode(m_sceneNode);

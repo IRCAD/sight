@@ -5,7 +5,6 @@ macro(profile_setup PROJECT)
 
     #Set the check-single-instance
     get_target_property(UNIQUE ${PROJECT} SIGHT_UNIQUE)
-    string(TOLOWER "${UNIQUE}" UNIQUE)
 
     # set a variable used in the configure_file command
     set(PROJECT_VERSION ${${PROJECT}_VERSION})
@@ -16,6 +15,7 @@ macro(profile_setup PROJECT)
     get_target_property(START ${PROJECT} SIGHT_START)
     if(START)
         list(APPEND START_MODULES "${PROJECT}")
+        list(APPEND PRIORITY_MODULES "100")
     endif()
 
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
@@ -26,23 +26,12 @@ macro(profile_setup PROJECT)
         endif()
     endforeach()
 
-    list(SORT START_MODULES)
-
     list(APPEND ALL_REQUIREMENTS "${PROJECT}")
 
     get_property(SIGHT_COMPONENTS GLOBAL PROPERTY ${PROJECT_NAME}_COMPONENTS)
 
     # Manage module activation
     foreach(CURRENT_REQUIREMENT ${ALL_REQUIREMENTS})
-
-        # Ensure that we start this module before the "START_BEFORE"
-        foreach(CURRENT_START_BEFORE ${${CURRENT_REQUIREMENT}_START_BEFORE})
-            list(FIND START_MODULES ${CURRENT_START_BEFORE} INDEX_START_BEFORE)
-            if(NOT ${INDEX_START_BEFORE} EQUAL -1)
-                list(INSERT START_MODULES ${INDEX_START_BEFORE} "${CURRENT_REQUIREMENT}")
-                break()
-            endif()
-        endforeach()
 
         get_target_property(TYPE ${CURRENT_REQUIREMENT} SIGHT_TARGET_TYPE)
 

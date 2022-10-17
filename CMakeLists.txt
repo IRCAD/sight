@@ -40,7 +40,7 @@ endif()
 
 project(
     sight
-    VERSION 21.1.0
+    VERSION 22.0.0
     DESCRIPTION "Surgical Image Guidance and Healthcare Toolkit"
     HOMEPAGE_URL "https://git.ircad.fr/sight/sight"
 )
@@ -94,14 +94,15 @@ endif()
 
 # Use clang-tidy linter
 option(SIGHT_ENABLE_CLANG_TIDY "Enable Clang Tidy checks" OFF)
-mark_as_advanced(SIGHT_TESTS_FILTER)
+mark_as_advanced(SIGHT_ENABLE_CLANG_TIDY)
 
 if(SIGHT_ENABLE_CLANG_TIDY)
     # cmake-lint: disable=C0301
-    find_program(CLANG_TIDY NAMES "clang-tidy" "clang-tidy-10" "clang-tidy-11" "clang-tidy-12" "clang-tidy-13" REQUIRED)
-    set(CMAKE_CXX_CLANG_TIDY
-        ${CLANG_TIDY};--header-filter=.*;--checks=*,-llvm-header-guard,-llvm-include-order,-llvmlibc-*,-fuchsia-*,-altera-struct-pack-align,-cppcoreguidelines-macro-usage,-bugprone-macro-parentheses;--use-color;--export-fixes=.clang-tidy-fixes.yaml
-    )
+    find_program(CLANG_TIDY NAMES "clang-tidy" "clang-tidy-14" REQUIRED)
+    set(CMAKE_CXX_CLANG_TIDY ${CLANG_TIDY};--use-color;--export-fixes=.clang-tidy-fixes.yaml)
+
+    # Also generate compile_commands.json which is useful when launching clang-tidy by "hand"
+    set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 endif()
 
 # QML_IMPORT_PATH allows qtCreator to find the qml modules created in our modules
@@ -133,15 +134,18 @@ mark_as_advanced(SIGHT_DEFAULT_PASSWORD)
 if(SIGHT_ENABLE_ENCRYPTED_LOG)
     add_compile_definitions(SIGHT_ENABLE_ENCRYPTED_LOG)
 endif()
-add_compile_definitions(SIGHT_DEFAULT_PASSWORD="${SIGHT_DEFAULT_PASSWORD}")
+if(SIGHT_DEFAULT_PASSWORD)
+    add_compile_definitions(SIGHT_DEFAULT_PASSWORD="${SIGHT_DEFAULT_PASSWORD}")
+endif()
 
 # Use solution folders.
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 set_property(GLOBAL PROPERTY AUTOGEN_TARGETS_FOLDER automoc)
 
-# Make openvslam optional
-option(SIGHT_ENABLE_OPENVSLAM "Enable OpenVSLAM" OFF)
-
+# Make openvslam optional on Linux
+if(NOT MSVC)
+    option(SIGHT_ENABLE_OPENVSLAM "Enable OpenVSLAM" OFF)
+endif()
 # Make Realsense optional
 option(SIGHT_ENABLE_REALSENSE "Enable RealSense" OFF)
 
@@ -237,6 +241,7 @@ if(SIGHT_BUILD_EXAMPLES)
     add_subdirectory(tutorials)
     add_subdirectory(examples)
 endif()
+add_subdirectory(3rd-party)
 
 ########################################################################################################################
 # Export and install targets
@@ -256,6 +261,15 @@ write_basic_package_version_file(
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install/linux/safe-xvfb-run ${CMAKE_CURRENT_BINARY_DIR}/bin/safe-xvfb-run
     COPYONLY
+)
+
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install/linux/exec_gui_tests.sh ${CMAKE_CURRENT_BINARY_DIR}/bin/exec_gui_tests.sh
+    COPYONLY
+)
+configure_file(
+    ${CMAKE_CURRENT_SOURCE_DIR}/cmake/install/windows/exec_gui_tests.bat
+    ${CMAKE_CURRENT_BINARY_DIR}/bin/exec_gui_tests.bat COPYONLY
 )
 
 # Install the sightConfig.cmake and sightConfigVersion.cmake
@@ -324,6 +338,9 @@ if(WIN32)
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/NSIS/rc/license.rtf"
         DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/windows/NSIS/rc/
     )
+    install(PROGRAMS "${CMAKE_SOURCE_DIR}/cmake/install/windows/exec_gui_tests.bat"
+            DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/windows COMPONENT dev
+    )
 elseif(UNIX)
     install(
         FILES "${CMAKE_SOURCE_DIR}/cmake/build/linux/template.sh.in"
@@ -337,6 +354,10 @@ elseif(UNIX)
     )
 
     install(PROGRAMS "${CMAKE_SOURCE_DIR}/cmake/install/linux/safe-xvfb-run"
+            DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/linux COMPONENT dev
+    )
+
+    install(PROGRAMS "${CMAKE_SOURCE_DIR}/cmake/install/linux/exec_gui_tests.sh"
             DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/linux COMPONENT dev
     )
 
@@ -369,5 +390,4 @@ if(SIGHT_BUILD_DOC)
 else()
     unset(SIGHT_BUILD_DOCSET CACHE)
 endif()
-
 sight_create_package_targets("${COMPONENTS}" "")

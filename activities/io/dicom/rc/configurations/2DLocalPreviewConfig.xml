@@ -8,6 +8,8 @@
     <config>
         <object uid="${objectID}" type="sight::data::DicomSeries" src="ref" />
         <object uid="image" type="sight::data::Image" src="deferred" />
+        <object uid="tf" type="sight::data::TransferFunction" />
+
         <service uid="mainview" type="sight::module::ui::base::SView">
             <gui>
                 <layout type="sight::ui::base::CardinalLayoutManager">
@@ -35,12 +37,14 @@
         </service>
 
         <service uid="pNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
-            <inout key="image" uid="image" />
+            <in key="image" uid="image" />
+            <in key="tf" uid="tf" />
             <config layer="defaultLayer" sliceIndex="axial" filtering="anisotropic" />
         </service>
 
         <service uid="pNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
             <inout key="image" uid="image" />
+            <inout key="tf" uid="tf" />
             <config layer="defaultLayer" priority="0" orientation="axial" />
         </service>
 
@@ -53,7 +57,7 @@
         <service uid="sliderIndexDicomPullerEditor" type="sight::module::ui::dicom::SSliceIndexDicomEditor">
             <in key="series" uid="${objectID}" />
             <out key="image" uid="image" />
-            <config dicomReader="sight::module::io::dicom::SSeriesDBReader" delay="200" cacheUID="${FILE_CACHE}">
+            <config dicomReader="sight::module::io::dicom::SSeriesSetReader" delay="200" cacheUID="${FILE_CACHE}">
                 <readerConfig>
                     <config>
                         <showLogDialog>false</showLogDialog>

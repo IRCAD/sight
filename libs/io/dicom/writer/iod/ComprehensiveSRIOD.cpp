@@ -32,21 +32,12 @@
 
 #include <core/spyLog.hpp>
 
-#include <data/Equipment.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
-#include <data/Patient.hpp>
-#include <data/Study.hpp>
 
 #include <gdcmWriter.h>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace iod
+namespace sight::io::dicom::writer::iod
 {
 
 //------------------------------------------------------------------------------
@@ -67,8 +58,7 @@ ComprehensiveSRIOD::ComprehensiveSRIOD(
 //------------------------------------------------------------------------------
 
 ComprehensiveSRIOD::~ComprehensiveSRIOD()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -78,18 +68,15 @@ void ComprehensiveSRIOD::write(const data::Series::csptr& series)
     data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
-    // Retrieve image
-    data::Image::csptr image = imageSeries->getImage();
-
     // Create writer
     SPTR(gdcm::Writer) writer = std::make_shared<gdcm::Writer>();
 
     // Create Information Entity helpers
-    io::dicom::writer::ie::Patient patientIE(writer, m_instance, series->getPatient());
-    io::dicom::writer::ie::Study studyIE(writer, m_instance, series->getStudy());
+    io::dicom::writer::ie::Patient patientIE(writer, m_instance, series);
+    io::dicom::writer::ie::Study studyIE(writer, m_instance, series);
     io::dicom::writer::ie::Series seriesIE(writer, m_instance, series);
-    io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series->getEquipment());
-    io::dicom::writer::ie::Document documentIE(writer, m_instance, image, m_use3DSR);
+    io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series);
+    io::dicom::writer::ie::Document documentIE(writer, m_instance, imageSeries, m_use3DSR);
 
     // Write Patient Module - PS 3.3 C.7.1.1
     patientIE.writePatientModule();
@@ -121,8 +108,4 @@ void ComprehensiveSRIOD::write(const data::Series::csptr& series)
 
 //------------------------------------------------------------------------------
 
-} // namespace iod
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::iod

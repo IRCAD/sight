@@ -29,10 +29,7 @@
 
 #include <cstdint>
 
-namespace sight::io::dicom
-{
-
-namespace container
+namespace sight::io::dicom::container
 {
 
 /**
@@ -72,9 +69,9 @@ public:
      */
     IO_DICOM_API DicomSurface(
         const data::Mesh::position_t* pointBuffer,
-        const data::Mesh::size_t pointBufferSize,
+        data::Mesh::size_t pointBufferSize,
         const DicomCellValueType* cellBuffer,
-        const data::Mesh::size_t cellBufferSize,
+        data::Mesh::size_t cellBufferSize,
         const data::Mesh::normal_t* normalBuffer
     );
 
@@ -85,21 +82,21 @@ public:
     IO_DICOM_API data::Mesh::sptr convertToData();
 
     /// Return point coordinates buffer
-    IO_DICOM_API const DicomPointBufferType& getPointBuffer() const;
+    [[nodiscard]] IO_DICOM_API const DicomPointBufferType& getPointBuffer() const;
     /// Return cell buffer
-    IO_DICOM_API const DicomCellBufferType& getCellBuffer() const;
+    [[nodiscard]] IO_DICOM_API const DicomCellBufferType& getCellBuffer() const;
 
     /// Return normal buffer
-    IO_DICOM_API const DicomNormalBufferType& getNormalBuffer() const;
+    [[nodiscard]] IO_DICOM_API const DicomNormalBufferType& getNormalBuffer() const;
 
     /// Return point coordinates buffer size
-    IO_DICOM_API std::size_t getPointBufferSize() const;
+    [[nodiscard]] IO_DICOM_API std::size_t getPointBufferSize() const;
 
     /// Return cell buffer size
-    IO_DICOM_API std::size_t getCellBufferSize() const;
+    [[nodiscard]] IO_DICOM_API std::size_t getCellBufferSize() const;
 
     /// Return normal buffer size
-    IO_DICOM_API std::size_t getNormalBufferSize() const;
+    [[nodiscard]] IO_DICOM_API std::size_t getNormalBufferSize() const;
 
 private:
 
@@ -125,6 +122,4 @@ private:
     DicomNormalBufferType m_normalBuffer;
 };
 
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container

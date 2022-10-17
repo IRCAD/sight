@@ -24,13 +24,9 @@
 
 #include "io/dicom/helper/DicomDataWriter.hxx"
 
-namespace sight::io::dicom
-{
+#include <utility>
 
-namespace container
-{
-
-namespace sr
+namespace sight::io::dicom::container::sr
 {
 
 //------------------------------------------------------------------------------
@@ -38,13 +34,13 @@ namespace sr
 DicomSRImageNode::DicomSRImageNode(
     const DicomCodedAttribute& codedAttribute,
     const std::string& relationship,
-    const std::string& sopClassUID,
-    const std::string& sopInstanceUID,
+    std::string sopClassUID,
+    std::string sopInstanceUID,
     int frameNumber
 ) :
     io::dicom::container::sr::DicomSRNode(codedAttribute, "IMAGE", relationship),
-    m_sopClassUID(sopClassUID),
-    m_sopInstanceUID(sopInstanceUID),
+    m_sopClassUID(std::move(sopClassUID)),
+    m_sopInstanceUID(std::move(sopInstanceUID)),
     m_frameNumber(frameNumber)
 {
 }
@@ -52,8 +48,7 @@ DicomSRImageNode::DicomSRImageNode(
 //------------------------------------------------------------------------------
 
 DicomSRImageNode::~DicomSRImageNode()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -99,8 +94,4 @@ void DicomSRImageNode::print(std::ostream& os) const
 
 //------------------------------------------------------------------------------
 
-} //namespace sr
-
-} //namespace container
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::container::sr

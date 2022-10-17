@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,28 +26,21 @@
 
 #include <array>
 
-namespace sight::io::opencv
-{
-
-namespace ut
+namespace sight::io::opencv::ut
 {
 
 //------------------------------------------------------------------------------
 
-#define declareCvFormatValue(_TYPE, _CVTYPE1, _CVTYPE2, _CVTYPE3, _CVTYPE4) \
-    const std::array<std::int32_t, 4> getCvFormat<_TYPE>::type = {{_CVTYPE1, _CVTYPE2, _CVTYPE3, _CVTYPE4} \
-    };
+using CvFormatValue = const std::array<std::int32_t, 4>;
 
-declareCvFormatValue(std::uint8_t, CV_8UC1, CV_8UC2, CV_8UC3, CV_8UC4)
-declareCvFormatValue(std::int8_t, CV_8SC1, CV_8SC2, CV_8SC3, CV_8SC4)
-declareCvFormatValue(std::uint16_t, CV_16UC1, CV_16UC2, CV_16UC3, CV_16UC4)
-declareCvFormatValue(std::int16_t, CV_16SC1, CV_16SC2, CV_16SC3, CV_16SC4)
-declareCvFormatValue(std::int32_t, CV_32SC1, CV_32SC2, CV_32SC3, CV_32SC4)
-declareCvFormatValue(float, CV_32FC1, CV_32FC2, CV_32FC3, CV_32FC4)
-declareCvFormatValue(double, CV_64FC1, CV_64FC2, CV_64FC3, CV_64FC4)
+CvFormatValue getCvFormat<std::uint8_t>::type {CV_8UC1, CV_8UC2, CV_8UC3, CV_8UC4};
+CvFormatValue getCvFormat<std::int8_t>::type {CV_8SC1, CV_8SC2, CV_8SC3, CV_8SC4};
+CvFormatValue getCvFormat<std::uint16_t>::type {CV_16UC1, CV_16UC2, CV_16UC3, CV_16UC4};
+CvFormatValue getCvFormat<std::int16_t>::type {CV_16SC1, CV_16SC2, CV_16SC3, CV_16SC4};
+CvFormatValue getCvFormat<std::int32_t>::type {CV_32SC1, CV_32SC2, CV_32SC3, CV_32SC4};
+CvFormatValue getCvFormat<float>::type {CV_32FC1, CV_32FC2, CV_32FC3, CV_32FC4};
+CvFormatValue getCvFormat<double>::type {CV_64FC1, CV_64FC2, CV_64FC3, CV_64FC4};
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::opencv
+} // namespace sight::io::opencv::ut

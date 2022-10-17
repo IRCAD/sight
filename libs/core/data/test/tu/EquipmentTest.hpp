@@ -22,14 +22,11 @@
 
 #pragma once
 
-#include <data/Equipment.hpp>
+#include <data/Series.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 class EquipmentTest : public CPPUNIT_NS::TestFixture
@@ -42,17 +39,15 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     void institutionNameTest();
-    void equalityTest();
+    static void equalityTest();
 
 private:
 
-    Equipment::sptr m_equipment;
+    Series::sptr m_equipment;
 };
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

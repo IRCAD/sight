@@ -180,7 +180,7 @@ private:
         inline Edge(const Ogre::Vector2& _a, const Ogre::Vector2& _b);
 
         /// Checks if the segment intersects an other one.
-        bool intersect(Edge _edge) const;
+        [[nodiscard]] bool intersect(Edge _edge) const;
 
         /// Checks if two segments a equals.
         inline bool operator==(const Edge& _edge) const;
@@ -193,7 +193,7 @@ private:
     };
 
     /// Computes the camera direction vector.
-    static Ogre::Vector3 getCamDirection(const Ogre::Camera* const _cam);
+    static Ogre::Vector3 getCamDirection(const Ogre::Camera* _cam);
 
     /// Sets if the tool is enabled or not.
     void enableTool(bool _enable);
@@ -215,7 +215,7 @@ private:
      * @brief Cancels further interactions.
      * @pre @ref m_interactionEnableState must be true.
      */
-    void wheelEvent(Modifier, int, int, int) override;
+    void wheelEvent(Modifier /*_mods*/, int /*_angleDelta*/, int /*_x*/, int /*_y*/) override;
 
     /**
      * @brief Adds a new point to the lasso.
@@ -224,7 +224,7 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    void buttonPressEvent(MouseButton _button, Modifier, int _x, int _y) override;
+    void buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) override;
 
     /**
      * @brief Closes the lasso shape.
@@ -233,7 +233,7 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    void buttonDoublePressEvent(MouseButton _button, Modifier, int _x, int _y) override;
+    void buttonDoublePressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) override;
 
     /**
      * @brief Draws the last lasso line or add a point to the lasso in the mouse is dragged.
@@ -242,13 +242,13 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    void mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, int, int) override;
+    void mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/) override;
 
     /**
      * @brief Ends the drag interaction.
      * @pre @ref m_interactionEnableState and @ref m_leftButtonMoveState must be true.
      */
-    void buttonReleaseEvent(MouseButton, Modifier, int, int) override;
+    void buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/) override;
 
     /// Draws the lasso from @ref m_lassoNearPositions.
     void drawLasso();
@@ -270,7 +270,7 @@ private:
     ) const;
 
     /// Adds a point to the triangulation with the delaunay constraints.
-    void addDelaunayPoint(std::vector<Triangle2D>& _triangulation, const Ogre::Vector2& _sommet) const;
+    static void addDelaunayPoint(std::vector<Triangle2D>& _triangulation, const Ogre::Vector2& _sommet);
 
     /**
      * @brief Add a constrained edge to the triangulation. IT inserts a new point corresponding to the midpoint of the
@@ -336,7 +336,7 @@ private:
     std::vector<Ogre::Vector3> m_lassoEdgePositions;
 
     /// Defines the radius of each point drawn at edges positions.
-    const float m_lassoEdgeSize {0.005f};
+    const float m_lassoEdgeSize {0.005F};
 
     /// Contains the node where all manual objects that represent the lasso are attached.
     Ogre::SceneNode* m_lassoNode {nullptr};

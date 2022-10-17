@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,7 @@
 
 #include "io/dicom/exception/InvalidTag.hpp"
 
-namespace sight::io::dicom
-{
-
-namespace exception
+namespace sight::io::dicom::exception
 {
 
 //----------------------------------------------------------------------------
@@ -37,12 +34,9 @@ InvalidTag::InvalidTag(const std::string& message) :
 
 //----------------------------------------------------------------------------
 
-InvalidTag::~InvalidTag() noexcept
-{
-}
+InvalidTag::~InvalidTag() noexcept =
+    default;
 
 //----------------------------------------------------------------------------
 
-} // namespace exception
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::exception

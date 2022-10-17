@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ public:
     /**
      * @brief Destructor
      */
-    MODULE_FILTER_IMAGE_API virtual ~SMIPMatchingRegistration() noexcept;
+    MODULE_FILTER_IMAGE_API ~SMIPMatchingRegistration() noexcept override;
 
 protected:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,10 +22,7 @@
 
 #include "ui/dicom/widget/QHexSpinBox.hpp"
 
-namespace sight::ui::dicom
-{
-
-namespace widget
+namespace sight::ui::dicom::widget
 {
 
 //-----------------------------------------------------------------------------
@@ -48,7 +45,7 @@ QValidator::State QHexSpinBox::validate(QString& text, int& pos) const
 
 int QHexSpinBox::valueFromText(const QString& text) const
 {
-    bool ok;
+    bool ok = false;
     return text.toInt(&ok, 16);
 }
 
@@ -57,7 +54,7 @@ int QHexSpinBox::valueFromText(const QString& text) const
 QString QHexSpinBox::textFromValue(int value) const
 {
     QString res = QString::number(value, 16).toUpper();
-    for(unsigned int i = res.size() ; i < 4 ; ++i)
+    for(int i = res.size() ; i < 4 ; ++i)
     {
         res = "0" + res;
     }
@@ -65,6 +62,4 @@ QString QHexSpinBox::textFromValue(int value) const
     return res;
 }
 
-} // namespace widget
-
-} // namespace sight::ui::dicom
+} // namespace sight::ui::dicom::widget

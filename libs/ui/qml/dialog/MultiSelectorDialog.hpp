@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@
 
 #include <vector>
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 //------------------------------------------------------------------------------
@@ -60,7 +57,7 @@ public:
 
     UI_QML_API MultiSelectorDialog(ui::base::GuiBaseObject::Key key);
 
-    UI_QML_API virtual ~MultiSelectorDialog();
+    UI_QML_API ~MultiSelectorDialog() override;
 
     /**
      * @brief The string list that can be chosen by the selector.
@@ -101,6 +98,4 @@ private:
     QString m_title;
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

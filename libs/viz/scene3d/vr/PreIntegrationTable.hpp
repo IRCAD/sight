@@ -31,10 +31,7 @@
 
 #include <OGRE/OgreTexture.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace vr
+namespace sight::viz::scene3d::vr
 {
 
 /**
@@ -59,19 +56,19 @@ public:
 
     /// Sets the table resolution based on the new image and recomputes it.
     VIZ_SCENE3D_API void imageUpdate(
-        const data::Image::sptr& _img,
-        const data::TransferFunction::sptr& _tf,
+        const data::Image::csptr& _img,
+        const data::TransferFunction::csptr& _tf,
         float _samplingRate
     );
 
     /// Computes the table based on the given TF and slice distance.
-    VIZ_SCENE3D_API void tfUpdate(const data::TransferFunction::sptr& _tf, float _sampleDistance);
+    VIZ_SCENE3D_API void tfUpdate(const data::TransferFunction::csptr& _tf, float _sampleDistance);
 
     /// Get the texture holding the pre-integration table.
-    VIZ_SCENE3D_API inline Ogre::TexturePtr getTexture() const;
+    [[nodiscard]] VIZ_SCENE3D_API inline Ogre::TexturePtr getTexture() const;
 
     /// Returns the image value interval.
-    VIZ_SCENE3D_API inline std::pair<int, int> getMinMax() const;
+    [[nodiscard]] VIZ_SCENE3D_API inline std::pair<int, int> getMinMax() const;
 
 private:
 
@@ -88,10 +85,10 @@ private:
     typedef glm::vec4 IntegralPixel;
 
     /// Array storing table values.
-    TablePixel* m_table;
+    TablePixel* m_table {nullptr};
 
     /// Transfer function integral.
-    IntegralPixel* m_integralTable;
+    IntegralPixel* m_integralTable {nullptr};
 
     /// Table's GPU texture.
     Ogre::TexturePtr m_tableTexture;
@@ -100,7 +97,7 @@ private:
     std::pair<int, int> m_valueInterval;
 
     /// Texture resolution.
-    unsigned m_textureSize;
+    unsigned m_textureSize {0};
 };
 
 //-----------------------------------------------------------------------------
@@ -119,6 +116,4 @@ std::pair<int, int> PreIntegrationTable::getMinMax() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace vr
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::vr

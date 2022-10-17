@@ -73,7 +73,7 @@ public:
     UI_QML_QT_API IQmlAppManager() noexcept;
 
     /// Destructor. Do nothing.
-    UI_QML_QT_API virtual ~IQmlAppManager() noexcept;
+    UI_QML_QT_API ~IQmlAppManager() noexcept override;
 
 public Q_SLOTS:
 
@@ -125,4 +125,4 @@ protected:
     bool m_isInitialized {false};
 };
 
-} // fwQml
+} // namespace sight::ui::qml

@@ -26,7 +26,7 @@
 
 #include <activity/IActivityLauncher.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 
 #include <ui/qml/IQmlEditor.hpp>
 
@@ -40,16 +40,13 @@ namespace sight::module::ui::qml::activity
  * @brief   This editor displays activities in a single view (when a new activity is launched, it replaces the previous
  * one).
  *
- * This service should receive signals containing ActivitySeries connected to the slot \b launchActivity.
+ * This service should receive signals containing Activity connected to the slot \b launchActivity.
  *
  * @section Signals Signals
  * - \b activityLaunched(): signal emitted when the activity is launched
  *
  * @section Slots Slots
- * - \b launchActivity( data::ActivitySeries::sptr ): This slot allows to create a view for the given activity
- *   series.
- * - \b launchActivitySeries( data::Series::sptr ): This slot allows to create a view for the given activity
- *   series.
+ * - \b launchActivity( data::Activity::sptr ): This slot allows to create a view for the given activity.
  *
  * @section Config Configuration
  *
@@ -143,12 +140,9 @@ protected:
 private:
 
     /// Slot: Launch the given activity in the stackView.
-    void launchActivity(data::ActivitySeries::sptr activitySeries);
-
-    /// Slot: Launch the given activity in the stackView.
-    void launchActivitySeries(data::Series::sptr series);
+    void launchActivity(data::Activity::sptr activity);
 
     ActivityLaunchedSignalType::sptr m_sigActivityLaunched;
 };
 
-} // uiActivitiesQml
+} // namespace sight::module::ui::qml::activity

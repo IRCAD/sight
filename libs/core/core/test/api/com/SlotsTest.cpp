@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::com::ut::SlotsTest);
 
-namespace sight::core::com
-{
-
-namespace ut
+namespace sight::core::com::ut
 {
 
 //------------------------------------------------------------------------------
@@ -69,12 +66,11 @@ void slotsTestPrint(const std::string& str)
 struct SlotsTestBasic
 {
     SlotsTestBasic()
-    {
-    }
+    = default;
 
     //------------------------------------------------------------------------------
 
-    int sum(int a, int b)
+    static int sum(int a, int b)
     {
         return a + b;
     }
@@ -98,8 +94,7 @@ void SlotsTest::buildTest()
     CPPUNIT_ASSERT(slots["sum"] == slots["another_key"]);
     CPPUNIT_ASSERT(!slots["wrong_slot"]);
 
-    SlotsTestBasic slotsBasicStruct;
-    slots("struct_sum", &SlotsTestBasic::sum, &slotsBasicStruct);
+    slots("struct_sum", slot1);
 
     CPPUNIT_ASSERT_EQUAL(14, slots["struct_sum"]->call<int>(5, 9));
 
@@ -108,7 +103,7 @@ void SlotsTest::buildTest()
     slots.setWorker(worker);
 
     int count = 0;
-    for(core::com::Slots::SlotKeyType key : slots.getSlotKeys())
+    for(const core::com::Slots::SlotKeyType& key : slots.getSlotKeys())
     {
         core::com::SlotBase::sptr slot = slots[key];
         CPPUNIT_ASSERT(worker == slot->getWorker());
@@ -123,26 +118,27 @@ void SlotsTest::buildTest()
 
 struct SlotsTestHasSlots : public HasSlots
 {
-    typedef Slot<int ()> GetValueSlotType;
+    using GetValueSlotType = Slot<int ()>;
 
     SlotsTestHasSlots()
     {
-        GetValueSlotType::sptr slotGetValue = core::com::newSlot(&SlotsTestHasSlots::getValue, this);
+        auto slotGetValue = core::com::newSlot(&SlotsTestHasSlots::getValue);
+        auto slotSum      = core::com::newSlot(&SlotsTestHasSlots::sum);
 
-        HasSlots::m_slots("sum", &SlotsTestHasSlots::sum, this)
+        HasSlots::m_slots("sum", slotSum)
             ("getValue", slotGetValue);
     }
 
     //------------------------------------------------------------------------------
 
-    int sum(int a, int b)
+    static int sum(int a, int b)
     {
         return a + b;
     }
 
     //------------------------------------------------------------------------------
 
-    int getValue()
+    static int getValue()
     {
         return 4;
     }
@@ -152,26 +148,26 @@ struct SlotsTestHasSlots : public HasSlots
 
 struct SlotsTestHasSlots2 : public HasSlots
 {
-    typedef Slot<int ()> GetValueSlotType;
+    using GetValueSlotType = Slot<int ()>;
 
     SlotsTestHasSlots2()
     {
-        newSlot("sum", &SlotsTestHasSlots2::sum, this);
+        newSlot("sum", &SlotsTestHasSlots2::sum);
 
-        GetValueSlotType::sptr slot = newSlot("getValue", &SlotsTestHasSlots2::getValue, this);
+        GetValueSlotType::sptr slot = newSlot("getValue", &SlotsTestHasSlots2::getValue);
         CPPUNIT_ASSERT(slot);
     }
 
     //------------------------------------------------------------------------------
 
-    int sum(int a, int b)
+    static int sum(int a, int b)
     {
         return a + b;
     }
 
     //------------------------------------------------------------------------------
 
-    int getValue()
+    static int getValue()
     {
         return 4;
     }
@@ -198,6 +194,4 @@ void SlotsTest::slotsIDTest()
 
 //-----------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::core::com
+} // namespace sight::core::com::ut

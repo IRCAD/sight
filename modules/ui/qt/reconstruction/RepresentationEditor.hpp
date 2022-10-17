@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,7 +70,7 @@ public:
     MODULE_UI_QT_API RepresentationEditor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~RepresentationEditor() noexcept;
+    MODULE_UI_QT_API ~RepresentationEditor() noexcept override;
 
 protected:
 
@@ -121,4 +121,4 @@ private:
     data::ptr<data::Reconstruction, data::Access::inout> m_rec {this, s_RECONSTRUCTION, true};
 };
 
-} // uiReconstructionQt
+} // namespace sight::module::ui::qt::reconstruction

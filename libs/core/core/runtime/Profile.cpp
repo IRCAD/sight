@@ -24,10 +24,6 @@
 #include "core/runtime/Profile.hpp"
 
 #include "core/runtime/detail/profile/Activater.hpp"
-#include "core/runtime/detail/profile/Initializer.hpp"
-#include "core/runtime/detail/profile/Starter.hpp"
-#include "core/runtime/detail/profile/Stopper.hpp"
-#include "core/runtime/detail/profile/Uninitializer.hpp"
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/Module.hpp"
 #include "core/runtime/Runtime.hpp"
@@ -53,7 +49,7 @@ struct Apply
     }
 };
 
-}
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -64,20 +60,14 @@ Profile::sptr Profile::New()
 
 //------------------------------------------------------------------------------
 
-Profile::Profile() :
-    m_argc(0),
-    m_argv(nullptr)
-{
-}
+Profile::Profile()
+= default;
 
 //------------------------------------------------------------------------------
 
 Profile::~Profile()
 {
-    if(m_argv)
-    {
-        delete[] m_argv;
-    }
+    delete[] m_argv;
 }
 
 //------------------------------------------------------------------------------
@@ -99,10 +89,7 @@ void Profile::setParams(const Profile::ParamsContainer& params)
 {
     m_params = params;
 
-    if(m_argv)
-    {
-        delete[] m_argv;
-    }
+    delete[] m_argv;
 
     m_argc = static_cast<int>(m_params.size());
     // allocate memory for an array of character strings
@@ -124,7 +111,7 @@ void Profile::setParams(const Profile::ParamsContainer& params)
 
 //------------------------------------------------------------------------------
 
-void setCurrentProfile(Profile::sptr)
+void setCurrentProfile(Profile::sptr /*unused*/)
 {
 }
 

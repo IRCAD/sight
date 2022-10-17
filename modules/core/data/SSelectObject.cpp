@@ -40,9 +40,8 @@ SSelectObject::SSelectObject() noexcept
 
 //-----------------------------------------------------------------------------
 
-SSelectObject::~SSelectObject() noexcept
-{
-}
+SSelectObject::~SSelectObject() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -70,7 +69,7 @@ void SSelectObject::updating()
 
 //-----------------------------------------------------------------------------
 
-void SSelectObject::info(std::ostream&)
+void SSelectObject::info(std::ostream& /*_sstream*/)
 {
 }
 
@@ -90,4 +89,4 @@ void SSelectObject::remove()
 
 //-----------------------------------------------------------------------------
 
-} // sight::module::data
+} // namespace sight::module::data

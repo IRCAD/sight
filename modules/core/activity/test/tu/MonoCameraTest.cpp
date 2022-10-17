@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,15 +26,12 @@
 #include <activity/IValidator.hpp>
 
 #include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
+#include <data/CameraSet.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::activity::validator::ut::MonoCameraTest);
 
-namespace sight::module::activity::validator
-{
-
-namespace ut
+namespace sight::module::activity::validator::ut
 {
 
 namespace factory = sight::activity::validator::factory;
@@ -59,7 +56,7 @@ void MonoCameraTest::tearDown()
 
 void MonoCameraTest::testValidator()
 {
-    auto validator = factory::New("sight::module::activity::validator::CameraSeries::MonoCamera");
+    auto validator = factory::New("sight::module::activity::validator::CameraSet::MonoCamera");
     CPPUNIT_ASSERT(validator);
 
     auto objValidator = IObjectValidator::dynamicCast(validator);
@@ -67,19 +64,19 @@ void MonoCameraTest::testValidator()
 
     IValidator::ValidationType validation;
 
-    data::CameraSeries::sptr cameraSeries = data::CameraSeries::New();
-    data::Camera::sptr camera             = data::Camera::New();
-    data::Camera::sptr camera2            = data::Camera::New();
+    data::CameraSet::sptr camera_set = data::CameraSet::New();
+    data::Camera::sptr camera        = data::Camera::New();
+    data::Camera::sptr camera2       = data::Camera::New();
 
     {
-        validation = objValidator->validate(cameraSeries);
-        CPPUNIT_ASSERT_EQUAL_MESSAGE("CameraSeries without camera should NOT be valid", false, validation.first);
+        validation = objValidator->validate(camera_set);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("CameraSet without camera should NOT be valid", false, validation.first);
     }
     {
-        cameraSeries->addCamera(camera);
-        validation = objValidator->validate(cameraSeries);
+        camera_set->add_camera(camera);
+        validation = objValidator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "CameraSeries with a non-calibrated camera should NOT be valid",
+            "CameraSet with a non-calibrated camera should NOT be valid",
             false,
             validation.first
         );
@@ -94,19 +91,19 @@ void MonoCameraTest::testValidator()
     }
     {
         camera->setIsCalibrated(true);
-        validation = objValidator->validate(cameraSeries);
+        validation = objValidator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "CameraSeries with a calibrated camera should be valid",
+            "CameraSet with a calibrated camera should be valid",
             true,
             validation.first
         );
     }
     {
         camera2->setIsCalibrated(true);
-        cameraSeries->addCamera(camera2);
-        validation = objValidator->validate(cameraSeries);
+        camera_set->add_camera(camera2);
+        validation = objValidator->validate(camera_set);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
-            "CameraSeries with two cameras should NOT be valid",
+            "CameraSet with two cameras should NOT be valid",
             false,
             validation.first
         );
@@ -115,6 +112,4 @@ void MonoCameraTest::testValidator()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::activity::validator
+} // namespace sight::module::activity::validator::ut

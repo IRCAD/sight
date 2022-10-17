@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,13 +35,13 @@ namespace sight::module::ui::history
 struct MODULE_UI_HISTORY_CLASS_API Plugin : public core::runtime::Plugin
 {
     /// Destructor. Do nothing.
-    MODULE_UI_HISTORY_API ~Plugin() noexcept;
+    MODULE_UI_HISTORY_API ~Plugin() noexcept override;
 
     /// Overrides start method. Does nothing.
-    MODULE_UI_HISTORY_API void start();
+    MODULE_UI_HISTORY_API void start() override;
 
     /// Overrides stop method. Does nothing.
-    MODULE_UI_HISTORY_API void stop() noexcept;
+    MODULE_UI_HISTORY_API void stop() noexcept override;
 };
 
 } // namespace sight::module::ui::history

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,17 +40,13 @@ public:
     TUTO01BASICQML_API Plugin() noexcept;
 
     /// Destructor. Do nothing.
-    TUTO01BASICQML_API ~Plugin() noexcept;
+    TUTO01BASICQML_API ~Plugin() noexcept override;
 
     /// Overrides start method. .
-    TUTO01BASICQML_API void start();
+    TUTO01BASICQML_API void start() override;
 
     /// Overrides stop method. Do nothing
-    TUTO01BASICQML_API void stop() noexcept;
-
-    TUTO01BASICQML_API void initialize();
-
-    TUTO01BASICQML_API void uninitialize() noexcept;
+    TUTO01BASICQML_API void stop() noexcept override;
 };
 
 } // namespace Tuto01BasicQml

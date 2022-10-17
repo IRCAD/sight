@@ -36,10 +36,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::base::ut::ReadCsvTest);
 
-namespace sight::io::base
-{
-
-namespace ut
+namespace sight::io::base::ut
 {
 
 //------------------------------------------------------------------------------
@@ -188,6 +185,4 @@ void ReadCsvTest::test_invalidCsv()
     CPPUNIT_ASSERT(size == 0);
 }
 
-} //namespace ut
-
-} //namespace sight::io::base
+} // namespace sight::io::base::ut

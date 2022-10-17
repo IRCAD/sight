@@ -32,9 +32,6 @@
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
 
-#include <boost/static_assert.hpp>
-#include <boost/type_traits.hpp>
-
 #include <map>
 #include <set>
 
@@ -43,7 +40,7 @@ namespace sight::data
 
 class Object;
 
-}
+} // namespace sight::data
 
 namespace sight::service
 {

@@ -65,7 +65,7 @@ public:
     MODULE_UI_QT_API SliceIndexPositionEditor() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API virtual ~SliceIndexPositionEditor() noexcept;
+    MODULE_UI_QT_API ~SliceIndexPositionEditor() noexcept override;
 
 protected:
 
@@ -145,7 +145,7 @@ private:
      * @}
      */
 
-    sight::ui::qt::SliceSelector* m_sliceSelectorPanel;
+    sight::ui::qt::SliceSelector* m_sliceSelectorPanel {};
 
     data::ptr<data::Image, data::Access::inout> m_image {this, "image", true};
 
@@ -156,4 +156,4 @@ private:
     orientation_t m_orientation {orientation_t::Z_AXIS};
 };
 
-} // uiImageQt
+} // namespace sight::module::ui::qt::image

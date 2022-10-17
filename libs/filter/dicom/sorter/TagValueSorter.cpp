@@ -32,12 +32,9 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(sight::filter::dicom::sorter::TagValueSorter);
+SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::sorter::TagValueSorter);
 
-namespace sight::filter::dicom
-{
-
-namespace sorter
+namespace sight::filter::dicom::sorter
 {
 
 const std::string TagValueSorter::s_FILTER_NAME        = "Tag value sorter";
@@ -46,17 +43,15 @@ const std::string TagValueSorter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-TagValueSorter::TagValueSorter(filter::dicom::IFilter::Key) :
-    ISorter()
+TagValueSorter::TagValueSorter(filter::dicom::IFilter::Key /*unused*/) :
+    m_tag(DCM_UndefinedTagKey)
 {
-    m_tag = DCM_UndefinedTagKey;
 }
 
 //-----------------------------------------------------------------------------
 
 TagValueSorter::~TagValueSorter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -98,7 +93,6 @@ const
     data::DicomSeries::DicomContainerType sortedDicom;
 
     OFCondition status;
-    DcmDataset* dataset;
     for(const auto& item : series->getDicomContainer())
     {
         const core::memory::BufferObject::sptr bufferObj = item.second;
@@ -123,7 +117,7 @@ const
         fileFormat.loadAllDataIntoMemory();
         fileFormat.transferEnd();
 
-        dataset = fileFormat.getDataset();
+        DcmDataset* dataset = fileFormat.getDataset();
 
         Sint32 index = 0;
         dataset->findAndGetSint32(m_tag, index);
@@ -155,6 +149,4 @@ const
     return result;
 }
 
-} // namespace sorter
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::sorter

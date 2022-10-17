@@ -28,10 +28,7 @@
 #include <data/Image.hpp>
 #include <data/tools/Color.hpp>
 
-namespace sight::service
-{
-
-namespace parser
+namespace sight::service::parser
 {
 
 //------------------------------------------------------------------------------
@@ -42,17 +39,17 @@ void Image::createConfig(core::tools::Object::sptr _obj)
     SIGHT_ASSERT("Image does not exist.", image);
 
     const auto config = core::runtime::Convert::toPropertyTree(m_cfg).get_child("object");
-    if(config.count("color"))
+    if(config.count("color") != 0U)
     {
-        const std::string colorStr = config.get<std::string>("color");
+        const auto colorStr = config.get<std::string>("color");
 
-        std::uint8_t color[4];
+        std::array<std::uint8_t, 4> color {};
         data::tools::Color::hexaStringToRGBA(colorStr, color);
 
         // Initialize with a dummy 4x4 black image
         image->setSpacing({1, 1, 1});
         image->setOrigin({0, 0, 0});
-        image->resize({4, 4, 1}, core::tools::Type::s_UINT8, data::Image::RGBA);
+        image->resize({4, 4, 1}, core::Type::UINT8, data::Image::RGBA);
 
         const auto dumpLock = image->dump_lock();
         auto itr            = image->begin<sight::data::iterator::rgba>();
@@ -70,6 +67,4 @@ void Image::createConfig(core::tools::Object::sptr _obj)
 
 //------------------------------------------------------------------------------
 
-} //namespace parser
-
-} //namespace sight::service
+} // namespace sight::service::parser

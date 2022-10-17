@@ -23,26 +23,25 @@
 
 #include <core/tools/compare.hpp>
 
+#include <array>
 #include <cmath>
 #include <limits>
 #include <list>
+#include <map>
+#include <unordered_set>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::tools::ut::CompareTest);
 
-namespace sight::core::tools
-{
-
-namespace ut
+namespace sight::core::tools::ut
 {
 
 // Simple class to test the comparison of containers
 struct Double
 {
     Double()
-    {
-    }
+    = default;
 
-    Double(double value) :
+    explicit Double(double value) :
         m_value(value)
     {
     }
@@ -252,10 +251,10 @@ void CompareTest::pointerTest()
 {
     {
         // raw pointers
-        const auto a = new int(42);
-        const auto b = new int(42);
-        const auto c = new int(0);
-        const auto d = a;
+        auto* const a = new int(42);
+        auto* const b = new int(42);
+        auto* const c = new int(0);
+        auto* const d = a;
 
         CPPUNIT_ASSERT(tools::is_equal(a, b));
         CPPUNIT_ASSERT(!tools::is_equal(a, c));
@@ -268,10 +267,10 @@ void CompareTest::pointerTest()
 
     {
         // smart pointers
-        const auto a = std::make_shared<double>(42.0);
-        const auto b = std::make_shared<float>(42.0F);
-        const auto c = std::make_shared<int>(0);
-        const auto d = a;
+        const auto a  = std::make_shared<double>(42.0);
+        const auto b  = std::make_shared<float>(42.0F);
+        const auto c  = std::make_shared<int>(0);
+        const auto& d = a;
 
         CPPUNIT_ASSERT(tools::is_equal(a, b));
         CPPUNIT_ASSERT(!tools::is_equal(a, c));
@@ -365,6 +364,38 @@ void CompareTest::mapTest()
     CPPUNIT_ASSERT(!tools::is_equal(f, i));
 }
 
-} //namespace ut
+//------------------------------------------------------------------------------
 
-} //namespace sight::core::tools
+void CompareTest::unorderedSetTest()
+{
+    // Empty set equality test
+    CPPUNIT_ASSERT(tools::is_equal(std::unordered_set<int>(), std::unordered_set<int>()));
+
+    // Same size, same values, but different order
+    const std::unordered_set<double> a {1.0, 2.0, 3.0};
+    const std::unordered_set<double> b {3.0, 1.0, 2.0};
+
+    CPPUNIT_ASSERT(tools::is_equal(a, b));
+
+    // Same size, one different value
+    const std::unordered_set<double> c {0.0, 2.0, 3.0};
+    CPPUNIT_ASSERT(!tools::is_equal(a, c));
+}
+
+//------------------------------------------------------------------------------
+
+void CompareTest::pairTest()
+{
+    const std::pair<int, double> a {1, 1.0};
+    const std::pair<int, double> b {1, 1.0};
+    const std::pair<int, double> c {1, 2.0};
+    const std::pair<int, double> d {2, 1.0};
+    const std::pair<int, double> e {2, 2.0};
+
+    CPPUNIT_ASSERT(tools::is_equal(a, b));
+    CPPUNIT_ASSERT(!tools::is_equal(a, c));
+    CPPUNIT_ASSERT(!tools::is_equal(a, d));
+    CPPUNIT_ASSERT(!tools::is_equal(a, e));
+}
+
+} // namespace sight::core::tools::ut

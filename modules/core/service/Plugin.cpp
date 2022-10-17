@@ -22,8 +22,6 @@
 
 #include "Plugin.hpp"
 
-#include <core/thread/Pool.hpp>
-
 #include <service/extension/AppConfig.hpp>
 #include <service/extension/AppConfigParameters.hpp>
 #include <service/extension/Config.hpp>
@@ -36,9 +34,8 @@ SIGHT_REGISTER_PLUGIN("sight::module::service::Plugin");
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -52,13 +49,7 @@ void Plugin::start()
 
 //-----------------------------------------------------------------------------
 
-void Plugin::initialize()
-{
-}
-
-//-----------------------------------------------------------------------------
-
-void Plugin::uninitialize()
+void Plugin::stop() noexcept
 {
     // Clear all service configs
     sight::service::extension::Config::getDefault()->clearRegistry();
@@ -71,12 +62,6 @@ void Plugin::uninitialize()
 
     // Clear all service factories
     sight::service::extension::Factory::getDefault()->clearFactory();
-}
-
-//-----------------------------------------------------------------------------
-
-void Plugin::stop() noexcept
-{
 }
 
 //-----------------------------------------------------------------------------

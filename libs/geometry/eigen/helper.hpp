@@ -28,10 +28,7 @@
 
 #include <Eigen/Core>
 
-namespace sight::geometry::eigen
-{
-
-namespace helper
+namespace sight::geometry::eigen::helper
 {
 
 /**
@@ -109,6 +106,4 @@ Eigen::Matrix<T, 4, 4, Eigen::RowMajor> toEigen(const data::Matrix4::csptr _trf)
     return mat;
 }
 
-} //namespace helper
-
-} //namespace sight::geometry::eigen
+} // namespace sight::geometry::eigen::helper

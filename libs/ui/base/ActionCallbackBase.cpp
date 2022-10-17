@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,14 +40,12 @@ const ActionCallbackBase::RegistryKeyType ActionCallbackBase::REGISTRY_KEY = "::
 //-----------------------------------------------------------------------------
 
 ActionCallbackBase::ActionCallbackBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 ActionCallbackBase::~ActionCallbackBase()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -75,10 +73,10 @@ void ActionCallbackBase::check(bool checked)
     SIGHT_ASSERT("Service " << m_sid << " not instanced.", service);
     ui::base::IAction::sptr action = ui::base::IAction::dynamicCast(service);
     SIGHT_ASSERT("Service " << m_sid << " is not an action.", action);
-    checked = (action->isInverted() ? !checked : checked);
-    if(action->getIsActive() != checked)
+    checked = (action->inverted() ? !checked : checked);
+    if(action->checked() != checked)
     {
-        action->setIsActive(checked);
+        action->setChecked(checked);
     }
 }
 

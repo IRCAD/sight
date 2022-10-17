@@ -34,10 +34,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::zip::ut::DirTest);
 
-namespace sight::io::zip
-{
-
-namespace ut
+namespace sight::io::zip::ut
 {
 
 //------------------------------------------------------------------------------
@@ -114,6 +111,4 @@ void DirTest::putFileTest()
     std::filesystem::remove_all(dirPath);
 }
 
-} // namespace ut
-
-} // namespace sight::io::zip
+} // namespace sight::io::zip::ut

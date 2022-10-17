@@ -1,4 +1,4 @@
-sight_add_target(Tuto01BasicQml TYPE APP START ON)
+sight_add_target(Tuto01BasicQml TYPE APP)
 
 find_package(Qt5 QUIET COMPONENTS Core Qml Quick REQUIRED)
 target_link_libraries(Tuto01BasicQml PUBLIC Qt5::Core Qt5::Quick Qt5::Qml)

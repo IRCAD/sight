@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,13 +37,13 @@ class MODULE_SYNC_CLASS_API Plugin : public core::runtime::Plugin
 public:
 
     /// Destructor. Do nothing.
-    MODULE_SYNC_API ~Plugin() noexcept;
+    MODULE_SYNC_API ~Plugin() noexcept override;
 
     /// Do nothing.
-    MODULE_SYNC_API void start();
+    MODULE_SYNC_API void start() override;
 
     /// Do nothing
-    MODULE_SYNC_API void stop() noexcept;
+    MODULE_SYNC_API void stop() noexcept override;
 };
 
 } // namespace sight::module::sync

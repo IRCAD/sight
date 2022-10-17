@@ -32,10 +32,7 @@
 
 #include <string>
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 /**
@@ -66,7 +63,7 @@ public:
 
     UI_QML_API InputDialog(ui::base::GuiBaseObject::Key key);
 
-    UI_QML_API virtual ~InputDialog();
+    UI_QML_API ~InputDialog() override;
 
     /// Set the title of the message box
     UI_QML_API void setTitle(const std::string& title) override;
@@ -111,6 +108,4 @@ private:
     EchoMode m_echoMode {EchoMode::DEFAULT};
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

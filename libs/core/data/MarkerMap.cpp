@@ -32,48 +32,46 @@ SIGHT_REGISTER_DATA(sight::data::MarkerMap)
 
 //------------------------------------------------------------------------------
 
-MarkerMap::MarkerMap(data::Object::Key)
+MarkerMap::MarkerMap(data::Object::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-MarkerMap::~MarkerMap()
+void MarkerMap::shallowCopy(const Object::csptr& source)
 {
-}
+    const auto& other = dynamicConstCast(source);
 
-//------------------------------------------------------------------------------
-
-void MarkerMap::shallowCopy(const data::Object::csptr& _source)
-{
-    MarkerMap::csptr other = MarkerMap::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldShallowCopy(_source);
 
     m_markers = other->m_markers;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void MarkerMap::cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& _cache)
+void MarkerMap::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    MarkerMap::csptr other = MarkerMap::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-    this->fieldDeepCopy(_source, _cache);
 
     m_markers = other->m_markers;
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -150,7 +148,7 @@ bool MarkerMap::operator==(const MarkerMap& other) const noexcept
     }
 
     // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

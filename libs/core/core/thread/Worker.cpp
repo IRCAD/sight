@@ -25,6 +25,7 @@
 #include "core/LazyInstantiator.hpp"
 #include "core/mt/types.hpp"
 
+#include <map>
 namespace sight::core::thread
 {
 
@@ -46,8 +47,7 @@ public:
 
     /// Constructor, creates the default worker
     ActiveWorkers()
-    {
-    }
+    = default;
 
     /// Destructor, destroys the default worker and the registered ones if necessary (this sends an error in this case)
     virtual ~ActiveWorkers()
@@ -87,7 +87,7 @@ public:
     {
         core::mt::WriteLock lock(m_registryMutex);
 
-        WorkerMapType::const_iterator it = m_workers.find(key);
+        auto it = m_workers.find(key);
 
         if(it != m_workers.end())
         {
@@ -126,7 +126,7 @@ public:
             return it->second;
         }
 
-        return core::thread::Worker::sptr();
+        return {};
     }
 
     //------------------------------------------------------------------------------
@@ -136,12 +136,42 @@ public:
         return core::LazyInstantiator<ActiveWorkers>::getInstance();
     }
 
+    //------------------------------------------------------------------------------
+
+    core::thread::Worker::sptr getDefaultWorker() const
+    {
+        return m_defaultWorker;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void setDefaultWorker(const core::thread::Worker::sptr& worker)
+    {
+        SIGHT_THROW_IF("default worker can not be null", worker == nullptr);
+
+        SIGHT_THROW_IF(
+            "Can not switch the default worker as the initial one is already used in the application",
+            m_defaultWorker.use_count() > 1
+        );
+
+        m_defaultWorker->stop();
+        m_defaultWorker = worker;
+    }
+
+    //------------------------------------------------------------------------------
+
+    void resetDefaultWorker()
+    {
+        m_defaultWorker->stop();
+        m_defaultWorker.reset();
+    }
+
+private:
+
     /// Specific pointer for the default worker
     core::thread::Worker::sptr m_defaultWorker {core::thread::Worker::New()};
 
-protected:
-
-    typedef std::map<WorkerKeyType, core::thread::Worker::sptr> WorkerMapType;
+    using WorkerMapType = std::map<WorkerKeyType, core::thread::Worker::sptr>;
 
     /// Association key <=> worker
     WorkerMapType m_workers;
@@ -184,32 +214,21 @@ void removeWorker(core::thread::Worker::sptr worker)
 
 core::thread::Worker::sptr getDefaultWorker()
 {
-    return ActiveWorkers::get()->m_defaultWorker;
+    return ActiveWorkers::get()->getDefaultWorker();
 }
 
 //-----------------------------------------------------------------------------
 
 void setDefaultWorker(core::thread::Worker::sptr worker)
 {
-    SIGHT_THROW_IF("default worker can not be null", worker == nullptr);
-    auto registry = ActiveWorkers::get();
-
-    SIGHT_THROW_IF(
-        "Can not switch the default worker as the initial one is already used in the application",
-        registry->m_defaultWorker.use_count() > 1
-    );
-
-    registry->m_defaultWorker->stop();
-    registry->m_defaultWorker = worker;
+    ActiveWorkers::get()->setDefaultWorker(worker);
 }
 
 //------------------------------------------------------------------------------
 
 void resetDefaultWorker()
 {
-    auto registry = ActiveWorkers::get();
-    registry->m_defaultWorker->stop();
-    registry->m_defaultWorker.reset();
+    ActiveWorkers::get()->resetDefaultWorker();
 }
 
 //-----------------------------------------------------------------------------

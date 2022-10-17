@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,15 +35,13 @@ namespace sight::module::ui::qt::calibration
 {
 
 //------------------------------------------------------------------------------
-SOpticalCenterEditor::SOpticalCenterEditor() noexcept
-{
-}
+SOpticalCenterEditor::SOpticalCenterEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SOpticalCenterEditor::~SOpticalCenterEditor() noexcept
-{
-}
+SOpticalCenterEditor::~SOpticalCenterEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -59,12 +57,12 @@ void SOpticalCenterEditor::starting()
     this->create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QVBoxLayout* vLayout  = new QVBoxLayout();
-    QHBoxLayout* cxLayout = new QHBoxLayout();
-    QHBoxLayout* cyLayout = new QHBoxLayout();
-    QHBoxLayout* fyLayout = new QHBoxLayout();
+    auto* vLayout  = new QVBoxLayout();
+    auto* cxLayout = new QHBoxLayout();
+    auto* cyLayout = new QHBoxLayout();
+    auto* fyLayout = new QHBoxLayout();
 
-    QLabel* cxLabel = new QLabel(tr("CCD X:"));
+    auto* cxLabel = new QLabel(tr("CCD X:"));
     m_cxSlider = new QSlider(Qt::Horizontal);
     m_cxLabel  = new QLabel();
 
@@ -72,7 +70,7 @@ void SOpticalCenterEditor::starting()
     cxLayout->addWidget(m_cxSlider);
     cxLayout->addWidget(m_cxLabel);
 
-    QLabel* cyLabel = new QLabel(tr("CCD Y:"));
+    auto* cyLabel = new QLabel(tr("CCD Y:"));
     m_cySlider = new QSlider(Qt::Horizontal);
     m_cyLabel  = new QLabel();
 
@@ -80,7 +78,7 @@ void SOpticalCenterEditor::starting()
     cyLayout->addWidget(m_cySlider);
     cyLayout->addWidget(m_cyLabel);
 
-    QLabel* fyLabel = new QLabel(tr("Fy:"));
+    auto* fyLabel = new QLabel(tr("Fy:"));
     m_fySlider = new QSlider(Qt::Horizontal);
     m_fyLabel  = new QLabel();
 

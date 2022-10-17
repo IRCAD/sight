@@ -42,10 +42,7 @@
 
 #include <string>
 
-namespace sight::module::ui::qt
-{
-
-namespace com
+namespace sight::module::ui::qt::com
 {
 
 static const core::com::Signals::SignalKeyType s_CLICKED_SIG = "clicked";
@@ -54,7 +51,7 @@ static const core::com::Signals::SignalKeyType s_TOGGLED_SIG = "toggled";
 static const core::com::Slots::SlotKeyType s_SET_CHECKED_SLOT       = "setChecked";
 static const core::com::Slots::SlotKeyType s_CHECK_SLOT             = "check";
 static const core::com::Slots::SlotKeyType s_UNCHECK_SLOT           = "uncheck";
-static const core::com::Slots::SlotKeyType s_SET_IS_EXECUTABLE_SLOT = "setIsExecutable";
+static const core::com::Slots::SlotKeyType s_SET_IS_EXECUTABLE_SLOT = "setEnabled";
 static const core::com::Slots::SlotKeyType s_SET_EXECUTABLE_SLOT    = "setExecutable";
 static const core::com::Slots::SlotKeyType s_SET_INEXECUTABLE_SLOT  = "setInexecutable";
 static const core::com::Slots::SlotKeyType s_SET_VISIBLE_SLOT       = "setVisible";
@@ -63,15 +60,14 @@ static const core::com::Slots::SlotKeyType s_HIDE_SLOT              = "hide";
 
 //-----------------------------------------------------------------------------
 
-SSignalButton::SSignalButton() noexcept
+SSignalButton::SSignalButton() noexcept :
+    m_sigClicked(newSignal<ClickedSignalType>(s_CLICKED_SIG)),
+    m_sigToggled(newSignal<ToggledSignalType>(s_TOGGLED_SIG))
 {
-    m_sigClicked = newSignal<ClickedSignalType>(s_CLICKED_SIG);
-    m_sigToggled = newSignal<ToggledSignalType>(s_TOGGLED_SIG);
-
     newSlot(s_SET_CHECKED_SLOT, &SSignalButton::setChecked, this);
     newSlot(s_CHECK_SLOT, &SSignalButton::check, this);
     newSlot(s_UNCHECK_SLOT, &SSignalButton::uncheck, this);
-    newSlot(s_SET_IS_EXECUTABLE_SLOT, &SSignalButton::setIsExecutable, this);
+    newSlot(s_SET_IS_EXECUTABLE_SLOT, &SSignalButton::setEnabled, this);
     newSlot(s_SET_EXECUTABLE_SLOT, &SSignalButton::setExecutable, this);
     newSlot(s_SET_INEXECUTABLE_SLOT, &SSignalButton::setInexecutable, this);
     newSlot(s_SET_VISIBLE_SLOT, &SSignalButton::setVisible, this);
@@ -81,9 +77,8 @@ SSignalButton::SSignalButton() noexcept
 
 //-----------------------------------------------------------------------------
 
-SSignalButton::~SSignalButton() noexcept
-{
-}
+SSignalButton::~SSignalButton() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -157,13 +152,13 @@ void SSignalButton::configuring()
         core::runtime::ConfigurationElement::sptr widthCfg = config->findConfigurationElement("iconWidth");
         if(widthCfg)
         {
-            m_iconWidth = std::stoi(widthCfg->getValue());
+            m_iconWidth = unsigned(std::stoi(widthCfg->getValue()));
         }
 
         core::runtime::ConfigurationElement::sptr heightCfg = config->findConfigurationElement("iconHeight");
         if(heightCfg)
         {
-            m_iconHeight = std::stoi(heightCfg->getValue());
+            m_iconHeight = unsigned(std::stoi(heightCfg->getValue()));
         }
 
         core::runtime::ConfigurationElement::sptr tooltipCfg = config->findConfigurationElement("toolTip");
@@ -182,7 +177,7 @@ void SSignalButton::starting()
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
-    QVBoxLayout* layout = new QVBoxLayout();
+    auto* layout = new QVBoxLayout();
     m_button = new QPushButton(QString::fromStdString(m_text));
     m_button->setEnabled(m_executable);
     layout->addWidget(m_button);
@@ -200,7 +195,7 @@ void SSignalButton::starting()
 
     if(m_iconWidth > 0 && m_iconHeight > 0)
     {
-        m_button->setIconSize(QSize(m_iconWidth, m_iconHeight));
+        m_button->setIconSize(QSize(int(m_iconWidth), int(m_iconHeight)));
     }
 
     if(m_checkable)
@@ -305,9 +300,9 @@ void SSignalButton::uncheck()
 
 //-----------------------------------------------------------------------------
 
-void SSignalButton::setIsExecutable(bool _isExecutable)
+void SSignalButton::setEnabled(bool _isEnabled)
 {
-    m_button->setEnabled(_isExecutable);
+    m_button->setEnabled(_isEnabled);
 }
 
 //-----------------------------------------------------------------------------
@@ -347,6 +342,4 @@ void SSignalButton::hide()
 
 //-----------------------------------------------------------------------------
 
-} // namespace com.
-
-} // namespace sight::module::ui::base.
+} // namespace sight::module::ui::qt::com

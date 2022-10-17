@@ -55,10 +55,9 @@ SShapeExtruder::Triangle2D::Triangle2D(
 ) :
     a(_a),
     b(_b),
-    c(_c)
+    c(_c),
+    id(s_id++)
 {
-    id = s_id++;
-
     // Matrix to rotate of 90 degree over the Z axis.
     const Ogre::Matrix3 quarterRotation {0, -1, 0, 1, 0, 0, 0, 0, 1};
 
@@ -68,13 +67,13 @@ SShapeExtruder::Triangle2D::Triangle2D(
 
     if(a.y != b.y)
     {
-        firstBisectorPos = (a + b) / 2.f;
+        firstBisectorPos = (a + b) / 2.F;
         const Ogre::Vector2 firstEdgeDir = (a - b).normalisedCopy();
         firstBisectorDir = (quarterRotation * Ogre::Vector3(firstEdgeDir.x, firstEdgeDir.y, 0)).xy();
     }
     else
     {
-        firstBisectorPos = (c + b) / 2.f;
+        firstBisectorPos = (c + b) / 2.F;
         const Ogre::Vector2 firstEdgeDir = (c - b).normalisedCopy();
         firstBisectorDir = (quarterRotation * Ogre::Vector3(firstEdgeDir.x, firstEdgeDir.y, 0)).xy();
     }
@@ -84,14 +83,14 @@ SShapeExtruder::Triangle2D::Triangle2D(
 
     if(a.y != c.y)
     {
-        secondBisectorPos = (a + c) / 2.f;
+        secondBisectorPos = (a + c) / 2.F;
         Ogre::Vector2 secondEdgeDir = (a - c).normalisedCopy();
         secondBisectorDir =
             (quarterRotation * Ogre::Vector3(secondEdgeDir.x, secondEdgeDir.y, 0)).xy();
     }
     else
     {
-        secondBisectorPos = (b + c) / 2.f;
+        secondBisectorPos = (b + c) / 2.F;
         Ogre::Vector2 secondEdgeDir = (b - c).normalisedCopy();
         secondBisectorDir =
             (quarterRotation * Ogre::Vector3(secondEdgeDir.x, secondEdgeDir.y, 0)).xy();
@@ -109,8 +108,8 @@ SShapeExtruder::Triangle2D::Triangle2D(
     center = Ogre::Vector2(intersectX, intersectY);
     radius = a.distance(center);
 
-    const Ogre::Vector2 baryDir(((a + b) / 2.f) - c);
-    barycentre = c + 2.f / 3.f * baryDir;
+    const Ogre::Vector2 baryDir(((a + b) / 2.F) - c);
+    barycentre = c + 2.F / 3.F * baryDir;
 }
 
 //------------------------------------------------------------------------------
@@ -130,12 +129,7 @@ bool SShapeExtruder::Edge::intersect(Edge _edge) const
     const float t          = qpXs / rXs;
     const float u          = qpXr / rXs;
 
-    if(rXs != 0 && t >= 0 && t < 1 && u >= 0 && u < 1)
-    {
-        return true;
-    }
-
-    return false;
+    return rXs != 0 && t >= 0 && t < 1 && u >= 0 && u < 1;
 }
 
 //------------------------------------------------------------------------------
@@ -159,9 +153,8 @@ SShapeExtruder::SShapeExtruder() noexcept
 
 //-----------------------------------------------------------------------------
 
-SShapeExtruder::~SShapeExtruder() noexcept
-{
-}
+SShapeExtruder::~SShapeExtruder() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -175,16 +168,19 @@ void SShapeExtruder::configuring()
     m_priority = config.get<int>(s_PRIORITY_CONFIG, m_priority);
     m_extrude  = config.get<bool>(s_EXTRUDE_CONFIG, m_extrude);
 
-    const auto divideBy255 = std::bind(std::divides<float>(), std::placeholders::_1, 255.f);
+    const auto divideBy255 = [](auto&& PH1, auto&& ...)
+                             {
+                                 return std::divides<>()(std::forward<decltype(PH1)>(PH1), 255.F);
+                             };
 
     const auto hexaLineColor = config.get<std::string>(s_LINE_COLOR_CONFIG, "#FFFFFF");
-    std::array<std::uint8_t, 4> lineColor;
-    data::tools::Color::hexaStringToRGBA(hexaLineColor, lineColor.data());
+    std::array<std::uint8_t, 4> lineColor {};
+    data::tools::Color::hexaStringToRGBA(hexaLineColor, lineColor);
     std::transform(lineColor.begin(), lineColor.end(), m_lineColor.ptr(), divideBy255);
 
     const auto hexaEdgeColor = config.get<std::string>(s_EDGE_COLOR_CONFIG, "#FFFFFF");
-    std::array<std::uint8_t, 4> edgeColor;
-    data::tools::Color::hexaStringToRGBA(hexaEdgeColor, edgeColor.data());
+    std::array<std::uint8_t, 4> edgeColor {};
+    data::tools::Color::hexaStringToRGBA(hexaEdgeColor, edgeColor);
     std::transform(edgeColor.begin(), edgeColor.end(), m_edgeColor.ptr(), divideBy255);
 }
 
@@ -296,7 +292,7 @@ void SShapeExtruder::deleteLastMesh()
 
     data::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
 
-    if(reconstructions.size() > 0)
+    if(!reconstructions.empty())
     {
         reconstructions.pop_back();
         extrudedMeshes->setReconstructionDB(reconstructions);
@@ -366,7 +362,7 @@ std::tuple<Ogre::Vector3, Ogre::Vector3, Ogre::Vector3> SShapeExtruder::getNearF
 
 //-----------------------------------------------------------------------------
 
-void SShapeExtruder::wheelEvent(Modifier, int, int, int)
+void SShapeExtruder::wheelEvent(Modifier /*_mods*/, int /*_angleDelta*/, int /*_x*/, int /*_y*/)
 {
     if(m_interactionEnableState)
     {
@@ -378,7 +374,7 @@ void SShapeExtruder::wheelEvent(Modifier, int, int, int)
 
 //-----------------------------------------------------------------------------
 
-void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int _y)
+void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
 {
     if(m_toolEnableState && (_button == MouseButton::LEFT || _button == MouseButton::RIGHT))
     {
@@ -441,7 +437,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
         else if(_button == MouseButton::RIGHT)
         {
             // Remove the last clicked point.
-            if(m_lassoToolPositions.size() > 0)
+            if(!m_lassoToolPositions.empty())
             {
                 m_lassoEdgePositions.pop_back();
                 do
@@ -450,11 +446,11 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
                     m_lassoNearPositions.pop_back();
                     m_lassoFarPositions.pop_back();
                 }
-                while(m_lassoToolPositions.size() > 0 && m_lassoToolPositions.back() != m_lassoEdgePositions.back());
+                while(!m_lassoToolPositions.empty() && m_lassoToolPositions.back() != m_lassoEdgePositions.back());
             }
 
             // Clear the last line if it's empty.
-            if(m_lassoToolPositions.size() == 0)
+            if(m_lassoToolPositions.empty())
             {
                 m_interactionEnableState = false;
                 m_lastLassoLine->clear();
@@ -469,7 +465,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
         // Draw the last lasso line.
         m_lastLassoLine->clear();
 
-        SIGHT_ASSERT("Lasso positions must have at east one point", m_lassoToolPositions.size() > 0);
+        SIGHT_ASSERT("Lasso positions must have at east one point", !m_lassoToolPositions.empty());
 
         m_lastLassoLine->begin(
             m_materialAdaptor->getMaterialName(),
@@ -490,7 +486,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier, int _x, int
 
 //-----------------------------------------------------------------------------
 
-void SShapeExtruder::buttonDoublePressEvent(MouseButton _button, Modifier, int _x, int _y)
+void SShapeExtruder::buttonDoublePressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
 {
     if(m_interactionEnableState && _button == MouseButton::LEFT)
     {
@@ -533,7 +529,7 @@ void SShapeExtruder::buttonDoublePressEvent(MouseButton _button, Modifier, int _
 
 //-----------------------------------------------------------------------------
 
-void SShapeExtruder::mouseMoveEvent(MouseButton _button, Modifier, int _x, int _y, int, int)
+void SShapeExtruder::mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/)
 {
     if(m_interactionEnableState)
     {
@@ -560,7 +556,7 @@ void SShapeExtruder::mouseMoveEvent(MouseButton _button, Modifier, int _x, int _
         }
 
         // Draw the last lasso line.
-        SIGHT_ASSERT("Lasso positions must have at east one point", m_lassoToolPositions.size() > 0);
+        SIGHT_ASSERT("Lasso positions must have at east one point", !m_lassoToolPositions.empty());
 
         m_lastLassoLine->beginUpdate(0);
 
@@ -577,7 +573,7 @@ void SShapeExtruder::mouseMoveEvent(MouseButton _button, Modifier, int _x, int _
 
 //-----------------------------------------------------------------------------
 
-void SShapeExtruder::buttonReleaseEvent(MouseButton, Modifier, int, int)
+void SShapeExtruder::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/)
 {
     if(m_interactionEnableState && m_leftButtonMoveState)
     {
@@ -622,7 +618,7 @@ void SShapeExtruder::drawLasso()
 
     // Draw the spheres at the edge of each line.
     const unsigned int sample = 16;
-    const float deltaRing     = static_cast<float>(Ogre::Math::PI / sample);
+    const auto deltaRing      = static_cast<float>(Ogre::Math::PI / sample);
     const float deltaSeg      = 2 * static_cast<float>(Ogre::Math::PI / sample);
 
     for(const Ogre::Vector3 pos : m_lassoEdgePositions)
@@ -687,10 +683,10 @@ void SShapeExtruder::triangulatePoints() const
     }
     else if(m_lassoNearPositions.size() == 3)
     {
-        triangulation.push_back(Triangle3D(m_lassoNearPositions[0], m_lassoNearPositions[1], m_lassoNearPositions[2]));
+        triangulation.emplace_back(m_lassoNearPositions[0], m_lassoNearPositions[1], m_lassoNearPositions[2]);
         if(m_extrude)
         {
-            triangulation.push_back(Triangle3D(m_lassoFarPositions[0], m_lassoFarPositions[1], m_lassoFarPositions[2]));
+            triangulation.emplace_back(m_lassoFarPositions[0], m_lassoFarPositions[1], m_lassoFarPositions[2]);
         }
     }
 
@@ -807,12 +803,12 @@ void SShapeExtruder::generateDelaunayTriangulation(
     std::vector<Ogre::Vector2> points;
     for(const Ogre::Vector3 point : _points)
     {
-        const Ogre::Vector2 viewPoint = (viewMatrix * Ogre::Vector4(point, 1.f)).xy();
+        const Ogre::Vector2 viewPoint = (viewMatrix * Ogre::Vector4(point, 1.F)).xy();
         points.push_back(viewPoint);
     }
 
     // Get the depth of the 2D plane.
-    const float depth = (viewMatrix * Ogre::Vector4(_points[0], 1.f)).z;
+    const float depth = (viewMatrix * Ogre::Vector4(_points[0], 1.F)).z;
 
     // Compute the bounding box of points.
     const float min = std::numeric_limits<float>::lowest();
@@ -834,8 +830,8 @@ void SShapeExtruder::generateDelaunayTriangulation(
 
     // Compute a triangle large enough to contains all points.
     const Ogre::Vector2 bottomLeft = minBound;
-    const Ogre::Vector2 bottomRight(minBound.x + (maxBound.x - minBound.x) * 2.f, minBound.y);
-    const Ogre::Vector2 topLeft(minBound.x, minBound.y + (maxBound.y - minBound.y) * 2.f);
+    const Ogre::Vector2 bottomRight(minBound.x + (maxBound.x - minBound.x) * 2.F, minBound.y);
+    const Ogre::Vector2 topLeft(minBound.x, minBound.y + (maxBound.y - minBound.y) * 2.F);
     const Triangle2D superTriangle(bottomLeft, bottomRight, topLeft);
 
     // Store triangles.
@@ -844,7 +840,7 @@ void SShapeExtruder::generateDelaunayTriangulation(
     // Triangulate points with the Bowyer-Watson algorithm.
     for(const Ogre::Vector2 sommet : points)
     {
-        this->addDelaunayPoint(triangulation, sommet);
+        sight::module::viz::scene3d::adaptor::SShapeExtruder::addDelaunayPoint(triangulation, sommet);
     }
 
     // Some input segment are missing from the triangulation, we insert them.
@@ -871,8 +867,8 @@ void SShapeExtruder::generateDelaunayTriangulation(
     while(count++ < maxIteration && oldPoints.size() != newPoints.size());
 
     // If triangles contains a vertex from original super-triangle, remove them.
-    std::vector<Triangle2D>::const_iterator endTriangulation = triangulation.end();
-    for(std::vector<Triangle2D>::const_iterator it = triangulation.begin() ; it != endTriangulation ; )
+    auto endTriangulation = triangulation.end();
+    for(auto it = triangulation.begin() ; it != endTriangulation ; )
     {
         const bool edgeA = it->a == superTriangle.a || it->a == superTriangle.b || it->a == superTriangle.c;
         const bool edgeB = it->b == superTriangle.a || it->b == superTriangle.b || it->b == superTriangle.c;
@@ -890,7 +886,7 @@ void SShapeExtruder::generateDelaunayTriangulation(
     }
 
     // Remove each triangle that aren't in the shape.
-    for(std::vector<Triangle2D>::const_iterator it = triangulation.begin() ; it != endTriangulation ; )
+    for(auto it = triangulation.begin() ; it != endTriangulation ; )
     {
         const Edge ray(it->barycentre, superTriangle.a);
 
@@ -920,17 +916,17 @@ void SShapeExtruder::generateDelaunayTriangulation(
     // Gets back triangle coordinates to the world space.
     for(const Triangle2D& triangle : triangulation)
     {
-        Ogre::Vector3 a = (viewMatrix.inverse() * Ogre::Vector4(triangle.a.x, triangle.a.y, depth, 1.f)).xyz();
-        Ogre::Vector3 b = (viewMatrix.inverse() * Ogre::Vector4(triangle.b.x, triangle.b.y, depth, 1.f)).xyz();
-        Ogre::Vector3 c = (viewMatrix.inverse() * Ogre::Vector4(triangle.c.x, triangle.c.y, depth, 1.f)).xyz();
+        Ogre::Vector3 a = (viewMatrix.inverse() * Ogre::Vector4(triangle.a.x, triangle.a.y, depth, 1.F)).xyz();
+        Ogre::Vector3 b = (viewMatrix.inverse() * Ogre::Vector4(triangle.b.x, triangle.b.y, depth, 1.F)).xyz();
+        Ogre::Vector3 c = (viewMatrix.inverse() * Ogre::Vector4(triangle.c.x, triangle.c.y, depth, 1.F)).xyz();
 
-        _wordTriangulation.push_back(Triangle3D(a, b, c));
+        _wordTriangulation.emplace_back(a, b, c);
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SShapeExtruder::addDelaunayPoint(std::vector<Triangle2D>& _triangulation, const Ogre::Vector2& _sommet) const
+void SShapeExtruder::addDelaunayPoint(std::vector<Triangle2D>& _triangulation, const Ogre::Vector2& _sommet)
 {
     // first find all the triangles that are no longer valid due to the insertion.
     std::list<Triangle2D> badTriangles;
@@ -1046,7 +1042,7 @@ std::list<Ogre::Vector2> SShapeExtruder::addConstraints(
     std::list<Ogre::Vector2> addedPoints;
     if(!found)
     {
-        const Ogre::Vector2 midPoint = (_edge.a + _edge.b) / 2.f;
+        const Ogre::Vector2 midPoint = (_edge.a + _edge.b) / 2.F;
         this->addDelaunayPoint(_triangulation, midPoint);
 
         const int depth                     = _depth + 1;

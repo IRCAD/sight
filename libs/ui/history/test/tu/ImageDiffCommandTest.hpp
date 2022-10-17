@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::ui::history
-{
-
-namespace ut
+namespace sight::ui::history::ut
 {
 
 class ImageDiffCommandTest : public CPPUNIT_NS::TestFixture
@@ -40,14 +37,12 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     // Test
-    void undoredoTest();
-    void getSizeTest();
+    static void undoredoTest();
+    static void getSizeTest();
 };
 
-} //namespace ut
-
-} //namespace sight::ui::history
+} // namespace sight::ui::history::ut

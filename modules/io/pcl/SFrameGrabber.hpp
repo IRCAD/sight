@@ -86,7 +86,7 @@ public:
     MODULE_IO_PCL_API SFrameGrabber() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_IO_PCL_API virtual ~SFrameGrabber() noexcept;
+    MODULE_IO_PCL_API ~SFrameGrabber() noexcept override = default;
 
 protected:
 
@@ -128,16 +128,16 @@ private:
     void grabImage();
 
     /// state of the loop mode
-    bool m_loopVideo;
+    bool m_loopVideo {false};
 
     /// state of the timeline initialization
-    bool m_isInitialized;
+    bool m_isInitialized {false};
 
     /// fps used to read the video
-    unsigned int m_fps;
+    unsigned int m_fps {30};
 
     /// counter used by the image reader
-    std::size_t m_imageCount;
+    std::size_t m_imageCount {0};
 
     core::thread::Timer::sptr m_timer;
 

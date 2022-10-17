@@ -25,39 +25,35 @@
 #include "io/dicom/helper/Encoding.hpp"
 
 #include <core/base.hpp>
-#include <core/tools/IntrinsicTypes.hpp>
 
 #include <gdcmGlobal.h>
 #include <gdcmPhotometricInterpretation.h>
 #include <gdcmPixelFormat.h>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 //------------------------------------------------------------------------------
 
-typedef std::map<core::tools::Type, gdcm::PixelFormat::ScalarType> PixelTypeConversionMapType;
+using PixelTypeConversionMapType = std::map<core::Type, gdcm::PixelFormat::ScalarType>;
 
 static const PixelTypeConversionMapType s_PIXEL_TYPE_CONVERSION_MAP = {
-    {core::tools::Type::create("uint8"), gdcm::PixelFormat::UINT8},
-    {core::tools::Type::create("int8"), gdcm::PixelFormat::INT8},
-    // {core::tools::Type::create("XXX")    , gdcm::PixelFormat::UINT12}  , // Unsupported by VTK Render
-    // {core::tools::Type::create("XXX")    , gdcm::PixelFormat::INT12}   , // Unsupported by VTK Render
-    {core::tools::Type::create("uint16"), gdcm::PixelFormat::UINT16},
-    {core::tools::Type::create("int16"), gdcm::PixelFormat::INT16},
-    {core::tools::Type::create("uint32"), gdcm::PixelFormat::UINT32},
-    {core::tools::Type::create("int32"), gdcm::PixelFormat::INT32},
-    // { core::tools::Type::create("XXX")   , gdcm::PixelFormat::FLOAT16} , // Unsupported by VTK Render
-    {core::tools::Type::create("float"), gdcm::PixelFormat::FLOAT32},
-    {core::tools::Type::create("double"), gdcm::PixelFormat::FLOAT64}
+    {core::Type::UINT8, gdcm::PixelFormat::UINT8},
+    {core::Type::INT8, gdcm::PixelFormat::INT8},
+    // {core::Type::XXX    , gdcm::PixelFormat::UINT12}  , // Unsupported by VTK Render
+    // {core::Type::XXX    , gdcm::PixelFormat::INT12}   , // Unsupported by VTK Render
+    {core::Type::UINT16, gdcm::PixelFormat::UINT16},
+    {core::Type::INT16, gdcm::PixelFormat::INT16},
+    {core::Type::UINT32, gdcm::PixelFormat::UINT32},
+    {core::Type::INT32, gdcm::PixelFormat::INT32},
+    // { core::Type::XXX   , gdcm::PixelFormat::FLOAT16} , // Unsupported by VTK Render
+    {core::Type::FLOAT, gdcm::PixelFormat::FLOAT32},
+    {core::Type::DOUBLE, gdcm::PixelFormat::FLOAT64}
 };
 
 //------------------------------------------------------------------------------
 
-const gdcm::PixelFormat DicomDataTools::getPixelType(const core::tools::Type& type)
+gdcm::PixelFormat DicomDataTools::getPixelType(const core::Type& type)
 {
     auto it = s_PIXEL_TYPE_CONVERSION_MAP.find(type);
     if(it != s_PIXEL_TYPE_CONVERSION_MAP.end())
@@ -70,7 +66,7 @@ const gdcm::PixelFormat DicomDataTools::getPixelType(const core::tools::Type& ty
 
 //------------------------------------------------------------------------------
 
-const gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
+gdcm::PhotometricInterpretation DicomDataTools::getPhotometricInterpretation(const data::Image::csptr& image)
 {
     gdcm::PhotometricInterpretation pi;
     const std::size_t components = image->numComponents();
@@ -159,7 +155,7 @@ std::size_t DicomDataTools::convertPointToFrameNumber(
     const double zOrigin = (image->numDimensions() > 2) ? (image->getOrigin()[2]) : 0;
 
     // Retrieve Z coordinate
-    const double zCoordinate = static_cast<double>(point->getCoord()[2]);
+    const auto zCoordinate = static_cast<double>(point->getCoord()[2]);
 
     // Compute frame number
     const std::size_t frameNumber = static_cast<std::size_t>(floor((zCoordinate - zOrigin) / zSpacing + 0.5)) + 1;
@@ -197,6 +193,4 @@ double DicomDataTools::convertFrameNumberToZCoordinate(
 
 //------------------------------------------------------------------------------
 
-} //namespace helper
-
-} //namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

@@ -3,13 +3,13 @@
     <parameters>
         <param name="WID_PARENT" />
         <param name="DYNAMICVIEW_SENDER_CHANNEL" default="channel" />
-        <param name="seriesDB" />
+        <param name="seriesSet" />
     </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${seriesDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="${seriesSet}" type="sight::data::SeriesSet" src="ref" />
         <object uid="selection" type="sight::data::Vector" />
 
         <!-- ******************************* UI declaration *********************************** -->
@@ -64,7 +64,7 @@
         <!-- ************************************* Action ************************************ -->
 
         <service uid="importAct" type="sight::module::ui::base::series::SDBMerger" >
-            <inout key="seriesDB" uid="${seriesDB}" />
+            <inout key="seriesSet" uid="${seriesSet}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
 
@@ -87,7 +87,7 @@
             <in key="series" uid="selection" />
             <config>
                 <parameters>
-                    <parameter replace="seriesDB" by="${seriesDB}" />
+                    <parameter replace="seriesSet" by="${seriesSet}" />
                 </parameters>
                 <filter>
                     <mode>include</mode>
@@ -100,7 +100,7 @@
             <in key="series" uid="selection" />
             <config>
                 <parameters>
-                    <parameter replace="seriesDB" by="${seriesDB}" />
+                    <parameter replace="seriesSet" by="${seriesSet}" />
                 </parameters>
                 <filter>
                     <mode>include</mode>
@@ -112,7 +112,7 @@
         <!-- ******************************* Services ***************************************** -->
 
         <service uid="selectorSrv" type="sight::module::ui::qt::series::SSelector" autoConnect="true" >
-            <inout key="seriesDB" uid="${seriesDB}" />
+            <inout key="seriesSet" uid="${seriesSet}" />
             <inout key="selection" uid="selection" />
         </service>
 

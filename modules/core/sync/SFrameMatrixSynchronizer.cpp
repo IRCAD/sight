@@ -25,6 +25,8 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
+#include <cmath>
+
 namespace sight::module::sync
 {
 
@@ -45,17 +47,13 @@ const core::com::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SET_FRAME_DELAY_
 // ----------------------------------------------------------------------------
 
 SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
-    m_tolerance(500.),
-    m_imagesInitialized(false),
-    m_timeStep(33),
+    m_sigSynchronizationDone(newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG)),
+    m_sigSynchronizationSkipped(newSignal<synchronizationSkippedSignalType>(s_SYNCHRONIZATION_SKIPPED_SIG)),
+    m_sigAllMatricesFound(newSignal<AllMatricesFoundSignalType>(s_ALL_MATRICES_FOUND_SIG)),
+    m_sigMatrixSynchronized(newSignal<MatrixSynchronizedSignalType>(s_MATRIX_SYNCHRONIZED_SIG)),
+    m_sigMatrixUnsynchronized(newSignal<MatrixUnsynchronizedSignalType>(s_MATRIX_UNSYNCHRONIZED_SIG)),
     m_lastTimestamp(std::numeric_limits<double>::lowest())
 {
-    m_sigSynchronizationDone    = newSignal<SynchronizationDoneSignalType>(s_SYNCHRONIZATION_DONE_SIG);
-    m_sigSynchronizationSkipped = newSignal<synchronizationSkippedSignalType>(s_SYNCHRONIZATION_SKIPPED_SIG);
-    m_sigAllMatricesFound       = newSignal<AllMatricesFoundSignalType>(s_ALL_MATRICES_FOUND_SIG);
-    m_sigMatrixSynchronized     = newSignal<MatrixSynchronizedSignalType>(s_MATRIX_SYNCHRONIZED_SIG);
-    m_sigMatrixUnsynchronized   = newSignal<MatrixUnsynchronizedSignalType>(s_MATRIX_UNSYNCHRONIZED_SIG);
-
     newSlot(s_RESET_TIMELINE_SLOT, &SFrameMatrixSynchronizer::resetTimeline, this);
     newSlot(s_SYNCHRONIZE_SLOT, &SFrameMatrixSynchronizer::synchronize, this);
     newSlot(s_SET_FRAME_DELAY_SLOT, &SFrameMatrixSynchronizer::setFrameDelay, this);
@@ -63,19 +61,18 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
 
 //-----------------------------------------------------------------------------
 
-SFrameMatrixSynchronizer::~SFrameMatrixSynchronizer() noexcept
-{
-}
+SFrameMatrixSynchronizer::~SFrameMatrixSynchronizer() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
 service::IService::KeyConnectionsMap SFrameMatrixSynchronizer::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_FRAMETL_INPUT, data::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT);
-    connections.push(s_FRAMETL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MATRIXTL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {
+        {s_FRAMETL_INPUT, data::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT},
+        {s_FRAMETL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT},
+        {s_MATRIXTL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT}
+    };
 }
 
 // ----------------------------------------------------------------------------
@@ -87,11 +84,6 @@ void SFrameMatrixSynchronizer::configuring()
     const auto framerate = cfg.get<unsigned int>("framerate", 30);
     m_timeStep  = framerate != 0 ? 1000 / cfg.get<unsigned int>("framerate", 30) : 0;
     m_tolerance = cfg.get<unsigned int>("tolerance", 500);
-
-    if(framerate != 0)
-    {
-        m_updateMask = OBJECT_RECEIVED;
-    }
 }
 
 // ----------------------------------------------------------------------------
@@ -146,11 +138,11 @@ void SFrameMatrixSynchronizer::starting()
     }
 
     SIGHT_ASSERT("No valid worker for timer.", m_associatedWorker);
-    if(m_timeStep)
+    if(m_timeStep != 0U)
     {
         m_timer = m_associatedWorker->createTimer();
         const auto duration = std::chrono::milliseconds(m_timeStep);
-        m_timer->setFunction(std::bind(&SFrameMatrixSynchronizer::synchronize, this));
+        m_timer->setFunction([this](auto&& ...){synchronize();});
         m_timer->setDuration(duration);
         m_timer->start();
     }
@@ -160,7 +152,7 @@ void SFrameMatrixSynchronizer::starting()
 
 void SFrameMatrixSynchronizer::stopping()
 {
-    if(m_timeStep)
+    if(m_timeStep != 0U)
     {
         m_timer->stop();
     }
@@ -172,7 +164,7 @@ void SFrameMatrixSynchronizer::synchronize()
 {
     m_updateMask |= SYNC_REQUESTED;
 
-    if(!(m_updateMask & OBJECT_RECEIVED))
+    if((m_updateMask & OBJECT_RECEIVED) == 0)
     {
         return;
     }
@@ -189,7 +181,7 @@ void SFrameMatrixSynchronizer::synchronize()
     // Then we get the one with the newest timestamp and the other ones are not considered.
     for(std::size_t i = 0 ; i != m_frameTLs.size() ; ++i)
     {
-        core::HiResClock::HiResClockType tlTimestamp;
+        core::HiResClock::HiResClockType tlTimestamp = NAN;
         {
             const auto tl = m_frameTLs[i].lock();
             SIGHT_ASSERT("Frame TL does not exist", tl);
@@ -217,7 +209,7 @@ void SFrameMatrixSynchronizer::synchronize()
                     std::remove_if(
                         availableFramesTL.begin(),
                         availableFramesTL.end(),
-                        [ = ](std::size_t const& idx)
+                        [ =, this](std::size_t const& idx)
                     {
                         const auto frametl = m_frameTLs[idx].lock();
                         SIGHT_ASSERT("Frame TL does not exist", frametl);
@@ -292,7 +284,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
             if(!m_imagesInitialized)
             {
-                data::Image::PixelFormat format;
+                data::Image::PixelFormat format {data::Image::UNDEFINED};
                 switch(frameTL->getPixelFormat())
                 {
                     case data::FrameTL::PixelFormat::GRAY_SCALE:
@@ -316,31 +308,8 @@ void SFrameMatrixSynchronizer::synchronize()
                         break;
 
                     default:
-                        format = data::Image::UNDEFINED;
-                        FW_DEPRECATED_MSG(
-                            "FrameTL pixel format should be defined, we temporary assume that the format "
-                            "is GrayScale, RGB or RGBA according to the number of components.",
-                            "22.0"
-                        );
-                        // FIXME Support old FrameTL API (sight 22.0)
-                        switch(frameTL->numComponents())
-                        {
-                            case 1:
-                                format = data::Image::GRAY_SCALE;
-                                break;
-
-                            case 3:
-                                format = data::Image::RGB;
-                                break;
-
-                            case 4:
-                                format = data::Image::RGBA;
-                                break;
-
-                            default:
-                                SIGHT_ERROR("Number of component not managed.")
-                                return;
-                        }
+                        SIGHT_ERROR("FrameTL pixel format undefined");
+                        return;
                 }
 
                 image->resize(size, frameTL->getType(), format);
@@ -348,8 +317,8 @@ void SFrameMatrixSynchronizer::synchronize()
                 image->setOrigin(origin);
                 const data::Image::Spacing spacing = {1., 1., 1.};
                 image->setSpacing(spacing);
-                image->setWindowWidth(1);
-                image->setWindowCenter(0);
+                image->setWindowWidth({1.0});
+                image->setWindowCenter({0.0});
 
                 m_imagesInitialized = true;
             }
@@ -368,9 +337,7 @@ void SFrameMatrixSynchronizer::synchronize()
         std::memcpy(&*iter, frameBuff, buffer->getSize());
 
         // Notify
-        auto sig = image->signal<data::Image::BufferModifiedSignalType>(
-            data::Image::s_BUFFER_MODIFIED_SIG
-        );
+        auto sig = image->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
         sig->asyncEmit();
     }
 
@@ -451,7 +418,7 @@ void SFrameMatrixSynchronizer::updating()
 {
     m_updateMask |= OBJECT_RECEIVED;
 
-    if(m_updateMask & SYNC_REQUESTED)
+    if((m_updateMask & SYNC_REQUESTED) != 0)
     {
         this->synchronize();
     }

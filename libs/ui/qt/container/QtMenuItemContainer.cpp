@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,24 +24,20 @@
 
 #include <QAction>
 
-namespace sight::ui::qt
-{
-
-namespace container
+namespace sight::ui::qt::container
 {
 
 //-----------------------------------------------------------------------------
 
-QtMenuItemContainer::QtMenuItemContainer(ui::base::GuiBaseObject::Key key) noexcept :
-    m_menuItem(0)
+QtMenuItemContainer::QtMenuItemContainer(ui::base::GuiBaseObject::Key /*key*/) noexcept :
+    m_menuItem(nullptr)
 {
 }
 
 //-----------------------------------------------------------------------------
 
-QtMenuItemContainer::~QtMenuItemContainer() noexcept
-{
-}
+QtMenuItemContainer::~QtMenuItemContainer() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -73,6 +69,4 @@ QAction* QtMenuItemContainer::getQtMenuItem()
 
 //-----------------------------------------------------------------------------
 
-} // namespace container
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::container

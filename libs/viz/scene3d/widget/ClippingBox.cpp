@@ -39,6 +39,7 @@
 #include <OGRE/OgreViewport.h>
 
 #include <numeric>
+#include <utility>
 
 namespace sight::viz::scene3d::widget
 {
@@ -46,24 +47,24 @@ namespace sight::viz::scene3d::widget
 //-----------------------------------------------------------------------------
 
 ClippingBox::ClippingBox(
-    const std::string& id,
+    std::string id,
     Ogre::SceneNode* parentSceneNode,
     Ogre::Camera* camera,
     Ogre::SceneManager* sceneManager,
     const Ogre::Matrix4& clippingMatrix,
-    const ClippingUpdateCallbackType& clippingUpdateCallback,
+    ClippingUpdateCallbackType clippingUpdateCallback,
     const std::string& boxMtlName,
     const std::string& handleMtlName
 ) :
-    m_id(id),
+    m_id(std::move(id)),
     m_sceneManager(sceneManager),
     m_camera(camera),
     m_volumeSceneNode(parentSceneNode),
     m_widgetSceneNode(m_volumeSceneNode->createChildSceneNode()),
-    m_clippingUpdateCallback(clippingUpdateCallback)
+    m_handleMtl(Ogre::MaterialManager::getSingleton().getByName(handleMtlName, RESOURCE_GROUP)),
+    m_boxMtl(Ogre::MaterialManager::getSingleton().getByName(boxMtlName, RESOURCE_GROUP)),
+    m_clippingUpdateCallback(std::move(clippingUpdateCallback))
 {
-    m_boxMtl    = Ogre::MaterialManager::getSingleton().getByName(boxMtlName, RESOURCE_GROUP);
-    m_handleMtl = Ogre::MaterialManager::getSingleton().getByName(handleMtlName, RESOURCE_GROUP);
     SIGHT_ASSERT("Missing '" + boxMtlName + "' material.", m_boxMtl);
     SIGHT_ASSERT("Missing '" + handleMtlName + "' material.", m_handleMtl);
 
@@ -125,7 +126,7 @@ std::array<Ogre::Vector3,
 Ogre::Vector3 ClippingBox::getFaceCenter(viz::scene3d::vr::IVolumeRenderer::CubeFace _faceName) const
 {
     const auto facePositions = this->getFacePositions(_faceName);
-    return std::accumulate(facePositions.cbegin() + 1, facePositions.cend(), facePositions[0]) / 4.f;
+    return std::accumulate(facePositions.cbegin() + 1, facePositions.cend(), facePositions[0]) / 4.F;
 }
 
 //-----------------------------------------------------------------------------
@@ -192,26 +193,26 @@ void ClippingBox::initWidgets()
 {
     // Create widget materials
     {
-        m_handleMtl->setAmbient(0.1f, 0.1f, 0.1f);
-        m_handleMtl->setDiffuse(1.f, 1.f, 1.f, 1.f);
-        m_handleMtl->setSpecular(0.f, 0.f, 0.f, 1.f);
-        m_handleMtl->setShininess(1.f);
+        m_handleMtl->setAmbient(0.1F, 0.1F, 0.1F);
+        m_handleMtl->setDiffuse(1.F, 1.F, 1.F, 1.F);
+        m_handleMtl->setSpecular(0.F, 0.F, 0.F, 1.F);
+        m_handleMtl->setShininess(1.F);
 
         m_handleHightlightMtl = m_handleMtl->clone(m_id + "_SphereHighlight", true, RESOURCE_GROUP);
-        m_handleHightlightMtl->setAmbient(0.3f, 0.f, 0.f);
-        m_handleHightlightMtl->setDiffuse(0.5f, 0.1f, 0.1f, 1.f);
+        m_handleHightlightMtl->setAmbient(0.3F, 0.F, 0.F);
+        m_handleHightlightMtl->setDiffuse(0.5F, 0.1F, 0.1F, 1.F);
 
-        m_boxMtl->setAmbient(1.f, 1.f, 1.f);
-        m_boxMtl->setDiffuse(0.f, 0.f, 0.f, 1.f);
-        m_boxMtl->setSpecular(0.f, 0.f, 0.f, 1.f);
+        m_boxMtl->setAmbient(1.F, 1.F, 1.F);
+        m_boxMtl->setDiffuse(0.F, 0.F, 0.F, 1.F);
+        m_boxMtl->setSpecular(0.F, 0.F, 0.F, 1.F);
 
         m_boxHighlightMtl = m_boxMtl->clone(m_id + "_FrameHighlight", true, RESOURCE_GROUP);
-        m_boxHighlightMtl->setAmbient(0.f, 1.f, 0.f);
+        m_boxHighlightMtl->setAmbient(0.F, 1.F, 0.F);
 
         m_boxFaceMtl = m_boxMtl->clone(m_id + "_FaceHighlight", true, RESOURCE_GROUP);
-        m_boxFaceMtl->setAmbient(1.f, 1.f, 0.f);
-        m_boxFaceMtl->setDiffuse(0.f, 0.f, 0.f, 0.6f);
-        m_boxFaceMtl->setSpecular(0.f, 0.f, 0.f, 0.6f);
+        m_boxFaceMtl->setAmbient(1.F, 1.F, 0.F);
+        m_boxFaceMtl->setDiffuse(0.F, 0.F, 0.F, 0.6F);
+        m_boxFaceMtl->setSpecular(0.F, 0.F, 0.F, 0.6F);
         m_boxFaceMtl->setSceneBlending(Ogre::SBT_TRANSPARENT_ALPHA);
         m_boxFaceMtl->setDepthWriteEnabled(false);
     }
@@ -255,7 +256,7 @@ void ClippingBox::initWidgets()
     m_selectedFace->end();
 
     // Render highlighted faces after other surfaces but before volumes.
-    m_selectedFace->setRenderQueueGroup(compositor::Core::s_SURFACE_RQ_GROUP_ID + 1);
+    m_selectedFace->setRenderQueueGroup(viz::scene3d::rq::s_SURFACE_ID + 1);
 
     // Create a pickable sphere for each cube face
     for(unsigned i = 0 ; i < 6 ; ++i)
@@ -278,7 +279,7 @@ void ClippingBox::initWidgets()
         const Ogre::Real scaleMin = std::min(volScale[0], std::min(volScale[1], volScale[2]));
 
         // Scale the handle to be 1/100th of the volume's initial size.
-        const Ogre::Vector3 widgetScale((0.01f * scaleMin) / newWidget->getBoundingRadius());
+        const Ogre::Vector3 widgetScale((0.01F * scaleMin) / newWidget->getBoundingRadius());
         sphereSceneNode->setScale(widgetScale);
 
         sphereSceneNode->attachObject(newWidget);
@@ -367,7 +368,7 @@ void ClippingBox::widgetPicked(Ogre::MovableObject* _pickedWidget, int _screenX,
         }
 
         // Check for overlap.
-        const float eps = 0.001f;
+        const float eps = 0.001F;
         for(std::size_t i = 0 ; i < 3 ; ++i)
         {
             if(tmpClippingCube[0][i] > m_clippingCube[1][i])
@@ -388,7 +389,7 @@ void ClippingBox::widgetPicked(Ogre::MovableObject* _pickedWidget, int _screenX,
 
         m_selectedWidget = dynamic_cast<Ogre::Entity*>(_pickedWidget);
         m_selectedWidget->setMaterialName(m_id + "_SphereHighlight", RESOURCE_GROUP);
-        m_selectedWidget->setRenderQueueGroupAndPriority(compositor::Core::s_SURFACE_RQ_GROUP_ID, 65535);
+        m_selectedWidget->setRenderQueueGroupAndPriority(viz::scene3d::rq::s_SURFACE_ID, 65535);
 
         m_clippingUpdateCallback();
     }
@@ -398,7 +399,7 @@ void ClippingBox::widgetPicked(Ogre::MovableObject* _pickedWidget, int _screenX,
 
 void ClippingBox::widgetReleased()
 {
-    if(m_selectedWidget)
+    if(m_selectedWidget != nullptr)
     {
         this->deselectFace();
         m_selectedWidget->setMaterial(m_handleMtl);
@@ -534,10 +535,10 @@ bool ClippingBox::scaleClippingBox(int x, int y, int dy)
         const int height = m_camera->getViewport()->getActualHeight();
 
         // A displacement of 1 pixel along the height axis scales the box by 1/100th of the image's length.
-        const float speed = (volumeSize.length() / 100.f) / static_cast<float>(height);
-        const float scale = 1.0f + static_cast<float>(dy) * speed;
+        const float speed = (volumeSize.length() / 100.F) / static_cast<float>(height);
+        const float scale = 1.0F + static_cast<float>(dy) * speed;
 
-        const Ogre::Vector3 ccCenter = (m_clippingCube[1] + m_clippingCube[0]) / 2.f;
+        const Ogre::Vector3 ccCenter = (m_clippingCube[1] + m_clippingCube[0]) / 2.F;
 
         // Scale clipping cube along its center.
         m_clippingCube[0] = (m_clippingCube[0] - ccCenter) * scale + ccCenter;
@@ -569,7 +570,7 @@ void ClippingBox::setVisibility(bool visibility)
 
 Ogre::AxisAlignedBox ClippingBox::getClippingBox() const
 {
-    return Ogre::AxisAlignedBox(m_clippingCube[0], m_clippingCube[1]);
+    return {m_clippingCube[0], m_clippingCube[1]};
 }
 
 //-----------------------------------------------------------------------------
@@ -578,7 +579,7 @@ Ogre::Matrix4 ClippingBox::getClippingTransform() const
 {
     const auto aaBox = this->getClippingBox();
 
-    const Ogre::Vector3 initialCenter = m_volumeSceneNode->convertLocalToWorldPosition(Ogre::Vector3(0.5f));
+    const Ogre::Vector3 initialCenter = m_volumeSceneNode->convertLocalToWorldPosition(Ogre::Vector3(0.5F));
     Ogre::Matrix4 invCenterTransMx    = Ogre::Matrix4::IDENTITY;
     invCenterTransMx.setTrans(-initialCenter);
 

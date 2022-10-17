@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@ namespace sight::data
 
 class Composite;
 
-}
+} // namespace sight::data
 
 namespace sight::module::io::igtl
 {
@@ -77,7 +77,7 @@ public:
     MODULE_IO_IGTL_API STDataListener();
 
     /// Destructor
-    MODULE_IO_IGTL_API virtual ~STDataListener();
+    MODULE_IO_IGTL_API ~STDataListener() override;
 
 protected:
 
@@ -92,7 +92,7 @@ protected:
 
 private:
 
-    typedef std::map<std::string, unsigned long> MatrixNameIndexType;
+    typedef std::map<std::string, std::uint64_t> MatrixNameIndexType;
 
     ///Push received matrices in timeline
     void manageTimeline(const SPTR(data::Composite)& obj, double timestamp = 0);

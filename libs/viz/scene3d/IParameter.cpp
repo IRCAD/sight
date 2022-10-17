@@ -34,15 +34,12 @@
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
 
-#include <service/macros.hpp>
-
 #include <viz/scene3d/ogre.hpp>
 
 #include <OGRE/OgreGpuProgramParams.h>
 #include <OGRE/OgreMaterial.h>
 #include <OGRE/OgreMaterialManager.h>
 #include <OGRE/OgreTechnique.h>
-#include <OGRE/OgreTextureManager.h>
 
 namespace sight::viz::scene3d
 {
@@ -60,9 +57,7 @@ const core::com::Slots::SlotKeyType IParameter::s_SET_INT3_PARAMETER_SLOT    = "
 
 //------------------------------------------------------------------------------
 
-IParameter::IParameter() noexcept :
-    m_shaderType(Ogre::GPT_FRAGMENT_PROGRAM),
-    m_dirty(true)
+IParameter::IParameter() noexcept
 {
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &IParameter::setBoolParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &IParameter::setColorParameter, this);
@@ -76,9 +71,8 @@ IParameter::IParameter() noexcept :
 
 //------------------------------------------------------------------------------
 
-IParameter::~IParameter() noexcept
-{
-}
+IParameter::~IParameter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -105,10 +99,7 @@ const std::string& IParameter::getParamName() const
 
 service::IService::KeyConnectionsMap IParameter::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_PARAMETER_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
+    return {{s_PARAMETER_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT}};
 }
 
 //------------------------------------------------------------------------------
@@ -124,9 +115,9 @@ void IParameter::configuring()
 
     m_techniqueName = config.get<std::string>("technique", "");
 
-    if(config.count("shaderType"))
+    if(config.count("shaderType") != 0U)
     {
-        const std::string shaderType = config.get<std::string>("shaderType");
+        const auto shaderType = config.get<std::string>("shaderType");
         if(shaderType == "vertex")
         {
             m_shaderType = Ogre::GPT_VERTEX_PROGRAM;
@@ -161,7 +152,7 @@ void IParameter::updating()
         bool bSet                                    = false;
         const Ogre::Material::Techniques& techniques = m_material->getTechniques();
 
-        for(const auto tech : techniques)
+        for(auto* const tech : techniques)
         {
             SIGHT_ASSERT("Technique is not set", tech);
 
@@ -207,12 +198,7 @@ void IParameter::stopping()
 {
     this->getRenderService()->makeCurrent();
     m_material.reset();
-
-    if(m_texture)
-    {
-        Ogre::TextureManager::getSingleton().remove(m_texture);
-        m_texture.reset();
-    }
+    m_texture.reset();
 }
 
 //------------------------------------------------------------------------------
@@ -223,7 +209,7 @@ bool IParameter::setParameter(Ogre::Technique& technique)
     Ogre::GpuProgramParametersSharedPtr params;
 
     // Get the parameters
-    auto pass = technique.getPass(0);
+    auto* pass = technique.getPass(0);
     if(m_shaderType == Ogre::GPT_VERTEX_PROGRAM)
     {
         params = pass->getVertexProgramParameters();
@@ -241,158 +227,169 @@ bool IParameter::setParameter(Ogre::Technique& technique)
         return false;
     }
 
-    if(!params->_findNamedConstantDefinition(m_paramName))
+    if(params->_findNamedConstantDefinition(m_paramName) == nullptr)
     {
         return false;
     }
 
-    auto obj = m_parameter.lock();
-
-    // Set shader parameters
-    std::string objClass = obj->getClassname();
-    if(objClass == "sight::data::Integer")
+    bool updateTexture = false;
     {
-        data::Integer::sptr intValue = data::Integer::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The given integer object is null", intValue);
+        auto obj = m_parameter.lock();
 
-        params->setNamedConstant(m_paramName, static_cast<int>(intValue->value()));
-    }
-    else if(objClass == "sight::data::Float")
-    {
-        data::Float::sptr floatValue = data::Float::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The given float object is null", floatValue);
-
-        params->setNamedConstant(m_paramName, floatValue->value());
-    }
-    else if(objClass == "sight::data::Boolean")
-    {
-        data::Boolean::sptr booleanValue = data::Boolean::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The given boolean object is null", booleanValue);
-
-        params->setNamedConstant(m_paramName, static_cast<int>(booleanValue->value()));
-    }
-    else if(objClass == "sight::data::Color")
-    {
-        data::Color::sptr colorValue = data::Color::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The given color object is null", colorValue);
-
-        float paramValues[4];
-
-        paramValues[0] = colorValue->red();
-        paramValues[1] = colorValue->green();
-        paramValues[2] = colorValue->blue();
-        paramValues[3] = colorValue->alpha();
-
-        Ogre::ColourValue color(paramValues[0], paramValues[1], paramValues[2], paramValues[3]);
-
-        params->setNamedConstant(m_paramName, color);
-    }
-    else if(objClass == "sight::data::PointList")
-    {
-        data::PointList::sptr pointListValue = data::PointList::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The given pointList object is null", pointListValue);
-
-        std::vector<data::Point::sptr> points = pointListValue->getPoints();
-        int nbPoints                          = static_cast<int>(points.size());
-
-        float* paramValues = new float [static_cast<unsigned long long>(nbPoints * 3)];
-
-        for(int i = 0 ; i < nbPoints * 3 ; )
+        // Set shader parameters
+        std::string objClass = obj->getClassname();
+        if(objClass == "sight::data::Integer")
         {
-            paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[0]);
-            i++;
+            data::Integer::sptr intValue = data::Integer::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The given integer object is null", intValue);
 
-            paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[1]);
-            i++;
-
-            paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[2]);
-            i++;
+            params->setNamedConstant(m_paramName, static_cast<int>(intValue->value()));
         }
-
-        params->setNamedConstant(m_paramName, paramValues, points.size(), static_cast<std::size_t>(3));
-
-        delete[] paramValues;
-    }
-    else if(objClass == "sight::data::Matrix4")
-    {
-        data::Matrix4::sptr transValue = data::Matrix4::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The given Matrix4 object is null", transValue);
-
-        float paramValues[16];
-
-        for(int i = 0 ; i < 16 ; i++)
+        else if(objClass == "sight::data::Float")
         {
-            paramValues[i] = static_cast<float>(transValue->getCoefficients()[static_cast<std::size_t>(i)]);
+            data::Float::sptr floatValue = data::Float::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The given float object is null", floatValue);
+
+            params->setNamedConstant(m_paramName, floatValue->value());
         }
-
-        params->setNamedConstant(m_paramName, paramValues, static_cast<std::size_t>(16), static_cast<std::size_t>(1));
-    }
-    else if(objClass == "sight::data::Array")
-    {
-        data::Array::sptr arrayObject = data::Array::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The object is nullptr", arrayObject);
-
-        const std::size_t numComponents = arrayObject->getSize()[0];
-        if(numComponents <= 3)
+        else if(objClass == "sight::data::Boolean")
         {
-            const auto dumpLock = arrayObject->dump_lock();
+            data::Boolean::sptr booleanValue = data::Boolean::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The given boolean object is null", booleanValue);
 
-            if(arrayObject->getType() == core::tools::Type::s_FLOAT)
+            params->setNamedConstant(m_paramName, static_cast<int>(booleanValue->value()));
+        }
+        else if(objClass == "sight::data::Color")
+        {
+            data::Color::sptr colorValue = data::Color::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The given color object is null", colorValue);
+
+            std::array<float, 4> paramValues {};
+
+            paramValues[0] = colorValue->red();
+            paramValues[1] = colorValue->green();
+            paramValues[2] = colorValue->blue();
+            paramValues[3] = colorValue->alpha();
+
+            Ogre::ColourValue color(paramValues[0], paramValues[1], paramValues[2], paramValues[3]);
+
+            params->setNamedConstant(m_paramName, color);
+        }
+        else if(objClass == "sight::data::PointList")
+        {
+            data::PointList::sptr pointListValue = data::PointList::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The given pointList object is null", pointListValue);
+
+            std::vector<data::Point::sptr> points = pointListValue->getPoints();
+            int nbPoints                          = static_cast<int>(points.size());
+
+            auto* paramValues = new float [static_cast<std::uint64_t>(nbPoints * 3)];
+
+            for(int i = 0 ; i < nbPoints * 3 ; )
             {
-                const float* floatValue = static_cast<const float*>(arrayObject->getBuffer());
-                params->setNamedConstant(m_paramName, floatValue, 1, numComponents);
+                paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[0]);
+                i++;
+
+                paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[1]);
+                i++;
+
+                paramValues[i] = static_cast<float>(points[static_cast<std::size_t>(i)]->getCoord()[2]);
+                i++;
             }
-            else if(arrayObject->getType() == core::tools::Type::s_DOUBLE)
+
+            params->setNamedConstant(m_paramName, paramValues, points.size(), static_cast<std::size_t>(3));
+
+            delete[] paramValues;
+        }
+        else if(objClass == "sight::data::Matrix4")
+        {
+            data::Matrix4::sptr transValue = data::Matrix4::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The given Matrix4 object is null", transValue);
+
+            std::array<float, 16> paramValues {};
+
+            for(std::size_t i = 0 ; i < 16 ; i++)
             {
-                const double* doubleValue = static_cast<const double*>(arrayObject->getBuffer());
-                params->setNamedConstant(m_paramName, doubleValue, 1, numComponents);
+                paramValues[i] = static_cast<float>(transValue->getCoefficients()[i]);
             }
-            else if(arrayObject->getType() == core::tools::Type::s_INT32)
+
+            params->setNamedConstant(
+                m_paramName,
+                paramValues.data(),
+                static_cast<std::size_t>(16),
+                static_cast<std::size_t>(1)
+            );
+        }
+        else if(objClass == "sight::data::Array")
+        {
+            data::Array::sptr arrayObject = data::Array::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The object is nullptr", arrayObject);
+
+            const std::size_t numComponents = arrayObject->getSize()[0];
+            if(numComponents <= 3)
             {
-                const int* intValue = static_cast<const int*>(arrayObject->getBuffer());
-                params->setNamedConstant(m_paramName, intValue, 1, numComponents);
+                const auto dumpLock = arrayObject->dump_lock();
+
+                if(arrayObject->getType() == core::Type::FLOAT)
+                {
+                    const auto* floatValue = static_cast<const float*>(arrayObject->getBuffer());
+                    params->setNamedConstant(m_paramName, floatValue, 1, numComponents);
+                }
+                else if(arrayObject->getType() == core::Type::DOUBLE)
+                {
+                    const auto* doubleValue = static_cast<const double*>(arrayObject->getBuffer());
+                    params->setNamedConstant(m_paramName, doubleValue, 1, numComponents);
+                }
+                else if(arrayObject->getType() == core::Type::INT32)
+                {
+                    const int* intValue = static_cast<const int*>(arrayObject->getBuffer());
+                    params->setNamedConstant(m_paramName, intValue, 1, numComponents);
+                }
+                else
+                {
+                    SIGHT_ERROR("Array type not handled: " << arrayObject->getType().name());
+                }
             }
             else
             {
-                SIGHT_ERROR("Array type not handled: " << arrayObject->getType());
+                SIGHT_ERROR("Array size not handled: " << arrayObject->getSize()[0]);
             }
         }
-        else
+        else if(objClass == "sight::data::Image")
         {
-            SIGHT_ERROR("Array size not handled: " << arrayObject->getSize()[0]);
+            data::Image::sptr image = data::Image::dynamicCast(obj.get_shared());
+            SIGHT_ASSERT("The object is nullptr", image);
+
+            if(!m_texture)
+            {
+                m_texture = std::make_shared<sight::viz::scene3d::Texture>(image);
+            }
+
+            // We can reach this code for an another reason than an image modification, for instance when the compositor
+            // is resized. However I don't know how to discriminate the two cases so for now we always copy the image.
+            // :/
+            if(image->getSizeInBytes() != 0U)
+            {
+                // Defer the update of the texture outside the scope of the data lock
+                updateTexture = true;
+            }
+        }
+        // We allow to work on the SRender composite and interact with slots instead
+        else if(objClass != "sight::data::Composite")
+        {
+            SIGHT_ERROR("This Type " << objClass << " isn't supported.");
         }
     }
-    else if(objClass == "sight::data::Image")
+
+    if(updateTexture)
     {
-        data::Image::sptr image = data::Image::dynamicCast(obj.get_shared());
-        SIGHT_ASSERT("The object is nullptr", image);
+        m_texture->update();
 
-        if(!m_texture)
-        {
-            m_texture = Ogre::TextureManager::getSingleton().create(
-                this->getID() + "_TextureParam",
-                viz::scene3d::RESOURCE_GROUP,
-                true
-            );
-        }
+        Ogre::TextureUnitState* texState = pass->getTextureUnitState(m_paramName);
+        texState->setTexture(m_texture->get());
 
-        // We can reach this code for an another reason than an image modification, for instance when the compositor
-        // is resized. However I don't know how to discriminate the two cases so for now we always copy the image. :/
-        if(image->getSizeInBytes())
-        {
-            viz::scene3d::Utils::loadOgreTexture(image, m_texture, Ogre::TEX_TYPE_2D, true);
-
-            Ogre::TextureUnitState* texState = pass->getTextureUnitState(m_paramName);
-            texState->setTexture(m_texture);
-
-            auto texUnitIndex = pass->getTextureUnitStateIndex(texState);
-            params->setNamedConstant(m_paramName, texUnitIndex);
-        }
-    }
-    // We allow to work on the SRender composite and interact with slots instead
-    else if(objClass != "sight::data::Composite")
-    {
-        SIGHT_ERROR("This Type " << objClass << " isn't supported.");
+        auto texUnitIndex = pass->getTextureUnitStateIndex(texState);
+        params->setNamedConstant(m_paramName, texUnitIndex);
     }
 
     return true;
@@ -434,7 +431,12 @@ void IParameter::setColorParameter(std::array<uint8_t, 4> color, std::string nam
             auto paramObject = m_parameter.lock();
             auto colorObject = std::dynamic_pointer_cast<data::Color>(paramObject.get_shared());
             SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Color", colorObject);
-            colorObject->setRGBA(color[0] / 255.f, color[1] / 255.f, color[2] / 255.f, color[3] / 255.f);
+            colorObject->setRGBA(
+                float(color[0]) / 255.F,
+                float(color[1]) / 255.F,
+                float(color[2]) / 255.F,
+                float(color[3]) / 255.F
+            );
         }
         this->updating();
     }
@@ -473,7 +475,7 @@ void IParameter::setInt2Parameter(int value1, int value2, std::string name)
 
             if(arrayObject->empty())
             {
-                arrayObject->resize({2}, core::tools::Type::s_INT32);
+                arrayObject->resize({2}, core::Type::INT32);
             }
 
             const auto dumpLock = arrayObject->dump_lock();
@@ -499,7 +501,7 @@ void IParameter::setInt3Parameter(int value1, int value2, int value3, std::strin
 
             if(arrayObject->empty())
             {
-                arrayObject->resize({3}, core::tools::Type::s_INT32);
+                arrayObject->resize({3}, core::Type::INT32);
             }
 
             const auto dumpLock = arrayObject->dump_lock();
@@ -545,18 +547,17 @@ void IParameter::setDouble2Parameter(double value1, double value2, std::string n
             SIGHT_ASSERT("Shader parameter '" + name + "' is not of type sight::data::Array", arrayObject);
             if(arrayObject->empty())
             {
-                core::tools::Type type = core::tools::Type::create<core::tools::Type::DoubleType>();
-                arrayObject->resize({2}, core::tools::Type::s_DOUBLE);
+                arrayObject->resize({2}, core::Type::DOUBLE);
             }
 
             const auto dumpLock = arrayObject->dump_lock();
 
-            if(arrayObject->getType() == core::tools::Type::s_FLOAT)
+            if(arrayObject->getType() == core::Type::FLOAT)
             {
                 arrayObject->at<float>(0) = static_cast<float>(value1);
                 arrayObject->at<float>(1) = static_cast<float>(value2);
             }
-            else if(arrayObject->getType() == core::tools::Type::s_DOUBLE)
+            else if(arrayObject->getType() == core::Type::DOUBLE)
             {
                 arrayObject->at<double>(0) = value1;
                 arrayObject->at<double>(1) = value2;
@@ -582,19 +583,18 @@ void IParameter::setDouble3Parameter(double value1, double value2, double value3
 
             if(arrayObject->empty())
             {
-                core::tools::Type type = core::tools::Type::create<core::tools::Type::DoubleType>();
-                arrayObject->resize({3}, core::tools::Type::s_DOUBLE);
+                arrayObject->resize({3}, core::Type::DOUBLE);
             }
 
             const auto dumpLock = arrayObject->dump_lock();
 
-            if(arrayObject->getType() == core::tools::Type::s_FLOAT)
+            if(arrayObject->getType() == core::Type::FLOAT)
             {
                 arrayObject->at<float>(0) = static_cast<float>(value1);
                 arrayObject->at<float>(1) = static_cast<float>(value2);
                 arrayObject->at<float>(2) = static_cast<float>(value3);
             }
-            else if(arrayObject->getType() == core::tools::Type::s_DOUBLE)
+            else if(arrayObject->getType() == core::Type::DOUBLE)
             {
                 arrayObject->at<double>(0) = value1;
                 arrayObject->at<double>(1) = value2;

@@ -32,24 +32,21 @@
 #include <QtConcurrent>
 #include <QtCore>
 
-namespace sight::ui::qt
-{
-
-namespace dialog
+namespace sight::ui::qt::dialog
 {
 
 //------------------------------------------------------------------------------
 
-PulseProgressDialog::PulseProgressDialog(ui::base::GuiBaseObject::Key key)
+PulseProgressDialog::PulseProgressDialog(ui::base::GuiBaseObject::Key /*key*/) :
+    m_dialog(new QProgressDialog(qApp->activeWindow()))
 {
-    m_dialog = new QProgressDialog(qApp->activeWindow());
 }
 
 //------------------------------------------------------------------------------
 
 PulseProgressDialog::~PulseProgressDialog()
 {
-    if(m_dialog)
+    if(m_dialog != nullptr)
     {
         m_dialog->hide();
         delete m_dialog;
@@ -89,6 +86,4 @@ void PulseProgressDialog::show()
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::dialog

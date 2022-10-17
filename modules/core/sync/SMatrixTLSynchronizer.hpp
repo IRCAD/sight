@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,11 +76,10 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~SMatrixTLSynchronizer() noexcept
-    {
-    }
+    ~SMatrixTLSynchronizer() noexcept override =
+        default;
 
-    typedef std::map<unsigned long, std::string> MatrixIndexNameType;
+    typedef std::map<std::uint64_t, std::string> MatrixIndexNameType;
 
 protected:
 

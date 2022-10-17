@@ -57,11 +57,9 @@ static const core::com::Slots::SlotKeyType s_SENABLE_SIG     = "enable";
 static const core::com::Slots::SlotKeyType s_DISABLE_SIG     = "disable";
 
 SSelectionMenuButton::SSelectionMenuButton() noexcept :
-    m_text(">"),
-    m_selection(0)
+    m_sigSelected(newSignal<SelectedSignalType>(s_SELECTED_SIG)),
+    m_text(">")
 {
-    m_sigSelected = newSignal<SelectedSignalType>(s_SELECTED_SIG);
-
     newSlot(s_SET_ENABLED_SIG, &SSelectionMenuButton::setEnabled, this);
     newSlot(s_SENABLE_SIG, &SSelectionMenuButton::enable, this);
     newSlot(s_DISABLE_SIG, &SSelectionMenuButton::disable, this);
@@ -69,9 +67,8 @@ SSelectionMenuButton::SSelectionMenuButton() noexcept :
 
 //------------------------------------------------------------------------------
 
-SSelectionMenuButton::~SSelectionMenuButton() noexcept
-{
-}
+SSelectionMenuButton::~SSelectionMenuButton() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -102,7 +99,7 @@ void SSelectionMenuButton::configuring()
 
     std::vector<Configuration> itemCfgs = itemsCfg->find("item");
     SIGHT_ASSERT("At least two items must be defined", itemCfgs.size() >= 2);
-    for(auto itemCfg : itemCfgs)
+    for(const auto& itemCfg : itemCfgs)
     {
         SIGHT_ASSERT("Missing 'text' attribute", itemCfg->hasAttribute("text"));
         SIGHT_ASSERT("Missing 'value' attribute", itemCfg->hasAttribute("value"));
@@ -128,9 +125,9 @@ void SSelectionMenuButton::starting()
     m_pDropDownMenu = new QMenu();
     m_actionGroup   = new QActionGroup(m_pDropDownMenu);
 
-    for(auto item : m_items)
+    for(const auto& item : m_items)
     {
-        QAction* action = new QAction(QString::fromStdString(item.second), m_pDropDownMenu);
+        auto* action = new QAction(QString::fromStdString(item.second), m_pDropDownMenu);
         action->setCheckable(true);
         action->setData(QVariant(item.first));
         m_actionGroup->addAction(action);
@@ -145,7 +142,7 @@ void SSelectionMenuButton::starting()
     QObject::connect(m_actionGroup, SIGNAL(triggered(QAction*)), this, SLOT(onSelection(QAction*)));
     m_dropDownButton->setMenu(m_pDropDownMenu);
 
-    QVBoxLayout* vLayout = new QVBoxLayout();
+    auto* vLayout = new QVBoxLayout();
     vLayout->addWidget(m_dropDownButton);
     vLayout->setContentsMargins(0, 0, 0, 0);
 
@@ -173,7 +170,7 @@ void SSelectionMenuButton::updating()
 
 //------------------------------------------------------------------------------
 
-void SSelectionMenuButton::info(std::ostream& _sstream)
+void SSelectionMenuButton::info(std::ostream& /*_sstream*/)
 {
 }
 

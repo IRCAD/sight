@@ -20,68 +20,74 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "viz/scene3d/vr/IVolumeRenderer.hpp"
 
 #include "viz/scene3d/Layer.hpp"
 
 #include <boost/algorithm/clamp.hpp>
 
-namespace sight::viz::scene3d
+#include <utility>
+
+namespace sight::viz::scene3d::vr
 {
 
-namespace vr
+const std::array<Ogre::Vector3, 8> IVolumeRenderer::s_imagePositions =
 {
+    Ogre::Vector3(1, 1, 1),
+    Ogre::Vector3(1, 0, 1),
+    Ogre::Vector3(1, 1, 0),
+    Ogre::Vector3(0, 1, 1),
+    Ogre::Vector3(0, 0, 1),
+    Ogre::Vector3(1, 0, 0),
+    Ogre::Vector3(0, 1, 0),
+    Ogre::Vector3(0, 0, 0)
+};
 
 //-----------------------------------------------------------------------------
 
 IVolumeRenderer::IVolumeRenderer(
-    const std::string& parentId,
+    std::string parentId,
     Ogre::SceneManager* const sceneManager,
     Ogre::SceneNode* const volumeNode,
-    std::optional<Ogre::TexturePtr> imageTexture,
+    sight::data::Image::csptr image,
+    sight::data::TransferFunction::csptr tf,
     bool with_buffer,
     bool preintegration
 ) :
-    m_parentId(parentId),
+    m_parentId(std::move(parentId)),
     m_sceneManager(sceneManager),
-    m_3DOgreTexture(imageTexture.value_or(Ogre::TextureManager::getSingleton().create(
-                                              m_parentId + "_Texture",
-                                              sight::viz::scene3d::RESOURCE_GROUP,
-                                              true
-                                          ))),
+    m_gpuVolumeTF(std::make_shared<sight::viz::scene3d::TransferFunction>(tf)),
     m_with_buffer(with_buffer),
     m_preintegration(preintegration),
-    m_volumeSceneNode(volumeNode)
+    m_volumeSceneNode(volumeNode),
+    m_camera(m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME)),
+    m_clippedImagePositions(s_imagePositions)
 {
-    m_camera = m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
-
-    m_clippedImagePositions = s_imagePositions;
-
     //Transfer function and preintegration table
     {
-        m_gpuVolumeTF->createTexture(m_parentId + "_VolumeGpuTF");
         m_preIntegrationTable.createTexture(m_parentId);
     }
-}
 
-//------------------------------------------------------------------------------
+    // 3D source texture instantiation
+    m_3DOgreTexture = std::make_shared<sight::viz::scene3d::Texture>(image);
 
-void IVolumeRenderer::update()
-{
-    this->setSampling(m_nbSlices);
-    m_update_pending = false;
+    if(m_with_buffer)
+    {
+        // 3D source texture instantiation
+        m_bufferingTexture = std::make_shared<sight::viz::scene3d::Texture>(image, "_buffered");
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 IVolumeRenderer::~IVolumeRenderer()
 {
-    Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture->getHandle());
     m_3DOgreTexture.reset();
 
     if(m_bufferingTexture)
     {
-        Ogre::TextureManager::getSingleton().remove(m_bufferingTexture->getHandle());
         m_bufferingTexture.reset();
     }
 
@@ -90,25 +96,11 @@ IVolumeRenderer::~IVolumeRenderer()
 
 //------------------------------------------------------------------------------
 
-void IVolumeRenderer::loadImage(const std::shared_ptr<sight::data::Image>& source)
+void IVolumeRenderer::loadImage()
 {
-    SIGHT_ASSERT("source cannot be nullptr", source != nullptr);
-
     if(m_with_buffer)
     {
-        if(m_bufferingTexture == nullptr)
-        {
-            m_bufferingTexture = Ogre::TextureManager::getSingleton().create(
-                m_parentId + "_Texture2",
-                sight::viz::scene3d::RESOURCE_GROUP,
-                true
-            );
-        }
-
-        Utils::convertImageForNegato(
-            m_bufferingTexture.get(),
-            source
-        );
+        m_bufferingTexture->update();
 
         // Swap texture pointers.
         {
@@ -118,14 +110,8 @@ void IVolumeRenderer::loadImage(const std::shared_ptr<sight::data::Image>& sourc
     }
     else
     {
-        sight::viz::scene3d::Utils::convertImageForNegato(m_3DOgreTexture.get(), source);
+        m_3DOgreTexture->update();
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void IVolumeRenderer::updateVolumeTF(std::shared_ptr<data::TransferFunction>&)
-{
 }
 
 //-----------------------------------------------------------------------------
@@ -161,9 +147,9 @@ void IVolumeRenderer::scaleTranslateCube(
     // Scale the volume based on the image's spacing and move it to the image origin.
     m_volumeSceneNode->resetToInitialState();
 
-    const double width  = static_cast<double>(m_3DOgreTexture->getWidth()) * spacing[0];
-    const double height = static_cast<double>(m_3DOgreTexture->getHeight()) * spacing[1];
-    const double depth  = static_cast<double>(m_3DOgreTexture->getDepth()) * spacing[2];
+    const double width  = static_cast<double>(m_3DOgreTexture->width()) * spacing[0];
+    const double height = static_cast<double>(m_3DOgreTexture->height()) * spacing[1];
+    const double depth  = static_cast<double>(m_3DOgreTexture->depth()) * spacing[2];
 
     const Ogre::Vector3 scaleFactors(
         static_cast<float>(width),
@@ -195,24 +181,24 @@ void IVolumeRenderer::updateSampleDistance()
 
     //Closest vertex
     {
-        const auto iterator = std::min_element(
+        const auto iterator = std::min_element( // NOLINT(readability-qualified-auto,llvm-qualified-auto)
             m_clippedImagePositions.begin(),
             m_clippedImagePositions.end(),
             comp
         );
-        const std::size_t index = static_cast<std::size_t>(std::distance(m_clippedImagePositions.begin(), iterator));
+        const auto index = static_cast<std::size_t>(std::distance(m_clippedImagePositions.begin(), iterator));
         m_cameraInfo.closest       = *iterator;
         m_cameraInfo.closest_index = index;
     }
 
     //Furthest vertex
     {
-        const auto iterator = std::max_element(
+        const auto iterator = std::max_element( // NOLINT(readability-qualified-auto,llvm-qualified-auto)
             m_clippedImagePositions.begin(),
             m_clippedImagePositions.end(),
             comp
         );
-        const std::size_t index = static_cast<std::size_t>(std::distance(m_clippedImagePositions.begin(), iterator));
+        const auto index = static_cast<std::size_t>(std::distance(m_clippedImagePositions.begin(), iterator));
 
         m_cameraInfo.furthest       = *iterator;
         m_cameraInfo.furthest_index = index;
@@ -226,7 +212,7 @@ void IVolumeRenderer::updateSampleDistance()
         );
 
     //Then simply uniformly divide it according to the total number of slices
-    m_sampleDistance = total_distance / m_nbSlices;
+    m_sampleDistance = total_distance / static_cast<float>(m_nbSlices);
 
     //Validation
     SIGHT_ASSERT("Sampled distance is NaN.", !std::isnan(m_sampleDistance)); //NaN
@@ -235,6 +221,4 @@ void IVolumeRenderer::updateSampleDistance()
 
 //-----------------------------------------------------------------------------
 
-} // namespace vr
-
-} // namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::vr

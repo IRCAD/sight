@@ -27,10 +27,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::StringTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -51,7 +48,8 @@ void StringTest::tearDown()
 
 void StringTest::methode1()
 {
-    const std::string VALUES[] = {"", "chaine_caractere"};
+    using namespace std::literals::string_literals;
+    const std::array VALUES = {""s, "chaine_caractere"s};
 
     for(const std::string& VALUE : VALUES)
     {
@@ -68,6 +66,4 @@ void StringTest::methode1()
     }
 }
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

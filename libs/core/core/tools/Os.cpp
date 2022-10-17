@@ -32,12 +32,8 @@
 #else
 #   include <link.h>
 #endif
-#include <regex>
 
-namespace sight::core::tools
-{
-
-namespace os
+namespace sight::core::tools::os
 {
 
 //------------------------------------------------------------------------------
@@ -71,7 +67,7 @@ std::string getEnv(const std::string& name, bool* ok)
     {
         *ok = exists;
     }
-    return std::string(exists ? value : "");
+    return {exists ? value : ""};
 #endif
 }
 
@@ -86,47 +82,97 @@ std::string getEnv(const std::string& name, const std::string& defaultValue)
 
 //------------------------------------------------------------------------------
 
-std::string getUserDataDir(std::string company, std::string appName, bool createDirectory)
+inline static std::filesystem::path getUserDir(
+    const std::string& variable,
+    [[maybe_unused]] const std::string& subdirectory_fallback,
+    const std::string& company,
+    const std::string& appName,
+    bool createDirectory = false
+)
 {
-    std::string dataDir;
-#ifdef WIN32
-    dataDir = core::tools::os::getEnv("APPDATA");
-#else
-    bool hasXdgConfigHome     = false;
-    bool hasHome              = false;
-    std::string xdgConfigHome = core::tools::os::getEnv("XDG_CONFIG_HOME", &hasXdgConfigHome);
-    std::string home          = core::tools::os::getEnv("HOME", &hasHome);
-    dataDir = hasXdgConfigHome ? xdgConfigHome : (hasHome ? std::string(home) + "/.config" : "");
+    // get the environment variable for user directory
+    std::filesystem::path dir = core::tools::os::getEnv(variable);
+
+#ifndef WIN32
+    // On Unix, fallback to $HOME / subdirectory_fallback
+    if(dir.empty())
+    {
+        dir = core::tools::os::getEnv("HOME");
+
+        if(dir.empty())
+        {
+            SIGHT_THROW("No $HOME environment set.");
+        }
+        else
+        {
+            dir /= subdirectory_fallback;
+        }
+    }
 #endif
+
+    // Make canonical to be prettier
+    if(!dir.empty())
+    {
+        dir = std::filesystem::weakly_canonical(dir);
+    }
 
     if(!company.empty())
     {
-        dataDir += "/" + company;
+        dir /= company;
     }
 
     if(!appName.empty())
     {
-        dataDir += "/" + appName;
+        dir /= appName;
     }
 
-    if(!dataDir.empty())
+    if(std::filesystem::exists(dir))
     {
-        if(std::filesystem::exists(dataDir))
-        {
-            if(!std::filesystem::is_directory(dataDir))
-            {
-                SIGHT_ERROR(dataDir << " already exists and is not a directory.");
-                dataDir = "";
-            }
-        }
-        else if(createDirectory)
-        {
-            SIGHT_INFO("Creating application data directory: " << dataDir);
-            std::filesystem::create_directories(dataDir);
-        }
+        SIGHT_THROW_IF(
+            dir.string() << " already exists and is not a directory.",
+            !std::filesystem::is_directory(dir)
+        );
+    }
+    else if(createDirectory)
+    {
+        SIGHT_INFO("Creating user application directory: " << dir.string());
+        std::filesystem::create_directories(dir);
     }
 
-    return dataDir;
+    return dir;
+}
+
+//------------------------------------------------------------------------------
+
+std::filesystem::path getUserDataDir(const std::string& appName, bool createDirectory, const std::string& company)
+{
+#ifdef WIN32
+    return getUserDir("APPDATA", "", company, appName, createDirectory);
+#else
+    return getUserDir("XDG_DATA_HOME", ".local/share", company, appName, createDirectory);
+#endif
+}
+
+//------------------------------------------------------------------------------
+
+std::filesystem::path getUserConfigDir(const std::string& appName, bool createDirectory, const std::string& company)
+{
+#ifdef WIN32
+    return getUserDir("APPDATA", "", company, appName, createDirectory);
+#else
+    return getUserDir("XDG_CONFIG_HOME", ".config", company, appName, createDirectory);
+#endif
+}
+
+//------------------------------------------------------------------------------
+
+std::filesystem::path getUserCacheDir(const std::string& appName, bool createDirectory, const std::string& company)
+{
+#ifdef WIN32
+    return getUserDir("APPDATA", "", company, appName, createDirectory);
+#else
+    return getUserDir("XDG_CACHE_HOME", ".cache", company, appName, createDirectory);
+#endif
 }
 
 //------------------------------------------------------------------------------
@@ -150,7 +196,7 @@ static std::string _getWin32SharedLibraryPath(const std::string& _libName)
         std::stringstream err;
         err << "Could not find shared library path, see error below." << std::endl;
         err << "GetModuleHandle failed, error = " << ret << std::endl;
-        SIGHT_THROW_EXCEPTION(core::tools::Exception(err.str()));
+        SIGHT_THROW_EXCEPTION(core::Exception(err.str()));
     }
 
     if(GetModuleFileName(hm, path, sizeof(path)) == NULL)
@@ -159,7 +205,7 @@ static std::string _getWin32SharedLibraryPath(const std::string& _libName)
         std::stringstream err;
         err << "Could not get shared library path, see error below." << std::endl;
         err << "GetModuleFileName failed, error = " << ret << std::endl;
-        SIGHT_THROW_EXCEPTION(core::tools::Exception(err.str()));
+        SIGHT_THROW_EXCEPTION(core::Exception(err.str()));
     }
 
     return path;
@@ -169,7 +215,7 @@ struct FindModuleFunctor
 {
     //------------------------------------------------------------------------------
 
-    static int callback(struct dl_phdr_info* info, std::size_t, void*)
+    static int callback(struct dl_phdr_info* info, std::size_t /*unused*/, void* /*unused*/)
     {
         const std::string libName(info->dlpi_name);
         const std::regex matchModule(s_libName);
@@ -197,24 +243,21 @@ std::filesystem::path getSharedLibraryPath(const std::string& _libName)
 #if defined(WIN32)
     return _getWin32SharedLibraryPath(_libName);
 #else
-    FindModuleFunctor functor;
     FindModuleFunctor::s_location.clear();
     FindModuleFunctor::s_libName = _libName;
     dl_iterate_phdr(&FindModuleFunctor::callback, nullptr);
 
-    if(functor.s_location.empty())
+    if(sight::core::tools::os::FindModuleFunctor::s_location.empty())
     {
         SIGHT_THROW_EXCEPTION(
-            core::tools::Exception(
+            core::Exception(
                 std::string("Could not find shared library path for ")
                 + _libName
             )
         );
     }
-    return functor.s_location;
+    return sight::core::tools::os::FindModuleFunctor::s_location;
 #endif
 }
 
-} // namespace os
-
-} // namespace sight::core::tools
+} // namespace sight::core::tools::os

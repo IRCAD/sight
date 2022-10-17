@@ -42,7 +42,8 @@
 
 #include <OGRE/OgreCamera.h>
 #include <OGRE/OgreSceneNode.h>
-#include <OGRE/OgreTextureManager.h>
+
+#include <memory>
 
 //-----------------------------------------------------------------------------
 
@@ -51,8 +52,7 @@ namespace sight::module::viz::scene3d::adaptor
 
 //-----------------------------------------------------------------------------
 
-SVolumeRender::SVolumeRender() noexcept :
-    m_helperVolumeTF(std::bind(&SVolumeRender::updateVolumeTF, this))
+SVolumeRender::SVolumeRender() noexcept
 {
     // Handle connections between the layer and the volume renderer.
     newSlot(s_NEW_IMAGE_SLOT, &SVolumeRender::newImage, this);
@@ -63,25 +63,26 @@ SVolumeRender::SVolumeRender() noexcept :
     newSlot(s_SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
     newSlot(s_UPDATE_CLIPPING_BOX_SLOT, &SVolumeRender::updateClippingBox, this);
+    newSlot(s_UPDATE_TF_SLOT, &SVolumeRender::updateVolumeTF, this);
 }
 
 //-----------------------------------------------------------------------------
 
-SVolumeRender::~SVolumeRender() noexcept
-{
-}
+SVolumeRender::~SVolumeRender() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
 service::IService::KeyConnectionsMap SVolumeRender::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-
-    connections.push(objects::IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT);
-    connections.push(objects::IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT);
-    connections.push(objects::CLIPPING_MATRIX_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_CLIPPING_BOX_SLOT);
-
-    return connections;
+    return {
+        {objects::IMAGE_IN, data::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT},
+        {objects::IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT},
+        {objects::CLIPPING_MATRIX_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_CLIPPING_BOX_SLOT},
+        {objects::VOLUME_TF_IN, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},
+        {objects::VOLUME_TF_IN, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT},
+        {objects::VOLUME_TF_IN, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT},
+    };
 }
 
 //-----------------------------------------------------------------------------
@@ -108,10 +109,10 @@ void SVolumeRender::configuring()
 
         //SAT
         {
-            m_config.sat.size_ratio = config.get<float>(config::SAT_SIZE_RATIO, 0.25f);
+            m_config.sat.size_ratio = config.get<float>(config::SAT_SIZE_RATIO, 0.25F);
             m_config.sat.shells     = static_cast<unsigned>(config.get<int>(config::SAT_SHELLS, 4));
             m_config.sat.radius     = static_cast<unsigned>(config.get<int>(config::SAT_SHELL_RADIUS, 4));
-            m_config.sat.angle      = config.get<float>(config::SAT_CONE_ANGLE, 0.1f);
+            m_config.sat.angle      = config.get<float>(config::SAT_CONE_ANGLE, 0.1F);
             m_config.sat.samples    = static_cast<unsigned>(config.get<int>(config::SAT_CONE_SAMPLES, 50));
         }
 
@@ -154,13 +155,6 @@ void SVolumeRender::starting()
     auto renderService = this->getRenderService();
     renderService->makeCurrent();
 
-    //Transfer function
-    {
-        const auto image = m_image.lock();
-        const auto tf    = m_tf.lock();
-        m_helperVolumeTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-    }
-
     //Scene (node, manager)
     {
         m_sceneManager = this->getSceneManager();
@@ -174,21 +168,22 @@ void SVolumeRender::starting()
     {
         sight::viz::scene3d::Layer::sptr layer = renderService->getLayer(m_layerID);
 
-        m_volumeRenderer.reset(
-            new sight::viz::scene3d::vr::RayTracingVolumeRenderer(
-                this->getID(),
-                layer,
-                m_volumeSceneNode,
-                {}, //No shared texture
-                m_config.dynamic,
-                m_config.preintegration,
-                m_config.shadows,
-                m_config.sat,
-                {} //Default shader
-            )
-        );
+        const auto image = m_image.lock();
+        const auto tf    = m_tf.lock();
+        m_volumeRenderer = std::make_unique<sight::viz::scene3d::vr::RayTracingVolumeRenderer>(
 
-        m_volumeRenderer->update();
+            this->getID(),
+            layer,
+            m_volumeSceneNode,
+            image.get_shared(),
+            tf.get_shared(),
+            m_config.dynamic,
+            m_config.preintegration,
+            m_config.shadows,
+            m_config.sat
+
+        );
+        m_volumeRenderer->update(tf.get_shared());
     }
 
     m_volumeSceneNode->setVisible(m_isVisible);
@@ -208,9 +203,6 @@ void SVolumeRender::starting()
         this->newImage();
     }
 
-    //Update the transfer function
-    this->updateVolumeTF();
-
     this->requestRender();
 }
 
@@ -218,22 +210,6 @@ void SVolumeRender::starting()
 
 void SVolumeRender::updating()
 {
-}
-
-//------------------------------------------------------------------------------
-
-void SVolumeRender::swapping(std::string_view _key)
-{
-    if(_key == objects::VOLUME_TF_INOUT)
-    {
-        this->getRenderService()->makeCurrent();
-        {
-            const auto image = m_image.lock();
-            const auto tf    = m_tf.lock();
-            m_helperVolumeTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-        }
-        this->updateVolumeTF();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -244,16 +220,13 @@ void SVolumeRender::stopping()
 
     // First wait on all pending buffering tasks and destroy the worker.
     m_bufferingWorker.reset();
-
-    m_helperVolumeTF.removeTFConnections();
-
     m_volumeRenderer.reset();
 
     this->getSceneManager()->destroySceneNode(m_volumeSceneNode);
 
-    const auto transformNode = this->getTransformNode();
+    auto* const transformNode = this->getTransformNode();
 
-    if(transformNode)
+    if(transformNode != nullptr)
     {
         m_sceneManager->getRootSceneNode()->removeChild(transformNode);
         this->getSceneManager()->destroySceneNode(static_cast<Ogre::SceneNode*>(transformNode));
@@ -270,10 +243,8 @@ void SVolumeRender::updateVolumeTF()
     std::lock_guard swapLock(m_mutex);
 
     {
-        data::TransferFunction::sptr tf = m_helperVolumeTF.getTransferFunction();
-        const data::mt::locked_ptr lock(tf);
-
-        m_volumeRenderer->updateVolumeTF(tf);
+        const auto tf = m_tf.lock();
+        m_volumeRenderer->updateVolumeTF(tf.get_shared());
     }
 
     this->requestRender();
@@ -297,10 +268,7 @@ void SVolumeRender::newImage()
         renderService->makeCurrent();
         {
             const auto image = m_image.lock();
-            const auto tf    = m_tf.lock();
-            m_helperVolumeTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-
-            m_volumeRenderer->loadImage(image.get_shared());
+            m_volumeRenderer->loadImage();
         }
         this->updateVolumeTF();
     }
@@ -319,7 +287,7 @@ void SVolumeRender::bufferImage()
             {
                 const auto image = m_image.lock();
 
-                m_volumeRenderer->loadImage(image.get_shared());
+                m_volumeRenderer->loadImage();
 
                 // Switch back to the main thread to compute the proxy geometry.
                 // Ogre can't handle parallel rendering.
@@ -333,7 +301,7 @@ void SVolumeRender::bufferImage()
         this->getRenderService()->makeCurrent();
         {
             const auto image = m_image.lock();
-            m_volumeRenderer->loadImage(image.get_shared());
+            m_volumeRenderer->loadImage();
         }
         this->updateImage();
     }
@@ -347,11 +315,9 @@ void SVolumeRender::updateImage()
 
     this->getRenderService()->makeCurrent();
 
-    const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
     {
-        data::mt::locked_ptr lock(volumeTF);
-
-        m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF);
+        const auto volumeTF = m_tf.lock();
+        m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF.get_shared());
     }
 
     // Create widgets on image update to take the image's size into account.
@@ -376,7 +342,8 @@ void SVolumeRender::updateSampling(unsigned _nbSamples)
 
     SIGHT_ASSERT("Sampling rate must fit in a 16 bit uint.", _nbSamples < 65536);
 
-    m_volumeRenderer->setSampling(static_cast<std::uint16_t>(_nbSamples));
+    const auto tf = m_tf.lock();
+    m_volumeRenderer->setSampling(static_cast<std::uint16_t>(_nbSamples), tf.get_shared());
 
     this->requestRender();
 }
@@ -385,7 +352,7 @@ void SVolumeRender::updateSampling(unsigned _nbSamples)
 
 void SVolumeRender::updateOpacityCorrection(unsigned _opacityCorrection)
 {
-    m_volumeRenderer->setOpacityCorrection(_opacityCorrection);
+    m_volumeRenderer->setOpacityCorrection(int(_opacityCorrection));
     this->requestRender();
 }
 
@@ -489,12 +456,10 @@ void SVolumeRender::togglePreintegration(bool _preintegration)
 
     if(_preintegration)
     {
-        const auto image = m_image.lock();
+        const auto image    = m_image.lock();
+        const auto volumeTF = m_tf.lock();
 
-        const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-        const data::mt::locked_ptr lock(volumeTF);
-
-        m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF);
+        m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF.get_shared());
     }
 
     this->requestRender();
@@ -605,7 +570,7 @@ void SVolumeRender::setIntParameter(int _val, std::string _key)
     this->getRenderService()->makeCurrent();
     std::lock_guard<std::mutex> swapLock(m_mutex);
 
-    const unsigned param = static_cast<unsigned>(_val);
+    const auto param = static_cast<unsigned>(_val);
 
     if(_key == "sampling")
     {
@@ -649,7 +614,7 @@ void SVolumeRender::setDoubleParameter(double _val, std::string _key)
     this->getRenderService()->makeCurrent();
     std::lock_guard swapLock(m_mutex);
 
-    const float param = static_cast<float>(_val);
+    const auto param = static_cast<float>(_val);
 
     if(_key == "colorBleedingFactor")
     {
@@ -671,7 +636,7 @@ void SVolumeRender::setDoubleParameter(double _val, std::string _key)
 
 void SVolumeRender::createWidget()
 {
-    auto clippingMxUpdate = std::bind(&SVolumeRender::updateClippingTM3D, this);
+    auto clippingMxUpdate = [this]{updateClippingTM3D();};
 
     Ogre::Matrix4 ogreClippingMx = Ogre::Matrix4::IDENTITY;
 
@@ -756,11 +721,10 @@ void SVolumeRender::toggleVREffect(VREffectType _vrEffect, bool _enable)
 
         if(m_volumeRenderer->preintegration())
         {
-            const auto image = m_image.lock();
+            const auto image    = m_image.lock();
+            const auto volumeTF = m_tf.lock();
 
-            const data::TransferFunction::sptr volumeTF = m_helperVolumeTF.getTransferFunction();
-            const data::mt::locked_ptr lock(volumeTF);
-            m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF);
+            m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF.get_shared());
         }
 
         this->requestRender();
@@ -821,7 +785,7 @@ void SVolumeRender::updateClippingTM3D()
 
 void SVolumeRender::setVisible(bool _visible)
 {
-    if(m_volumeSceneNode)
+    if(m_volumeSceneNode != nullptr)
     {
         m_volumeSceneNode->setVisible(_visible);
 

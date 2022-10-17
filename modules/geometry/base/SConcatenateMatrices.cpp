@@ -35,15 +35,14 @@ namespace sight::module::geometry::base
 
 // ----------------------------------------------------------------------------
 
-SConcatenateMatrices::SConcatenateMatrices() noexcept
-{
-}
+SConcatenateMatrices::SConcatenateMatrices() noexcept =
+    default;
 
 // ----------------------------------------------------------------------------
 
 void SConcatenateMatrices::configuring()
 {
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
+    using ConfigurationType = core::runtime::ConfigurationElement::sptr;
     std::vector<ConfigurationType> inCfgs = m_configuration->find("in");
     SIGHT_ASSERT("Config must contain one input group named 'matrix'.", inCfgs.size() == 1);
 
@@ -51,7 +50,7 @@ void SConcatenateMatrices::configuring()
 
     std::vector<ConfigurationType> matrixCfgs = inCfgs[0]->find("key");
 
-    for(ConfigurationType cfg : matrixCfgs)
+    for(const ConfigurationType& cfg : matrixCfgs)
     {
         bool invertCurrentMatrix  = false;
         const std::string inverse = cfg->getAttributeValue("inverse");
@@ -115,9 +114,7 @@ void SConcatenateMatrices::updating()
 
 service::IService::KeyConnectionsMap SConcatenateMatrices::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_MATRIX_GROUP_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {{s_MATRIX_GROUP_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT}};
 }
 
 // ----------------------------------------------------------------------------

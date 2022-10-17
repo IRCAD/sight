@@ -59,9 +59,8 @@ SIGHT_REGISTER_PLUGIN("sight::module::ui::qml::Plugin");
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -104,7 +103,7 @@ void Plugin::start()
     iconPath.append(QString::fromStdString(path.string()));
     QIcon::setThemeSearchPaths(iconPath);
 
-    profile->setRunCallback(std::bind(&Plugin::run, this));
+    profile->setRunCallback(run);
 }
 
 //-----------------------------------------------------------------------------
@@ -116,24 +115,15 @@ void Plugin::stop() noexcept
 
 //-----------------------------------------------------------------------------
 
-void setup()
-{
-    core::runtime::getCurrentProfile()->setup();
-}
-
-//-----------------------------------------------------------------------------
-
 int Plugin::run() noexcept
 {
     auto workerQt = core::thread::getDefaultWorker();
-    workerQt->post(std::bind(&setup));
     workerQt->getFuture().wait(); // This is required to start WorkerQt loop
 
-    core::runtime::getCurrentProfile()->cleanup();
     int result = std::any_cast<int>(workerQt->getFuture().get());
     return result;
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::module::ui::qt
+} // namespace sight::module::ui::qml

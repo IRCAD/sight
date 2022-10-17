@@ -40,9 +40,8 @@ class MODULE_VIZ_SCENE3D_CLASS_API SightOgreListener final : public Ogre::LogLis
 public:
 
     /// Does nothing.
-    ~SightOgreListener()
-    {
-    }
+    ~SightOgreListener() override
+    = default;
 
     /**
      * @brief Set Ogre log on Sight log depending on it's LogLevel.
@@ -50,8 +49,8 @@ public:
     MODULE_VIZ_SCENE3D_API void messageLogged(
         const Ogre::String& _message,
         Ogre::LogMessageLevel _lml,
-        bool,
-        const Ogre::String&,
+        bool /*maskDebug*/,
+        const Ogre::String& /*logName*/,
         bool& _skipThisMessage
     ) override;
 };

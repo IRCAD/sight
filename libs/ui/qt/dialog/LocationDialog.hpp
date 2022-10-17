@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,10 +34,7 @@ class QString;
  * @brief       The namespace sight::ui::qt contains classes which provide the implementation of the Gui using Qt
  * library.
  */
-namespace sight::ui::qt
-{
-
-namespace dialog
+namespace sight::ui::qt::dialog
 {
 
 /**
@@ -63,8 +60,8 @@ public:
 
 protected:
 
-    ui::base::dialog::ILocationDialog::Options m_style;
-    ui::base::dialog::ILocationDialog::Types m_type;
+    ui::base::dialog::ILocationDialog::Options m_style {ui::base::dialog::ILocationDialog::NONE};
+    ui::base::dialog::ILocationDialog::Types m_type {ui::base::dialog::ILocationDialog::SINGLE_FILE};
     std::vector<std::pair<std::string, std::string> > m_filters;
 
     /// helper to transform m_filters into qt encoding ("BMP and GIF files (*.bmp *.gif);;PNG files (*.png)"
@@ -76,6 +73,4 @@ protected:
     std::string m_wildcard;
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::dialog

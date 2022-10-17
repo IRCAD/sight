@@ -24,21 +24,15 @@
 
 #include "io/dicom/writer/ie/InformationEntity.hpp"
 
-#include <data/Patient.hpp>
+#include <data/Series.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 /**
  * @brief Patient Information Entity class
  */
-class IO_DICOM_CLASS_API Patient : public io::dicom::writer::ie::InformationEntity<data::Patient>
+class IO_DICOM_CLASS_API Patient : public io::dicom::writer::ie::InformationEntity<data::Series>
 {
 public:
 
@@ -54,14 +48,14 @@ public:
     IO_DICOM_API Patient(
         const SPTR(gdcm::Writer)& writer,
         const SPTR(io::dicom::container::DicomInstance)& instance,
-        const data::Patient::csptr& patient,
+        const data::Series::csptr& series,
         const core::log::Logger::sptr& logger = nullptr,
         ProgressCallback progress             = nullptr,
         CancelRequestedCallback cancel        = nullptr
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~Patient();
+    IO_DICOM_API ~Patient() override;
 
     /**
      * @brief Write Patient Module tags
@@ -70,8 +64,4 @@ public:
     IO_DICOM_API virtual void writePatientModule();
 };
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

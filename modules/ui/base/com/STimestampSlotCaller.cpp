@@ -26,28 +26,20 @@
 #include <core/com/Slots.hxx>
 #include <core/HiResClock.hpp>
 
-#include <data/Camera.hpp>
-#include <data/CameraSeries.hpp>
-
 #include <regex>
 
-namespace sight::module::ui::base
-{
-
-namespace com
+namespace sight::module::ui::base::com
 {
 
 //-----------------------------------------------------------------------------
 
 STimestampSlotCaller::STimestampSlotCaller()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 STimestampSlotCaller::~STimestampSlotCaller()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -61,9 +53,11 @@ void STimestampSlotCaller::configuring()
 
     std::regex re("(.*)/(.*)");
     std::smatch match;
-    std::string src, uid, key;
+    std::string src;
+    std::string uid;
+    std::string key;
 
-    for(ConfigurationType elem : slotCfgs.getElements())
+    for(const ConfigurationType& elem : slotCfgs.getElements())
     {
         src = elem->getValue();
         if(std::regex_match(src, match, re))
@@ -93,7 +87,7 @@ void STimestampSlotCaller::updating()
 {
     core::HiResClock::HiResClockType timestamp = core::HiResClock::getTimeInMilliSec();
 
-    for(SlotInfoType info : m_slotInfos)
+    for(const SlotInfoType& info : m_slotInfos)
     {
         HasSlotIDType HasSlotId               = info.first;
         core::com::Slots::SlotKeyType slotKey = info.second;
@@ -120,6 +114,4 @@ void STimestampSlotCaller::stopping()
 
 //-----------------------------------------------------------------------------
 
-} // namespace com
-
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::base::com

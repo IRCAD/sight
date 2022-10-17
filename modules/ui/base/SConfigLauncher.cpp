@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,20 +41,17 @@ static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 
 //------------------------------------------------------------------------------
 
-SConfigLauncher::SConfigLauncher() noexcept
+SConfigLauncher::SConfigLauncher() noexcept :
+    m_sigLaunched(newSignal<LaunchedSignalType>(s_LAUNCHED_SIG)),
+    m_configLauncher(std::make_unique<service::helper::ConfigLauncher>())
 {
-    m_configLauncher = std::make_unique<service::helper::ConfigLauncher>();
-
-    m_sigLaunched = newSignal<LaunchedSignalType>(s_LAUNCHED_SIG);
-
     newSlot(s_STOP_CONFIG_SLOT, &SConfigLauncher::stopConfig, this);
 }
 
 //------------------------------------------------------------------------------
 
-SConfigLauncher::~SConfigLauncher() noexcept
-{
-}
+SConfigLauncher::~SConfigLauncher() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -84,10 +81,10 @@ void SConfigLauncher::configuring()
 
 //-----------------------------------------------------------------------------
 
-void SConfigLauncher::setIsActive(bool isActive)
+void SConfigLauncher::setChecked(bool isChecked)
 {
-    this->sight::ui::base::IAction::setIsActive(isActive);
-    if(isActive)
+    this->sight::ui::base::IAction::setChecked(isChecked);
+    if(isChecked)
     {
         // Check if the config is already running, this avoids to start a running config.
         if(!m_configLauncher->configIsRunning())
@@ -121,10 +118,10 @@ void SConfigLauncher::stopConfig()
         m_configLauncher->stopConfig();
         service::registry::Proxy::sptr proxies = service::registry::Proxy::getDefault();
         proxies->disconnect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
-        this->setIsActive(false);
+        this->setChecked(false);
     }
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module
+} // namespace sight::module::ui::base

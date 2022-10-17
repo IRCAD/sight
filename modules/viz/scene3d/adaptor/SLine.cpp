@@ -55,13 +55,12 @@ SLine::SLine() noexcept
 
 //-----------------------------------------------------------------------------
 
-SLine::~SLine() noexcept
-{
-}
+SLine::~SLine() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
-void SLine::setVisible(bool)
+void SLine::setVisible(bool /*_visible*/)
 {
     this->updating();
 }
@@ -86,12 +85,12 @@ void SLine::configuring()
     m_length = config.get<float>(s_LENGTH_CONFIG, m_length);
 
     const std::string color = config.get(s_COLOR_CONFIG, "#FFFFFF");
-    std::uint8_t rgba[4];
+    std::array<std::uint8_t, 4> rgba {};
     data::tools::Color::hexaStringToRGBA(color, rgba);
-    m_color.r = static_cast<float>(rgba[0]) / 255.f;
-    m_color.g = static_cast<float>(rgba[1]) / 255.f;
-    m_color.b = static_cast<float>(rgba[2]) / 255.f;
-    m_color.a = static_cast<float>(rgba[3]) / 255.f;
+    m_color.r = static_cast<float>(rgba[0]) / 255.F;
+    m_color.g = static_cast<float>(rgba[1]) / 255.F;
+    m_color.b = static_cast<float>(rgba[2]) / 255.F;
+    m_color.a = static_cast<float>(rgba[3]) / 255.F;
 
     m_dashed     = config.get(s_DASHED_CONFIG, m_dashed);
     m_dashLength = config.get(s_DASHLENGTH_CONFIG, m_dashLength);
@@ -132,8 +131,8 @@ void SLine::starting()
     this->drawLine(false);
 
     // Set the bounding box of your Manual Object
-    Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
-    Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
+    Ogre::Vector3 bbMin(-0.1F, -0.1F, 0.F);
+    Ogre::Vector3 bbMax(0.1F, 0.1F, m_length);
     Ogre::AxisAlignedBox box(bbMin, bbMax);
     m_line->setBoundingBox(box);
 
@@ -159,7 +158,7 @@ void SLine::stopping()
     this->getRenderService()->makeCurrent();
     this->unregisterServices();
     m_material = nullptr;
-    if(m_line)
+    if(m_line != nullptr)
     {
         m_line->detachFromParent();
         this->getSceneManager()->destroyManualObject(m_line);
@@ -171,8 +170,7 @@ void SLine::stopping()
 
 void SLine::attachNode(Ogre::MovableObject* object)
 {
-    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
-    Ogre::SceneNode* transNode     = this->getTransformNode();
+    Ogre::SceneNode* transNode = this->getTransformNode();
     SIGHT_ASSERT("Transform node shouldn't be null", transNode);
 
     transNode->setVisible(m_isVisible);
@@ -183,7 +181,7 @@ void SLine::attachNode(Ogre::MovableObject* object)
 
 void SLine::drawLine(bool _existingLine)
 {
-    if(_existingLine == false)
+    if(!_existingLine)
     {
         m_line->begin(
             m_materialAdaptor->getMaterialName(),
@@ -198,12 +196,15 @@ void SLine::drawLine(bool _existingLine)
 
     m_line->colour(m_color);
 
-    if(m_dashed == true)
+    if(m_dashed)
     {
-        for(float i = 0.f ; i <= m_length ; i += m_dashLength * 2)
+        float f = 0.F;
+        for(std::size_t i = 0 ; i <= static_cast<std::size_t>(m_length / (m_dashLength * 2)) ; i++)
         {
-            m_line->position(0, 0, i);
-            m_line->position(0, 0, i + m_dashLength);
+            m_line->position(0, 0, f);
+            m_line->position(0, 0, f + m_dashLength);
+
+            f += m_dashLength * 2;
         }
     }
     else
@@ -227,8 +228,8 @@ void SLine::updateLength(float _length)
     this->drawLine(true);
 
     // Set the bounding box of your Manual Object
-    Ogre::Vector3 bbMin(-0.1f, -0.1f, 0.f);
-    Ogre::Vector3 bbMax(0.1f, 0.1f, m_length);
+    Ogre::Vector3 bbMin(-0.1F, -0.1F, 0.F);
+    Ogre::Vector3 bbMax(0.1F, 0.1F, m_length);
     Ogre::AxisAlignedBox box(bbMin, bbMax);
     m_line->setBoundingBox(box);
 

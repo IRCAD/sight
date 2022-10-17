@@ -11,6 +11,7 @@ add_dependencies(
     module_io_vtk
     module_viz_sample
     module_filter_mesh
+    module_data
 )
 
 # Allow dark theme via module_ui_qt

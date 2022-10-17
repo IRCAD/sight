@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,31 +39,22 @@
 #include <Qt3DRender/QGeometry>
 #include <Qt3DRender/QGeometryRenderer>
 
-namespace sight::viz::qt3d
-{
-
-namespace data
+namespace sight::viz::qt3d::data
 {
 
 Mesh::Mesh(Qt3DCore::QNode* _parent) :
-    QEntity(_parent)
+    QEntity(_parent),
+    m_scene(qobject_cast<sight::viz::qt3d::core::GenericScene*>(_parent)),
+    m_geomRenderer(new Qt3DRender::QGeometryRenderer(m_scene)),
+    m_geometry(new Qt3DRender::QGeometry(m_geomRenderer)),
+    m_material(new viz::qt3d::data::Material()),
+    m_posAttrib(new Qt3DRender::QAttribute(m_geometry)),
+    m_normalAttrib(new Qt3DRender::QAttribute(m_geometry)),
+    m_indexAttrib(new Qt3DRender::QAttribute(m_geometry)),
+    m_posBuffer(new Qt3DRender::QBuffer(m_geometry)),
+    m_normalBuffer(new Qt3DRender::QBuffer(m_geometry)),
+    m_indexBuffer(new Qt3DRender::QBuffer(m_geometry))
 {
-    auto defaultMaterial = new viz::qt3d::data::Material();
-
-    m_material = defaultMaterial;
-    m_scene    = qobject_cast<sight::viz::qt3d::core::GenericScene*>(_parent);
-
-    m_geomRenderer = new Qt3DRender::QGeometryRenderer(m_scene);
-    m_geometry     = new Qt3DRender::QGeometry(m_geomRenderer);
-
-    m_posBuffer    = new Qt3DRender::QBuffer(m_geometry);
-    m_normalBuffer = new Qt3DRender::QBuffer(m_geometry);
-    m_indexBuffer  = new Qt3DRender::QBuffer(m_geometry);
-
-    m_posAttrib    = new Qt3DRender::QAttribute(m_geometry);
-    m_normalAttrib = new Qt3DRender::QAttribute(m_geometry);
-    m_indexAttrib  = new Qt3DRender::QAttribute(m_geometry);
-
     this->addComponent(m_geomRenderer);
     this->addComponent(m_material);
 }
@@ -71,8 +62,7 @@ Mesh::Mesh(Qt3DCore::QNode* _parent) :
 //------------------------------------------------------------------------------
 
 Mesh::~Mesh()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -115,7 +105,7 @@ void Mesh::setMesh(sight::data::Mesh::sptr _mesh)
     // Sets the number of points (for a mesh of triangles).
     m_numberOfPoints = static_cast<unsigned int>(_mesh->numPoints());
 
-    if(m_geometry->attributes().size() != 0)
+    if(!m_geometry->attributes().empty())
     {
         m_geometry->removeAttribute(m_posAttrib);
         m_geometry->removeAttribute(m_normalAttrib);
@@ -166,7 +156,7 @@ void Mesh::setMesh(sight::data::Mesh::sptr _mesh)
 
 void Mesh::centerCameraOnMesh()
 {
-    auto camera = m_scene->getCamera();
+    auto* camera = m_scene->getCamera();
     camera->viewSphere(
         m_meshCenter,
         std::max(
@@ -190,16 +180,16 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
 
     // Declares data arrays which are associated with QBuffers.
     QByteArray posBufferData;
-    posBufferData.resize(static_cast<int>(m_numberOfPoints * m_vertexSize * sizeof(float)));
-    float* rawPosBufferData = reinterpret_cast<float*>(posBufferData.data());
+    posBufferData.resize(static_cast<int>(static_cast<std::size_t>(m_numberOfPoints) * m_vertexSize * sizeof(float)));
+    auto* rawPosBufferData = reinterpret_cast<float*>(posBufferData.data());
 
     QByteArray normalBufferData;
-    normalBufferData.resize(static_cast<int>(m_numberOfPoints * m_vertexSize * sizeof(float)));
-    float* rawNormalBufferData = reinterpret_cast<float*>(normalBufferData.data());
+    normalBufferData.resize(static_cast<int>(std::size_t(m_numberOfPoints) * m_vertexSize * sizeof(float)));
+    auto* rawNormalBufferData = reinterpret_cast<float*>(normalBufferData.data());
 
     QByteArray indexBufferData;
     indexBufferData.resize(3 * static_cast<int>(_mesh->numCells()) * static_cast<int>(sizeof(unsigned int)));
-    unsigned int* rawIndexBufferData = reinterpret_cast<unsigned int*>(indexBufferData.data());
+    auto* rawIndexBufferData = reinterpret_cast<unsigned int*>(indexBufferData.data());
 
     // Checks if the mesh has normals. If not, generates them.
     if(!_mesh->has<sight::data::Mesh::Attributes::POINT_NORMALS>())
@@ -207,11 +197,17 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
         geometry::data::Mesh::generatePointNormals(_mesh);
     }
 
-    float minX = 0, maxX = 0, minY = 0, maxY = 0, minZ = 0, maxZ = 0;
+    float minX     = 0;
+    float maxX     = 0;
+    float minY     = 0;
+    float maxY     = 0;
+    float minZ     = 0;
+    float maxZ     = 0;
     bool minMaxSet = false;
 
     // Iterates over points and registers each point in position and normal buffers.
-    using namespace sight::data::iterator;
+    namespace point = sight::data::iterator::point;
+    namespace cell  = sight::data::iterator::cell;
 
     unsigned int countPts = 0;
     for(const auto& [p, n] : _mesh->czip_range<point::xyz, point::nxyz>())
@@ -327,18 +323,16 @@ void Mesh::buildBuffers(sight::data::Mesh::sptr _mesh)
     m_posBuffer->setData(posBufferData);
     m_normalBuffer->setData(normalBufferData);
     m_indexBuffer->setData(indexBufferData);
-
-    return;
 }
 
 //------------------------------------------------------------------------------
 
 void Mesh::addComputeEntityToScene(int _numberOfCells)
 {
-    auto const computeEntity  = new Qt3DCore::QEntity(m_scene);
-    auto const computeCommand = new Qt3DRender::QComputeCommand(computeEntity);
+    auto* const computeEntity  = new Qt3DCore::QEntity(m_scene);
+    auto* const computeCommand = new Qt3DRender::QComputeCommand(computeEntity);
 
-    auto const computeMat = new viz::qt3d::ComputeMaterial();
+    auto* const computeMat = new viz::qt3d::ComputeMaterial();
     computeMat->setIndexBuffer(m_indexBuffer);
 
     computeEntity->addComponent(computeMat);
@@ -347,6 +341,4 @@ void Mesh::addComputeEntityToScene(int _numberOfCells)
     computeMat->updateFrameGraph(m_scene->getFrameGraph(), _numberOfCells);
 }
 
-} // namespace data.
-
-} // namespace sight::viz::qt3d.
+} // namespace sight::viz::qt3d::data

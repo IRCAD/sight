@@ -35,7 +35,7 @@ namespace sight::data
  *
  * Float object is essentially used as a field in other objects.
  */
-class DATA_CLASS_API Float : public GenericField<float>
+class DATA_CLASS_API Float final : public GenericField<float>
 {
 public:
 
@@ -43,7 +43,7 @@ public:
 
     //------------------------------------------------------------------------------
 
-    static sptr New(const float val = 0.f)
+    static sptr New(const float val = 0.F)
     {
         return GenericFieldFactory<Float>(val);
     }
@@ -57,17 +57,25 @@ public:
     /**
      * @brief Destructor.
      */
-    DATA_API virtual ~Float() noexcept = default;
+    DATA_API ~Float() noexcept override = default;
 
     /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
+
+    /// Defines deep copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 
 protected:
 
     DATA_API Float() noexcept = default;
-
-    /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
 };
 
 } // namespace sight::data

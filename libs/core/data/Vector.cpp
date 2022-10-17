@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2019 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,12 +19,11 @@
  *
  ***********************************************************************/
 
-#include "data/Vector.hpp"
+#include "Vector.hpp"
 
-#include "data/Exception.hpp"
+#include "data/IContainer.hxx"
 #include "data/registry/macros.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 
 SIGHT_REGISTER_DATA(sight::data::Vector);
@@ -33,78 +31,55 @@ SIGHT_REGISTER_DATA(sight::data::Vector);
 namespace sight::data
 {
 
-const core::com::Signals::SignalKeyType Vector::s_ADDED_OBJECTS_SIG   = "addedObjects";
-const core::com::Signals::SignalKeyType Vector::s_REMOVED_OBJECTS_SIG = "removedObjects";
-
-//------------------------------------------------------------------------------
-
-Vector::Vector(data::Object::Key)
-{
-    newSignal<AddedObjectsSignalType>(s_ADDED_OBJECTS_SIG);
-    newSignal<RemovedObjectsSignalType>(s_REMOVED_OBJECTS_SIG);
-}
-
-//------------------------------------------------------------------------------
-
-Vector::~Vector()
+Vector::Vector(Object::Key key) :
+    IContainer<Vector::container_type>(key)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void Vector::shallowCopy(const Object::csptr& _source)
+void Vector::shallowCopy(const Object::csptr& source)
 {
-    Vector::csptr other = Vector::dynamicConstCast(_source);
+    const auto& other = Vector::dynamicCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
         ),
-        !bool(other)
+        !other
     );
-    this->fieldShallowCopy(_source);
-    m_container = other->m_container;
-}
 
-//------------------------------------------------------------------------------
-
-void Vector::cachedDeepCopy(const Object::csptr& source, DeepCopyCacheType& cache)
-{
-    Vector::csptr other = Vector::dynamicConstCast(source);
-    SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (source ? source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
-        ),
-        !bool(other)
-    );
-    this->fieldDeepCopy(source, cache);
-    m_container.clear();
-    m_container.reserve(other->m_container.size());
-    for(const ContainerType::value_type& obj : other->m_container)
-    {
-        m_container.push_back(data::Object::copy(obj, cache));
-    }
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool Vector::operator==(const Vector& other) const noexcept
 {
-    if(!core::tools::is_equal(m_container, other.m_container))
-    {
-        return false;
-    }
-
-    // Super class last
-    return Object::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------
 
 bool Vector::operator!=(const Vector& other) const noexcept
 {
-    return !(*this == other);
+    return BaseClass::operator!=(other);
+}
+
+//------------------------------------------------------------------------------
+
+void Vector::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
+{
+    const auto& other = Vector::dynamicCast(source);
+
+    SIGHT_THROW_EXCEPTION_IF(
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>")) + " to " + getClassname()
+        ),
+        !other
+    );
+
+    BaseClass::deepCopy(other, cache);
 }
 
 } // namespace sight::data

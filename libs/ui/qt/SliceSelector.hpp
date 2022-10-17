@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,10 +55,10 @@ public:
      * @brief Constructor.
      * @param parent The parent widget.
      */
-    UI_QT_API SliceSelector(QWidget* const parent = nullptr) noexcept;
+    UI_QT_API SliceSelector(QWidget* parent = nullptr) noexcept;
 
     /// @brief Destructor.
-    UI_QT_API virtual ~SliceSelector() noexcept;
+    UI_QT_API ~SliceSelector() noexcept override;
 
     UI_QT_API void setSliceRange(int min, int max);
 
@@ -103,4 +103,4 @@ private:
     ChangeTypeCallback m_fctChangeTypeCallback;
 };
 
-} // fwGuiQt
+} // namespace sight::ui::qt

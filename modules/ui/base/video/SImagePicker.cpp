@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,9 +44,8 @@ SImagePicker::SImagePicker() noexcept
 
 //-----------------------------------------------------------------------------
 
-SImagePicker::~SImagePicker() noexcept
-{
-}
+SImagePicker::~SImagePicker() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -128,8 +127,8 @@ void SImagePicker::addPoint(const std::array<double, 3>& currentPoint)
     {
         case VideoReference::CENTER:
         {
-            const float offset[2] = {static_cast<float>(camera->getWidth()) / 2.f,
-                                     static_cast<float>(camera->getHeight()) / 2.f
+            const std::array offset {static_cast<float>(camera->getWidth()) / 2.F,
+                                     static_cast<float>(camera->getHeight()) / 2.F
             };
 
             // Shift point to set reference at top_left corner & inverse y axis.

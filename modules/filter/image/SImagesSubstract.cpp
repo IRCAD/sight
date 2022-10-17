@@ -60,7 +60,7 @@ void SImagesSubstract::stopping()
 
 void SImagesSubstract::updating()
 {
-    core::tools::Type REQUESTED_TYPE = core::tools::Type::create("int16");
+    core::Type REQUESTED_TYPE = core::Type::INT16;
 
     const auto image1 = m_image1.lock();
     const auto image2 = m_image2.lock();
@@ -75,7 +75,7 @@ void SImagesSubstract::updating()
         const bool isSameSize = (image1->getSize() == image2->getSize());
         if(isSameSize)
         {
-            typedef itk::Image<std::int16_t, 3> ImageType;
+            using ImageType = itk::Image<std::int16_t, 3>;
 
             ImageType::Pointer itkImage1 = io::itk::moveToItk<ImageType>(image1.get_shared());
             SIGHT_ASSERT("Unable to convert data::Image to itkImage", itkImage1);
@@ -86,7 +86,7 @@ void SImagesSubstract::updating()
             ImageType::Pointer output;
 
             //Create filter
-            typedef itk::SubtractImageFilter<ImageType, ImageType, ImageType> SubtractImageFilterType;
+            using SubtractImageFilterType = itk::SubtractImageFilter<ImageType, ImageType, ImageType>;
             SubtractImageFilterType::Pointer filter;
             filter = SubtractImageFilterType::New();
             assert(filter);

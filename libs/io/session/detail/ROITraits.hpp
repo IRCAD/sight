@@ -28,10 +28,7 @@
 #include <data/ROITraits.hpp>
 #include <data/StructureTraits.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::ROITraits
+namespace sight::io::session::detail::ROITraits
 {
 
 constexpr static auto s_Identifier {"Identifier"};
@@ -42,14 +39,14 @@ constexpr static auto s_StructureTraits {"StructureTraits"};
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto roiTraits = Helper::safeCast<data::ROITraits>(object);
+    const auto roiTraits = Helper::safe_cast<data::ROITraits>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::ROITraits>(tree, 1);
@@ -64,15 +61,15 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::ROITraits::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto roiTraits = Helper::safeCast<data::ROITraits>(object);
+    auto roiTraits = Helper::cast_or_create<data::ROITraits>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::ROITraits>(tree, 0, 1);
@@ -86,6 +83,4 @@ inline static data::ROITraits::sptr deserialize(
     return roiTraits;
 }
 
-} // namespace detail::ROITraits
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::ROITraits

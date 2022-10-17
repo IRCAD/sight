@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace sight::core::jobs
 class Observer;
 class IJob;
 
-}
+} // namespace sight::core::jobs
 
 namespace sight::io::vtk
 {
@@ -65,7 +65,7 @@ public:
     IO_VTK_API BitmapImageWriter(io::base::writer::IObjectWriter::Key key);
 
     //! @brief Destructor.
-    IO_VTK_API ~BitmapImageWriter();
+    IO_VTK_API ~BitmapImageWriter() override;
 
     //! @brief Writing operator.
     IO_VTK_API void write() override;

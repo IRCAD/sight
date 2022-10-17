@@ -22,18 +22,12 @@
 
 #include "UtilsTest.hpp"
 
-#ifdef WIN32
-#define MODULE_UI_VIZ_EXPORTS
-#endif
-#include "../../../../../modules/ui/viz/helper/Utils.cpp"
+#include "../../../../../modules/ui/viz/helper/Utils.hpp"
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::viz::ut::UtilsTest);
 
-namespace sight::module::ui::viz
-{
-
-namespace ut
+namespace sight::module::ui::viz::ut
 {
 
 //------------------------------------------------------------------------------
@@ -76,6 +70,4 @@ void UtilsTest::convertQColorToOgreColor()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::ui::viz
+} // namespace sight::module::ui::viz::ut

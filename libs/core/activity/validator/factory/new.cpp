@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,7 @@
 
 #include "activity/IValidator.hpp"
 
-namespace sight::activity
-{
-
-namespace validator
-{
-
-namespace factory
+namespace sight::activity::validator::factory
 {
 
 //------------------------------------------------------------------------------
@@ -40,8 +34,4 @@ activity::IValidator::sptr New(const activity::validator::registry::KeyType& cla
     return activity::validator::registry::get()->create(classname);
 }
 
-} // namespace factory
-
-} // namespace validator
-
-} // namespace sight::activity
+} // namespace sight::activity::validator::factory

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "Plugin.hpp"
 
-#include <io/itk/inr2itk/itkInrImageIO.hpp>
-
 #include <service/macros.hpp>
 
 namespace sight::module::io::itk
@@ -31,9 +29,8 @@ namespace sight::module::io::itk
 
 SIGHT_REGISTER_PLUGIN("sight::module::io::itk::Plugin");
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

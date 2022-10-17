@@ -69,7 +69,7 @@ public:
     MODULE_IO_IGTL_API SClientListener();
 
     /// Destructor
-    MODULE_IO_IGTL_API virtual ~SClientListener();
+    MODULE_IO_IGTL_API ~SClientListener() override;
 
 protected:
 
@@ -108,7 +108,7 @@ private:
     /// port config key
     std::string m_portConfig;
 
-    bool m_tlInitialized;
+    bool m_tlInitialized {false};
 
     /// Vector of device name used
     std::vector<std::string> m_deviceNames;

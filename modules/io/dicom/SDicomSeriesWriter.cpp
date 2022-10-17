@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,16 +50,15 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesWriter::SDicomSeriesWriter() noexcept
+SDicomSeriesWriter::SDicomSeriesWriter() noexcept :
+    m_sigJobCreated(newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL))
 {
-    m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesWriter::~SDicomSeriesWriter() noexcept
-{
-}
+SDicomSeriesWriter::~SDicomSeriesWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

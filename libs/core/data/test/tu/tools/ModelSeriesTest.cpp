@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::tools::ut::ModelSeriesTest);
 
-namespace sight::data::tools
-{
-
-namespace ut
+namespace sight::data::tools::ut
 {
 
 //------------------------------------------------------------------------------
@@ -85,7 +82,7 @@ void ModelSeriesTest::addReconstruction()
 void ModelSeriesTest::createReconstructionFromMesh()
 {
     data::Mesh::sptr mesh   = data::Mesh::New();
-    data::Color::sptr color = data::Color::New(1.0f, 0.3f, 0.7f, 0.5f);
+    data::Color::sptr color = data::Color::New(1.0F, 0.3F, 0.7F, 0.5F);
 
     {
         const std::string organName     = "Liver1";
@@ -106,10 +103,10 @@ void ModelSeriesTest::createReconstructionFromMesh()
         CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(), data::Material::SURFACE);
 
         auto ambient = rec->getMaterial()->diffuse();
-        CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0f);
-        CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3f);
-        CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7f);
-        CPPUNIT_ASSERT_EQUAL(ambient->alpha(), 0.5f);
+        CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0F);
+        CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3F);
+        CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7F);
+        CPPUNIT_ASSERT_EQUAL(ambient->alpha(), 0.5F);
     }
 
     {
@@ -132,10 +129,10 @@ void ModelSeriesTest::createReconstructionFromMesh()
         CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(), data::Material::WIREFRAME);
 
         auto ambient = rec->getMaterial()->diffuse();
-        CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0f);
-        CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3f);
-        CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7f);
-        CPPUNIT_ASSERT_EQUAL(ambient->alpha(), 0.5f);
+        CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0F);
+        CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3F);
+        CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7F);
+        CPPUNIT_ASSERT_EQUAL(ambient->alpha(), 0.5F);
     }
 }
 
@@ -148,7 +145,7 @@ void ModelSeriesTest::addMesh()
 
     {
         data::Mesh::sptr mesh           = data::Mesh::New();
-        data::Color::sptr color         = data::Color::New(1.0f, 0.3f, 0.7f, 0.5f);
+        data::Color::sptr color         = data::Color::New(1.0F, 0.3F, 0.7F, 0.5F);
         const std::string organName     = "Liver1";
         const std::string structureType = "Liver";
 
@@ -170,15 +167,15 @@ void ModelSeriesTest::addMesh()
         CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(), data::Material::SURFACE);
 
         auto ambient = rec->getMaterial()->diffuse();
-        CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0f);
-        CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3f);
-        CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7f);
-        CPPUNIT_ASSERT_EQUAL(ambient->alpha(), 0.5f);
+        CPPUNIT_ASSERT_EQUAL(ambient->red(), 1.0F);
+        CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3F);
+        CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7F);
+        CPPUNIT_ASSERT_EQUAL(ambient->alpha(), 0.5F);
     }
 
     {
         data::Mesh::sptr mesh           = data::Mesh::New();
-        data::Color::sptr color         = data::Color::New(0.1f, 0.3f, 0.7f, 1.5f);
+        data::Color::sptr color         = data::Color::New(0.1F, 0.3F, 0.7F, 1.5F);
         const std::string organName     = "Foo";
         const std::string structureType = "Foofoo";
 
@@ -200,15 +197,13 @@ void ModelSeriesTest::addMesh()
         CPPUNIT_ASSERT_EQUAL(rec->getMaterial()->getRepresentationMode(), data::Material::WIREFRAME);
 
         auto ambient = rec->getMaterial()->diffuse();
-        CPPUNIT_ASSERT_EQUAL(ambient->red(), 0.1f);
-        CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3f);
-        CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7f);
-        CPPUNIT_ASSERT_EQUAL(ambient->alpha(), 1.5f);
+        CPPUNIT_ASSERT_EQUAL(ambient->red(), 0.1F);
+        CPPUNIT_ASSERT_EQUAL(ambient->green(), 0.3F);
+        CPPUNIT_ASSERT_EQUAL(ambient->blue(), 0.7F);
+        CPPUNIT_ASSERT_EQUAL(ambient->alpha(), 1.5F);
     }
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::data::tools
+} // namespace sight::data::tools::ut

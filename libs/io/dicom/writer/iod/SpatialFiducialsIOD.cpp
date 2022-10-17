@@ -32,23 +32,14 @@
 
 #include <core/spyLog.hpp>
 
-#include <data/Equipment.hpp>
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
-#include <data/Patient.hpp>
-#include <data/Study.hpp>
 #include <data/Vector.hpp>
 
 #include <gdcmWriter.h>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace iod
+namespace sight::io::dicom::writer::iod
 {
 
 //------------------------------------------------------------------------------
@@ -67,8 +58,7 @@ SpatialFiducialsIOD::SpatialFiducialsIOD(
 //------------------------------------------------------------------------------
 
 SpatialFiducialsIOD::~SpatialFiducialsIOD()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -78,21 +68,18 @@ void SpatialFiducialsIOD::write(const data::Series::csptr& series)
     data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
-    // Retrieve image
-    data::Image::csptr image = imageSeries->getImage();
-
-    const data::Vector::sptr distances = data::helper::MedicalImage::getDistances(*image);
+    const data::Vector::sptr distances = data::helper::MedicalImage::getDistances(*imageSeries);
     SIGHT_WARN_IF("Writing Spatial Fiducials IOD : distances will be ignored.", distances && !distances->empty());
 
     // Create writer
     SPTR(gdcm::Writer) writer = std::make_shared<gdcm::Writer>();
 
     // Create Information Entity helpers
-    io::dicom::writer::ie::Patient patientIE(writer, m_instance, series->getPatient());
-    io::dicom::writer::ie::Study studyIE(writer, m_instance, series->getStudy());
+    io::dicom::writer::ie::Patient patientIE(writer, m_instance, series);
+    io::dicom::writer::ie::Study studyIE(writer, m_instance, series);
     io::dicom::writer::ie::Series seriesIE(writer, m_instance, series);
-    io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series->getEquipment());
-    io::dicom::writer::ie::SpatialFiducials spatialFiducialsIE(writer, m_instance, image);
+    io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series);
+    io::dicom::writer::ie::SpatialFiducials spatialFiducialsIE(writer, m_instance, imageSeries);
 
     // Write Patient Module - PS 3.3 C.7.1.1
     patientIE.writePatientModule();
@@ -127,8 +114,4 @@ void SpatialFiducialsIOD::write(const data::Series::csptr& series)
 
 //------------------------------------------------------------------------------
 
-} // namespace iod
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::iod

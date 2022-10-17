@@ -108,7 +108,7 @@ protected:
      *
      * @return future of all the IJobs of the Aggregator
      */
-    CORE_API SharedFuture runImpl();
+    CORE_API SharedFuture runImpl() override;
 
 private:
 
@@ -118,34 +118,28 @@ private:
     /// Hold sub job info
     struct JobInfo
     {
-        std::uint64_t doneWork;
-        std::uint64_t totalWork;
-        std::uint64_t lastValue;
+        std::uint64_t doneWork {0};
+        std::uint64_t totalWork {0};
+        std::uint64_t lastValue {0};
 
-        JobInfo() :
-            doneWork(0),
-            totalWork(0),
-            lastValue(0)
-        {
-        }
+        JobInfo()
+        = default;
 
         JobInfo(std::uint64_t d, std::uint64_t t) :
             doneWork(d),
-            totalWork(t),
-            lastValue(0)
+            totalWork(t)
         {
         }
 
         JobInfo(const IJob& iJob) :
             doneWork(iJob.getDoneWorkUnits()),
-            totalWork(iJob.getTotalWorkUnits()),
-            lastValue(0)
+            totalWork(iJob.getTotalWorkUnits())
         {
         }
 
         //------------------------------------------------------------------------------
 
-        double progress() const
+        [[nodiscard]] double progress() const
         {
             return (0 == totalWork) ? 1. : static_cast<double>(doneWork) / static_cast<double>(totalWork);
         }

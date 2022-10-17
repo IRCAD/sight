@@ -22,7 +22,7 @@
 
 #include "SImageSeriesWriter.hpp"
 
-#include "modules/io/itk/InrImageWriterService.hpp"
+#include "SImageWriter.hpp"
 
 #include <core/base.hpp>
 #include <core/location/SingleFile.hpp>
@@ -32,7 +32,6 @@
 #include <data/ImageSeries.hpp>
 
 #include <io/base/service/IWriter.hpp>
-#include <io/itk/ImageWriter.hpp>
 
 #include <service/macros.hpp>
 
@@ -46,15 +45,13 @@ namespace sight::module::io::itk
 
 //------------------------------------------------------------------------------
 
-SImageSeriesWriter::SImageSeriesWriter() noexcept
-{
-}
+SImageSeriesWriter::SImageSeriesWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SImageSeriesWriter::~SImageSeriesWriter() noexcept
-{
-}
+SImageSeriesWriter::~SImageSeriesWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -77,9 +74,10 @@ void SImageSeriesWriter::openLocationDialog()
     static auto defaultDirectory = std::make_shared<core::location::SingleFolder>();
 
     sight::ui::base::dialog::LocationDialog dialogFile;
-    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an inrimage file to save image" : m_windowTitle);
+    dialogFile.setTitle(m_windowTitle.empty() ? "Choose an image file to save image" : m_windowTitle);
     dialogFile.setDefaultLocation(defaultDirectory);
-    dialogFile.addFilter("Inrimage", "*.inr.gz");
+    dialogFile.addFilter("NIfTI (.nii)", "*.nii *.nii.gz");
+    dialogFile.addFilter("Inr (.inr.gz)", "*.inr.gz");
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
     auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
@@ -118,6 +116,8 @@ void SImageSeriesWriter::info(std::ostream& _sstream)
 
 void SImageSeriesWriter::updating()
 {
+    m_writeFailed = true;
+
     if(this->hasLocationDefined())
     {
         const auto data         = m_data.lock();
@@ -127,17 +127,9 @@ void SImageSeriesWriter::updating()
             image_series
         );
 
-        const data::Image::csptr& associatedImage = image_series->getImage();
-        SIGHT_ASSERT("associatedImage not instanced", associatedImage);
-
-        sight::ui::base::Cursor cursor;
-        cursor.setCursor(ui::base::ICursor::BUSY);
-        InrImageWriterService::saveImage(this->getFile(), associatedImage);
-        cursor.setDefaultCursor();
-    }
-    else
-    {
-        m_writeFailed = true;
+        sight::ui::base::BusyCursor cursor;
+        SImageWriter::saveImage(this->getFile(), image_series);
+        m_writeFailed = false;
     }
 }
 

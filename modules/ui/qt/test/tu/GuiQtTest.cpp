@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,6 @@
 
 #include "GuiQtTest.hpp"
 
-#include <core/runtime/EConfigurationElement.hpp>
-
 #include <data/String.hpp>
 
 #include <service/AppConfigManager.hpp>
@@ -38,10 +36,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::ui::qt::ut::GuiQtTest);
 
-namespace sight::module::ui::qt
-{
-
-namespace ut
+namespace sight::module::ui::qt::ut
 {
 
 //------------------------------------------------------------------------------
@@ -60,6 +55,10 @@ void GuiQtTest::tearDown()
 
 //------------------------------------------------------------------------------
 
+#define ASSERT_NOT_NULL(expr) if((expr) == nullptr){throw std::runtime_error(#expr " is null.");}
+
+//------------------------------------------------------------------------------
+
 void GuiQtTest::testDefaultFrame()
 {
     data::String::sptr object = data::String::New();
@@ -71,17 +70,17 @@ void GuiQtTest::testDefaultFrame()
     frameConfig.put("gui.frame.minSize.<xmlattr>.height", "600");
 
     service::IService::sptr srv = service::add("sight::module::ui::base::SFrame");
-    CPPUNIT_ASSERT(srv);
+    ASSERT_NOT_NULL(srv);
 
     srv->setConfiguration(frameConfig);
     srv->configure();
     srv->start();
 
-    QMainWindow* window = qobject_cast<QMainWindow*>(qApp->activeWindow());
+    auto* window = qobject_cast<QMainWindow*>(qApp->activeWindow());
 
-    CPPUNIT_ASSERT(qApp);
-    CPPUNIT_ASSERT(qApp->activeWindow());
-    CPPUNIT_ASSERT(window);
+    ASSERT_NOT_NULL(qApp);
+    ASSERT_NOT_NULL(qApp->activeWindow());
+    ASSERT_NOT_NULL(window);
     CPPUNIT_ASSERT_EQUAL(std::string("guiQtUnitTest"), window->windowTitle().toStdString());
 
     srv->stop();
@@ -90,6 +89,4 @@ void GuiQtTest::testDefaultFrame()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::ui::qt
+} // namespace sight::module::ui::qt::ut

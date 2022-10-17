@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,10 +31,7 @@
 #include <QPointer>
 #include <QWidget>
 
-namespace sight::ui::dicom
-{
-
-namespace widget
+namespace sight::ui::dicom::widget
 {
 
 /**
@@ -47,10 +44,10 @@ Q_OBJECT;
 public:
 
     /// Constructor
-    QTagSelectorWidget(QWidget* parent = 0);
+    QTagSelectorWidget(QWidget* parent = nullptr);
 
     /// Destructor
-    ~QTagSelectorWidget();
+    ~QTagSelectorWidget() override;
 
     /// Set tag
     void setTagValue(const DcmTagKey& tag);
@@ -78,6 +75,4 @@ protected:
     DcmTagKey m_tag;
 };
 
-} // namespace widget
-
-} // namespace sight::ui::dicom
+} // namespace sight::ui::dicom::widget

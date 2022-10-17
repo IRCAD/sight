@@ -29,13 +29,7 @@
 
 #include <gdcmImageWriter.h>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 //------------------------------------------------------------------------------
@@ -55,8 +49,7 @@ Image::Image(
 //------------------------------------------------------------------------------
 
 Image::~Image()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -73,7 +66,7 @@ void Image::writeGeneralImageModuleSpecificTags(unsigned int instanceNumber)
     gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
     // Instance Number
-    io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0013>(instanceNumber, dataset);
+    io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0013>(int(instanceNumber), dataset);
 }
 
 //------------------------------------------------------------------------------
@@ -138,7 +131,7 @@ void Image::writeImagePixelModule()
     gdcmImage.SetPixelFormat(pixelFormat);
 
     //Image's number of dimension
-    unsigned int dimension =
+    auto dimension =
         static_cast<unsigned int>((m_instance->getIsMultiFiles()) ? 2 : m_object->numDimensions());
     gdcmImage.SetNumberOfDimensions(dimension);
 
@@ -182,15 +175,23 @@ void Image::writeVOILUTModule()
     // Retrieve dataset
     gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
-    const double windowCenter = m_object->getWindowCenter();
-    const double windowWidth  = m_object->getWindowWidth();
-    if(windowCenter || windowWidth)
+    const auto& windowCenters = m_object->getWindowCenter();
+    const auto& windowWidths  = m_object->getWindowWidth();
+    if(!windowCenters.empty() || !windowWidths.empty())
     {
         // Image's windows center
-        io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0028, 0x1050>(&windowCenter, 1, dataset);
+        io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0028, 0x1050>(
+            windowCenters.data(),
+            windowCenters.size(),
+            dataset
+        );
 
         // Image's windows width
-        io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0028, 0x1051>(&windowWidth, 1, dataset);
+        io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0028, 0x1051>(
+            windowWidths.data(),
+            windowWidths.size(),
+            dataset
+        );
     }
 }
 
@@ -297,8 +298,4 @@ void Image::writeMRImageModule()
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

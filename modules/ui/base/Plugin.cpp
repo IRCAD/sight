@@ -20,10 +20,11 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "modules/ui/base/Plugin.hpp"
 
 #include <core/crypto/PasswordKeeper.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/tools/Os.hpp>
 
 #include <service/base.hpp>
@@ -46,9 +47,8 @@ SIGHT_REGISTER_PLUGIN("sight::module::ui::base::Plugin");
 
 //-----------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -83,6 +83,7 @@ void Plugin::start()
     // Set an hardcoded password
     if(module->hasParameter(s_PREFERENCES_PASSWORD))
     {
+        // NOLINTNEXTLINE(readability-redundant-string-cstr)
         const secure_string& password = module->getParameterValue(s_PREFERENCES_PASSWORD).c_str();
         Preferences::set_password(password);
     }

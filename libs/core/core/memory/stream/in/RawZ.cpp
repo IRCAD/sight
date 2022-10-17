@@ -30,18 +30,12 @@
 #include <filesystem>
 #include <fstream>
 
-namespace sight::core::memory
-{
-
-namespace stream
-{
-
-namespace in
+namespace sight::core::memory::stream::in
 {
 
 struct FilteringStream : boost::iostreams::filtering_istream
 {
-    ~FilteringStream()
+    ~FilteringStream() override
     {
         try
         {
@@ -70,8 +64,4 @@ SPTR(std::istream) RawZ::get()
     return filter;
 }
 
-} // namespace in
-
-} // namespace stream
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::stream::in

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,22 +24,22 @@
 
 #include <core/com/Signal.hxx>
 
-using namespace sight;
+namespace data    = sight::data;
+namespace service = sight::service;
+namespace ui      = sight::ui;
 
 namespace Tuto05EditorQml
 {
 
 //------------------------------------------------------------------------------
 
-SStringEditor::SStringEditor() noexcept
-{
-}
+SStringEditor::SStringEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SStringEditor::~SStringEditor() noexcept
-{
-}
+SStringEditor::~SStringEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -79,6 +79,8 @@ void SStringEditor::updating()
 
 void SStringEditor::updateString(const QString& str)
 {
+    namespace core = sight::core;
+
     auto sstr = m_string.lock();
     SIGHT_ASSERT("'" << s_STRING_INOUT << "' data must be set as 'inout'", sstr);
 

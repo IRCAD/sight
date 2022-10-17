@@ -30,10 +30,7 @@
 #include <iostream>
 #include <string>
 
-namespace sight::core
-{
-
-namespace log
+namespace sight::core::log
 {
 
 // Default log file name inside the archive
@@ -67,12 +64,12 @@ public:
     /// Adds a console sink to the logger from the given output stream.
     /// @param os The output stream to use.
     /// @param level The minimum level to log.
-    CORE_API void add_console_log(std::ostream& os = std::clog, LevelType level = SL_TRACE);
+    static CORE_API void add_console_log(std::ostream& os = std::clog, LevelType level = SL_TRACE);
 
     /// Adds a file sink to the logger.
     /// @param path The path to the log file.
     /// @param level The minimum level to log.
-    CORE_API void add_file_log(const std::filesystem::path& log_file = LOG_FILE, LevelType level = SL_TRACE);
+    static CORE_API void add_file_log(const std::filesystem::path& log_file = LOG_FILE, LevelType level = SL_TRACE);
 
     /// Adds an encrypted file sink to the logger. It will start a separated detached child process that will perform
     /// the encryption. The real file name will have an extension suffix with an index counter which will be incremented
@@ -116,17 +113,17 @@ public:
     /// Returns true if the current log file is encrypted. IE if there is a child sightlog process running.
     CORE_API std::filesystem::path get_current_log_path() const;
 
-    CORE_API void trace(const std::string& mes, const char* file = nullptr, int line = -1);
+    static CORE_API void trace(const std::string& mes, const char* file = nullptr, int line = -1);
 
-    CORE_API void debug(const std::string& mes, const char* file = nullptr, int line = -1);
+    static CORE_API void debug(const std::string& mes, const char* file = nullptr, int line = -1);
 
-    CORE_API void info(const std::string& mes, const char* file = nullptr, int line = -1);
+    static CORE_API void info(const std::string& mes, const char* file = nullptr, int line = -1);
 
-    CORE_API void warn(const std::string& mes, const char* file = nullptr, int line = -1);
+    static CORE_API void warn(const std::string& mes, const char* file = nullptr, int line = -1);
 
-    CORE_API void error(const std::string& mes, const char* file = nullptr, int line = -1);
+    static CORE_API void error(const std::string& mes, const char* file = nullptr, int line = -1);
 
-    CORE_API void fatal(const std::string& mes, const char* file = nullptr, int line = -1);
+    static CORE_API void fatal(const std::string& mes, const char* file = nullptr, int line = -1);
 
     //------------------------------------------------------------------------------
 
@@ -139,12 +136,10 @@ public:
 private:
 
     CORE_API SpyLogger();
-    CORE_API ~SpyLogger();
+    CORE_API ~SpyLogger() override;
 
     class SpyLoggerImpl;
     std::unique_ptr<SpyLoggerImpl> m_pimpl;
 }; // SpyLogger
 
-} // namespace log
-
-} // namespace sight::core
+} // namespace sight::core::log

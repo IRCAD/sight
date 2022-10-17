@@ -60,9 +60,8 @@ SPreferencesConfiguration::SPreferencesConfiguration() noexcept
 
 //------------------------------------------------------------------------------
 
-SPreferencesConfiguration::~SPreferencesConfiguration() noexcept
-{
-}
+SPreferencesConfiguration::~SPreferencesConfiguration() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -70,12 +69,14 @@ void SPreferencesConfiguration::configuring()
 {
     this->initialize();
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     core::runtime::ConfigurationElementContainer config = m_configuration->findAllConfigurationElement("preference");
     for(const auto& elt : config.getElements())
     {
         PreferenceElt pref;
 
-        ConfigurationType typeCfg = elt->findConfigurationElement("type");
+        auto typeCfg = elt->findConfigurationElement("type");
         SIGHT_ASSERT("element 'type' is missing.", typeCfg);
         if(typeCfg->getValue() == "checkbox")
         {
@@ -101,7 +102,7 @@ void SPreferencesConfiguration::configuring()
         {
             pref.m_type = PreferenceType::DOUBLE;
 
-            ConfigurationType keyCfg = elt->findConfigurationElement("min");
+            auto keyCfg = elt->findConfigurationElement("min");
             if(keyCfg)
             {
                 pref.m_dMinMax.first = std::stod(keyCfg->getValue());
@@ -117,7 +118,7 @@ void SPreferencesConfiguration::configuring()
         {
             pref.m_type = PreferenceType::U_INT;
 
-            ConfigurationType keyCfg = elt->findConfigurationElement("min");
+            auto keyCfg = elt->findConfigurationElement("min");
             if(keyCfg)
             {
                 pref.m_iMinMax.first = std::stoi(keyCfg->getValue());
@@ -134,15 +135,15 @@ void SPreferencesConfiguration::configuring()
             SIGHT_ERROR("Preference type " << typeCfg->getValue() << " is not implemented");
         }
 
-        ConfigurationType nameCfg = elt->findConfigurationElement("name");
+        auto nameCfg = elt->findConfigurationElement("name");
         SIGHT_ASSERT("element 'name' is missing.", nameCfg);
         pref.m_name = nameCfg->getValue();
 
-        ConfigurationType keyCfg = elt->findConfigurationElement("key");
+        auto keyCfg = elt->findConfigurationElement("key");
         SIGHT_ASSERT("element 'key' is missing.", keyCfg);
         pref.m_preferenceKey = keyCfg->getValue();
 
-        ConfigurationType defaultValueCfg = elt->findConfigurationElement("default_value");
+        auto defaultValueCfg = elt->findConfigurationElement("default_value");
         SIGHT_ASSERT("element 'default_value' is missing.", defaultValueCfg);
         pref.m_defaultValue = defaultValueCfg->getValue();
 
@@ -150,25 +151,29 @@ void SPreferencesConfiguration::configuring()
            || pref.m_type == PreferenceType::FILE)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
+            pref.m_lineEdit->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
         }
         else if(pref.m_type == PreferenceType::CHECKBOX)
         {
             pref.m_checkBox = new QCheckBox();
             pref.m_checkBox->setChecked(pref.m_defaultValue == "true");
+            pref.m_checkBox->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
         }
         else if(pref.m_type == PreferenceType::U_INT)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
             pref.m_lineEdit->setValidator(new QIntValidator(pref.m_iMinMax.first, pref.m_iMinMax.second));
+            pref.m_lineEdit->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
         }
         else if(pref.m_type == PreferenceType::DOUBLE)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
             pref.m_lineEdit->setValidator(new QDoubleValidator(pref.m_dMinMax.first, pref.m_dMinMax.second, 6));
+            pref.m_lineEdit->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
         }
         else if(pref.m_type == PreferenceType::COMBOBOX)
         {
-            ConfigurationType valuesCfg = elt->findConfigurationElement("values");
+            auto valuesCfg = elt->findConfigurationElement("values");
             SIGHT_ASSERT("element 'values' is missing.", valuesCfg);
 
             const boost::char_separator<char> sep(", ;");
@@ -176,6 +181,7 @@ void SPreferencesConfiguration::configuring()
             const boost::tokenizer<boost::char_separator<char> > tokens {s, sep};
 
             pref.m_comboBox = new QComboBox();
+            pref.m_comboBox->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
             for(const std::string& value : tokens)
             {
                 pref.m_comboBox->addItem(QString::fromStdString(value));
@@ -209,7 +215,7 @@ void SPreferencesConfiguration::starting()
             }
         }
     }
-    catch(const sight::ui::base::PreferencesDisabled& e)
+    catch(const sight::ui::base::PreferencesDisabled& /*e*/)
     {
         // Nothing to do..
     }
@@ -219,7 +225,10 @@ void SPreferencesConfiguration::starting()
 
 void SPreferencesConfiguration::updating()
 {
-    QPointer<QDialog> dialog     = new QDialog();
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
+    QPointer<QDialog> dialog = new QDialog();
+    dialog->setObjectName(serviceID);
     QPointer<QGridLayout> layout = new QGridLayout();
 
     int index = 0;
@@ -278,9 +287,9 @@ void SPreferencesConfiguration::updating()
             QObject::connect(
                 directorySelector.data(),
                 &QPushButton::clicked,
-                [this, pref]()
+                [pref]()
                 {
-                    this->onSelectDir(pref.m_lineEdit);
+                    sight::module::ui::qt::SPreferencesConfiguration::onSelectDir(pref.m_lineEdit);
                 });
         }
         else if(pref.m_type == PreferenceType::FILE)
@@ -292,9 +301,9 @@ void SPreferencesConfiguration::updating()
             QObject::connect(
                 directorySelector.data(),
                 &QPushButton::clicked,
-                [this, pref]()
+                [pref]()
                 {
-                    this->onSelectFile(pref.m_lineEdit);
+                    sight::module::ui::qt::SPreferencesConfiguration::onSelectFile(pref.m_lineEdit);
                 });
         }
         else if(pref.m_type == PreferenceType::COMBOBOX)
@@ -320,7 +329,9 @@ void SPreferencesConfiguration::updating()
     }
 
     QPointer<QPushButton> cancelButton = new QPushButton("Cancel");
-    QPointer<QPushButton> okButton     = new QPushButton("OK");
+    cancelButton->setObjectName(serviceID + '/' + cancelButton->text());
+    QPointer<QPushButton> okButton = new QPushButton("OK");
+    okButton->setObjectName(serviceID + '/' + okButton->text());
     okButton->setDefault(true);
 
     QPointer<QHBoxLayout> buttonLayout = new QHBoxLayout();

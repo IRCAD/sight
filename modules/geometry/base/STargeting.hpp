@@ -112,7 +112,7 @@ private:
     void removePoint();
 
     /// Label containing the landmark group name.
-    std::string m_label {""};
+    std::string m_label;
 
     /// Index of the point to modify in the landmark group.
     std::size_t m_index {0};

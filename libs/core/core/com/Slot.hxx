@@ -32,7 +32,6 @@
 
 #include <boost/function_types/function_arity.hpp>
 #include <boost/function_types/result_type.hpp>
-#include <boost/static_assert.hpp>
 
 #include <type_traits>
 
@@ -79,7 +78,7 @@ Slot<Slot<R(A ...)> >::Slot(SPTR(SlotRun<F>)slot) :
             boost::function_types::function_arity<F>::value
         >::wrap(&SlotRun<F>::run, slot.get()))
 {
-    BOOST_STATIC_ASSERT((std::is_same<void, R>::value));
+    static_assert(std::is_same<void, R>::value);
     this->setWorker(slot->getWorker());
 }
 
@@ -112,7 +111,9 @@ SPTR(Slot<R(A ...)>) Slot<Slot<R(A ...)> >::New(SPTR(SlotRun<F>) slot)
 
 //-----------------------------------------------------------------------------
 
-template<typename F, typename ... BINDING>
+template<typename F, std::enable_if_t<std::is_function_v<typename core::com::util::convert_function_type<F>::type>,
+                                      bool> = true,
+         typename ... BINDING>
 SPTR(Slot<typename core::com::util::convert_function_type<F>::type>) newSlot(F f, BINDING ... binding)
 {
 #ifdef _DEBUG
@@ -122,6 +123,16 @@ SPTR(Slot<typename core::com::util::convert_function_type<F>::type>) newSlot(F f
     typedef std::function<typename core::com::util::convert_function_type<F>::type> FunctionType;
     FunctionType func = core::com::util::autobind(f, binding ...);
     return std::make_shared<Slot<FunctionType> >(func);
+}
+
+//-----------------------------------------------------------------------------
+
+template<typename F, std::enable_if_t<!std::is_function_v<typename core::com::util::convert_function_type<F>::type>,
+                                      bool> = true>
+SPTR(Slot<core::lambda_to_function_t<F> >) newSlot(F f)
+{
+    auto fn = lambda_to_function(f);
+    return std::make_shared<sight::core::com::Slot<core::lambda_to_function_t<F> > >(fn);
 }
 
 //-----------------------------------------------------------------------------

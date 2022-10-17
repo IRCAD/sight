@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-MeshWriter::MeshWriter(io::base::writer::IObjectWriter::Key) :
+MeshWriter::MeshWriter(io::base::writer::IObjectWriter::Key /*unused*/) :
     m_job(core::jobs::Observer::New("VTK Mesh writer"))
 {
 }
@@ -50,14 +50,13 @@ MeshWriter::MeshWriter(io::base::writer::IObjectWriter::Key) :
 //------------------------------------------------------------------------------
 
 MeshWriter::~MeshWriter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 void MeshWriter::write()
 {
-    using namespace sight::io::vtk::helper;
+    using helper::vtkLambdaCommand;
 
     SIGHT_ASSERT("Object pointer expired", !m_object.expired());
 
@@ -78,9 +77,9 @@ void MeshWriter::write()
 
     progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
     progressCallback->SetCallback(
-        [&](vtkObject* caller, long unsigned int, void*)
+        [&](vtkObject* caller, std::uint64_t, void*)
         {
-            const auto filter = static_cast<vtkGenericDataObjectWriter*>(caller);
+            auto* const filter = static_cast<vtkGenericDataObjectWriter*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     writer->AddObserver(vtkCommand::ProgressEvent, progressCallback);

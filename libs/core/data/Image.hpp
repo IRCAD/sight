@@ -30,12 +30,13 @@
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
 #include <core/memory/IBuffered.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/iterator.hpp>
 
-#include <boost/shared_array.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
+#include <array>
 #include <filesystem>
 #include <vector>
 
@@ -50,7 +51,8 @@ class PointList;
  *
  * An image contains a buffer and is defined by some parameters (size, spacing, pixel type, ...)
  *
- * The buffer type is defined by core::tools::Type that provides the basic types ([u]int8, [u]int16, [u]int32, [u]int64,
+ * The buffer type is defined by core::Type that provides the basic types ([u]int8, [u]int16, [u]int32,
+ *[u]int64,
  * float and double).
  *
  * The image size is a 3D std::size_t array but the third dimension can be 0 for a 2D image.
@@ -66,7 +68,7 @@ class PointList;
  * You can get the allocated size using getSizeInBytes() and getAllocatedSizeInBytes().
  *
  * To resize the image, you must pass the Type ([u]int[8|16|32|64], double, float), the size and the pixel
- * format of the buffer when calling resize(const Size& size, const core::tools::Type& type, PixelFormat format).
+ * format of the buffer when calling resize(const Size& size, const core::Type& type, PixelFormat format).
  *
  * @section Access Buffer access
  *
@@ -123,7 +125,7 @@ class PointList;
  * \b Example :
  * @code{.cpp}
     Image::sptr img = Image::New();
-    img->resize(1920, 1080, 1, core::tools::Type::s_UINT8, Image::PixelFormat::RGBA);
+    img->resize(1920, 1080, 1, core::Type::UINT8, Image::PixelFormat::RGBA);
     auto iter    = img->begin<Color>();
     const auto iterEnd = img->end<Color>();
 
@@ -168,7 +170,7 @@ class PointList;
    @endcode
  */
 /* *INDENT-ON* */
-class DATA_CLASS_API Image : public Object,
+class DATA_CLASS_API Image : public virtual Object,
                              public core::memory::IBuffered
 {
 public:
@@ -185,7 +187,6 @@ public:
 
     typedef Size::value_type IndexType;
     typedef std::uint8_t BufferType;
-    typedef boost::shared_array<BufferType> SharedArray;
 
     /// Image format
     enum PixelFormat
@@ -209,10 +210,7 @@ public:
     /**
      * @brief Destructor
      */
-    DATA_API ~Image() noexcept override;
-
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    DATA_API ~Image() noexcept override = default;
 
     /// @brief get image information from source. Informations are spacing,origin,size ... expect Fields
     DATA_API void copyInformation(Image::csptr _source);
@@ -236,15 +234,15 @@ public:
     /** @{
      *  @brief Get/set preferred window center
      */
-    double getWindowCenter() const;
-    void setWindowCenter(double val);
+    virtual std::vector<double> getWindowCenter() const noexcept;
+    virtual void setWindowCenter(const std::vector<double>& windowCenters);
     /// @}
 
     /** @{
      *  @brief Get/set preferred window width
      */
-    double getWindowWidth() const;
-    void setWindowWidth(double val);
+    virtual std::vector<double> getWindowWidth() const noexcept;
+    virtual void setWindowWidth(const std::vector<double>& windowWidths);
     /// @}
 
     /// Get the number of elements (ie: size[0]*size[1]*size[2]*nbComponents)
@@ -254,7 +252,7 @@ public:
     std::size_t numComponents() const;
 
     /// Get image type
-    DATA_API core::tools::Type getType() const;
+    DATA_API core::Type getType() const;
 
     /// Get pixel format
     PixelFormat getPixelFormat() const;
@@ -274,7 +272,7 @@ public:
      *
      * @return Allocated size in bytes
      */
-    DATA_API std::size_t resize(const Size& size, const core::tools::Type& type, PixelFormat format);
+    DATA_API std::size_t resize(const Size& size, const core::Type& type, PixelFormat format);
     /// @}
 
     /// @brief return image size in bytes
@@ -321,15 +319,6 @@ public:
     /// Type of signal when slice type is modified (from slice type, to slice type)
     typedef core::com::Signal<void (int, int)> SliceTypeModifiedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_SLICE_TYPE_MODIFIED_SIG;
-
-    /// Type of signal when visibility is modified
-    typedef core::com::Signal<void (bool)> VisibilityModifiedSignalType;
-    DATA_API static const core::com::Signals::SignalKeyType s_VISIBILITY_MODIFIED_SIG;
-
-    /// Type of signal when visibility is modified
-    typedef core::com::Signal<void ()> TransparencyModifiedSignalType;
-    DATA_API static const core::com::Signals::SignalKeyType s_TRANSPARENCY_MODIFIED_SIG;
-
     /**
      * @}
      */
@@ -364,7 +353,7 @@ public:
      * Example:
      * @code{.cpp}
         Image::sptr img = Image::New();
-        img->resize(1920, 1080, 0, core::tools::Type::s_UINT8, Image::PixelFormat::RGBA);
+        img->resize(1920, 1080, 0, core::Type::UINT8, Image::PixelFormat::RGBA);
         Image::iterator< Color > iter    = img->begin< Color >();
         const Image::iterator< Color > iterEnd = img->end< Color >();
 
@@ -438,7 +427,7 @@ public:
     DATA_API void setBuffer(
         void* buf,
         bool takeOwnership,
-        const core::tools::Type& type,
+        const core::Type& type,
         const Image::Size& size,
         PixelFormat format,
         core::memory::BufferAllocationPolicy::sptr policy = core::memory::BufferMallocPolicy::New()
@@ -503,10 +492,10 @@ public:
      * @param pixBuf pixel value represented as a void* buffer
      * @throw Exception The buffer cannot be accessed if the array is not locked (see dump_lock_impl())
      */
-    DATA_API void setPixel(IndexType index, BufferType* pixBuf);
+    DATA_API void setPixel(IndexType index, const BufferType* pixBuf);
 
     /// Return the pixel value in a std::string
-    DATA_API const std::string getPixelAsString(
+    DATA_API std::string getPixelAsString(
         IndexType x,
         IndexType y,
         IndexType z
@@ -524,10 +513,21 @@ public:
     DATA_API bool operator!=(const Image& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     /// Add a lock on the image in the given vector to prevent from dumping the buffer on the disk
     /// This is needed for IBuffered interface implementation
@@ -551,7 +551,7 @@ private:
      *
      * @return Allocated size in bytes
      */
-    DATA_API std::size_t _resize(const Size& size, const core::tools::Type& type, PixelFormat format, bool realloc);
+    DATA_API std::size_t _resize(const Size& size, const core::Type& type, PixelFormat format, bool realloc);
     /// @}
 
     /**
@@ -579,15 +579,15 @@ private:
 
     //! Preferred window center/with
     ///@{
-    double m_windowCenter {0.};
-    double m_windowWidth {0.};
+    std::vector<double> m_windowCenters {0.};
+    std::vector<double> m_windowWidths {0.};
     ///@}
 
     //! Number of components
     std::size_t m_numComponents {1};
 
     //! type of image pixel
-    core::tools::Type m_type {core::tools::Type::s_UNSPECIFIED_TYPE};
+    core::Type m_type {core::Type::UINT8};
 
     //! image format
     PixelFormat m_pixelFormat {PixelFormat::UNDEFINED};
@@ -598,30 +598,30 @@ private:
 
 //-----------------------------------------------------------------------------
 
-inline double Image::getWindowCenter() const
+inline std::vector<double> Image::getWindowCenter() const noexcept
 {
-    return m_windowCenter;
+    return m_windowCenters;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Image::setWindowCenter(double val)
+inline void Image::setWindowCenter(const std::vector<double>& windowCenters)
 {
-    m_windowCenter = val;
+    m_windowCenters = windowCenters;
 }
 
 //-----------------------------------------------------------------------------
 
-inline double Image::getWindowWidth() const
+inline std::vector<double> Image::getWindowWidth() const noexcept
 {
-    return m_windowWidth;
+    return m_windowWidths;
 }
 
 //-----------------------------------------------------------------------------
 
-inline void Image::setWindowWidth(double val)
+inline void Image::setWindowWidth(const std::vector<double>& windowWidths)
 {
-    m_windowWidth = val;
+    m_windowWidths = windowWidths;
 }
 
 //-----------------------------------------------------------------------------

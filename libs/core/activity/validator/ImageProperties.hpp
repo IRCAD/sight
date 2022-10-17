@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 
 #include <core/base.hpp>
 
-namespace sight::activity
-{
-
-namespace validator
+namespace sight::activity::validator
 {
 
 /**
@@ -50,13 +47,13 @@ public:
     ACTIVITY_API ImageProperties(activity::IValidator::Key key);
 
     /// Destructor. Do nothing.
-    ACTIVITY_API virtual ~ImageProperties();
+    ACTIVITY_API ~ImageProperties() override;
 
     /**
      * @brief Validates if the given images have the same properties (origin, spacing, ...)
      * @see activity::IValidator::validate
      */
-    ACTIVITY_API virtual IValidator::ValidationType validate(
+    ACTIVITY_API IValidator::ValidationType validate(
         const activity::extension::ActivityInfo& activityInfo,
         const CSPTR(data::Vector)& currentSelection
     ) const override;
@@ -66,10 +63,8 @@ public:
      * @note Given object must be a Vector or Composite of ImageSeries (or images)
      * @see activity::IValidator::validate
      */
-    ACTIVITY_API virtual IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject) const
+    ACTIVITY_API IValidator::ValidationType validate(const CSPTR(data::Object)& currentObject) const
     override;
 };
 
-} // namespace validator
-
-} // namespace sight::activity
+} // namespace sight::activity::validator

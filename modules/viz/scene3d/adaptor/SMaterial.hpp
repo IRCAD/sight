@@ -48,7 +48,7 @@ namespace sight::data
 
 class Material;
 
-}
+} // namespace sight::data
 
 namespace sight::module::viz::scene3d::adaptor
 {

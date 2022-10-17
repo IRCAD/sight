@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,28 +32,24 @@
 
 #include <QGuiApplication>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qml::dialog::MultiSelectorDialog,
     sight::ui::base::dialog::IMultiSelectorDialog::REGISTRY_KEY
 );
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 //------------------------------------------------------------------------------
 
-MultiSelectorDialog::MultiSelectorDialog(ui::base::GuiBaseObject::Key)
+MultiSelectorDialog::MultiSelectorDialog(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 MultiSelectorDialog::~MultiSelectorDialog()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -93,7 +89,7 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 
     window->setProperty("title", m_title);
 
-    QObject* dialog = window->findChild<QObject*>("dialog");
+    auto* dialog = window->findChild<QObject*>("dialog");
     SIGHT_ASSERT("The dialog is not found inside the window", dialog);
 
     // fill the repeater for each checkbox that has to be created
@@ -136,7 +132,7 @@ ui::base::dialog::IMultiSelectorDialog::Selections MultiSelectorDialog::show()
 
 void MultiSelectorDialog::resultDialog(QVariant checkList, bool state)
 {
-    if(state == true)
+    if(state)
     {
         // retreive each check state of the selection list
         QList<QVariant> checkListState = checkList.toList();
@@ -158,6 +154,4 @@ void MultiSelectorDialog::setMessage(const std::string& msg)
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

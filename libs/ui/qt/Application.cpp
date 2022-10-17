@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 
 #include <QCoreApplication>
 
-fwGuiRegisterMacro(sight::ui::qt::Application, sight::ui::base::IApplication::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qt::Application, sight::ui::base::IApplication::REGISTRY_KEY);
 
 namespace sight::ui::qt
 {
@@ -49,18 +49,12 @@ void Application::exit(int returncode)
 
         if(res == ui::base::dialog::IMessageDialog::YES)
         {
-            if(QCoreApplication::instance())
-            {
-                QCoreApplication::instance()->exit(returncode);
-            }
+            QCoreApplication::exit(returncode);
         }
     }
     else
     {
-        if(QCoreApplication::instance())
-        {
-            QCoreApplication::instance()->exit(returncode);
-        }
+        QCoreApplication::exit(returncode);
     }
 }
 

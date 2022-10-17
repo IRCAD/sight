@@ -29,10 +29,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::opencv::ut::FrameTLTest);
 
-namespace sight::io::opencv
-{
-
-namespace ut
+namespace sight::io::opencv::ut
 {
 
 //------------------------------------------------------------------------------
@@ -46,7 +43,7 @@ static std::pair<data::FrameTL::sptr, SPTR(data::FrameTL::BufferType)> genFrameT
 {
     CPPUNIT_ASSERT(_numChannels == 1 || _numChannels == 3 || _numChannels == 4);
 
-    const core::tools::Type type = core::tools::Type::create<T>();
+    const core::Type type = core::Type::get<T>();
 
     data::FrameTL::sptr frameTL = data::FrameTL::New();
     frameTL->initPoolSize(
@@ -112,7 +109,7 @@ static void testMoveToCV(std::size_t _w, std::size_t _h, std::uint8_t _numChanne
     SPTR(data::FrameTL::BufferType) buffer;
 
     std::tie(frameTL, buffer) = genFrameTL<T>(_w, _h, _numChannels);
-    auto eltBuffer = buffer->addElement(0);
+    auto* eltBuffer = buffer->addElement(0);
     std::copy(imageBuffer.begin(), imageBuffer.end(), eltBuffer);
 
     {
@@ -147,7 +144,7 @@ static void testCopyFromCV(std::size_t _w, std::size_t _h, std::uint8_t _numChan
     SPTR(data::FrameTL::BufferType) buffer;
 
     std::tie(frameTL, buffer) = genFrameTL<T>(_w, _h, _numChannels);
-    auto eltBuffer = buffer->addElement(0);
+    auto* eltBuffer = buffer->addElement(0);
 
     io::opencv::FrameTL::copyFromCv(frameTL, eltBuffer, cvImage);
 
@@ -168,7 +165,7 @@ static void testCopyToCV(std::size_t _w, std::size_t _h, std::uint8_t _numChanne
     SPTR(data::FrameTL::BufferType) buffer;
 
     std::tie(frameTL, buffer) = genFrameTL<T>(_w, _h, _numChannels);
-    auto eltBuffer = buffer->addElement(0);
+    auto* eltBuffer = buffer->addElement(0);
     std::copy(imageBuffer.begin(), imageBuffer.end(), eltBuffer);
 
     cv::Mat cvImage;
@@ -220,6 +217,4 @@ void FrameTLTest::copyToCv()
     testCopyToCV<std::uint8_t>(10, 7, 4);
 }
 
-} // namespace ut
-
-} // namespace sight::io::opencv
+} // namespace sight::io::opencv::ut

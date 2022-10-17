@@ -29,13 +29,10 @@
 #include <data/PointList.hpp>
 #include <data/Vector.hpp>
 
-namespace sight::io::dicom
-{
+#include <memory>
+#include <utility>
 
-namespace reader
-{
-
-namespace iod
+namespace sight::io::dicom::reader::iod
 {
 
 //------------------------------------------------------------------------------
@@ -54,8 +51,7 @@ SpatialFiducialsIOD::SpatialFiducialsIOD(
 //------------------------------------------------------------------------------
 
 SpatialFiducialsIOD::~SpatialFiducialsIOD()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -64,11 +60,9 @@ void SpatialFiducialsIOD::read(data::Series::sptr series)
     // Retrieve images
     data::ImageSeries::sptr imageSeries = data::ImageSeries::dynamicCast(series);
     SIGHT_ASSERT("ImageSeries should not be null.", imageSeries);
-    data::Image::sptr image = imageSeries->getImage();
-    SIGHT_ASSERT("sight::data::Image not instanced", image);
 
     // Create GDCM Reader
-    SPTR(gdcm::Reader) reader = std::shared_ptr<gdcm::Reader>(new gdcm::Reader);
+    SPTR(gdcm::Reader) reader = std::make_shared<gdcm::Reader>();
 
     // Read the first file
     data::DicomSeries::DicomContainerType dicomContainer = m_dicomSeries->getDicomContainer();
@@ -98,7 +92,7 @@ void SpatialFiducialsIOD::read(data::Series::sptr series)
 
     // Create Information Entity helpers
     io::dicom::reader::ie::SpatialFiducials spatialFiducialsIE(
-        m_dicomSeries, reader, m_instance, imageSeries->getImage(),
+        m_dicomSeries, reader, m_instance, imageSeries,
         m_logger, m_progressCallback, m_cancelRequestedCallback);
 
     // Retrieve dataset
@@ -141,8 +135,4 @@ void SpatialFiducialsIOD::read(data::Series::sptr series)
 
 //------------------------------------------------------------------------------
 
-} // namespace iod
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::iod

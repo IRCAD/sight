@@ -37,10 +37,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::base::ut::DictionaryReaderTest);
 
-namespace sight::io::base
-{
-
-namespace ut
+namespace sight::io::base::ut
 {
 
 //------------------------------------------------------------------------------
@@ -50,7 +47,7 @@ void DictionaryReaderTest::setUp()
     // Set up context before running a test.
     m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "Dictionary.dic";
 
-    this->generateDictionaryFile(m_tmpDictionaryFilePath);
+    sight::io::base::ut::DictionaryReaderTest::generateDictionaryFile(m_tmpDictionaryFilePath);
 
     CPPUNIT_ASSERT(std::filesystem::exists(m_tmpDictionaryFilePath));
 }
@@ -62,7 +59,7 @@ void DictionaryReaderTest::tearDown()
     // Clean up after the test run.
     if(std::filesystem::exists(m_tmpDictionaryFilePath))
     {
-        bool removed;
+        bool removed = false;
         removed = std::filesystem::remove(m_tmpDictionaryFilePath);
         CPPUNIT_ASSERT(removed);
     }
@@ -76,7 +73,7 @@ void DictionaryReaderTest::test_1()
     data::StructureTraits::sptr expectedSkin = data::StructureTraits::New();
     expectedSkin->setType("Skin");
     expectedSkin->setClass(data::StructureTraits::ENVIRONMENT);
-    expectedSkin->setColor(data::Color::New(255.0f / 255.0f, 179.0f / 255.0f, 140.0f / 255.0f, 100.0 / 100.0f));
+    expectedSkin->setColor(data::Color::New(1.0F, 179.0F / 255.0F, 140.0F / 255.0F, 1.0F));
     data::StructureTraits::CategoryContainer skinCat(1);
     skinCat[0] = data::StructureTraits::BODY;
     expectedSkin->setCategories(skinCat);
@@ -118,7 +115,7 @@ void DictionaryReaderTest::test_2()
 {
     // Set up context before running a test.
     m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "WrongDictionary.dic";
-    this->generateDictionaryFileWithMissingSemiColon(m_tmpDictionaryFilePath);
+    sight::io::base::ut::DictionaryReaderTest::generateDictionaryFileWithMissingSemiColon(m_tmpDictionaryFilePath);
 
     data::StructureTraitsDictionary::sptr structDico = data::StructureTraitsDictionary::New();
     // Get data from file.
@@ -150,7 +147,7 @@ void DictionaryReaderTest::test_4()
 {
     // Set up context before running a test.
     m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "WrongDictionary.dic";
-    this->generateDictionaryFileWithWrongCategory(m_tmpDictionaryFilePath);
+    sight::io::base::ut::DictionaryReaderTest::generateDictionaryFileWithWrongCategory(m_tmpDictionaryFilePath);
 
     data::StructureTraitsDictionary::sptr structDico = data::StructureTraitsDictionary::New();
     // Get data from file.
@@ -167,7 +164,7 @@ void DictionaryReaderTest::test_5()
 {
     // Set up context before running a test.
     m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "WrongDictionary.dic";
-    this->generateDictionaryFileWithWrongClass(m_tmpDictionaryFilePath);
+    sight::io::base::ut::DictionaryReaderTest::generateDictionaryFileWithWrongClass(m_tmpDictionaryFilePath);
 
     data::StructureTraitsDictionary::sptr structDico = data::StructureTraitsDictionary::New();
     // Get data from file.
@@ -227,6 +224,4 @@ void DictionaryReaderTest::generateDictionaryFileWithWrongClass(std::filesystem:
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::io::base
+} // namespace sight::io::base::ut

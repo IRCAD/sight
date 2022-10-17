@@ -84,10 +84,7 @@ public:
     DATA_API Landmarks(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Landmarks();
-
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    DATA_API ~Landmarks() noexcept override = default;
 
     /**
      * @brief Add a new landmark group
@@ -96,14 +93,14 @@ public:
      */
     DATA_API void addGroup(
         const std::string& name,
-        const ColorType& color = {{1.0f, 1.0f, 1.0f, 1.0f}},
-        const SizeType size    = 1.0f,
-        const Shape shape      = Shape::SPHERE,
-        const bool visibility  = true
+        const ColorType& color = {{1.0F, 1.0F, 1.0F, 1.0F}},
+        SizeType size          = 1.0F,
+        Shape shape            = Shape::SPHERE,
+        bool visibility        = true
     );
 
     /// Return all group names
-    DATA_API const GroupNameContainer getGroupNames() const;
+    DATA_API GroupNameContainer getGroupNames() const;
 
     /**
      * @brief Get the group properties
@@ -147,21 +144,21 @@ public:
      *
      * @throw data::Exception if the group does not exist
      */
-    DATA_API void setGroupSize(const std::string& name, const SizeType size);
+    DATA_API void setGroupSize(const std::string& name, SizeType size);
 
     /**
      * @brief Set the group's shape (SPHERE or CUBE)
      *
      * @throw data::Exception if the group does not exist
      */
-    DATA_API void setGroupShape(const std::string& name, const Shape shape);
+    DATA_API void setGroupShape(const std::string& name, Shape shape);
 
     /**
      * @brief Set the group's visibility
      *
      * @throw data::Exception if the group does not exist
      */
-    DATA_API void setGroupVisibility(const std::string& name, const bool visibility);
+    DATA_API void setGroupVisibility(const std::string& name, bool visibility);
 
     /**
      * @brief Add a point to the group
@@ -175,7 +172,7 @@ public:
      *
      * @throw data::Exception if the group does not exist
      */
-    DATA_API void insertPoint(const std::string& name, const std::size_t index, const PointType& point);
+    DATA_API void insertPoint(const std::string& name, std::size_t index, const PointType& point);
 
     /**
      * @brief Get the point at the given index
@@ -275,10 +272,19 @@ public:
     DATA_API bool operator!=(const Landmarks& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 
 private:
 

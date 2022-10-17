@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,9 +76,8 @@ public:
     /**
      * @brief Destructor.
      */
-    MODULE_UI_QT_API ~SCameraInformationEditor() noexcept
-    {
-    }
+    MODULE_UI_QT_API ~SCameraInformationEditor() noexcept override =
+        default;
 
     /**
      * @brief Configuring method : This method is used to configure the service.
@@ -118,75 +117,75 @@ protected:
     /**
      * @brief Label that displays the camera description
      */
-    QLabel* m_description;
+    QLabel* m_description {};
 
     /**
      * @brief Label that displays if the camera is calibrated.
      */
-    QLabel* m_isCalibrated;
+    QLabel* m_isCalibrated {};
 
     /**
      * @brief Width of the video.
      */
-    QLabel* m_width;
+    QLabel* m_width {};
 
     /**
      * @brief Height of the video.
      */
-    QLabel* m_height;
+    QLabel* m_height {};
 
     /**
      * @brief Optical center x.
      */
-    QLabel* m_cx;
+    QLabel* m_cx {};
 
     /**
      * @brief Optical center y.
      */
-    QLabel* m_cy;
+    QLabel* m_cy {};
 
     /**
      * @brief Field of view x.
      */
-    QLabel* m_fx;
+    QLabel* m_fx {};
 
     /**
      * @brief Field of view y.
      */
-    QLabel* m_fy;
+    QLabel* m_fy {};
 
     /**
      * @brief Distortion coefficient k1.
      */
-    QLabel* m_k1;
+    QLabel* m_k1 {};
 
     /**
      * @brief Distortion coefficient k2.
      */
-    QLabel* m_k2;
+    QLabel* m_k2 {};
 
     /**
      * @brief Distortion coefficient p1.
      */
-    QLabel* m_p1;
+    QLabel* m_p1 {};
 
     /**
      * @brief Distortion coefficient p2.
      */
-    QLabel* m_p2;
+    QLabel* m_p2 {};
 
     /**
      * @brief Distortion coefficient k3.
      */
-    QLabel* m_k3;
+    QLabel* m_k3 {};
 
     /**
      * @brief Camera skew.
      */
-    QLabel* m_skew;
+    QLabel* m_skew {};
 
     static constexpr std::string_view s_CAMERA = "camera";
     data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA, true};
 };
 
-} // namespace uiCameraSelectorQt
+} // namespace sight::module::ui::qt::calibration

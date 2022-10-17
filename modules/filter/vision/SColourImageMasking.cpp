@@ -28,8 +28,7 @@
 #include <io/opencv/FrameTL.hpp>
 #include <io/opencv/Image.hpp>
 
-#include <service/macros.hpp>
-
+#include <boost/lexical_cast.hpp>
 #include <boost/tokenizer.hpp>
 
 namespace sight::module::filter::vision
@@ -46,14 +45,10 @@ const core::com::Slots::SlotKeyType s_CLEAR_MASKTL_SLOT              = "clearMas
 // ------------------------------------------------------------------------------
 
 SColourImageMasking::SColourImageMasking() noexcept :
-    m_lastVideoTimestamp(0.),
-    m_scaleFactor(1.),
+
     m_maskDownsize(cv::Size(0, 0)),
     m_lowerColor(cv::Scalar(0, 0, 0)),
-    m_upperColor(cv::Scalar(255, 255, 255)),
-    m_noise(0.),
-    m_backgroundComponents(5),
-    m_foregroundComponents(5)
+    m_upperColor(cv::Scalar(255, 255, 255))
 {
     newSlot(s_SET_BACKGROUND_SLOT, &SColourImageMasking::setBackground, this);
     newSlot(s_SET_FOREGROUND_SLOT, &SColourImageMasking::setForeground, this);
@@ -66,9 +61,8 @@ SColourImageMasking::SColourImageMasking() noexcept :
 
 // ------------------------------------------------------------------------------
 
-SColourImageMasking::~SColourImageMasking() noexcept
-{
-}
+SColourImageMasking::~SColourImageMasking() noexcept =
+    default;
 
 // ------------------------------------------------------------------------------
 
@@ -131,8 +125,8 @@ void SColourImageMasking::configuring()
 
 void SColourImageMasking::starting()
 {
-    using namespace sight::filter::vision;
-    m_masker = std::make_unique<Masker>(HSv, LLRatio);
+    namespace vision = sight::filter::vision;
+    m_masker         = std::make_unique<vision::Masker>(vision::HSv, vision::LLRatio);
     m_masker->setThreshold(1.);
 
     m_lastVideoTimestamp = 0.;
@@ -294,14 +288,14 @@ void SColourImageMasking::setBackground()
     cv::erode(maskCV, maskCV, elementErode);
 
     // Learn background color model
-    m_masker->trainBackgroundModel(videoCV, maskCV, m_backgroundComponents);
+    m_masker->trainBackgroundModel(videoCV, maskCV, unsigned(m_backgroundComponents));
 
     // Initialize the mask timeline
     const auto videoMaskTL = m_videoMaskTL.lock();
     videoMaskTL->initPoolSize(
         videoTL->getWidth(),
         videoTL->getHeight(),
-        core::tools::Type::s_UINT8,
+        core::Type::UINT8,
         data::FrameTL::PixelFormat::RGBA
     );
 }
@@ -326,7 +320,8 @@ void SColourImageMasking::setForeground()
     cv::Mat videoCV = io::opencv::FrameTL::moveToCv(videoTL.get_shared(), frameBuffOutVideo);
 
     // Convert RGB to HSV
-    cv::Mat videoBGR, videoHSV;
+    cv::Mat videoBGR;
+    cv::Mat videoHSV;
     cv::cvtColor(videoCV, videoBGR, cv::COLOR_RGBA2BGR);
     cv::cvtColor(videoBGR, videoHSV, cv::COLOR_BGR2HSV);
 
@@ -350,7 +345,7 @@ void SColourImageMasking::setForeground()
     cv::erode(foregroundMask, openForegroundMask, elementErode);
 
     // Learn foreground color model
-    m_masker->trainForegroundModel(videoCV, openForegroundMask, m_foregroundComponents, m_noise);
+    m_masker->trainForegroundModel(videoCV, openForegroundMask, unsigned(m_foregroundComponents), m_noise);
 }
 
 // ------------------------------------------------------------------------------

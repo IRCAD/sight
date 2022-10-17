@@ -22,11 +22,13 @@
 
 #include "AcquisitionNumberSplitterTest.hpp"
 
+#include <data/SeriesSet.hpp>
+
 #include <filter/dicom/factory/new.hpp>
 #include <filter/dicom/helper/Filter.hpp>
 #include <filter/dicom/IFilter.hpp>
 
-#include <io/dicom/reader/SeriesDB.hpp>
+#include <io/dicom/reader/SeriesSet.hpp>
 
 #include <utestData/Data.hpp>
 
@@ -35,10 +37,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::dicom::ut::AcquisitionNumberSplitterTest);
 
-namespace sight::filter::dicom
-{
-
-namespace ut
+namespace sight::filter::dicom::ut
 {
 
 //------------------------------------------------------------------------------
@@ -59,7 +58,7 @@ void AcquisitionNumberSplitterTest::tearDown()
 
 void AcquisitionNumberSplitterTest::simpleApplication()
 {
-    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
+    auto series_set = data::SeriesSet::New();
 
     const std::string filename       = "08-CT-PACS";
     const std::filesystem::path path = utestData::Data::dir() / "sight/Patient/Dicom/DicomDB" / filename;
@@ -70,14 +69,14 @@ void AcquisitionNumberSplitterTest::simpleApplication()
     );
 
     // Read DicomSeries
-    io::dicom::reader::SeriesDB::sptr reader = io::dicom::reader::SeriesDB::New();
-    reader->setObject(seriesDB);
+    auto reader = io::dicom::reader::SeriesSet::New();
+    reader->setObject(series_set);
     reader->setFolder(path);
     CPPUNIT_ASSERT_NO_THROW(reader->readDicomSeries());
-    CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesDB->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Retrieve DicomSeries
-    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*seriesDB)[0]);
+    data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast((*series_set)[0]);
     CPPUNIT_ASSERT(dicomSeries);
     std::vector<data::DicomSeries::sptr> dicomSeriesContainer;
     dicomSeriesContainer.push_back(dicomSeries);
@@ -99,6 +98,4 @@ void AcquisitionNumberSplitterTest::simpleApplication()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::ut

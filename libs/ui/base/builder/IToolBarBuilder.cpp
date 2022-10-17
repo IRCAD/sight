@@ -29,10 +29,7 @@
 
 #include <boost/lexical_cast.hpp>
 
-namespace sight::ui::base
-{
-
-namespace builder
+namespace sight::ui::base::builder
 {
 
 const IToolBarBuilder::RegistryKeyType IToolBarBuilder::REGISTRY_KEY = "::ui::base::ToolBarBuilder";
@@ -40,16 +37,14 @@ const IToolBarBuilder::RegistryKeyType IToolBarBuilder::REGISTRY_KEY = "::ui::ba
 //-----------------------------------------------------------------------------
 
 IToolBarBuilder::IToolBarBuilder() :
-    m_alignment(TOP)
+    m_toolBitmapSize(std::make_pair(32, 32))
 {
-    m_toolBitmapSize = std::make_pair(32, 32);
 }
 
 //-----------------------------------------------------------------------------
 
 IToolBarBuilder::~IToolBarBuilder()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -127,6 +122,4 @@ ui::base::container::fwToolBar::sptr IToolBarBuilder::getToolBar()
 
 //-----------------------------------------------------------------------------
 
-} // namespace builder
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::builder

@@ -29,7 +29,7 @@
 #include <core/location/SingleFile.hpp>
 #include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/operations.hpp>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/Matrix4.hpp>
 
@@ -86,7 +86,7 @@ static const core::com::Signals::SignalKeyType s_DEVICE_PLAYED_SIG     = "device
 static const core::com::Signals::SignalKeyType s_FILE_PLAYED_SIG       = "filePlayed";
 
 // Determine depth value corresponding to one meter
-static const float s_METERS_TO_MMS = 1000.f;
+static const float s_METERS_TO_MMS = 1000.F;
 
 //-----------------------------------------------------------------------------
 
@@ -108,7 +108,7 @@ SScan::SScan() noexcept
 
 SScan::~SScan() noexcept
 {
-    this->stopCamera();
+    this->SScan::stopCamera();
 }
 
 //-----------------------------------------------------------------------------
@@ -208,8 +208,8 @@ std::string SScan::selectDevice()
         const std::string selected = dial.show();
 
         // Get the index of selected camera.
-        const std::size_t dot = selected.find(".");
-        const auto index      = std::atoi(selected.substr(0, dot).c_str()) - 1;
+        const std::size_t dot = selected.find('.');
+        const auto index      = std::stoi(selected.substr(0, dot)) - 1;
 
         // Get associated serial numbers.
         selectedDevice = devices[static_cast<uint32_t>(index)].get_info(RS2_CAMERA_INFO_SERIAL_NUMBER);
@@ -239,17 +239,17 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
 
     SIGHT_DEBUG("Actual mode : \n" + str.str());
 
-    const data::Mesh::size_t depthStreamW = static_cast<data::Mesh::size_t>(depthStream.width());
-    const data::Mesh::size_t depthStreamH = static_cast<data::Mesh::size_t>(depthStream.height());
-    const data::Mesh::size_t colorStreamW = static_cast<data::Mesh::size_t>(colorStream.width());
-    const data::Mesh::size_t colorStreamH = static_cast<data::Mesh::size_t>(colorStream.height());
+    const auto depthStreamW = static_cast<data::Mesh::size_t>(depthStream.width());
+    const auto depthStreamH = static_cast<data::Mesh::size_t>(depthStream.height());
+    const auto colorStreamW = static_cast<data::Mesh::size_t>(colorStream.width());
+    const auto colorStreamH = static_cast<data::Mesh::size_t>(colorStream.height());
 
     {
         const auto colorTimeline = m_frame.lock();
         colorTimeline->initPoolSize(
             colorStreamW,
             colorStreamH,
-            core::tools::Type::s_UINT8,
+            core::Type::UINT8,
             data::FrameTL::PixelFormat::RGBA
         );
         colorTimeline->setMaximumSize(50);
@@ -262,7 +262,7 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
             depthTimeline->initPoolSize(
                 depthStreamW,
                 depthStreamH,
-                core::tools::Type::s_UINT16,
+                core::Type::UINT16,
                 data::FrameTL::PixelFormat::GRAY_SCALE
             );
             depthTimeline->setMaximumSize(50);
@@ -271,42 +271,42 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
 
     {
 // Get camera information.
-        const auto cameraSeries = m_cameraSeries.lock();
+        const auto camera_set = m_camera_set.lock();
 
-        if(cameraSeries)
+        if(camera_set)
         {
             data::Camera::sptr colorCamera;
             data::Camera::sptr depthCamera;
 
             // check if there is camera
-            if(cameraSeries->numCameras() == 0)
+            if(camera_set->size() == 0)
             {
                 depthCamera = data::Camera::New();
                 colorCamera = data::Camera::New();
 
-                cameraSeries->addCamera(depthCamera);
-                cameraSeries->addCamera(colorCamera);
-                auto sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
-                    data::CameraSeries::s_ADDED_CAMERA_SIG
+                camera_set->add_camera(depthCamera);
+                camera_set->add_camera(colorCamera);
+                auto sig = camera_set->signal<data::CameraSet::added_camera_signal_t>(
+                    data::CameraSet::s_ADDED_CAMERA_SIG
                 );
                 sig->asyncEmit(depthCamera);
                 sig->asyncEmit(colorCamera);
             }
-            else if(cameraSeries->numCameras() == 1) // missing one camera
+            else if(camera_set->size() == 1) // missing one camera
             {
-                depthCamera = cameraSeries->getCamera(0);
+                depthCamera = camera_set->get_camera(0);
                 colorCamera = data::Camera::New();
-                cameraSeries->addCamera(colorCamera);
+                camera_set->add_camera(colorCamera);
 
-                auto sig = cameraSeries->signal<data::CameraSeries::AddedCameraSignalType>(
-                    data::CameraSeries::s_ADDED_CAMERA_SIG
+                auto sig = camera_set->signal<data::CameraSet::added_camera_signal_t>(
+                    data::CameraSet::s_ADDED_CAMERA_SIG
                 );
                 sig->asyncEmit(colorCamera);
             }
             else
             {
-                depthCamera = cameraSeries->getCamera(0);
-                colorCamera = cameraSeries->getCamera(1);
+                depthCamera = camera_set->get_camera(0);
+                colorCamera = camera_set->get_camera(1);
             }
 
             if(!depthCamera->getIsCalibrated() || !colorCamera->getIsCalibrated())
@@ -367,10 +367,10 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
                     }
                 }
 
-                cameraSeries->setExtrinsicMatrix(1, matrix);
+                camera_set->set_extrinsic_matrix(1, matrix);
 
-                auto sig = cameraSeries->signal<data::CameraSeries::ModifiedSignalType>(
-                    data::CameraSeries::s_MODIFIED_SIG
+                auto sig = camera_set->signal<data::CameraSet::ModifiedSignalType>(
+                    data::CameraSet::s_MODIFIED_SIG
                 );
                 sig->asyncEmit();
             }
@@ -410,7 +410,7 @@ void SScan::startCamera()
     }
 
     {
-        const auto cameraSeries = m_cameraSeries.lock();
+        const auto camera_set = m_camera_set.lock();
 
         const auto setPlaybackMode =
             [&](data::Camera::csptr camera)
@@ -423,7 +423,7 @@ void SScan::startCamera()
                 }
                 else if(camera->getCameraSource() == data::Camera::STREAM)
                 {
-                    this->popMessageDialog(
+                    sight::module::io::realsense::SScan::popMessageDialog(
                         "RealSense grabber cannot open STREAM type, please select DEVICE or FILE."
                     );
                     return;
@@ -444,20 +444,20 @@ void SScan::startCamera()
                 }
             };
 
-        if(cameraSeries)
+        if(camera_set)
         {
             // Extract the first camera (source should be the same).
-            data::mt::locked_ptr<data::Camera> locked(cameraSeries->getCamera(0));
+            data::mt::locked_ptr<data::Camera> locked(camera_set->get_camera(0));
             setPlaybackMode(locked.get_shared());
         }
-        else // No cameraSeries (called by SGrabberProxy for ex.).
+        else // No camera_set (called by SGrabberProxy for ex.).
         {
             const auto locked = m_camera.lock();
             setPlaybackMode(locked.get_shared());
 
             SIGHT_ASSERT(
                 "Camera should not be null, check if  '"
-                << s_CAMERA_SERIES_INOUT
+                << s_CAMERA_SET_INOUT
                 << "' or '"
                 << s_CAMERA_INPUT
                 << "' is present.",
@@ -568,12 +568,12 @@ void SScan::startCamera()
         // Options are read-only when playing from files.
         if(!m_playbackMode)
         {
-            depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (m_cameraSettings.irEmitter ? 1.f : 0.f));
+            depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (m_cameraSettings.irEmitter ? 1.F : 0.F));
         }
     }
     catch(const std::exception& e)
     {
-        this->popMessageDialog(
+        sight::module::io::realsense::SScan::popMessageDialog(
             "RealSense device is not available. Please check if it is plugged in. Error : "
             + std::string(e.what())
         );
@@ -673,7 +673,7 @@ void SScan::record()
     // Cannot record when playback a file.
     if(m_playbackMode)
     {
-        this->popMessageDialog("Cannot record when grabber playback a file !");
+        sight::module::io::realsense::SScan::popMessageDialog("Cannot record when grabber playback a file !");
         return;
     }
 
@@ -780,12 +780,12 @@ void SScan::setBoolParameter(bool _value, std::string _key)
             if(!m_deviceID.empty() && m_running)
             {
                 auto depthSensor = m_currentDevice.first<rs2::depth_sensor>();
-                depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (_value ? 1.f : 0.f));
+                depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (_value ? 1.F : 0.F));
             }
         }
         catch(const std::exception& e)
         {
-            this->popMessageDialog("RealSense device error:" + std::string(e.what()));
+            sight::module::io::realsense::SScan::popMessageDialog("RealSense device error:" + std::string(e.what()));
             return;
         }
     }
@@ -945,7 +945,7 @@ void SScan::setIntParameter(int _value, std::string _key)
     }
     catch(const std::exception& e)
     {
-        this->popMessageDialog("RealSense device error:" + std::string(e.what()));
+        sight::module::io::realsense::SScan::popMessageDialog("RealSense device error:" + std::string(e.what()));
         return;
     }
 }
@@ -981,7 +981,7 @@ void SScan::setDoubleParameter(double _value, std::string _key)
     }
     catch(const std::exception& e)
     {
-        this->popMessageDialog("RealSense device error:" + std::string(e.what()));
+        sight::module::io::realsense::SScan::popMessageDialog("RealSense device error:" + std::string(e.what()));
         return;
     }
 }
@@ -1046,7 +1046,8 @@ void SScan::grab()
             auto depth = frames.get_depth_frame();
             auto color = frames.get_color_frame();
             auto infra = frames.get_infrared_frame();
-            rs2::frame mapframe, colorOrInfra;
+            rs2::frame mapframe;
+            rs2::frame colorOrInfra;
 
             // push infrared in color TL if needed.
             m_switchInfra2Color ? colorOrInfra = infra : colorOrInfra = color;
@@ -1218,7 +1219,7 @@ void SScan::onCameraImage(const uint8_t* _buffer)
         const auto colorTimeline = m_frame.lock();
         const auto colorBuffer   = colorTimeline->createBuffer(timestamp);
 
-        uint8_t* destColorBuffer = reinterpret_cast<uint8_t*>(colorBuffer->addElement(0));
+        auto* destColorBuffer = reinterpret_cast<uint8_t*>(colorBuffer->addElement(0));
 
         memcpy(destColorBuffer, _buffer, colorBuffer->getSize());
 
@@ -1246,13 +1247,13 @@ void SScan::onCameraImageDepth(const std::uint16_t* _buffer)
         const auto width  = depthTimeline->getWidth();
         const auto height = depthTimeline->getHeight();
 
-        std::uint16_t* depthBuffer = reinterpret_cast<std::uint16_t*>(depthTL->addElement(0));
-        const auto sizeBuffer      = width * height;
+        auto* depthBuffer     = reinterpret_cast<std::uint16_t*>(depthTL->addElement(0));
+        const auto sizeBuffer = width * height;
 
         // Re-map depth frame in mm.
         for(std::size_t i = 0 ; i < sizeBuffer ; ++i)
         {
-            *depthBuffer++ = static_cast<std::uint16_t>(*_buffer++ *m_depthScale);
+            *depthBuffer++ = static_cast<std::uint16_t>(static_cast<float>(*_buffer++) * m_depthScale);
         }
 
         // Push buffer to timeline and notify
@@ -1276,13 +1277,13 @@ void SScan::onPointCloud(const rs2::points& _pc, const rs2::video_frame& _textur
         const int textureW = _texture.get_width();  // Frame width in pixels
         const int textureH = _texture.get_height(); // Frame height in pixels
 
-        const int textureBytePerPix = _texture.get_bytes_per_pixel();
-        const int textureStrides    = _texture.get_stride_in_bytes();
-        const auto textureBuff      = reinterpret_cast<const uint8_t*>(_texture.get_data());
+        const int textureBytePerPix   = _texture.get_bytes_per_pixel();
+        const int textureStrides      = _texture.get_stride_in_bytes();
+        const auto* const textureBuff = reinterpret_cast<const uint8_t*>(_texture.get_data());
 
         /* this segment actually prints the pointcloud */
-        const auto vertices     = _pc.get_vertices();
-        const auto textureCoord = _pc.get_texture_coordinates();
+        const auto* const vertices     = _pc.get_vertices();
+        const auto* const textureCoord = _pc.get_texture_coordinates();
 
         const std::size_t pcSize = _pc.size();
 
@@ -1301,16 +1302,14 @@ void SScan::onPointCloud(const rs2::points& _pc, const rs2::video_frame& _textur
             // Normals to Texture Coordinates conversion
             const int x_value = std::min(
                 std::max(
-                    static_cast<int>(textureCoord[i].u * static_cast<float>(textureW)
-                                     + .5f),
+                    static_cast<int>(std::lround(textureCoord[i].u * static_cast<float>(textureW))),
                     0
                 ),
                 textureW - 1
             );
             const int y_value = std::min(
                 std::max(
-                    static_cast<int>(textureCoord[i].v * static_cast<float>(textureH)
-                                     + .5f),
+                    static_cast<int>(std::lround(textureCoord[i].v * static_cast<float>(textureH))),
                     0
                 ),
                 textureH - 1

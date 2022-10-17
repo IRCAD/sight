@@ -25,10 +25,7 @@
 #include "data/config.hpp"
 #include "data/timeline/Buffer.hpp"
 
-namespace sight::data
-{
-
-namespace timeline
+namespace sight::data::timeline
 {
 
 /**
@@ -41,19 +38,19 @@ public:
     /// Constructor
     DATA_API RawBuffer(
         core::HiResClock::HiResClockType timestamp = 0,
-        BufferDataType buffer                      = 0,
+        BufferDataType buffer                      = nullptr,
         std::size_t size                           = 0,
-        DeleterType d                              = 0
+        DeleterType d                              = nullptr
     );
 
     /// Destructor
-    DATA_API virtual ~RawBuffer();
+    DATA_API ~RawBuffer() override;
 
     /// Set buffer values
     DATA_API void setBufferValues(BufferDataType values);
 
     /// Return buffer
-    BufferDataType getBuffer() const
+    [[nodiscard]] BufferDataType getBuffer() const
     {
         return m_buffer;
     }
@@ -61,12 +58,10 @@ public:
     //------------------------------------------------------------------------------
 
     template<typename TYPE>
-    TYPE* getBuffer() const
+    [[nodiscard]] TYPE* getBuffer() const
     {
         return reinterpret_cast<TYPE*>(m_buffer);
     }
 };
 
-} // namespace timeline
-
-} // namespace sight::data
+} // namespace sight::data::timeline

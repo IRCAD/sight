@@ -39,14 +39,12 @@ namespace sight::module::filter::image
 //------------------------------------------------------------------------------
 
 SImageCenter::SImageCenter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
 SImageCenter::~SImageCenter()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -125,10 +123,7 @@ void SImageCenter::stopping()
 
 service::IService::KeyConnectionsMap SImageCenter::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-
-    return connections;
+    return {{s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT}};
 }
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE NOLINT
+
 #pragma once
 
 #include "io/vtk/config.hpp"
@@ -28,10 +30,7 @@
 
 #include <functional>
 
-namespace sight::io::vtk
-{
-
-namespace helper
+namespace sight::io::vtk::helper
 {
 
 /**
@@ -41,7 +40,7 @@ class IO_VTK_CLASS_API vtkLambdaCommand : public vtkCommand
 {
 public:
 
-    typedef std::function<void (vtkObject*, unsigned long, void*)> Callback;
+    typedef std::function<void (vtkObject*, unsigned long, void*)> Callback; // NOLINT(google-runtime-int)
 
     vtkTypeMacro(vtkLambdaCommand, vtkCommand)
 
@@ -56,6 +55,7 @@ public:
     /**
      * @brief vtkCommand::Execute implementation
      */
+    // NOLINTNEXTLINE(google-runtime-int)
     IO_VTK_API void Execute(vtkObject* caller, unsigned long eid, void* callData) override;
 
     /**
@@ -69,16 +69,12 @@ public:
 protected:
 
     vtkLambdaCommand()
-    {
-    }
+    = default;
 
-    ~vtkLambdaCommand()
-    {
-    }
+    ~vtkLambdaCommand() override
+    = default;
 
     Callback m_callback;
 };
 
-} // namespace helper
-
-} // namespace sight::io::vtk
+} // namespace sight::io::vtk::helper

@@ -25,7 +25,6 @@
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 #include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 
 #include <data/String.hpp>
 
@@ -58,9 +57,8 @@ SDisplayCalibrationInfo::SDisplayCalibrationInfo() noexcept
 
 //------------------------------------------------------------------------------
 
-SDisplayCalibrationInfo::~SDisplayCalibrationInfo() noexcept
-{
-}
+SDisplayCalibrationInfo::~SDisplayCalibrationInfo() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -144,7 +142,7 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
             service::extension::AppConfig::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap, true);
 
         // Launch configuration
-        m_configMgr = service::IAppConfigManager::New();
+        m_configMgr = service::AppConfigManager::New();
         m_configMgr->service::IAppConfigManager::setConfig(config);
         m_configMgr->launch();
 
@@ -156,4 +154,4 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
 
 //------------------------------------------------------------------------------
 
-} // uiCalibration
+} // namespace sight::module::ui::qt::calibration

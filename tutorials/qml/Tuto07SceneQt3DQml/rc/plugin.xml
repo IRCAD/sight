@@ -1,4 +1,4 @@
-<plugin id="Tuto07SceneQt3DQml" library="true" >
+<plugin id="Tuto07SceneQt3DQml" library="true" autostart="true">
 
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qml" />

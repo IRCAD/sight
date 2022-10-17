@@ -13,7 +13,7 @@ The `realsense` module contains services to bring support for the Intel Realsens
 
 ```cmake
 
-add_dependencies(myTarget 
+add_dependencies(myTarget
                 ...
                  module_io_realsense
 )
@@ -49,7 +49,7 @@ You can achieve this in two different ways:
     <inout key="depthTL" uid="..." />
     <inout key="frameTL" uid="..." />
     <out key="pointcloud" uid="..." />
-    <inout key="cameraSeries" uid="..." />
+    <inout key="cameraSet" uid="..." />
     <config preset="NAME" />
 </service>
    ```
@@ -62,7 +62,7 @@ You can achieve this in two different ways:
     <parameters>
         <param type="enum" name="Realsense presets" key="preset" defaultValue="Default" values="Default,HighResHighAccuracy, HighResHighDensity,HighResMidDensity,MidResHighAccuracy, MidResHighDensity,MidResMidDensity,LowResHighAccuracy, LowResHighDensity,LowResMidDensity,Hand,ShortRange,BodyScan,RemoveIR" />
     </parameters>
-</service>          
+</service>
 ```
 
 

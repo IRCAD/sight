@@ -1,4 +1,4 @@
-<plugin id="sight::module::viz::qt3d" library="true" >
+<plugin id="sight::module::viz::qt3d" library="true" autostart="true">
 
     <extension implements="sight::service::extension::Factory">
          <type>sight::viz::qt3d::IAdaptor</type>

@@ -54,7 +54,7 @@ public:
     MODULE_MEMORY_API LockDumpSrv() noexcept;
 
     /// Destructor. Does nothing
-    MODULE_MEMORY_API virtual ~LockDumpSrv() noexcept;
+    MODULE_MEMORY_API ~LockDumpSrv() noexcept override;
 
 protected:
 
@@ -83,4 +83,4 @@ private:
     std::vector<core::memory::BufferObject::Lock> m_locks;
 };
 
-} // sight::module::memory
+} // namespace sight::module::memory

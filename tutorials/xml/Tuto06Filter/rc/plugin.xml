@@ -95,25 +95,13 @@
             <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
             <!-- Action to open image file: call update on image reader service -->
-            <service uid="openImageAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>imageReaderSrv/update</slot>
-                </slots>
-            </service>
+            <service uid="openImageAct" type="sight::module::ui::base::SAction" />
 
             <!-- Action apply threshold filter: call update on threshold filter service -->
-            <service uid="imageFilterAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>imageFilterSrv/update</slot>
-                </slots>
-            </service>
+            <service uid="imageFilterAct" type="sight::module::ui::base::SAction" />
 
             <!-- Action apply flip filter: call 'flipAxisY' slot on flip service -->
-            <service uid="imageFlipperAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>imageFlipperSrv/flipAxisY</slot>
-                </slots>
-            </service>
+            <service uid="imageFlipperAct" type="sight::module::ui::base::SAction" />
 
             <!-- ******************************* Services ***************************************** -->
 
@@ -165,6 +153,21 @@
             </service>
 
             <!-- ******************************* Start services ***************************************** -->
+
+            <connect>
+                <signal>openImageAct/updated</signal>
+                <slot>imageReaderSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>imageFilterAct/updated</signal>
+                <slot>imageFilterSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>imageFlipperAct/updated</signal>
+                <slot>imageFlipperSrv/flipAxisY</slot>
+            </connect>
 
             <start uid="mainFrame" />
             <start uid="imageReaderSrv" />

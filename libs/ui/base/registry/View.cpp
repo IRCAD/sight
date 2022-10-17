@@ -37,25 +37,20 @@
 
 #include <utility>
 
-namespace sight::ui::base
-{
-
-namespace registry
+namespace sight::ui::base::registry
 {
 
 //-----------------------------------------------------------------------------
 
-View::View(const std::string& sid) :
-    m_parentWid(""),
-    m_sid(sid)
+View::View(std::string sid) :
+    m_sid(std::move(sid))
 {
 }
 
 //-----------------------------------------------------------------------------
 
 View::~View()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -92,7 +87,7 @@ void View::setParent(std::string wid)
         "The method 'setParent()' is available only if this service declares its parent container with a 'wid'.",
         !m_parentWid.empty()
     );
-    m_parentWid = wid;
+    m_parentWid = std::move(wid);
 }
 
 //-----------------------------------------------------------------------------
@@ -179,7 +174,7 @@ void View::initialize(core::runtime::ConfigurationElement::sptr configuration)
 void View::manage(std::vector<ui::base::container::fwContainer::sptr> subViews)
 {
     ui::base::container::fwContainer::sptr container;
-    for(SIDContainerMapType::value_type sid : m_sids)
+    for(const SIDContainerMapType::value_type& sid : m_sids)
     {
         SIGHT_ASSERT(
             "The view '" << m_sid << "' contains more sub-views in <registry> than in <layout>: "
@@ -208,7 +203,7 @@ void View::manage(std::vector<ui::base::container::fwContainer::sptr> subViews)
         }
     }
 
-    for(WIDContainerMapType::value_type wid : m_wids)
+    for(const WIDContainerMapType::value_type& wid : m_wids)
     {
         SIGHT_ASSERT(
             "The view '" << m_sid << "' contains more sub-views in <registry> than in <layout>: "
@@ -224,7 +219,7 @@ void View::manage(std::vector<ui::base::container::fwContainer::sptr> subViews)
 
 void View::manageMenuBar(ui::base::container::fwMenuBar::sptr menuBar)
 {
-    ui::base::GuiRegistry::registerSIDMenuBar(m_menuBarSid.first, menuBar);
+    ui::base::GuiRegistry::registerSIDMenuBar(m_menuBarSid.first, std::move(menuBar));
     if(m_menuBarSid.second) //service is auto started?
     {
         SIGHT_ASSERT(
@@ -240,7 +235,7 @@ void View::manageMenuBar(ui::base::container::fwMenuBar::sptr menuBar)
 
 void View::manageToolBar(ui::base::container::fwToolBar::sptr toolBar)
 {
-    ui::base::GuiRegistry::registerSIDToolBar(m_toolBarSid.first, toolBar);
+    ui::base::GuiRegistry::registerSIDToolBar(m_toolBarSid.first, std::move(toolBar));
     if(m_toolBarSid.second) //service is auto started?
     {
         SIGHT_ASSERT(
@@ -256,7 +251,7 @@ void View::manageToolBar(ui::base::container::fwToolBar::sptr toolBar)
 
 void View::unmanage()
 {
-    for(SIDContainerMapType::value_type sid : m_sids)
+    for(const SIDContainerMapType::value_type& sid : m_sids)
     {
         if(sid.second.second) //service is auto started?
         {
@@ -272,7 +267,7 @@ void View::unmanage()
         ui::base::GuiRegistry::unregisterSIDContainer(sid.first);
     }
 
-    for(WIDContainerMapType::value_type wid : m_wids)
+    for(const WIDContainerMapType::value_type& wid : m_wids)
     {
         ui::base::GuiRegistry::unregisterWIDContainer(wid.first);
     }
@@ -320,6 +315,4 @@ void View::unmanageMenuBar()
 
 //-----------------------------------------------------------------------------
 
-} // namespace registry
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::registry

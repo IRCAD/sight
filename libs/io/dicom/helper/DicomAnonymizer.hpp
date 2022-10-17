@@ -45,12 +45,9 @@ namespace sight::core::jobs
 class IJob;
 class Observer;
 
-}
+} // namespace sight::core::jobs
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 /**
@@ -101,7 +98,7 @@ public:
     );
 
     /// Get job observer
-    IO_DICOM_API SPTR(core::jobs::IJob) getJob() const;
+    [[nodiscard]] IO_DICOM_API SPTR(core::jobs::IJob) getJob() const;
 
     /// Return next file index
     IO_DICOM_API unsigned int getNextIndex();
@@ -180,7 +177,7 @@ private:
      * C: clean, that is replace with values of similar meaning known not to contain identifying information and
      * consistent with the VR
      */
-    void applyActionCodeC(const gdcm::Tag& tag);
+    static void applyActionCodeC(const gdcm::Tag& tag);
 
     /// U: if UID is not empty, replace with a non-zero length UID
     /// that is internally consistent within a set of Instances
@@ -218,10 +215,10 @@ private:
     SPTR(core::jobs::Observer) m_observer;
 
     /// Archiving boolean used to compute correct progress when archiving
-    bool m_archiving;
+    bool m_archiving {false};
 
     /// Index of anonymizer
-    unsigned int m_fileIndex;
+    unsigned int m_fileIndex {0};
 
     /// Reference date for shifting
     boost::gregorian::date m_referenceDate;
@@ -246,6 +243,4 @@ private:
     io::dicom::helper::PrivateTagVecType m_privateTags;
 };
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

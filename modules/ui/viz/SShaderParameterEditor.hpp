@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ public:
     MODULE_UI_VIZ_API SShaderParameterEditor() noexcept;
 
     /// Destructor. Destroy UI
-    MODULE_UI_VIZ_API virtual ~SShaderParameterEditor() noexcept;
+    MODULE_UI_VIZ_API ~SShaderParameterEditor() noexcept override;
 
 protected:
 
@@ -109,9 +109,9 @@ private:
     /// Connection to the material
     core::com::helper::SigSlotConnection m_connections;
 
-    QVBoxLayout* m_sizer;
+    QVBoxLayout* m_sizer {};
 
     data::ptr<data::Reconstruction, data::Access::inout> m_reconstruction {this, "reconstruction"};
 };
 
-} // uiVisuOgre
+} // namespace sight::module::ui::viz

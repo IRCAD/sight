@@ -12,8 +12,8 @@ This module contains services for reading and writing itk file formats.
   Writes an image to jpg format.
 - **SImageSeriesWriter**
   Writes `.inr.gz` image series format.
-- **SInrSeriesDBReader**
-  Reads `.inr.gz` files and pushes them into SeriesDB.
+- **SInrSeriesSetReader**
+  Reads `.inr.gz` files and pushes them into SeriesSet.
 - **SJpgImageSeriesWriter**
   Writes an image series to jpg format.
 
@@ -22,7 +22,7 @@ This module contains services for reading and writing itk file formats.
 
 ```cmake
 
-add_dependencies(myTarget 
+add_dependencies(myTarget
                 ...
                  module_io_itk
 )

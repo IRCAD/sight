@@ -19,7 +19,13 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+
+// cspell:ignore NOLINTNEXTLINE
+
 #include "io/vtk/vtk.hpp"
+
+#include <core/runtime/Profile.hpp>
+#include <core/tools/Os.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
@@ -66,10 +72,18 @@ static bool initVTKLogFile()
     const auto timenow =
         std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
 
-    // Create VTK.log in current folder.
+    // Create VTK.log in user cache folder.
+    // Find log dir
+    const auto& current_profile = core::runtime::getCurrentProfile();
+    const auto& profile_name    = current_profile ? current_profile->getName() : std::string();
+    const auto& vtk_log         = core::tools::os::getUserCacheDir(profile_name) / "VTK.log";
+
     // TODO: Gather all .log file together in Session.
     vtkSmartPointer<vtkFileOutputWindow> outwin = vtkFileOutputWindow::New();
-    outwin->SetFileName("VTK.log");
+
+    // MSVC doesn't have std::filesystem::path::c_str()
+    const auto& vtk_log_string = vtk_log.string();
+    outwin->SetFileName(vtk_log_string.c_str());
 
     // Print header.
     std::string header = "# VTK LOG File " + std::string(ctime(&timenow));
@@ -89,7 +103,7 @@ TypeTranslator::fwToolsToVtkMap::mapped_type TypeTranslator::translate(
     const TypeTranslator::fwToolsToVtkMap::key_type& key
 )
 {
-    fwToolsToVtkMap::const_iterator it = s_toVtk.find(key);
+    auto it = s_toVtk.find(key);
     SIGHT_THROW_IF("Unknown Type: " << key, it == s_toVtk.end());
     return it->second;
 }
@@ -100,7 +114,7 @@ TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
     const TypeTranslator::VtkTofwToolsMap::key_type& key
 )
 {
-    VtkTofwToolsMap::const_iterator it = s_fromVtk.find(key);
+    auto it = s_fromVtk.find(key);
     SIGHT_THROW_IF("Unknown Type: " << key, it == s_fromVtk.end());
     return it->second;
 }
@@ -108,43 +122,43 @@ TypeTranslator::VtkTofwToolsMap::mapped_type TypeTranslator::translate(
 const TypeTranslator::fwToolsToVtkMap TypeTranslator::s_toVtk = {
     // char and signed char are treated as the same type.
     // and plain char is used when writing an int8 image
-    {core::tools::Type::create("int8"), VTK_CHAR},
-    {core::tools::Type::create("uint8"), VTK_UNSIGNED_CHAR},
-    {core::tools::Type::create("int16"), VTK_SHORT},
-    {core::tools::Type::create("uint16"), VTK_UNSIGNED_SHORT},
-    {core::tools::Type::create("int32"), VTK_INT},
-    {core::tools::Type::create("uint32"), VTK_UNSIGNED_INT},
-    {core::tools::Type::create("int64"), VTK_LONG_LONG},
-    {core::tools::Type::create("uint64"), VTK_UNSIGNED_LONG_LONG},
-    {core::tools::Type::create("float"), VTK_FLOAT},
-    {core::tools::Type::create("double"), VTK_DOUBLE}
+    {core::Type::INT8, VTK_CHAR},
+    {core::Type::UINT8, VTK_UNSIGNED_CHAR},
+    {core::Type::INT16, VTK_SHORT},
+    {core::Type::UINT16, VTK_UNSIGNED_SHORT},
+    {core::Type::INT32, VTK_INT},
+    {core::Type::UINT32, VTK_UNSIGNED_INT},
+    {core::Type::INT64, VTK_LONG_LONG},
+    {core::Type::UINT64, VTK_UNSIGNED_LONG_LONG},
+    {core::Type::FLOAT, VTK_FLOAT},
+    {core::Type::DOUBLE, VTK_DOUBLE}
 };
 
 const TypeTranslator::VtkTofwToolsMap TypeTranslator::s_fromVtk = {
     // char and signed char are treated as the same type.
     // and plain char is used when writing an int8 image
-    {VTK_SIGNED_CHAR, core::tools::Type::create("int8")},
-    {VTK_CHAR, core::tools::Type::create("int8")},
-    {VTK_UNSIGNED_CHAR, core::tools::Type::create("uint8")},
-    {VTK_SHORT, core::tools::Type::create("int16")},
-    {VTK_UNSIGNED_SHORT, core::tools::Type::create("uint16")},
-    {VTK_INT, core::tools::Type::create("int32")},
-    {VTK_UNSIGNED_INT, core::tools::Type::create("uint32")},
-    {VTK_FLOAT, core::tools::Type::create("float")},
-    {VTK_DOUBLE, core::tools::Type::create("double")},
-    {VTK_LONG_LONG, core::tools::Type::create("int64")},
-    {VTK_UNSIGNED_LONG_LONG, core::tools::Type::create("uint64")},
+    {VTK_SIGNED_CHAR, core::Type::INT8},
+    {VTK_CHAR, core::Type::INT8},
+    {VTK_UNSIGNED_CHAR, core::Type::UINT8},
+    {VTK_SHORT, core::Type::INT16},
+    {VTK_UNSIGNED_SHORT, core::Type::UINT16},
+    {VTK_INT, core::Type::INT32},
+    {VTK_UNSIGNED_INT, core::Type::UINT32},
+    {VTK_FLOAT, core::Type::FLOAT},
+    {VTK_DOUBLE, core::Type::DOUBLE},
+    {VTK_LONG_LONG, core::Type::INT64},
+    {VTK_UNSIGNED_LONG_LONG, core::Type::UINT64},
 
 #if (INT_MAX < LONG_MAX)
     {
-        VTK_LONG, core::tools::Type::create("int64")
+        VTK_LONG, core::Type::INT64
     },
-    {VTK_UNSIGNED_LONG, core::tools::Type::create("uint64")}
+    {VTK_UNSIGNED_LONG, core::Type::UINT64}
 #else
     {
-        VTK_LONG, core::tools::Type::create("int32")
+        VTK_LONG, core::Type::INT32
     },
-    {VTK_UNSIGNED_LONG, core::tools::Type::create("uint32")}
+    {VTK_UNSIGNED_LONG, core::Type::UINT32}
 #endif
 };
 
@@ -166,7 +180,7 @@ void toVTKImage(data::Image::csptr data, vtkImageData* dst)
 template<typename IMAGETYPE>
 void* newBuffer(std::size_t size)
 {
-    IMAGETYPE* destBuffer;
+    IMAGETYPE* destBuffer = nullptr;
     try
     {
         destBuffer = new IMAGETYPE[size];
@@ -175,7 +189,7 @@ void* newBuffer(std::size_t size)
     {
         SIGHT_ERROR(
             "No enough memory to allocate an image of type "
-            << core::tools::Type::create<IMAGETYPE>().string()
+            << core::Type::get<IMAGETYPE>().name()
             << " and of size " << size << "." << std::endl
             << e.what()
         );
@@ -189,15 +203,17 @@ void* newBuffer(std::size_t size)
 template<typename IMAGETYPE>
 void fromRGBBuffer(void* input, std::size_t size, void*& destBuffer)
 {
-    if(destBuffer == NULL)
+    if(destBuffer == nullptr)
     {
         destBuffer = newBuffer<IMAGETYPE>(size);
     }
 
-    IMAGETYPE* destBufferTyped = static_cast<IMAGETYPE*>(destBuffer);
-    IMAGETYPE* inputTyped = static_cast<IMAGETYPE*>(input);
-    IMAGETYPE* finalPtr = static_cast<IMAGETYPE*>(destBuffer) + size;
-    IMAGETYPE valR, valG, valB;
+    auto* destBufferTyped = static_cast<IMAGETYPE*>(destBuffer);
+    auto* inputTyped      = static_cast<IMAGETYPE*>(input);
+    IMAGETYPE* finalPtr   = static_cast<IMAGETYPE*>(destBuffer) + size;
+    IMAGETYPE valR;
+    IMAGETYPE valG;
+    IMAGETYPE valB;
 
     while(destBufferTyped < finalPtr)
     {
@@ -213,14 +229,14 @@ void fromRGBBuffer(void* input, std::size_t size, void*& destBuffer)
 template<typename IMAGETYPE>
 void fromRGBBufferColor(void* input, std::size_t size, void*& destBuffer)
 {
-    if(destBuffer == NULL)
+    if(destBuffer == nullptr)
     {
         destBuffer = newBuffer<IMAGETYPE>(size);
     }
 
-    IMAGETYPE* destBufferTyped = static_cast<IMAGETYPE*>(destBuffer);
-    IMAGETYPE* inputTyped      = static_cast<IMAGETYPE*>(input);
-    IMAGETYPE* finalPtr        = static_cast<IMAGETYPE*>(destBuffer) + size;
+    auto* destBufferTyped = static_cast<IMAGETYPE*>(destBuffer);
+    auto* inputTyped      = static_cast<IMAGETYPE*>(input);
+    IMAGETYPE* finalPtr   = static_cast<IMAGETYPE*>(destBuffer) + size;
 
     while(destBufferTyped < finalPtr)
     {
@@ -278,14 +294,14 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
             source->GetDimensions(),
             source->GetDimensions() + static_cast<std::size_t>(dim),
             std::max(static_cast<std::size_t>(3), static_cast<std::size_t>(nbComponents)),
-            std::multiplies<std::size_t>()
+            std::multiplies<>()
         )
     );
     const void* input = source->GetScalarPointer();
 
     if(size != 0)
     {
-        void* destBuffer;
+        void* destBuffer = nullptr;
 
         sight::data::Image::PixelFormat format = data::Image::PixelFormat::GRAY_SCALE;
         if(nbComponents == 1)
@@ -317,7 +333,7 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
         const std::size_t sizeInBytes = destination->getSizeInBytes();
         std::memcpy(destBuffer, input, sizeInBytes);
 
-        sight::data::helper::MedicalImage::checkTransferFunctionPool(destination);
+        sight::data::helper::MedicalImage::updateDefaultTransferFunction(*destination);
         sight::data::helper::MedicalImage::checkImageSliceIndex(destination);
     }
 }
@@ -382,6 +398,7 @@ void configureVTKImageImport(vtkImageImport* _pImageImport, data::Image::csptr _
 
     // no copy, no buffer destruction/management
     // Remove const of the pointer.
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
     _pImageImport->SetImportVoidPointer(const_cast<void*>(_pDataImage->getBuffer()));
 
     // used to set correct pixeltype to VtkImage

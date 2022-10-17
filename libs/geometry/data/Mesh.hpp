@@ -59,19 +59,6 @@ public:
     GEOMETRY_DATA_API static void generatePointNormals(sight::data::Mesh::sptr mesh);
 
     /**
-     * @brief Shake Array of Normals.
-     *
-     * Array must have 3 float components, 1 dimension. Otherwise, shakeNormals
-     * will do nothing.
-     *
-     * @param[out]  array mesh's array containing normals.
-     * @deprecated This method will be removed because mesh arrays can no longer be accessed.
-     */
-    [[deprecated("will be removed in sight 22.0")]] GEOMETRY_DATA_API static void shakeNormals(
-        sight::data::Array::sptr array
-    );
-
-    /**
      * @brief Shake point Normals.
      *
      * @param[out]  mesh data::Mesh structure to shake normals.
@@ -123,10 +110,10 @@ public:
      */
     GEOMETRY_DATA_API static void colorizeMeshPoints(
         const sight::data::Mesh::sptr& mesh,
-        const std::uint8_t colorR,
-        const std::uint8_t colorG,
-        const std::uint8_t colorB,
-        const std::uint8_t colorA = 255
+        std::uint8_t colorR,
+        std::uint8_t colorG,
+        std::uint8_t colorB,
+        std::uint8_t colorA = 255
     );
 
     /**
@@ -137,10 +124,10 @@ public:
     GEOMETRY_DATA_API static void colorizeMeshPoints(
         const sight::data::Mesh::sptr& _mesh,
         const std::vector<std::size_t>& _vectorNumTriangle,
-        const std::uint8_t _colorR,
-        const std::uint8_t colorG,
-        const std::uint8_t colorB,
-        const std::uint8_t _colorA = 255
+        std::uint8_t _colorR,
+        std::uint8_t colorG,
+        std::uint8_t colorB,
+        std::uint8_t _colorA = 255
     );
 
     /**
@@ -150,10 +137,10 @@ public:
      */
     GEOMETRY_DATA_API static void colorizeMeshCells(
         const sight::data::Mesh::sptr& mesh,
-        const std::uint8_t colorR,
-        const std::uint8_t colorG,
-        const std::uint8_t colorB,
-        const std::uint8_t _colorA = 255
+        std::uint8_t colorR,
+        std::uint8_t colorG,
+        std::uint8_t colorB,
+        std::uint8_t _colorA = 255
     );
     /**
      * @brief Colorize the cells in vectorNumTriangle
@@ -163,10 +150,10 @@ public:
     GEOMETRY_DATA_API static void colorizeMeshCells(
         const sight::data::Mesh::sptr& mesh,
         const std::vector<std::size_t>& triangleIndexVector,
-        const std::uint8_t colorR,
-        const std::uint8_t colorG,
-        const std::uint8_t colorB,
-        const std::uint8_t _colorA = 255
+        std::uint8_t colorR,
+        std::uint8_t colorG,
+        std::uint8_t colorB,
+        std::uint8_t _colorA = 255
     );
 
     /*!

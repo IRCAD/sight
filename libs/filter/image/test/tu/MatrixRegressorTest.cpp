@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,9 @@
 #include "MatrixRegressorTest.hpp"
 
 #include <filter/image/MatrixRegressor.hpp>
+
 #include <geometry/data/Matrix4.hpp>
+
 #include <glm/gtc/epsilon.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #define GLM_ENABLE_EXPERIMENTAL
@@ -33,10 +35,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::filter::image::ut::MatrixRegressorTest);
 
-namespace sight::filter::image
-{
-
-namespace ut
+namespace sight::filter::image::ut
 {
 
 //------------------------------------------------------------------------------
@@ -57,11 +56,11 @@ void MatrixRegressorTest::identityTest()
 {
     auto id = data::Matrix4::New();
 
-    data::Vector::sptr matList = data::Vector::New();
+    auto matList = data::Vector::New();
 
     for(int i = 0 ; i < 5 ; ++i)
     {
-        matList->getContainer().push_back(id);
+        matList->push_back(id);
     }
 
     const std::vector<MatrixRegressor::PointType> ptList = {{
@@ -80,7 +79,7 @@ void MatrixRegressorTest::identityTest()
 
     data::Matrix4::sptr res = regressor.minimize(*id);
 
-    for(int i = 0 ; i < 16 ; ++i)
+    for(std::size_t i = 0 ; i < 16 ; ++i)
     {
         const double expected = id->getCoefficients()[i];
         const double result   = res->getCoefficients()[i];
@@ -103,10 +102,10 @@ void MatrixRegressorTest::avgTranslationTest()
     geometry::data::setTF3DFromMatrix(*trans1, t1);
     geometry::data::setTF3DFromMatrix(*trans2, t2);
 
-    data::Vector::sptr matList = data::Vector::New();
+    auto matList = data::Vector::New();
 
-    matList->getContainer().push_back(trans1);
-    matList->getContainer().push_back(trans2);
+    matList->push_back(trans1);
+    matList->push_back(trans2);
 
     const std::vector<MatrixRegressor::PointType> ptList = {{
         {0., 0., 0., 1.},
@@ -129,7 +128,7 @@ void MatrixRegressorTest::avgTranslationTest()
 
     geometry::data::setTF3DFromMatrix(expectedMat, transExpected);
 
-    for(int i = 0 ; i < 16 ; ++i)
+    for(std::size_t i = 0 ; i < 16 ; ++i)
     {
         const double expected = expectedMat.getCoefficients()[i];
         const double result   = res->getCoefficients()[i];
@@ -149,10 +148,10 @@ void MatrixRegressorTest::avgRotationTest()
 
     geometry::data::setTF3DFromMatrix(*rot, r1);
 
-    data::Vector::sptr matList = data::Vector::New();
+    auto matList = data::Vector::New();
 
-    matList->getContainer().push_back(id);
-    matList->getContainer().push_back(rot);
+    matList->push_back(id);
+    matList->push_back(rot);
 
     const std::vector<MatrixRegressor::PointType> ptList = {{
         {0., 0., 0., 1.},
@@ -183,6 +182,4 @@ void MatrixRegressorTest::avgRotationTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut.
-
-} //namespace sight::filter::image.
+} // namespace sight::filter::image::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,4 +38,4 @@ struct Exception : core::Exception
     }
 };
 
-} // namespace sight::io::igtl::detail
+} // namespace sight::io::igtl

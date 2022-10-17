@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,15 +28,12 @@
 #include <core/base.hpp>
 #include <core/log/Logger.hpp>
 
-namespace sight::ui::base
-{
-
-namespace dialog
+namespace sight::ui::base::dialog
 {
 
 /**
  * @brief ILoggerDialog is used to display a dialog message and a set of logs
- * Use the Delegate design pattern. The specific implementation selection is ensured by fwGuiRegisterMacro.
+ * Use the Delegate design pattern. The specific implementation selection is ensured by SIGHT_REGISTER_GUI.
  * The specific implementation is fwQt libraries
  */
 class UI_BASE_CLASS_API LoggerDialog : public ILoggerDialog
@@ -62,7 +59,7 @@ public:
     UI_BASE_API LoggerDialog();
 
     /// Destructor
-    UI_BASE_API virtual ~LoggerDialog();
+    UI_BASE_API ~LoggerDialog() override = default;
 
     /**
      * Constructor. Create a selector with the specified title, message and logs.
@@ -104,6 +101,4 @@ protected:
     ui::base::dialog::ILoggerDialog::sptr m_implementation;
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::dialog

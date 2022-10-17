@@ -71,6 +71,7 @@
             <object uid="snapshot1" type="sight::data::Image" />
             <object uid="snapshot2" type="sight::data::Image" />
             <object uid="snapshot3" type="sight::data::Image" />
+            <object uid="tf" type="sight::data::TransferFunction" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -241,11 +242,7 @@
             </service>
 
             <!-- Action to save an image in the Tab 3 -->
-            <service uid="computeImageAct" type="sight::module::ui::base::com::SSlotCaller" >
-                <slots>
-                    <slot>imageSubstractSrv/update</slot>
-                </slots>
-            </service>
+            <service uid="computeImageAct" type="sight::module::ui::base::SAction" />
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
@@ -270,7 +267,8 @@
             </service>
 
             <service uid="N1NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
-                <inout key="image" uid="image1" />
+                <in key="image" uid="image1" />
+                <inout key="tf" uid="tf" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
@@ -297,7 +295,8 @@
             </service>
 
             <service uid="N2NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
-                <inout key="image" uid="image2" />
+                <in key="image" uid="image2" />
+                <inout key="tf" uid="tf" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
@@ -324,7 +323,8 @@
             </service>
 
             <service uid="N3NegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
-                <inout key="image" uid="imageResult" />
+                <in key="image" uid="imageResult" />
+                <inout key="tf" uid="tf" />
                 <config layer="default" sliceIndex="axial" interactive="true" />
             </service>
 
@@ -406,6 +406,11 @@
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>computeImageAct/clicked</signal>
+                <slot>imageSubstractSrv/update</slot>
+            </connect>
 
             <connect>
                 <signal>snapshotNegato1EditorSrv/clicked</signal>

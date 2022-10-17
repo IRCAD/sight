@@ -9,14 +9,13 @@
 
     <xi:include href="configurations/SightCalibratorActivitySelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
     <xi:include href="configurations/SightCalibratorBase.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
-    <xi:include href="configurations/SightCalibratorSelector.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="sight::activity::extension::Activity">
         <id>SightCalibratorActivitySelector_Activity</id>
         <title>Activity selector</title>
         <desc>Activity selector for SightCalibrator</desc>
         <icon>sight::module::ui::flaticons/YellowCamera.svg</icon>
-        <requirements />
+        <requirements></requirements>
         <appConfig id="SightCalibrator_ActivitySelector_AppCfg">
             <parameters />
         </appConfig>

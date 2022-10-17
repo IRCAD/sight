@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <viz/scene2d/IAdaptor.hpp>
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
@@ -64,7 +61,7 @@ public:
     MODULE_VIZ_SCENE2D_API SLine() noexcept;
 
     /// Basic destructor, do nothing.
-    MODULE_VIZ_SCENE2D_API virtual ~SLine() noexcept;
+    MODULE_VIZ_SCENE2D_API ~SLine() noexcept override;
 
 protected:
 
@@ -85,15 +82,13 @@ private:
     void draw();
 
     /// The coordinates of the line.
-    float m_x1, m_x2, m_y1, m_y2;
+    float m_x1 {0.F}, m_x2 {0.F}, m_y1 {0.F}, m_y2 {0.F};
 
     /// The pen.
     QPen m_pen;
 
     /// The layer.
-    QGraphicsItemGroup* m_layer;
+    QGraphicsItemGroup* m_layer {nullptr};
 };
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

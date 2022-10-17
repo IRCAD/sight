@@ -27,10 +27,9 @@
 #include <data/Float.hpp>
 #include <data/Integer.hpp>
 
-namespace sight::module::ui::viz
-{
+#include <cmath>
 
-namespace helper
+namespace sight::module::ui::viz::helper
 {
 
 //-----------------------------------------------------------------------------
@@ -122,11 +121,11 @@ service::IService::ConfigType ParameterEditor::createConfig(
     {
         _connections.connect(_paramSrv, "doubleChanged", _adaptor, "setDoubleParameter");
 
-        auto floatValue           = data::Float::dynamicCast(shaderObj.get_shared());
-        const double defaultValue = static_cast<double>(floatValue->value());
-        const auto minmax         = getRange(defaultValue);
-        const double min          = minmax.first;
-        const double max          = minmax.second;
+        auto floatValue         = data::Float::dynamicCast(shaderObj.get_shared());
+        const auto defaultValue = static_cast<double>(floatValue->value());
+        const auto minmax       = getRange(defaultValue);
+        const double min        = minmax.first;
+        const double max        = minmax.second;
 
         paramConfig.add("<xmlattr>.type", "double");
         paramConfig.add("<xmlattr>.name", _adaptor->getParamName());
@@ -140,7 +139,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
         _connections.connect(_paramSrv, "intChanged", _adaptor, "setIntParameter");
 
         auto intValue          = data::Integer::dynamicCast(shaderObj.get_shared());
-        const int defaultValue = intValue->value();
+        const int defaultValue = int(intValue->value());
         const auto minmax      = getRange(defaultValue);
         const int min          = minmax.first;
         const int max          = minmax.second;
@@ -160,8 +159,8 @@ service::IService::ConfigType ParameterEditor::createConfig(
         {
             std::string strSize = std::to_string(numComponents);
 
-            if(arrayObject->getType() == core::tools::Type::s_FLOAT
-               || arrayObject->getType() == core::tools::Type::s_DOUBLE)
+            if(arrayObject->getType() == core::Type::FLOAT
+               || arrayObject->getType() == core::Type::DOUBLE)
             {
                 _connections.connect(
                     _paramSrv,
@@ -174,8 +173,8 @@ service::IService::ConfigType ParameterEditor::createConfig(
                 // For now fill it with the first one
                 const auto dumpLock = arrayObject->dump_lock();
 
-                double defaultValue;
-                if(arrayObject->getType() == core::tools::Type::s_FLOAT)
+                double defaultValue = NAN;
+                if(arrayObject->getType() == core::Type::FLOAT)
                 {
                     defaultValue = static_cast<double>(arrayObject->at<float>(0));
                 }
@@ -195,7 +194,7 @@ service::IService::ConfigType ParameterEditor::createConfig(
                 paramConfig.add("<xmlattr>.min", min);
                 paramConfig.add("<xmlattr>.max", max);
             }
-            else if(arrayObject->getType() == core::tools::Type::s_INT32)
+            else if(arrayObject->getType() == core::Type::INT32)
             {
                 _connections.connect(
                     _paramSrv,
@@ -237,6 +236,4 @@ service::IService::ConfigType ParameterEditor::createConfig(
 
 //-----------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::module::ui::viz
+} // namespace sight::module::ui::viz::helper

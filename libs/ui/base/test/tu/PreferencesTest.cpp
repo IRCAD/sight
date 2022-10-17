@@ -38,10 +38,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::ui::base::ut::PreferencesTest);
 
-namespace sight::ui::base
-{
-
-namespace ut
+namespace sight::ui::base::ut
 {
 
 //------------------------------------------------------------------------------
@@ -51,14 +48,15 @@ void PreferencesTest::setUp()
     ui::base::Preferences::set_enabled(true);
 
     core::runtime::init();
+    core::runtime::loadModule("sight::module::ui::base");
 
     // Set the profile name
     const std::string& profileName = core::tools::UUID::generateUUID();
     core::runtime::getCurrentProfile()->setName(profileName);
 
     // Compute the expected preferences file path
-    m_preferencesPath = core::tools::os::getUserDataDir("sight", profileName) + "/preferences.json";
-    m_encryptedPath   = core::tools::os::getUserDataDir("sight", profileName) + "/preferences.sight";
+    m_preferencesPath = core::tools::os::getUserConfigDir(profileName) / "preferences.json";
+    m_encryptedPath   = core::tools::os::getUserConfigDir(profileName) / "preferences.sight";
 }
 
 //------------------------------------------------------------------------------
@@ -66,8 +64,7 @@ void PreferencesTest::setUp()
 void PreferencesTest::tearDown()
 {
     ui::base::Preferences::set_enabled(false);
-    std::filesystem::remove(m_preferencesPath);
-    std::filesystem::remove(m_encryptedPath);
+    std::filesystem::remove_all(m_preferencesPath.parent_path());
 }
 
 //------------------------------------------------------------------------------
@@ -100,8 +97,11 @@ void PreferencesTest::simpleTest()
         ui::base::Preferences preferences;
 
         // Check get value from an empty preferences file
-        CPPUNIT_ASSERT_THROW(preferences.get<std::string>(root_key), boost::property_tree::ptree_error);
-        CPPUNIT_ASSERT_NO_THROW(preferences.get(root_key, string_value));
+        CPPUNIT_ASSERT_THROW(
+            auto p = preferences.get<std::string>(root_key),
+            boost::property_tree::ptree_error
+        );
+        CPPUNIT_ASSERT_NO_THROW(std::string p = preferences.get(root_key, string_value));
 
         const auto& same_value = preferences.get(root_key, string_value);
         CPPUNIT_ASSERT_EQUAL(string_value, same_value);
@@ -110,7 +110,7 @@ void PreferencesTest::simpleTest()
         CPPUNIT_ASSERT_NO_THROW(
             preferences.put(string_key, string_value);
         );
-        CPPUNIT_ASSERT_NO_THROW(preferences.get<std::string>(string_key));
+        CPPUNIT_ASSERT_NO_THROW(auto p = preferences.get<std::string>(string_key));
         const auto& set_value = preferences.get<std::string>(string_key);
         CPPUNIT_ASSERT_EQUAL(string_value, set_value);
     }
@@ -159,6 +159,39 @@ void PreferencesTest::delimeterTest()
 
 //------------------------------------------------------------------------------
 
+void PreferencesTest::parsedGetTest()
+{
+    const std::string& root_key      = "ROOT";
+    const std::string& str_key       = root_key + ".STR";
+    const std::string& delimited_key = "%" + str_key + "%";
+    const std::string str_value      = "1664";
+
+    ui::base::Preferences preferences;
+
+    CPPUNIT_ASSERT_NO_THROW(
+        preferences.put(str_key, str_value);
+    );
+
+    // Now test the getter
+    {
+        // Test without delimiter, will fail as the key won't be found
+        // The key will however be returned as the val
+        auto [key, val] = preferences.parsed_get<std::string>(str_key);
+        CPPUNIT_ASSERT_EQUAL(key, std::string(""));
+        CPPUNIT_ASSERT_EQUAL(val, str_key);
+    }
+
+    {
+        // Test with a delimiter, both values should be returned
+        // As the preferneces is valid this time
+        auto [key, val] = preferences.parsed_get<std::string>(delimited_key);
+        CPPUNIT_ASSERT_EQUAL(key, str_key);
+        CPPUNIT_ASSERT_EQUAL(val, str_value);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void PreferencesTest::encryptedTest()
 {
     // Setting a password will enable encryption
@@ -172,8 +205,11 @@ void PreferencesTest::encryptedTest()
         ui::base::Preferences preferences;
 
         // Check get value from an empty preferences file
-        CPPUNIT_ASSERT_THROW(preferences.get<std::string>(root_key), boost::property_tree::ptree_error);
-        CPPUNIT_ASSERT_NO_THROW(preferences.get(root_key, string_value));
+        CPPUNIT_ASSERT_THROW(
+            auto p = preferences.get<std::string>(root_key),
+            boost::property_tree::ptree_error
+        );
+        CPPUNIT_ASSERT_NO_THROW(std::string p = preferences.get(root_key, string_value));
 
         const auto& same_value = preferences.get(root_key, string_value);
         CPPUNIT_ASSERT_EQUAL(string_value, same_value);
@@ -182,7 +218,7 @@ void PreferencesTest::encryptedTest()
         CPPUNIT_ASSERT_NO_THROW(
             preferences.put(string_key, string_value);
         );
-        CPPUNIT_ASSERT_NO_THROW(preferences.get<std::string>(string_key));
+        CPPUNIT_ASSERT_NO_THROW(auto p = preferences.get<std::string>(string_key));
         const auto& set_value = preferences.get<std::string>(string_key);
         CPPUNIT_ASSERT_EQUAL(string_value, set_value);
     }
@@ -240,7 +276,7 @@ void PreferencesTest::forcedEncryptionTest()
         );
 
         // check the value
-        CPPUNIT_ASSERT_NO_THROW(preferences.get<std::string>(string_key));
+        CPPUNIT_ASSERT_NO_THROW(auto p = preferences.get<std::string>(string_key));
         const auto& set_value = preferences.get<std::string>(string_key);
         CPPUNIT_ASSERT_EQUAL(string_value, set_value);
     }
@@ -258,12 +294,10 @@ void PreferencesTest::forcedEncryptionTest()
         ui::base::Preferences preferences;
 
         // check the value
-        CPPUNIT_ASSERT_NO_THROW(preferences.get<std::string>(string_key));
+        CPPUNIT_ASSERT_NO_THROW(auto p = preferences.get<std::string>(string_key));
         const auto& set_value = preferences.get<std::string>(string_key);
         CPPUNIT_ASSERT_EQUAL(string_value, set_value);
     }
 }
 
-} //namespace ut
-
-} //namespace sight::ui::base
+} // namespace sight::ui::base::ut

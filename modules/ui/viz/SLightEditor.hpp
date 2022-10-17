@@ -65,7 +65,7 @@ public:
     MODULE_UI_VIZ_API SLightEditor() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_VIZ_API virtual ~SLightEditor() noexcept;
+    MODULE_UI_VIZ_API ~SLightEditor() noexcept override;
 
 private:
 
@@ -145,13 +145,13 @@ private Q_SLOTS:
      * @brief Opens a color picker and lets the user choose a new diffuse color.
      * @see m_diffuseColorBtn.
      */
-    void onEditDiffuseColor(bool);
+    void onEditDiffuseColor(bool /*unused*/);
 
     /**
      * @brief Opens a color picker and lets the user choose a new specular color.
      * @see m_specularColorBtn.
      */
-    void onEditSpecularColor(bool);
+    void onEditSpecularColor(bool /*unused*/);
 
     /**
      * @brief Sets the new theta offset value on the light adaptor accurately.
@@ -206,19 +206,19 @@ private Q_SLOTS:
      * @brief Reset the X translation of the light.
      * @see m_xReset.
      */
-    void onResetXTranslation(bool);
+    void onResetXTranslation(bool /*unused*/);
 
     /**
      * @brief Reset the Y translation of the light.
      * @see m_yReset.
      */
-    void onResetYTranslation(bool);
+    void onResetYTranslation(bool /*unused*/);
 
     /**
      * @brief Reset the Z translation of the light.
      * @see m_zReset.
      */
-    void onResetZTranslation(bool);
+    void onResetZTranslation(bool /*unused*/);
 };
 
 } // namespace sight::module::ui::viz

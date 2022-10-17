@@ -40,54 +40,47 @@ const core::com::Signals::SignalKeyType ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG
 const core::com::Signals::SignalKeyType ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG = "reconstructionsRemoved";
 
 ModelSeries::ModelSeries(data::Object::Key _key) :
-    Series(_key)
+    Series(_key),
+    m_sigReconstructionsAdded(ReconstructionsAddedSignalType::New()),
+    m_sigReconstructionsRemoved(ReconstructionsRemovedSignalType::New())
 {
-    m_sigReconstructionsAdded   = ReconstructionsAddedSignalType::New();
-    m_sigReconstructionsRemoved = ReconstructionsRemovedSignalType::New();
-
     m_signals(s_RECONSTRUCTIONS_ADDED_SIG, m_sigReconstructionsAdded)
         (s_RECONSTRUCTIONS_REMOVED_SIG, m_sigReconstructionsRemoved);
 }
 
 //------------------------------------------------------------------------------
 
-ModelSeries::~ModelSeries()
+void ModelSeries::shallowCopy(const Object::csptr& source)
 {
-}
+    const auto& other = dynamicConstCast(source);
 
-//------------------------------------------------------------------------------
-
-void ModelSeries::shallowCopy(const data::Object::csptr& _source)
-{
-    ModelSeries::csptr other = ModelSeries::dynamicConstCast(_source);
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-
-    this->data::Series::shallowCopy(_source);
 
     m_reconstructionDB = other->m_reconstructionDB;
     m_dicomReference   = other->m_dicomReference;
+
+    BaseClass::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
 
-void ModelSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCacheType& cache)
+void ModelSeries::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
 {
-    ModelSeries::csptr other = ModelSeries::dynamicConstCast(_source);
+    const auto& other = dynamicConstCast(source);
+
     SIGHT_THROW_EXCEPTION_IF(
-        data::Exception(
-            "Unable to copy" + (_source ? _source->getClassname() : std::string("<NULL>"))
-            + " to " + this->getClassname()
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
         ),
         !bool(other)
     );
-
-    this->data::Series::cachedDeepCopy(_source, cache);
 
     m_reconstructionDB.clear();
     for(const data::Reconstruction::sptr& rec : other->m_reconstructionDB)
@@ -96,6 +89,8 @@ void ModelSeries::cachedDeepCopy(const data::Object::csptr& _source, DeepCopyCac
     }
 
     m_dicomReference = data::Object::copy(other->m_dicomReference);
+
+    BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
@@ -109,7 +104,7 @@ bool ModelSeries::operator==(const ModelSeries& other) const noexcept
     }
 
     // Super class last
-    return Series::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

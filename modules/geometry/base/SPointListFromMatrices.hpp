@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,7 @@ protected:
 private:
 
     /// Append mode
-    bool m_append;
+    bool m_append {false};
 
     data::ptr_vector<data::Matrix4, data::Access::in> m_matrices {this, "matrices"};
     data::ptr<data::PointList, data::Access::inout> m_pointList {this, "pointList"};

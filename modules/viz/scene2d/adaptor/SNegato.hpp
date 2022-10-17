@@ -25,19 +25,14 @@
 #include "modules/viz/scene2d/config.hpp"
 
 #include <data/helper/MedicalImage.hpp>
-#include <data/helper/TransferFunction.hpp>
 
-#include <viz/scene2d/data/Coord.hpp>
 #include <viz/scene2d/IAdaptor.hpp>
 
 #include <QGraphicsItemGroup>
 #include <QImage>
 #include <QPointF>
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 /**
@@ -81,7 +76,7 @@ public:
 
     MODULE_VIZ_SCENE2D_API SNegato() noexcept;
 
-    MODULE_VIZ_SCENE2D_API virtual ~SNegato() noexcept;
+    MODULE_VIZ_SCENE2D_API ~SNegato() noexcept override;
 
     /**
      * @brief Returns proposals to connect service slots to associated object signals,
@@ -90,7 +85,6 @@ public:
      * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
      * Connect Image::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_INDEX_SLOT
      * Connect Image::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
-     * Connect Image::s_VISIBILITY_MODIFIED_SIG to this::s_UPDATE_VISIBILITY_SLOT
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
      */
     MODULE_VIZ_SCENE2D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -104,9 +98,6 @@ protected:
     MODULE_VIZ_SCENE2D_API void updating() override;
 
     MODULE_VIZ_SCENE2D_API void stopping() override;
-
-    /// Retrives the current transfer function
-    MODULE_VIZ_SCENE2D_API void swapping(std::string_view key) override;
 
     MODULE_VIZ_SCENE2D_API void processInteraction(sight::viz::scene2d::data::Event& _event) override;
 
@@ -140,45 +131,38 @@ private:
     void updateBufferFromImage(QImage* _img);
 
     void changeImageMinMaxFromCoord(
-        sight::viz::scene2d::data::Coord& oldCoord,
-        sight::viz::scene2d::data::Coord& newCoord
+        sight::viz::scene2d::vec2d_t& oldCoord,
+        sight::viz::scene2d::vec2d_t& newCoord
     );
 
-    static QRgb getQImageVal(
-        const std::size_t index,
-        const short* buffer,
-        double wlMin,
-        double tfWin,
-        const data::TransferFunction::csptr& tf
-    );
+    static QRgb getQImageVal(std::int16_t value, const data::TransferFunction& tf);
 
-    QImage* m_qImg;
+    QImage* m_qImg {nullptr};
 
-    QGraphicsPixmapItem* m_pixmapItem;
+    QGraphicsPixmapItem* m_pixmapItem {nullptr};
 
-    QGraphicsItemGroup* m_layer;
+    QGraphicsItemGroup* m_layer {nullptr};
 
     using orientation_t = data::helper::MedicalImage::orientation_t;
 
     /// The current orientation of the negato
-    orientation_t m_orientation;
+    orientation_t m_orientation {orientation_t::Z_AXIS};
 
     /// Used during negato interaction to manage window/level
-    bool m_pointIsCaptured;
+    bool m_pointIsCaptured {false};
 
     /// Ref. position when changing image window/level
-    sight::viz::scene2d::data::Coord m_oldCoord;
+    sight::viz::scene2d::vec2d_t m_oldCoord {};
 
     /// Specify if the negato allow slice type events
-    bool m_changeSliceTypeAllowed;
+    bool m_changeSliceTypeAllowed {true};
 
-    data::helper::TransferFunction m_helperTF;
+    static constexpr std::string_view s_IMAGE_IN = "image";
+    static constexpr std::string_view s_TF_INOUT = "tf";
 
-    static constexpr std::string_view s_IMAGE_INOUT = "image";
-    static constexpr std::string_view s_TF_INOUT    = "tf";
-
-    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT};
-    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_IN, true};
+    sight::data::ptr<sight::data::TransferFunction, sight::data::Access::inout> m_tf {this, s_TF_INOUT, true};
+    sight::data::ptr<sight::viz::scene2d::data::Viewport, sight::data::Access::inout> m_viewport {this, "viewport"};
 
     /// Stores current slice index on each orientation.
     std::int64_t m_axialIndex {-1};
@@ -186,6 +170,4 @@ private:
     std::int64_t m_sagittalIndex {-1};
 };
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

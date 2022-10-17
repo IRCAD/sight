@@ -6,8 +6,7 @@ This module contains contains several interfaces for data management in XML conf
 
 - **SCopy**: copies an object and updates its own objects or the defined target.
 - **SExtractDeviceInfo**: extracts camera information in configuration using android device name
-- **SManage**: manages an object (add/swap/remove) into a container object (composite, vector, seriesDB).
-- **SMergeTF**: merges all TF from a composite into one TF.
+- **SManage**: manages an object (add/swap/remove) into a container object (composite, vector, series_set).
 - **SeriesSignals**: emits a signal for each added series (the signal contains the added series)
 - **SSelectObject**: registers/unregisters the object given by the slots.
 - **SImageSignalForwarder**: forwards signals from an image to another.

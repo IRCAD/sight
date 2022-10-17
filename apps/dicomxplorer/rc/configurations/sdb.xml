@@ -1,7 +1,7 @@
 <extension implements="sight::service::extension::AppConfig">
     <id>SDBdicomXplorer</id>
     <parameters>
-        <param name="SERIESDB" />
+        <param name="SERIES_SET" />
         <param name="WID_PARENT" />
         <param name="DYNAMICVIEW_CHANNEL" default="channel" />
         <param name="PROGRESS_CHANNEL" default="progressChannel" />
@@ -9,7 +9,7 @@
     </parameters>
     <config>
 
-        <object uid="${SERIESDB}" type="sight::data::SeriesDB" src="ref" />
+        <object uid="${SERIES_SET}" type="sight::data::SeriesSet" src="ref" />
         <object uid="selections" type="sight::data::Vector" />
 
         <service uid="mainview" type="sight::module::ui::base::SView">
@@ -56,11 +56,11 @@
         </service>
 
         <service uid="action_import" type="sight::module::ui::base::series::SDBMerger">
-            <inout key="seriesDB" uid="${SERIESDB}" />
+            <inout key="seriesSet" uid="${SERIES_SET}" />
             <IOSelectorSrvConfig name="SDBReaderIOSelectorConfig" />
         </service>
         <service uid="selector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
-            <inout key="seriesDB" uid="${SERIESDB}" />
+            <inout key="seriesSet" uid="${SERIES_SET}" />
             <inout key="selection" uid="selections" />
         </service>
 
@@ -77,7 +77,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" by="${SERIESDB}" />
+                    <parameter replace="SERIES_SET" by="${SERIES_SET}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                     <parameter replace="APP_NAME" by="dicomXplorer" />
                     <parameter replace="PROGRESS_CHANNEL" by="${PROGRESS_CHANNEL}" />
@@ -95,7 +95,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" by="${SERIESDB}" />
+                    <parameter replace="SERIES_SET" by="${SERIES_SET}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                 </parameters>
                 <filter>
@@ -109,7 +109,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" by="${SERIESDB}" />
+                    <parameter replace="SERIES_SET" by="${SERIES_SET}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                 </parameters>
                 <filter>
@@ -123,7 +123,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" by="${SERIESDB}" />
+                    <parameter replace="SERIES_SET" by="${SERIES_SET}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                     <parameter replace="APP_NAME" by="dicomXplorer" />
                 </parameters>
@@ -153,7 +153,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" by="${SERIESDB}" />
+                    <parameter replace="SERIES_SET" by="${SERIES_SET}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                     <parameter replace="PROGRESS_CHANNEL" by="${PROGRESS_CHANNEL}" />
                 </parameters>
@@ -168,7 +168,7 @@
             <in key="series" uid="selections" />
             <config>
                 <parameters>
-                    <parameter replace="SERIESDB" by="${SERIESDB}" />
+                    <parameter replace="SERIES_SET" by="${SERIES_SET}" />
                     <parameter replace="ICON_PATH" by="${ICON_PATH}" />
                     <parameter replace="APP_NAME" by="dicomXplorer" />
                 </parameters>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,12 +28,9 @@
 
 #include <string>
 
-fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::AcquisitionNumberSplitter);
+SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::splitter::AcquisitionNumberSplitter);
 
-namespace sight::filter::dicom
-{
-
-namespace splitter
+namespace sight::filter::dicom::splitter
 {
 
 const std::string AcquisitionNumberSplitter::s_FILTER_NAME        = "Acquisition number splitter";
@@ -51,8 +48,7 @@ AcquisitionNumberSplitter::AcquisitionNumberSplitter(filter::dicom::IFilter::Key
 //-----------------------------------------------------------------------------
 
 AcquisitionNumberSplitter::~AcquisitionNumberSplitter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -77,6 +73,4 @@ bool AcquisitionNumberSplitter::isConfigurationRequired() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace splitter
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::splitter

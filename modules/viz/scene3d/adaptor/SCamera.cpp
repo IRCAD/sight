@@ -48,14 +48,14 @@ struct SCamera::CameraNodeListener : public Ogre::MovableObject::Listener
 
     //------------------------------------------------------------------------------
 
-    CameraNodeListener(SCamera* _renderer) :
+    explicit CameraNodeListener(SCamera* _renderer) :
         m_layer(_renderer)
     {
     }
 
     //------------------------------------------------------------------------------
 
-    void objectMoved(Ogre::MovableObject*) override
+    void objectMoved(Ogre::MovableObject* /*unused*/) override
     {
         m_layer->updateTF3D();
     }
@@ -71,9 +71,8 @@ SCamera::SCamera() noexcept
 
 //------------------------------------------------------------------------------
 
-SCamera::~SCamera() noexcept
-{
-}
+SCamera::~SCamera() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -116,9 +115,10 @@ service::IService::KeyConnectionsMap SCamera::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
     connections.push(s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_CALIBRATION_INPUT, data::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
     connections.push(s_CALIBRATION_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
-    connections.push(s_CAMERA_SERIES_INPUT, data::CameraSeries::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
-    connections.push(s_CAMERA_SERIES_INPUT, data::CameraSeries::s_EXTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
+    connections.push(s_CAMERA_SET_INPUT, data::CameraSet::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
+    connections.push(s_CAMERA_SET_INPUT, data::CameraSet::s_EXTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
 
     return connections;
 }
@@ -174,7 +174,7 @@ void SCamera::stopping()
 {
     m_layerConnection.disconnect();
 
-    if(m_cameraNodeListener)
+    if(m_cameraNodeListener != nullptr)
     {
         m_camera->setListener(nullptr);
         delete m_cameraNodeListener;
@@ -283,18 +283,18 @@ void SCamera::setAspectRatio(Ogre::Real _ratio)
 
 void SCamera::calibrate()
 {
-    const auto cameraSeries      = m_cameraSeries.lock();
+    const auto camera_set        = m_camera_set.lock();
     const auto cameraCalibration = m_cameraCalibration.lock();
 
     SIGHT_WARN_IF(
         "A '" << s_CALIBRATION_INPUT << "' input was set but will not be used because a '"
-        << s_CAMERA_SERIES_INPUT << "' was defined as well",
-        cameraSeries && cameraCalibration
+        << s_CAMERA_SET_INPUT << "' was defined as well",
+        camera_set && cameraCalibration
     );
 
-    if(cameraSeries)
+    if(camera_set)
     {
-        this->calibrateCameraSeries(*cameraSeries);
+        this->calibrateCameraSet(*camera_set);
     }
     else if(cameraCalibration)
     {
@@ -302,8 +302,8 @@ void SCamera::calibrate()
     }
     else
     {
-        const float width  = static_cast<float>(m_camera->getViewport()->getActualWidth());
-        const float height = static_cast<float>(m_camera->getViewport()->getActualHeight());
+        const auto width  = static_cast<float>(m_camera->getViewport()->getActualWidth());
+        const auto height = static_cast<float>(m_camera->getViewport()->getActualHeight());
 
         const float aspectRatio = width / height;
         m_camera->setAspectRatio(aspectRatio);
@@ -314,10 +314,10 @@ void SCamera::calibrate()
 
 void SCamera::calibrateMonoCamera(const data::Camera& _cam)
 {
-    const float width    = static_cast<float>(m_camera->getViewport()->getActualWidth());
-    const float height   = static_cast<float>(m_camera->getViewport()->getActualHeight());
-    const float nearClip = static_cast<float>(m_camera->getNearClipDistance());
-    const float farClip  = static_cast<float>(m_camera->getFarClipDistance());
+    const auto width    = static_cast<float>(m_camera->getViewport()->getActualWidth());
+    const auto height   = static_cast<float>(m_camera->getViewport()->getActualHeight());
+    const auto nearClip = static_cast<float>(m_camera->getNearClipDistance());
+    const auto farClip  = static_cast<float>(m_camera->getFarClipDistance());
 
     if(_cam.getIsCalibrated())
     {
@@ -337,17 +337,17 @@ void SCamera::calibrateMonoCamera(const data::Camera& _cam)
 
 //------------------------------------------------------------------------------
 
-void SCamera::calibrateCameraSeries(const data::CameraSeries& _cs)
+void SCamera::calibrateCameraSet(const data::CameraSet& _cs)
 {
-    const float width        = static_cast<float>(m_camera->getViewport()->getActualWidth());
-    const float height       = static_cast<float>(m_camera->getViewport()->getActualHeight());
-    const float nearClip     = static_cast<float>(m_camera->getNearClipDistance());
-    const float farClip      = static_cast<float>(m_camera->getFarClipDistance());
-    const std::size_t nbCams = _cs.numCameras();
+    const auto width         = static_cast<float>(m_camera->getViewport()->getActualWidth());
+    const auto height        = static_cast<float>(m_camera->getViewport()->getActualHeight());
+    const auto nearClip      = static_cast<float>(m_camera->getNearClipDistance());
+    const auto farClip       = static_cast<float>(m_camera->getFarClipDistance());
+    const std::size_t nbCams = _cs.size();
 
     SIGHT_WARN_IF(
-        "There are no cameras in the '" << s_CAMERA_SERIES_INPUT << "', the default projection transform"
-                                                                    "will be used.",
+        "There are no cameras in the '" << s_CAMERA_SET_INPUT << "', the default projection transform"
+                                                                 "will be used.",
         nbCams == 0
     );
 
@@ -356,7 +356,7 @@ void SCamera::calibrateCameraSeries(const data::CameraSeries& _cs)
     // Calibrate only the first camera when stereo is not enabled.
     if(layer->getStereoMode() == sight::viz::scene3d::compositor::Core::StereoModeType::NONE && nbCams > 0)
     {
-        this->calibrateMonoCamera(*_cs.getCamera(0));
+        this->calibrateMonoCamera(*_cs.get_camera(0));
     }
     else
     {
@@ -365,7 +365,7 @@ void SCamera::calibrateCameraSeries(const data::CameraSeries& _cs)
 
         for(std::size_t i = 0 ; i < nbCams ; ++i)
         {
-            const data::Camera::csptr camera = _cs.getCamera(i);
+            const data::Camera::csptr camera = _cs.get_camera(i);
 
             if(camera->getIsCalibrated())
             {
@@ -389,12 +389,12 @@ void SCamera::calibrateCameraSeries(const data::CameraSeries& _cs)
             // first camera to the current one.
             if(i < nbCams - 1)
             {
-                const data::Matrix4::csptr extrinsic = _cs.getExtrinsicMatrix(i + 1);
+                const data::Matrix4::csptr extrinsic = _cs.get_extrinsic_matrix(i + 1);
                 extrinsicMx = sight::viz::scene3d::Utils::convertTM3DToOgreMx(extrinsic) * extrinsicMx;
             }
         }
 
-        if(calibrations.size() > 0)
+        if(!calibrations.empty())
         {
             layer->setCameraCalibrations(calibrations);
             this->updating();

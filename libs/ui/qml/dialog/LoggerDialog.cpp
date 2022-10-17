@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,25 +33,21 @@
 
 #include <filesystem>
 
-fwGuiRegisterMacro(sight::ui::qml::dialog::LoggerDialog, sight::ui::base::dialog::ILoggerDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::qml::dialog::LoggerDialog, sight::ui::base::dialog::ILoggerDialog::REGISTRY_KEY);
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 //------------------------------------------------------------------------------
 
-LoggerDialog::LoggerDialog(ui::base::GuiBaseObject::Key)
+LoggerDialog::LoggerDialog(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 LoggerDialog::~LoggerDialog()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -98,7 +94,7 @@ bool LoggerDialog::show()
     // keep window to destroy it
     window->setProperty("title", m_title);
 
-    QObject* dialog = window->findChild<QObject*>("dialog");
+    auto* dialog = window->findChild<QObject*>("dialog");
     SIGHT_ASSERT("The dialog is not found inside the window", dialog);
 
     // set the icon of the biggest type of error
@@ -147,7 +143,7 @@ bool LoggerDialog::show()
     dialog->setProperty("critical", QUrl::fromLocalFile(QString::fromStdString(critical.string())));
 
     // Fill log table
-    core::log::Logger::ConstIteratorType it = m_logger->begin();
+    auto it = m_logger->begin();
     model.addRole(Qt::UserRole + 1, "level");
     model.addRole(Qt::UserRole + 2, "message");
     for( ; it != m_logger->end() ; ++it)
@@ -230,6 +226,4 @@ void LoggerDialog::emitShown(const QUrl& shown)
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

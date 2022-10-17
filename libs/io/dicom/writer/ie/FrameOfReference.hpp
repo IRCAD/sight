@@ -26,13 +26,7 @@
 
 #include <data/Series.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 /**
@@ -61,7 +55,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~FrameOfReference();
+    IO_DICOM_API ~FrameOfReference() override;
 
     /**
      * @brief Write Frame of Reference Module tags
@@ -70,8 +64,4 @@ public:
     IO_DICOM_API virtual void writeFrameOfReferenceModule();
 };
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

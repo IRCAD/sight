@@ -36,10 +36,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::thread::ut::WorkerTest);
 
-namespace sight::core::thread
-{
-
-namespace ut
+namespace sight::core::thread::ut
 {
 
 static utest::Exception e(""); // force link with fwTest
@@ -62,9 +59,9 @@ void WorkerTest::tearDown()
 
 struct TestHandler
 {
-    TestHandler()
+    TestHandler() :
+        m_constructorThreadId(core::thread::getCurrentThreadId())
     {
-        m_constructorThreadId = core::thread::getCurrentThreadId();
     }
 
     //------------------------------------------------------------------------------
@@ -108,9 +105,9 @@ void WorkerTest::basicTest()
 
         TestHandler handler;
         handler.setWorkerId(worker->getThreadId());
-        worker->post(std::bind(&TestHandler::nextStep, &handler));
-        worker->post(std::bind(&TestHandler::nextStep, &handler));
-        worker->post(std::bind(&TestHandler::nextStep, &handler));
+        worker->post([ObjectPtr = &handler](auto&& ...){ObjectPtr->nextStep();});
+        worker->post([ObjectPtr = &handler](auto&& ...){ObjectPtr->nextStep();});
+        worker->post([ObjectPtr = &handler](auto&& ...){ObjectPtr->nextStep();});
 
         worker->stop();
         CPPUNIT_ASSERT_EQUAL(3, handler.m_step.load());
@@ -122,9 +119,9 @@ void WorkerTest::basicTest()
 
         TestHandler handler;
         handler.setWorkerId(worker->getThreadId());
-        worker->post(std::bind(&TestHandler::nextStepNoSleep, &handler));
-        worker->post(std::bind(&TestHandler::nextStepNoSleep, &handler));
-        worker->post(std::bind(&TestHandler::nextStepNoSleep, &handler));
+        worker->post([ObjectPtr = &handler](auto&& ...){ObjectPtr->nextStepNoSleep();});
+        worker->post([ObjectPtr = &handler](auto&& ...){ObjectPtr->nextStepNoSleep();});
+        worker->post([ObjectPtr = &handler](auto&& ...){ObjectPtr->nextStepNoSleep();});
 
         worker->stop();
         CPPUNIT_ASSERT_EQUAL(3, handler.m_step.load());
@@ -145,7 +142,7 @@ void WorkerTest::timerTest()
 
     std::chrono::milliseconds duration = std::chrono::milliseconds(100);
 
-    timer->setFunction(std::bind(&TestHandler::nextStepNoSleep, &handler));
+    timer->setFunction([ObjectPtr = &handler](auto&& ...){ObjectPtr->nextStepNoSleep();});
     timer->setDuration(duration);
 
     CPPUNIT_ASSERT(!timer->isRunning());
@@ -294,9 +291,9 @@ void WorkerTest::timerTest()
         duration = std::chrono::milliseconds(10);
         timer2->setFunction(
             [duration]()
-                {
-                    std::this_thread::sleep_for(duration * 90);
-                });
+            {
+                std::this_thread::sleep_for(duration * 90);
+            });
 
         timer2->setDuration(duration);
 
@@ -374,6 +371,4 @@ void WorkerTest::registryTest()
 
 //-----------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::core::thread
+} // namespace sight::core::thread::ut

@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "SSelector.hpp"
 
 #include <activity/IBuilder.hpp>
@@ -32,7 +34,7 @@
 #include <core/com/Slots.hxx>
 #include <core/runtime/operations.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 #include <data/Composite.hpp>
 #include <data/String.hpp>
 #include <data/Vector.hpp>
@@ -55,10 +57,7 @@
 
 Q_DECLARE_METATYPE(sight::activity::extension::ActivityInfo)
 
-namespace sight::module::ui::qt
-{
-
-namespace activity
+namespace sight::module::ui::qt::activity
 {
 
 //------------------------------------------------------------------------------
@@ -76,9 +75,8 @@ SSelector::SSelector() noexcept
 
 //------------------------------------------------------------------------------
 
-SSelector::~SSelector() noexcept
-{
-}
+SSelector::~SSelector() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -93,13 +91,14 @@ void SSelector::configuring()
         const service::IService::ConfigType& configFilter = cfg.get_child("filter");
         SIGHT_ASSERT("A maximum of 1 <mode> tag is allowed", configFilter.count("mode") < 2);
 
-        const std::string mode = configFilter.get<std::string>("mode");
+        const auto mode = configFilter.get<std::string>("mode");
         SIGHT_ASSERT(
             "'" + mode + "' value for <mode> tag isn't valid. Allowed values are : 'include', 'exclude'.",
             mode == "include" || mode == "exclude"
         );
         m_filterMode = mode;
 
+        // NOLINTNEXTLINE(bugprone-branch-clone)
         BOOST_FOREACH(const ConfigType::value_type& v, configFilter.equal_range("id"))
         {
             m_keys.push_back(v.second.get<std::string>(""));
@@ -117,13 +116,13 @@ void SSelector::starting()
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QGroupBox* groupBox = new QGroupBox(tr("Activity"));
+    auto* groupBox = new QGroupBox(tr("Activity"));
 
-    QScrollArea* scrollArea = new QScrollArea();
+    auto* scrollArea = new QScrollArea();
     scrollArea->setWidget(groupBox);
     scrollArea->setWidgetResizable(true);
 
-    QVBoxLayout* mainLayout = new QVBoxLayout();
+    auto* mainLayout = new QVBoxLayout();
     mainLayout->addWidget(scrollArea);
 
     m_buttonGroup = new QButtonGroup(groupBox);
@@ -146,14 +145,16 @@ void SSelector::starting()
     const int numRows       = static_cast<int>(std::floor(rows));
     numCols = 2 * numCols + 1;
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     QWidget* const container = qtContainer->getQtContainer();
-    container->setObjectName("activities");
+    container->setObjectName(serviceID);
     const std::string styleGrid("QGridLayout#activities {"
                                 "border-width: 4px;"
                                 "}");
     container->setStyleSheet(QString::fromUtf8(styleGrid.c_str()));
 
-    QGridLayout* activitiesLayout = new QGridLayout();
+    auto* activitiesLayout = new QGridLayout();
     activitiesLayout->setRowMinimumHeight(0, 5);
     activitiesLayout->setRowStretch(0, 2);
     groupBox->setLayout(activitiesLayout);
@@ -162,7 +163,7 @@ void SSelector::starting()
     font.setPointSize(12);
     font.setBold(true);
 
-    std::string style("QPushButton#activityButton {"
+    std::string style("* {"
                       "padding: 16px;"
                       "text-align:bottom"
                       "}");
@@ -170,18 +171,18 @@ void SSelector::starting()
     int i = 1;
     int j = 0;
 
-    for(const auto info : m_activitiesInfo)
+    for(const auto& info : m_activitiesInfo)
     {
-        QPushButton* button = new QPushButton(QIcon(info.icon.c_str()), QString::fromStdString(" " + info.title));
+        auto* button = new QPushButton(QIcon(info.icon.c_str()), QString::fromStdString(" " + info.title));
         button->setToolTip(QString::fromStdString(info.description));
         button->setIconSize(QSize(80, 80));
-        button->setObjectName("activityButton");
+        button->setObjectName(serviceID + '/' + info.title.c_str());
         button->setFont(font);
 
         button->setStyleSheet(QString::fromUtf8(style.c_str()));
         m_buttonGroup->addButton(button, static_cast<int>(indexButton));
 
-        QLabel* label = new QLabel(QString::fromStdString(info.description));
+        auto* label = new QLabel(QString::fromStdString(info.description));
         label->setWordWrap(true);
 
         activitiesLayout->setColumnMinimumWidth(j, 10);
@@ -254,13 +255,9 @@ SSelector::ActivityInfoContainer SSelector::getEnabledActivities(const ActivityI
 
         for(const auto& info : infos)
         {
-            KeysType::iterator keyIt = std::find(m_keys.begin(), m_keys.end(), info.id);
+            auto keyIt = std::find(m_keys.begin(), m_keys.end(), info.id);
 
-            if(keyIt != m_keys.end() && isIncludeMode)
-            {
-                configs.push_back(info);
-            }
-            else if(keyIt == m_keys.end() && !isIncludeMode)
+            if((keyIt != m_keys.end() && isIncludeMode) || (keyIt == m_keys.end() && !isIncludeMode))
             {
                 configs.push_back(info);
             }
@@ -276,6 +273,4 @@ SSelector::ActivityInfoContainer SSelector::getEnabledActivities(const ActivityI
 
 //------------------------------------------------------------------------------
 
-} // namespace activity
-
-} // namespace activity
+} // namespace sight::module::ui::qt::activity

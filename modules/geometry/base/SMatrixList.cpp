@@ -51,18 +51,17 @@ SMatrixList::SMatrixList() noexcept
 
 //-----------------------------------------------------------------------------
 
-SMatrixList::~SMatrixList() noexcept
-{
-}
+SMatrixList::~SMatrixList() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
 void SMatrixList::starting()
 {
     // get inputs
-    const std::size_t numMatrices = m_inputVector.size();
-    const std::size_t numSelected = m_selectedVector.size();
-    const std::size_t numOutput   = m_outputVector.size();
+    [[maybe_unused]] const std::size_t numMatrices = m_inputVector.size();
+    [[maybe_unused]] const std::size_t numSelected = m_selectedVector.size();
+    [[maybe_unused]] const std::size_t numOutput   = m_outputVector.size();
 
     SIGHT_ASSERT(
         "the numbers of matrices, vectors and selected matrices should be the same",
@@ -94,7 +93,7 @@ void SMatrixList::updating()
     data::Vector::sptr computedVector;
     if(m_inputVector.size() > 0)
     {
-        for(int i = 0 ; i < m_inputVector.size() ; ++i)
+        for(std::size_t i = 0 ; i < m_inputVector.size() ; ++i)
         {
             data::Matrix4::sptr computedMatrix = data::Matrix4::New();
 
@@ -112,11 +111,11 @@ void SMatrixList::updating()
                 computedVector = data::Vector::New();
             }
 
-            computedVector->getContainer().push_back(computedMatrix);
+            computedVector->push_back(computedMatrix);
             this->setOutput(s_VECTOR_INOUT, computedVector, i);
-            auto sig = computedVector->signal<data::Vector::AddedObjectsSignalType>
+            auto sig = computedVector->signal<data::Vector::added_signal_t>
                            (data::Vector::s_ADDED_OBJECTS_SIG);
-            sig->asyncEmit(computedVector->getContainer());
+            sig->asyncEmit(computedVector->get_content());
         }
     }
 
@@ -128,10 +127,10 @@ void SMatrixList::updating()
         computedMatrix->deepCopy(input.get_shared());
     }
     const data::Matrix4::TMCoefArray& coef = computedMatrix->getCoefficients();
-    for(int i = 0 ; i < 4 ; ++i)
+    for(std::size_t i = 0 ; i < 4 ; ++i)
     {
         str += "[ ";
-        for(int j = 0 ; j < 4 ; j++)
+        for(std::size_t j = 0 ; j < 4 ; j++)
         {
             std::ostringstream out;
             out << std::setprecision(3) << coef[i * 4 + j];
@@ -163,7 +162,7 @@ void SMatrixList::selectMatrix(int index)
     {
         auto selectedMatrix = m_selectedVector[i].lock();
         auto outputVector   = m_outputVector[i].lock();
-        selectedMatrix->deepCopy(data::Matrix4::dynamicCast(outputVector->getContainer()[index]));
+        selectedMatrix->deepCopy(data::Matrix4::dynamicCast((*outputVector)[std::size_t(index)]));
 
         auto sig = selectedMatrix->signal<data::Matrix4::ModifiedSignalType>(data::Matrix4::s_MODIFIED_SIG);
         sig->asyncEmit();
@@ -178,13 +177,12 @@ void SMatrixList::removeMatrix(int _index)
     {
         for(std::size_t i = 0 ; i < m_inputVector.size() ; ++i)
         {
-            auto outputVector                = m_outputVector[i].lock();
-            data::Vector::ContainerType& vec = outputVector->getContainer();
-            vec.erase(vec.begin() + _index);
+            auto outputVector = m_outputVector[i].lock();
+            outputVector->erase(outputVector->begin() + _index);
 
-            auto sig = outputVector->signal<data::Vector::RemovedObjectsSignalType>
+            auto sig = outputVector->signal<data::Vector::removed_signal_t>
                            (data::Vector::s_REMOVED_OBJECTS_SIG);
-            sig->asyncEmit(outputVector->getContainer());
+            sig->asyncEmit(outputVector->get_content());
         }
 
         this->signal<MatrixRemovedSignalType>(s_MATRIX_REMOVED_SIG)->asyncEmit(_index);
@@ -193,4 +191,4 @@ void SMatrixList::removeMatrix(int _index)
 
 //-----------------------------------------------------------------------------
 
-} // maths
+} // namespace sight::module::geometry::base

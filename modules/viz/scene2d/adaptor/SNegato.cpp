@@ -22,12 +22,8 @@
 
 #include "modules/viz/scene2d/adaptor/SNegato.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
@@ -43,42 +39,32 @@
 #include <QPixmap>
 #include <QPoint>
 
-namespace sight::module::viz::scene2d
-{
-
-namespace adaptor
+namespace sight::module::viz::scene2d::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_INDEX_SLOT = "updateSliceIndex";
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICE_TYPE_SLOT  = "updateSliceType";
 static const core::com::Slots::SlotKeyType s_UPDATE_BUFFER_SLOT      = "updateBuffer";
 static const core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT  = "updateVisibility";
+static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT          = "updateTF";
 
 namespace medHelper = data::helper::MedicalImage;
 
 //-----------------------------------------------------------------------------
 
-SNegato::SNegato() noexcept :
-    m_qImg(nullptr),
-    m_pixmapItem(nullptr),
-    m_layer(nullptr),
-    m_pointIsCaptured(false),
-    m_changeSliceTypeAllowed(true),
-    m_helperTF(std::bind(&SNegato::updateTF, this))
+SNegato::SNegato() noexcept
 {
     newSlot(s_UPDATE_SLICE_INDEX_SLOT, &SNegato::updateSliceIndex, this);
     newSlot(s_UPDATE_SLICE_TYPE_SLOT, &SNegato::updateSliceType, this);
     newSlot(s_UPDATE_BUFFER_SLOT, &SNegato::updateBuffer, this);
     newSlot(s_UPDATE_VISIBILITY_SLOT, &SNegato::updateVisibility, this);
-
-    m_orientation = orientation_t::Z_AXIS;
+    newSlot(s_UPDATE_TF_SLOT, &SNegato::updateTF, this);
 }
 
 //-----------------------------------------------------------------------------
 
-SNegato::~SNegato() noexcept
-{
-}
+SNegato::~SNegato() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -88,9 +74,9 @@ void SNegato::configuring()
 
     const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
 
-    if(config.count("orientation"))
+    if(config.count("orientation") != 0U)
     {
-        const std::string orientationValue = config.get<std::string>("orientation");
+        const auto orientationValue = config.get<std::string>("orientation");
 
         if(orientationValue == "axial")
         {
@@ -106,9 +92,9 @@ void SNegato::configuring()
         }
     }
 
-    if(config.count("changeSliceType"))
+    if(config.count("changeSliceType") != 0U)
     {
-        const std::string changeValue = config.get<std::string>("changeSliceType");
+        const auto changeValue = config.get<std::string>("changeSliceType");
 
         if(changeValue == "true")
         {
@@ -125,32 +111,26 @@ void SNegato::configuring()
 
 void SNegato::updateBufferFromImage(QImage* _img)
 {
-    if(!_img)
+    if(_img == nullptr)
     {
         return;
     }
 
     // Window min/max
-    const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
-    const data::mt::locked_ptr tfLock(tf);
-    const double wlMin = tf->getWLMinMax().first;
+    const auto tf = m_tf.const_lock();
 
     // Window max
     auto image                     = m_image.lock();
     const data::Image::Size size   = image->getSize();
-    const short* imgBuff           = static_cast<const short*>(image->getBuffer());
+    const auto* imgBuff            = static_cast<const std::int16_t*>(image->getBuffer());
     const std::size_t imageZOffset = size[0] * size[1];
-
-    const double tfMin = tf->getMinMaxTFValues().first;
-    const double tfMax = tf->getMinMaxTFValues().second;
-    const double tfWin = (1. / tf->getWindow()) * ((tfMax - tfMin) + tfMin);
 
     std::uint8_t* pDest = _img->bits();
 
     // Fill image according to current slice type:
     if(m_orientation == orientation_t::SAGITTAL) // sagittal
     {
-        const std::size_t sagitalIndex = static_cast<std::size_t>(m_sagittalIndex);
+        const auto sagitalIndex = static_cast<std::size_t>(m_sagittalIndex);
 
         for(std::size_t z = 0 ; z < size[2] ; ++z)
         {
@@ -159,7 +139,8 @@ void SNegato::updateBufferFromImage(QImage* _img)
 
             for(std::size_t y = 0 ; y < size[1] ; ++y)
             {
-                const QRgb val = this->getQImageVal(zxOffset + y * size[0], imgBuff, wlMin, tfWin, tf);
+                const QRgb val =
+                    sight::module::viz::scene2d::adaptor::SNegato::getQImageVal(imgBuff[zxOffset + y * size[0]], *tf);
 
                 *pDest++ = static_cast<std::uint8_t>(qRed(val));
                 *pDest++ = static_cast<std::uint8_t>(qGreen(val));
@@ -169,8 +150,8 @@ void SNegato::updateBufferFromImage(QImage* _img)
     }
     else if(m_orientation == orientation_t::FRONTAL) // frontal
     {
-        const std::size_t frontalIndex = static_cast<std::size_t>(m_frontalIndex);
-        const std::size_t yOffset      = frontalIndex * size[0];
+        const auto frontalIndex   = static_cast<std::size_t>(m_frontalIndex);
+        const std::size_t yOffset = frontalIndex * size[0];
 
         for(std::size_t z = 0 ; z < size[2] ; ++z)
         {
@@ -179,7 +160,8 @@ void SNegato::updateBufferFromImage(QImage* _img)
 
             for(std::size_t x = 0 ; x < size[0] ; ++x)
             {
-                const QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, tfWin, tf);
+                const QRgb val =
+                    sight::module::viz::scene2d::adaptor::SNegato::getQImageVal(imgBuff[zyOffset + x], *tf);
 
                 *pDest++ = static_cast<std::uint8_t>(qRed(val));
                 *pDest++ = static_cast<std::uint8_t>(qGreen(val));
@@ -189,8 +171,8 @@ void SNegato::updateBufferFromImage(QImage* _img)
     }
     else if(m_orientation == orientation_t::AXIAL) // axial
     {
-        const std::size_t axialIndex = static_cast<std::size_t>(m_axialIndex);
-        const std::size_t zOffset    = axialIndex * imageZOffset;
+        const auto axialIndex     = static_cast<std::size_t>(m_axialIndex);
+        const std::size_t zOffset = axialIndex * imageZOffset;
 
         for(std::size_t y = 0 ; y < size[1] ; ++y)
         {
@@ -199,7 +181,8 @@ void SNegato::updateBufferFromImage(QImage* _img)
 
             for(std::size_t x = 0 ; x < size[0] ; ++x)
             {
-                const QRgb val = this->getQImageVal(zyOffset + x, imgBuff, wlMin, tfWin, tf);
+                const QRgb val =
+                    sight::module::viz::scene2d::adaptor::SNegato::getQImageVal(imgBuff[zyOffset + x], *tf);
 
                 *pDest++ = static_cast<std::uint8_t>(qRed(val));
                 *pDest++ = static_cast<std::uint8_t>(qGreen(val));
@@ -214,19 +197,9 @@ void SNegato::updateBufferFromImage(QImage* _img)
 
 //-----------------------------------------------------------------------------
 
-QRgb SNegato::getQImageVal(
-    const std::size_t index,
-    const short* buffer,
-    double wlMin,
-    double tfWin,
-    const data::TransferFunction::csptr& tf
-)
+QRgb SNegato::getQImageVal(const std::int16_t value, const data::TransferFunction& tf)
 {
-    const short val16 = buffer[index];
-
-    double value = (val16 - wlMin) * tfWin;
-
-    const data::TransferFunction::TFColor color = tf->getInterpolatedColor(value);
+    const data::TransferFunction::color_t color = tf.sample(value);
 
     // use QImage::Format_RGBA8888 in QImage if you need alpha value
     return qRgb(static_cast<int>(color.r * 255), static_cast<int>(color.g * 255), static_cast<int>(color.b * 255));
@@ -253,9 +226,9 @@ QImage* SNegato::createQImage()
         origin  = img->getOrigin();
     }
 
-    double qImageSpacing[2];
-    double qImageOrigin[2];
-    int qImageSize[2];
+    std::array<double, 2> qImageSpacing {};
+    std::array<double, 2> qImageOrigin {};
+    std::array<int, 2> qImageSize {};
 
     switch(m_orientation)
     {
@@ -265,8 +238,8 @@ QImage* SNegato::createQImage()
             qImageSize[1]    = static_cast<int>(size[2]);
             qImageSpacing[0] = spacing[1];
             qImageSpacing[1] = spacing[2];
-            qImageOrigin[0]  = origin[1] - 0.5f * spacing[1];
-            qImageOrigin[1]  = -(origin[2] + size[2] * spacing[2] - 0.5f * spacing[2]);
+            qImageOrigin[0]  = origin[1] - 0.5F * spacing[1];
+            qImageOrigin[1]  = -(origin[2] + static_cast<double>(size[2]) * spacing[2] - 0.5 * spacing[2]);
             break;
 
         case orientation_t::Y_AXIS: // frontal
@@ -274,8 +247,8 @@ QImage* SNegato::createQImage()
             qImageSize[1]    = static_cast<int>(size[2]);
             qImageSpacing[0] = spacing[0];
             qImageSpacing[1] = spacing[2];
-            qImageOrigin[0]  = origin[0] - 0.5f * spacing[0];
-            qImageOrigin[1]  = -(origin[2] + size[2] * spacing[2] - 0.5f * spacing[2]);
+            qImageOrigin[0]  = origin[0] - 0.5F * spacing[0];
+            qImageOrigin[1]  = -(origin[2] + static_cast<double>(size[2]) * spacing[2] - 0.5 * spacing[2]);
             break;
 
         case orientation_t::Z_AXIS: // axial
@@ -283,8 +256,8 @@ QImage* SNegato::createQImage()
             qImageSize[1]    = static_cast<int>(size[1]);
             qImageSpacing[0] = spacing[0];
             qImageSpacing[1] = spacing[1];
-            qImageOrigin[0]  = origin[0] - 0.5f * spacing[0];
-            qImageOrigin[1]  = origin[1] - 0.5f * spacing[1];
+            qImageOrigin[0]  = origin[0] - 0.5 * spacing[0];
+            qImageOrigin[1]  = origin[1] - 0.5 * spacing[1];
             break;
 
         default:
@@ -293,7 +266,7 @@ QImage* SNegato::createQImage()
     }
 
     // Create empty QImage
-    QImage* image = new QImage(qImageSize[0], qImageSize[1], QImage::Format_RGB888);
+    auto* image = new QImage(qImageSize[0], qImageSize[1], QImage::Format_RGB888);
 
     // Place m_pixmapItem
     m_pixmapItem->resetTransform();
@@ -305,7 +278,7 @@ QImage* SNegato::createQImage()
     m_layer->addToGroup(m_pixmapItem);
 
     // Update image scene
-    this->getScene2DRender()->updateSceneSize(0.20f);
+    this->getScene2DRender()->updateSceneSize(0.20F);
 
     return image;
 }
@@ -323,8 +296,6 @@ void SNegato::starting()
     m_sagittalIndex =
         std::max(0, int(medHelper::getSliceIndex(*image, medHelper::orientation_t::SAGITTAL).value_or(0)));
 
-    m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-
     m_pixmapItem = new QGraphicsPixmapItem();
     m_pixmapItem->setShapeMode(QGraphicsPixmapItem::BoundingRectShape);
     m_pixmapItem->setTransformationMode(Qt::SmoothTransformation);
@@ -338,7 +309,7 @@ void SNegato::starting()
     m_qImg = this->createQImage();
     this->updateBufferFromImage(m_qImg);
 
-    this->getScene2DRender()->updateSceneSize(1.f);
+    this->getScene2DRender()->updateSceneSize(1.F);
 }
 
 //-----------------------------------------------------------------------------
@@ -347,24 +318,6 @@ void SNegato::updating()
 {
     m_qImg = this->createQImage();
     this->updateBufferFromImage(m_qImg);
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato::swapping(std::string_view key)
-{
-    if(key == s_TF_INOUT)
-    {
-        {
-            auto image = m_image.lock();
-            SIGHT_ASSERT("Missing image", image);
-
-            auto tf = m_tf.lock();
-            m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-        }
-
-        this->updating();
-    }
 }
 
 //-----------------------------------------------------------------------------
@@ -444,8 +397,6 @@ void SNegato::updateTF()
 
 void SNegato::stopping()
 {
-    m_helperTF.removeTFConnections();
-
     this->getScene2DRender()->getScene()->removeItem(m_layer);
 
     delete m_qImg;
@@ -466,21 +417,21 @@ void SNegato::processInteraction(sight::viz::scene2d::data::Event& _event)
             // get image origin
             QRectF recImage = m_pixmapItem->sceneBoundingRect();
 
-            sight::viz::scene2d::data::Viewport::sptr sceneViewport = this->getScene2DRender()->getViewport();
+            const auto sceneViewport = m_viewport.lock();
 
-            float sceneWidth  = static_cast<float>(this->getScene2DRender()->getView()->width());
-            float sceneHeight = static_cast<float>(this->getScene2DRender()->getView()->height());
+            double sceneWidth  = static_cast<double>(this->getScene2DRender()->getView()->width());
+            double sceneHeight = static_cast<double>(this->getScene2DRender()->getView()->height());
 
-            float ratioYonXimage = recImage.height() / recImage.width();
-            float sceneRatio     = sceneHeight / sceneWidth;
+            double ratioYonXimage = recImage.height() / recImage.width();
+            double sceneRatio     = sceneHeight / sceneWidth;
 
             if(sceneRatio > ratioYonXimage) // used scene ratio
             {
-                float widthViewPortNew  = recImage.width();
-                float heightViewPortNew = widthViewPortNew * sceneRatio;
+                double widthViewPortNew  = recImage.width();
+                double heightViewPortNew = widthViewPortNew * sceneRatio;
 
                 // computes new y origin
-                float newOrigineY = recImage.y() - (heightViewPortNew - recImage.height()) / 2.f;
+                double newOrigineY = recImage.y() - (heightViewPortNew - recImage.height()) / 2.F;
 
                 sceneViewport->setX(recImage.x());
                 sceneViewport->setY(newOrigineY);
@@ -489,11 +440,11 @@ void SNegato::processInteraction(sight::viz::scene2d::data::Event& _event)
             }
             else
             {
-                float heightViewPortNew = recImage.height();
-                float widthViewPortNew  = heightViewPortNew / sceneRatio;
+                double heightViewPortNew = recImage.height();
+                double widthViewPortNew  = heightViewPortNew / sceneRatio;
 
                 // computes new x origin
-                float newOrigineX = recImage.x() - (widthViewPortNew - recImage.width()) / 2.f;
+                double newOrigineX = recImage.x() - (widthViewPortNew - recImage.width()) / 2.F;
 
                 sceneViewport->setX(newOrigineX);
                 sceneViewport->setY(recImage.y());
@@ -501,7 +452,8 @@ void SNegato::processInteraction(sight::viz::scene2d::data::Event& _event)
                 sceneViewport->setHeight(heightViewPortNew);
             }
 
-            this->getScene2DRender()->getView()->updateFromViewport();
+            auto viewportObject = m_viewport.lock();
+            this->getScene2DRender()->getView()->updateFromViewport(*viewportObject);
         }
 
         //image pixel
@@ -519,9 +471,9 @@ void SNegato::processInteraction(sight::viz::scene2d::data::Event& _event)
         }
     }
 
-    sight::viz::scene2d::data::Coord coord = this->getScene2DRender()->mapToScene(_event.getCoord());
-    coord.setX(coord.getX() / m_layer->scale());
-    coord.setY(coord.getY() / m_layer->scale());
+    sight::viz::scene2d::vec2d_t coord = this->getScene2DRender()->mapToScene(_event.getCoord());
+    coord.x = coord.x / m_layer->scale();
+    coord.y = coord.y / m_layer->scale();
 
     if(_event.getType() == sight::viz::scene2d::data::Event::MouseButtonPress
        && _event.getButton() == sight::viz::scene2d::data::Event::RightButton
@@ -535,7 +487,7 @@ void SNegato::processInteraction(sight::viz::scene2d::data::Event& _event)
     {
         if(_event.getType() == sight::viz::scene2d::data::Event::MouseMove)
         {
-            sight::viz::scene2d::data::Coord newCoord = _event.getCoord();
+            sight::viz::scene2d::vec2d_t newCoord = _event.getCoord();
             this->changeImageMinMaxFromCoord(m_oldCoord, newCoord);
             m_oldCoord = newCoord;
             _event.setAccepted(true);
@@ -552,18 +504,17 @@ void SNegato::processInteraction(sight::viz::scene2d::data::Event& _event)
 //-----------------------------------------------------------------------------
 
 void SNegato::changeImageMinMaxFromCoord(
-    sight::viz::scene2d::data::Coord&,
-    sight::viz::scene2d::data::Coord& newCoord
+    sight::viz::scene2d::vec2d_t& /*unused*/,
+    sight::viz::scene2d::vec2d_t& newCoord
 )
 {
-    data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-    data::mt::locked_ptr tfLock(tf);
+    const auto tf = m_tf.lock();
 
-    const double min = tf->getWLMinMax().first;
-    const double max = tf->getWLMinMax().second;
+    const double min = tf->windowMinMax().first;
+    const double max = tf->windowMinMax().second;
 
-    const double window = newCoord.getX() - m_oldCoord.getX();
-    const double level  = newCoord.getY() - m_oldCoord.getY();
+    const double window = newCoord.x - m_oldCoord.x;
+    const double level  = newCoord.y - m_oldCoord.y;
 
     const double imgWindow = max - min;
     const double imgLevel  = min + imgWindow / 2.0;
@@ -580,7 +531,7 @@ void SNegato::changeImageMinMaxFromCoord(
         data::TransferFunction::s_WINDOWING_MODIFIED_SIG
     );
     {
-        core::com::Connection::Blocker block(m_helperTF.getTFWindowingConnection());
+        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_UPDATE_TF_SLOT)));
         sig->asyncEmit(newImgWindow, newImgLevel);
     }
 }
@@ -589,17 +540,17 @@ void SNegato::changeImageMinMaxFromCoord(
 
 service::IService::KeyConnectionsMap SNegato::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_BUFFER_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_VISIBILITY_MODIFIED_SIG, s_UPDATE_VISIBILITY_SLOT);
-    return connections;
+    return {
+        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT},
+        {s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT},
+        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_BUFFER_SLOT},
+        {s_TF_INOUT, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},
+        {s_TF_INOUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT},
+        {s_TF_INOUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT}
+    };
 }
 
 //-----------------------------------------------------------------------------
 
-} // namespace adaptor
-
-} // namespace sight::module::viz::scene2d
+} // namespace sight::module::viz::scene2d::adaptor

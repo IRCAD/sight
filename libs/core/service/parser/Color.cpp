@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,10 +28,7 @@
 
 #include <data/Color.hpp>
 
-namespace sight::service
-{
-
-namespace parser
+namespace sight::service::parser
 {
 
 static const std::string s_VALUE_CONFIG = "value";
@@ -62,6 +59,4 @@ void Color::createConfig(core::tools::Object::sptr _obj)
 
 //------------------------------------------------------------------------------
 
-} // namespace parser.
-
-} // namespace sight::service.
+} // namespace sight::service::parser

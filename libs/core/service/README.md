@@ -60,7 +60,7 @@ Deprecated, this class is no longer supported, please  use `sight::service::AppC
 - **Color**: parses an hexa color value from an xml-based description and set it to the color data (`sight::data::Color`) object
 - **Composite**: parses and constructs a composite (`sight::data::Composite`) and its associated services from an XML-based description
 - **Float**: specialisation of GenericField parser for float
-- **GenericField**: parses and constructs a GenericField (`sight::data::GenericFieldBase`) and its associated services from an XML-based description
+- **GenericField**: parses and constructs a GenericField and its associated services from an XML-based description
 - **List**: parses and constructs a List (`sight::data::List`) and its associated services from an XML-based description
 - **Matrix4**: parses and constructs a square 4x4 Matrix (`sight::data::Matrix4`) and its associated services from an XML-based description
 - **Object**: parses and constructs a generic sight Object (`sight::data::Object`) from an XML-based description. Does nothing as no IService method is specialized

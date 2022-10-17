@@ -29,17 +29,17 @@
 
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
-#include <data/helper/Composite.hpp>
 #include <data/helper/MedicalImage.hpp>
-#include <data/helper/SeriesDB.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/Integer.hpp>
-#include <data/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
 #include <service/base.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
+
+#include <boost/lexical_cast.hpp>
 
 #include <QApplication>
 #include <QComboBox>
@@ -58,18 +58,16 @@ const core::com::Slots::SlotKeyType SSliceIndexDicomEditor::s_DISPLAY_MESSAGE_SL
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept :
-    m_delay(500)
+SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept
 {
     m_slotReadImage = newSlot(s_READ_IMAGE_SLOT, &SSliceIndexDicomEditor::readImage, this);
-    newSlot(s_DISPLAY_MESSAGE_SLOT, &SSliceIndexDicomEditor::displayErrorMessage, this);
+    newSlot(s_DISPLAY_MESSAGE_SLOT, &SSliceIndexDicomEditor::displayErrorMessage);
 }
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept
-{
-}
+SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -84,7 +82,7 @@ void SSliceIndexDicomEditor::configuring()
         config
     );
 
-    bool success;
+    bool success = false;
 
     // Reader
     std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
@@ -117,7 +115,7 @@ void SSliceIndexDicomEditor::starting()
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
-    QHBoxLayout* layout = new QHBoxLayout();
+    auto* layout = new QHBoxLayout();
 
     const auto dicomSeries = m_dicomSeries.lock();
     SIGHT_ASSERT("DicomSeries should not be null !", dicomSeries);
@@ -144,8 +142,8 @@ void SSliceIndexDicomEditor::starting()
     // Connect the signals
     QObject::connect(m_sliceIndexSlider, SIGNAL(valueChanged(int)), this, SLOT(changeSliceIndex(int)));
 
-    // Create temporary SeriesDB
-    m_tempSeriesDB = data::SeriesDB::New();
+    // Create temporary SeriesSet
+    m_tmp_series_set = data::SeriesSet::New();
 
     // Create reader
     auto dicomReader = service::add<sight::io::base::service::IReader>(m_dicomReaderType);
@@ -154,7 +152,7 @@ void SSliceIndexDicomEditor::starting()
                                                                       "sight::module::ui::dicom::SSliceIndexDicomEditor.",
         dicomReader
     );
-    dicomReader->setInOut(m_tempSeriesDB, sight::io::base::service::s_DATA_KEY);
+    dicomReader->setInOut(m_tmp_series_set, sight::io::base::service::s_DATA_KEY);
 
     if(m_readerConfig)
     {
@@ -172,9 +170,9 @@ void SSliceIndexDicomEditor::starting()
     m_sagittalIndex = data::Integer::New(0);
 
     // Load a slice
-    std::chrono::milliseconds duration = std::chrono::milliseconds(m_delay);
+    auto duration = std::chrono::milliseconds(m_delay);
     m_delayTimer2->setFunction(
-        [ = ]()
+        [ =, this]()
         {
             this->triggerNewSlice();
         });
@@ -216,7 +214,7 @@ void SSliceIndexDicomEditor::info(std::ostream& _sstream)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::changeSliceIndex(int)
+void SSliceIndexDicomEditor::changeSliceIndex(int /*unused*/)
 {
     // Update text
     std::stringstream ss;
@@ -270,9 +268,9 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
         return;
     }
 
-    // Clear temporary seriesDB
-    data::helper::SeriesDB sDBTempohelper(*m_tempSeriesDB);
-    sDBTempohelper.clear();
+    // Clear temporary series_set
+    const auto scoped_emitter = m_tmp_series_set->scoped_emit();
+    m_tmp_series_set->clear();
 
     // Creates unique temporary folder, no need to check if exists before (see core::tools::System::getTemporaryFolder)
     std::filesystem::path path    = core::tools::System::getTemporaryFolder("dicom");
@@ -294,7 +292,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     std::ofstream fs(dest, std::ios::binary | std::ios::trunc);
     SIGHT_THROW_IF("Can't open '" << tmpPath << "' for write.", !fs.good());
 
-    fs.write(buffer, static_cast<long>(size));
+    fs.write(buffer, static_cast<std::int64_t>(size));
     fs.close();
 
     // Read image
@@ -316,9 +314,9 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     //Copy image
     data::ImageSeries::sptr imageSeries;
 
-    if(m_tempSeriesDB->getContainer().size() > 0)
+    if(!m_tmp_series_set->empty())
     {
-        auto series = *(m_tempSeriesDB->getContainer().begin());
+        auto series = m_tmp_series_set->front();
         if(isModalitySupported(*series))
         {
             imageSeries = data::ImageSeries::dynamicCast(series);
@@ -327,29 +325,28 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 
     if(imageSeries)
     {
-        data::Image::sptr newImage      = imageSeries->getImage();
-        const data::Image::Size newSize = newImage->getSize();
+        const data::Image::Size newSize = imageSeries->getSize();
 
         m_frontalIndex->setValue(static_cast<int>(newSize[0] / 2));
         m_sagittalIndex->setValue(static_cast<int>(newSize[1] / 2));
 
         data::helper::MedicalImage::setSliceIndex(
-            *newImage,
+            *imageSeries,
             data::helper::MedicalImage::orientation_t::AXIAL,
             m_axialIndex->value()
         );
         data::helper::MedicalImage::setSliceIndex(
-            *newImage,
+            *imageSeries,
             data::helper::MedicalImage::orientation_t::FRONTAL,
             m_frontalIndex->value()
         );
         data::helper::MedicalImage::setSliceIndex(
-            *newImage,
+            *imageSeries,
             data::helper::MedicalImage::orientation_t::SAGITTAL,
             m_sagittalIndex->value()
         );
 
-        this->setOutput(s_IMAGE, newImage);
+        this->setOutput(s_IMAGE, imageSeries);
     }
 
     std::error_code ec;
@@ -359,7 +356,7 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 
 //------------------------------------------------------------------------------
 
-void SSliceIndexDicomEditor::displayErrorMessage(const std::string& message) const
+void SSliceIndexDicomEditor::displayErrorMessage(const std::string& message)
 {
     SIGHT_WARN("Error: " + message);
     sight::ui::base::dialog::MessageDialog messageBox;

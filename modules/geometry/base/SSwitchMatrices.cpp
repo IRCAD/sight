@@ -35,8 +35,7 @@ const core::com::Slots::SlotKeyType SSwitchMatrices::s_SWITCH_TO_SLOT = "switchT
 
 // ----------------------------------------------------------------------------
 
-SSwitchMatrices::SSwitchMatrices() noexcept :
-    m_indexOfDesiredMatrix(0)
+SSwitchMatrices::SSwitchMatrices() noexcept
 {
     newSlot(s_SWITCH_SLOT, &SSwitchMatrices::switchMatrix, this);
     newSlot(s_SWITCH_TO_SLOT, &SSwitchMatrices::switchToMatrix, this);
@@ -65,9 +64,7 @@ void SSwitchMatrices::stopping()
 
 service::IService::KeyConnectionsMap SSwitchMatrices::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {{s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT}};
 }
 
 // ----------------------------------------------------------------------------

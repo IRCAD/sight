@@ -2,7 +2,7 @@
     <id>DicomPacsReader</id>
     <parameters>
         <param name="WID_PARENT" />
-        <param name="SERIESDB" />
+        <param name="SERIES_SET" />
         <param name="AS_UID" />
         <param name="APP_NAME" />
     </parameters>
@@ -10,12 +10,12 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <object uid="${SERIESDB}" type="sight::data::SeriesDB" src="ref" />
-        <object uid="previewSeriesDB" type="sight::data::SeriesDB" />
+        <object uid="${SERIES_SET}" type="sight::data::SeriesSet" src="ref" />
+        <object uid="previewSeriesSet" type="sight::data::SeriesSet" />
         <object uid="pacsConfiguration" type="sight::io::dimse::data::PacsConfiguration" />
         <object uid="previewSelections" type="sight::data::Vector" />
 
-        <object uid="localSeriesDB" type="sight::data::SeriesDB" />
+        <object uid="localSeriesSet" type="sight::data::SeriesSet" />
         <object uid="localSelections" type="sight::data::Vector" />
 
         <service uid="mainView" type="sight::module::ui::base::SView" >
@@ -41,7 +41,7 @@
                 <layout>
                     <menuItem name="Edit pacs configuration" icon="sight::module::ui::icons/Settings.svg" style="check" />
                     <menuItem name="Pull selected series from Pacs" icon="sight::module::ui::icons/Pull.svg" />
-                    <menuItem name="Push selected series to the main SeriesDB" icon="sight::module::ui::icons/Push.svg" />
+                    <menuItem name="Push selected series to the main SeriesSet" icon="sight::module::ui::icons/Push.svg" />
                 </layout>
             </gui>
             <registry>
@@ -111,15 +111,11 @@
             <parameter replace="ICON_PATH" by="sight::module::ui::icons/Settings.svg"  />
         </service>
 
-        <service uid="action_pullSeries" type="sight::module::ui::base::com::SSlotCaller" >
-            <slots>
-                <slot>pullSeriesController/update</slot>
-            </slots>
-        </service>
+        <service uid="action_pullSeries" type="sight::module::ui::base::SAction" />
 
         <service uid="action_pushSeries" type="sight::module::ui::base::series::SPushSelection">
             <in key="selectedSeries" uid="localSelections" />
-            <inout key="seriesDB" uid="${SERIESDB}" />
+            <inout key="seriesSet" uid="${SERIES_SET}" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->
@@ -144,19 +140,19 @@
         <!-- PREVIEW -->
         <service uid="previewSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
             <inout key="selection" uid="previewSelections" />
-            <inout key="seriesDB" uid="previewSeriesDB" />
+            <inout key="seriesSet" uid="previewSeriesSet" />
         </service>
 
         <service uid="queryEditor" type="sight::module::io::dimse::SQueryEditor">
             <in key="pacsConfig" uid="pacsConfiguration" />
-            <inout key="seriesDB" uid="previewSeriesDB" />
+            <inout key="seriesSet" uid="previewSeriesSet" />
         </service>
 
         <service uid="pullSeriesController" type="sight::module::io::dimse::SSeriesPuller" autoConnect="true">
             <in key="pacsConfig" uid="pacsConfiguration" />
             <in key="selectedSeries" uid="previewSelections" />
-            <inout key="seriesDB" uid="localSeriesDB" />
-            <config dicomReader="sight::module::io::dicom::SSeriesDBReader" readerConfig="DicomPacsReaderConfig" />
+            <inout key="seriesSet" uid="localSeriesSet" />
+            <config dicomReader="sight::module::io::dicom::SSeriesSetReader" readerConfig="DicomPacsReaderConfig" />
         </service>
 
         <service uid="pacsViewer" type="sight::module::ui::qt::series::SViewer" autoConnect="true">
@@ -171,7 +167,7 @@
 
         <!-- LOCAL -->
         <service uid="localSelector" type="sight::module::ui::qt::series::SSelector" autoConnect="true">
-            <inout key="seriesDB" uid="localSeriesDB" />
+            <inout key="seriesSet" uid="localSeriesSet" />
             <inout key="selection" uid="localSelections" />
         </service>
 
@@ -189,14 +185,21 @@
             <signal>pullSeriesController/progressed</signal>
             <slot>progressBarController/updateProgress</slot>
         </connect>
+
         <connect>
             <signal>pullSeriesController/progressStarted</signal>
             <slot>progressBarController/startProgress</slot>
         </connect>
+
         <connect>
             <signal>pullSeriesController/progressStopped</signal>
             <slot>progressBarController/stopProgress</slot>
-         </connect>
+        </connect>
+
+        <connect>
+            <signal>action_pullSeries/clicked</signal>
+            <slot>pullSeriesController/update</slot>
+        </connect>
 
         <!-- START AND STOP SERVICES -->
         <start uid="mainView" />

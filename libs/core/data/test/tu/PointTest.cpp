@@ -26,10 +26,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::PointTest);
 
-namespace sight::data
-{
-
-namespace ut
+namespace sight::data::ut
 {
 
 //------------------------------------------------------------------------------
@@ -50,24 +47,24 @@ void PointTest::copyTest()
 {
     // shallow copy
     {
-        data::Point::sptr p1 = data::Point::New(1.f, 2.f, 3.f);
+        data::Point::sptr p1 = data::Point::New(1.F, 2.F, 3.F);
         data::Point::sptr p2 = data::Point::New();
 
         CPPUNIT_ASSERT_NO_THROW(p2->shallowCopy(p1));
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(p1->getCoord()[0], p2->getCoord()[0], std::numeric_limits<double>::epsilon());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(p1->getCoord()[1], p2->getCoord()[1], std::numeric_limits<double>::epsilon());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(p1->getCoord()[2], p2->getCoord()[2], std::numeric_limits<double>::epsilon());
+        CPPUNIT_ASSERT_EQUAL(p1->getCoord()[0], p2->getCoord()[0]);
+        CPPUNIT_ASSERT_EQUAL(p1->getCoord()[1], p2->getCoord()[1]);
+        CPPUNIT_ASSERT_EQUAL(p1->getCoord()[2], p2->getCoord()[2]);
     }
 
     // Deep copy
     {
-        data::Point::sptr p1 = data::Point::New(1.f, 2.f, 3.f);
+        data::Point::sptr p1 = data::Point::New(1.F, 2.F, 3.F);
         data::Point::sptr p2 = data::Point::New();
 
         CPPUNIT_ASSERT_NO_THROW(p2->deepCopy(p1));
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(p1->getCoord()[0], p2->getCoord()[0], std::numeric_limits<double>::epsilon());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(p1->getCoord()[1], p2->getCoord()[1], std::numeric_limits<double>::epsilon());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(p1->getCoord()[2], p2->getCoord()[2], std::numeric_limits<double>::epsilon());
+        CPPUNIT_ASSERT_EQUAL(p1->getCoord()[0], p2->getCoord()[0]);
+        CPPUNIT_ASSERT_EQUAL(p1->getCoord()[1], p2->getCoord()[1]);
+        CPPUNIT_ASSERT_EQUAL(p1->getCoord()[2], p2->getCoord()[2]);
     }
 }
 
@@ -81,9 +78,9 @@ void PointTest::getterTest()
 
     const auto coords = p1->getCoord();
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., coords[0], std::numeric_limits<double>::epsilon());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1., coords[1], std::numeric_limits<double>::epsilon());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(10., coords[2], std::numeric_limits<double>::epsilon());
+    CPPUNIT_ASSERT_EQUAL(0., coords[0]);
+    CPPUNIT_ASSERT_EQUAL(1., coords[1]);
+    CPPUNIT_ASSERT_EQUAL(10., coords[2]);
 }
 
 //------------------------------------------------------------------------------
@@ -97,9 +94,9 @@ void PointTest::setterTest()
     p1->setCoord(expected);
     const auto actual = p1->getCoord();
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected[0], actual[0], std::numeric_limits<double>::epsilon());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected[1], actual[1], std::numeric_limits<double>::epsilon());
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(expected[2], actual[2], std::numeric_limits<double>::epsilon());
+    CPPUNIT_ASSERT_EQUAL(expected[0], actual[0]);
+    CPPUNIT_ASSERT_EQUAL(expected[1], actual[1]);
+    CPPUNIT_ASSERT_EQUAL(expected[2], actual[2]);
 }
 
 //------------------------------------------------------------------------------
@@ -117,6 +114,4 @@ void PointTest::labelTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::data
+} // namespace sight::data::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,20 +45,15 @@ static const core::com::Signals::SignalKeyType s_ACTIVATED_SIG = "activated";
 
 //-----------------------------------------------------------------------------
 
-SSignalShortcut::SSignalShortcut() noexcept :
-    m_shortcut(""),
-    m_sid(""),
-    m_wid(""),
-    m_shortcutObject(nullptr)
+SSignalShortcut::SSignalShortcut() noexcept
 {
     newSignal<ActivatedShortcutSignalType>(s_ACTIVATED_SIG);
 }
 
 //-----------------------------------------------------------------------------
 
-SSignalShortcut::~SSignalShortcut() noexcept
-{
-}
+SSignalShortcut::~SSignalShortcut() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -67,11 +62,14 @@ void SSignalShortcut::configuring()
     const auto configTree     = this->getConfigTree();
     const auto configShortcut = configTree.get_child("config.<xmlattr>");
     m_shortcut = configShortcut.get<std::string>("shortcut", m_shortcut);
-    SIGHT_ASSERT("Shortcut must not be empty", m_shortcut != "");
+    SIGHT_ASSERT("Shortcut must not be empty", !m_shortcut.empty());
 
     m_wid = configShortcut.get<std::string>("wid", m_wid);
     m_sid = configShortcut.get<std::string>("sid", m_sid);
-    SIGHT_ASSERT("Either The wid or sid attribute must be specified for SSignalShortcut", m_wid != "" || m_sid != "");
+    SIGHT_ASSERT(
+        "Either The wid or sid attribute must be specified for SSignalShortcut",
+        !m_wid.empty() || !m_sid.empty()
+    );
 }
 
 //-----------------------------------------------------------------------------
@@ -81,7 +79,7 @@ void SSignalShortcut::starting()
     sight::ui::base::container::fwContainer::sptr fwc = nullptr;
 
     // Either get the container via a service id
-    if(m_sid != "")
+    if(!m_sid.empty())
     {
         bool sidExists = core::tools::fwID::exist(m_sid);
 
@@ -97,7 +95,7 @@ void SSignalShortcut::starting()
         }
     }
     // or a window id
-    else if(m_wid != "")
+    else if(!m_wid.empty())
     {
         fwc = sight::ui::base::GuiRegistry::getWIDContainer(m_wid);
         if(!fwc)
@@ -111,7 +109,7 @@ void SSignalShortcut::starting()
         auto qtc = std::dynamic_pointer_cast<sight::ui::qt::container::QtContainer>(fwc);
         if(qtc != nullptr)
         {
-            if(!m_shortcutObject)
+            if(m_shortcutObject == nullptr)
             {
                 // Get the associated widget to use as parent for the shortcut
                 QWidget* widget = qtc->getQtContainer();
@@ -128,7 +126,7 @@ void SSignalShortcut::starting()
     {
         SIGHT_ERROR(
             "Cannot setup shortcut " << m_shortcut << " on invalid "
-            << (m_wid != "" ? "wid " + m_wid : "sid " + m_sid)
+            << (!m_wid.empty() ? "wid " + m_wid : "sid " + m_sid)
         );
     }
 }
@@ -137,7 +135,7 @@ void SSignalShortcut::starting()
 
 void SSignalShortcut::stopping()
 {
-    if(m_shortcutObject)
+    if(m_shortcutObject != nullptr)
     {
         // Connect the activated signal to the onActivation method of this class
         QObject::disconnect(m_shortcutObject, SIGNAL(activated()), this, SLOT(onActivation()));
@@ -156,4 +154,4 @@ void SSignalShortcut::onActivation()
     this->signal<ActivatedShortcutSignalType>(s_ACTIVATED_SIG)->asyncEmit();
 }
 
-} // namespace sight::module::ui::base
+} // namespace sight::module::ui::qt::com

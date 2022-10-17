@@ -36,7 +36,7 @@ namespace sight::data
  *
  * An edge is represented by a to identifier ("from" and "to") and a nature.
  */
-class DATA_CLASS_API Edge : public Object
+class DATA_CLASS_API Edge final : public Object
 {
 public:
 
@@ -50,11 +50,9 @@ public:
      * @param key Private construction key
      */
     DATA_API Edge(Object::Key key);
-    /// Destructor
-    DATA_API virtual ~Edge();
 
-    /// @brief do a shallow copy of edge
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
+    /// Destructor
+    DATA_API ~Edge() noexcept override = default;
 
     /**
      * @brief Set the edge identifier ("ID_SIZEX" , ...)
@@ -91,10 +89,21 @@ public:
     DATA_API bool operator!=(const Edge& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
-    /// @brief do a deep copy of edge
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// Defines deep copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     std::string m_fromPortIdentifier; // "ID_SIZEX" , ...
     std::string m_toPortIdentifier;   // "ID_SIZEX" , ...

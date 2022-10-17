@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,19 +38,19 @@ namespace container
 
 class fwContainer;
 
-}
+} // namespace container
 namespace layoutManager
 {
 
 class IViewLayoutManager;
 
-}
+} // namespace layoutManager
 namespace registry
 {
 
 class View;
 
-}
+} // namespace registry
 namespace builder
 {
 
@@ -58,7 +58,7 @@ class IToolBarBuilder;
 class IContainerBuilder;
 class ISlideViewBuilder;
 
-}
+} // namespace builder
 
 /**
  * @brief   Defines the service interface managing the layout.
@@ -141,7 +141,7 @@ protected:
 
     UI_BASE_API IGuiContainer();
 
-    UI_BASE_API virtual ~IGuiContainer();
+    UI_BASE_API ~IGuiContainer() override;
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
@@ -216,7 +216,7 @@ private:
     void initializeToolBarBuilder(core::runtime::ConfigurationElement::sptr toolBarConfig);
     void initializeSlideViewBuilder(core::runtime::ConfigurationElement::sptr slideViewConfig);
 
-    bool m_viewLayoutManagerIsCreated;
+    bool m_viewLayoutManagerIsCreated {false};
     SPTR(ui::base::layoutManager::IViewLayoutManager) m_viewLayoutManager;
 
     SPTR(ui::base::registry::View) m_viewRegistry;
@@ -229,7 +229,7 @@ private:
     ConfigurationType m_toolBarConfig;
     ConfigurationType m_slideViewConfig;
 
-    bool m_hasToolBar;
+    bool m_hasToolBar {false};
 };
 
 } // namespace sight::ui::base

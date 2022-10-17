@@ -24,27 +24,24 @@
 
 #include "io/base/reader/registry/macros.hpp"
 
+#include <cmath>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
 
 SIGHT_REGISTER_IO_READER(sight::io::base::reader::Matrix4Reader);
 
-namespace sight::io::base
+namespace sight::io::base::reader
 {
 
-namespace reader
-{
-
-Matrix4Reader::Matrix4Reader(io::base::reader::IObjectReader::Key)
+Matrix4Reader::Matrix4Reader(io::base::reader::IObjectReader::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 Matrix4Reader::~Matrix4Reader()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -58,7 +55,7 @@ void Matrix4Reader::read()
     assert(inFile.good());
 
     char readValue = 0;
-    double value;
+    double value   = NAN;
 
     while(!inFile.eof() && readValue < 16)
     {
@@ -79,6 +76,4 @@ std::string Matrix4Reader::extension() const
 
 //------------------------------------------------------------------------------
 
-} // namespace reader
-
-} // namespace sight::io::base
+} // namespace sight::io::base::reader

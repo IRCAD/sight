@@ -33,10 +33,7 @@
 #include <vtkXMLPolyDataReader.h>
 #include <vtkXMLPolyDataWriter.h>
 
-namespace sight::io::session
-{
-
-namespace detail::Mesh
+namespace sight::io::session::detail::Mesh
 {
 
 constexpr static auto s_uuid {"uuid"};
@@ -48,11 +45,11 @@ inline static void serialize(
     zip::ArchiveWriter& archive,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
-    std::map<std::string, data::Object::csptr>&,
+    std::map<std::string, data::Object::csptr>& /*unused*/,
     const core::crypto::secure_string& password = ""
 )
 {
-    const auto mesh = Helper::safeCast<data::Mesh>(object);
+    const auto mesh = Helper::safe_cast<data::Mesh>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Mesh>(tree, 1);
@@ -86,13 +83,13 @@ inline static void serialize(
 inline static data::Mesh::sptr deserialize(
     zip::ArchiveReader& archive,
     const boost::property_tree::ptree& tree,
-    const std::map<std::string, data::Object::sptr>&,
+    const std::map<std::string, data::Object::sptr>& /*unused*/,
     data::Object::sptr object,
     const core::crypto::secure_string& password = ""
 )
 {
     // Create or reuse the object
-    auto mesh = Helper::safeCast<data::Mesh>(object);
+    auto mesh = Helper::cast_or_create<data::Mesh>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Mesh>(tree, 0, 1);
@@ -119,6 +116,4 @@ inline static data::Mesh::sptr deserialize(
     return mesh;
 }
 
-} // namespace detail::Mesh
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Mesh

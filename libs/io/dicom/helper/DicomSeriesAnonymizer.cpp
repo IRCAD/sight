@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,28 +29,22 @@
 #include <core/jobs/Observer.hpp>
 #include <core/tools/System.hpp>
 
-#include <data/SeriesDB.hpp>
-
 #include <boost/foreach.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace helper
+namespace sight::io::dicom::helper
 {
 
 DicomSeriesAnonymizer::DicomSeriesAnonymizer() :
     m_job(core::jobs::Aggregator::New("Anonymization process"))
 {
     m_writer = io::dicom::helper::DicomSeriesWriter::New();
-    m_reader = io::dicom::reader::SeriesDB::New();
+    m_reader = io::dicom::reader::SeriesSet::New();
 }
 
 //------------------------------------------------------------------------------
 
 DicomSeriesAnonymizer::~DicomSeriesAnonymizer()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -72,10 +66,10 @@ void DicomSeriesAnonymizer::anonymize(
     // Set up observer cancel callback
     m_job->addSimpleCancelHook(
         [&]
-            {
-                writerObserver->cancel();
-                anonymizerObserver->cancel();
-            });
+        {
+            writerObserver->cancel();
+            anonymizerObserver->cancel();
+        });
 
     m_job->add(writerObserver);
     m_job->add(anonymizerObserver, 10);
@@ -111,14 +105,13 @@ void DicomSeriesAnonymizer::anonymize(
     // However, this reader also uses an aggregator - we discovered that an aggregator of aggregator exits
     // immediately, thus its state is FINISHED when we try to start the task...
     // Read anonymized series
-    data::SeriesDB::sptr seriesDB = data::SeriesDB::New();
-    m_reader->setObject(seriesDB);
+    auto series_set = data::SeriesSet::New();
+    m_reader->setObject(series_set);
     m_reader->setFolder(destPath);
     m_reader->readDicomSeries();
 
     // Update DicomSeries
-    data::DicomSeries::sptr anonymizedSeries =
-        data::DicomSeries::dynamicCast(seriesDB->getContainer().front());
+    auto anonymizedSeries = data::DicomSeries::dynamicCast(series_set->front());
     destination->deepCopy(anonymizedSeries);
 }
 
@@ -131,6 +124,4 @@ core::jobs::Aggregator::sptr DicomSeriesAnonymizer::getJob() const
 
 //------------------------------------------------------------------------------
 
-} // namespace helper
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::helper

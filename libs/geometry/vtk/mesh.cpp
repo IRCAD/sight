@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,9 +45,9 @@ data::Point::sptr computeCenterOfMass(const data::Mesh::csptr mesh, const bool u
     centerOfMassFilter->SetUseScalarsAsWeights(useScalarAsWeights);
     centerOfMassFilter->Update();
 
-    double centerOfMass[3];
-    centerOfMassFilter->GetCenter(centerOfMass);
-    const data::Point::sptr center = data::Point::New(centerOfMass[0], centerOfMass[1], centerOfMass[2]);
+    std::array<double, 3> centerOfMass {};
+    centerOfMassFilter->GetCenter(centerOfMass.data());
+    data::Point::sptr center = data::Point::New(centerOfMass[0], centerOfMass[1], centerOfMass[2]);
     return center;
 }
 

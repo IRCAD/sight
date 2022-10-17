@@ -36,7 +36,7 @@ namespace sight::data
  * @brief This class defines a node.
  * A node is represented by input and output ports.
  */
-class DATA_CLASS_API Node : public Object
+class DATA_CLASS_API Node final : public Object
 {
 public:
 
@@ -55,7 +55,7 @@ public:
     DATA_API Node(Object::Key key);
 
     /// Destructor
-    DATA_API virtual ~Node();
+    DATA_API ~Node() noexcept override = default;
 
     /// Add an input port
     DATA_API void addInputPort(const Port::sptr& port);
@@ -87,9 +87,6 @@ public:
      */
     DATA_API Port::sptr findPort(const std::string& _identifier, bool _modeInput) const;
 
-    /// Defines shallow copy
-    DATA_API void shallowCopy(const Object::csptr& _source) override;
-
     /// Updated signal key
     DATA_API static const core::com::Signals::SignalKeyType s_UPDATED_SIG;
 
@@ -99,10 +96,21 @@ public:
     DATA_API bool operator!=(const Node& other) const noexcept;
     /// @}
 
-protected:
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
 
     /// Defines deep copy
-    DATA_API void cachedDeepCopy(const Object::csptr& _source, DeepCopyCacheType& cache) override;
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
+protected:
 
     /// node object
     Object::sptr m_object;

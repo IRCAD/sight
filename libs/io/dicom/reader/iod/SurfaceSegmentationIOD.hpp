@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,22 +31,16 @@ namespace sight::data
 
 class Reconstruction;
 
-}
+} // namespace sight::data
 
 namespace sight::data
 {
 
 class ModelSeries;
 
-}
+} // namespace sight::data
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace iod
+namespace sight::io::dicom::reader::iod
 {
 
 /**
@@ -73,18 +67,14 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~SurfaceSegmentationIOD();
+    IO_DICOM_API ~SurfaceSegmentationIOD() override;
 
     /**
      * @brief Read a DICOM File
      * @param[in,out] series Series that must be enriched
      * @throw io::dicom::exception::Failed
      */
-    IO_DICOM_API void read(data::Series::sptr series);
+    IO_DICOM_API void read(data::Series::sptr series) override;
 };
 
-} // namespace iod
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::iod

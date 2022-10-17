@@ -28,19 +28,15 @@
 #include <data/Series.hpp>
 #include <data/types.hpp>
 
+#include <boost/algorithm/string/classification.hpp>
+#include <boost/algorithm/string/split.hpp>
 #include <boost/date_time/posix_time/posix_time.hpp>
 
 #include <gdcmUIDGenerator.h>
 
 #include <sstream>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 //------------------------------------------------------------------------------
@@ -61,8 +57,7 @@ Series::Series(
 //------------------------------------------------------------------------------
 
 Series::~Series()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -78,10 +73,9 @@ void Series::writeGeneralSeriesModule()
     const std::string instanceUID = uidGenerator.Generate();
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x000e>(instanceUID, dataset);
 
-    if(!m_object->getNumber().empty())
+    if(const auto& seriesNumber = m_object->getSeriesNumber(); seriesNumber)
     {
-        io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0011>
-            (std::stoi(m_object->getNumber()), dataset);
+        io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0011>(*seriesNumber, dataset);
     }
 
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x0060>(m_object->getLaterality(), dataset);
@@ -93,19 +87,21 @@ void Series::writeGeneralSeriesModule()
     boost::tokenizer<boost::char_separator<char> > tokens(fulldate, sep);
     boost::tokenizer<boost::char_separator<char> >::iterator tok_iter = tokens.begin();
     const std::string date                                            = *tok_iter;
-    tok_iter++;
+    ++tok_iter;
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0021>(date, dataset);
 
     const std::string time = *tok_iter;
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0031>(time, dataset);
 
     // Performing physicians name - Type 3
-    data::DicomValuesType performingPhysicians = m_object->getPerformingPhysiciansName();
-    if(!performingPhysicians.empty())
+    std::vector<std::string> performingPhysicianNames;
+    boost::split(performingPhysicianNames, m_object->getPerformingPhysicianName(), boost::is_any_of("\\"));
+
+    if(!performingPhysicianNames.empty())
     {
-        gdcm::String<>* physicians = new gdcm::String<>[performingPhysicians.size()];
-        unsigned int count         = 0;
-        for(std::string physician : performingPhysicians)
+        auto* physicians   = new gdcm::String<>[performingPhysicianNames.size()];
+        unsigned int count = 0;
+        for(const auto& physician : performingPhysicianNames)
         {
             physicians[count++] = gdcm::String<>(physician);
         }
@@ -115,84 +111,110 @@ void Series::writeGeneralSeriesModule()
             count,
             dataset
         );
+
+        delete[] physicians;
     }
 
     io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1030>(m_object->getProtocolName(), dataset);
 
-    // Serie's description
-    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x103e>(m_object->getDescription(), dataset);
+    // Series' description
+    io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x103e>(m_object->getSeriesDescription(), dataset);
     io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x0015>(m_object->getBodyPartExamined(), dataset);
     io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x5100>(m_object->getPatientPosition(), dataset);
     io::dicom::helper::DicomDataWriter::setTagValue<0x0010, 0x2210>(
         m_object->getAnatomicalOrientationType(),
         dataset
     );
+
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0x0253>(
         m_object->getPerformedProcedureStepID(),
         dataset
     );
+
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0x0244>(
         m_object->getPerformedProcedureStepStartDate(),
         dataset
     );
+
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0x0245>(
         m_object->getPerformedProcedureStepStartTime(),
         dataset
     );
+
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0x0250>(
         m_object->getPerformedProcedureStepEndDate(),
         dataset
     );
+
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0x0251>(
         m_object->getPerformedProcedureStepEndTime(),
         dataset
     );
+
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0x0254>(
         m_object->getPerformedProcedureStepDescription(),
         dataset
     );
+
     io::dicom::helper::DicomDataWriter::setTagValue<0x0040, 0x0280>(
-        m_object->getPerformedProcedureComments(),
+        m_object->getCommentsOnThePerformedProcedureStep(),
         dataset
     );
 
     const data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(m_object);
     if(imageSeries)
     {
-        io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x0010>(imageSeries->getContrastAgent(), dataset);
-        io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1040>(imageSeries->getContrastRoute(), dataset);
-        if(!imageSeries->getContrastVolume().empty())
+        io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x0010>(imageSeries->getContrastBolusAgent(), dataset);
+        io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1040>(imageSeries->getContrastBolusRoute(), dataset);
+
+        if(const auto& contrastBolusVolume = imageSeries->getContrastBolusVolume(); contrastBolusVolume)
         {
-            io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1041>
-                (std::stoi(imageSeries->getContrastVolume()), dataset);
+            io::dicom::helper::DicomDataWriter::setTagValue<double, 0x0018, 0x1041>(*contrastBolusVolume, dataset);
         }
 
-        io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1042>(imageSeries->getContrastStartTime(), dataset);
-        io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1043>(imageSeries->getContrastStopTime(), dataset);
-        if(!imageSeries->getContrastTotalDose().empty())
+        io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1042>(
+            imageSeries->getContrastBolusStartTime(),
+            dataset
+        );
+
+        io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1043>(
+            imageSeries->getContrastBolusStopTime(),
+            dataset
+        );
+
+        if(const auto& contrastBolusTotalDose = imageSeries->getContrastBolusTotalDose(); contrastBolusTotalDose)
         {
-            io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1044>
-                (std::stoi(imageSeries->getContrastTotalDose()), dataset);
+            io::dicom::helper::DicomDataWriter::setTagValue<double, 0x0018, 0x1044>(*contrastBolusTotalDose, dataset);
         }
 
-        if(!imageSeries->getContrastFlowRate().empty())
+        if(const auto& contrastFlowRates = imageSeries->getContrastFlowRates(); !contrastFlowRates.empty())
         {
-            io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1046>
-                (std::stoi(imageSeries->getContrastFlowRate()), dataset);
+            io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0018, 0x1046>(
+                contrastFlowRates.data(),
+                contrastFlowRates.size(),
+                dataset
+            );
         }
 
-        if(!imageSeries->getContrastFlowDuration().empty())
+        if(const auto& contrastFlowDurations = imageSeries->getContrastFlowDurations(); !contrastFlowDurations.empty())
         {
-            io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1047>
-                (std::stoi(imageSeries->getContrastFlowDuration()), dataset);
+            io::dicom::helper::DicomDataWriter::setTagValues<double, 0x0018, 0x1047>(
+                contrastFlowDurations.data(),
+                contrastFlowDurations.size(),
+                dataset
+            );
         }
 
         io::dicom::helper::DicomDataWriter::setTagValue<0x0018, 0x1048>
-            (imageSeries->getContrastIngredient(), dataset);
-        if(!imageSeries->getContrastIngredientConcentration().empty())
+            (imageSeries->getContrastBolusIngredient(), dataset);
+
+        if(const auto& contrastBolusIngredientConcentration = imageSeries->getContrastBolusIngredientConcentration();
+           contrastBolusIngredientConcentration)
         {
-            io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0018, 0x1049>
-                (std::stoi(imageSeries->getContrastIngredientConcentration()), dataset);
+            io::dicom::helper::DicomDataWriter::setTagValue<double, 0x0018, 0x1049>(
+                *contrastBolusIngredientConcentration,
+                dataset
+            );
         }
 
         io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0022>(imageSeries->getAcquisitionDate(), dataset);
@@ -207,7 +229,7 @@ void Series::writeSegmentationSeriesModule()
     // Retrieve dataset
     gdcm::DataSet& dataset = m_writer->GetFile().GetDataSet();
 
-    // Series's modality - Type 1
+    // Series' modality - Type 1
     dataset.Remove(gdcm::Tag(0x0008, 0x0060));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0060>("SEG", dataset);
 }
@@ -222,15 +244,15 @@ void Series::writeSRDocumentSeriesModule()
     // Create generator
     gdcm::UIDGenerator uidGenerator;
 
-    // Series's modality - Type 1
+    // Series' modality - Type 1
     dataset.Remove(gdcm::Tag(0x0008, 0x0060));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0060>("SR", dataset);
 
-    // Serie's instance UID - Type 1
+    // Series' instance UID - Type 1
     dataset.Remove(gdcm::Tag(0x0020, 0x000e));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x000e>(uidGenerator.Generate(), dataset);
 
-    // Serie's number - Type 1
+    // Series' number - Type 1
     io::dicom::helper::DicomDataWriter::setTagValue<int, 0x0020, 0x0011>(0, dataset);
 
     // Referenced Performed Procedure Step Sequence  - Type 2
@@ -247,19 +269,15 @@ void Series::writeSpatialFiducialsSeriesModule()
     // Create uid generator
     gdcm::UIDGenerator uidGenerator;
 
-    // Serie's instance UID - Type 1
+    // Series' instance UID - Type 1
     dataset.Remove(gdcm::Tag(0x0020, 0x000e));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0020, 0x000e>(uidGenerator.Generate(), dataset);
 
-    // Series's modality - Type 1
+    // Series' modality - Type 1
     dataset.Remove(gdcm::Tag(0x0008, 0x0060));
     io::dicom::helper::DicomDataWriter::setTagValue<0x0008, 0x0060>("FID", dataset);
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

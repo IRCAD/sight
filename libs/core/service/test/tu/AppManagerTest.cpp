@@ -38,13 +38,12 @@
 
 #include <utest/wait.hpp>
 
+#include <memory>
+
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::AppManagerTest);
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 //------------------------------------------------------------------------------
@@ -73,7 +72,7 @@ void AppManagerTest::tearDown()
 
 void AppManagerTest::managerCreationTest()
 {
-    m_appMgr = std::unique_ptr<service::AppManager>(new service::AppManager);
+    m_appMgr = std::make_unique<service::AppManager>();
     CPPUNIT_ASSERT(m_appMgr);
 
     m_appMgr->create();
@@ -126,7 +125,7 @@ void AppManagerTest::managerCreationTest()
 
 void AppManagerTest::managerWithObjectTest()
 {
-    m_appMgr = std::unique_ptr<service::AppManager>(new service::AppManager);
+    m_appMgr = std::make_unique<service::AppManager>();
     CPPUNIT_ASSERT(m_appMgr);
 
     m_appMgr->create();
@@ -233,7 +232,7 @@ void AppManagerTest::managerWithObjectTest()
 
 void AppManagerTest::managerWithObjectConnectionTest()
 {
-    m_appMgr = std::unique_ptr<service::AppManager>(new service::AppManager);
+    m_appMgr = std::make_unique<service::AppManager>();
     CPPUNIT_ASSERT(m_appMgr);
 
     m_appMgr->create();
@@ -349,7 +348,7 @@ void AppManagerTest::managerWithObjectConnectionTest()
 
 void AppManagerTest::managerWithServiceConnectionTest()
 {
-    m_appMgr = std::unique_ptr<service::AppManager>(new service::AppManager);
+    m_appMgr = std::make_unique<service::AppManager>();
     CPPUNIT_ASSERT(m_appMgr);
 
     m_appMgr->create();
@@ -418,7 +417,7 @@ void AppManagerTest::managerWithServiceConnectionTest()
 
 void AppManagerTest::managerWithOutputCreationTest()
 {
-    m_appMgr = std::unique_ptr<service::AppManager>(new service::AppManager);
+    m_appMgr = std::make_unique<service::AppManager>();
     CPPUNIT_ASSERT(m_appMgr);
 
     m_appMgr->create();
@@ -508,7 +507,7 @@ void AppManagerTest::managerWithOutputCreationTest()
 
 void AppManagerTest::managerWithGroupTest()
 {
-    m_appMgr = std::unique_ptr<service::AppManager>(new service::AppManager);
+    m_appMgr = std::make_unique<service::AppManager>();
     CPPUNIT_ASSERT(m_appMgr);
 
     m_appMgr->create();
@@ -579,7 +578,7 @@ void AppManagerTest::managerWithInputsTest()
     const std::string INPUT_CHANNEL2     = "channel2";
     const std::string INPUT_STR          = "inputStr";
 
-    auto appMgr = std::unique_ptr<AppManagerForTest>(new AppManagerForTest);
+    auto appMgr = std::make_unique<AppManagerForTest>();
     CPPUNIT_ASSERT(appMgr);
 
     appMgr->create();
@@ -619,10 +618,7 @@ void AppManagerTest::managerWithInputsTest()
     appMgr->requireInput(INPUT_CHANNEL2, AppManagerForTest::InputType::CHANNEL, INPUT_CHANNEL2);
     CPPUNIT_ASSERT(appMgr->checkInputs());
 
-    CPPUNIT_ASSERT_EQUAL(INPUT_CHANNEL2, INPUT_CHANNEL2);
-
     appMgr->replaceInput(INPUT_CHANNEL2, appMgr->getInputID(INPUT_CHANNEL2));
-    CPPUNIT_ASSERT_EQUAL(INPUT_CHANNEL2, INPUT_CHANNEL2);
     CPPUNIT_ASSERT(appMgr->checkInputs());
 
     appMgr->requireInput(INPUT_CHANNEL1, AppManagerForTest::InputType::CHANNEL);
@@ -639,7 +635,7 @@ void AppManagerTest::managerWithInputsTest()
     }
 
     // Check that getInputID does not return the same string on another instance of the manager
-    auto appMgr2 = std::unique_ptr<AppManagerForTest>(new AppManagerForTest);
+    auto appMgr2 = std::make_unique<AppManagerForTest>();
     CPPUNIT_ASSERT(appMgr2);
     appMgr2->create();
 
@@ -651,6 +647,4 @@ void AppManagerTest::managerWithInputsTest()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

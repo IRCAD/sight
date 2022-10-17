@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <filesystem>
 
-namespace sight::io::base
-{
-
-namespace ut
+namespace sight::io::base::ut
 {
 
 /**
@@ -48,8 +45,8 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
     // test for inexistence of csv file
     void test_inexistenceCsv();
@@ -71,6 +68,4 @@ protected:
     std::filesystem::path m_wrongFilepathDirectory;
 };
 
-} //namespace ut
-
-} //namespace sight::io::base
+} // namespace sight::io::base::ut

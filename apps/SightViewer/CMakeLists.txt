@@ -14,6 +14,7 @@ add_dependencies(
     module_ui_base
     module_ui_viz
     module_ui_flaticons
+    module_io_itk
     module_io_vtk
     module_io_dicom
     module_io_session
@@ -34,3 +35,7 @@ module_param(
 module_param(module_appXml PARAM_LIST config PARAM_VALUES SightViewer_AppCfg)
 
 sight_generate_profile(SightViewer)
+
+if(SIGHT_BUILD_TESTS)
+    add_subdirectory(test)
+endif(SIGHT_BUILD_TESTS)

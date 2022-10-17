@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <service/IService.hpp>
 
-namespace sight::service
-{
-
-namespace ut
+namespace sight::service::ut
 {
 
 //------------------------------------------------------------------------------
@@ -62,17 +59,15 @@ public:
 
     SIGHT_DECLARE_CLASS(Buffer, data::Object, data::factory::New<Buffer>);
 
-    Buffer(data::Object::Key)
+    Buffer(data::Object::Key /*unused*/)
     {
     }
 
-    ~Buffer()
-    {
-    }
+    ~Buffer() noexcept override = default;
 
     //------------------------------------------------------------------------------
 
-    void cachedDeepCopy(const Object::csptr&, DeepCopyCacheType&) override
+    void shallowCopy(const Object::csptr& /*unused*/) override
     {
     }
 };
@@ -99,8 +94,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(SBasicTest, IBasicTest);
 
-    bool m_updateFinished;
-    bool m_swapFinished;
+    bool m_updateFinished {false};
+    bool m_swapFinished {false};
 
     SBasicTest();
 
@@ -127,8 +122,7 @@ public:
     SIGHT_DECLARE_SERVICE(SReaderTest, IBasicTest);
 
     SReaderTest()
-    {
-    }
+    = default;
 
 protected:
 
@@ -207,8 +201,8 @@ public:
 
     SShowTest();
 
-    int m_receiveCount;
-    int m_changeCount;
+    int m_receiveCount {0};
+    int m_changeCount {0};
 
     void change();
 
@@ -259,7 +253,7 @@ public:
 
     SShow2Test();
 
-    int m_receiveCount;
+    int m_receiveCount {0};
 
 protected:
 
@@ -291,6 +285,4 @@ protected:
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::service
+} // namespace sight::service::ut

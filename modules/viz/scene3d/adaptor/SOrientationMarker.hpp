@@ -105,7 +105,7 @@ private:
     std::string m_patientMeshRc {"human.mesh"};
 
     /// Z coordinate of marker position, increase to zoom in, decrease to zoom out.
-    float m_markerDepth = -32.f;
+    float m_markerDepth = -32.F;
 
     static constexpr std::string_view s_MATRIX_IN = "matrix";
     sight::data::ptr<sight::data::Matrix4, sight::data::Access::in> m_matrix {this, s_MATRIX_IN};

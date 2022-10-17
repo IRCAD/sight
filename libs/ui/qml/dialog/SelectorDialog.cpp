@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,28 +32,24 @@
 
 #include <QGuiApplication>
 
-fwGuiRegisterMacro(
+SIGHT_REGISTER_GUI(
     sight::ui::qml::dialog::SelectorDialog,
     sight::ui::base::dialog::ISelectorDialog::REGISTRY_KEY
 );
 
-namespace sight::ui::qml
-{
-
-namespace dialog
+namespace sight::ui::qml::dialog
 {
 
 //------------------------------------------------------------------------------
 
-SelectorDialog::SelectorDialog(ui::base::GuiBaseObject::Key)
+SelectorDialog::SelectorDialog(ui::base::GuiBaseObject::Key /*unused*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
 SelectorDialog::~SelectorDialog()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -91,7 +87,7 @@ std::string SelectorDialog::show()
     // keep window to destroy it
 
     window->setProperty("title", m_title);
-    QObject* dialog = window->findChild<QObject*>("dialog");
+    auto* dialog = window->findChild<QObject*>("dialog");
     SIGHT_ASSERT("The dialog is not found inside the window", dialog);
 
     // create all radiobutton
@@ -142,12 +138,10 @@ void SelectorDialog::resultDialog(QVariant selection)
 
 //------------------------------------------------------------------------------
 
-void SelectorDialog::addCustomButton(const std::string&, std::function<void()>)
+void SelectorDialog::addCustomButton(const std::string& /*label*/, std::function<void()> /*clickedFn*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-} // namespace dialog
-
-} // namespace sight::ui::qml
+} // namespace sight::ui::qml::dialog

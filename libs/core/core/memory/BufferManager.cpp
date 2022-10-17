@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE
+
 #include "core/memory/BufferManager.hpp"
 
 #include "core/memory/policy/NeverDump.hpp"
@@ -59,7 +61,6 @@ BufferManager::sptr BufferManager::getDefault()
 BufferManager::BufferManager() :
     m_updatedSig(UpdatedSignalType::New()),
     m_dumpPolicy(core::memory::policy::NeverDump::New()),
-    m_loadingMode(BufferManager::DIRECT),
     m_worker(core::thread::Worker::New())
 {
 }
@@ -76,7 +77,7 @@ BufferManager::~BufferManager()
 
 std::shared_future<void> BufferManager::registerBuffer(BufferManager::BufferPtrType bufferPtr)
 {
-    return m_worker->postTask<void>(std::bind(&BufferManager::registerBufferImpl, this, bufferPtr));
+    return m_worker->postTask<void>([this, bufferPtr](auto&& ...){registerBufferImpl(bufferPtr);});
 }
 
 //------------------------------------------------------------------------------
@@ -91,7 +92,7 @@ void BufferManager::registerBufferImpl(BufferManager::BufferPtrType bufferPtr)
 
 std::shared_future<void> BufferManager::unregisterBuffer(BufferManager::BufferPtrType bufferPtr)
 {
-    return m_worker->postTask<void>(std::bind(&BufferManager::unregisterBufferImpl, this, bufferPtr));
+    return m_worker->postTask<void>([this, bufferPtr](auto&& ...){unregisterBufferImpl(bufferPtr);});
 }
 
 //------------------------------------------------------------------------------
@@ -116,7 +117,11 @@ std::shared_future<void> BufferManager::allocateBuffer(
     const core::memory::BufferAllocationPolicy::sptr& policy
 )
 {
-    return m_worker->postTask<void>(std::bind(&BufferManager::allocateBufferImpl, this, bufferPtr, size, policy));
+    return m_worker->postTask<void>(
+        [this, bufferPtr, size, policy](auto&& ...)
+        {
+            allocateBufferImpl(bufferPtr, size, policy);
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -128,7 +133,7 @@ void BufferManager::allocateBufferImpl(
 )
 {
     BufferInfo& info = m_bufferInfos[bufferPtr];
-    SIGHT_ASSERT("Buffer has already been allocated", info.loaded && (*bufferPtr == NULL));
+    SIGHT_ASSERT("Buffer has already been allocated", info.loaded && (*bufferPtr == nullptr));
 
     if(!info.loaded)
     {
@@ -151,8 +156,7 @@ void BufferManager::allocateBufferImpl(
         std::make_shared<core::memory::stream::in::Buffer>(
             *bufferPtr,
             size,
-            std::bind(&getLock, this->getSptr(), bufferPtr)
-        );
+            [capture0 = this->getSptr(), bufferPtr](auto&& ...){return getLock(capture0, bufferPtr);});
 
     info.lastAccess.modified();
     info.size         = size;
@@ -170,8 +174,7 @@ std::shared_future<void> BufferManager::setBuffer(
 )
 {
     return m_worker->postTask<void>(
-        std::bind(&BufferManager::setBufferImpl, this, bufferPtr, buffer, size, policy)
-    );
+        [this, bufferPtr, buffer, size, policy](auto&& ...){setBufferImpl(bufferPtr, buffer, size, policy);});
 }
 
 //------------------------------------------------------------------------------
@@ -185,7 +188,7 @@ void BufferManager::setBufferImpl(
 {
     BufferInfo& info = m_bufferInfos[bufferPtr];
 
-    SIGHT_ASSERT("Buffer is already set", *bufferPtr == NULL && info.loaded);
+    SIGHT_ASSERT("Buffer is already set", *bufferPtr == nullptr && info.loaded);
 
     m_dumpPolicy->setRequest(info, bufferPtr, size);
 
@@ -205,8 +208,7 @@ void BufferManager::setBufferImpl(
         std::make_shared<core::memory::stream::in::Buffer>(
             *bufferPtr,
             size,
-            std::bind(&getLock, this->getSptr(), bufferPtr)
-        );
+            [capture0 = this->getSptr(), bufferPtr](auto&& ...){return getLock(capture0, bufferPtr);});
     info.userStreamFactory = false;
     m_updatedSig->asyncEmit();
 }
@@ -215,7 +217,7 @@ void BufferManager::setBufferImpl(
 
 std::shared_future<void> BufferManager::reallocateBuffer(BufferManager::BufferPtrType bufferPtr, SizeType newSize)
 {
-    return m_worker->postTask<void>(std::bind(&BufferManager::reallocateBufferImpl, this, bufferPtr, newSize));
+    return m_worker->postTask<void>([this, bufferPtr, newSize](auto&& ...){reallocateBufferImpl(bufferPtr, newSize);});
 }
 
 //------------------------------------------------------------------------------
@@ -223,7 +225,7 @@ std::shared_future<void> BufferManager::reallocateBuffer(BufferManager::BufferPt
 void BufferManager::reallocateBufferImpl(BufferManager::BufferPtrType bufferPtr, SizeType newSize)
 {
     BufferInfo& info = m_bufferInfos[bufferPtr];
-    SIGHT_ASSERT("Buffer must be allocated or dumped", (*bufferPtr != NULL) || !info.loaded);
+    SIGHT_ASSERT("Buffer must be allocated or dumped", (*bufferPtr != nullptr) || !info.loaded);
 
     m_dumpPolicy->reallocateRequest(info, bufferPtr, newSize);
 
@@ -248,8 +250,7 @@ void BufferManager::reallocateBufferImpl(BufferManager::BufferPtrType bufferPtr,
         std::make_shared<core::memory::stream::in::Buffer>(
             *bufferPtr,
             newSize,
-            std::bind(&getLock, this->getSptr(), bufferPtr)
-        );
+            [capture0 = this->getSptr(), bufferPtr](auto&& ...){return getLock(capture0, bufferPtr);});
 
     info.lastAccess.modified();
     info.size = newSize;
@@ -261,7 +262,7 @@ void BufferManager::reallocateBufferImpl(BufferManager::BufferPtrType bufferPtr,
 
 std::shared_future<void> BufferManager::destroyBuffer(BufferManager::BufferPtrType bufferPtr)
 {
-    return m_worker->postTask<void>(std::bind(&BufferManager::destroyBufferImpl, this, bufferPtr));
+    return m_worker->postTask<void>([this, bufferPtr](auto&& ...){destroyBufferImpl(bufferPtr);});
 }
 
 //------------------------------------------------------------------------------
@@ -269,7 +270,7 @@ std::shared_future<void> BufferManager::destroyBuffer(BufferManager::BufferPtrTy
 void BufferManager::destroyBufferImpl(BufferManager::BufferPtrType bufferPtr)
 {
     BufferInfo& info = m_bufferInfos[bufferPtr];
-    SIGHT_ASSERT("Buffer must be allocated or dumped", (*bufferPtr != NULL) || !info.loaded);
+    SIGHT_ASSERT("Buffer must be allocated or dumped", (*bufferPtr != nullptr) || !info.loaded);
 
     m_dumpPolicy->destroyRequest(info, bufferPtr);
 
@@ -290,7 +291,7 @@ std::shared_future<void> BufferManager::swapBuffer(
     BufferManager::BufferPtrType bufB
 )
 {
-    return m_worker->postTask<void>(std::bind(&BufferManager::swapBufferImpl, this, bufA, bufB));
+    return m_worker->postTask<void>([this, bufA, bufB](auto&& ...){swapBufferImpl(bufA, bufB);});
 }
 
 //------------------------------------------------------------------------------
@@ -328,7 +329,7 @@ struct AutoUnlock
             bool restored = manager->restoreBuffer(bufferPtr).get();
             SIGHT_ASSERT(
                 "restore not OK ( " << restored << " && " << *bufferPtr << " != 0 ).",
-                restored && *bufferPtr != 0
+                restored && *bufferPtr != nullptr
             );
             SIGHT_NOT_USED(restored);
         }
@@ -358,15 +359,14 @@ struct AutoUnlock
 
 std::shared_future<SPTR(void)> BufferManager::lockBuffer(BufferManager::ConstBufferPtrType bufferPtr)
 {
-    return m_worker->postTask<SPTR(void)>(std::bind(&BufferManager::lockBufferImpl, this, bufferPtr));
+    return m_worker->postTask<SPTR(void)>([this, bufferPtr](auto&& ...){return lockBufferImpl(bufferPtr);});
 }
 
 SPTR(void) BufferManager::lockBufferImpl(BufferManager::ConstBufferPtrType bufferPtr)
 {
-    BufferManager::BufferPtrType castedBuffer = const_cast<BufferManager::BufferPtrType>(bufferPtr);
-    BufferInfo& info                          = m_bufferInfos[castedBuffer];
+    BufferInfo& info = m_bufferInfos[bufferPtr];
 
-    m_dumpPolicy->lockRequest(info, castedBuffer);
+    m_dumpPolicy->lockRequest(info, bufferPtr);
 
     SPTR(void) counter = info.lockCounter.lock();
     if(!counter)
@@ -386,7 +386,7 @@ SPTR(void) BufferManager::lockBufferImpl(BufferManager::ConstBufferPtrType buffe
 
 std::shared_future<bool> BufferManager::unlockBuffer(BufferManager::ConstBufferPtrType bufferPtr)
 {
-    return m_worker->postTask<bool>(std::bind(&BufferManager::unlockBufferImpl, this, bufferPtr));
+    return m_worker->postTask<bool>([this, bufferPtr](auto&& ...){return unlockBufferImpl(bufferPtr);});
 }
 
 //------------------------------------------------------------------------------
@@ -404,15 +404,16 @@ bool BufferManager::unlockBufferImpl(BufferManager::ConstBufferPtrType bufferPtr
 
 std::shared_future<bool> BufferManager::dumpBuffer(BufferManager::ConstBufferPtrType bufferPtr)
 {
-    return m_worker->postTask<bool>(std::bind(&BufferManager::dumpBufferImpl, this, bufferPtr));
+    return m_worker->postTask<bool>([this, bufferPtr](auto&& ...){return dumpBufferImpl(bufferPtr);});
 }
 
 //------------------------------------------------------------------------------
 
 bool BufferManager::dumpBufferImpl(BufferManager::ConstBufferPtrType bufferPtr)
 {
-    BufferManager::BufferPtrType castedBuffer = const_cast<BufferManager::BufferPtrType>(bufferPtr);
-    BufferInfo& info                          = m_bufferInfos[castedBuffer];
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+    auto* castedBuffer = const_cast<BufferManager::BufferPtrType>(bufferPtr);
+    BufferInfo& info   = m_bufferInfos[castedBuffer];
     return this->dumpBuffer(info, castedBuffer);
 }
 
@@ -430,14 +431,14 @@ bool BufferManager::dumpBuffer(BufferInfo& info, BufferManager::BufferPtrType bu
 
     info.lockCounter.reset();
 
-    if(this->writeBufferImpl(*bufferPtr, info.size, dumpedFile))
+    if(sight::core::memory::BufferManager::writeBufferImpl(*bufferPtr, info.size, dumpedFile))
     {
         info.fsFile            = core::memory::FileHolder(dumpedFile, true);
         info.fileFormat        = core::memory::RAW;
         info.istreamFactory    = std::make_shared<core::memory::stream::in::Raw>(info.fsFile);
         info.userStreamFactory = false;
         info.bufferPolicy->destroy(*bufferPtr);
-        *bufferPtr  = NULL;
+        *bufferPtr  = nullptr;
         info.loaded = false;
 
         m_dumpPolicy->dumpSuccess(info, bufferPtr);
@@ -452,15 +453,16 @@ bool BufferManager::dumpBuffer(BufferInfo& info, BufferManager::BufferPtrType bu
 
 std::shared_future<bool> BufferManager::restoreBuffer(BufferManager::ConstBufferPtrType bufferPtr)
 {
-    return m_worker->postTask<bool>(std::bind(&BufferManager::restoreBufferImpl, this, bufferPtr));
+    return m_worker->postTask<bool>([this, bufferPtr](auto&& ...){return restoreBufferImpl(bufferPtr);});
 }
 
 //------------------------------------------------------------------------------
 
 bool BufferManager::restoreBufferImpl(BufferManager::ConstBufferPtrType bufferPtr)
 {
-    BufferManager::BufferPtrType castedBuffer = const_cast<BufferManager::BufferPtrType>(bufferPtr);
-    BufferInfo& info                          = m_bufferInfos[castedBuffer];
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+    auto* castedBuffer = const_cast<BufferManager::BufferPtrType>(bufferPtr);
+    BufferInfo& info   = m_bufferInfos[castedBuffer];
     return this->restoreBuffer(info, castedBuffer);
 }
 
@@ -472,7 +474,7 @@ bool BufferManager::restoreBuffer(
     BufferManager::SizeType allocSize
 )
 {
-    allocSize = ((allocSize) ? allocSize : info.size);
+    allocSize = ((allocSize) != 0U ? allocSize : info.size);
     if(!info.loaded)
     {
         info.bufferPolicy->allocate(*bufferPtr, allocSize);
@@ -482,8 +484,8 @@ bool BufferManager::restoreBuffer(
         bool notFailed = false;
         {
             SPTR(std::istream) stream = (*info.istreamFactory)();
-            std::istream& is    = *stream;
-            const SizeType read = static_cast<SizeType>(is.read(charBuf, static_cast<std::streamsize>(size)).gcount());
+            std::istream& is = *stream;
+            const auto read  = static_cast<SizeType>(is.read(charBuf, static_cast<std::streamsize>(size)).gcount());
 
             SIGHT_THROW_IF(" Bad file size, expected: " << size << ", was: " << read, size - read != 0);
             notFailed = !is.fail();
@@ -502,12 +504,7 @@ bool BufferManager::restoreBuffer(
                 std::make_shared<core::memory::stream::in::Buffer>(
                     *bufferPtr,
                     allocSize,
-                    std::bind(
-                        &getLock,
-                        this->getSptr(),
-                        bufferPtr
-                    )
-                );
+                    [capture0 = this->getSptr(), bufferPtr](auto&& ...){return getLock(capture0, bufferPtr);});
             info.userStreamFactory = false;
             m_updatedSig->asyncEmit();
             return true;
@@ -525,7 +522,11 @@ std::shared_future<bool> BufferManager::writeBuffer(
     std::filesystem::path& path
 )
 {
-    return m_worker->postTask<bool>(std::bind(&BufferManager::writeBufferImpl, this, buffer, size, path));
+    return m_worker->postTask<bool>(
+        [buffer, size, path](auto&& ...)
+        {
+            return BufferManager::writeBufferImpl(buffer, size, path);
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -533,7 +534,7 @@ std::shared_future<bool> BufferManager::writeBuffer(
 bool BufferManager::writeBufferImpl(
     BufferManager::ConstBufferType buffer,
     SizeType size,
-    std::filesystem::path& path
+    const std::filesystem::path& path
 )
 {
     std::ofstream fs(path, std::ios::binary | std::ios::trunc);
@@ -552,12 +553,16 @@ std::shared_future<bool> BufferManager::readBuffer(
     std::filesystem::path& path
 )
 {
-    return m_worker->postTask<bool>(std::bind(&BufferManager::readBufferImpl, this, buffer, size, path));
+    return m_worker->postTask<bool>(
+        [buffer, size, path](auto&& ...)
+        {
+            return BufferManager::readBufferImpl(buffer, size, path);
+        });
 }
 
 //------------------------------------------------------------------------------
 
-bool BufferManager::readBufferImpl(BufferManager::BufferType buffer, SizeType size, std::filesystem::path& path)
+bool BufferManager::readBufferImpl(BufferManager::BufferType buffer, SizeType size, const std::filesystem::path& path)
 {
     std::ifstream fs(path, std::ios::in | std::ios::binary | std::ios::ate);
     SIGHT_THROW_IF("Unable to read " << path, !fs.good());
@@ -581,7 +586,7 @@ bool BufferManager::readBufferImpl(BufferManager::BufferType buffer, SizeType si
 
 std::shared_future<std::string> BufferManager::toString() const
 {
-    return m_worker->postTask<std::string>(std::bind(&BufferManager::toStringImpl, this));
+    return m_worker->postTask<std::string>([this](auto&& ...){return toStringImpl();});
 }
 
 //------------------------------------------------------------------------------
@@ -598,9 +603,9 @@ std::string BufferManager::toStringImpl() const
     << "DumpStatus" << " "
     << "File" << " "
     << std::endl;
-    for(BufferInfoMapType::value_type item : m_bufferInfos)
+    for(const BufferInfoMapType::value_type& item : m_bufferInfos)
     {
-        BufferInfo& info = item.second;
+        const BufferInfo& info = item.second;
         sstr << std::setw(18) << item.first << "->" << std::setw(18) << *(item.first) << " "
         << std::setw(10) << info.size << " "
         << std::setw(18) << info.bufferPolicy << " "
@@ -633,7 +638,7 @@ core::memory::IPolicy::sptr BufferManager::getDumpPolicy() const
 
 std::shared_future<BufferManager::BufferInfoMapType> BufferManager::getBufferInfos() const
 {
-    return m_worker->postTask<BufferInfoMapType>(std::bind(&BufferManager::getBufferInfosImpl, this));
+    return m_worker->postTask<BufferInfoMapType>([this](auto&& ...){return getBufferInfosImpl();});
 }
 
 //------------------------------------------------------------------------------
@@ -648,8 +653,7 @@ BufferManager::BufferInfoMapType BufferManager::getBufferInfosImpl() const
 std::shared_future<BufferManager::BufferStats> BufferManager::getBufferStats() const
 {
     return m_worker->postTask<BufferManager::BufferStats>(
-        std::bind(&BufferManager::computeBufferStats, m_bufferInfos)
-    );
+        [this](auto&& ...){return BufferManager::computeBufferStats(m_bufferInfos);});
 }
 
 //------------------------------------------------------------------------------
@@ -683,8 +687,10 @@ std::shared_future<void> BufferManager::setIStreamFactory(
 )
 {
     return m_worker->postTask<void>(
-        std::bind(&BufferManager::setIStreamFactoryImpl, this, bufferPtr, factory, size, fsFile, format, policy)
-    );
+        [this, bufferPtr, factory, size, fsFile, format, policy](auto&& ...)
+        {
+            setIStreamFactoryImpl(bufferPtr, factory, size, fsFile, format, policy);
+        });
 }
 
 //------------------------------------------------------------------------------
@@ -698,11 +704,11 @@ void BufferManager::setIStreamFactoryImpl(
     const core::memory::BufferAllocationPolicy::sptr& policy
 )
 {
-    BufferInfoMapType::iterator iterInfo = m_bufferInfos.find(bufferPtr);
+    auto iterInfo = m_bufferInfos.find(bufferPtr);
     SIGHT_THROW_IF("Buffer is not managed by core::memory::BufferManager.", iterInfo == m_bufferInfos.end());
     BufferInfo& info = iterInfo->second;
 
-    SIGHT_ASSERT("Buffer is already set", *bufferPtr == NULL && info.loaded);
+    SIGHT_ASSERT("Buffer is already set", *bufferPtr == nullptr && info.loaded);
 
     m_dumpPolicy->setRequest(info, bufferPtr, size);
 
@@ -738,8 +744,7 @@ std::shared_future<BufferManager::StreamInfo> BufferManager::getStreamInfo(
 ) const
 {
     return m_worker->postTask<BufferManager::StreamInfo>(
-        std::bind(&BufferManager::getStreamInfoImpl, this, bufferPtr)
-    );
+        [this, bufferPtr](auto&& ...){return getStreamInfoImpl(bufferPtr);});
 }
 
 //------------------------------------------------------------------------------
@@ -747,7 +752,7 @@ std::shared_future<BufferManager::StreamInfo> BufferManager::getStreamInfo(
 BufferManager::StreamInfo BufferManager::getStreamInfoImpl(const BufferManager::ConstBufferPtrType bufferPtr) const
 {
     StreamInfo streamInfo;
-    BufferInfoMapType::const_iterator iterInfo = m_bufferInfos.find(bufferPtr);
+    auto iterInfo = m_bufferInfos.find(bufferPtr);
     SIGHT_THROW_IF("Buffer is not managed by core::memory::BufferManager.", iterInfo == m_bufferInfos.end());
     const BufferInfo& info = iterInfo->second;
     streamInfo.size       = info.size;

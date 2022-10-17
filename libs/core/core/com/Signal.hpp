@@ -77,7 +77,7 @@ struct CORE_CLASS_API Signal<R(A ...)>: SignalBase
     static sptr New();
 
     /// Destructor : disconnects all remaining connections.
-    ~Signal()
+    ~Signal() override
     {
         this->disconnectAll();
     }
@@ -89,13 +89,13 @@ struct CORE_CLASS_API Signal<R(A ...)>: SignalBase
      * @throws BadSlot If given slot doesn't match signal type.
      * @throws AlreadyConnected If given slot is already connected.
      */
-    Connection connect(SPTR(SlotBase) slot);
+    Connection connect(SPTR(SlotBase) slot) override;
 
     /**
      * @brief Disconnects the given slot.
      * @throws BadSlot If given slot is not found in current connections.
      */
-    void disconnect(SPTR(SlotBase) slot);
+    void disconnect(SPTR(SlotBase) slot) override;
 
     /// Disconnects all slots.
     void disconnectAll();
@@ -107,7 +107,7 @@ struct CORE_CLASS_API Signal<R(A ...)>: SignalBase
     void asyncEmit(A ... a) const;
 
     /// Returns number of connected slots.
-    std::size_t numConnections() const
+    std::size_t numConnections() const override
     {
         core::mt::ReadLock lock(m_connectionsMutex);
         return m_slots.size();
@@ -145,7 +145,7 @@ struct CORE_CLASS_API Signal<R(A ...)>: SignalBase
 
     private:
 
-        BOOST_STATIC_ASSERT((std::is_same<void, R>::value));
+        static_assert((std::is_same<void, R>::value));
 };
 
 } // namespace sight::core::com

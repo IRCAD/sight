@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -110,7 +110,7 @@ public:
 
     MODULE_IO_SESSION_API SWriter() noexcept;
 
-    MODULE_IO_SESSION_API ~SWriter() noexcept;
+    MODULE_IO_SESSION_API ~SWriter() noexcept override;
 
     /// Propose to create a medical data file
     MODULE_IO_SESSION_API void openLocationDialog() override;

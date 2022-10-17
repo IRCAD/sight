@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ public:
     SIGHT_DECLARE_SERVICE(STextureSelector, sight::ui::base::IEditor);
 
     MODULE_UI_VIZ_API STextureSelector() noexcept;
-    MODULE_UI_VIZ_API virtual ~STextureSelector() noexcept;
+    MODULE_UI_VIZ_API ~STextureSelector() noexcept override;
 
 protected:
 
@@ -94,4 +94,4 @@ private:
     data::ptr<data::Reconstruction, data::Access::inout> m_reconstruction {this, "reconstruction"};
 };
 
-} // uiVisuOgre
+} // namespace sight::module::ui::viz

@@ -52,7 +52,7 @@ namespace sight::io::dimse
             "ORTHANC";
         seriesEnquirer->connect();
         OFList< QRResponse* > responses = seriesEnquire->findSeriesByModality("CT");
-        data::SeriesDB::ContainerType series = io::dimse::helper::Series::toFwMedData(responses);
+        data::SeriesSet::container_type series = io::dimse::helper::Series::toFwMedData(responses);
         io::dimse::helper::Series::releaseResponses(responses);
     }
     catch(io::dimse::exceptions::Base& _e)
@@ -100,7 +100,7 @@ public:
     IO_DIMSE_API void initialize(
         const std::string& _applicationTitle,
         const std::string& _peerHostName,
-        unsigned short _peerPort,
+        std::uint16_t _peerPort,
         const std::string& _peerApplicationTitle,
         const std::string& _moveApplicationTitle         = "",
         ProgressCallbackSlotType::sptr _progressCallback = ProgressCallbackSlotType::sptr()
@@ -267,7 +267,7 @@ protected:
      * @return
      */
     IO_DIMSE_API OFCondition handleMOVEResponse(
-        const T_ASC_PresentationContextID _presID,
+        T_ASC_PresentationContextID _presID,
         RetrieveResponse* _response,
         OFBool& _waitForNextResponse
     ) override;
@@ -281,10 +281,11 @@ protected:
      * @return
      */
     IO_DIMSE_API OFCondition handleSTORERequest(
-        const T_ASC_PresentationContextID,
+        T_ASC_PresentationContextID /*presID*/,
         DcmDataset* _incomingObject,
-        OFBool&,
+        OFBool& /*continueCGETSession*/,
         Uint16&
+        /*cStoreReturnStatus*/
     ) override;
 
     /**

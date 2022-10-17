@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,8 +56,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(SImagesSubstract, sight::service::IFilter);
 
-    MODULE_FILTER_IMAGE_API SImagesSubstract()          = default;
-    MODULE_FILTER_IMAGE_API virtual ~SImagesSubstract() = default;
+    MODULE_FILTER_IMAGE_API SImagesSubstract()           = default;
+    MODULE_FILTER_IMAGE_API ~SImagesSubstract() override = default;
 
 protected:
 

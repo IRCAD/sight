@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,9 +26,9 @@
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Observer.hpp>
 
-#include <data/helper/SeriesDB.hpp>
+#include <data/SeriesSet.hpp>
 
-#include <io/dicom/reader/SeriesDB.hpp>
+#include <io/dicom/reader/SeriesSet.hpp>
 
 #include <ui/base/dialog/LoggerDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -41,16 +41,15 @@ static const core::com::Signals::SignalKeyType JOB_CREATED_SIGNAL = "jobCreated"
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesConverter::SDicomSeriesConverter() noexcept
+SDicomSeriesConverter::SDicomSeriesConverter() noexcept :
+    m_sigJobCreated(newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL))
 {
-    m_sigJobCreated = newSignal<JobCreatedSignal>(JOB_CREATED_SIGNAL);
 }
 
 //------------------------------------------------------------------------------
 
-SDicomSeriesConverter::~SDicomSeriesConverter() noexcept
-{
-}
+SDicomSeriesConverter::~SDicomSeriesConverter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -81,14 +80,14 @@ void SDicomSeriesConverter::configuring()
 
 void SDicomSeriesConverter::updating()
 {
-    // Get Destination SeriesDB
-    const auto destinationSeriesDB = m_target.lock();
-    SIGHT_ASSERT("The 'target' key doesn't exist.", destinationSeriesDB);
+    // Get Destination SeriesSet
+    const auto dest_series_set = m_target.lock();
+    SIGHT_ASSERT("The 'target' key doesn't exist.", dest_series_set);
 
-    const auto dicomSeriesDB   = m_source.lock();
-    data::SeriesDB::sptr dummy = data::SeriesDB::New();
+    const auto dicom_series_set = m_source.lock();
+    data::SeriesSet::sptr dummy = data::SeriesSet::New();
 
-    if(dicomSeriesDB->empty())
+    if(dicom_series_set->empty())
     {
         sight::ui::base::dialog::MessageDialog messageBox;
         messageBox.setIcon(ui::base::dialog::IMessageDialog::INFO);
@@ -99,14 +98,14 @@ void SDicomSeriesConverter::updating()
     }
     else
     {
-        auto reader = sight::io::dicom::reader::SeriesDB::New();
+        auto reader = sight::io::dicom::reader::SeriesSet::New();
         reader->setObject(dummy);
         auto job = reader->getJob();
         m_sigJobCreated->emit(job);
 
         try
         {
-            reader->readFromDicomSeriesDB(dicomSeriesDB.get_shared(), this->getSptr());
+            reader->readFromDicomSeriesSet(dicom_series_set.get_shared(), this->getSptr());
 
             core::log::Logger::sptr logger = reader->getLogger();
             logger->sort();
@@ -129,14 +128,12 @@ void SDicomSeriesConverter::updating()
             // If the user cancel the reading process we delete the loaded series
             if(!result || job->cancelRequested())
             {
-                data::helper::SeriesDB sDBhelper(*dummy);
-                sDBhelper.clear();
+                dummy->clear();
             }
             else
             {
-                data::helper::SeriesDB sDBhelper(*destinationSeriesDB);
-                sDBhelper.merge(dummy);
-                sDBhelper.notify();
+                const auto scoped_emitter = dest_series_set->scoped_emit();
+                std::copy(dummy->cbegin(), dummy->cend(), sight::data::inserter(*dest_series_set));
             }
         }
         catch(const std::exception& e)

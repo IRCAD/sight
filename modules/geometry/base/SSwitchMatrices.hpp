@@ -71,9 +71,8 @@ public:
     /**
      * @brief Destructor.
      */
-    virtual ~SSwitchMatrices() noexcept
-    {
-    }
+    ~SSwitchMatrices() noexcept override =
+        default;
 
     MODULE_GEOMETRY_BASE_API static const core::com::Slots::SlotKeyType s_SWITCH_SLOT;
     typedef core::com::Slot<void ()> SwitchSlotType;
@@ -105,7 +104,7 @@ protected:
 
 private:
 
-    std::size_t m_indexOfDesiredMatrix;
+    std::size_t m_indexOfDesiredMatrix {0};
 
     static constexpr std::string_view s_MATRIX_INPUT  = "matrix";
     static constexpr std::string_view s_MATRIX_OUTPUT = "output";

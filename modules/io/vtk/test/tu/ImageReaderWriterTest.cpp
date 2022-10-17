@@ -22,8 +22,6 @@
 
 #include "ImageReaderWriterTest.hpp"
 
-#include <core/runtime/EConfigurationElement.hpp>
-#include <core/thread/Worker.hpp>
 #include <core/tools/System.hpp>
 
 #include <data/Image.hpp>
@@ -34,6 +32,8 @@
 #include <utestData/Data.hpp>
 #include <utestData/generator/Image.hpp>
 
+#include <boost/property_tree/xml_parser.hpp>
+
 #include <filesystem>
 #include <fstream>
 
@@ -42,17 +42,14 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::module::io::vtk::ut::ImageReaderWriterTes
 
 static const double epsilon = 0.00001;
 
-namespace sight::module::io::vtk
-{
-
-namespace ut
+namespace sight::module::io::vtk::ut
 {
 
 //------------------------------------------------------------------------------
 
 void runImageSrv(
     const std::string& srvname,
-    const SPTR(core::runtime::EConfigurationElement)& cfg,
+    const boost::property_tree::ptree& cfg,
     const SPTR(data::Object)& image
 )
 {
@@ -91,12 +88,10 @@ void ImageReaderWriterTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-core::runtime::EConfigurationElement::sptr getIOConfiguration(const std::filesystem::path& file)
+boost::property_tree::ptree getIOConfiguration(const std::filesystem::path& file)
 {
-    core::runtime::EConfigurationElement::sptr readerSrvCfg = core::runtime::EConfigurationElement::New("service");
-    core::runtime::EConfigurationElement::sptr readerCfg    = core::runtime::EConfigurationElement::New("file");
-    readerCfg->setValue(file.string());
-    readerSrvCfg->addConfigurationElement(readerCfg);
+    service::IService::ConfigType readerSrvCfg;
+    readerSrvCfg.add("file", file.string());
 
     return readerSrvCfg;
 }
@@ -184,7 +179,7 @@ void ImageReaderWriterTest::testVtiImageReader()
     sizeExpected[1] = 256;
     sizeExpected[2] = 178;
 
-    core::tools::Type expectedType("int8"); // MHD File image type : MET_CHAR
+    core::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
     data::Image::Spacing spacingRead = image->getSpacing();
@@ -239,7 +234,7 @@ void ImageReaderWriterTest::testMhdImageReader()
     sizeExpected[1] = 256;
     sizeExpected[2] = 178;
 
-    core::tools::Type expectedType("int8"); // MHD File image type : MET_CHAR
+    core::Type expectedType("int8"); // MHD File image type : MET_CHAR
 
     // Data read.
     data::Image::Spacing spacingRead = image->getSpacing();
@@ -301,7 +296,7 @@ void ImageReaderWriterTest::testImageReaderExtension()
 void ImageReaderWriterTest::testBitmapImageWriter()
 {
     // Data to write
-    const core::tools::Type type         = core::tools::Type::s_UINT8;
+    const core::Type type                = core::Type::UINT8;
     const data::Image::Size sizeExpected = {10, 20, 0};
 
     // Use standard information for spacing and origin
@@ -323,11 +318,11 @@ void ImageReaderWriterTest::testBitmapImageWriter()
 
     // Test all teh available extensions
     std::vector<std::string> extensions;
-    extensions.push_back("bmp");
-    extensions.push_back("jpeg");
-    extensions.push_back("jpg");
-    extensions.push_back("png");
-    extensions.push_back("tiff");
+    extensions.emplace_back("bmp");
+    extensions.emplace_back("jpeg");
+    extensions.emplace_back("jpg");
+    extensions.emplace_back("png");
+    extensions.emplace_back("tiff");
 
     for(const std::string& ext : extensions)
     {
@@ -381,7 +376,7 @@ void ImageReaderWriterTest::testBitmapImageWriter()
 void ImageReaderWriterTest::testVtkImageWriter()
 {
     // Data to write
-    core::tools::Type type               = core::tools::Type::s_UINT8;
+    core::Type type                      = core::Type::UINT8;
     const data::Image::Size sizeExpected = {10, 20, 30
     };
     const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
@@ -446,12 +441,9 @@ void ImageReaderWriterTest::testVtkImageWriter()
 
 void ImageReaderWriterTest::testVtkImageSeriesWriter()
 {
-    core::tools::Type type  = core::tools::Type::s_FLOAT;
-    data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, type);
-
-    data::ImageSeries::sptr imageSeries = data::ImageSeries::New();
-    imageSeries->setImage(image);
+    core::Type type  = core::Type::FLOAT;
+    auto imageSeries = data::ImageSeries::New();
+    utestData::generator::Image::generateRandomImage(imageSeries, type);
 
     const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "imageSeries.vtk";
 
@@ -459,13 +451,13 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
     runImageSrv("sight::module::io::vtk::SImageSeriesWriter", getIOConfiguration(file), imageSeries);
 
     // Read image series
-    data::Image::sptr image2 = data::Image::New();
-    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), image2);
+    auto imageSeries2 = data::ImageSeries::New();
+    runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageSeries2);
 
-    image2->setWindowCenter(image->getWindowCenter());
-    image2->setWindowWidth(image->getWindowWidth());
+    imageSeries2->setWindowCenter(imageSeries->getWindowCenter());
+    imageSeries2->setWindowWidth(imageSeries->getWindowWidth());
 
-    CPPUNIT_ASSERT(*image == *image2);
+    CPPUNIT_ASSERT(*imageSeries == *imageSeries2);
 }
 
 //------------------------------------------------------------------------------
@@ -473,7 +465,7 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
 void ImageReaderWriterTest::testVtiImageWriter()
 {
     // Data to write
-    core::tools::Type type               = core::tools::Type::s_UINT8;
+    core::Type type                      = core::Type::UINT8;
     const data::Image::Size sizeExpected = {10, 20, 30
     };
     const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
@@ -537,7 +529,7 @@ void ImageReaderWriterTest::testVtiImageWriter()
 void ImageReaderWriterTest::testMhdImageWriter()
 {
     // Data to write
-    core::tools::Type type               = core::tools::Type::s_UINT8;
+    core::Type type                      = core::Type::UINT8;
     const data::Image::Size sizeExpected = {10, 20, 30
     };
     const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
@@ -601,7 +593,7 @@ void ImageReaderWriterTest::testMhdImageWriter()
 void ImageReaderWriterTest::testImageWriterExtension()
 {
     // Data to write
-    core::tools::Type type               = core::tools::Type::s_UINT8;
+    core::Type type                      = core::Type::UINT8;
     const data::Image::Size sizeExpected = {10, 20, 30
     };
     const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
@@ -642,6 +634,4 @@ void ImageReaderWriterTest::testImageWriterExtension()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::module::io::vtk
+} // namespace sight::module::io::vtk::ut

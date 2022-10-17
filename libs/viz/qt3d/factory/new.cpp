@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,7 @@
 
 #include "viz/qt3d/IWindowInteractor.hpp"
 
-namespace sight::viz::qt3d
-{
-
-namespace factory
+namespace sight::viz::qt3d::factory
 {
 
 //------------------------------------------------------------------------------
@@ -37,6 +34,4 @@ viz::qt3d::IWindowInteractor::sptr New(const viz::qt3d::registry::KeyType& class
     return viz::qt3d::registry::get()->create(classname);
 }
 
-} // namespace factory
-
-} // namespace sight::viz::qt3d
+} // namespace sight::viz::qt3d::factory

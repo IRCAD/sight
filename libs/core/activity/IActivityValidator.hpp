@@ -27,14 +27,14 @@
 
 #include <core/base.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 
 namespace sight::data
 {
 
-class ActivitySeries;
+class Activity;
 
-}
+} // namespace sight::data
 
 namespace sight::activity
 {
@@ -51,9 +51,10 @@ public:
     SIGHT_DECLARE_CLASS(IActivityValidator, activity::IValidator);
 
     /// Does nothing.
-    ACTIVITY_API virtual ValidationType validate(
-        const activity::extension::ActivityInfo&,
+    ACTIVITY_API ValidationType validate(
+        const activity::extension::ActivityInfo& /*activityInfo*/,
         const CSPTR(data::Vector)&
+        /*currentSelection*/
     ) const override
     {
         ValidationType validation;
@@ -66,14 +67,14 @@ public:
      * @brief Performs the validation of the given activity data.
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains detailed error.
      */
-    ACTIVITY_API virtual ValidationType validate(const CSPTR(data::ActivitySeries)& activity) const = 0;
+    ACTIVITY_API virtual ValidationType validate(const CSPTR(data::Activity)& activity) const = 0;
 
     /**
-     * @brief Checks if all the required data are present in the activity series.
+     * @brief Checks if all the required data are present in the activity.
      * @return pair <isValid, errorMsg> : errorMsg is empty if the data are valid else it contains the list of missing
      *         (or not valid) data.
      */
-    ACTIVITY_API ValidationType checkRequirements(const CSPTR(data::ActivitySeries)& activity) const;
+    static ACTIVITY_API ValidationType checkRequirements(const CSPTR(data::Activity)& activity);
 
     /**
      * @brief Calls the object validator if it is defined.
@@ -82,10 +83,10 @@ public:
      * @return pair <isValid, errorMsg> : errorMsg is empty if the object is valid else it contains the detailed error.
      * @see activity::IObjectValidator
      */
-    ACTIVITY_API ValidationType checkObject(
+    static ACTIVITY_API ValidationType checkObject(
         const CSPTR(data::Object)& object,
         const std::string& validatorImpl
-    ) const;
+    );
 };
 
 } // namespace sight::activity

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,7 @@ public:
     MODULE_FILTER_IMAGE_API SAutomaticRegistration();
 
     /// Destructor, does nothing.
-    MODULE_FILTER_IMAGE_API ~SAutomaticRegistration();
+    MODULE_FILTER_IMAGE_API ~SAutomaticRegistration() override;
 
 protected:
 
@@ -130,25 +130,25 @@ private:
 
     /// Extract the level at the end of the parameter name.
     /// Create the level if it doesn't exist
-    unsigned long extractLevelFromParameterName(const std::string& name);
+    std::uint64_t extractLevelFromParameterName(const std::string& name);
 
     /// Smallest step that can be taken by the optimizer.
-    double m_minStep;
+    double m_minStep {};
 
     /// Maximum number of iterations allowed.
-    unsigned long m_maxIterations;
+    std::uint64_t m_maxIterations {};
 
     /// Flag enabling the registration log.
     bool m_log = {false};
 
     /// Metric used by the optimizer.
-    sight::filter::image::MetricType m_metric;
+    sight::filter::image::MetricType m_metric {sight::filter::image::MetricType::MEAN_SQUARES};
 
     /// Shrink factors per level and smoothing sigmas per level.
     sight::filter::image::AutomaticRegistration::MultiResolutionParametersType m_multiResolutionParameters;
 
     /// Percentage of samples used for registration.
-    sight::filter::image::AutomaticRegistration::RealType m_samplingPercentage;
+    sight::filter::image::AutomaticRegistration::RealType m_samplingPercentage {};
 
     static constexpr std::string_view s_TRANSFORM_INOUT = "transform";
     static constexpr std::string_view s_TARGET_IN       = "target";

@@ -59,13 +59,12 @@ sight::data::Image::sptr createSphereImage(itk::Vector<double, N> spacing = itk:
     radiusArray[0] = 10;
     radiusArray[1] = 15;
     radiusArray[2] = 20;
-    ellipse->SetRadius(radiusArray);
+    ellipse->SetRadiusInObjectSpace(radiusArray);
 
     typename TransformType::Pointer transform = TransformType::New();
     transform->SetIdentity();
 
     typename TransformType::OutputVectorType translation;
-    typename TransformType::CenterType center;
 
     translation[0] = 50;
     translation[1] = 50;

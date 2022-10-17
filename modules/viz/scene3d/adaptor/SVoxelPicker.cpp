@@ -55,9 +55,8 @@ SVoxelPicker::SVoxelPicker() noexcept
 
 //-----------------------------------------------------------------------------
 
-SVoxelPicker::~SVoxelPicker() noexcept
-{
-}
+SVoxelPicker::~SVoxelPicker() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -152,7 +151,7 @@ void SVoxelPicker::pick(MouseButton _button, Modifier _mod, int _x, int _y, bool
     {
         if(auto layer = m_layer.lock())
         {
-            if(!this->isInLayer(_x, _y, layer, m_layerOrderDependant))
+            if(!sight::module::viz::scene3d::adaptor::SVoxelPicker::isInLayer(_x, _y, layer, m_layerOrderDependant))
             {
                 return;
             }
@@ -261,9 +260,9 @@ std::pair<bool, Ogre::Vector3> SVoxelPicker::computeRayImageIntersection(
     const auto frontalIdx  = imHelper::getSliceIndex(*_image, imHelper::orientation_t::FRONTAL).value_or(0);
     const auto sagittalIdx = imHelper::getSliceIndex(*_image, imHelper::orientation_t::SAGITTAL).value_or(0);
 
-    const Ogre::Real axialIndex    = static_cast<Ogre::Real>(axialIdx);
-    const Ogre::Real frontalIndex  = static_cast<Ogre::Real>(frontalIdx);
-    const Ogre::Real sagittalIndex = static_cast<Ogre::Real>(sagittalIdx);
+    const auto axialIndex    = static_cast<Ogre::Real>(axialIdx);
+    const auto frontalIndex  = static_cast<Ogre::Real>(frontalIdx);
+    const auto sagittalIndex = static_cast<Ogre::Real>(sagittalIdx);
 
     const auto size = _image->getSize();
 
@@ -432,7 +431,7 @@ std::pair<bool, Ogre::Vector3> SVoxelPicker::computeRayImageIntersection(
         }
     }
 
-    return std::make_pair(false, Ogre::Vector3());
+    return std::make_pair(false, Ogre::Vector3 {0.0, 0.0, 0.0});
 }
 
 //-----------------------------------------------------------------------------

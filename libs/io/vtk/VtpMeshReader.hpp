@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,7 @@ namespace sight::core::jobs
 class Observer;
 class IJob;
 
-}
+} // namespace sight::core::jobs
 
 namespace sight::io::vtk
 {
@@ -66,7 +66,7 @@ public:
     IO_VTK_API VtpMeshReader(io::base::reader::IObjectReader::Key key);
 
     /// @brief Destructor.
-    IO_VTK_API ~VtpMeshReader();
+    IO_VTK_API ~VtpMeshReader() override;
 
     /// @brief Reading operator.
     IO_VTK_API void read() override;

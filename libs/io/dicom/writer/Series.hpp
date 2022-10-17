@@ -33,10 +33,7 @@
 
 #include <io/base/writer/GenericObjectWriter.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
+namespace sight::io::dicom::writer
 {
 
 /**
@@ -70,7 +67,7 @@ public:
     IO_DICOM_API Series(io::base::writer::IObjectWriter::Key key);
 
     /// Destructor
-    IO_DICOM_API ~Series();
+    IO_DICOM_API ~Series() override;
 
     /**
      * @brief Load and start appropriate writing tools.
@@ -105,7 +102,7 @@ private:
      * @brief Check if there is comment on acquisition.
      * @param[in] series ImageSeries that must be checked.
      */
-    bool hasDocumentSR(const data::ImageSeries::csptr& series) const;
+    static bool hasDocumentSR(const data::ImageSeries::csptr& series);
 
     /**
      * @brief Returns the image instance used to create the reconstruction
@@ -118,9 +115,7 @@ private:
     DicomInstanceMapType m_dicomInstanceMap;
 
     /// Fiducials Export Mode
-    FiducialsExportMode m_fiducialsExportMode;
+    FiducialsExportMode m_fiducialsExportMode {SPATIAL_FIDUCIALS};
 };
 
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer

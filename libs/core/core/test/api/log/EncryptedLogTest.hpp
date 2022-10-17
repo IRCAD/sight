@@ -23,10 +23,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::core::log
-{
-
-namespace ut
+namespace sight::core::log::ut
 {
 
 class EncryptedLogTest : public CPPUNIT_NS::TestFixture
@@ -42,16 +39,14 @@ CPPUNIT_TEST_SUITE_END();
 public:
 
     // interface
-    void setUp();
-    void tearDown();
+    void setUp() override;
+    void tearDown() override;
 
-    void log_without_sink_test();
-    void nominal_test();
-    void bad_path_test();
-    void basic_decryption_test();
-    void password_change_decryption_test();
+    static void log_without_sink_test();
+    static void nominal_test();
+    static void bad_path_test();
+    static void basic_decryption_test();
+    static void password_change_decryption_test();
 };
 
-} // namespace ut
-
-} //namespace sight::core::log
+} // namespace sight::core::log::ut

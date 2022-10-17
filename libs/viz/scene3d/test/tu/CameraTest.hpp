@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,10 +26,7 @@
 
 #include <OgreRoot.h>
 
-namespace sight::viz::scene3d
-{
-
-namespace ut
+namespace sight::viz::scene3d::ut
 {
 
 class CameraTest : public CPPUNIT_NS::TestFixture
@@ -44,10 +41,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    void computeProjectionMatrix();
-    void convertPixelToWorldSpace();
+    static void computeProjectionMatrix();
+    static void convertPixelToWorldSpace();
 };
 
-} //namespace ut
-
-} //namespace sight::viz::scene3d
+} // namespace sight::viz::scene3d::ut

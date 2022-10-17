@@ -34,12 +34,9 @@
 #include <dcmtk/dcmimgle/dcmimage.h>
 #include <dcmtk/dcmnet/diutil.h>
 
-fwDicomIOFilterRegisterMacro(sight::filter::dicom::splitter::ImagePositionPatientSplitter);
+SIGHT_REGISTER_DICOM_FILTER(sight::filter::dicom::splitter::ImagePositionPatientSplitter);
 
-namespace sight::filter::dicom
-{
-
-namespace splitter
+namespace sight::filter::dicom::splitter
 {
 
 const std::string ImagePositionPatientSplitter::s_FILTER_NAME        = "Image position patient splitter";
@@ -49,16 +46,14 @@ const std::string ImagePositionPatientSplitter::s_FILTER_DESCRIPTION =
 
 //-----------------------------------------------------------------------------
 
-ImagePositionPatientSplitter::ImagePositionPatientSplitter(filter::dicom::IFilter::Key) :
-    ISplitter()
+ImagePositionPatientSplitter::ImagePositionPatientSplitter(filter::dicom::IFilter::Key /*unused*/)
 {
 }
 
 //-----------------------------------------------------------------------------
 
 ImagePositionPatientSplitter::~ImagePositionPatientSplitter()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -85,8 +80,6 @@ const
     DicomSeriesContainerType result;
 
     OFCondition status;
-    DcmDataset* dataset;
-
     double previousIndex        = 0.;
     unsigned int instanceNumber = 0;
     double spacingBetweenSlices = 0.;
@@ -116,7 +109,7 @@ const
         fileFormat.loadAllDataIntoMemory();
         fileFormat.transferEnd();
 
-        dataset = fileFormat.getDataset();
+        DcmDataset* dataset = fileFormat.getDataset();
 
         if(!dataset->tagExists(DCM_ImagePositionPatient) || !dataset->tagExists(DCM_ImageOrientationPatient))
         {
@@ -137,7 +130,7 @@ const
         for(unsigned int i = 0 ; i < 3 ; ++i)
         {
             dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationU[i], i);
-            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationV[i], i + 3);
+            dataset->findAndGetFloat64(DCM_ImageOrientationPatient, imageOrientationV[i], i + std::size_t(3));
         }
 
         //Compute Z direction (cross product)
@@ -184,6 +177,4 @@ const
     return result;
 }
 
-} // namespace splitter
-
-} // namespace sight::filter::dicom
+} // namespace sight::filter::dicom::splitter

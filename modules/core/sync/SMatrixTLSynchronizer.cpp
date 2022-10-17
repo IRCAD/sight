@@ -80,11 +80,11 @@ void SMatrixTLSynchronizer::synchronize()
 
         for(std::size_t matrixIndex = 0 ; matrixIndex < m_matrices.size() ; ++matrixIndex)
         {
-            const unsigned int index = static_cast<unsigned int>(matrixIndex);
+            const auto index = static_cast<unsigned int>(matrixIndex);
 
             if(buffer->isPresent(index))
             {
-                const float* values = buffer->getElement(index);
+                const std::array<float, 16> values = buffer->getElement(index);
 
                 auto matrix = m_matrices[matrixIndex].lock();
                 SIGHT_ASSERT("Matrix['" << matrixIndex << "] not found.", matrix);
@@ -120,9 +120,7 @@ void SMatrixTLSynchronizer::synchronize()
 
 service::IService::KeyConnectionsMap SMatrixTLSynchronizer::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_MATRIXTL_INPUT, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {{s_MATRIXTL_INPUT, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT}};
 }
 
 // ----------------------------------------------------------------------------

@@ -20,6 +20,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "SVideoWriter.hpp"
 
 #include <core/com/Slot.hpp>
@@ -41,10 +43,11 @@
 namespace sight::module::io::video
 {
 
-static const core::com::Slots::SlotKeyType s_SAVE_FRAME   = "saveFrame";
-static const core::com::Slots::SlotKeyType s_START_RECORD = "startRecord";
-static const core::com::Slots::SlotKeyType s_STOP_RECORD  = "stopRecord";
-static const core::com::Slots::SlotKeyType s_RECORD       = "record";
+static const core::com::Slots::SlotKeyType s_SAVE_FRAME       = "saveFrame";
+static const core::com::Slots::SlotKeyType s_START_RECORD     = "startRecord";
+static const core::com::Slots::SlotKeyType s_STOP_RECORD      = "stopRecord";
+static const core::com::Slots::SlotKeyType s_RECORD           = "record";
+static const core::com::Slots::SlotKeyType s_TOGGLE_RECORDING = "toggleRecording";
 
 const std::string SVideoWriter::s_MP4_EXTENSION = ".mp4";
 const std::string SVideoWriter::s_AVC1_CODEC    = "avc1";
@@ -57,13 +60,13 @@ SVideoWriter::SVideoWriter() noexcept
     newSlot(s_START_RECORD, &SVideoWriter::startRecord, this);
     newSlot(s_STOP_RECORD, &SVideoWriter::stopRecord, this);
     newSlot(s_RECORD, &SVideoWriter::record, this);
+    newSlot(s_TOGGLE_RECORDING, &SVideoWriter::toggleRecording, this);
 }
 
 //------------------------------------------------------------------------------
 
-SVideoWriter::~SVideoWriter() noexcept
-{
-}
+SVideoWriter::~SVideoWriter() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -132,7 +135,7 @@ void SVideoWriter::writeBuffer(int width, int height, CSPTR(data::FrameTL::Buffe
 
     const cv::Mat image(
         cv::Size(width, height),
-        m_imageType, const_cast<std::uint8_t*>(imageBuffer),
+        m_imageType, const_cast<std::uint8_t*>(imageBuffer), // NOLINT(cppcoreguidelines-pro-type-const-cast)
         cv::Mat::AUTO_STEP
     );
     if(m_imageType == CV_16UC1)
@@ -293,25 +296,32 @@ void SVideoWriter::startRecord()
         const auto data    = m_data.lock();
         const auto frameTL = std::dynamic_pointer_cast<const data::FrameTL>(data.get_shared());
 
-        if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->numComponents() == 3)
+        if(frameTL->getType() == core::Type::UINT8 && frameTL->numComponents() == 3)
         {
             m_imageType = CV_8UC3;
         }
-        else if(frameTL->getType() == core::tools::Type::s_UINT8 && frameTL->numComponents() == 4)
+        else if(frameTL->getType() == core::Type::UINT8 && frameTL->numComponents() == 4)
         {
             m_imageType = CV_8UC4;
         }
-        else if(frameTL->getType() == core::tools::Type::s_UINT16 && frameTL->numComponents() == 1)
+        else if(frameTL->getType() == core::Type::UINT16 && frameTL->numComponents() == 1)
         {
             m_imageType = CV_16UC1;
         }
         else
         {
             SIGHT_ERROR(
-                "This type of frame : " + frameTL->getType().string() + " with "
+                "This type of frame : " + frameTL->getType().name() + " with "
                 + std::to_string(frameTL->numComponents()) + " components is not supported"
             );
             return;
+        }
+
+        // Make sure the parent path exists
+        const std::filesystem::path dirname = this->getFile().parent_path();
+        if(!std::filesystem::exists(dirname))
+        {
+            std::filesystem::create_directories(dirname);
         }
 
         m_isRecording = true;
@@ -343,6 +353,20 @@ void SVideoWriter::record(bool state)
     else
     {
         this->stopRecord();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SVideoWriter::toggleRecording()
+{
+    if(m_isRecording)
+    {
+        this->stopRecord();
+    }
+    else
+    {
+        this->startRecord();
     }
 }
 

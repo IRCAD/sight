@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,7 @@
 
 #include <vector>
 
-namespace sight::ui::qt
-{
-
-namespace dialog
+namespace sight::ui::qt::dialog
 {
 
 //------------------------------------------------------------------------------
@@ -56,7 +53,7 @@ public:
     UI_QT_API LoggerDialog(ui::base::GuiBaseObject::Key key);
 
     /// Destructor
-    UI_QT_API virtual ~LoggerDialog();
+    UI_QT_API ~LoggerDialog() override;
 
     /**
      * @brief Set the dialog title.
@@ -107,6 +104,4 @@ private:
     QPointer<QTableWidget> m_logTableWidget;
 };
 
-} // namespace dialog
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::dialog

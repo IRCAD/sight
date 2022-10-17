@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,7 @@
 
 #include <core/base.hpp>
 
+#include <array>
 #include <cmath>
 
 namespace sight::geometry::data
@@ -33,17 +34,14 @@ class Point
 {
 public:
 
-    float x;
-    float y;
-    float z;
+    float x {0.};
+    float y {0.};
+    float z {0.};
 
-    Point() :
-        x(0.),
-        y(0.),
-        z(0.)
-    {
-    }
-    Point(const float p[3]) :
+    Point()
+    = default;
+
+    Point(const std::array<float, 3>& p) :
         x(p[0]),
         y(p[1]),
         z(p[2])
@@ -61,13 +59,13 @@ public:
 
     bool operator<(const Point& pt) const
     {
-        return (   this->x < pt.x
-                   ||(this->x == pt.x && this->y < pt.y)
-                   ||(this->x == pt.x && this->y == pt.y && this->z < pt.z) );
+        return this->x < pt.x
+               || (this->x == pt.x && this->y < pt.y)
+               || (this->x == pt.x && this->y == pt.y && this->z < pt.z);
     }
 };
 
-template <typename T>
+template<typename T>
 class Vector
 {
 public:
@@ -89,12 +87,14 @@ public:
         z(v.z)
     {
     }
+
     Vector(const Point& p1, const Point& p2) :
-        x(p2.x-p1.x),
-        y(p2.y-p1.y),
-        z(p2.z-p1.z)
+        x(p2.x - p1.x),
+        y(p2.y - p1.y),
+        z(p2.z - p1.z)
     {
     }
+
     Vector(T _x, T _y, T _z) :
         x(_x),
         y(_y),
@@ -106,51 +106,56 @@ public:
 
     bool operator<(const Vector& v) const
     {
-        return (   x < v.x
-                   ||(x == v.x && y < v.y)
-                   ||(x == v.x && y == v.y && z < v.z) );
+        return x < v.x
+               || (x == v.x && y < v.y)
+               || (x == v.x && y == v.y && z < v.z);
     }
 
     //------------------------------------------------------------------------------
 
-    void operator=(const Vector& v)
-    {
-        x = v.x; y = v.y; z = v.z;
-    }
+    Vector& operator=(const Vector& v) = default;
 
     //------------------------------------------------------------------------------
 
     void operator-=(const Vector& v)
     {
-        x -= v.x; y -= v.y; z -= v.z;
+        x -= v.x;
+        y -= v.y;
+        z -= v.z;
     }
 
     //------------------------------------------------------------------------------
 
     void operator+=(const Vector& v)
     {
-        x += v.x; y += v.y; z += v.z;
+        x += v.x;
+        y += v.y;
+        z += v.z;
     }
 
     //------------------------------------------------------------------------------
 
     void operator*=(const float val)
     {
-        x = val*x; y = val*y; z = val*z;
+        x = val * x;
+        y = val * y;
+        z = val * z;
     }
 
     //------------------------------------------------------------------------------
 
     void operator/=(const float val)
     {
-        x = x/val; y = y/val; z = z/val;
+        x = x / val;
+        y = y / val;
+        z = z / val;
     }
 
     //------------------------------------------------------------------------------
 
     T norm2()
     {
-        return x*x + y*y + z*z;
+        return x * x + y * y + z * z;
     }
 
     //------------------------------------------------------------------------------
@@ -181,7 +186,7 @@ public:
 
     T dot(Vector& v)
     {
-        return x*v.x + y*v.y + z*v.z;
+        return x * v.x + y * v.y + z * v.z;
     }
 
     //------------------------------------------------------------------------------

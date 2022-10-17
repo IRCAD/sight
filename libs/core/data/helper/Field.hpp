@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,12 +23,10 @@
 #pragma once
 
 #include "data/config.hpp"
+
 #include <data/Object.hpp>
 
-namespace sight::data
-{
-
-namespace helper
+namespace sight::data::helper
 {
 
 /**
@@ -155,6 +153,4 @@ inline SPTR(DATA_TYPE) Field::setDefaultField(const data::Object::FieldNameType&
     return object->setDefaultField(name, defaultValue);
 }
 
-} // namespace helper
-
-} // namespace sight::data
+} // namespace sight::data::helper

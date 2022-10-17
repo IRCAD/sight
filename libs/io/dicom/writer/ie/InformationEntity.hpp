@@ -33,13 +33,7 @@
 
 #include <cstdint>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 /**
@@ -63,12 +57,12 @@ public:
      * @param[in] cancel Cancel requested callback
      */
     IO_DICOM_API InformationEntity(
-        const SPTR(gdcm::Writer)& writer,
-        const SPTR(io::dicom::container::DicomInstance)& instance,
-        const CSPTR(DATATYPE)& object,
-        const core::log::Logger::sptr& logger = nullptr,
-        ProgressCallback progress             = nullptr,
-        CancelRequestedCallback cancel        = nullptr
+        SPTR(gdcm::Writer)writer,
+        SPTR(io::dicom::container::DicomInstance)instance,
+        CSPTR(DATATYPE)object,
+        core::log::Logger::sptr logger = nullptr,
+        ProgressCallback progress      = nullptr,
+        CancelRequestedCallback cancel = nullptr
     );
 
     /// Destructor
@@ -99,36 +93,30 @@ protected:
 
 template<class DATATYPE>
 InformationEntity<DATATYPE>::InformationEntity(
-    const SPTR(gdcm::Writer)& writer,
-    const SPTR(io::dicom::container::DicomInstance)& instance,
-    const CSPTR(DATATYPE)& object,
-    const core::log::Logger::sptr& logger,
+    SPTR(gdcm::Writer)writer,
+    SPTR(io::dicom::container::DicomInstance)instance,
+    CSPTR(DATATYPE)object,
+    core::log::Logger::sptr logger,
     ProgressCallback progress,
     CancelRequestedCallback cancel
 ) :
-    m_writer(writer),
-    m_instance(instance),
-    m_object(object),
-    m_logger(logger),
-    m_progressCallback(progress),
-    m_cancelRequestedCallback(cancel)
+    m_writer(std::move(writer)),
+    m_instance(std::move(instance)),
+    m_object(std::move(object)),
+    m_logger(std::move(logger)),
+    m_progressCallback(std::move(progress)),
+    m_cancelRequestedCallback(std::move(cancel))
 {
-    SIGHT_ASSERT("Writer should not be null.", writer);
-    SIGHT_ASSERT("Instance should not be null.", instance);
-    SIGHT_ASSERT("Object should not be null.", object);
+    SIGHT_ASSERT("Writer should not be null.", m_writer);
+    SIGHT_ASSERT("Instance should not be null.", m_instance);
+    SIGHT_ASSERT("Object should not be null.", m_object);
 }
 
 //------------------------------------------------------------------------------
 
-template<class DATATYPE>
-InformationEntity<DATATYPE>::~InformationEntity()
-{
-}
+template<class DATATYPE> InformationEntity<DATATYPE>::~InformationEntity()
+= default;
 
 //------------------------------------------------------------------------------
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

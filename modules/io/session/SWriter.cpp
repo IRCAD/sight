@@ -19,6 +19,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINT
+
 #include "modules/io/session/SWriter.hpp"
 
 #include <core/com/Signal.hxx>
@@ -55,7 +57,7 @@ public:
     WriterImpl& operator=(WriterImpl&&)      = delete;
 
     /// Constructor
-    inline WriterImpl(SWriter* const writer) noexcept :
+    inline explicit WriterImpl(SWriter* const writer) noexcept :
         m_writer(writer),
         m_job_created_signal(writer->newSignal<JobCreatedSignal>("jobCreated"))
     {
@@ -211,38 +213,35 @@ void SWriter::updating()
                 // No password management
                 return secure_string();
             }
-            else
+
+            const secure_string& globalPassword = PasswordKeeper::get_global_password();
+
+            if((m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ALWAYS)
+               || (m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ONCE
+                   && globalPassword.empty()))
             {
-                const secure_string& globalPassword = PasswordKeeper::get_global_password();
+                const auto& newPassword = secure_string(
+                    sight::ui::base::dialog::InputDialog::showInputDialog(
+                        "Enter Password",
+                        "Password:",
+                        globalPassword.c_str(), // NOLINT(readability-redundant-string-cstr)
+                        sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
+                    )
+                );
 
-                if((m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ALWAYS)
-                   || (m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ONCE
-                       && globalPassword.empty()))
+                if(m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ONCE)
                 {
-                    sight::ui::base::dialog::InputDialog inputDialog;
-                    const auto& newPassword = secure_string(
-                        inputDialog.showInputDialog(
-                            "Enter Password",
-                            "Password:",
-                            globalPassword.c_str(),
-                            sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
-                        )
-                    );
-
-                    if(m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ONCE)
-                    {
-                        PasswordKeeper::set_global_password(newPassword);
-                    }
-
-                    return newPassword;
+                    PasswordKeeper::set_global_password(newPassword);
                 }
 
-                return globalPassword;
+                return newPassword;
             }
+
+            return globalPassword;
         }();
 
     const auto writeJob = core::jobs::Job::New(
-        "Writing " + temporaryFile.getTemporaryFilePath().string() + " file",
+        "Writing " + temporaryFile.filePath().string() + " file",
         [&](core::jobs::Job& runningJob)
         {
             runningJob.doneWork(10);
@@ -253,7 +252,7 @@ void SWriter::updating()
                 // The object must be unlocked since it will be locked again when writing
                 auto data = m_data.lock();
                 writer->setObject(data.get_shared());
-                writer->setFile(temporaryFile.getTemporaryFilePath());
+                writer->setFile(temporaryFile.filePath());
                 writer->set_password(password);
                 writer->setEncryptionPolicy(m_pimpl->m_encryption_policy);
                 writer->setArchiveFormat(m_pimpl->m_archive_format);
@@ -271,13 +270,13 @@ void SWriter::updating()
     );
 
     const auto renameJob = core::jobs::Job::New(
-        "Rename file" + temporaryFile.getTemporaryFilePath().string() + " to " + filepath.string() + ".",
+        "Rename file" + temporaryFile.filePath().string() + " to " + filepath.string() + ".",
         [&](core::jobs::Job& runningJob)
         {
             runningJob.doneWork(80);
 
             // Robust rename
-            core::tools::System::robustRename(temporaryFile.getTemporaryFilePath(), filepath, true);
+            core::tools::System::robustRename(temporaryFile.filePath(), filepath, true);
 
             runningJob.done();
         },

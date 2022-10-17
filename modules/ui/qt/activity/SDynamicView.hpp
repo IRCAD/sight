@@ -33,9 +33,9 @@
 #include <core/com/Slots.hpp>
 #include <core/tools/Failed.hpp>
 
-#include <data/ActivitySeries.hpp>
+#include <data/Activity.hpp>
 
-#include <service/IAppConfigManager.hpp>
+#include <service/AppConfigManager.hpp>
 
 #include <ui/base/view/IActivityView.hpp>
 #include <ui/qt/container/QtContainer.hpp>
@@ -52,47 +52,40 @@ namespace sight::data
 
 class Composite;
 
-}
-namespace sight::module::ui::qt
-{
-
-namespace activity
+} // namespace sight::data
+namespace sight::module::ui::qt::activity
 {
 
 /**
  * @brief   This editor manages tabs containing activities.
  *
- * This service should received signals containing ActivitySeries connected to the slot \b launchActivity. It will
+ * This service should received signals containing Activity connected to the slot \b launchActivity. It will
  * launch the activity in a new tab.
  *
- * @note The same activitySeries cannot be launch in two different tabs.
+ * @note The same activity cannot be launch in two different tabs.
  *
  * @section Signal Signal
  * - \b activitySelected( data::object::sptr ): this signal is emitted when the current tab selection
- *   changed, it contains the associated ActivitySeries. The activity series is send as a data::Object in order to
+ *   changed, it contains the associated Activity. The activity is send as a data::Object in order to
  *   connect this signal to slots receiving a data::Object.
  * - \b nothingSelected(): this signal is emitted when no tab are selected.
  *
  * @section Slots Slots
- * - \b launchActivity( data::ActivitySeries::sptr ): this slot allows to create a tab with the given activity
- *   series.
- * - \b launchActivitySeries( data::Series::sptr ): this slot allows to create a tab with the given activity
- *   series.
- * - \b createTab( activity::ActivityMsg ): this slot allows to create a tab with the given activity
- *   information.
+ * - \b launchActivity( data::Activity::sptr ): this slot allows to create a tab with the given activity.
+ * - \b createTab( activity::ActivityMsg ): this slot allows to create a tab with the given activity information.
  *
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::ui::qt::activity::SDynamicView" autoConnect="true" >
      <mainActivity id="SDBActivity" closable="false" />
      <parameters>
-         <parameter replace="SERIESDB" by="medicalData"  />
+         <parameter replace="SERIES_SET" by="medicalData"  />
          <parameter replace="ICON_PATH" by="sight::module::ui::icons/app.ico"  />
      </parameters>
      <config document="true" />
    </service>
    @endcode
- * - \b mainActivity (optional): information about the main activity (first tab). The activity series will be generated.
+ * - \b mainActivity (optional): information about the main activity (first tab). The activity will be generated.
  *   This activity must not have requirement.
  *   - \b id : identifier of the activity
  *   - \b closable (optional, default 'no') : defines if the user can close this tab.
@@ -118,7 +111,7 @@ public:
 
     /// Destructor. Do nothing.
 
-    MODULE_UI_QT_API virtual ~SDynamicView() noexcept;
+    MODULE_UI_QT_API ~SDynamicView() noexcept override;
 
     typedef core::com::Signal<void (data::Object::sptr)> ActivitySelectedSignalType;
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_ACTIVITY_SELECTED_SIG;
@@ -161,13 +154,13 @@ private:
         service::IAppConfigManager::sptr helper;
         std::string wid;
         std::string title;
-        bool closable;
+        bool closable {};
         std::string icon;
         std::string tooltip;
         std::string tabID;
         std::string viewConfigID;
         std::map<std::string, std::string> replacementMap;
-        data::ActivitySeries::sptr activitySeries;
+        data::Activity::sptr activity;
     };
 
     typedef std::map<QWidget*, SDynamicViewInfo> SDynamicViewInfoMapType;
@@ -179,18 +172,18 @@ private:
 
     /**
      * @brief Slot: Launch the given activity in a new tab.
-     * @note The same activity series cannot be launched in two different tabs.
+     * @note The same activity cannot be launched in two different tabs.
      */
-    void launchActivity(data::ActivitySeries::sptr activitySeries) override;
+    void launchActivity(data::Activity::sptr activity) override;
 
     /// launch a new tab according to the receiving msg
     void createTab(sight::activity::ActivityMsg info);
 
-    /// Create the main activitySeries and launch the activity
+    /// Create the main activity and launch the activity
     virtual void buildMainActivity();
 
-    /// Create view info from activitySeries
-    SDynamicViewInfo createViewInfo(data::ActivitySeries::sptr activitySeries);
+    /// Create view info from activity
+    SDynamicViewInfo createViewInfo(data::Activity::sptr activity);
 
     /**
      * @brief Close the tab at the given index.
@@ -215,7 +208,7 @@ private:
     ActivityIdType m_activityIds;
 
     SDynamicViewInfoMapType m_dynamicInfoMap;
-    bool m_dynamicConfigStartStop;
+    bool m_dynamicConfigStartStop {false};
 
     QPointer<QTabWidget> m_tabWidget;
     QPointer<QWidget> m_currentWidget;
@@ -223,12 +216,10 @@ private:
     ActivitySelectedSignalType::sptr m_sigActivitySelected;
     NothingSelectedSignalType::sptr m_sigNothingSelected;
 
-    bool m_mainActivityClosable;
+    bool m_mainActivityClosable {true};
 
     /// Allows to set the document mode.
     bool m_documentMode {true};
 };
 
-} //namespace activity
-
-} // guiQt
+} // namespace sight::module::ui::qt::activity

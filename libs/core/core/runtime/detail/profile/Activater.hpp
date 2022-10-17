@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,19 +24,13 @@
 
 #include "core/config.hpp"
 
-#include <boost/utility.hpp>
+#include <boost/noncopyable.hpp>
 
 #include <map>
 #include <string>
 #include <vector>
 
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace profile
+namespace sight::core::runtime::detail::profile
 {
 
 /**
@@ -52,7 +46,7 @@ public:
      * @param[in]   identifier  a string containing a module identifier
      * @param[in]   version     a string a module version
      */
-    Activater(const std::string& identifier, const std::string& version);
+    Activater(std::string identifier, const std::string& version);
 
     /**
      * @brief       Adds a new parameter to the activater.
@@ -96,8 +90,4 @@ private:
     DisableExtensionContainer m_disableExtensions;           ///< all disable extensions
 };
 
-} // namespace profile
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail::profile

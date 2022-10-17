@@ -1,7 +1,5 @@
 sight_add_target(core TYPE LIBRARY OBJECT_LIBRARY ON)
 
-find_package(Boost QUIET COMPONENTS date_time log log_setup iostreams REQUIRED)
-
 target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC std::filesystem)
 target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC Boost::date_time Boost::log Boost::log_setup Boost::iostreams)
 
@@ -14,11 +12,11 @@ if(CMAKE_SYSTEM_NAME MATCHES "Windows")
 endif()
 
 # This is the only place where we should pass these variables to the C++ code
+target_compile_definitions(${TARGET_OBJECT_LIB} PRIVATE MODULE_BIN_PREFIX="${CMAKE_INSTALL_BINDIR}")
 target_compile_definitions(${TARGET_OBJECT_LIB} PRIVATE MODULE_LIB_PREFIX="${SIGHT_MODULE_LIB_PREFIX}")
 target_compile_definitions(${TARGET_OBJECT_LIB} PRIVATE MODULE_RC_PREFIX="${SIGHT_MODULE_RC_PREFIX}")
 
-target_include_directories(${TARGET_OBJECT_LIB} PUBLIC ${LIBXML2_INCLUDE_DIR})
-target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC ${LIBXML2_LIBRARIES})
+target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE LibXml2::LibXml2)
 
 # Include openssl for crypto
 target_link_libraries(${TARGET_OBJECT_LIB} PRIVATE OpenSSL::Crypto)
@@ -29,8 +27,9 @@ if(UNIX)
 endif()
 
 if(WIN32)
-    target_include_directories(${TARGET_OBJECT_LIB} PUBLIC ${Iconv_INCLUDE_DIR})
+    target_include_directories(${TARGET_OBJECT_LIB} PRIVATE ${Iconv_INCLUDE_DIR})
 endif()
+target_link_libraries(${TARGET_OBJECT_LIB} PUBLIC OpenMP::OpenMP_CXX)
 
 if(SIGHT_BUILD_TESTS)
     add_subdirectory(test/api)

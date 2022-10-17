@@ -36,10 +36,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::itk::ut::ImageConversionTest);
 
-namespace sight::io::itk
-{
-
-namespace ut
+namespace sight::io::itk::ut
 {
 
 using core::tools::random::safeRand;
@@ -63,9 +60,9 @@ void ImageConversionTest::testConversion()
 {
     // create Image
     data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateRandomImage(image, core::tools::Type::s_INT16);
+    utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
 
-    typedef ::itk::Image<std::int16_t, 3> ImageType;
+    using ImageType = ::itk::Image<std::int16_t, 3>;
     ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
     data::Image::sptr image2 = data::Image::New();
@@ -117,12 +114,12 @@ void ImageConversionTest::testConversion2D()
     };
     data::Image::Spacing spacing = {(safeRand() % 200 + 1) / 100., (safeRand() % 200 + 1) / 100., 0.};
     data::Image::Origin origin   = {(safeRand() % 200 - 100) / 3., (safeRand() % 200 - 100) / 3., 0.};
-    core::tools::Type type       = core::tools::Type::s_INT16;
+    core::Type type              = core::Type::INT16;
 
     utestData::generator::Image::generateImage(image, size, spacing, origin, type, data::Image::GRAY_SCALE);
     utestData::generator::Image::randomizeImage(image);
 
-    typedef ::itk::Image<std::int16_t, 2> ImageType;
+    using ImageType = ::itk::Image<std::int16_t, 2>;
 
     ImageType::Pointer itkImage = io::itk::moveToItk<ImageType>(image);
 
@@ -147,6 +144,4 @@ void ImageConversionTest::testConversion2D()
 
 //------------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::io::itk
+} // namespace sight::io::itk::ut

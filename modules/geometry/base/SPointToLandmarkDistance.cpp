@@ -38,8 +38,7 @@ const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT             = "removePoi
 
 // -----------------------------------------------------------------------------
 
-SPointToLandmarkDistance::SPointToLandmarkDistance() noexcept :
-    m_landmarkSelected(false)
+SPointToLandmarkDistance::SPointToLandmarkDistance() noexcept
 {
     newSignal<DistanceChangedSignalType>(DISTANCE_CHANGED_SIG);
     newSlot(s_SELECTED_POINT_SLOT, &SPointToLandmarkDistance::updateSelectedPoint, this);
@@ -49,9 +48,8 @@ SPointToLandmarkDistance::SPointToLandmarkDistance() noexcept :
 
 // -----------------------------------------------------------------------------
 
-SPointToLandmarkDistance::~SPointToLandmarkDistance() noexcept
-{
-}
+SPointToLandmarkDistance::~SPointToLandmarkDistance() noexcept =
+    default;
 
 // -----------------------------------------------------------------------------
 
@@ -94,7 +92,7 @@ void SPointToLandmarkDistance::updating()
         const glm::dvec3 point = glm::dvec3(pointMatrix * originPoint);
 
         const glm::dvec3 direction = m_currentLandmark - point;
-        const float length         = static_cast<float>(glm::length(direction));
+        const auto length          = static_cast<float>(glm::length(direction));
 
         std::ostringstream out;
         out.precision(m_precision);
@@ -142,7 +140,7 @@ void SPointToLandmarkDistance::updateSelectedPoint(std::string name, std::size_t
     const data::Landmarks::PointType& point = landmark->getPoint(name, index);
     for(int i = 0 ; i < 3 ; ++i)
     {
-        m_currentLandmark[i] = point[i];
+        m_currentLandmark[i] = point[std::size_t(i)];
     }
 
     this->update();
@@ -158,7 +156,7 @@ void SPointToLandmarkDistance::updatePoint(std::string name)
     const data::Landmarks::PointType& point = landmark->getPoint(name, size - 1);
     for(int i = 0 ; i < 3 ; ++i)
     {
-        m_currentLandmark[i] = point[i];
+        m_currentLandmark[i] = point[std::size_t(i)];
     }
 
     this->update();
@@ -181,4 +179,4 @@ void SPointToLandmarkDistance::removePoint()
 
 // -----------------------------------------------------------------------------
 
-} // maths
+} // namespace sight::module::geometry::base

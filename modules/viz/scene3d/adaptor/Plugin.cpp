@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,13 +25,10 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-using namespace core::runtime::utils;
-
 SIGHT_REGISTER_PLUGIN("sight::module::viz::scene3d::adaptor::Plugin");
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 

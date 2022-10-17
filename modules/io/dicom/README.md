@@ -4,11 +4,11 @@ Contains services dealing with the reading and writing of DICOM (Digital Imaging
 
 ## Services
 - **SDicomSeriesAnonymizer**: anonymizes a DicomSeries.
-- **SDicomSeriesConverter**: converts DicomSeries from source SeriesDB and push result (ImageSeries, ModelSeries, ...) in a target SeriesDB.
-- **SDicomSeriesDBReader**: reads DICOM Series.
+- **SDicomSeriesConverter**: converts DicomSeries from source SeriesSet and push result (ImageSeries, ModelSeries, ...) in a target SeriesSet.
+- **SDicomSeriesSetReader**: reads DICOM Series.
 - **SDicomSeriesWriter**: writes DICOM Series.
-- **SSeriesDBReader**: reads Image and Model Series from DICOM.
-- **SSeriesDBWriter**: writes Image and Model Series in DICOM format.
+- **SSeriesSetReader**: reads Image and Model Series from DICOM.
+- **SSeriesSetWriter**: writes Image and Model Series in DICOM format.
 - **SSurfaceSegmentationWriter**: writes 3D ModelSeries.
 
 ## How to use it

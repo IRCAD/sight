@@ -103,7 +103,7 @@ public:
 
     VIZ_SCENE3D_API void updateMaterial(viz::scene3d::Material* _material, bool _isR2VB) const;
 
-    VIZ_SCENE3D_API bool hasColorLayerChanged(const data::Mesh::csptr& _mesh);
+    [[nodiscard]] VIZ_SCENE3D_API bool hasColorLayerChanged(const data::Mesh::csptr& _mesh) const;
 
     VIZ_SCENE3D_API Ogre::Entity* createEntity(Ogre::SceneManager& _sceneMgr);
 
@@ -121,7 +121,7 @@ private:
     Ogre::MeshPtr m_ogreMesh;
 
     /// Binding for each layer
-    unsigned short m_binding[NUM_BINDINGS];
+    std::array<std::uint16_t, NUM_BINDINGS> m_binding {};
 
     data::Mesh::CellType m_cellType {data::Mesh::CellType::_SIZE};
     /// Pointers on submeshes need for reallocation check.

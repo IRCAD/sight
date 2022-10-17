@@ -31,30 +31,25 @@
 
 #include <iostream>
 
-namespace sight::module::debug
-{
-
-namespace action
+namespace sight::module::debug::action
 {
 
 //------------------------------------------------------------------------------
 
-MemoryInfo::MemoryInfo() noexcept
-{
-}
+MemoryInfo::MemoryInfo() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-MemoryInfo::~MemoryInfo() noexcept
-{
-}
+MemoryInfo::~MemoryInfo() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
 void MemoryInfo::updating()
 {
     // Memory information
-    std::uint64_t mo                = 1024 * 1024;
+    std::uint64_t mo                = 1024LL * 1024;
     std::uint64_t totalSystemMemory = core::memory::tools::MemoryMonitorTools::getTotalSystemMemory();
     std::uint64_t freeSystemMemory  = core::memory::tools::MemoryMonitorTools::getFreeSystemMemory();
     std::uint64_t usedProcessMemory = core::memory::tools::MemoryMonitorTools::getUsedProcessMemory();
@@ -109,6 +104,4 @@ void MemoryInfo::stopping()
 
 //------------------------------------------------------------------------------
 
-} // namespace action
-
-} // namespace basicVisuCtrl
+} // namespace sight::module::debug::action

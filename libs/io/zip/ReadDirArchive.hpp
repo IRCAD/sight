@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,10 +50,10 @@ public:
     }
 
     /// Constructors. Initializes archive path.
-    IO_ZIP_API ReadDirArchive(const std::filesystem::path& archive);
+    IO_ZIP_API ReadDirArchive(std::filesystem::path archive);
 
     /// Destructor. Close automatically last input file stream.
-    IO_ZIP_API ~ReadDirArchive();
+    IO_ZIP_API ~ReadDirArchive() override;
 
     /**
      * @brief Returns input stream for the file in current archive.
@@ -67,11 +67,11 @@ public:
     /**
      * @brief Returns archive path.
      */
-    IO_ZIP_API const std::filesystem::path getArchivePath() const override;
+    [[nodiscard]] IO_ZIP_API std::filesystem::path getArchivePath() const override;
 
     //------------------------------------------------------------------------------
 
-    IReadArchive::sptr clone() const override
+    [[nodiscard]] IReadArchive::sptr clone() const override
     {
         return ReadDirArchive::New(m_archive);
     }
@@ -81,4 +81,4 @@ protected:
     std::filesystem::path m_archive;
 };
 
-}
+} // namespace sight::io::zip

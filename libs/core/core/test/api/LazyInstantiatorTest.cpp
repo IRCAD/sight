@@ -34,10 +34,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::ut::LazyInstantiatorTest);
 
-namespace sight::core
-{
-
-namespace ut
+namespace sight::core::ut
 {
 
 //------------------------------------------------------------------------------
@@ -61,7 +58,7 @@ class StaticCounter
 {
 public:
 
-    typedef std::shared_ptr<StaticCounter> sptr;
+    using sptr = std::shared_ptr<StaticCounter>;
 
     StaticCounter()
     {
@@ -80,7 +77,7 @@ int StaticCounter<SLEEP>::s_counter = 0;
 template<int SLEEP>
 core::mt::Mutex StaticCounter<SLEEP>::s_mutex;
 
-struct second_counter {};
+struct SecondCounter {};
 
 //-----------------------------------------------------------------------------
 
@@ -98,7 +95,7 @@ void LazyInstantiatorTest::lazyTest()
     StaticCounter<>::sptr counter2 = core::LazyInstantiator<StaticCounter<> >::getInstance();
     CPPUNIT_ASSERT_EQUAL(2, counter2->s_counter);
 
-    StaticCounter<>::sptr counter3 = core::LazyInstantiator<StaticCounter<>, second_counter>::getInstance();
+    StaticCounter<>::sptr counter3 = core::LazyInstantiator<StaticCounter<>, SecondCounter>::getInstance();
     CPPUNIT_ASSERT_EQUAL(3, counter3->s_counter);
 
     StaticCounter<>::s_counter = 0;
@@ -106,23 +103,22 @@ void LazyInstantiatorTest::lazyTest()
 
 //-----------------------------------------------------------------------------
 
-struct thread_counter_tag {};
+struct ThreadCounterTag {};
 
 struct CounterThread
 {
-    typedef StaticCounter<5> CounterType;
-    typedef std::shared_ptr<CounterThread> sptr;
+    using CounterType = StaticCounter<5>;
+    using sptr        = std::shared_ptr<CounterThread>;
 
     CounterThread()
-    {
-    }
+    = default;
 
     //------------------------------------------------------------------------------
 
-    void run()
+    static void run()
     {
         CounterType::sptr counter;
-        counter = core::LazyInstantiator<CounterType, thread_counter_tag>::getInstance();
+        counter = core::LazyInstantiator<CounterType, ThreadCounterTag>::getInstance();
     }
 };
 
@@ -137,7 +133,7 @@ void LazyInstantiatorTest::threadSafetyTest()
     for(std::size_t i = 0 ; i <= NB_THREAD ; i++)
     {
         CounterThread::sptr ct = std::make_shared<CounterThread>();
-        tg.push_back(std::thread(std::bind(&CounterThread::run, ct)));
+        tg.emplace_back(&CounterThread::run);
     }
 
     for(auto& t : tg)
@@ -146,12 +142,10 @@ void LazyInstantiatorTest::threadSafetyTest()
     }
 
     CounterThread::CounterType::sptr counter;
-    counter = core::LazyInstantiator<CounterThread::CounterType, thread_counter_tag>::getInstance();
+    counter = core::LazyInstantiator<CounterThread::CounterType, ThreadCounterTag>::getInstance();
     CPPUNIT_ASSERT_EQUAL(1, counter->s_counter);
 
     CounterThread::CounterType::s_counter = 0;
 }
 
-} //namespace ut
-
-} //namespace sight::core
+} // namespace sight::core::ut

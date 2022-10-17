@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,23 +27,20 @@
 #include <data/Color.hpp>
 #include <data/StructureTraitsDictionary.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::StructureTraitsDictionary
+namespace sight::io::session::detail::StructureTraitsDictionary
 {
 
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto structureTraitsDictionary = Helper::safeCast<data::StructureTraitsDictionary>(object);
+    const auto structureTraitsDictionary = Helper::safe_cast<data::StructureTraitsDictionary>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::StructureTraitsDictionary>(tree, 1);
@@ -58,15 +55,15 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::StructureTraitsDictionary::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto structureTraitsDictionary = Helper::safeCast<data::StructureTraitsDictionary>(object);
+    auto structureTraitsDictionary = Helper::cast_or_create<data::StructureTraitsDictionary>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::StructureTraitsDictionary>(tree, 0, 1);
@@ -87,6 +84,4 @@ inline static data::StructureTraitsDictionary::sptr deserialize(
     return structureTraitsDictionary;
 }
 
-} // namespace detail::StructureTraitsDictionary
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::StructureTraitsDictionary

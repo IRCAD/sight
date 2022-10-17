@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@ namespace sight::core::tools
 template<>
 bool isMapping<std::uint8_t>(const Type& type)
 {
-    return type.isOfType<std::uint8_t>();
+    return type == Type::UINT8;
 }
 
 //------------------------------------------------------------------------------
@@ -37,7 +37,7 @@ bool isMapping<std::uint8_t>(const Type& type)
 template<>
 bool isMapping<std::uint16_t>(const Type& type)
 {
-    return type.isOfType<std::uint16_t>();
+    return type == Type::UINT16;
 }
 
 //------------------------------------------------------------------------------
@@ -45,7 +45,7 @@ bool isMapping<std::uint16_t>(const Type& type)
 template<>
 bool isMapping<std::uint32_t>(const Type& type)
 {
-    return type.isOfType<std::uint32_t>();
+    return type == Type::UINT32;
 }
 
 //------------------------------------------------------------------------------
@@ -53,14 +53,15 @@ bool isMapping<std::uint32_t>(const Type& type)
 template<>
 bool isMapping<std::uint64_t>(const Type& type)
 {
-    return type.isOfType<std::uint64_t>();
+    return type == Type::UINT64;
 }
 
-// FIXED PRECISION SIGNED
+//------------------------------------------------------------------------------
+
 template<>
 bool isMapping<std::int8_t>(const Type& type)
 {
-    return type.isOfType<std::int8_t>();
+    return type == Type::INT8;
 }
 
 //------------------------------------------------------------------------------
@@ -68,7 +69,7 @@ bool isMapping<std::int8_t>(const Type& type)
 template<>
 bool isMapping<std::int16_t>(const Type& type)
 {
-    return type.isOfType<std::int16_t>();
+    return type == Type::INT16;
 }
 
 //------------------------------------------------------------------------------
@@ -76,7 +77,7 @@ bool isMapping<std::int16_t>(const Type& type)
 template<>
 bool isMapping<std::int32_t>(const Type& type)
 {
-    return type.isOfType<std::int32_t>();
+    return type == Type::INT32;
 }
 
 //------------------------------------------------------------------------------
@@ -84,14 +85,14 @@ bool isMapping<std::int32_t>(const Type& type)
 template<>
 bool isMapping<std::int64_t>(const Type& type)
 {
-    return type.isOfType<std::int64_t>();
+    return type == Type::INT64;
 }
 
 // FLOATING PRECISION
 template<>
 bool isMapping<float>(const Type& type)
 {
-    return type.isOfType<float>();
+    return type == Type::FLOAT;
 }
 
 //------------------------------------------------------------------------------
@@ -99,14 +100,7 @@ bool isMapping<float>(const Type& type)
 template<>
 bool isMapping<double>(const Type& type)
 {
-    return type.isOfType<double>();
+    return type == Type::DOUBLE;
 }
 
-// MISC
-template<>
-bool isMapping<std::string>(const Type& type)
-{
-    return type.isOfType<std::string>();
-}
-
-} // end namespace sight::core::tools {
+} // namespace sight::core::tools

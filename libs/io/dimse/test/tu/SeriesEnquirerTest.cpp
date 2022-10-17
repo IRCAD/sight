@@ -39,10 +39,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dimse::ut::SeriesEnquirerTest);
 
-namespace sight::io::dimse
-{
-
-namespace ut
+namespace sight::io::dimse::ut
 {
 
 //------------------------------------------------------------------------------
@@ -65,7 +62,7 @@ void SeriesEnquirerTest::setUp()
     // Pacs application port (default 11112)
     char* pacsApplicationPort = std::getenv("FWTEST_PACS_APPLICATION_PORT");
     m_pacsApplicationPort =
-        (pacsApplicationPort) ? (boost::lexical_cast<unsigned short>(pacsApplicationPort)) : 11112;
+        (pacsApplicationPort) != nullptr ? (boost::lexical_cast<std::uint16_t>(pacsApplicationPort)) : 11112;
 
     // Move application title
     char* moveApplicationTitle = std::getenv("FWTEST_MOVE_APPLICATION_TITLE");
@@ -75,7 +72,7 @@ void SeriesEnquirerTest::setUp()
     // Move application port (default 11110)
     char* moveApplicationPort = std::getenv("FWTEST_MOVE_APPLICATION_PORT");
     m_moveApplicationPort =
-        (moveApplicationPort) ? (boost::lexical_cast<unsigned short>(moveApplicationPort)) : 11110;
+        (moveApplicationPort) != nullptr ? (boost::lexical_cast<std::uint16_t>(moveApplicationPort)) : 11110;
 }
 
 //------------------------------------------------------------------------------
@@ -150,9 +147,10 @@ void SeriesEnquirerTest::pushSeries()
     CPPUNIT_ASSERT_EQUAL(std::size_t(129), filenames.size());
 
     std::vector<std::filesystem::path> paths;
+    paths.reserve(filenames.size());
     for(const auto& file : filenames)
     {
-        paths.push_back(file.string());
+        paths.emplace_back(file.string());
     }
 
     // Try to push instances to the pacs
@@ -170,7 +168,7 @@ void SeriesEnquirerTest::pullSeriesUsingMoveRetrieveMethod()
     m_seriesRetriever = io::dimse::SeriesRetriever::New();
     m_seriesRetriever->initialize(m_moveApplicationTitle, m_moveApplicationPort);
     core::thread::Worker::sptr worker = core::thread::Worker::New();
-    worker->post(std::bind(&io::dimse::SeriesRetriever::start, m_seriesRetriever));
+    worker->post([this](auto&& ...){m_seriesRetriever->start();});
 
     // Create the series enquirer
     m_seriesEnquirer = io::dimse::SeriesEnquirer::New();
@@ -236,7 +234,7 @@ void SeriesEnquirerTest::pullInstanceUsingMoveRetrieveMethod()
     m_seriesRetriever = io::dimse::SeriesRetriever::New();
     m_seriesRetriever->initialize(m_moveApplicationTitle, m_moveApplicationPort);
     core::thread::Worker::sptr worker = core::thread::Worker::New();
-    worker->post(std::bind(&io::dimse::SeriesRetriever::start, m_seriesRetriever));
+    worker->post([this](auto&& ...){m_seriesRetriever->start();});
 
     // Create the series enquirer
     m_seriesEnquirer = io::dimse::SeriesEnquirer::New();
@@ -304,6 +302,4 @@ void SeriesEnquirerTest::pullInstanceUsingGetRetrieveMethod()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::dimse
+} // namespace sight::io::dimse::ut

@@ -22,8 +22,8 @@
 
 #include "SPoseFrom2d.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <geometry/vision/helper.hpp>
 
@@ -34,21 +34,13 @@
 namespace sight::module::geometry::vision
 {
 
-//-----------------------------------------------------------------------------
+static const std::string s_UPDATE_CAMERA_SLOT = "updateCamera";
 
 //-----------------------------------------------------------------------------
 
-SPoseFrom2d::SPoseFrom2d() noexcept :
-    m_lastTimestamp(0),
-    m_patternWidth(80),
-    m_isInitialized(false)
+SPoseFrom2d::SPoseFrom2d() noexcept
 {
-}
-
-//-----------------------------------------------------------------------------
-
-SPoseFrom2d::~SPoseFrom2d() noexcept
-{
+    newSlot(s_UPDATE_CAMERA_SLOT, &SPoseFrom2d::initialize, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -68,7 +60,7 @@ void SPoseFrom2d::configuring()
             auto keyCfg = itCfg->second.equal_range("key");
             for(auto itKeyCfg = keyCfg.first ; itKeyCfg != keyCfg.second ; ++itKeyCfg)
             {
-                const data::MarkerMap::KeyType key = itKeyCfg->second.get<std::string>("<xmlattr>.id");
+                const auto key = itKeyCfg->second.get<std::string>("<xmlattr>.id");
                 m_matricesTag.push_back(key);
             }
 
@@ -82,12 +74,12 @@ void SPoseFrom2d::configuring()
 void SPoseFrom2d::starting()
 {
     //3D Points
-    const float halfWidth = static_cast<float>(m_patternWidth) * .5f;
+    const float halfWidth = static_cast<float>(m_patternWidth) * .5F;
 
-    m_3dModel.push_back(cv::Point3f(-halfWidth, halfWidth, 0));
-    m_3dModel.push_back(cv::Point3f(halfWidth, halfWidth, 0));
-    m_3dModel.push_back(cv::Point3f(halfWidth, -halfWidth, 0));
-    m_3dModel.push_back(cv::Point3f(-halfWidth, -halfWidth, 0));
+    m_3dModel.emplace_back(-halfWidth, halfWidth, 0.F);
+    m_3dModel.emplace_back(halfWidth, halfWidth, 0.F);
+    m_3dModel.emplace_back(halfWidth, -halfWidth, 0.F);
+    m_3dModel.emplace_back(-halfWidth, -halfWidth, 0.F);
 
     auto pl = m_pointList.lock();
     if(pl)
@@ -103,6 +95,8 @@ void SPoseFrom2d::starting()
         auto sig = pl->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         sig->asyncEmit();
     }
+
+    this->initialize();
 }
 
 //-----------------------------------------------------------------------------
@@ -112,7 +106,6 @@ void SPoseFrom2d::stopping()
     m_cameras.clear();
     m_3dModel.clear();
     m_lastTimestamp = 0;
-    m_isInitialized = false;
 
     auto pl = m_pointList.lock();
     if(pl)
@@ -136,20 +129,15 @@ void SPoseFrom2d::updating()
 
 //-----------------------------------------------------------------------------
 
-void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp)
+void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timestamp*/)
 {
-    SIGHT_WARN_IF("Invoking doRegistration while service is STOPPED", this->isStopped());
-
-    if(!m_isInitialized)
-    {
-        this->initialize();
-    }
+    SIGHT_WARN_IF("Invoking computeRegistration while service is STOPPED", this->isStopped());
 
     if(this->isStarted())
     {
         // For each marker
         unsigned int markerIndex = 0;
-        for(auto markerKey : m_matricesTag)
+        for(const auto& markerKey : m_matricesTag)
         {
             std::vector<Marker> markers;
             std::size_t indexTL = 0;
@@ -160,12 +148,12 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
                 const auto marker_ptr = markerMap.second.lock();
                 const auto* marker    = marker_ptr->getMarker(markerKey);
 
-                if(marker)
+                if(marker != nullptr)
                 {
                     Marker currentMarker;
                     for(std::size_t i = 0 ; i < 4 ; ++i)
                     {
-                        currentMarker.corners2D.push_back(cv::Point2f((*marker)[i][0], (*marker)[i][1]));
+                        currentMarker.corners2D.emplace_back((*marker)[i][0], (*marker)[i][1]);
                     }
 
                     markers.push_back(currentMarker);
@@ -224,6 +212,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType timestamp
 
 void SPoseFrom2d::initialize()
 {
+    m_cameras.clear();
     for(std::size_t idx = 0 ; idx < m_camera.size() ; ++idx)
     {
         auto camera = m_camera[idx].lock();
@@ -262,13 +251,11 @@ void SPoseFrom2d::initialize()
 
         m_cameras.push_back(cam);
     }
-
-    m_isInitialized = true;
 }
 
 //-----------------------------------------------------------------------------
 
-const cv::Matx44f SPoseFrom2d::cameraPoseFromStereo(
+cv::Matx44f SPoseFrom2d::cameraPoseFromStereo(
     const SPoseFrom2d::Marker& _markerCam1,
     const SPoseFrom2d::Marker& _markerCam2
 ) const
@@ -290,7 +277,7 @@ const cv::Matx44f SPoseFrom2d::cameraPoseFromStereo(
 
 //-----------------------------------------------------------------------------
 
-const cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _markerCam1) const
+cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _markerCam1) const
 {
     cv::Matx44f pose =
         sight::geometry::vision::helper::cameraPoseMonocular(
@@ -306,9 +293,11 @@ const cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _ma
 
 service::IService::KeyConnectionsMap SPoseFrom2d::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_MARKERMAP_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    return connections;
+    return {
+        {s_MARKERMAP_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_CAMERA_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_CAMERA_SLOT},
+        {s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_CAMERA_SLOT}
+    };
 }
 
 //-----------------------------------------------------------------------------

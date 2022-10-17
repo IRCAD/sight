@@ -24,7 +24,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 #include <data/Image.hpp>
 #include <data/Material.hpp>
@@ -60,9 +60,8 @@ STexture::STexture() noexcept
 
 //------------------------------------------------------------------------------
 
-STexture::~STexture() noexcept
-{
-}
+STexture::~STexture() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -91,14 +90,11 @@ void STexture::starting()
 
     this->getRenderService()->makeCurrent();
 
-    m_texture =
-        Ogre::dynamic_pointer_cast<Ogre::Texture>(
-            Ogre::TextureManager::getSingleton().createOrRetrieve(
-                m_textureName,
-                sight::viz::scene3d::RESOURCE_GROUP,
-                true
-            ).first
-        );
+    // Retrieves associated Sight image
+    {
+        const auto image = m_image.lock();
+        m_texture = std::make_shared<sight::viz::scene3d::Texture>(image.get_shared());
+    }
 
     this->updating();
 }
@@ -124,7 +120,7 @@ void STexture::updating()
     {
         // Loads the new image
         this->getRenderService()->makeCurrent();
-        sight::viz::scene3d::Utils::loadOgreTexture(image.get_shared(), m_texture, Ogre::TEX_TYPE_2D, m_isDynamic);
+        m_texture->update();
 
         m_sigTextureSwapped->asyncEmit();
     }
@@ -135,10 +131,6 @@ void STexture::updating()
 void STexture::stopping()
 {
     this->getRenderService()->makeCurrent();
-
-    // This is necessary, otherwise we have "ghost" textures later when we reload a new texture
-    Ogre::TextureManager::getSingleton().remove(m_textureName, sight::viz::scene3d::RESOURCE_GROUP);
-    m_texture->freeInternalResources();
     m_texture.reset();
 }
 
@@ -148,7 +140,7 @@ bool STexture::isValid() const
 {
     if(m_texture)
     {
-        if(m_texture->getFormat() != Ogre::PF_UNKNOWN)
+        if(m_texture->get()->getFormat() != Ogre::PF_UNKNOWN)
         {
             return true;
         }

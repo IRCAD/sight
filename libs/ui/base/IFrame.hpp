@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -125,7 +125,7 @@ protected:
 
     UI_BASE_API IFrame();
 
-    UI_BASE_API virtual ~IFrame();
+    UI_BASE_API ~IFrame() override;
 
     typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     /**
@@ -161,9 +161,9 @@ private:
     /// SLOT: hide the container
     void hide();
 
-    void onCloseExit();
+    static void onCloseExit();
     void onCloseNotify();
-    void onCloseMessage();
+    static void onCloseMessage();
     void initializeLayoutManager(core::runtime::ConfigurationElement::sptr layoutConfig);
     void initializeMenuBarBuilder(core::runtime::ConfigurationElement::sptr menuBarConfig);
     void initializeToolBarBuilder(core::runtime::ConfigurationElement::sptr toolBarConfig);
@@ -178,8 +178,8 @@ private:
     ConfigurationType m_menuBarConfig;
     ConfigurationType m_toolBarConfig;
 
-    bool m_hasMenuBar;
-    bool m_hasToolBar;
+    bool m_hasMenuBar {false};
+    bool m_hasToolBar {false};
 
     std::string m_closePolicy;
 

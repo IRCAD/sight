@@ -19,7 +19,7 @@
         <requirements>
             <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::activity::builder::ActivitySeries</builder>
+        <builder>::activity::builder::Activity</builder>
         <appConfig id="ExDicomSegmentation_VTKMesher_AppCfg"/>
     </extension>
 
@@ -31,7 +31,7 @@
         <requirements>
             <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::activity::builder::ActivitySeries</builder>
+        <builder>::activity::builder::Activity</builder>
         <appConfig id="ExDicomSegmentation_Threshold_AppCfg" />
     </extension>
 
@@ -52,7 +52,7 @@
 
             <!-- ******************************* Objects declaration ****************************** -->
 
-            <object uid="seriesDB" type="sight::data::SeriesDB" />
+            <object uid="seriesSet" type="sight::data::SeriesSet" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
@@ -71,7 +71,7 @@
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="dynamicViewSrv" type="sight::module::ui::qt::activity::SDynamicView">
-                <inout key="seriesDB" uid="seriesDB" />
+                <inout key="seriesSet" uid="seriesSet" />
                 <mainActivity id="ExDicomSegmentation_Base_Activity" closable="false" />
                 <parameters>
                     <parameter replace="ICON_PATH" by="ExDicomSegmentation/tuto.ico" />

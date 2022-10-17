@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2021 IRCAD France
+ * Copyright (C) 2017-2022 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,11 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <viz/scene3d/IParameter.hpp>
-
 #include <service/IService.hpp>
 
-namespace sight::module::ui::viz
-{
+#include <viz/scene3d/IParameter.hpp>
 
-namespace helper
+namespace sight::module::ui::viz::helper
 {
 
 class ParameterEditor
@@ -52,6 +49,4 @@ public:
     );
 };
 
-} // namespace helper
-
-} // namespace sight::module::ui::viz
+} // namespace sight::module::ui::viz::helper

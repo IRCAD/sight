@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,12 +23,10 @@
 #pragma once
 
 #include "service/config.hpp"
+
 #include <service/IXMLParser.hpp>
 
-namespace sight::service
-{
-
-namespace parser
+namespace sight::service::parser
 {
 
 /**
@@ -52,6 +50,4 @@ public:
     SERVICE_API void createConfig(core::tools::Object::sptr _obj) override;
 };
 
-} //namespace parser
-
-} //namespace sight::service
+} // namespace sight::service::parser

@@ -26,13 +26,7 @@
 
 #include <data/Image.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace reader
-{
-
-namespace ie
+namespace sight::io::dicom::reader::ie
 {
 
 /**
@@ -63,7 +57,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~SpatialFiducials();
+    IO_DICOM_API ~SpatialFiducials() override;
 
     /**
      * @brief Read image landmarks from dataset
@@ -76,8 +70,4 @@ public:
     void readDistance(const gdcm::DataSet& fiducialDataset);
 };
 
-} // namespace ie
-
-} // namespace reader
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::reader::ie

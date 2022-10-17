@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,22 +27,13 @@
 
 #include <filesystem>
 #include <functional>
+#include <map>
 #include <vector>
-
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace profile
+namespace sight::core::runtime::detail::profile
 {
 
 class Activater;
 class Starter;
-class Stopper;
-class Initializer;
-class Uninitializer;
 
 /**
  * @brief   Implements a module set profile.
@@ -75,28 +66,14 @@ public:
      *
      * @param[in]   starter a shared pointer to a starter
      */
-    void add(SPTR(Starter) starter);
+    void addStarter(const std::string& identifier);
 
     /**
      * @brief       Adds a new stopper.
      *
      * @param[in]   stopper a shared pointer to a stopper
      */
-    void add(SPTR(Stopper) stopper);
-
-    /**
-     * @brief       Adds a new starter.
-     *
-     * @param[in]   initializer a shared pointer to an initializer
-     */
-    void add(SPTR(Initializer) initializer);
-
-    /**
-     * @brief       Adds a new starter.
-     *
-     * @param[in]   uninitializer a shared pointer to an uninitializer
-     */
-    void add(SPTR(Uninitializer) uninitializer);
+    void addStopper(const std::string& identifier, int priority);
 
     /**
      * @brief   Starts the profile.
@@ -105,18 +82,12 @@ public:
     void stop() final;
 
     /**
-     * @brief   Once started, setup the profile.
-     */
-    void setup() final;
-    void cleanup() final;
-
-    /**
      * @brief   Run the profile.
      */
     int run() final;
     void setRunCallback(RunCallbackType callback) final;
 
-    int defaultRun();
+    static int defaultRun();
 
     /**
      * @brief   Return profile CheckSingleInstance.
@@ -139,20 +110,16 @@ public:
 private:
 
     typedef std::vector<SPTR(Activater)> ActivaterContainer;
-    typedef std::vector<SPTR(Starter)> StarterContainer;
-    typedef std::vector<SPTR(Stopper)> StopperContainer;
-    typedef std::vector<SPTR(Initializer)> InitializerContainer;
-    typedef std::vector<SPTR(Uninitializer)> UninitializerContainer;
+    typedef std::multimap<int, std::string> StarterContainer;
+    typedef std::multimap<int, std::string> StopperContainer;
 
-    ActivaterContainer m_activaters;         ///< all managed activators
-    StarterContainer m_starters;             ///< all managed starters
-    StopperContainer m_stoppers;             ///< all managed stoppers
-    InitializerContainer m_initializers;     ///< all managed initializers
-    UninitializerContainer m_uninitializers; ///< all managed uninitializers
+    ActivaterContainer m_activaters; ///< all managed activators
+    StarterContainer m_starters;     ///< all managed starters
+    StopperContainer m_stoppers;     ///< all managed stoppers
 
     RunCallbackType m_run;
 
-    bool m_checkSingleInstance;
+    bool m_checkSingleInstance {false};
 };
 
 /**
@@ -167,8 +134,4 @@ void setCurrentProfile(Profile::sptr prof);
  */
 Profile::sptr getCurrentProfile();
 
-} // namespace profile
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail::profile

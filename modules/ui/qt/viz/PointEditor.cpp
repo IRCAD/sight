@@ -59,9 +59,8 @@ PointEditor::PointEditor() noexcept
 
 //------------------------------------------------------------------------------
 
-PointEditor::~PointEditor() noexcept
-{
-}
+PointEditor::~PointEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -73,23 +72,23 @@ void PointEditor::starting()
         this->getContainer()
     );
 
-    QHBoxLayout* h_layout = new QHBoxLayout();
+    auto* h_layout = new QHBoxLayout();
 
-    QLabel* staticText_x = new QLabel(tr("x:"));
+    auto* staticText_x = new QLabel(tr("x:"));
     h_layout->addWidget(staticText_x, 0, Qt::AlignVCenter);
 
     m_textCtrl_x = new QLineEdit();
     m_textCtrl_x->setValidator(new QDoubleValidator(m_textCtrl_x));
     h_layout->addWidget(m_textCtrl_x, 1, Qt::AlignVCenter);
 
-    QLabel* staticText_y = new QLabel(tr("y:"));
+    auto* staticText_y = new QLabel(tr("y:"));
     h_layout->addWidget(staticText_y, 0, Qt::AlignVCenter);
 
     m_textCtrl_y = new QLineEdit();
     m_textCtrl_y->setValidator(new QDoubleValidator(m_textCtrl_y));
     h_layout->addWidget(m_textCtrl_y, 1, Qt::AlignVCenter);
 
-    QLabel* staticText_z = new QLabel(tr("z:"));
+    auto* staticText_z = new QLabel(tr("z:"));
     h_layout->addWidget(staticText_z, 0, Qt::AlignVCenter);
 
     m_textCtrl_z = new QLineEdit();

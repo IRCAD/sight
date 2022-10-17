@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,14 +36,12 @@ namespace sight::io::http
 {
 
 ClientQt::ClientQt()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 ClientQt::~ClientQt()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -53,7 +51,7 @@ QByteArray ClientQt::get(Request::sptr request)
     const QUrl qtUrl(QString::fromStdString(request->getUrl()));
     QNetworkRequest qtRequest(qtUrl);
 
-    this->computeHeaders(qtRequest, request->getHeaders());
+    sight::io::http::ClientQt::computeHeaders(qtRequest, request->getHeaders());
 
     QNetworkReply* reply = networkManager.get(qtRequest);
     QEventLoop loop;
@@ -61,7 +59,7 @@ QByteArray ClientQt::get(Request::sptr request)
     QObject::connect(
         reply,
         QOverload<QNetworkReply::NetworkError>::of(
-            &QNetworkReply::error
+            &QNetworkReply::errorOccurred
         ),
         this,
         &ClientQt::processError
@@ -81,7 +79,7 @@ std::string ClientQt::getFile(Request::sptr request)
     const QUrl qtUrl(QString::fromStdString(request->getUrl()));
     QNetworkRequest qtRequest(qtUrl);
 
-    this->computeHeaders(qtRequest, request->getHeaders());
+    sight::io::http::ClientQt::computeHeaders(qtRequest, request->getHeaders());
 
     QNetworkReply* reply = networkManager.get(qtRequest);
     QEventLoop loop;
@@ -89,7 +87,7 @@ std::string ClientQt::getFile(Request::sptr request)
     QObject::connect(
         reply,
         QOverload<QNetworkReply::NetworkError>::of(
-            &QNetworkReply::error
+            &QNetworkReply::errorOccurred
         ),
         this,
         &ClientQt::processError
@@ -108,7 +106,7 @@ std::string ClientQt::getFile(Request::sptr request)
 
     if(!file.open(QIODevice::WriteOnly))
     {
-        throw("Could not create a temporary file");
+        throw std::runtime_error("Could not create a temporary file");
     }
 
     QObject::connect(reply, &QNetworkReply::readyRead, [&]{file.write(reply->readAll());});
@@ -158,7 +156,7 @@ QByteArray ClientQt::post(Request::sptr request, const QByteArray& body)
 
     qtRequest.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
-    this->computeHeaders(qtRequest, request->getHeaders());
+    sight::io::http::ClientQt::computeHeaders(qtRequest, request->getHeaders());
 
     QNetworkReply* reply = networkManager.post(qtRequest, body);
     QEventLoop loop;
@@ -166,7 +164,7 @@ QByteArray ClientQt::post(Request::sptr request, const QByteArray& body)
     QObject::connect(
         reply,
         QOverload<QNetworkReply::NetworkError>::of(
-            &QNetworkReply::error
+            &QNetworkReply::errorOccurred
         ),
         this,
         &ClientQt::processError
@@ -181,7 +179,7 @@ QByteArray ClientQt::post(Request::sptr request, const QByteArray& body)
 
 void ClientQt::computeHeaders(QNetworkRequest& request, const Request::HeadersType& headers)
 {
-    Request::HeadersType::const_iterator cIt = headers.begin();
+    auto cIt = headers.begin();
     for( ; cIt != headers.end() ; ++cIt)
     {
         request.setRawHeader(cIt->first.c_str(), cIt->second.c_str());

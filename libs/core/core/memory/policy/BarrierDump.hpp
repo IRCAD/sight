@@ -30,10 +30,7 @@
 
 #include <core/base.hpp>
 
-namespace sight::core::memory
-{
-
-namespace policy
+namespace sight::core::memory::policy
 {
 
 /**
@@ -50,43 +47,43 @@ public:
 
     CORE_API BarrierDump();
 
-    CORE_API virtual void allocationRequest(
+    CORE_API void allocationRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer,
         BufferInfo::SizeType size
     ) override;
 
-    CORE_API virtual void setRequest(
+    CORE_API void setRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer,
         BufferInfo::SizeType size
     ) override;
 
-    CORE_API virtual void reallocateRequest(
+    CORE_API void reallocateRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer,
         BufferInfo::SizeType newSize
     ) override;
 
-    CORE_API virtual void destroyRequest(
+    CORE_API void destroyRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
 
-    CORE_API virtual void lockRequest(
+    CORE_API void lockRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
-    CORE_API virtual void unlockRequest(
+    CORE_API void unlockRequest(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
 
-    CORE_API virtual void dumpSuccess(
+    CORE_API void dumpSuccess(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
-    CORE_API virtual void restoreSuccess(
+    CORE_API void restoreSuccess(
         BufferInfo& info,
         core::memory::BufferManager::ConstBufferPtrType buffer
     ) override;
@@ -107,7 +104,7 @@ public:
         return m_barrier;
     }
 
-    CORE_API std::string getParam(const std::string& name, bool* ok = NULL) const override;
+    CORE_API std::string getParam(const std::string& name, bool* ok = nullptr) const override;
     CORE_API bool setParam(const std::string& name, const std::string& value) override;
     CORE_API const core::memory::IPolicy::ParamNamesType& getParamNames() const override;
 
@@ -116,15 +113,13 @@ protected:
     CORE_API std::size_t getTotalAlive() const;
     CORE_API bool isBarrierCrossed() const;
 
-    CORE_API std::size_t dump(std::size_t nbOfBytes);
+    static CORE_API std::size_t dump(std::size_t nbOfBytes);
 
     CORE_API void apply();
 
-    std::size_t m_totalAllocated;
-    std::size_t m_totalDumped;
+    std::size_t m_totalAllocated {0};
+    std::size_t m_totalDumped {0};
     std::size_t m_barrier;
 };
 
-} // namespace policy
-
-} // namespace sight::core::memory
+} // namespace sight::core::memory::policy

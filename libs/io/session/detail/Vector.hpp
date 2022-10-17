@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,29 +26,26 @@
 
 #include <data/Vector.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::Vector
+namespace sight::io::session::detail::Vector
 {
 
 //------------------------------------------------------------------------------
 
 inline static void serialize(
-    zip::ArchiveWriter&,
+    zip::ArchiveWriter& /*unused*/,
     boost::property_tree::ptree& tree,
     data::Object::csptr object,
     std::map<std::string, data::Object::csptr>& children,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
-    const auto vector = Helper::safeCast<data::Vector>(object);
+    const auto vector = Helper::safe_cast<data::Vector>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Vector>(tree, 1);
 
     std::size_t index = 0;
-    for(const auto& child : vector->getContainer())
+    for(const auto& child : *vector)
     {
         children[data::Object::classname() + std::to_string(index++)] = child;
     }
@@ -57,24 +54,22 @@ inline static void serialize(
 //------------------------------------------------------------------------------
 
 inline static data::Vector::sptr deserialize(
-    zip::ArchiveReader&,
+    zip::ArchiveReader& /*unused*/,
     const boost::property_tree::ptree& tree,
     const std::map<std::string, data::Object::sptr>& children,
     data::Object::sptr object,
-    const core::crypto::secure_string& = ""
+    const core::crypto::secure_string& /*unused*/ = ""
 )
 {
     // Create or reuse the object
-    auto vector = Helper::safeCast<data::Vector>(object);
+    auto vector = Helper::cast_or_create<data::Vector>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Vector>(tree, 0, 1);
 
     // Deserialize vector
-    auto& objects = vector->getContainer();
-
     // Clearing is required in case the object is reused
-    objects.clear();
+    vector->clear();
 
     for(std::size_t index = 0, end = children.size() ; index < end ; ++index)
     {
@@ -85,12 +80,10 @@ inline static data::Vector::sptr deserialize(
             break;
         }
 
-        objects.push_back(it->second);
+        vector->push_back(it->second);
     }
 
     return vector;
 }
 
-} // namespace detail::Vector
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::Vector

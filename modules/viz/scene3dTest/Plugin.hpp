@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,13 +37,13 @@ class Plugin : public core::runtime::Plugin
 public:
 
     /// Destructor. Do nothing.
-    ~Plugin() noexcept;
+    ~Plugin() noexcept override;
 
     /// Instantiates Ogre Root.
-    void start();
+    void start() override;
 
     /// Overrides stop method. Do nothing
-    void stop() noexcept;
+    void stop() noexcept override;
 
 private:
 

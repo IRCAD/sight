@@ -31,10 +31,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::geometry::eigen::ut::EigenToolsTest);
 
-namespace sight::geometry::eigen
-{
-
-namespace ut
+namespace sight::geometry::eigen::ut
 {
 
 //------------------------------------------------------------------------------
@@ -57,13 +54,11 @@ void EigenToolsTest::eigenToF4s()
 {
     Eigen::Matrix<double, 4, 4> mat;
 
-    data::Matrix4::sptr f4sRes = data::Matrix4::New();
-
     for(unsigned int r = 0 ; r < 3 ; ++r)
     {
         for(unsigned int c = 0 ; c < 3 ; ++c)
         {
-            mat(r, c) = EigenToolsTest::random<double>(-1.f, 1.f);
+            mat(r, c) = EigenToolsTest::random<double>(-1.F, 1.F);
         }
     }
 
@@ -76,19 +71,18 @@ void EigenToolsTest::eigenToF4s()
     mat(3, 2) = 0;
     mat(3, 3) = 1;
 
-    f4sRes = geometry::eigen::helper::toF4s(mat);
+    data::Matrix4::sptr f4sRes = geometry::eigen::helper::toF4s(mat);
 
     for(unsigned int r = 0 ; r < 4 ; ++r)
     {
         for(unsigned int c = 0 ; c < 4 ; ++c)
         {
-            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
                 "Elements differ at (" + std::to_string(r) + "," + std::to_string(
                     c
                 ) + ")",
                 mat(r, c),
-                f4sRes->getCoefficient(r, c),
-                0.0000000001
+                f4sRes->getCoefficient(r, c)
             );
         }
     }
@@ -106,7 +100,7 @@ void EigenToolsTest::f4sToEigen()
     {
         for(unsigned int c = 0 ; c < 3 ; ++c)
         {
-            mat->setCoefficient(r, c, random<float>(-1.f, 1.f));
+            mat->setCoefficient(r, c, random<float>(-1.F, 1.F));
         }
     }
 
@@ -145,7 +139,7 @@ void EigenToolsTest::f4sToEigen()
 void EigenToolsTest::eigenMatToRvecTvec()
 {
     Eigen::Matrix4d m        = Eigen::Matrix4d::Identity();
-    Eigen::AngleAxisd rotVec = Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.f, 0.f, 1.0).normalized());
+    Eigen::AngleAxisd rotVec = Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.F, 0.F, 1.0).normalized());
 
     Eigen::Vector3d expected_rvec = rotVec.angle() * rotVec.axis();
     Eigen::Vector3d expected_tvec(0.3, 0.4, 0.5);
@@ -184,7 +178,7 @@ void EigenToolsTest::eigenMatToRvecTvec()
 void EigenToolsTest::f4sMatToRvecTvec()
 {
     Eigen::Matrix4d m        = Eigen::Matrix4d::Identity();
-    Eigen::AngleAxisd rotVec = Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.f, 0.f, 1.0).normalized());
+    Eigen::AngleAxisd rotVec = Eigen::AngleAxisd(0.2, Eigen::Vector3d(0.F, 0.F, 1.0).normalized());
 
     Eigen::Vector3d expected_rvec = rotVec.angle() * rotVec.axis();
     Eigen::Vector3d expected_tvec(0.3, 0.4, 0.5);
@@ -224,10 +218,10 @@ void EigenToolsTest::f4sMatToRvecTvec()
 
 void EigenToolsTest::float16ToEigen()
 {
-    std::array<float, 16> mat16 = {{0.1f, 0.2f, 0.3f, 1.f,
-        0.4f, 0.5f, 0.6f, 2.f,
-        0.7f, 0.8f, 0.9f, 3.f,
-        0.f, 0.f, 0.f, 1.f
+    std::array<float, 16> mat16 = {{0.1F, 0.2F, 0.3F, 1.F,
+        0.4F, 0.5F, 0.6F, 2.F,
+        0.7F, 0.8F, 0.9F, 3.F,
+        0.F, 0.F, 0.F, 1.F
     }
     };
 
@@ -251,6 +245,4 @@ void EigenToolsTest::float16ToEigen()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::geometry::eigen
+} // namespace sight::geometry::eigen::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,14 +33,15 @@
 #include <glm/gtx/quaternion.hpp>
 #undef GLM_ENABLE_EXPERIMENTAL
 #include <glm/mat4x4.hpp>
+#include <utility>
 
 namespace sight::filter::image
 {
 
 //-----------------------------------------------------------------------------
 
-MatrixRegressor::MatrixRegressor(const data::Vector::csptr& matrixList, const std::vector<PointType>& points) :
-    m_pointList(points)
+MatrixRegressor::MatrixRegressor(const data::Vector::csptr& matrixList, std::vector<PointType> points) :
+    m_pointList(std::move(points))
 {
     for(const auto& elt : *matrixList)
     {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,10 +28,7 @@
 #include <data/ModelSeries.hpp>
 #include <data/Reconstruction.hpp>
 
-namespace sight::io::session
-{
-
-namespace detail::ModelSeries
+namespace sight::io::session::detail::ModelSeries
 {
 
 constexpr static auto s_DicomReference {"DicomReference"};
@@ -46,7 +43,7 @@ inline static void serialize(
     const core::crypto::secure_string& password = ""
 )
 {
-    const auto modelSeries = Helper::safeCast<data::ModelSeries>(object);
+    const auto modelSeries = Helper::safe_cast<data::ModelSeries>(object);
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::ModelSeries>(tree, 1);
@@ -75,7 +72,7 @@ inline static data::ModelSeries::sptr deserialize(
 )
 {
     // Create or reuse the object
-    auto modelSeries = Helper::safeCast<data::ModelSeries>(object);
+    auto modelSeries = Helper::cast_or_create<data::ModelSeries>(object);
 
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::ModelSeries>(tree, 0, 1);
@@ -106,6 +103,4 @@ inline static data::ModelSeries::sptr deserialize(
     return modelSeries;
 }
 
-} // namespace detail::ModelSeries
-
-} // namespace sight::io
+} // namespace sight::io::session::detail::ModelSeries

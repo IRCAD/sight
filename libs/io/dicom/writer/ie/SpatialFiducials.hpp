@@ -27,13 +27,7 @@
 
 #include <data/Image.hpp>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace ie
+namespace sight::io::dicom::writer::ie
 {
 
 /**
@@ -62,7 +56,7 @@ public:
     );
 
     /// Destructor
-    IO_DICOM_API virtual ~SpatialFiducials();
+    IO_DICOM_API ~SpatialFiducials() override;
 
     /**
      * @brief Write Spatial Fiducials Module tags
@@ -107,8 +101,4 @@ protected:
     );
 };
 
-} // namespace ie
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::ie

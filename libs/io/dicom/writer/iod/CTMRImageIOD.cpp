@@ -32,21 +32,12 @@
 
 #include <core/spyLog.hpp>
 
-#include <data/Equipment.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
-#include <data/Patient.hpp>
-#include <data/Study.hpp>
 
 #include <gdcmImageWriter.h>
 
-namespace sight::io::dicom
-{
-
-namespace writer
-{
-
-namespace iod
+namespace sight::io::dicom::writer::iod
 {
 
 //------------------------------------------------------------------------------
@@ -66,8 +57,7 @@ CTMRImageIOD::CTMRImageIOD(
 //------------------------------------------------------------------------------
 
 CTMRImageIOD::~CTMRImageIOD()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -77,19 +67,16 @@ void CTMRImageIOD::write(const data::Series::csptr& series)
     data::ImageSeries::csptr imageSeries = data::ImageSeries::dynamicCast(series);
     SIGHT_ASSERT("Image series should not be null.", imageSeries);
 
-    // Retrieve image
-    data::Image::csptr image = imageSeries->getImage();
-
     // Create writer
     SPTR(gdcm::ImageWriter) writer = std::make_shared<gdcm::ImageWriter>();
 
     // Create Information Entity helpers
-    io::dicom::writer::ie::Patient patientIE(writer, m_instance, series->getPatient());
-    io::dicom::writer::ie::Study studyIE(writer, m_instance, series->getStudy());
+    io::dicom::writer::ie::Patient patientIE(writer, m_instance, series);
+    io::dicom::writer::ie::Study studyIE(writer, m_instance, series);
     io::dicom::writer::ie::Series seriesIE(writer, m_instance, series);
     io::dicom::writer::ie::FrameOfReference frameOfReferenceIE(writer, m_instance, series);
-    io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series->getEquipment());
-    io::dicom::writer::ie::Image imageIE(writer, m_instance, imageSeries->getImage());
+    io::dicom::writer::ie::Equipment equipmentIE(writer, m_instance, series);
+    io::dicom::writer::ie::Image imageIE(writer, m_instance, imageSeries);
 
     // Write Patient Module - PS 3.3 C.7.1.1
     patientIE.writePatientModule();
@@ -139,7 +126,7 @@ void CTMRImageIOD::write(const data::Series::csptr& series)
     const gdcm::DataSet datasetCopy = writer->GetFile().GetDataSet();
 
     // Compute number of frames
-    std::size_t nbFrames = (m_instance->getIsMultiFiles()) ? (image->getSize()[2]) : 1;
+    std::size_t nbFrames = (m_instance->getIsMultiFiles()) ? (imageSeries->getSize()[2]) : 1;
 
     // Write specific tags according to frame number
     for(unsigned int i = 0 ; i < nbFrames ; ++i)
@@ -170,8 +157,4 @@ void CTMRImageIOD::write(const data::Series::csptr& series)
 
 //------------------------------------------------------------------------------
 
-} // namespace iod
-
-} // namespace writer
-
-} // namespace sight::io::dicom
+} // namespace sight::io::dicom::writer::iod

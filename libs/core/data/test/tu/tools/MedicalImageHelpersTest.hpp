@@ -26,10 +26,7 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::data::tools
-{
-
-namespace ut
+namespace sight::data::tools::ut
 {
 
 class MedicalImageHelpersTest : public CPPUNIT_NS::TestFixture
@@ -46,52 +43,54 @@ CPPUNIT_TEST(testDistances);
 CPPUNIT_TEST(testDistanceVisibility);
 CPPUNIT_TEST(testLandmarksVisibility);
 CPPUNIT_TEST(testTransferFunction);
+CPPUNIT_TEST(computeHistogram);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
     /// Does nothing.
-    void setUp();
+    void setUp() override;
     /// Does nothing.
-    void tearDown();
+    void tearDown() override;
 
     /// Tests the getMinMax method.
-    void getMinMaxTest();
+    static void getMinMaxTest();
 
     /// Tests the getPixel method for several image pixel types
-    void getPixelTest();
+    static void getPixelTest();
 
     /// Tests the setPixel method for several image pixel types
-    void setPixelTest();
+    static void setPixelTest();
 
     /// Tests isBuffNull method.
-    void isBufNull();
+    static void isBufNull();
 
     /// Tests helper method around landmarks (get/set).
-    void testLandmarks();
+    static void testLandmarks();
 
     /// Tests checkImageValidity method.
-    void testImageValidity();
+    static void testImageValidity();
 
     /// Tests helper methods around slice count.
     void testSliceCount();
 
     /// Tests helper methods around slice indexes.
-    void testSliceIndex();
+    static void testSliceIndex();
 
     /// Tests helper methods around distances.
-    void testDistances();
+    static void testDistances();
 
     /// Tests set/get methods on distance visibility.
-    void testDistanceVisibility();
+    static void testDistanceVisibility();
 
     /// Tests set/get methods on landmarks visibility.
-    void testLandmarksVisibility();
+    static void testLandmarksVisibility();
 
     /// Tests helper methods around transfer function.
-    void testTransferFunction();
+    static void testTransferFunction();
+
+    /// Test the computation of the image histogram
+    static void computeHistogram();
 };
 
-} // namespace ut
-
-} // namespace sight::data::tools
+} // namespace sight::data::tools::ut

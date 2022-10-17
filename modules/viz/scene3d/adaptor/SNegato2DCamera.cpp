@@ -45,9 +45,7 @@ static const std::string s_ORIENTATION_CONFIG           = "orientation";
 
 //-----------------------------------------------------------------------------
 
-SNegato2DCamera::SNegato2DCamera() noexcept :
-    // This connection is useless here but needed to create the TF helper.
-    m_helperTF(std::bind(&SNegato2DCamera::updating, this))
+SNegato2DCamera::SNegato2DCamera() noexcept
 {
     newSlot(s_RESET_CAMERA_SLOT, &SNegato2DCamera::resetCamera, this);
     newSlot(s_CHANGE_ORIENTATION_SLOT, &SNegato2DCamera::changeOrientation, this);
@@ -56,9 +54,8 @@ SNegato2DCamera::SNegato2DCamera() noexcept :
 
 //-----------------------------------------------------------------------------
 
-SNegato2DCamera::~SNegato2DCamera() noexcept
-{
-}
+SNegato2DCamera::~SNegato2DCamera() noexcept =
+    default;
 
 //-----------------------------------------------------------------------------
 
@@ -119,18 +116,6 @@ void SNegato2DCamera::updating() noexcept
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::swapping(std::string_view _key)
-{
-    if(_key == s_TF_INOUT)
-    {
-        const auto image = m_image.lock();
-        const auto tf    = m_tf.lock();
-        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-    }
-}
-
-//-----------------------------------------------------------------------------
-
 void SNegato2DCamera::stopping()
 {
     const auto layer = this->getLayer();
@@ -142,12 +127,11 @@ void SNegato2DCamera::stopping()
 
 service::IService::KeyConnectionsMap SNegato2DCamera::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_RESET_CAMERA_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_CHANGE_ORIENTATION_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_MOVE_BACK_SLOT);
-
-    return connections;
+    return {
+        {s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_RESET_CAMERA_SLOT},
+        {s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_CHANGE_ORIENTATION_SLOT},
+        {s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_MOVE_BACK_SLOT}
+    };
 }
 
 //-----------------------------------------------------------------------------
@@ -165,7 +149,7 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
             auto* const camera         = layer->getDefaultCamera();
             auto* const camNode        = camera->getParentNode();
 
-            constexpr float mouseWheelScale = 0.05f;
+            constexpr float mouseWheelScale = 0.05F;
             const float zoomAmount          = static_cast<float>(-_delta) * mouseWheelScale;
 
             // Compute the mouse's position in the camera's view.
@@ -178,11 +162,11 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
             // Zoom in.
             const float orthoHeight    = camera->getOrthoWindowHeight();
             const float newOrthoHeight = orthoHeight + (orthoHeight / zoomAmount);
-            const float clampedHeight  = std::max(newOrthoHeight, 1e-7f); // Make sure the height is strictly greater
+            const float clampedHeight  = std::max(newOrthoHeight, 1e-7F); // Make sure the height is strictly greater
                                                                           // than 0
 
-            const float vpWidth  = static_cast<float>(viewport->getActualWidth());
-            const float vpHeight = static_cast<float>(viewport->getActualHeight());
+            const auto vpWidth  = static_cast<float>(viewport->getActualWidth());
+            const auto vpHeight = static_cast<float>(viewport->getActualHeight());
 
             camera->setAspectRatio(vpWidth / vpHeight);
             camera->setOrthoWindowHeight(clampedHeight);
@@ -206,7 +190,7 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
                 static_cast<int>(imHelper::getSliceIndex(*image, m_currentNegatoOrientation).value_or(0));
             const int max_slice = static_cast<int>(image->getSize()[m_currentNegatoOrientation] - 1);
 
-            if(max_slice < 0)
+            if(max_slice <= 0)
             {
                 // Do nothing, image doesn't have slices.
                 return;
@@ -226,7 +210,7 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
             // Speed up SHIFT+ wheel: "scrolls" 5% of total slices at each wheel move.
             if(_modifier == Modifier::SHIFT)
             {
-                slice_move *= std::round(static_cast<float>(max_slice) * 5.f / 100.f);
+                slice_move *= int(std::round(static_cast<float>(max_slice) * 5.F / 100.F));
             }
 
             // TODO: We may test for finer-resolution wheels and wait for another event before moving.
@@ -246,7 +230,7 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
             imHelper::setSliceIndex(*image, m_currentNegatoOrientation, new_slice_index);
 
             // Get up-to-date index values.
-            const int idx[3] = {
+            const std::array<int, 3> idx {
                 static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::SAGITTAL).value_or(0)),
                 static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL).value_or(0)),
                 static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL).value_or(0))
@@ -264,7 +248,14 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
 
 // ----------------------------------------------------------------------------
 
-void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y, int _dx, int _dy)
+void SNegato2DCamera::mouseMoveEvent(
+    IInteractor::MouseButton _button,
+    Modifier /*_mods*/,
+    int _x,
+    int _y,
+    int _dx,
+    int _dy
+)
 {
     if(m_isInteracting && _button == MouseButton::MIDDLE)
     {
@@ -289,8 +280,8 @@ void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton _button, Modifier,
     }
     else if(m_isInteracting && _button == MouseButton::RIGHT)
     {
-        const double dx = static_cast<double>(_x - m_initialPos[0]);
-        const double dy = static_cast<double>(m_initialPos[1] - _y);
+        const auto dx = static_cast<double>(_x - m_initialPos[0]);
+        const auto dy = static_cast<double>(m_initialPos[1] - _y);
 
         this->updateWindowing(dx, dy);
     }
@@ -298,7 +289,7 @@ void SNegato2DCamera::mouseMoveEvent(IInteractor::MouseButton _button, Modifier,
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton _button, Modifier, int _x, int _y)
+void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton _button, Modifier /*_mods*/, int _x, int _y)
 {
     const auto layer = this->getLayer();
     if(_button == MouseButton::MIDDLE)
@@ -309,11 +300,10 @@ void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton _button, Modifie
     {
         m_isInteracting = true;
 
-        const data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
-        const data::mt::locked_ptr lock(tf);
+        const auto tf = m_tf.const_lock();
 
-        m_initialLevel  = tf->getLevel();
-        m_initialWindow = tf->getWindow();
+        m_initialLevel  = tf->level();
+        m_initialWindow = tf->window();
 
         m_initialPos = {_x, _y};
     }
@@ -321,14 +311,19 @@ void SNegato2DCamera::buttonPressEvent(IInteractor::MouseButton _button, Modifie
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::buttonReleaseEvent(IInteractor::MouseButton, Modifier, int, int)
+void SNegato2DCamera::buttonReleaseEvent(
+    IInteractor::MouseButton /*_button*/,
+    Modifier /*_mods*/,
+    int /*_x*/,
+    int /*_y*/
+)
 {
     m_isInteracting = false;
 }
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::keyPressEvent(int _key, Modifier, int _x, int _y)
+void SNegato2DCamera::keyPressEvent(int _key, Modifier /*_mods*/, int _x, int _y)
 {
     const auto layer = this->getLayer();
     if(IInteractor::isInLayer(_x, _y, layer, m_layerOrderDependant) && (_key == 'R' || _key == 'r'))
@@ -343,26 +338,23 @@ void SNegato2DCamera::resetCamera()
 {
     // This method is called when the image buffer is modified,
     // we need to retrieve the TF here if it came from the image.
-    const auto image = m_image.lock();
-    const auto tf    = m_tf.lock();
-    m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-
     const auto layer           = this->getLayer();
     const auto* const viewport = layer->getViewport();
     auto* const camera         = layer->getDefaultCamera();
     auto* const camNode        = camera->getParentNode();
 
-    const float vpWidth  = static_cast<float>(viewport->getActualWidth());
-    const float vpHeight = static_cast<float>(viewport->getActualHeight());
-    const float vpRatio  = vpWidth / vpHeight;
+    const auto vpWidth  = static_cast<float>(viewport->getActualWidth());
+    const auto vpHeight = static_cast<float>(viewport->getActualHeight());
+    const float vpRatio = vpWidth / vpHeight;
     camera->setAspectRatio(vpRatio);
 
     // HACK: Temporarily set the near clip distance here because the Layer doesn't handle orthographic cameras.
-    camera->setNearClipDistance(1e-3f);
+    camera->setNearClipDistance(1e-3F);
 
     camNode->setPosition(Ogre::Vector3::ZERO);
     camNode->resetOrientation();
 
+    const auto image   = m_image.lock();
     const auto origin  = image->getOrigin();
     const auto size    = image->getSize();
     const auto spacing = image->getSpacing();
@@ -375,23 +367,23 @@ void SNegato2DCamera::resetCamera()
         switch(m_currentNegatoOrientation)
         {
             case Orientation::X_AXIS:
-                camNode->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90.f));
-                camNode->rotate(Ogre::Vector3::UNIT_Z, Ogre::Degree(-90.f));
+                camNode->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(-90.F));
+                camNode->rotate(Ogre::Vector3::UNIT_Z, Ogre::Degree(-90.F));
                 width  = static_cast<double>(size[1]) * spacing[1];
                 height = static_cast<double>(size[2]) * spacing[2];
                 ratio  = static_cast<float>(width / height);
                 break;
 
             case Orientation::Y_AXIS:
-                camNode->rotate(Ogre::Vector3::UNIT_X, Ogre::Degree(90.f));
+                camNode->rotate(Ogre::Vector3::UNIT_X, Ogre::Degree(90.F));
                 width  = static_cast<double>(size[0]) * spacing[0];
                 height = static_cast<double>(size[2]) * spacing[2];
                 ratio  = static_cast<float>(width / height);
                 break;
 
             case Orientation::Z_AXIS:
-                camNode->rotate(Ogre::Vector3::UNIT_Z, Ogre::Degree(180.f));
-                camNode->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(180.f));
+                camNode->rotate(Ogre::Vector3::UNIT_Z, Ogre::Degree(180.F));
+                camNode->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(180.F));
                 height = static_cast<double>(size[0]) * spacing[0];
                 width  = static_cast<double>(size[1]) * spacing[1];
                 ratio  = static_cast<float>(width / height);
@@ -400,18 +392,18 @@ void SNegato2DCamera::resetCamera()
 
         if(vpRatio > ratio)
         {
-            const Ogre::Real h = static_cast<Ogre::Real>(height);
+            const auto h = static_cast<Ogre::Real>(height);
             // Zoom out the camera (add 10% of the height), allow the image to not be stuck on the viewport.
-            camera->setOrthoWindowHeight(h + h * 0.1f);
+            camera->setOrthoWindowHeight(h + h * 0.1F);
         }
         else
         {
-            const Ogre::Real w = static_cast<Ogre::Real>(width);
+            const auto w = static_cast<Ogre::Real>(width);
             // Zoom out the camera (add 10% of the width), allow the image to not be stuck on the viewport.
-            camera->setOrthoWindowWidth(w + w * 0.1f);
+            camera->setOrthoWindowWidth(w + w * 0.1F);
         }
 
-        const std::size_t orientation = static_cast<std::size_t>(m_currentNegatoOrientation);
+        const auto orientation = static_cast<std::size_t>(m_currentNegatoOrientation);
         Ogre::Vector3 camPos(
             static_cast<Ogre::Real>(origin[0] + static_cast<double>(size[0]) * spacing[0] * 0.5),
             static_cast<Ogre::Real>(origin[1] + static_cast<double>(size[1]) * spacing[1] * 0.5),
@@ -464,11 +456,11 @@ void SNegato2DCamera::moveBack()
 
     if(worldBoundingBox.isFinite())
     {
-        const std::size_t orientation = static_cast<std::size_t>(m_currentNegatoOrientation);
+        const auto orientation = static_cast<std::size_t>(m_currentNegatoOrientation);
 
         auto camPos = camNode->getPosition();
 
-        const float backupPos = worldBoundingBox.getMinimum()[orientation] - 1.f;
+        const float backupPos = worldBoundingBox.getMinimum()[orientation] - 1.F;
         camPos[orientation] = std::min(camPos[orientation], backupPos);
 
         camNode->setPosition(camPos);
@@ -484,13 +476,13 @@ void SNegato2DCamera::updateWindowing(double _dw, double _dl)
     const double newWindow = m_initialWindow + _dw;
     const double newLevel  = m_initialLevel - _dl;
 
-    const data::TransferFunction::sptr tf = m_helperTF.getTransferFunction();
     {
-        const data::mt::locked_ptr lock(tf);
+        const auto image = m_image.lock();
+        const auto tf    = m_tf.lock();
 
         tf->setWindow(newWindow);
         tf->setLevel(newLevel);
-        const auto sig = tf->signal<data::TransferFunction::WindowingModifiedSignalType>(
+        const auto sig = tf->template signal<data::TransferFunction::WindowingModifiedSignalType>(
             data::TransferFunction::s_WINDOWING_MODIFIED_SIG
         );
         {

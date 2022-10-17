@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,10 +33,7 @@
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::thread::ut::TaskHandlerTest);
 
-namespace sight::core::thread
-{
-
-namespace ut
+namespace sight::core::thread::ut
 {
 
 //------------------------------------------------------------------------------
@@ -74,11 +71,11 @@ void TaskHandlerTest::basicTest()
 {
     core::thread::Worker::sptr worker = core::thread::Worker::New();
 
-    std::packaged_task<int()> task(std::bind(&copy, 5));
+    std::packaged_task<int()> task([]{return copy(5);});
     std::future<int> future = task.get_future();
     std::function<void()> f = moveTaskIntoFunction(task);
 
-    std::packaged_task<int()> task2(std::bind(&copy, 8));
+    std::packaged_task<int()> task2([]{return copy(8);});
     std::future<int> future2 = task2.get_future();
     std::function<void()> f2 = moveTaskIntoFunction(task2);
 
@@ -98,11 +95,11 @@ void TaskHandlerTest::basicTest()
     CPPUNIT_ASSERT_EQUAL(8, future2.get());
     CPPUNIT_ASSERT(!future2.valid());
 
-    std::packaged_task<int()> task3(std::bind(&copy, 5));
+    std::packaged_task<int()> task3([]{return copy(5);});
     std::future<int> future3 = task3.get_future();
     std::function<void()> f3 = moveTaskIntoFunction(task3);
 
-    std::packaged_task<int()> task4(std::bind(&copy, 8));
+    std::packaged_task<int()> task4([]{return copy(8);});
     std::future<int> future4 = task4.get_future();
     std::function<void()> f4 = moveTaskIntoFunction(task4);
 
@@ -129,7 +126,7 @@ void TaskHandlerTest::exceptionTest()
 {
     core::thread::Worker::sptr worker = core::thread::Worker::New();
 
-    std::packaged_task<void()> task(std::bind(&throwException));
+    std::packaged_task<void()> task([]{return throwException();});
     std::future<void> future = task.get_future();
     std::function<void()> f  = moveTaskIntoFunction(task);
 
@@ -152,6 +149,4 @@ void TaskHandlerTest::exceptionTest()
 
 //-----------------------------------------------------------------------------
 
-} //namespace ut
-
-} //namespace sight::core::thread
+} // namespace sight::core::thread::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2021 IRCAD France
+ * Copyright (C) 2016-2022 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,7 @@
 
 #include "ui/base/builder/ISlideViewBuilder.hpp"
 
-#include <boost/lexical_cast.hpp>
-
-namespace sight::ui::base
-{
-
-namespace builder
+namespace sight::ui::base::builder
 {
 
 const std::string ISlideViewBuilder::REGISTRY_KEY = "::ui::base::SlideViewBuilder";
@@ -46,14 +41,12 @@ static const std::string s_STYLE_SHEET_CONFIG      = "styleSheet";
 //-----------------------------------------------------------------------------
 
 ISlideViewBuilder::ISlideViewBuilder()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 ISlideViewBuilder::~ISlideViewBuilder()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
@@ -78,8 +71,9 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         else
         {
             SIGHT_FATAL(
-                "Wrong value '" + hAlign + "' for '" + s_H_ALIGN_CONFIG
-                + "' attribute (require 'left' or 'right')"
+                std::string(
+                    "Wrong value '"
+                ) + hAlign + "' for '" + s_H_ALIGN_CONFIG + "' attribute (require 'left' or 'right')"
             );
         }
     }
@@ -98,8 +92,9 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         else
         {
             SIGHT_FATAL(
-                "Wrong value '" + vAlign + "' for '" + s_V_ALIGN_CONFIG
-                + "' attribute (require 'top' or 'bottom')"
+                std::string(
+                    "Wrong value '"
+                ) + vAlign + "' for '" + s_V_ALIGN_CONFIG + "' attribute (require 'top' or 'bottom')"
             );
         }
     }
@@ -185,7 +180,7 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         else
         {
             SIGHT_FATAL(
-                "Wrong value '" + animatable + "' for '" + s_ANIMATABLE_CONFIG
+                std::string("Wrong value '") + animatable + "' for '" + s_ANIMATABLE_CONFIG
                 + "' attribute (require 'true' or 'false')"
             );
         }
@@ -213,7 +208,7 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
         else
         {
             SIGHT_FATAL(
-                "Wrong value '" + align + "' for '" + s_ANIMATABLE_ALIGN_CONFIG
+                std::string("Wrong value '") + align + "' for '" + s_ANIMATABLE_ALIGN_CONFIG
                 + "' attribute (require 'left', 'right', 'top' or 'bottom')"
             );
         }
@@ -223,48 +218,6 @@ void ISlideViewBuilder::initialize(core::runtime::ConfigurationElement::sptr _co
     if(styleCfg)
     {
         m_styleSheet = styleCfg->getValue();
-    }
-
-    // Deprecated configuration.
-    int size = 200;
-    if(_config->hasAttribute("size"))
-    {
-        FW_DEPRECATED_MSG("::ui::base::builder::ISlideViewBuilder deprecated attribute 'size'", "21.0");
-        size = std::stoi(_config->getExistingAttributeValue("size"));
-    }
-
-    if(_config->hasAttribute("align"))
-    {
-        FW_DEPRECATED_MSG("::ui::base::builder::ISlideViewBuilder deprecated attribute 'align'", "21.0");
-        const std::string align = _config->getExistingAttributeValue("align");
-        if(align == "top")
-        {
-            m_hAlignment    = LEFT;
-            m_vAlignment    = TOP;
-            m_height        = size;
-            m_percentHeight = false;
-        }
-        else if(align == "bottom")
-        {
-            m_hAlignment    = LEFT;
-            m_vAlignment    = BOTTOM;
-            m_height        = size;
-            m_percentHeight = false;
-        }
-        else if(align == "right")
-        {
-            m_hAlignment   = RIGHT;
-            m_vAlignment   = TOP;
-            m_width        = size;
-            m_percentWidth = false;
-        }
-        else if(align == "left")
-        {
-            m_hAlignment   = LEFT;
-            m_vAlignment   = TOP;
-            m_width        = size;
-            m_percentWidth = false;
-        }
     }
 }
 
@@ -277,6 +230,4 @@ ui::base::container::fwContainer::sptr ISlideViewBuilder::getContainer() const
 
 //-----------------------------------------------------------------------------
 
-} // namespace builder.
-
-} // namespace sight::ui::base.
+} // namespace sight::ui::base::builder

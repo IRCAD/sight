@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,10 +30,7 @@
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::http::ut::RequestTest);
 
-namespace sight::io::http
-{
-
-namespace ut
+namespace sight::io::http::ut
 {
 
 //------------------------------------------------------------------------------
@@ -81,6 +78,4 @@ void RequestTest::testRequest()
 
 //------------------------------------------------------------------------------
 
-} // namespace ut
-
-} // namespace sight::io::http
+} // namespace sight::io::http::ut

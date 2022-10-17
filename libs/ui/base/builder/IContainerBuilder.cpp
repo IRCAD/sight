@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,10 +27,7 @@
 
 #include "ui/base/builder/IContainerBuilder.hpp"
 
-namespace sight::ui::base
-{
-
-namespace builder
+namespace sight::ui::base::builder
 {
 
 const IContainerBuilder::RegistryKeyType IContainerBuilder::REGISTRY_KEY = "::ui::base::ContainerBuilder";
@@ -38,18 +35,16 @@ const IContainerBuilder::RegistryKeyType IContainerBuilder::REGISTRY_KEY = "::ui
 //-----------------------------------------------------------------------------
 
 IContainerBuilder::IContainerBuilder()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
 IContainerBuilder::~IContainerBuilder()
-{
-}
+= default;
 
 //-----------------------------------------------------------------------------
 
-void IContainerBuilder::initialize(core::runtime::ConfigurationElement::sptr)
+void IContainerBuilder::initialize(core::runtime::ConfigurationElement::sptr /*unused*/)
 {
 }
 
@@ -62,6 +57,4 @@ ui::base::container::fwContainer::sptr IContainerBuilder::getContainer()
 
 //-----------------------------------------------------------------------------
 
-} // namespace builder
-
-} // namespace sight::ui::base
+} // namespace sight::ui::base::builder

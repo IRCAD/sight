@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ public:
     MODULE_UI_QT_API SOrganMaterialEditor() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_QT_API virtual ~SOrganMaterialEditor() noexcept;
+    MODULE_UI_QT_API ~SOrganMaterialEditor() noexcept override;
 
 private:
 
@@ -122,4 +122,4 @@ private Q_SLOTS:
     void onAmbientColorButton();
 };
 
-} // uiReconstructionQt
+} // namespace sight::module::ui::qt::reconstruction

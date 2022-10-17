@@ -24,8 +24,6 @@
 
 #include <core/com/Signal.hxx>
 
-#include <boost/pool/pool.hpp>
-
 #include <cmath>
 
 namespace sight::data
@@ -45,7 +43,7 @@ BufferTL::BufferTL(data::Object::Key key) :
 
 BufferTL::~BufferTL()
 {
-    this->clearTimeline();
+    this->BufferTL::clearTimeline();
 }
 
 //------------------------------------------------------------------------------
@@ -67,7 +65,7 @@ void BufferTL::pushObject(const SPTR(data::timeline::Object)& obj)
 
     if(m_timeline.size() >= m_maximumSize)
     {
-        TimelineType::iterator begin = m_timeline.begin();
+        auto begin = m_timeline.begin();
         m_timeline.erase(begin);
     }
 
@@ -131,7 +129,7 @@ CSPTR(data::timeline::Object) BufferTL::getClosestObject(
         return result;
     }
 
-    TimelineType::const_iterator iter =
+    auto iter =
         (direction == PAST) ? m_timeline.upper_bound(timestamp) : m_timeline.lower_bound(timestamp);
     if(iter != m_timeline.begin())
     {
@@ -186,7 +184,7 @@ CSPTR(data::timeline::Object) BufferTL::getClosestObject(
 CSPTR(data::timeline::Object) BufferTL::getObject(core::HiResClock::HiResClockType timestamp) const
 {
     SPTR(data::timeline::Buffer) result;
-    TimelineType::const_iterator iter = m_timeline.find(timestamp);
+    auto iter = m_timeline.find(timestamp);
 
     if(iter != m_timeline.end())
     {
@@ -250,7 +248,7 @@ bool BufferTL::operator==(const BufferTL& other) const noexcept
     }
 
     // Super class last
-    return TimeLine::operator==(other);
+    return BaseClass::operator==(other);
 }
 
 //------------------------------------------------------------------------------

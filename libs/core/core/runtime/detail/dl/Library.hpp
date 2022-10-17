@@ -29,13 +29,7 @@
 #include <filesystem>
 #include <memory>
 
-namespace sight::core::runtime
-{
-
-namespace detail
-{
-
-namespace dl
+namespace sight::core::runtime::detail::dl
 {
 
 /**
@@ -54,18 +48,24 @@ public:
     Library(const std::filesystem::path& modulePath) noexcept;
 
     /**
+     * @brief   Assignment operator.
+     *
+     * @remark  Assignment is forbidden for this class.
+     */
+    void operator=(const Library&) noexcept = delete;
+
+    /**
      * @brief   Destructor : does nothing.
      */
-    ~Library() noexcept
-    {
-    }
+    ~Library() noexcept =
+        default;
 
     /**
      * @brief   Tells if the module is loaded.
      *
      * @return  true or false
      */
-    bool isLoaded() const noexcept
+    [[nodiscard]] bool isLoaded() const noexcept
     {
         return m_implementor->isLoaded();
     }
@@ -77,7 +77,7 @@ public:
      *
      * @see     getPath
      */
-    const std::filesystem::path getFullPath() const
+    [[nodiscard]] std::filesystem::path getFullPath() const
     {
         return m_implementor->getFullPath();
     }
@@ -91,7 +91,7 @@ public:
      *
      * @see     getFullPath
      */
-    const std::filesystem::path getName() const
+    [[nodiscard]] std::filesystem::path getName() const
     {
         return m_implementor->getName();
     }
@@ -103,7 +103,7 @@ public:
      *
      * @return      a pointer to the found symbol or null if none has been found
      */
-    void* getSymbol(const std::string& name) const
+    [[nodiscard]] void* getSymbol(const std::string& name) const
     {
         return m_implementor->getSymbol(name);
     }
@@ -140,19 +140,6 @@ private:
      * @brief   The native module implementor.
      */
     std::unique_ptr<Native> m_implementor;
-
-    /**
-     * @brief   Assignment operator.
-     *
-     * @remark  Assignment is forbidden for this class.
-     */
-    void operator=(const Library&) noexcept
-    {
-    }
 };
 
-} // namespace dl
-
-} // namespace detail
-
-} // namespace sight::core::runtime
+} // namespace sight::core::runtime::detail::dl

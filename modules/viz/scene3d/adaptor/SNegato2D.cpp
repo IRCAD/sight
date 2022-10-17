@@ -34,42 +34,45 @@
 #include <viz/scene3d/Utils.hpp>
 
 #include <OgreSceneNode.h>
-#include <OgreTextureManager.h>
 
 #include <algorithm>
 
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT  = "sliceType";
-const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT = "sliceIndex";
+const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT        = "sliceType";
+const core::com::Slots::SlotKeyType s_SLICEINDEX_SLOT       = "sliceIndex";
+static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
 
 static const core::com::Slots::SlotKeyType s_UPDATE_SLICES_FROM_WORLD = "updateSlicesFromWorld";
 
 static const core::com::Signals::SignalKeyType s_SLICE_INDEX_CHANGED_SIG = "sliceIndexChanged";
+static const core::com::Signals::SignalKeyType s_PICKED_VOXEL_SIG        = "pickedVoxel";
 
 static const std::string s_SLICE_INDEX_CONFIG = "sliceIndex";
 static const std::string s_FILTERING_CONFIG   = "filtering";
 static const std::string s_TF_ALPHA_CONFIG    = "tfAlpha";
 static const std::string s_BORDER_CONFIG      = "border";
+static const std::string s_TRANSFORM_CONFIG   = "transform";
+static const std::string s_INTERACTIVE_CONFIG = "interactive";
 
 //------------------------------------------------------------------------------
 
-SNegato2D::SNegato2D() noexcept :
-    m_helperTF(std::bind(&SNegato2D::updateTF, this))
+SNegato2D::SNegato2D() noexcept
 {
     newSlot(s_SLICETYPE_SLOT, &SNegato2D::changeSliceType, this);
     newSlot(s_SLICEINDEX_SLOT, &SNegato2D::changeSliceIndex, this);
     newSlot(s_UPDATE_SLICES_FROM_WORLD, &SNegato2D::updateSlicesFromWorld, this);
+    newSlot(s_UPDATE_TF_SLOT, &SNegato2D::updateTF, this);
 
-    m_sliceIndexChangedSig = this->newSignal<SliceIndexChangedSignalType>(s_SLICE_INDEX_CHANGED_SIG);
+    m_sliceIndexChangedSig = newSignal<SliceIndexChangedSignalType>(s_SLICE_INDEX_CHANGED_SIG);
+    m_pickedVoxelSignal    = newSignal<PickedVoxelSigType>(s_PICKED_VOXEL_SIG);
 }
 
 //------------------------------------------------------------------------------
 
-SNegato2D::~SNegato2D() noexcept
-{
-}
+SNegato2D::~SNegato2D() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -94,18 +97,18 @@ void SNegato2D::configuring()
         m_orientation = OrientationMode::X_AXIS;
     }
 
-    if(config.count(s_FILTERING_CONFIG))
+    if(config.count(s_FILTERING_CONFIG) != 0U)
     {
-        const std::string filteringValue = config.get<std::string>(s_FILTERING_CONFIG);
-        sight::viz::scene3d::Plane::FilteringEnumType filtering(sight::viz::scene3d::Plane::FilteringEnumType::LINEAR);
+        const auto filteringValue = config.get<std::string>(s_FILTERING_CONFIG);
+        sight::viz::scene3d::Plane::filter_t filtering(sight::viz::scene3d::Plane::filter_t::LINEAR);
 
         if(filteringValue == "none")
         {
-            filtering = sight::viz::scene3d::Plane::FilteringEnumType::NONE;
+            filtering = sight::viz::scene3d::Plane::filter_t::NONE;
         }
         else if(filteringValue == "anisotropic")
         {
-            filtering = sight::viz::scene3d::Plane::FilteringEnumType::ANISOTROPIC;
+            filtering = sight::viz::scene3d::Plane::filter_t::ANISOTROPIC;
         }
 
         this->setFiltering(filtering);
@@ -113,6 +116,11 @@ void SNegato2D::configuring()
 
     m_enableAlpha = config.get<bool>(s_TF_ALPHA_CONFIG, m_enableAlpha);
     m_border      = config.get<bool>(s_BORDER_CONFIG, m_border);
+    m_interactive = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
+
+    const std::string transformId =
+        config.get<std::string>(sight::viz::scene3d::ITransformable::s_TRANSFORM_CONFIG, this->getID() + "_transform");
+    this->setTransformId(transformId);
 }
 
 //------------------------------------------------------------------------------
@@ -122,31 +130,25 @@ void SNegato2D::starting()
     this->initialize();
     this->getRenderService()->makeCurrent();
     {
+        // 3D source texture instantiation
         const auto image = m_image.lock();
-        const auto tf    = m_tf.lock();
-        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
+        m_3DOgreTexture = std::make_shared<sight::viz::scene3d::Texture>(image.get_shared());
+
+        // TF texture initialization
+        const auto tf = m_tf.lock();
+        m_gpuTF = std::make_unique<sight::viz::scene3d::TransferFunction>(tf.get_shared());
     }
 
-    // 3D source texture instantiation
-    m_3DOgreTexture = Ogre::TextureManager::getSingleton().create(
-        this->getID() + "_Texture",
-        sight::viz::scene3d::RESOURCE_GROUP,
-        true
-    );
-
-    // TF texture initialization
-    m_gpuTF = std::unique_ptr<sight::viz::scene3d::TransferFunction>(new sight::viz::scene3d::TransferFunction());
-    m_gpuTF->createTexture(this->getID());
-
     // Scene node's instantiation
-    m_negatoSceneNode = this->getSceneManager()->getRootSceneNode()->createChildSceneNode();
+    Ogre::SceneNode* const rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* const transformNode = this->getOrCreateTransformNode(rootSceneNode);
+    m_negatoSceneNode = transformNode->createChildSceneNode();
 
     // Plane's instantiation
     m_plane = std::make_unique<sight::viz::scene3d::Plane>(
         this->getID(),
         m_negatoSceneNode,
         getSceneManager(),
-        m_orientation,
         m_3DOgreTexture,
         m_filtering,
         m_border
@@ -154,6 +156,18 @@ void SNegato2D::starting()
 
     this->newImage();
     this->setVisible(m_isVisible);
+
+    if(m_interactive)
+    {
+        auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
+        this->getLayer()->addInteractor(interactor, 0);
+
+        m_pickingCross = std::make_unique<sight::viz::scene3d::PickingCross>(
+            this->getID(),
+            *this->getSceneManager(),
+            *m_negatoSceneNode
+        );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -162,11 +176,8 @@ void SNegato2D::stopping()
 {
     this->getRenderService()->makeCurrent();
 
-    m_helperTF.removeTFConnections();
-
+    m_pickingCross.reset();
     m_plane.reset();
-
-    Ogre::TextureManager::getSingleton().remove(m_3DOgreTexture);
     m_3DOgreTexture.reset();
     m_gpuTF.reset();
 
@@ -179,20 +190,6 @@ void SNegato2D::updating()
 {
     this->newImage();
     this->setVisible(m_isVisible);
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato2D::swapping(std::string_view _key)
-{
-    if(_key == s_TF_INOUT)
-    {
-        const auto image = m_image.lock();
-        const auto tf    = m_tf.lock();
-        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
-
-        this->updateTF();
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -212,8 +209,6 @@ void SNegato2D::newImage()
     int sagittalIdx = 0;
     {
         const auto image = m_image.lock();
-        const auto tf    = m_tf.lock();
-        m_helperTF.setOrCreateTF(tf.get_shared(), image.get_shared());
 
         if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
         {
@@ -221,11 +216,12 @@ void SNegato2D::newImage()
         }
 
         // Retrieves or creates the slice index fields
-        sight::viz::scene3d::Utils::convertImageForNegato(m_3DOgreTexture.get(), image.get_shared());
+        m_3DOgreTexture->update();
 
         const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
-        this->createPlane(spacing);
-        m_plane->setOriginPosition(origin);
+
+        // Fits the plane to the new texture
+        m_plane->update(m_orientation, spacing, origin, m_enableAlpha);
 
         // Update Slice
         namespace imHelper = data::helper::MedicalImage;
@@ -237,7 +233,7 @@ void SNegato2D::newImage()
 
     this->changeSliceIndex(axialIdx, frontalIdx, sagittalIdx);
 
-    // Update tranfer function in Gpu programs
+    // Update transfer function in Gpu programs
     this->updateTF();
 
     this->requestRender();
@@ -252,19 +248,18 @@ void SNegato2D::changeSliceType(int _from, int _to)
     const auto toOrientation   = static_cast<OrientationMode>(_to);
     const auto fromOrientation = static_cast<OrientationMode>(_from);
 
-    const auto planeOrientation = m_plane->getOrientationMode();
-    const auto newOrientation   = planeOrientation == toOrientation ? fromOrientation
-                                                                    : planeOrientation
+    const auto planeOrientation = m_orientation;
+    const auto newOrientation   = m_orientation == toOrientation ? fromOrientation
+                                                                 : planeOrientation
                                   == fromOrientation ? toOrientation : planeOrientation;
 
     if(planeOrientation != newOrientation)
     {
+        m_orientation = newOrientation;
         this->getRenderService()->makeCurrent();
 
-        m_plane->setOrientationMode(newOrientation);
-
-        const auto origin = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared()).second;
-        m_plane->setOriginPosition(origin);
+        const auto& [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
+        m_plane->update(m_orientation, spacing, origin, m_enableAlpha);
 
         // Update threshold if necessary
         this->updateTF();
@@ -301,6 +296,8 @@ void SNegato2D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
     this->updateShaderSliceIndexParameter();
 
     m_sliceIndexChangedSig->emit();
+
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -331,10 +328,7 @@ void SNegato2D::updateSlicesFromWorld(double _x, double _y, double _z)
 
 void SNegato2D::updateShaderSliceIndexParameter()
 {
-    this->getRenderService()->makeCurrent();
     m_plane->changeSlice(m_currentSliceIndex[static_cast<std::size_t>(m_plane->getOrientationMode())]);
-
-    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -343,54 +337,109 @@ void SNegato2D::updateTF()
 {
     this->getRenderService()->makeCurrent();
 
-    const data::TransferFunction::csptr tf = m_helperTF.getTransferFunction();
-    {
-        const data::mt::locked_ptr lock(tf);
-        m_gpuTF->updateTexture(tf);
-
-        m_plane->switchThresholding(tf->getIsClamped());
-    }
+    m_gpuTF->update();
 
     // Sends the TF texture to the negato-related passes
-    m_plane->setTFData(*m_gpuTF.get());
+    m_plane->setTFData(*m_gpuTF);
 
     this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2D::mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/)
+{
+    if(m_picked)
+    {
+        if(_button == MouseButton::LEFT)
+        {
+            this->pickIntensity(_x, _y);
+        }
+
+        this->getLayer()->cancelFurtherInteraction();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2D::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
+{
+    m_pickingCross->setVisible(false);
+    if(_button == MouseButton::LEFT)
+    {
+        this->pickIntensity(_x, _y);
+    }
+
+    if(m_picked)
+    {
+        this->getLayer()->cancelFurtherInteraction();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2D::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/)
+{
+    m_picked = false;
+    m_pickingCross->setVisible(false);
+    m_pickedVoxelSignal->asyncEmit("");
 }
 
 //-----------------------------------------------------------------------------
 
 service::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
 {
-    service::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT);
-
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
-void SNegato2D::createPlane(const Ogre::Vector3& _spacing)
-{
-    this->getRenderService()->makeCurrent();
-
-    // Fits the plane to the new texture
-    m_plane->setVoxelSpacing(_spacing);
-    m_plane->initializePlane();
-
-    m_plane->enableAlpha(m_enableAlpha);
+    return {
+        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT},
+        {s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT},
+        {s_TF_IN, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},
+        {s_TF_IN, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT},
+        {s_TF_IN, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT}
+    };
 }
 
 //------------------------------------------------------------------------------
 void SNegato2D::setVisible(bool _visible)
 {
-    if(m_negatoSceneNode)
+    if(m_negatoSceneNode != nullptr)
     {
         m_negatoSceneNode->setVisible(_visible);
 
         this->requestRender();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2D::pickIntensity(int _x, int _y)
+{
+    Ogre::SceneManager* sm = this->getSceneManager();
+
+    const auto result = sight::viz::scene3d::Utils::pickObject(_x, _y, Ogre::SceneManager::ENTITY_TYPE_MASK, *sm);
+
+    if(result.has_value())
+    {
+        if(m_plane->getMovableObject() == result->first)
+        {
+            m_picked = true;
+            const auto image = m_image.lock();
+
+            if(!data::helper::MedicalImage::checkImageValidity(image.get_shared()))
+            {
+                return;
+            }
+
+            const auto imageBufferLock = image->dump_lock();
+
+            const auto [spacing, origin] = sight::viz::scene3d::Utils::convertSpacingAndOrigin(image.get_shared());
+            auto crossLines = m_plane->computeCross(result->second, origin);
+            m_pickingCross->update(crossLines[0], crossLines[1], crossLines[2], crossLines[3]);
+
+            const auto pickingText = sight::viz::scene3d::Utils::pickImage(*image, result->second, origin, spacing);
+            m_pickedVoxelSignal->asyncEmit(pickingText);
+        }
     }
 }
 

@@ -24,7 +24,7 @@
 
 #include "io/opencv/config.hpp"
 
-#include <core/tools/Type.hpp>
+#include <core/Type.hpp>
 
 namespace sight::io::opencv
 {
@@ -34,10 +34,10 @@ class IO_OPENCV_CLASS_API Type
 public:
 
     /// Returns an OpenCV format given a Sight pixel type and a number of components
-    IO_OPENCV_API static std::int32_t toCv(const core::tools::Type _type, const std::size_t _numComponents);
+    IO_OPENCV_API static std::int32_t toCv(core::Type _type, std::size_t _numComponents);
 
     /// Returns a Sight pixel type and a number of components given an OpenCV format
-    IO_OPENCV_API static std::pair<core::tools::Type, std::uint8_t> fromCv(std::int32_t _cvType);
+    IO_OPENCV_API static std::pair<core::Type, std::uint8_t> fromCv(std::int32_t _cvType);
 };
 
 } // namespace sight::io::opencv

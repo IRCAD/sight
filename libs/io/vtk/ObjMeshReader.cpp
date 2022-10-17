@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,7 +42,7 @@ namespace sight::io::vtk
 
 //------------------------------------------------------------------------------
 
-ObjMeshReader::ObjMeshReader(io::base::reader::IObjectReader::Key) :
+ObjMeshReader::ObjMeshReader(io::base::reader::IObjectReader::Key /*unused*/) :
     m_job(core::jobs::Observer::New("OBJ Mesh reader"))
 {
 }
@@ -50,8 +50,7 @@ ObjMeshReader::ObjMeshReader(io::base::reader::IObjectReader::Key) :
 //------------------------------------------------------------------------------
 
 ObjMeshReader::~ObjMeshReader()
-{
-}
+= default;
 
 //------------------------------------------------------------------------------
 
@@ -65,7 +64,7 @@ void ObjMeshReader::read()
 
     const data::Mesh::sptr pMesh = getConcreteObject();
 
-    using namespace sight::io::vtk::helper;
+    using helper::vtkLambdaCommand;
 
     vtkSmartPointer<vtkOBJReader> reader = vtkSmartPointer<vtkOBJReader>::New();
     reader->SetFileName(this->getFile().string().c_str());
@@ -74,9 +73,9 @@ void ObjMeshReader::read()
 
     progressCallback = vtkSmartPointer<vtkLambdaCommand>::New();
     progressCallback->SetCallback(
-        [&](vtkObject* caller, long unsigned int, void*)
+        [&](vtkObject* caller, std::uint64_t, void*)
         {
-            const auto filter = static_cast<vtkOBJReader*>(caller);
+            auto* const filter = static_cast<vtkOBJReader*>(caller);
             m_job->doneWork(static_cast<std::uint64_t>(filter->GetProgress() * 100.));
         });
     reader->AddObserver(vtkCommand::ProgressEvent, progressCallback);

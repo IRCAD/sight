@@ -19,6 +19,8 @@
  *
  ***********************************************************************/
 
+// cspell:ignore NOLINTNEXTLINE hicpp NOLINT
+
 #ifdef _WIN32
 #include <windows.h>
 #endif
@@ -53,19 +55,19 @@
 #define DEBUG_LOG(msg) do{std::ofstream log("sightlog.log", std::ios_base::app); \
                           log << __LINE__ << ": " << msg << std::endl;}while(false)
 #else
-#define DEBUG_LOG(msg) (std::clog << __LINE__ << ": " << msg << std::endl)
+#define DEBUG_LOG(msg) (std::clog << __LINE__ << ": " << msg << std::endl) /* NOLINT: bugprone-macro-parentheses */
 #endif
 
 //------------------------------------------------------------------------------
 
-inline static void signal_handler([[maybe_unused]] int signal)
+inline static void signalHandler([[maybe_unused]] int signal)
 {
     DEBUG_LOG("SIGNAL: " << signal << " received");
 }
 
 //------------------------------------------------------------------------------
 
-inline static void send_password(const sight::core::crypto::secure_string& password)
+inline static void sendPassword(const sight::core::crypto::secure_string& password)
 {
     const int pid = sight::core::tools::System::getPID();
     std::cout.write(reinterpret_cast<const char*>(&pid), sizeof(pid));
@@ -93,11 +95,11 @@ int main(int argc, char* argv[])
 
     // Setup own boost::log logger to print stuff on stderr by default
     boost::log::core::get()->remove_all_sinks();
-    sight::core::log::SpyLogger::get().add_console_log(std::clog, sight::core::log::SpyLogger::SL_WARN);
+    sight::core::log::SpyLogger::add_console_log(std::clog, sight::core::log::SpyLogger::SL_WARN);
 
     // Register program options
     // Common options
-    using namespace boost::program_options;
+    namespace po = boost::program_options;
     constexpr static auto HELP      = "help";
     constexpr static auto VERSION   = "version";
     constexpr static auto INPUT     = "input";
@@ -108,7 +110,7 @@ int main(int argc, char* argv[])
     constexpr static auto RAW       = "raw";
     constexpr static auto ASK_PASS  = "ask-password";
 
-    options_description options("Sightlog logger options");
+    po::options_description options("Sightlog logger options");
     options.add_options()
     (
         (std::string(HELP) + ",h").c_str(),
@@ -120,12 +122,12 @@ int main(int argc, char* argv[])
     )
     (
         (std::string(INPUT) + ",i").c_str(),
-        value<std::filesystem::path>(),
+        po::value<std::filesystem::path>(),
         "Log archive to extract."
     )
     (
         (std::string(PASSWORD) + ",p").c_str(),
-        value<sight::core::crypto::secure_string>(),
+        po::value<sight::core::crypto::secure_string>(),
         "Password to use for encryption and decryption."
     )
     (
@@ -134,12 +136,12 @@ int main(int argc, char* argv[])
     )
     (
         (std::string(DIRECTORY) + ",d").c_str(),
-        value<std::filesystem::path>(),
+        po::value<std::filesystem::path>(),
         "Output directory when extracting a log archive."
     );
 
     // Hidden options
-    options_description hidden_options("Hidden options");
+    po::options_description hidden_options("Hidden options");
     hidden_options.add_options()
     (
         (std::string(RAW) + ",r").c_str(),
@@ -151,21 +153,21 @@ int main(int argc, char* argv[])
     )
     (
         (std::string(OUTPUT) + ",o").c_str(),
-        value<std::filesystem::path>(),
+        po::value<std::filesystem::path>(),
         "Log archive to write."
     );
 
     // Merge options
-    options_description arguments;
+    po::options_description arguments;
     arguments.add(options).add(hidden_options);
 
     // Parse program options
-    variables_map variables_map;
+    po::variables_map variables_map;
 
     try
     {
         store(
-            command_line_parser(argc, argv)
+            po::command_line_parser(argc, argv)
             .options(arguments)
             .run(),
             variables_map
@@ -174,25 +176,25 @@ int main(int argc, char* argv[])
         notify(variables_map);
 
         // Check mutually exclusive options
-        if(variables_map.count(INPUT) && !variables_map[INPUT].defaulted()
-           && variables_map.count(OUTPUT) && !variables_map[OUTPUT].defaulted())
+        if((variables_map.count(INPUT) != 0U) && !variables_map[INPUT].defaulted()
+           && (variables_map.count(OUTPUT) != 0U) && !variables_map[OUTPUT].defaulted())
         {
             std::cerr << "Error: Options -i and -o are mutually exclusive." << std::endl;
             std::cerr << options << std::endl;
             return __LINE__;
         }
 
-        if(!variables_map.count(HELP)
-           && !variables_map.count(VERSION)
-           && !variables_map.count(INPUT)
-           && !variables_map.count(OUTPUT))
+        if((variables_map.count(HELP) == 0U)
+           && (variables_map.count(VERSION) == 0U)
+           && (variables_map.count(INPUT) == 0U)
+           && (variables_map.count(OUTPUT) == 0U))
         {
             std::cerr << "Error: One of the options -i or -o is required." << std::endl;
             std::cerr << options << std::endl;
             return __LINE__;
         }
     }
-    catch([[maybe_unused]] const error& e)
+    catch([[maybe_unused]] const po::error& e)
     {
         DEBUG_LOG(argv[0] << ": " << e.what());
         DEBUG_LOG(options);
@@ -264,6 +266,7 @@ int main(int argc, char* argv[])
             // If we MUST ask the user for a password,
             if(variables_map.count(ASK_PASS) > 0)
             {
+                // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
                 QApplication app(argc, argv);
 
                 bool ok = false;
@@ -305,21 +308,35 @@ int main(int argc, char* argv[])
     if(is_logging)
     {
         // Install a signal handler
-        std::signal(SIGINT, signal_handler);
-        std::signal(SIGTERM, signal_handler);
+        if(std::signal(SIGINT, signalHandler) == SIG_ERR)
+        {
+            perror("std::signal(SIGINT)");
+        }
+
+        if(std::signal(SIGTERM, signalHandler) == SIG_ERR)
+        {
+            perror("std::signal(SIGTERM)");
+        }
 
     #ifndef WIN32
-        std::signal(SIGHUP, signal_handler);
-        std::signal(SIGQUIT, signal_handler);
+        if(std::signal(SIGHUP, signalHandler) == SIG_ERR)
+        {
+            perror("std::signal(SIGHUP)");
+        }
+
+        if(std::signal(SIGQUIT, signalHandler) == SIG_ERR)
+        {
+            perror("std::signal(SIGQUIT)");
+        }
     #endif
 
         try
         {
             // 1kB buffer
-            char buffer[1024];
+            std::array<char, 1024> buffer {};
 
             // 100 MB rotation limit
-            constexpr std::streamsize rotate_size = 128 * 1024 * 1024;
+            constexpr std::streamsize rotate_size = 128LL * 1024 * 1024;
 
             // Store the read size, so we can rotate the log file
             std::streamsize written_size = 0;
@@ -337,13 +354,13 @@ int main(int argc, char* argv[])
                 }
 
                 // Tell to the parent process to start logging things
-                send_password(password);
+                sendPassword(password);
 
                 // Start logging
                 while(!std::cin.eof())
                 {
                     // Read from std::cin
-                    std::cin.read(buffer, sizeof(buffer));
+                    std::cin.read(buffer.data(), buffer.size());
 
                     // Store the read size
                     const std::streamsize read_size = std::cin.gcount();
@@ -351,7 +368,7 @@ int main(int argc, char* argv[])
                     if(read_size > 0)
                     {
                         // Write to the archive
-                        log_file_stream.write(buffer, read_size);
+                        log_file_stream.write(buffer.data(), read_size);
 
                         written_size += read_size;
 
@@ -392,13 +409,13 @@ int main(int argc, char* argv[])
                 );
 
                 // Tell to the parent process to start logging things
-                send_password(password);
+                sendPassword(password);
 
                 // Start the writing loop
                 while(!std::cin.eof())
                 {
                     // Read from std::cin
-                    std::cin.read(buffer, sizeof(buffer));
+                    std::cin.read(buffer.data(), buffer.size());
 
                     // Store the read size
                     const std::streamsize read_size = std::cin.gcount();
@@ -406,7 +423,7 @@ int main(int argc, char* argv[])
                     if(read_size > 0)
                     {
                         // Write to the archive
-                        archive_stream->write(buffer, read_size);
+                        archive_stream->write(buffer.data(), read_size);
 
                         written_size += read_size;
 
@@ -486,11 +503,9 @@ int main(int argc, char* argv[])
                         std::filesystem::create_directories(directory);
                         return directory / sight::core::log::LOG_FILE;
                     }
-                    else
-                    {
-                        // Use current working directory
-                        return std::filesystem::path(sight::core::log::LOG_FILE);
-                    }
+
+                    // Use current working directory
+                    return std::filesystem::path(sight::core::log::LOG_FILE);
                 }();
 
             std::ofstream log_file_stream(log_path.string());

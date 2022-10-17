@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,10 +29,7 @@
 #include <QPointer>
 #include <QWidget>
 
-namespace sight::ui::qt
-{
-
-namespace widget
+namespace sight::ui::qt::widget
 {
 
 class UI_QT_CLASS_API QRangeSlider : public QWidget
@@ -45,23 +42,22 @@ public:
     {
     public:
 
-        Paintable(QWidget* w)
+        Paintable(QWidget* w) :
+            m_widget(w)
         {
-            m_widget = w;
         }
 
         virtual ~Paintable()
-        {
-        }
+        = default;
 
-        virtual void draw(QPainter&, bool enabled = true) = 0;
-        virtual bool pick(const QPoint&) const    = 0;
+        virtual void draw(QPainter&, bool enabled            = true) = 0;
+        [[nodiscard]] virtual bool pick(const QPoint&) const = 0;
 
     protected:
 
         //------------------------------------------------------------------------------
 
-        QSize drawingArea() const
+        [[nodiscard]] QSize drawingArea() const
         {
             return m_widget->size();
         }
@@ -69,14 +65,14 @@ public:
         QPointer<QWidget> m_widget;
     };
 
-    UI_QT_API QRangeSlider(QWidget* parent = NULL);
-    UI_QT_API virtual ~QRangeSlider();
+    UI_QT_API QRangeSlider(QWidget* parent = nullptr);
+    UI_QT_API ~QRangeSlider() override;
 
     //------------------------------------------------------------------------------
 
-    QSize sizeHint() const
+    [[nodiscard]] QSize sizeHint() const override
     {
-        return QSize(100, 20);
+        return {100, 20};
     }
 
     //------------------------------------------------------------------------------
@@ -100,33 +96,31 @@ protected:
     void move(int delta);
     bool movedTo(double _min, double _max);
 
-    virtual void paintEvent(QPaintEvent* event);
-    virtual void mouseMoveEvent(QMouseEvent* event);
-    virtual void mousePressEvent(QMouseEvent* event);
-    virtual void mouseReleaseEvent(QMouseEvent* event);
-    virtual void wheelEvent(QWheelEvent* event);
-    virtual void resizeEvent(QResizeEvent* event);
+    void paintEvent(QPaintEvent* event) override;
+    void mouseMoveEvent(QMouseEvent* event) override;
+    void mousePressEvent(QMouseEvent* event) override;
+    void mouseReleaseEvent(QMouseEvent* event) override;
+    void wheelEvent(QWheelEvent* event) override;
+    void resizeEvent(QResizeEvent* event) override;
 
     Paintable* m_minHandle;
     Paintable* m_maxHandle;
     Paintable* m_window;
 
-    Paintable* m_current;
+    Paintable* m_current {nullptr};
 
-    int m_handleSize;
+    int m_handleSize {11};
 
     QPoint m_pressPos;
-    int m_pressMin;
-    int m_pressMax;
+    int m_pressMin {};
+    int m_pressMax {};
 
-    double m_minValue;
-    double m_maxValue;
+    double m_minValue {0.};
+    double m_maxValue {1.};
 
-    double m_minimumMinMaxDelta;
-    bool m_allowMinGreaterThanMax;
-    bool m_emitRangeChanged;
+    double m_minimumMinMaxDelta {0.};
+    bool m_allowMinGreaterThanMax {true};
+    bool m_emitRangeChanged {};
 };
 
-} // namespace widget
-
-} // namespace sight::ui::qt
+} // namespace sight::ui::qt::widget

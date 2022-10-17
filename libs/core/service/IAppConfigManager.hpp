@@ -42,17 +42,8 @@ public:
 
     SIGHT_DECLARE_CLASS(IAppConfigManager, core::tools::Object);
 
-    /// Constructor. Do nothing.
-
-    [[deprecated("will be removed in sight 22.0, use service::AppConfigManager")]]
-    SERVICE_API IAppConfigManager();
-
     /// Destructor. Do nothing.
-    SERVICE_API virtual ~IAppConfigManager();
-
-    /// Return a new AppConfigManager implementation. Should be used for all the IAppConfigManager of the application,
-    /// except the first one which must be explicitly called.
-    SERVICE_API static SPTR(IAppConfigManager) New();
+    SERVICE_API ~IAppConfigManager() override = default;
 
     /// Return state
     bool isCreated() const;
@@ -109,6 +100,9 @@ public:
 
 protected:
 
+    /// Constructor. Does nothing.
+    SERVICE_API IAppConfigManager() = default;
+
     enum ConfigState
     {
         STATE_CREATED,
@@ -121,21 +115,8 @@ protected:
     core::runtime::ConfigurationElement::csptr m_cfgElem;
 
     /// Running state of the app config manager
-    ConfigState m_state;
+    ConfigState m_state {STATE_DESTROYED};
 };
-
-//------------------------------------------------------------------------------
-
-inline IAppConfigManager::IAppConfigManager() :
-    m_state(STATE_DESTROYED)
-{
-}
-
-//------------------------------------------------------------------------------
-
-inline IAppConfigManager::~IAppConfigManager()
-{
-}
 
 //------------------------------------------------------------------------------
 

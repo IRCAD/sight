@@ -18,6 +18,7 @@
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="PICKER_SENDER_CHANNEL" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
+        <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
         <param name="modelSeries" />
         <param name="image" />
         <param name="volumeTF" />
@@ -203,6 +204,7 @@
                 <adaptor uid="axialNegatoResizeViewportAdp" />
                 <adaptor uid="axialPickerInteractorAdp" />
                 <adaptor uid="axialLandmarksAdp" />
+                <adaptor uid="axialPickedVoxelTextAdp" />
 
                 <layer id="sagittalBackgroundNegatoLayer" order="4" >
                     <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
@@ -220,6 +222,7 @@
                 <adaptor uid="sagittalNegatoResizeViewportAdp" />
                 <adaptor uid="sagittalPickerInteractorAdp" />
                 <adaptor uid="sagittalLandmarksAdp" />
+                <adaptor uid="sagittalPickedVoxelTextAdp" />
 
                 <layer id="frontalBackgroundNegatoLayer" order="6" >
                     <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top"/>
@@ -237,6 +240,7 @@
                 <adaptor uid="frontalNegatoResizeViewportAdp" />
                 <adaptor uid="frontalPickerInteractorAdp" />
                 <adaptor uid="frontalLandmarksAdp" />
+                <adaptor uid="frontalPickedVoxelTextAdp" />
 
                 <layer id="orientationMarkerLayer" order="8" >
                     <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom"/>
@@ -271,14 +275,14 @@
         </service>
 
         <service uid="volumeAdp" type="sight::module::viz::scene3d::adaptor::SVolumeRender" >
-            <inout key="image" uid="extrudedImage" autoConnect="true" />
-            <inout key="tf" uid="${volumeTF}" />
-            <inout key="clippingMatrix" uid="clippingMatrix" autoConnect="true" />
+            <in key="image" uid="extrudedImage" />
+            <in key="tf" uid="${volumeTF}" />
+            <inout key="clippingMatrix" uid="clippingMatrix" />
             <config layer="defaultLayer" widgets="false" preintegration="false" autoresetcamera="false" samples="1024" />
         </service>
 
         <service uid="3DNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" >
-            <inout key="image" uid="${image}" autoConnect="true" />
+            <in key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="defaultLayer" queryFlags="0x40000000" interactive="true" priority="2" />
         </service>
@@ -289,7 +293,7 @@
         </service>
 
         <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
-            <inout key="image" uid="${image}" />
+            <in key="image" uid="${image}" />
             <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
 
@@ -299,7 +303,7 @@
 
         <service uid="pickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::SText">
             <text></text>
-            <config layer="defaultLayer" x="0.01" y="0.01" hAlign="left" vAlign="bottom" color="#D35151" />
+            <config layer="defaultLayer" x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
         </service>
 
         <service uid="shapeExtruderAdp" type="sight::module::viz::scene3d::adaptor::SShapeExtruder">
@@ -340,18 +344,18 @@
             <config layer="axialNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="axialNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
-            <inout key="image" uid="${image}" />
-            <inout key="tf" uid="${volumeTF}" />
+        <service uid="axialNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" >
+            <in key="image" uid="${image}" />
+            <in key="tf" uid="${volumeTF}" />
             <config layer="axialNegatoLayer" sliceIndex="axial" filtering="anisotropic" />
         </service>
 
         <service uid="axialNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
-            <inout key="image" uid="${image}" />
+            <in key="image" uid="${image}" />
             <config layer="axialNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="axialNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
+        <service uid="axialNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="axialNegatoLayer" priority="0" orientation="axial" />
@@ -371,6 +375,11 @@
             <config layer="axialNegatoLayer" label="false" orientation="axial" priority="4" />
         </service>
 
+        <service uid="axialPickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::SText">
+            <text></text>
+            <config layer="axialNegatoLayer" x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
+        </service>
+
         <!-- Sagittal -->
 
         <service uid="sagittalBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
@@ -387,18 +396,18 @@
             <config layer="sagittalNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="sagittalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
-            <inout key="image" uid="${image}" />
-            <inout key="tf" uid="${volumeTF}" />
+        <service uid="sagittalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" >
+            <in key="image" uid="${image}" />
+            <in key="tf" uid="${volumeTF}" />
             <config layer="sagittalNegatoLayer" sliceIndex="sagittal" filtering="anisotropic" />
         </service>
 
         <service uid="sagittalNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
-            <inout key="image" uid="${image}" />
+            <in key="image" uid="${image}" />
             <config layer="sagittalNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="sagittalNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
+        <service uid="sagittalNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="sagittalNegatoLayer" priority="0" orientation="sagittal" />
@@ -418,6 +427,11 @@
             <config layer="sagittalNegatoLayer" label="false" orientation="sagittal" priority="4" />
         </service>
 
+        <service uid="sagittalPickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::SText">
+            <text></text>
+            <config layer="sagittalNegatoLayer" x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
+        </service>
+
         <!-- Frontal -->
 
         <service uid="frontalBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
@@ -434,18 +448,18 @@
             <config layer="frontalNegatoLayer" compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
         </service>
 
-        <service uid="frontalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
-            <inout key="image" uid="${image}" />
-            <inout key="tf" uid="${volumeTF}" />
+        <service uid="frontalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" >
+            <in key="image" uid="${image}" />
+            <in key="tf" uid="${volumeTF}" />
             <config layer="frontalNegatoLayer" sliceIndex="frontal" filtering="anisotropic" />
         </service>
 
         <service uid="frontalNegatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
-            <inout key="image" uid="${image}" />
+            <in key="image" uid="${image}" />
             <config layer="frontalNegatoLayer" fontSize="32" radius="3" queryFlags="0x40000000" />
         </service>
 
-        <service uid="frontalNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
+        <service uid="frontalNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" >
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config layer="frontalNegatoLayer" priority="0" orientation="frontal" />
@@ -464,6 +478,12 @@
             <in key="image" uid="${image}" />
             <config layer="frontalNegatoLayer" label="false" orientation="frontal" priority="4" />
         </service>
+
+        <service uid="frontalPickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::SText">
+            <text></text>
+            <config layer="frontalNegatoLayer" x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
+        </service>
+
 
         <!-- ************************************* Services ************************************ -->
 
@@ -516,20 +536,12 @@
         </service>
 
         <!-- Set the view in windowed  -->
-        <service uid="windowedAct" type="sight::module::ui::base::com::SSlotCaller">
+        <service uid="windowedAct" type="sight::module::ui::base::SAction">
             <state visible="false" />
-            <slots>
-                <slot>genericSceneSrv/disableFullscreen</slot>
-                <slot>fullscreenAct/show</slot>
-            </slots>
         </service>
 
         <!-- Save the snapshot image -->
-        <service uid="snapshotAct" type="sight::module::ui::base::com::SSlotCaller">
-            <slots>
-                <slot>imageWriterSrv/update</slot>
-            </slots>
-        </service>
+        <service uid="snapshotAct" type="sight::module::ui::base::SAction"/>
 
         <!-- ******************************* Connections ***************************************** -->
 
@@ -621,6 +633,10 @@
             <slot>3DNegatoAdp/updateSlicesFromWorld</slot>
         </connect>
 
+        <connect channel="${NEGATO3D_TRANSPARENCY_CHANNEL}" >
+            <slot>3DNegatoAdp/setTransparency</slot>
+        </connect>
+
         <!-- Slide view -->
         <connect>
             <signal>mainView/started</signal>
@@ -637,7 +653,7 @@
         <connect>
             <signal>genericSceneSrv/fullscreenSet</signal>
             <slot>windowedAct/setVisible</slot>
-            <slot>windowedAct/setIsExecutable</slot>
+            <slot>windowedAct/setEnabled</slot>
         </connect>
 
         <connect>
@@ -652,13 +668,23 @@
         </connect>
 
         <connect>
-            <signal>shapeExtruderAdp/infoNotified</signal>
-            <slot>notifierSrv/popInfo</slot>
+            <signal>axialNegatoAdp/pickedVoxel</signal>
+            <slot>axialPickedVoxelTextAdp/setText</slot>
         </connect>
 
         <connect>
-            <signal>shapeExtruderAdp/failureNotified</signal>
-            <slot>notifierSrv/popFailure</slot>
+            <signal>frontalNegatoAdp/pickedVoxel</signal>
+            <slot>frontalPickedVoxelTextAdp/setText</slot>
+        </connect>
+
+        <connect>
+            <signal>sagittalNegatoAdp/pickedVoxel</signal>
+            <slot>sagittalPickedVoxelTextAdp/setText</slot>
+        </connect>
+
+        <connect>
+            <signal>shapeExtruderAdp/notified</signal>
+            <slot>notifierSrv/pop</slot>
         </connect>
 
         <!-- Connects double click on landmark to slice moves. -->
@@ -668,6 +694,17 @@
             <signal>frontalLandmarksAdp/sendWorldCoord</signal>
             <signal>sagittalLandmarksAdp/sendWorldCoord</signal>
             <slot>3DNegatoAdp/updateSlicesFromWorld</slot>
+        </connect>
+
+        <connect>
+            <signal>windowedAct/clicked</signal>
+            <slot>genericSceneSrv/disableFullscreen</slot>
+            <slot>fullscreenAct/show</slot>
+        </connect>
+
+        <connect>
+            <signal>snapshotAct/clicked</signal>
+            <slot>imageWriterSrv/update</slot>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->
@@ -685,7 +722,6 @@
         <start uid="modeSeriesAdp" />
         <start uid="extrudedMeshesAdp" />
         <start uid="volumeAdp" />
-        <start uid="3DNegatoAdp" />
         <start uid="landmarksAdp" />
         <start uid="multiDistancesAdp" />
         <start uid="axisAdp" />
@@ -696,33 +732,39 @@
         <start uid="snapshotAdp" />
         <start uid="orientationMarkerAdp" />
 
+        <start uid="axialNegatoCameraAdp" />
+        <start uid="frontalNegatoCameraAdp" />
+        <start uid="sagittalNegatoCameraAdp" />
+
+        <start uid="3DNegatoAdp" />
+
         <start uid="axialBackgroundAdp" />
         <start uid="axialBackgroundResizeViewportAdp" />
         <start uid="axialCompositorAdp" />
         <start uid="axialNegatoAdp" />
         <start uid="axialNegatoMultiDistancesAdp" />
-        <start uid="axialNegatoCameraAdp" />
         <start uid="axialNegatoResizeViewportAdp" />
         <start uid="axialPickerInteractorAdp" />
         <start uid="axialLandmarksAdp" />
+        <start uid="axialPickedVoxelTextAdp" />
         <start uid="sagittalBackgroundAdp" />
         <start uid="sagittalBackgroundResizeViewportAdp" />
         <start uid="sagittalCompositorAdp" />
         <start uid="sagittalNegatoAdp" />
         <start uid="sagittalNegatoMultiDistancesAdp" />
-        <start uid="sagittalNegatoCameraAdp" />
         <start uid="sagittalNegatoResizeViewportAdp" />
         <start uid="sagittalPickerInteractorAdp" />
         <start uid="sagittalLandmarksAdp" />
+        <start uid="sagittalPickedVoxelTextAdp" />
         <start uid="frontalBackgroundAdp" />
         <start uid="frontalBackgroundResizeViewportAdp" />
         <start uid="frontalCompositorAdp" />
         <start uid="frontalNegatoAdp" />
         <start uid="frontalNegatoMultiDistancesAdp" />
-        <start uid="frontalNegatoCameraAdp" />
         <start uid="frontalNegatoResizeViewportAdp" />
         <start uid="frontalPickerInteractorAdp" />
         <start uid="frontalLandmarksAdp" />
+        <start uid="frontalPickedVoxelTextAdp" />
 
         <start uid="axialNegatoSlicerSrv" />
         <start uid="frontalNegatoSlicerSrv" />

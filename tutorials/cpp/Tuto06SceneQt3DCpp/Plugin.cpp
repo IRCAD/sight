@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2021 IRCAD France
+ * Copyright (C) 2020-2022 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,8 @@
 
 #include <data/Mesh.hpp>
 
-using namespace sight;
+namespace service = sight::service;
+namespace data    = sight::data;
 
 namespace Tuto06SceneQt3DCpp
 {
@@ -33,25 +34,17 @@ SIGHT_REGISTER_PLUGIN("Tuto06SceneQt3DCpp::Plugin");
 
 //------------------------------------------------------------------------------
 
-Plugin::Plugin() noexcept
-{
-}
+Plugin::Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-Plugin::~Plugin() noexcept
-{
-}
+Plugin::~Plugin() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
 void Plugin::start()
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::initialize()
 {
     m_appManager = std::make_unique<service::AppManager>();
     m_appManager->create();
@@ -211,12 +204,6 @@ void Plugin::initialize()
 //------------------------------------------------------------------------------
 
 void Plugin::stop() noexcept
-{
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::uninitialize() noexcept
 {
     m_appManager->destroy();
     m_appManager.reset();

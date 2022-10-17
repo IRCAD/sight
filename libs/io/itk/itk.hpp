@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2021 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include <data/Image.hpp>
 
 #include "io/itk/config.hpp"
+#include <itkImageIOBase.h>
 
 namespace sight::io::itk
 {
@@ -69,6 +70,27 @@ void moveFromItk(
 template<class ITKIMAGE>
 typename ITKIMAGE::Pointer moveToItk(data::Image::csptr imageData);
 
-}
+/**
+ * @brief Map which associates itk types with sight types
+ *
+ */
+static const std::map<::itk::ImageIOBase::IOComponentType, core::Type> ITK_TYPE_CONVERTER =
+{
+    {::itk::ImageIOBase::UNKNOWNCOMPONENTTYPE, core::Type::NONE},
+    {::itk::ImageIOBase::UCHAR, core::Type::UINT8},
+    {::itk::ImageIOBase::CHAR, core::Type::INT8},
+    {::itk::ImageIOBase::USHORT, core::Type::UINT16},
+    {::itk::ImageIOBase::SHORT, core::Type::INT16},
+    {::itk::ImageIOBase::UINT, core::Type::UINT32},
+    {::itk::ImageIOBase::INT, core::Type::INT32},
+    {::itk::ImageIOBase::ULONG, core::Type::UINT32},
+    {::itk::ImageIOBase::LONG, core::Type::INT32},
+    {::itk::ImageIOBase::ULONGLONG, core::Type::UINT64},
+    {::itk::ImageIOBase::LONGLONG, core::Type::INT64},
+    {::itk::ImageIOBase::FLOAT, core::Type::FLOAT},
+    {::itk::ImageIOBase::DOUBLE, core::Type::DOUBLE}
+};
+
+} // namespace sight::io::itk
 
 #include "io/itk/itk.hxx"

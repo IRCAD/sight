@@ -23,7 +23,6 @@
 #include "SQueryEditor.hpp"
 
 #include <data/DicomSeries.hpp>
-#include <data/helper/SeriesDB.hpp>
 
 #include <io/http/helper/Series.hpp>
 
@@ -46,15 +45,13 @@ namespace sight::module::io::dicomweb
 
 //------------------------------------------------------------------------------
 
-SQueryEditor::SQueryEditor() noexcept
-{
-}
+SQueryEditor::SQueryEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
-SQueryEditor::~SQueryEditor() noexcept
-{
-}
+SQueryEditor::~SQueryEditor() noexcept =
+    default;
 
 //------------------------------------------------------------------------------
 
@@ -62,7 +59,7 @@ void SQueryEditor::configuring()
 {
     service::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
-    if(configuration.count("server"))
+    if(configuration.count("server") != 0U)
     {
         const std::string serverInfo               = configuration.get("server", "");
         const std::string::size_type splitPosition = serverInfo.find(':');
@@ -87,7 +84,7 @@ void SQueryEditor::starting()
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
 
     // Main Widget
-    QGridLayout* layout = new QGridLayout();
+    auto* layout = new QGridLayout();
 
     m_patientNameLineEdit    = new QLineEdit();
     m_patientNameQueryButton = new QPushButton("Send");
@@ -102,7 +99,7 @@ void SQueryEditor::starting()
     m_endStudyDateEdit->setDate(QDate::currentDate());
     m_endStudyDateEdit->setDisplayFormat("dd.MM.yyyy");
     m_studyDateQueryButton = new QPushButton("Send");
-    QHBoxLayout* dateLayout = new QHBoxLayout();
+    auto* dateLayout = new QHBoxLayout();
     layout->addWidget(new QLabel("Study date:"), 1, 0);
     layout->addLayout(dateLayout, 1, 1);
     layout->addWidget(m_studyDateQueryButton, 1, 2);
@@ -158,7 +155,7 @@ void SQueryEditor::queryPatientName()
     try
     {
         // Vector of all Series that will be retrieved.
-        data::SeriesDB::ContainerType allSeries;
+        data::SeriesSet::container_type allSeries;
 
         // Find series according to patient's name
         QJsonObject query;
@@ -197,15 +194,15 @@ void SQueryEditor::queryPatientName()
             seriesJson.insert("NumberOfSeriesRelatedInstances", instanceArray.count());
 
             // Convert response to DicomSeries
-            data::SeriesDB::ContainerType series = sight::io::http::helper::Series::toFwMedData(seriesJson);
+            data::SeriesSet::container_type series = sight::io::http::helper::Series::toFwMedData(seriesJson);
 
             allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
-            this->updateSeriesDB(allSeries);
+            this->updateSeriesSet(allSeries);
         }
     }
     catch(sight::io::http::exceptions::Base& exception)
     {
-        this->displayErrorMessage(exception.what());
+        sight::module::io::dicomweb::SQueryEditor::displayErrorMessage(exception.what());
     }
 }
 
@@ -227,7 +224,7 @@ void SQueryEditor::queryStudyDate()
     try
     {
         // Vector of all Series that will be retrieved.
-        data::SeriesDB::ContainerType allSeries;
+        data::SeriesSet::container_type allSeries;
 
         // Find Studies according to their StudyDate
         QJsonObject query;
@@ -259,7 +256,7 @@ void SQueryEditor::queryStudyDate()
             << "Pacs host name: " << m_serverHostname << "\n"
             << "Pacs port: " << m_serverPort << "\n";
 
-            this->displayErrorMessage(ss.str());
+            sight::module::io::dicomweb::SQueryEditor::displayErrorMessage(ss.str());
             SIGHT_WARN(exception.what());
         }
         QJsonDocument jsonResponse         = QJsonDocument::fromJson(studiesListAnswer);
@@ -277,14 +274,14 @@ void SQueryEditor::queryStudyDate()
             const QJsonArray& seriesArray = jsonObj["Series"].toArray();
             const int seriesArraySize     = seriesArray.count();
 
-            for(int i = 0 ; i < seriesArraySize ; ++i)
+            for(int j = 0 ; j < seriesArraySize ; ++j)
             {
-                const std::string& seriesUID = seriesArray.at(i).toString().toStdString();
+                const std::string& seriesUID = seriesArray.at(j).toString().toStdString();
                 const std::string instancesUrl(pacsServer + "/series/" + seriesUID);
                 const QByteArray& instancesAnswer = m_clientQt.get(sight::io::http::Request::New(instancesUrl));
                 jsonResponse = QJsonDocument::fromJson(instancesAnswer);
-                const QJsonObject& jsonObj      = jsonResponse.object();
-                const QJsonArray& instanceArray = jsonObj["Instances"].toArray();
+                const QJsonObject& anotherJsonObj = jsonResponse.object();
+                const QJsonArray& instanceArray   = anotherJsonObj["Instances"].toArray();
 
                 // Retrieve the first instance for the needed information
                 const std::string& instanceUID = instanceArray.at(0).toString().toStdString();
@@ -295,10 +292,10 @@ void SQueryEditor::queryStudyDate()
                 seriesJson.insert("NumberOfSeriesRelatedInstances", instanceArray.count());
 
                 // Convert response to DicomSeries
-                data::SeriesDB::ContainerType series = sight::io::http::helper::Series::toFwMedData(seriesJson);
+                data::SeriesSet::container_type series = sight::io::http::helper::Series::toFwMedData(seriesJson);
 
                 allSeries.insert(std::end(allSeries), std::begin(series), std::end(series));
-                this->updateSeriesDB(allSeries);
+                this->updateSeriesSet(allSeries);
             }
         }
     }
@@ -306,35 +303,32 @@ void SQueryEditor::queryStudyDate()
     {
         std::stringstream ss;
         ss << "Unknown error.";
-        this->displayErrorMessage(ss.str());
+        sight::module::io::dicomweb::SQueryEditor::displayErrorMessage(ss.str());
         SIGHT_WARN(exception.what());
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SQueryEditor::updateSeriesDB(data::SeriesDB::ContainerType series)
+void SQueryEditor::updateSeriesSet(const data::SeriesSet::container_type& series)
 {
-    const auto seriesDB = m_seriesDB.lock();
-    data::helper::SeriesDB seriesDBHelper(*seriesDB);
+    const auto series_set     = m_series_set.lock();
+    const auto scoped_emitter = series_set->scoped_emit();
 
-    // Delete old series from the SeriesDB
-    seriesDBHelper.clear();
+    // Delete old series from the SeriesSet
+    series_set->clear();
 
-    // Push new series in the SeriesDB
-    for(const data::Series::sptr& s : series)
+    // Push new series in the SeriesSet
+    for(const auto& s : series)
     {
-        data::DicomSeries::sptr dicomSeries = data::DicomSeries::dynamicCast(s);
-        seriesDBHelper.add(dicomSeries);
+        const auto& dicomSeries = data::DicomSeries::dynamicCast(s);
+        series_set->push_back(dicomSeries);
     }
-
-    // Notify th SeriesDB
-    seriesDBHelper.notify();
 }
 
 //------------------------------------------------------------------------------
 
-void SQueryEditor::displayErrorMessage(const std::string& message) const
+void SQueryEditor::displayErrorMessage(const std::string& message)
 {
     sight::ui::base::dialog::MessageDialog messageBox;
     messageBox.setTitle("Error");
