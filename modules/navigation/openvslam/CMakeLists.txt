@@ -19,13 +19,6 @@ target_link_libraries(module_navigation_openvslam PRIVATE ${DBoW2_LIBS})
 find_package(Eigen3 QUIET REQUIRED)
 target_link_libraries(module_navigation_openvslam PRIVATE Eigen3::Eigen)
 
-# Download the vocabulary file (from nextcloud)
-message(STATUS "Downdload vocabulary file")
-file(DOWNLOAD "https://cloud.ircad.fr/index.php/s/tojArWTZcK223Fq/download"
-     "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${NAME}/orb_vocab.dbow2" SHOW_PROGRESS
-     EXPECTED_HASH SHA256=33a6808d3d963f23c938d17c64b199194dfeaa2a5649fa130d01fab54c82797f
-)
-
 target_link_libraries(
     module_navigation_openvslam
     PUBLIC core
