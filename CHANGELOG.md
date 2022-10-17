@@ -1,3 +1,765 @@
+# sight 22.0.0
+
+## Enhancement:
+
+### build
+
+*Update VCPKG.*
+
+VCPKG packages has been rebuilt, and the hash has been changed. All dependency packages have kept the same version number, so it is unlikely that a change of behavior occurs.
+
+*Remove libxml2 from the core public interface.*
+
+*Upgrade code to support C++20, and use some new features.*
+
+* Build with C++20 standard
+* Update the code to fix the following deprecations:
+  * implicit capture of ‘this’ via ‘\[=\]’ is deprecated in C++20 (see [reference](https://www.nextptr.com/tutorial/ta1430524603/capture-this-in-lambda-expression-timeline-of-change) )
+* Replace usage of `boost`::ublas``by glm (the current version does not build with C++20, Debian is shipped with an old version of boost...)
+* Use a new vcpkg build with a patched ITK version for C++20, and thus some minor adjustments because of new package versions (DCMTK and openCV for instance)
+* Use std`::ranges`algorithms in some places just for fun :heart_eyes:
+
+*Update VCPKG packages.*
+
+### ci
+
+*Disable debug dialog on Windows on the CI.*
+
+When a unit test fails with an assertion failure in Windows Debug, a debug dialog will appear. This is useless in the CI, where physical access is required to view the dialog and know where is the problem. These changes remedy this, by disabling debug dialog and printing messages in the console when the environment variable DISABLE_ABORT_DIALOG is set.
+
+*Disable thread information from GDB in the CI.*
+
+*Use Sheldon's Clang-tidy hook for lint job.*
+
+Now that Clang-tidy is added as a hook for Sheldon, we can use it instead of using
+Clang-tidy directly, to reduce code redundancy.
+
+*Check whether packaged applications are executable.*
+
+Existing testing to prevent regressions isn't sufficient, as experience has shown. The packaged applications will now be tested automatically in the CI: SightViewer and SightCalibrator will be installed, and then executed in order to check if they start successfully or crash because of missing dependencies or various errors during installation. Also, all examples, tutorials and utilities will be launched to verify, at least, that they can start and stop.
+
+*Add Clang-Tidy to the CI.*
+
+*Add some metrics.*
+
+This shows the number of warnings and deprecated declarations in the merge request metrics reports.
+
+### core
+
+*Create the log in user cache directory by default.*
+
+Default log file path, when nothing is specified with --log-output in the user "cache" directory, which is given by $XDG_CACHE_HOME on Linux or simply $APPDATA on Windows. As a fallback, the default temporary directory is used. In both cases, the path is suffixed with ./sight/<profile name>. The final path is also displayed on the console.
+
+> VTK.log and Ogre.log has been taken into account...
+
+Some (light) adjustment and cleanup have also been made in core`::tools::Os`to manage "cache" directory and return a std`::filesystem::path`instead of a std::string.
+
+this could be a possible breaking change as you may have to call std::filesystem::path::string() when calling getUserConfigDir() (already fixed in this MR).
+
+getUserDataDir() name is misleading. Since it returns XDG_CONFIG_HOME it should be called getUserConfigDir(). It was hard to not change this in this MR for me, so it was done....
+
+And last but not least, a small "fix"  in PreferencesTest to clean correctly the user config directory after the test pass. I come through it while changing the getUserDataDir() returned type to std::filesystem::path
+
+*Remove hard-coded label value to generate mesh.*
+
+provide a from input the value to generate mesh and implements the unit tests for the codes.
+
+*Enable usage of lamba functions in slots.*
+
+It is now possible to use lambda functions in slots. For instance, this declares  a slot making the sum of two integers :
+
+```cpp
+auto slotSum = core::com::newSlot( [](int a, int b){ return a + b;} );
+```
+
+*Improve camera resolution selection.*
+
+The camera service selection now provides a new setting `<resolution>` allowing to automate the choice of the resolution. The value can be `min/max/WxH/preferences/prompt`.
+- `min`: the minimum resolution is automatically chosen.
+- `max`: the maximum resolution is automatically chosen.
+- `WxH`: the exact resolution is set (for instance 1280x720). Beware because if the device does not support the resolution, an error message will be displayed and the camera will not be available.
+- `preferences`: default value, the dialog is shown on the first time and then the choice is stored in the preferences of the application. This choice will then be used each time. An extra button is displayed next to the camera selector to change the resolution later.
+- `prompt`: former behavior which makes the resolution dialog to always prompt.
+
+*Add initializer_list constructor support for KeyConnectionsMap.*
+
+A new constructor was added to KeyConnectionsMap allowing to shorten the implementation of `IService::GetAutoConnections()`. For instance :
+```cpp
+    IService`::KeyConnectionsMap`SSample::getAutoConnections() const override
+    {
+        return {
+           {"data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+           {"data2", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT}
+        };
+    }
+```
+instead of :
+
+```cpp
+    IService`::KeyConnectionsMap`getAutoConnections() const override
+    {
+        KeyConnectionsMap connections;
+        connections.push("data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data2", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+
+        return connections;
+    }
+```
+The previous declaration is still possible. Few implementations were changed as example.
+
+*Secure library loading when upgrading sight version.*
+
+When executing sight in build tree, we may load the wrong version of libraries when upgrading. Now, we use the ."so" symlink first to be less sensitive to version change.
+
+### geometry
+
+*Remove charuco related codes.*
+
+### io
+
+*Add optional receive timeout on igtl server.*
+
+* when using the timeout receive fonction aren't blocking
+* also remove client from vector when disconnected
+
+### navigation
+
+*Download openvslam vocabulary only when SOpenvslam starts.*
+
+* create a function to donwload file using curl in io_http library
+* minors fixes on SOpenvslam, SFrustum & SFrustumList to match latest updates
+
+### test
+
+*Add tests for the HiResTimer class.*
+
+*Improve geometry::data::Mesh::transform unit-test.*
+
+The unit test for `geometry`::data::Mesh::transform``was pretty weak, as the test was mostly the same code as the tested code. The method is now tested with a hardcoded small mesh which is transformed, with all combinations of types possible (only points, point and point normals, point and cell normals, point and all normals).
+
+### ui
+
+*Add an optional scroll bar for SParameters.*
+
+A `scrollable` property was implemented in `SParameters`, which adds a scroll bar to the right of the widgets.
+
+*Add a new signal to notify if the next activity is ready.*
+
+Two signals were renamed in `sight::module::ui::qt::SSequencer`:
+  - `enabledNext()` -> hasNext()
+  - `enabledPrevious()` -> hasPrevious()
+
+One signal was added, which is triggered when the next activity is enabled (all requirements are satisfied):
+  - `nextEnabled()`
+
+*Simplify notification API by using single signal & slot.*
+
+* One signal "notified" in IService containing the type & the message
+* One slot "pop" in SNotifier reading type & message and displaying the corresponding notification popup
+
+*Move the modal transfer function editor in the right panel in SightViewer.*
+
+### viz
+
+*Add pixel values in 2D negatoscopes.*
+
+We added the ability to pick pixel values in 2D negatoscopes, in the same way than it was already done in 3D negatoscopes.
+
+*Use image GPU resource sharing in all adaptors.*
+
+*Speedup the tf upload by 40x.*
+
+*Set SNegato2D adaptor transformable.*
+
+*Merge ExOgreRGBDStream and ExRealSense together.*
+
+The ExOgreRGBDStream sample was somehow useless since the only RGBD camera we do support is the IntelRealsense, which is demonstrated in ExRealSense. We added a missing feature from ExOgreRGBDStream into ExRealSense, the transfer function editor. The sample was also modernized a bit and debug optimizations were enabled in some modules to keep good performances in this build type.
+
+*Merge SAxis and SScaleValues together.*
+
+*Enlarge the viewport shutter to contain histogram and tf values.*
+
+## Bug fixes:
+
+### build
+
+*Fix various CPPCheck warnings / errors.*
+
+*Change windows export handling on lib with QT in the name.*
+
+*Small fixes to support gcc / libstdc++ 12.*
+
+*Configuration issues with GLM.*
+
+Since GLMConfig.cmake is correct on Windows and buggy on Ubuntu, we use a different approach depending on the platform:
+
+* Use the old-ish system with `target_include_directories` on Linux
+* Use `glmConfig.cmake` on Windows (but everywhere this time)
+
+*Clang-tidy warnings.*
+
+Here is the complete list:
+  - readability-duplicate-include
+  - readability-container-data-pointer
+  - cppcoreguidelines-virtual-class-destructor
+  - cert-err33-c
+  - readability-identifier-naming
+  - cppcoreguidelines-pro-type-cstyle-cast
+  - clang-analyzer-core.NonNullParamChecker
+  - clang-analyzer-core.NullDereference
+  - clang-analyzer-core.CallAndMessage
+  - cppcoreguidelines-non-private-member-variables-in-classes
+  - google-explicit-constructor,hicpp-explicit-conversions
+  - bugprone-reserved-identifier,cert-dcl37-c,cert-dcl51-cpp
+  - modernize-use-using
+  - cppcoreguidelines-macro-usage
+  - bugprone-macro-parentheses
+  - hicpp-exception-baseclass
+  - clang-analyzer-security.insecureAPI.strcpy
+  - bugprone-too-small-loop-variable
+  - bugprone-inaccurate-erase
+  - cert-flp30-c
+  - bugprone-incorrect-roundings
+  - bugprone-suspicious-include
+  - google-build-explicit-make-pair
+  - google-global-names-in-headers
+  - readability-redundant-control-flow
+  - bugprone-throw-keyword-missing
+  - readability-static-definition-in-anonymous-namespace
+  - readability-string-compare
+  - hicpp-move-const-arg,performance-move-const-arg
+  - cppcoreguidelines-interfaces-global-init
+  - readability-misleading-indentation
+  - cert-err09-cpp,cert-err61-cpp,misc-throw-by-value-catch-by-reference
+  - bugprone-parent-virtual-call
+  - modernize-redundant-void-arg
+  - misc-unused-using-decls
+  - performance-inefficient-algorithm
+  - modernize-make-unique
+  - readability-suspicious-call-argument
+  - bugprone-narrowing-conversions,cppcoreguidelines-narrowing-conversions
+  - bugprone-undefined-memory-manipulation
+  - google-readability-function-size,hicpp-function-size,readability-function-size
+  - readability-container-size-empty
+  - bugprone-integer-division
+  - readability-use-anyofallof
+  - cppcoreguidelines-slicing
+  - modernize-raw-string-literal
+  - performance-unnecessary-copy-initialization
+  - boost-use-to-string
+  - readability-redundant-smartptr-get
+  - hicpp-use-emplace,modernize-use-emplace
+  - cert-msc32-c,cert-msc51-cpp
+  - cppcoreguidelines-pro-type-const-cast
+  - hicpp-multiway-paths-covered
+  - performance-inefficient-vector-operation
+  - cert-err34-c
+  - performance-faster-string-find
+  - clang-analyzer-optin.cplusplus.VirtualCall
+  - readability-isolate-declaration
+  - readability-qualified-auto,llvm-qualified-auto
+  - clang-analyzer-deadcode.DeadStores
+  - google-build-using-namespace
+  - readability-delete-null-pointer
+  - bugprone-implicit-widening-of-multiplication-result
+  - misc-unused-alias-decls
+  - readability-uppercase-literal-suffix
+  - bugprone-branch-clone
+  - performance-inefficient-string-concatenation
+  - bugprone-misplaced-widening-cast
+  - cppcoreguidelines-no-malloc,hicpp-no-malloc
+  - performance-no-automatic-move
+  - performance-for-range-copy
+  - modernize-loop-convert
+  - readability-inconsistent-declaration-parameter-name
+  - modernize-avoid-bind
+  - bugprone-forward-declaration-namespace
+  - modernize-make-shared
+  - performance-trivially-destructible
+  - cert-dcl21-cpp
+  - modernize-use-transparent-functors
+  - readability-implicit-bool-conversion
+  - cppcoreguidelines-init-variables
+  - hicpp-noexcept-move,performance-noexcept-move-constructor
+  - modernize-pass-by-value
+  - hicpp-named-parameter,readability-named-parameter
+  - google-runtime-int
+  - hicpp-use-equals-delete,modernize-use-equals-delete
+  - cppcoreguidelines-c-copy-assignment-signature,misc-unconventional-assign-operator
+  - cert-oop54-cpp
+  - readability-simplify-boolean-expr
+  - modify .clang-tidy configuration file
+  - bugprone-sizeof-container
+  - llvm-else-after-return,readability-else-after-return
+  - hicpp-use-auto,modernize-use-auto
+  - cppcoreguidelines-pro-type-member-init,hicpp-member-init
+  - cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays
+  - hicpp-deprecated-headers,modernize-deprecated-headers
+  - hicpp-use-equals-default,modernize-use-equals-default
+  - readability-redundant-string-init
+  - readability-redundant-member-init
+  - modernize-use-default-member-init
+  - hicpp-use-nullptr,modernize-use-nullptr
+  - cppcoreguidelines-prefer-member-initializer
+  - readability-avoid-const-params-in-decls
+  - llvm-namespace-comment
+  - modernize-return-braced-init-list
+  - readability-const-return-type
+  - modernize-use-nodiscard
+  - readability-make-member-function-const
+  - readability-convert-member-functions-to-static,readability-static-accessed-through-instance
+  - modernize-concat-nested-namespaces
+  - hicpp-use-override,modernize-use-override
+  - cert-dcl58-cpp
+
+*Small corrections on filter_image to build with ITK5.*
+* disable spheroidExtraction
+* Add missing components
+
+*Move Ogre plugins next to the Ogre libraries.*
+
+*Remove warnings in modules.*
+
+These changes remove warnings in Sight modules. These warnings were mostly harmless, but could hide potentially harmful problems.
+
+*Remove warnings in libraries.*
+
+These changes remove all compile warnings in Sight libraries. These warnings were mostly harmless but could hide potentially harmful problems.
+
+*Correct windows application packaging.*
+
+*Forward script arguments when using privilege escalation on Windows.*
+
+### ci
+
+*Windows SDK package made relocatable.*
+
+Sight windows SDK package is now relocatable. All mentions of the build tree are removed with careful usage of CMake. A test has been added to the CI to prevent any regression.
+
+*Reorder plugins loading in Tuto01DataServiceBasicCpp to avoid crash at exit.*
+
+*Migrate artifacts download to nextcloud.*
+
+*Remove redundant coverage report in Sight config.*
+
+### core
+
+*Detection of runtime library folder.*
+
+*Reset the count before resetting BufferObject to avoid lock count assert at buffer destruction.*
+
+Resetting the counter in the destructor **BEFORE** resetting BufferObject shared pointer is required ! Otherwise, the lock count assert in the destruction of the buffer, in `BufferManager::::unregisterBufferImpl()` will be triggered.
+
+Also remove hack in SDistorsion service.
+
+*Parsing of transfer function data in XML.*
+
+The transfer function data can be initialized directly in XML configurations. Because of a regression, the parsing was broken and caused a crash at start.
+
+*Really disable SIGHT_DEFAULT_PASSWORD when not set by user.*
+
+*Consider multi arch folders in runtime directory detection.*
+
+*Use priorities to unload modules loaded after profile start.*
+
+Priorities are now used to unload all modules, even those loaded after the initial start of the profile. This allows notably to unload `appXml` first, and then modules like `module::viz::scene3d`.
+
+To achieve this, the start and priority properties are now set directly in the `plugin.xml`. The priority is read at runtime when parsing modules. It is used both to start and to stop modules. Some code cleanup was performed, which led for instance to remove the over-designed Starter and Stopper classes. This part of the profile management should be clearer now.
+
+The sorting of modules in the generation of the `profile.xml` is _de facto_ no longer necessary and has thus been removed to simplify the code.
+
+*Set the log output in the main of unit-tests.*
+
+The redirection of the log into `fwTest.log` is performed by a singleton in sight::core::utest. We link with this library in coreTest, but we do not use any symbol from it. Thus the linker strips it and so in the end, we do not initialize the log output.
+To fix this, we simply initialize it in the main file of unit tests.
+
+*Prevent race condition in serviceTest.*
+
+*Prevent race condition when adding a new id.*
+
+### geometry
+
+*Update intrinsic parameters in SPoseFrom2d.*
+
+When intrinsic parameters, such as the resolution of the camera, change, the computation of the 2D pose did not take this into account and used the parameters set at start. Now we listen the changes of the parameters and update accordingly.
+
+### io
+
+*Use a patched ITK header when using clang + Ubuntu 22.04 support.*
+
+- update sight-deps and use Ubuntu 22.04 image
+- vtk mesher has been fixed upstream
+
+*Overwrite the seriesDB in the ITK reader, make *.nii the default.*
+
+*Add patched version of buggy igtl functions.*
+
+* Add a modify version of igtlSocket.h header, included first it allows public access to socket descriptor (needed for a proper closing function)
+* Patched version of createServer to call patched version of bindSocket()
+* bindSocket: remove need to define VTK_HAVE_SO_REUSEADDR to add SO_REUSEADDR option in socket
+
+*Throw exception for common socket error (timeout, ...).*
+
+* INetwork will now throw exceptions if timeout, network error, or size mismatching of received data instead of returning a nullptr of igtl::MessageBase.
+* Create unit test to test server/client communication
+
+*Do not restore the UUID of objects when deserializing.*
+
+Restoring the UUID of objects implies that a serialized object is really unique. Thus if you read a file containing a object twice, you expect to have only on object in memory.
+This is definitely not the behavior we want, we expect the object to be duplicated each time it is read, with its own UUID.
+
+### navigation
+
+*Remove vocabulary download from cmake.*
+
+Since the download is now performed at runtime in C++
+
+### test
+
+*Change float comparison equality strictness of copies.*
+
+### ui
+
+*Deadlock when exporting transfer function.*
+
+Because SWriter`::update`locks data and so does the function before calling this, a deadlock occurred.
+
+*Allow to use subtoolbars in toolbars.*
+
+This fixes two bugs preventing from using sub toolbars in toolbars:
+* parsing error in `<editor wid="...">` tag attribute in the toolbar config
+* wrong alignment used in child toolbars
+
+*Block signal when enum parameter is updated in SParameter.*
+
+* also look in both item text and data as fallback to find value of enum
+
+*Initialize the type selection combobox with the right value.*
+
+*SNegato2D Camera crash when a single frame is provided.*
+
+*Run appXml code on the main worker thread.*
+
+This fixes a regression caused by the removal of the second initialisation stage of `IPlugin`. All `initialize()` functions, notably the one from AppXml, were called from the Qt event loop. The function loading the stylesheet is posted just before on this Qt event loop, which implies it is called before the initialisation of `AppXml`. With the removal of `initialize()`, the `start` function of `AppXml` was called directly from the main thread, before the start of the Qt event loop. Thus, the function loading the stylesheet was executed after the start of the application, causing rendering issues.
+
+It seems safer anyway to keep the previous behaviour. So, `AppXml` was slightly modified to execute the start of the application on the Qt event loop.
+
+*Various issues when loading meshes in SightViewer.*
+
+- random crash when the camera is not reset
+- reset the camera when a model is loaded in SightViewer
+- enable the hide/show model when a model is loaded
+- do not enable the image buttons when a model is loaded
+
+### viz
+
+*Display of images with 32 bits integer pixel format.*
+
+This restores partially the behavior prior to 1353d895 that converts 32 bits integer images into 16 bits images when uploading them on the GPU.
+This fixes a regression that prevents from reading all 32 bits integer DICOMs.
+
+*Avoid deadlock in viz::scene3d::IParameter with textures.*
+
+*Invert Plane constructor param to fit SNegato usage.*
+
+*Out of bounds writing in function transfer.*
+
+An error was introduced that could fill one pixel too many, causing a crash when deleting the transfer function, potentially when exiting the application on Windows.
+
+*Add a workaround for NVidia Prime to solve a deadlock with several 3D scenes.*
+
+*Blend transfer function pieces proportionally to their opacity.*
+
+*Do not allow to move TF points outside the viewport.*
+
+*Do not reset the opacity when changing the color of a TF point.*
+
+*Change Ogre plugin location.*
+
+Ogre needs to locate its plugin at the start, in a similar way as Qt does. Over the years, we had different strategies to locate them which always fails in the end in some corner cases. Well, I finally propose to use the exact same strategy as we do for Qt, which is to locate the core Ogre library and then use a relative filesystem path from there. It has proved to be a winning strategy with Qt.
+
+## New features:
+
+### core
+
+*Forward SParameters signals from SGrabberProxy and IGrabber.*
+
+*Remove SeriesDB, Activity and Camera are stored in separated set.*
+
+- rename ActivitySeries to Activity
+- rename CameraSeries to CameraSet
+- rework deep/shallow copy to use full inheritance and to copy parent class
+- change ImageSeries inheritance to Series and Image
+- remove Patient, Study, Equipment data object and use GDCM to store DICOM attributes
+
+*Add generic container classes.*
+
+#### Description
+
+Implements a generic templated data container class, aka `IContainer`, that allows code factorization from all containers. STL API from the corresponding STL container classes is exposed and the inherited containers, such `Composite` and `Vector` can be seen as a real `std`::vector``and `std`::map``from outside (which they indeed are !), while keeping to be data objects, that can be used in XML, that can be serialized, etc..
+
+Since it is a part of https://git.ircad.fr/sight/sight/-/issues/862, some containers (`ActivitySet`, `CameraSet`, `SeriesSet`) have been also implemented. Although not used yet, you can still take a look at them, as `CameraSet` uses a more complex `std::vector<std::pair<Camera::sptr, Matrix4::sptr>>` while `ActivitySet` and `SeriesSet` use a [Boost Multi-index](https://www.boost.org/doc/libs/1_79_0/libs/multi_index/doc/index.html), which allows to define a `set` which is sequenced like a `vector`.
+
+##### Usage
+
+The best open `Composite` or `Vector` and `IContainerTest` code, but basically, all you have to do if you need a specific data object container class, is to inherits from `sight::data::IContainer<XXX>`, with `XXX` being your STL container type (or boost STL compatible container, like Multi-index !). As an example:
+
+```c++
+#include "data/IContainer.hpp"
+
+class DATA_CLASS_API Vector final : public IContainer<std::vector<Object::sptr> >
+{
+...
+};
+```
+
+You can then use it like a real std::vector<Object::sptr>:
+
+```c++
+auto vector = sight::data::Vector::New();
+
+// 99.9% of STL API is available
+vector.reserve(2)
+vector.push_back(sight::data::Integer::New(1));
+vector.push_back(vector.front())
+vector[1] = sight::data::Integer::New(2)
+...
+
+// Initializer list / assignment operators
+vector = {sight::data::Integer::New(1), sight::data::Integer::New(2), sight::data::Integer::New(3)};
+
+// iterators are supported
+for(const auto& element ; *vector)
+{
+    std`::cout`<< element->getValue() << std::endl;
+}
+
+```
+
+##### ScoppedEmitter
+
+There is also a generic `ScopedEmitter` which replace various "helpers", that were used to send signals when adding / removing objects in the container. It uses RAII mechanism to send the right signals when it is deleted.
+
+To use them, simply call the generic `scoped_emit()` function form a container to get a `ScopedEmitter` instance, and perform operation on the container. The ScopedEmitter will take a snapshot of the content and compare it with the current container upon destruction. Signals will be fired if elements have been added or removed or changed (in case of a map like container). Short example:
+
+```c++
+auto composite = sight::data::Composite::New();
+
+{
+    auto scoped_emitter = composite->scoped_emit();
+
+    // Now modification to `composite` will be notified to whatever is connected to `composite` signals
+    composite->insert({"beast", sight::data::Integer::New(666)});
+    ...
+
+    // Signals are sent when notifier is destroyed, like outside this scope...
+}
+
+```
+
+##### Advanced usage
+
+###### Writing specific code for specific container
+
+Sometimes, it is useful to know if an object is a container and if yes, from which kind it is. Some template matching functions have been added to `core/tools/compare.hpp`:
+
+```c++
+#include <core/tools/compare.hpp>
+
+template<typename T>
+void my_function(const T& truc)
+{
+    ...
+    if constexpr(core::tools::is_map_like<T>::value)
+    {
+        truc.insert({"maman", value});
+    }
+    else if constexpr(core::tools::is_container<T>::value)
+    {
+        truc.insert(value);
+    }
+    else
+    {
+        ....
+    }
+}
+```
+
+###### Generic container without inheriting from `IContainer`
+
+If you don't want the `IContainer<XXX>` inheritance because you don't want to be a `sight::data::Object`, but still want to act like a `XXX`, you could inherit directly from `ContainerWrapper<XXX>`:
+
+```c++
+class MySimpleContainer : public ContainerWrapper<std::set<std::string>>
+{
+    ...
+};
+
+MySimpleContainer a;
+
+a.insert("Le petit chaton bleu est très malade.");
+
+...
+```
+
+### io
+
+*Add requestSettings slot to grabber interfaces.*
+
+*New DICOM reader implementaion.*
+
+A new DICOM reader has been implemented to take use of the shared DICOM context, allowing to have access to all DICOM properties from the original DICOM files. The new reader is also able to read DICOM IMAGE files that were not well-supported, most notably:
+
+* All Ultrasound Images IOD (Enhanced US Volume, Ultrasound Image, Ultrasound Multi-Frame Image)
+* RGB Image with YBR color space (used in jpeg image)
+* Encapsulated transfer syntax
+* Unusual planar configuration (r1r2r3...g1g2g3...b1b2b3 instead of r1g1b1r2g2b2r3g3b3...)
+* Monochrome 1 image
+
+Few bugs have also been corrected, and some enhancement has been done:
+
+* Allows selecting the series to read in case there are more than one series found
+* Huge speedup: 4x faster reading
+* 2x less memory used
+* Fixed many bugs in the Series selection dialog:
+  * crash with date/time on anonymized data (which contained unusual dates)
+  * wrong data displayed
+  * wrong data selected
+  * added utf-8 / internationalization support (yes Ren**é** is now displayed correctly, and far east patient are no more a number of squares)
+* Thread management of GUI stuff like cursors, DICOM logger dialog, etc....
+* some tests were added (and also US data on sight-data)
+
+*Update IWriter interface to automate data output.*
+
+* Automate the output of data using Preferences and Series for the SFrameWriter, SVideoWriter and SMatrixWriter services
+
+*Refactor io itk services and add nifti support.*
+
+Global refactor of the itk io services and libs.
+
+* add of the nifti support in the lib and in the modules
+* refactor the lib existing read/write files to fit the global sight io naming
+* refactor the services, to make a single SImageReader/SImageWriter which switch depending on the extension
+* refactor the services, to have reader/writer which go together
+* add unit-test
+* add itk reader in sightviewer images series loader
+
+### test
+
+*Add a macro saver to generate GUI test skeletons.*
+
+GUI testing is now possible, but creating GUI tests still isn't that simple, especially to get the graphic components to interact with. MacroSaver will generate a GUI test skeleton compatible with GuiTester to save that hassle. To use MacroSaver, one must call sightrun with the `--macro` flag, the generated tests will be available once the application is closed as the files "GuiTest.cpp" and "GuiTest.hpp".
+
+*Add a GUI test library and GUI tests.*
+
+An automated GUI test library built on top of QTest was introduced. This library can wait and get graphic components, interact with them by emulating mouse and keyboard events and check if assertions are true. In order for the graphic components to be fetched more easily, components got objectNames, so they can be easily found using `QObject::findChild()`.
+
+Additionally, the tests will test the 3D rendering, by creating snapshots and comparing them with reference images using 6 different methods (pixel by pixel, mean square error, cosine of the matrices, histogram, Spearman's correlation,...). When a test fail, it will take a screenshot of the screen, to help in troubleshooting, especially when it runs on an non-desktop environment, such as the CI.
+
+Last, first UI tests were introduced for SightViewer and SightCalibrator.
+
+### ui
+
+*Add standard embeddable video toolbar.*
+
+*Allow to programmatically set enum values in SParameters.*
+
+### viz
+
+*Introduce GPU resource sharing.*
+
+GPU resource sharing is introduced, with the first application to textures and transfer functions.
+From the user point of view, we provide a new class `sight::viz::scene3d`::Texture``and we extended the existing class `sight::viz::scene3d`::TransferFunction``in order to allow GPU resource sharing. These classes only allocate Ogre resources (and thus GPU memory) when the Id of the source object changes. In addition, they "cache" the update of these resources. Thus now, when we have, for instance, 3 negato adaptors on the same image, there is only one `Ogre`::Texture``created, and only one `Ogre`::Texture``updated when the `sight`::data::Image``is modified (and similarly for the transfer functions).
+
+*Allow applications to add Ogre plugins from CMake.*
+
+We added the possibility to enable Ogre plugins from CMake `module_param(module_viz_scene3d ...)` calls.
+
+## Refactor:
+
+### build
+
+*Use a single PCH with only external dependencies.*
+
+To solve the issues described in #948, we now provide a single PCH file. It only contains 3rd part libraries headers. The list was extracted from the previous pchServices recursive list, by removing all sight headers. It is also built in a second version for the targets that use optimized debug builds.
+During tests, we realized the build timings remain stable and even outperform sometimes the previous approach.
+
+On Clang, we also took the opportunity to use a new feature that speedups PCH builds: http://llunak.blogspot.com/2021/04/clang-precompiled-headers-and-improving.html. The gain was measured at 10%.
+
+### core
+
+*Rename oldish macros.*
+
+*Replace EConfigurationElement with boost::property_tree::ptree in all unit tests.*
+
+*Remove visibility and transparency signals on images.*
+
+The visibility and transparency of images are now handled in a simpler way, following the MVC pattern:
+- the image is the model
+- the view is the adaptor (`SNegato2D`, etc...)
+- the controller is the widget (`SParameters`, `SAction`, etc...)
+
+The view does not control the state and only applies what the controller requests.
+
+This implied the following changes:
+- Removed s_TRANSPARENCY_MODIFIED_SIG and s_VISIBILITY_MODIFIED_SIG fields from `data::image`
+- Removed all associated code, including the old service `module::ui::qt::image::ImageTransparency`
+
+*Simplify core::tools::Type and massive core::tools cleaning.*
+
+`core`::tools::Type``was simplified for easier use. First, it was moved to the root of the library, so it is now `core::Type`. Then, it simply contains a single enum attribute that sets the supported type. All methods of the class use an internal map to answer to the capabilities of the type (size, signed, name, etc...) instead of storing them in each type instance.
+
+Some extra cleaning was also done. `core`::tools::Type``is a very old piece of code, previous to C++11 and was linked to some pieces of dead code. Many features it used to bring are now done easily with post C++11 code. The dispatcher, for instance, used exclusively for ITK filters, relied on `type_info` just because of the use of a deprecated ITK function to get the image type. With the new function, this is no longer necessary, so a large amount of code dealing with `type_info` was removed.
+
+*No longer use xml profile in utest, remove initialize state in IPlugin.*
+
+### ui
+
+*Deprecated SSlotCaller in favor of SAction.*
+
+*Use new signals and slots of IAction everywhere.*
+
+*Harmonize IAction signals and slots.*
+
+*Remove deprecated services, functions and config.*
+
+`ui`::viz::SAddPoint``is removed in favor of `module::geometry::SManagePointList`, `IAction::getActiveStateValue()` is removed in favor of `IAction`::inverted``and `ISlideViewBuilder` `align` and `size` configuration attributes are removed in favor of `halign/valign` and `width/height`.
+
+### viz
+
+*Remove transfer function merge copy in the data.*
+
+We faced multiple floating precisions issues when merging the pieces of a transfer function. To avoid that, we removed the pre-merge phase of the pieces and we actually merge directly when sampling.
+
+*Simplify transfer function management.*
+
+This is a major rework of the transfer function data. Now the transfer function is a real piecewise function. Each piece stored in the object can be individually edited and thus is serialized. Pieces can be accessed and edited independently thanks to the `pieces()` function that returns a vector of `TransferFunctionData`. When the pieces are modified, the function `mergePieces()` must be called to mix the pieces together.
+
+This implies that the duplicated `sight`::module::ui::qt::SMultipleTF``and `sight::module::viz::scene2d`::SMultipleTF``are removed in favor of `sight`::module::ui::qt::STransferFunction``and `sight::module::viz::scene2d::STransferFunction`.
+
+On top of that, the former TF "pool" is no longer exposed anywhere in the services interfaces, thus from the XML. `sight`::module::ui::qt::STransferFunction``handles this "pool", renamed as "presets", internally.
+
+Other changes were brought:
+- `sight::data::TransferFunction::mergePieces()` implies the removal of `sight`::module::data::SMergeTF``service. It also brings a functional change, the pieces of the transfer function is performed with an average of colors instead of a strict additive blending.
+- It is no longer possible to move a transfer function piece outside the range of the viewport (bug fix request in the comments of this ticket).
+- Adjusting the window in the negatoscope is now reflected properly in the transfer function editor (partially fixes https://git.ircad.fr/sight/sight/-/issues/847)
+- Moved and renamed `TransferFunctionManager` from `scene3d` to `scene2D::TransferFunctionWindow`.
+
+*Include TransferFunctionManager from TransferFunctionManagerWindow.*
+
+*Merge SHistogram, SHistogramCursor and SHistogramValue together.*
+
+Since we removed SCurveHistogram, there was no good reason to keep those three adaptors separately.
+
+Doing that, we improved the computation speed of the image histogram by a factor of 10. Computing the histogram is now so fast that it is useless to have a dedicated data for it. We removed all the ecosystem around it and the only service that uses it so far, the SHistogram adaptor, computes the histogram dynamically. On top of that, this allows to change the bins width dynamically which is very handy.
+
+We also added an axis for the image histogram that can scale with the graph. This required a refactor of the usage of the viewport in the 2D scene. Now the scene no longer holds a viewport, but can only update its viewing rect through a dedicated function available to the adaptors. The adaptors that do use the viewport now all explicitly declare it, with the correct access type (in or inout).  Last, we scale the transfer function viewport range automatically from image min and max intensities.
+
+Many warnings were fixed along, notably because of the coexistence of float and double variables. The floating point precision was set to double everywhere to comply with Qt API.
+
+*Remove irrelevant SCurvedHistogram service, use SHistogram instead.*
+
+
 # sight 21.1.0
 
 ## Refactor:
