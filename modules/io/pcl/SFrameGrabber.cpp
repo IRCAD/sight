@@ -87,9 +87,10 @@ void SFrameGrabber::updating()
 
 void SFrameGrabber::startCamera()
 {
-    if(m_timer)
+    if(this->started())
     {
-        this->stopCamera();
+        // Do not reset if we are already started
+        return;
     }
 
     const auto camera = m_camera.lock();

@@ -219,6 +219,7 @@ protected:
      * @brief sets the current start state of the grabber.
      */
     IO_BASE_API void setStartState(bool state);
+    bool started() const;
 
     data::ptr<data::FrameTL, data::Access::inout> m_frame {this, s_FRAMETL_INOUT};
 
@@ -233,5 +234,12 @@ private:
     /// Determines whether the grabber has been started, note : this does not mean it is playing, as it could be paused.
     bool m_isStarted {false};
 };
+
+//------------------------------------------------------------------------------
+
+inline bool IGrabber::started() const
+{
+    return m_isStarted;
+}
 
 } //namespace sight::io::base::service
