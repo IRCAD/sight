@@ -88,11 +88,6 @@ add_compile_options(
     "$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<CONFIG:RelWithDebInfo>>:-ggdb;-gz>"
 )
 
-if(SIGHT_ENABLE_PCH)
-    # This speedups Clang build significantly (approx 10%)
-    add_compile_options("$<$<CXX_COMPILER_ID:Clang>:-fpch-instantiate-templates>")
-endif()
-
 # -gmodules is problematic for clang-tidy
 if(NOT CMAKE_EXPORT_COMPILE_COMMANDS AND NOT SIGHT_ENABLE_CLANG_TIDY)
     add_compile_options("$<$<AND:$<CXX_COMPILER_ID:Clang>,$<CONFIG:RelWithDebInfo,Debug>>:-gmodules>")

@@ -1,4 +1,11 @@
-sight_add_target(pchCore TYPE LIBRARY)
+add_library(pchCore STATIC pch.cpp)
+
+# Ensure we use the same compile flags with the other targets
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug" AND MSVC)
+    restore_cxx_flags(pchCore ${SIGHT_CMAKE_CXX_FLAGS_DEBUG} OFF)
+endif()
+
+target_precompile_headers(pchCore PUBLIC ${SIGHT_PCH_HEADERS})
 
 find_package(Filesystem REQUIRED)
 find_package(Boost QUIET COMPONENTS system date_time iostreams log log_setup REQUIRED)
