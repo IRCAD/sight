@@ -579,8 +579,8 @@ private:
 
     //! Preferred window center/with
     ///@{
-    std::vector<double> m_windowCenters {0.};
-    std::vector<double> m_windowWidths {0.};
+    std::vector<double> m_windowCenters;
+    std::vector<double> m_windowWidths;
     ///@}
 
     //! Number of components

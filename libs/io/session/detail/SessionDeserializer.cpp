@@ -30,8 +30,6 @@
 #include "Color.hpp"
 #include "Composite.hpp"
 #include "DicomSeries.hpp"
-#include "Edge.hpp"
-#include "Graph.hpp"
 #include "Image.hpp"
 #include "ImageSeries.hpp"
 #include "Landmarks.hpp"
@@ -40,17 +38,13 @@
 #include "Matrix4.hpp"
 #include "Mesh.hpp"
 #include "ModelSeries.hpp"
-#include "Node.hpp"
 #include "Plane.hpp"
 #include "PlaneList.hpp"
 #include "Point.hpp"
 #include "PointList.hpp"
-#include "Port.hpp"
 #include "Reconstruction.hpp"
-#include "ReconstructionTraits.hpp"
 #include "Resection.hpp"
 #include "ResectionDB.hpp"
-#include "ROITraits.hpp"
 #include "Series.hpp"
 #include "SeriesSet.hpp"
 #include "Set.hpp"
@@ -92,9 +86,7 @@ static const std::unordered_map<std::string, deserializer_t> s_defaultDeserializ
     {data::Color::classname(), &Color::deserialize},
     {data::Composite::classname(), &Composite::deserialize},
     {data::DicomSeries::classname(), &DicomSeries::deserialize},
-    {data::Edge::classname(), &Edge::deserialize},
     {data::Float::classname(), &Helper::deserialize<data::Float>},
-    {data::Graph::classname(), &Graph::deserialize},
     {data::Integer::classname(), &Helper::deserialize<data::Integer>},
     {data::Image::classname(), &Image::deserialize},
     {data::ImageSeries::classname(), &ImageSeries::deserialize},
@@ -104,17 +96,13 @@ static const std::unordered_map<std::string, deserializer_t> s_defaultDeserializ
     {data::Matrix4::classname(), &Matrix4::deserialize},
     {data::Mesh::classname(), &Mesh::deserialize},
     {data::ModelSeries::classname(), &ModelSeries::deserialize},
-    {data::Node::classname(), &Node::deserialize},
     {data::Point::classname(), &Point::deserialize},
     {data::PointList::classname(), &PointList::deserialize},
     {data::Plane::classname(), &Plane::deserialize},
     {data::PlaneList::classname(), &PlaneList::deserialize},
-    {data::Port::classname(), &Port::deserialize},
     {data::Reconstruction::classname(), &Reconstruction::deserialize},
-    {data::ReconstructionTraits::classname(), &ReconstructionTraits::deserialize},
     {data::Resection::classname(), &Resection::deserialize},
     {data::ResectionDB::classname(), &ResectionDB::deserialize},
-    {data::ROITraits::classname(), &ROITraits::deserialize},
     {data::Series::classname(), &Series::deserialize},
     {data::SeriesSet::classname(), &SeriesSet::deserialize},
     {data::Set::classname(), &Set::deserialize},

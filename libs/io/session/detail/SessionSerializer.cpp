@@ -30,8 +30,6 @@
 #include "Color.hpp"
 #include "Composite.hpp"
 #include "DicomSeries.hpp"
-#include "Edge.hpp"
-#include "Graph.hpp"
 #include "Image.hpp"
 #include "ImageSeries.hpp"
 #include "Landmarks.hpp"
@@ -40,17 +38,13 @@
 #include "Matrix4.hpp"
 #include "Mesh.hpp"
 #include "ModelSeries.hpp"
-#include "Node.hpp"
 #include "Plane.hpp"
 #include "PlaneList.hpp"
 #include "Point.hpp"
 #include "PointList.hpp"
-#include "Port.hpp"
 #include "Reconstruction.hpp"
-#include "ReconstructionTraits.hpp"
 #include "Resection.hpp"
 #include "ResectionDB.hpp"
-#include "ROITraits.hpp"
 #include "Series.hpp"
 #include "SeriesSet.hpp"
 #include "Set.hpp"
@@ -92,9 +86,7 @@ static const std::unordered_map<std::string, serializer_t> s_defaultSerializers 
     {data::Color::classname(), &Color::serialize},
     {data::Composite::classname(), &Composite::serialize},
     {data::DicomSeries::classname(), &DicomSeries::serialize},
-    {data::Edge::classname(), &Edge::serialize},
     {data::Float::classname(), &Helper::serialize<data::Float>},
-    {data::Graph::classname(), &Graph::serialize},
     {data::Integer::classname(), &Helper::serialize<data::Integer>},
     {data::Image::classname(), &Image::serialize},
     {data::ImageSeries::classname(), &ImageSeries::serialize},
@@ -104,17 +96,13 @@ static const std::unordered_map<std::string, serializer_t> s_defaultSerializers 
     {data::Matrix4::classname(), &Matrix4::serialize},
     {data::Mesh::classname(), &Mesh::serialize},
     {data::ModelSeries::classname(), &ModelSeries::serialize},
-    {data::Node::classname(), &Node::serialize},
     {data::Point::classname(), &Point::serialize},
     {data::PointList::classname(), &PointList::serialize},
     {data::Plane::classname(), &Plane::serialize},
     {data::PlaneList::classname(), &PlaneList::serialize},
-    {data::Port::classname(), &Port::serialize},
     {data::Reconstruction::classname(), &Reconstruction::serialize},
-    {data::ReconstructionTraits::classname(), &ReconstructionTraits::serialize},
     {data::Resection::classname(), &Resection::serialize},
     {data::ResectionDB::classname(), &ResectionDB::serialize},
-    {data::ROITraits::classname(), &ROITraits::serialize},
     {data::Series::classname(), &Series::serialize},
     {data::SeriesSet::classname(), &SeriesSet::serialize},
     {data::Set::classname(), &Set::serialize},

@@ -332,10 +332,17 @@ inline bool TransferFunctionPiece::operator==(const TransferFunctionPiece& _othe
     }
 
     // Super class last
-    return !core::tools::is_equal(
+    return core::tools::is_equal(
         *this,
         _other
     );
+}
+
+//-----------------------------------------------------------------------------
+
+inline bool TransferFunctionPiece::operator!=(const TransferFunctionPiece& _other) const noexcept
+{
+    return !(*this == _other);
 }
 
 //-----------------------------------------------------------------------------

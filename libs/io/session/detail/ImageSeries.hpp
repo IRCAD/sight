@@ -72,9 +72,9 @@ inline static data::ImageSeries::sptr deserialize(
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::ImageSeries>(tree, 0, 1);
 
-    // Since ImageSeries inherits from Series we could use SeriesDeserializer
-    Series::deserialize(archive, tree, children, imageSeries, password);
     Image::deserialize(archive, tree, children, imageSeries, password);
+    // Deserialize series last since it overwrites some attributes of Image.
+    Series::deserialize(archive, tree, children, imageSeries, password);
 
     // Deserialize other attributes
     imageSeries->setDicomReference(std::dynamic_pointer_cast<data::DicomSeries>(children.at(s_DicomReference)));

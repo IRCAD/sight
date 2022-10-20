@@ -207,6 +207,28 @@ inline static data::Image::sptr deserialize(
 
     image->setWindowWidth(windowWidths);
 
+    const auto& spacingTree = tree.get_child(s_Spacing);
+    image->setSpacing(
+        {
+            spacingTree.get<double>(s_X),
+            spacingTree.get<double>(s_Y),
+            spacingTree.get<double>(s_Z)
+        });
+
+    const auto& originTree = tree.get_child(s_Origin);
+    image->setOrigin(
+        {
+            originTree.get<double>(s_X),
+            originTree.get<double>(s_Y),
+            originTree.get<double>(s_Z)
+        });
+
+    // If pixelFormart == UNDEFINED it is ALWAYS an empty image, so early return here.
+    if(format == data::Image::PixelFormat::UNDEFINED)
+    {
+        return image;
+    }
+
     const auto& serialized_uuid = tree.get<std::string>(s_uuid);
 
     // Read the image data
@@ -228,32 +250,15 @@ inline static data::Image::sptr deserialize(
 
     // Convert from VTK
     io::vtk::fromVTKImage(vtk_reader->GetOutput(), image);
+#endif
 
     /// @todo We should convert VTK RGB back to BGR if the original image is BGR and we produced a real vti files by
-    /// converting BGR to RGB, which is not the case right now (see io::vtk::toVTKImage). For now, we simply switch back
+    /// converting BGR to RGB, which is not the case right now (see io::vtk::toVTKImage). For now, we simply switch
+    /// back
     /// to the correct pixel type.
     image->resize(size, type, format);
-#else
-    // Allocate the buffer
-    image->resize(size, type, format);
 
-    // Read metadata
-    const auto& spacingTree = tree.get_child(s_Spacing);
-    image->setSpacing(
-        {
-            spacingTree.get<double>(s_X),
-            spacingTree.get<double>(s_Y),
-            spacingTree.get<double>(s_Z)
-        });
-
-    const auto& originTree = tree.get_child(s_Origin);
-    image->setOrigin(
-        {
-            originTree.get<double>(s_X),
-            originTree.get<double>(s_Y),
-            originTree.get<double>(s_Z)
-        });
-
+#if !defined(USE_VTK)
     // Read the image data as raw bytes
     istream->read(reinterpret_cast<char*>(image->getBuffer()), std::streamsize(image->getSizeInBytes()));
 #endif

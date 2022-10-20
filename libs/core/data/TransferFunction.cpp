@@ -305,9 +305,27 @@ bool TransferFunction::operator==(const TransferFunction& _other) const noexcept
 {
     if(m_name != _other.m_name
        || !core::tools::is_equal(m_backgroundColor, _other.m_backgroundColor)
-       || m_pieces != _other.m_pieces)
+       || m_pieces.size() != _other.m_pieces.size())
     {
         return false;
+    }
+
+    // test each piece in m_pieces
+
+    auto a_it = m_pieces.cbegin();
+    auto b_it = _other.m_pieces.cbegin();
+
+    const auto a_end = m_pieces.cend();
+
+    while(a_it != a_end)
+    {
+        if(**a_it != **b_it)
+        {
+            return false;
+        }
+
+        ++a_it;
+        ++b_it;
     }
 
     // Super class last

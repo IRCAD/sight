@@ -130,12 +130,15 @@ void fromVTKPointSet(vtkPointSet& dataset, data::Mesh& mesh)
             {VTK_TETRA, data::Mesh::CellType::TETRA},
         };
 
-        mesh.resize(
-            static_cast<data::Mesh::size_t>(numberOfPoints),
-            static_cast<data::Mesh::size_t>(numberOfCells),
-            s_getCellType[firstCellType],
-            attributes
-        );
+        if(numberOfPoints > 0 && numberOfCells > 0)
+        {
+            mesh.resize(
+                static_cast<data::Mesh::size_t>(numberOfPoints),
+                static_cast<data::Mesh::size_t>(numberOfCells),
+                s_getCellType[firstCellType],
+                attributes
+            );
+        }
 
         {
             vtkIdType i = 0;
@@ -277,6 +280,10 @@ void fromVTKPointSet(vtkPointSet& dataset, data::Mesh& mesh)
                         cell.pt[3] = static_cast<data::Mesh::point_t>(idList->GetId(3));
                     }
 
+                    break;
+
+                case VTK_EMPTY_CELL:
+                    // Nothing to do.
                     break;
 
                 default:

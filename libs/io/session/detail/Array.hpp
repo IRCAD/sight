@@ -104,7 +104,10 @@ inline static data::Array::sptr deserialize(
         sizes.push_back(size);
     }
 
-    array->resize(sizes, tree.get<std::string>(s_Type), true);
+    if(!sizes.empty())
+    {
+        array->resize(sizes, tree.get<std::string>(s_Type), true);
+    }
 
     // Buffer
     const auto& bufferObject = array->getBufferObject();
