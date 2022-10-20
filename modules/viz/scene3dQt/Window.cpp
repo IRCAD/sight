@@ -196,6 +196,20 @@ void Window::makeCurrent()
     if(m_glContext)
     {
         m_glContext->makeCurrent(this);
+        if(m_ogreRenderWindow != nullptr)
+        {
+            Ogre::RenderSystem* renderSystem = m_ogreRoot->getRenderSystem();
+            SIGHT_ASSERT("RenderSystem is null", renderSystem);
+
+            // glXMakeCurrent needs the current GL context, but also the current drawable
+            // This trick allows to set the current OpenGL drawable in Ogre internal state
+            // Not doing this gives errors with multiple windows opened, like the following:
+            //
+            // Exception occurred during Ogre renderingInternalErrorException: failed to lock 48 bytes at 0 of
+            // total 48 bytes in lockImpl at XXX/RenderSystems/GL3Plus/src/OgreGL3PlusHardwareBuffer.cpp
+            //
+            renderSystem->_setRenderTarget(m_ogreRenderWindow);
+        }
     }
 }
 
