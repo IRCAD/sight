@@ -194,8 +194,28 @@ void IGuiContainer::destroy()
 {
     SIGHT_ASSERT("View must be initialized.", m_viewRegistry);
 
+    m_viewRegistry->unmanage();
+
+    for(const auto& slideBuilder : m_slideViewBuilders)
+    {
+        SIGHT_ASSERT("Slide builder is not instantiated", slideBuilder);
+        core::thread::getDefaultWorker()->postTask<void>(
+            [&]
+            {
+                slideBuilder->destroyContainer();
+            }).wait();
+    }
+
     if(m_viewLayoutManagerIsCreated)
     {
+        SIGHT_ASSERT("ViewLayoutManager must be initialized.", m_viewLayoutManager);
+
+        core::thread::getDefaultWorker()->postTask<void>(
+            [&]
+            {
+                m_viewLayoutManager->destroyLayout();
+            }).wait();
+
         if(m_hasToolBar)
         {
             m_viewRegistry->unmanageToolBar();
@@ -207,25 +227,6 @@ void IGuiContainer::destroy()
                     m_toolBarBuilder->destroyToolBar();
                 }).wait();
         }
-
-        m_viewRegistry->unmanage();
-        SIGHT_ASSERT("ViewLayoutManager must be initialized.", m_viewLayoutManager);
-
-        core::thread::getDefaultWorker()->postTask<void>(
-            [&]
-            {
-                m_viewLayoutManager->destroyLayout();
-            }).wait();
-    }
-
-    for(const auto& slideBuilder : m_slideViewBuilders)
-    {
-        SIGHT_ASSERT("Slide builder is not instantiated", slideBuilder);
-        core::thread::getDefaultWorker()->postTask<void>(
-            [&]
-            {
-                slideBuilder->destroyContainer();
-            }).wait();
     }
 
     m_containerBuilder->destroyContainer();
