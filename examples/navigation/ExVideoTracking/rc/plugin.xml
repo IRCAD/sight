@@ -22,7 +22,7 @@
             <!-- ******************************* UI declaration *********************************** -->
 
             <service uid="videoToolbarConfig" type="sight::service::SConfigController">
-                <appConfig id="sight::config::io::video::Toolbar" />
+                <appConfig id="sight::config::io::video::controls" />
 
                 <inout key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />

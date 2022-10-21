@@ -1,6 +1,77 @@
-<!-- Standard video widget -->
+<!-- 
+    Standard video widget 
+    It provides a toolbar for the standard play/pause/stop/loop actions.
+    It includes a selector to choose the video source (device/file/stream) and the grabber.
+    The camera resolution is handled through preferences and a selector.
+    There are several input and output channels (int/double/bool/enum) to specify capture options 
+    or notify that some options have changed. 
+    The config outputs a timeline, and does not do any synchronisation.
+    This config aims to be generic fo all kind of videos. As a result, all kind of specific 
+    video processing are not expected here.
+
+Inout: 
+   camera  [sight::data::Camera]: camera used to display video.
+   frameTL  [sight::data::FrameTL]: timeline where to extract the video frames.
+
+ui elements: 
+   TOOLBAR: editor wid of a toolbar in which the play/pause/stop/loop buttons will be displayed.
+
+parameters: 
+    videoSupport (optional, default="true") : indicates if the "file" video source is allowed or not
+
+channels - out (optional): 
+
+    notificationChannel :         channel to signal notifications to display them on screen to user (successes/failures/....)
+    cameraStartedChannelOut :     channel on which a signal is triggered when the camera is started.
+    cameraPausedChannelOut :      channel on which a signal is triggered when the camera is paused.
+    cameraResumePauseChannelOut : channel on which a signal is triggered when the camera pause is resumed.
+    cameraStoppedChannelOut :     channel on which a signal is triggered when the camera is stopped.
+    loopModeToggleChannelOut :    channel on which a signal is triggered when the camera loop mode is toggled.
+
+    boolParameterChannelOut(bool, std::string)             : channel on which a signal is triggered when a named boolean grabber parameter is changed.
+    intParameterChannelOut(int, std::string)               : channel on which a signal is triggered when a named integer grabber parameter is changed.
+    enumParameterChannelOut(std::string, std::string)      : channel on which a signal is triggered when a named list element grabber parameter is changed.
+    enumValuesParameterChannelOut(std::string, std::string): channel on which a signal is triggered when a named data list element grabber parameter is changed.
+    
+    videoPositionParameterOut : channel on which a signal is triggered when the position in the video is modified during playing.
+    videoDurationParameterOut : channel on which a signal is triggered when the duration of the video is modified.
+   
+    configuredFileOut : channel on which a signal is triggered the user selects a file as the video source.
+    configuredStreamOut : channel on which a signal is triggered the user selects a stream as the video source.
+    configuredDeviceOut   : channel on which a signal is triggered when the user selects a device as the video source. 
+
+channels - in (optional): 
+
+    boolParameterChannelIn(bool, std::string)       : channel on which a signal is expected to notify the grabber that a named boolean parameter is changed.
+    intParameterChannelIn(int, std::string)         : channel on which a signal is expected to notify the grabber that a named integer parameter is changed.
+    enumParameterChannelIn(std::string, std::string): channel on which a signal is expected to notify the grabber that a named list element parameter is changed.
+
+Usage:
+
+        <service uid="..." type="sight::service::SConfigController">
+            <appConfig id="sight::config::io::video::controls" />
+            <inout key="camera" uid="..." />
+            <inout key="frameTL" uid="..." />
+            <parameter replace="TOOLBAR"                        by="..." />
+            <parameter replace="videoSupport"                   by="..." />
+            <parameter replace="notificationChannel"            by="..." />
+            <parameter replace="cameraStartedChannelOut"        by="..." />
+            <parameter replace="cameraPausedChannelOut"         by="..." />
+            <parameter replace="cameraResumePauseChannelOut"    by="..." />
+            <parameter replace="cameraStoppedChannelOut"        by="..." />
+            <parameter replace="loopModeToggleChannelOut"       by="..." />
+            <parameter replace="intParameterChannelIn"          by="..." />
+            <parameter replace="intParameterChannelOut"         by="..." />
+            <parameter replace="enumParameterChannelIn"         by="..." />
+            <parameter replace="enumParameterChannelOut"        by="..." />
+            <parameter replace="enumValuesParameterChannelOut"  by="..." />
+            <parameter replace="configuredFileOut"              by="..." />
+            <parameter replace="configuredStreamOut"            by="..." />
+            <parameter replace="configuredDeviceOut"            by="..." />
+        </service>
+-->
 <extension implements="sight::service::extension::AppConfig" >
-    <id>sight::config::io::video::Toolbar</id>
+    <id>sight::config::io::video::controls</id>
     <parameters>
         <param name="camera" />
         <param name="frameTL" />
@@ -8,9 +79,13 @@
         <param name="TOOLBAR" />
         <param name="videoSupport" default="true" />
 
-        <param name="cameraStartedChannelOut" default="cameraStartedChannelOut" />
-        <param name="cameraStoppedChannelOut" default="cameraStoppedChannelOut" />
         <param name="notificationChannel" default="notificationChannel" />
+
+        <param name="cameraStartedChannelOut" default="cameraStartedChannelOut" />
+        <param name="cameraPausedChannelOut" default="cameraPausedChannelOut" />
+        <param name="cameraResumePauseChannelOut" default="cameraResumePauseChannelOut" />
+        <param name="cameraStoppedChannelOut" default="cameraStoppedChannelOut" />
+        <param name="loopModeToggleChannelOut" default="loopModeToggleChannelOut" />
 
         <param name="boolParameterChannelIn" default="boolParameterChannelIn" />
         <param name="boolParameterChannelOut" default="boolParameterChannelOut" />
@@ -23,6 +98,11 @@
         <param name="videoPositionParameterIn" default="videoPositionParameterIn" />
         <param name="videoPositionParameterOut" default="videoPositionParameterOut" />
         <param name="videoDurationParameterOut" default="videoDurationParameterOut" />
+
+        <param name="configuredFileOut" default="configuredFileOut" />
+        <param name="configuredStreamOut" default="configuredStreamOut" />
+        <param name="configuredDeviceOut" default="configuredDeviceOut" />
+
     </parameters>
     <config>
 
@@ -105,14 +185,14 @@
             <slot>grabberProxySrv/startCamera</slot>
         </connect>
 
-        <connect>
+        <connect channel="${cameraPausedChannelOut}">
             <signal>pauseVideoAct/clicked</signal>
             <slot>grabberProxySrv/pauseCamera</slot>
             <slot>resumeVideoAct/show</slot>
             <slot>pauseVideoAct/hide</slot>
         </connect>
 
-        <connect>
+        <connect channel="${cameraResumePauseChannelOut}">
             <signal>resumeVideoAct/clicked</signal>
             <slot>grabberProxySrv/pauseCamera</slot>
             <slot>resumeVideoAct/hide</slot>
@@ -130,7 +210,7 @@
             <slot>loopVideoAct/uncheck</slot>
         </connect>
 
-        <connect>
+        <connect channel="${loopModeToggleChannelOut}">
             <signal>loopVideoAct/clicked</signal>
             <slot>grabberProxySrv/loopVideo</slot>
         </connect>
@@ -141,10 +221,21 @@
         </connect>
 
         <connect>
-            <signal>videoSelectorSrv/configuredFile</signal>
             <signal>videoSelectorSrv/configuredStream</signal>
             <signal>videoSelectorSrv/configuredDevice</signal>
             <slot>startVideoAct/update</slot>
+        </connect>
+
+        <connect channel="${configuredFileOut}">
+            <signal>videoSelectorSrv/configuredFile</signal>
+        </connect>
+
+        <connect channel="${configuredStreamOut}">
+            <signal>videoSelectorSrv/configuredStream</signal>
+        </connect>
+
+        <connect channel="${configuredDeviceOut}">
+            <signal>videoSelectorSrv/configuredDevice</signal>
         </connect>
 
         <connect channel="${cameraStartedChannelOut}" >
@@ -155,6 +246,7 @@
             <slot>loopVideoAct/enable</slot>
         </connect>
 
+        
         <connect>
             <signal>camera/idModified</signal>
             <slot>grabberProxySrv/stopCamera</slot>
