@@ -30,7 +30,7 @@
 
 namespace service = sight::service;
 
-namespace Tuto04MeshGeneratorCpp
+namespace Tuto13MeshGeneratorCpp
 {
 
 static const service::IService::KeyType s_MESH_INOUT = "mesh";
@@ -183,4 +183,4 @@ void SMeshModifier::stopping()
 
 //-----------------------------------------------------------------------------
 
-} // namespace Tuto04MeshGeneratorCpp.
+} // namespace Tuto13MeshGeneratorCpp.

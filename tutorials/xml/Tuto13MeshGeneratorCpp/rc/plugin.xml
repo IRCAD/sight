@@ -1,4 +1,4 @@
-<plugin id="Tuto04MeshGeneratorCpp" library="true" >
+<plugin id="Tuto13MeshGeneratorCpp" library="true" >
 
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::viz::scene3d" />
@@ -8,12 +8,12 @@
 
     <extension implements="sight::service::extension::Factory" >
         <type>sight::ui::base::IAction</type>
-        <service>Tuto04MeshGeneratorCpp::SMeshModifier</service>
+        <service>Tuto13MeshGeneratorCpp::SMeshModifier</service>
         <object>sight::data::Mesh</object>
     </extension>
 
     <extension implements="sight::service::extension::AppConfig" >
-        <id>Tuto04MeshGeneratorCpp_AppCfg</id>
+        <id>Tuto13MeshGeneratorCpp_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
@@ -25,8 +25,8 @@
             <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
-                        <name>Tuto04MeshGeneratorCpp</name>
-                        <icon>Tuto04MeshGeneratorCpp/tuto.ico</icon>
+                        <name>Tuto13MeshGeneratorCpp</name>
+                        <icon>Tuto13MeshGeneratorCpp/tuto.ico</icon>
                     </frame>
                     <menuBar/>
                 </gui>
@@ -129,42 +129,42 @@
 
             <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
-            <service uid="shakeMeshPointAct" type="Tuto04MeshGeneratorCpp::SMeshModifier" >
+            <service uid="shakeMeshPointAct" type="Tuto13MeshGeneratorCpp::SMeshModifier" >
                 <inout key="mesh" uid="mesh" />
                 <config functor="ShakeMeshPoint" />
             </service>
 
-            <service uid="colorizeMeshPointAct" type="Tuto04MeshGeneratorCpp::SMeshModifier" >
+            <service uid="colorizeMeshPointAct" type="Tuto13MeshGeneratorCpp::SMeshModifier" >
                 <inout key="mesh" uid="mesh" />
                 <config functor="ColorizeMeshPoints" />
             </service>
 
-            <service uid="colorizeMeshCellsAct" type="Tuto04MeshGeneratorCpp::SMeshModifier" >
+            <service uid="colorizeMeshCellsAct" type="Tuto13MeshGeneratorCpp::SMeshModifier" >
                 <inout key="mesh" uid="mesh" />
                 <config functor="ColorizeMeshCells" />
             </service>
 
-            <service uid="colorizeComputePointsNormalsAct" type="Tuto04MeshGeneratorCpp::SMeshModifier" >
+            <service uid="colorizeComputePointsNormalsAct" type="Tuto13MeshGeneratorCpp::SMeshModifier" >
                 <inout key="mesh" uid="mesh" />
                 <config functor="ComputePointNormals" />
             </service>
 
-            <service uid="colorizeComputeCellsNormalsAct" type="Tuto04MeshGeneratorCpp::SMeshModifier" >
+            <service uid="colorizeComputeCellsNormalsAct" type="Tuto13MeshGeneratorCpp::SMeshModifier" >
                 <inout key="mesh" uid="mesh" />
                 <config functor="ComputeCellNormals" />
             </service>
 
-            <service uid="shakePointsNormalsAct" type="Tuto04MeshGeneratorCpp::SMeshModifier" >
+            <service uid="shakePointsNormalsAct" type="Tuto13MeshGeneratorCpp::SMeshModifier" >
                 <inout key="mesh" uid="mesh" />
                 <config functor="ShakePointNormals" />
             </service>
 
-            <service uid="shakeCellsNormalsAct" type="Tuto04MeshGeneratorCpp::SMeshModifier" >
+            <service uid="shakeCellsNormalsAct" type="Tuto13MeshGeneratorCpp::SMeshModifier" >
                 <inout key="mesh" uid="mesh" />
                 <config functor="ShakeCellNormals" />
             </service>
 
-            <service uid="meshDeformationAct" type="Tuto04MeshGeneratorCpp::SMeshModifier" >
+            <service uid="meshDeformationAct" type="Tuto13MeshGeneratorCpp::SMeshModifier" >
                 <inout key="mesh" uid="mesh" />
                 <config functor="MeshDeformation" />
             </service>

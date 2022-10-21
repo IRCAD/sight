@@ -28,7 +28,7 @@
 
 #include <ui/base/IAction.hpp>
 
-namespace Tuto04MeshGeneratorCpp
+namespace Tuto13MeshGeneratorCpp
 {
 
 /**
@@ -37,7 +37,7 @@ namespace Tuto04MeshGeneratorCpp
  *
  * @section XML XML Configuration
  * @code{.xml}
-     <service type="Tuto04MeshGeneratorCpp::SMeshModifier" >
+     <service type="Tuto13MeshGeneratorCpp::SMeshModifier" >
          <inout key="mesh" uid="..." />
          <config functor="ShakeMeshPoint" />
      </service>
@@ -89,9 +89,9 @@ private:
     std::string m_functor;
 
     /// Defines the algorithm used to animate a deformation on the mesh.
-    Tuto04MeshGeneratorCpp::AlgoMeshDeformation m_animator;
+    Tuto13MeshGeneratorCpp::AlgoMeshDeformation m_animator;
 
     sight::data::ptr<sight::data::Mesh, sight::data::Access::inout> m_mesh {this, "mesh"};
 };
 
-} // namespace Tuto04MeshGeneratorCpp.
+} // namespace Tuto13MeshGeneratorCpp.

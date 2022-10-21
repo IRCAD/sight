@@ -1,7 +1,7 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
  *
@@ -22,38 +22,26 @@
 
 #pragma once
 
-#include "Tuto07SceneQt3DQml/config.hpp"
+#include "Tuto13MeshGeneratorCpp/config.hpp"
 
 #include <core/runtime/Plugin.hpp>
 
-/**
- * Do not mark `TUTO07SCENEQT3DQML` as incorrect.
- * cspell:ignore TUTO07SCENEQT3DQML
- */
-namespace Tuto07SceneQt3DQml
+namespace Tuto13MeshGeneratorCpp
 {
 
-/**
- * @brief This class starts the software when the bundles is loaded.
- */
-
-class TUTO07SCENEQT3DQML_CLASS_API Plugin : public sight::core::runtime::Plugin
+/// This class is started when the module is loaded.
+class TUTO13MESHGENERATORCPP_CLASS_API Plugin final : public sight::core::runtime::Plugin
 {
 public:
 
-    /// Constructor.
-    TUTO07SCENEQT3DQML_API Plugin() noexcept;
+    /// Destroys the plugin.
+    TUTO13MESHGENERATORCPP_API ~Plugin() noexcept override;
 
-    /// Destructor. Does nothing.
-    TUTO07SCENEQT3DQML_API ~Plugin() noexcept override;
+    /// Starts the plugin, does nothing here.
+    TUTO13MESHGENERATORCPP_API void start() override;
 
-private:
-
-    /// Registers fwRenderQt3D features to be used as QML types.
-    void start() override;
-
-    /// Does nothing.
-    void stop() noexcept override;
+    /// Stops the plugin, does nothing here.
+    TUTO13MESHGENERATORCPP_API void stop() noexcept override;
 };
 
-} // namespace Tuto07SceneQt3DQml.
+} // namespace Tuto13MeshGeneratorCpp.

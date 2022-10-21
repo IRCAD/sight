@@ -1,7 +1,7 @@
-sight_add_target(Tuto04MeshGeneratorCpp TYPE APP UNIQUE ON)
+sight_add_target(Tuto13MeshGeneratorCpp TYPE APP UNIQUE ON)
 
 add_dependencies(
-    Tuto04MeshGeneratorCpp
+    Tuto13MeshGeneratorCpp
     sightrun
     data
     module_appXml
@@ -14,7 +14,7 @@ add_dependencies(
     module_io_vtk
 )
 
-target_link_libraries(Tuto04MeshGeneratorCpp PUBLIC data geometry_data service ui_base)
+target_link_libraries(Tuto13MeshGeneratorCpp PUBLIC data geometry_data service ui_base)
 
 # Allow dark theme via module_ui_qt
 module_param(
@@ -23,6 +23,6 @@ module_param(
 )
 
 # Main application's configuration to launch
-module_param(module_appXml PARAM_LIST config PARAM_VALUES Tuto04MeshGeneratorCpp_AppCfg)
+module_param(module_appXml PARAM_LIST config PARAM_VALUES Tuto13MeshGeneratorCpp_AppCfg)
 
-sight_generate_profile(Tuto04MeshGeneratorCpp)
+sight_generate_profile(Tuto13MeshGeneratorCpp)

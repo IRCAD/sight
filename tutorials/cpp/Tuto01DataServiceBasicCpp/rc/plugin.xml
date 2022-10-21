@@ -1,6 +1,0 @@
-<plugin id="Tuto01DataServiceBasicCpp" library="true" autostart="true" priority="100">
-
-    <requirement id="sight::module::service" />
-    <requirement id="sight::module::ui::qt" />
-
-</plugin>

@@ -1,9 +1,0 @@
-<plugin id="Tuto03MesherWithGenericSceneCpp" library="true" autostart="true">
-
-    <requirement id="sight::module::ui::base" />
-    <requirement id="sight::module::viz::scene3d" />
-    <requirement id="sight::module::viz::scene3dQt" />
-    <requirement id="sight::module::ui::qt" />
-    <requirement id="sight::module::service" />
-
-</plugin>

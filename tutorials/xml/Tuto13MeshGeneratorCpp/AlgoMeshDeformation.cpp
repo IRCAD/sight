@@ -31,7 +31,7 @@
 namespace data     = sight::data;
 namespace geometry = sight::geometry;
 
-namespace Tuto04MeshGeneratorCpp
+namespace Tuto13MeshGeneratorCpp
 {
 
 //-----------------------------------------------------------------------------
@@ -168,4 +168,4 @@ void AlgoMeshDeformation::computeSimu()
 
 //-----------------------------------------------------------------------------
 
-} // namespace Tuto04MeshGeneratorCpp.
+} // namespace Tuto13MeshGeneratorCpp.

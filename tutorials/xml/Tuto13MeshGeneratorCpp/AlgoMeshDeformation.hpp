@@ -22,28 +22,28 @@
 
 #pragma once
 
-#include "Tuto04MeshGeneratorCpp/config.hpp"
+#include "Tuto13MeshGeneratorCpp/config.hpp"
 
 #include <core/tools/Failed.hpp>
 
 #include <data/Array.hpp>
 #include <data/Mesh.hpp>
 
-namespace Tuto04MeshGeneratorCpp
+namespace Tuto13MeshGeneratorCpp
 {
 
-class TUTO04MESHGENERATORCPP_CLASS_API AlgoMeshDeformation final
+class TUTO13MESHGENERATORCPP_CLASS_API AlgoMeshDeformation final
 {
 public:
 
     /// Creates an instance.
-    TUTO04MESHGENERATORCPP_API AlgoMeshDeformation() noexcept;
+    TUTO13MESHGENERATORCPP_API AlgoMeshDeformation() noexcept;
 
     /// Destroys the instance.
-    TUTO04MESHGENERATORCPP_API ~AlgoMeshDeformation() noexcept;
+    TUTO13MESHGENERATORCPP_API ~AlgoMeshDeformation() noexcept;
 
     /// Computes the deformation or sets and initializes the algorithm if necessary.
-    TUTO04MESHGENERATORCPP_API void computeDeformation(
+    TUTO13MESHGENERATORCPP_API void computeDeformation(
         sight::data::Mesh::sptr _mesh,
         unsigned int _nbStep,
         unsigned int _amplitude
@@ -89,4 +89,4 @@ private:
     sight::data::Mesh::sptr m_originMesh;
 };
 
-} // namespace Tuto04MeshGeneratorCpp.
+} // namespace Tuto13MeshGeneratorCpp.
