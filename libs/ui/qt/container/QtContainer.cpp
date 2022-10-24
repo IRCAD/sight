@@ -105,7 +105,7 @@ void QtContainer::destroyContainer()
 
     if(m_container != nullptr)
     {
-        delete m_container;
+        m_container->deleteLater();
         m_container.clear();
     }
 }
