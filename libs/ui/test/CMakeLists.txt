@@ -1,4 +1,4 @@
-sight_add_target(guiTest TYPE LIBRARY)
+sight_add_target(guiTest TYPE LIBRARY FAST_DEBUG ON)
 
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Test REQUIRED)

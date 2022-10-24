@@ -65,7 +65,7 @@ lint:sheldon:
     - mkdir -p $IMAGE_OUTPUT_PATH
     # Launch tests
     - >
-      if [ $SIGHT_ENABLE_COVERAGE = "ON" ]; then
+      if [ "$SIGHT_ENABLE_COVERAGE" = "ON" ]; then
         TIMEOUT="840"
       else
         TIMEOUT="480"
