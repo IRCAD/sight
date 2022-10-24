@@ -139,7 +139,8 @@ void WindowInteractor::createContainer(
     m_windowContainer->installEventFilter(
         new EventDispatcher(
             m_qOgreWidget,
-            {QEvent::MouseButtonPress, QEvent::MouseButtonRelease, QEvent::Enter, QEvent::MouseMove, QEvent::Leave
+            {QEvent::MouseButtonPress, QEvent::MouseButtonRelease, QEvent::Enter, QEvent::MouseMove, QEvent::Leave,
+             QEvent::Wheel
             })
     );
     layout->addWidget(m_windowContainer);

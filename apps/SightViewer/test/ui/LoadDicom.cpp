@@ -67,6 +67,12 @@ void LoadDicom::test()
                 [](QWidget* obj) -> bool {return obj->isEnabled();});
             tester.interact(std::make_unique<sight::ui::test::MouseClick>());
 
+            // The image appears small, zoom in with the mouse to make it bigger
+            tester.take(
+                "ogre scene",
+                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("genericSceneSrv");});
+            tester.interact(std::make_unique<sight::ui::test::MouseWheel>(QPoint(0, 1200)));
+
             saveSnapshot(tester, snapshotPath);
 
             compareImages(snapshotPath, referencePath);
