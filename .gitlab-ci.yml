@@ -64,7 +64,13 @@ lint:sheldon:
     - export IMAGE_OUTPUT_PATH=$CI_PROJECT_DIR/.build/testImages
     - mkdir -p $IMAGE_OUTPUT_PATH
     # Launch tests
-    - ctest --timeout 480 --output-on-failure -O ctest.log -j4 --output-junit junit.xml
+    - >
+      if [ $SIGHT_ENABLE_COVERAGE = "ON" ]; then
+        TIMEOUT="840"
+      else
+        TIMEOUT="480"
+      fi
+    - ctest --timeout $TIMEOUT --output-on-failure -O ctest.log -j4 --output-junit junit.xml
     # Build documentation if needed
     - >
       if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
