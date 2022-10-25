@@ -34,7 +34,7 @@
 
 // Wait at worst 1s for a given condition
 #define fwTestWaitMacro(cond, ...) \
-    core::TimeStamp BOOST_PP_CAT(timeStamp, __LINE__); \
+    sight::core::TimeStamp BOOST_PP_CAT(timeStamp, __LINE__); \
     BOOST_PP_CAT( \
         timeStamp, \
         __LINE__ \

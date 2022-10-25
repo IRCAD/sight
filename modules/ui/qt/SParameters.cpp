@@ -51,6 +51,7 @@ namespace sight::module::ui::qt
 
 //-----------------------------------------------------------------------------
 
+static const core::com::Signals::SignalKeyType PARAMETER_CHANGED_SIG  = "parameterChanged";
 static const core::com::Signals::SignalKeyType BOOLEAN_CHANGED_SIG    = "boolChanged";
 static const core::com::Signals::SignalKeyType COLOR_CHANGED_SIG      = "colorChanged";
 static const core::com::Signals::SignalKeyType DOUBLE_CHANGED_SIG     = "doubleChanged";
@@ -62,6 +63,7 @@ static const core::com::Signals::SignalKeyType INTEGER3_CHANGED_SIG   = "int3Cha
 static const core::com::Signals::SignalKeyType ENUM_CHANGED_SIG       = "enumChanged";
 static const core::com::Signals::SignalKeyType ENUM_INDEX_CHANGED_SIG = "enumIndexChanged";
 
+static const core::com::Slots::SlotKeyType s_SET_PARAMETER_SLOT            = "setParameter";
 static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT       = "setBoolParameter";
 static const core::com::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT      = "setColorParameter";
 static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT     = "setDoubleParameter";
@@ -82,6 +84,7 @@ static const core::com::Slots::SlotKeyType s_SET_DOUBLE_MAX_PARAMETER_SLOT = "se
 
 SParameters::SParameters() noexcept
 {
+    newSignal<ChangedSignalType>(PARAMETER_CHANGED_SIG);
     newSignal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG);
     newSignal<ColorChangedSignalType>(COLOR_CHANGED_SIG);
     newSignal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG);
@@ -93,6 +96,7 @@ SParameters::SParameters() noexcept
     newSignal<EnumChangedSignalType>(ENUM_CHANGED_SIG);
     newSignal<EnumChangedIndexSignalType>(ENUM_INDEX_CHANGED_SIG);
 
+    newSlot(s_SET_PARAMETER_SLOT, &SParameters::setParameter, this);
     newSlot(s_SET_BOOL_PARAMETER_SLOT, &SParameters::setBoolParameter, this);
     newSlot(s_SET_COLOR_PARAMETER_SLOT, &SParameters::setColorParameter, this);
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SParameters::setDoubleParameter, this);
@@ -444,6 +448,7 @@ void SParameters::updating()
                 if(!m_blockSignals)
                 {
                     this->signal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG)->asyncEmit(state, key);
+                    this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(state, key);
                     SIGHT_DEBUG(
                         "[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (state ? "true" : "false") << ", " << key
                         << ")"
@@ -474,11 +479,13 @@ void SParameters::updating()
                 if(!m_blockSignals)
                 {
                     this->signal<EnumChangedSignalType>(ENUM_CHANGED_SIG)->asyncEmit(data.toStdString(), key);
+                    this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(data.toStdString(), key);
                     SIGHT_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key << ")");
                     this->signal<EnumChangedIndexSignalType>(ENUM_INDEX_CHANGED_SIG)->asyncEmit(
                         box->currentIndex(),
                         key
                     );
+                    this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(box->currentIndex(), key);
                     SIGHT_DEBUG(
                         "[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << box->currentIndex() << ", " << key
                         << ")"
@@ -572,8 +579,10 @@ void SParameters::onChangeEnum(int value)
     if(!m_blockSignals)
     {
         this->signal<EnumChangedSignalType>(ENUM_CHANGED_SIG)->asyncEmit(data.toStdString(), key.toStdString());
+        this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(data.toStdString(), key.toStdString());
         SIGHT_DEBUG("[EMIT] " << ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key.toStdString() << ")");
         this->signal<EnumChangedIndexSignalType>(ENUM_INDEX_CHANGED_SIG)->asyncEmit(value, key.toStdString());
+        this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(box->currentIndex(), key.toStdString());
         SIGHT_DEBUG("[EMIT] " << ENUM_INDEX_CHANGED_SIG << "(" << value << ", " << key.toStdString() << ")");
     }
 }
@@ -589,6 +598,7 @@ void SParameters::onChangeBoolean(int value)
     if(!m_blockSignals)
     {
         this->signal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG)->asyncEmit(checked, key.toStdString());
+        this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(checked, key.toStdString());
         SIGHT_DEBUG(
             "[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (checked ? "true" : "false") << ", " << key.toStdString()
             << ")"
@@ -664,6 +674,7 @@ void SParameters::emitIntegerSignal(QObject* widget)
             }
 
             this->signal<IntegerChangedSignalType>(INTEGER_CHANGED_SIG)->asyncEmit(value, key.toStdString());
+            this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(value, key.toStdString());
             SIGHT_DEBUG("[EMIT] " << INTEGER_CHANGED_SIG << "(" << value << ", " << key.toStdString() << ")");
         }
         else
@@ -695,6 +706,8 @@ void SParameters::emitIntegerSignal(QObject* widget)
                     value2,
                     key.toStdString()
                 );
+                const sight::ui::base::int2_t values = {value1, value2};
+                this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(values, key.toStdString());
                 SIGHT_DEBUG(
                     "[EMIT] " << INTEGER2_CHANGED_SIG << "(" << value1 << ", " << value2 << ", "
                     << key.toStdString() << ")"
@@ -720,6 +733,8 @@ void SParameters::emitIntegerSignal(QObject* widget)
                     value3,
                     key.toStdString()
                 );
+                const sight::ui::base::int3_t values = {value1, value2, value3};
+                this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(values, key.toStdString());
                 SIGHT_DEBUG(
                     "[EMIT] " << INTEGER3_CHANGED_SIG << "(" << value1 << ", " << value2 << ", " << value3
                     << ", " << key.toStdString() << ")"
@@ -753,6 +768,7 @@ void SParameters::emitDoubleSignal(QObject* widget)
         {
             const double value = sight::module::ui::qt::SParameters::getDoubleSliderValue(slider);
             this->signal<DoubleChangedSignalType>(DOUBLE_CHANGED_SIG)->asyncEmit(value, key.toStdString());
+            this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(value, key.toStdString());
             SIGHT_DEBUG("[EMIT] " << DOUBLE_CHANGED_SIG << "(" << value << ", " << key.toStdString() << ")");
         }
         else if(spinbox != nullptr)
@@ -765,6 +781,7 @@ void SParameters::emitDoubleSignal(QObject* widget)
                     spinbox->value(),
                     key.toStdString()
                 );
+                this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(spinbox->value(), key.toStdString());
                 SIGHT_DEBUG(
                     "[EMIT] " << DOUBLE_CHANGED_SIG << "(" << spinbox->value() << ", "
                     << key.toStdString() << ")"
@@ -785,6 +802,8 @@ void SParameters::emitDoubleSignal(QObject* widget)
                         value2,
                         key.toStdString()
                     );
+                    const sight::ui::base::double2_t values = {value1, value2};
+                    this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(values, key.toStdString());
                     SIGHT_DEBUG(
                         "[EMIT] " << DOUBLE2_CHANGED_SIG << "(" << value1 << ", " << value2
                         << ", " << key.toStdString() << ")"
@@ -801,6 +820,8 @@ void SParameters::emitDoubleSignal(QObject* widget)
                         value3,
                         key.toStdString()
                     );
+                    const sight::ui::base::double3_t values = {value1, value2, value3};
+                    this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(values, key.toStdString());
                     SIGHT_DEBUG(
                         "[EMIT] " << DOUBLE3_CHANGED_SIG << "(" << value1 << ", " << value2
                         << ", " << value3 << ", " << key.toStdString() << ")"
@@ -873,6 +894,7 @@ void SParameters::onResetBooleanMapped(QWidget* widget)
         if(!m_blockSignals)
         {
             this->signal<BooleanChangedSignalType>(BOOLEAN_CHANGED_SIG)->asyncEmit(value != 0, key.toStdString());
+            this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(value != 0, key.toStdString());
             SIGHT_DEBUG(
                 "[EMIT] " << BOOLEAN_CHANGED_SIG << "(" << (value ? "true" : "false") << ", "
                 << key.toStdString() << ")"
@@ -907,6 +929,7 @@ void SParameters::onResetColorMapped(QWidget* widget)
         if(!m_blockSignals)
         {
             this->signal<ColorChangedSignalType>(COLOR_CHANGED_SIG)->asyncEmit(newColor, key.toStdString());
+            this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(newColor, key.toStdString());
             SIGHT_DEBUG(
                 "[EMIT] " << COLOR_CHANGED_SIG << "(" << int(newColor[0]) << ", "
                 << int(newColor[1]) << ", " << int(newColor[2]) << ", " << int(newColor[3]) << ", "
@@ -1509,6 +1532,70 @@ double SParameters::getDoubleSliderValue(const QSlider* slider)
 
 //------------------------------------------------------------------------------
 
+void SParameters::setParameter(sight::ui::base::parameter_t val, std::string key)
+{
+    this->blockSignals(true);
+
+    if(std::holds_alternative<bool>(val))
+    {
+        this->setBoolParameter(std::get<bool>(val), key);
+    }
+    else if(std::holds_alternative<sight::ui::base::color_t>(val))
+    {
+        this->setColorParameter(std::get<sight::ui::base::color_t>(val), key);
+    }
+    else if(std::holds_alternative<double>(val))
+    {
+        this->setDoubleParameter(std::get<double>(val), key);
+    }
+    else if(std::holds_alternative<sight::ui::base::double2_t>(val))
+    {
+        const auto values = std::get<sight::ui::base::double2_t>(val);
+        this->setDouble2Parameter(values[0], values[1], key);
+    }
+    else if(std::holds_alternative<sight::ui::base::double3_t>(val))
+    {
+        const auto values = std::get<sight::ui::base::double3_t>(val);
+        this->setDouble3Parameter(values[0], values[1], values[2], key);
+    }
+    else if(std::holds_alternative<sight::ui::base::int2_t>(val))
+    {
+        const auto values = std::get<sight::ui::base::int2_t>(val);
+        this->setInt2Parameter(values[0], values[1], key);
+    }
+    else if(std::holds_alternative<sight::ui::base::int3_t>(val))
+    {
+        const auto values = std::get<sight::ui::base::int3_t>(val);
+        this->setInt3Parameter(values[0], values[1], values[2], key);
+    }
+    else if(std::holds_alternative<std::string>(val))
+    {
+        this->setEnumParameter(std::get<std::string>(val), key);
+    }
+    else if(std::holds_alternative<int>(val))
+    {
+        // This can be either an int or a enum index
+        // Solve the ambiguity by testing the widget type
+        QWidget* child = this->getParamWidget(key);
+
+        auto* spinbox = qobject_cast<QSpinBox*>(child);
+        auto* slider  = qobject_cast<QSlider*>(child);
+
+        if(spinbox != nullptr || slider != nullptr)
+        {
+            this->setIntParameter(std::get<int>(val), key);
+        }
+        else
+        {
+            this->setEnumIndexParameter(std::get<int>(val), key);
+        }
+    }
+
+    this->blockSignals(false);
+}
+
+//------------------------------------------------------------------------------
+
 void SParameters::setBoolParameter(bool val, std::string key)
 {
     this->blockSignals(true);
@@ -1783,6 +1870,7 @@ void SParameters::emitColorSignal(const QColor color, const std::string& key)
     if(!m_blockSignals)
     {
         this->signal<ColorChangedSignalType>(COLOR_CHANGED_SIG)->asyncEmit(newColor, key);
+        this->signal<ChangedSignalType>(PARAMETER_CHANGED_SIG)->asyncEmit(newColor, key);
         SIGHT_DEBUG(
             "[EMIT] " << COLOR_CHANGED_SIG << "(" << int(newColor[0]) << ", "
             << int(newColor[1]) << ", " << int(newColor[2]) << ", " << int(newColor[3]) << ", " << key << ")"

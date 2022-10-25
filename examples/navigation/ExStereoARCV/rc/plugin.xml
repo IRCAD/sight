@@ -17,8 +17,8 @@
             <object uid="camera2" type="sight::data::Camera" src="deferred" />
             <object uid="frameTL1" type="sight::data::FrameTL" />
             <object uid="frameTL2" type="sight::data::FrameTL" />
-            <object uid="tagTL1" type="sight::data::MarkerTL" />
-            <object uid="tagTL2" type="sight::data::MarkerTL" />
+            <object uid="markerMap1" type="sight::data::MarkerMap" />
+            <object uid="markerMap2" type="sight::data::MarkerMap" />
             <object uid="videoImage1" type="sight::data::Image" />
             <object uid="videoImage2" type="sight::data::Image" />
             <object uid="matrixTL" type="sight::data::MatrixTL" />
@@ -229,10 +229,11 @@
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
             <service uid="leftGenericSceneSrv" type="sight::viz::scene3d::SRender" >
-                <scene>
+                <scene renderMode="sync" >
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1" />
+                    <layer id="video" order="1" />
+                    <layer id="default" order="2" />
                     <adaptor uid="LVideoAdp" />
                     <adaptor uid="LAxisAdp" />
                     <adaptor uid="LCameraAdp" />
@@ -258,10 +259,11 @@
 
             <!-- Scene in which the video and the 3D will be rendered -->
             <service uid="rightGenericSceneSrv" type="sight::viz::scene3d::SRender" >
-                <scene>
+                <scene renderMode="sync" >
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1" />
+                    <layer id="video" order="1" />
+                    <layer id="default" order="2" />
                     <adaptor uid="RVideoAdp" />
                     <adaptor uid="RAxisAdp" />
                     <adaptor uid="RCameraAdp" />
@@ -292,7 +294,7 @@
 
             <!-- extract a sight::data::Camera from the sight::data::CameraSet -->
             <service uid="cameraExtractorSrv" type="sight::module::data::SGetCamera" >
-                <inout key="source" uid="cameraSet" />
+                <inout key="cameraSet" uid="cameraSet" />
                 <out group="camera" >
                     <key index="0" uid="camera1" />
                     <key index="1" uid="camera2" />
@@ -418,11 +420,11 @@
 
             <!-- Aruco tracker service -->
             <service uid="arucoTracker1Srv" type="sight::module::navigation::optics::SArucoTracker" worker="tracking1" >
-                <in key="timeline" uid="frameTL1" autoConnect="true" />
                 <in key="camera" uid="camera1" />
-                <inout group="tagTL" >
+                <inout key="frame" uid="videoImage1" autoConnect="true" />
+                <inout group="markerMap" >
                     <!-- timeline of detected tag(s) -->
-                    <key uid="tagTL1" />
+                    <key uid="markerMap1" />
                 </inout>
                 <track>
                     <!-- list of id -->
@@ -432,11 +434,11 @@
             </service>
 
             <service uid="arucoTracker2Srv" type="sight::module::navigation::optics::SArucoTracker" worker="tracking2" >
-                <in key="timeline" uid="frameTL2" autoConnect="true" />
                 <in key="camera" uid="camera2" />
-                <inout group="tagTL" >
+                <inout key="frame" uid="videoImage2" autoConnect="true" />
+                <inout group="markerMap" >
                     <!-- timeline of detected tag(s) -->
-                    <key uid="tagTL2" />
+                    <key uid="markerMap2" />
                 </inout>
                 <track>
                     <!-- list of id -->
@@ -447,35 +449,40 @@
 
             <!-- This will compute the pose of the camera with tag(s) detected by aruco -->
             <service uid="registrationSrv" type="sight::module::geometry::vision::SPoseFrom2d" worker="registration" >
-                <in group="markerTL" autoConnect="true" >
-                    <key uid="tagTL1" />
-                    <key uid="tagTL2" />
+                <in group="markerMap" >
+                    <key uid="markerMap1" />
+                    <key uid="markerMap2" />
                 </in>
                 <in group="camera" >
                     <key uid="camera1" />
                     <key uid="camera2" />
                 </in>
                 <in key="extrinsic" uid="extrinsic" />
-                <inout key="matrixTL" uid="matrixTL" />
+                <inout group="matrix" >
+                    <key uid="matrix" id="101" />
+                </inout>
                 <patternWidth>60</patternWidth>
             </service>
 
-
             <!-- This will compute the reprojection error Left -->
             <service uid="leftReprojectionErrorSrv" type="sight::module::geometry::vision::SReprojectionError" worker="error1" >
-                <in key="matrixTL" uid="matrixTL" autoConnect="true" />
+                <in group="matrix" autoConnect="true" >
+                    <key uid="matrix" id="101" />
+                </in>
                 <in key="camera" uid="camera1" />
-                <in key="markerTL" uid="tagTL1" />
-                <inout key="frameTL" uid="frameTL1" />
+                <in key="markerMap" uid="markerMap1" />
+                <inout key="frame" uid="videoImage1" />
                 <patternWidth>60</patternWidth>
             </service>
 
             <service uid="rightReprojectionErrorSrv" type="sight::module::geometry::vision::SReprojectionError" worker="error2" >
-                <in key="matrixTL" uid="matrixTL" autoConnect="true" />
+                <in group="matrix" autoConnect="true" >
+                    <key uid="matrix" id="101" />
+                </in>
                 <in key="extrinsic" uid="extrinsic" />
                 <in key="camera" uid="camera2" />
-                <in key="markerTL" uid="tagTL2" />
-                <inout key="frameTL" uid="frameTL2" />
+                <in key="markerMap" uid="markerMap2" />
+                <inout key="frame" uid="videoImage2" />
                 <patternWidth>60</patternWidth>
             </service>
 
@@ -483,18 +490,12 @@
             <!-- To synchronize matrix, frame and detection -->
             <service uid="frameMatrixSynchronizerSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
                 <in group="frameTL" >
-                    <key uid="frameTL1" />
-                    <key uid="frameTL2" />
+                    <key uid="frameTL1" autoConnect="true"/>
+                    <key uid="frameTL2" autoConnect="true"/>
                 </in>
                 <inout group="image" >
                     <key uid="videoImage1" />
                     <key uid="videoImage2" />
-                </inout>
-                <in group="matrixTL" >
-                    <key uid="matrixTL" />
-                </in>
-                <inout group="matrices0" >
-                    <key uid="matrix" sendStatus="true" />
                 </inout>
                 <framerate>30</framerate>
                 <tolerance>100</tolerance>
@@ -519,7 +520,34 @@
 
             <service uid="hideAxisSrv" type="sight::module::ui::base::SAction" />
 
+            <!-- Wait for both poses -->
+            <service uid="syncPose" type="sight::module::sync::SSignalGate" >
+                <signal>markerMap1/modified</signal>
+                <signal>markerMap2/modified</signal>
+            </service>
+
+            <!-- Wait for the undistortion and the matrix inversion to be finished -->
+            <service uid="syncGenericSceneSrv" type="sight::module::sync::SSignalGate" >
+                <signal>videoImage1/bufferModified</signal>
+                <signal>videoImage2/bufferModified</signal>
+                <signal>rightMat/modified</signal>
+                <signal>inverseMat/modified</signal>
+            </service>
+
             <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>syncPose/allReceived</signal>
+                <slot>registrationSrv/update</slot>
+            </connect>
+            <!-- When the undistortion and the matrix inversion are done, trigger the rendering -->
+            <!-- then process a new frame -->
+            <connect>
+                <signal>syncGenericSceneSrv/allReceived</signal>
+                <slot>leftGenericSceneSrv/requestRender</slot>
+                <slot>rightGenericSceneSrv/requestRender</slot>
+                <slot>frameMatrixSynchronizerSrv/synchronize</slot>
+            </connect>
 
             <connect>
                 <signal>loadCalibAct/clicked</signal>
@@ -559,15 +587,9 @@
             </connect>
 
             <connect>
-                <signal>reprojectionParamsSrv/colorChanged</signal>
-                <slot>leftReprojectionErrorSrv/setColorParameter</slot>
-                <slot>rightReprojectionErrorSrv/setColorParameter</slot>
-            </connect>
-
-            <connect>
-                <signal>reprojectionParamsSrv/boolChanged</signal>
-                <slot>leftReprojectionErrorSrv/setBoolParameter</slot>
-                <slot>rightReprojectionErrorSrv/setBoolParameter</slot>
+                <signal>reprojectionParamsSrv/parameterChanged</signal>
+                <slot>leftReprojectionErrorSrv/setParameter</slot>
+                <slot>rightReprojectionErrorSrv/setParameter</slot>
             </connect>
 
             <connect>
@@ -596,21 +618,9 @@
             </connect>
 
             <connect>
-                <signal>arucoParamsSrv/boolChanged</signal>
-                <slot>arucoTracker1Srv/setBoolParameter</slot>
-                <slot>arucoTracker2Srv/setBoolParameter</slot>
-            </connect>
-
-            <connect>
-                <signal>arucoParamsSrv/intChanged</signal>
-                <slot>arucoTracker1Srv/setIntParameter</slot>
-                <slot>arucoTracker2Srv/setIntParameter</slot>
-            </connect>
-
-            <connect>
-                <signal>arucoParamsSrv/doubleChanged</signal>
-                <slot>arucoTracker1Srv/setDoubleParameter</slot>
-                <slot>arucoTracker2Srv/setDoubleParameter</slot>
+                <signal>arucoParamsSrv/parameterChanged</signal>
+                <slot>arucoTracker1Srv/setParameter</slot>
+                <slot>arucoTracker2Srv/setParameter</slot>
             </connect>
 
             <connect>
@@ -678,6 +688,8 @@
             <start uid="RVideoAdp" />
             <start uid="RAxisAdp" />
             <start uid="RCameraAdp" />
+            <start uid="syncPose" />
+            <start uid="syncGenericSceneSrv" />
 
             <!-- ******************************* Update services ***************************************** -->
 

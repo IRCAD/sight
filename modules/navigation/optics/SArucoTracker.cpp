@@ -49,9 +49,7 @@ namespace sight::module::navigation::optics
 const core::com::Signals::SignalKeyType SArucoTracker::s_DETECTION_DONE_SIG  = "detectionDone";
 const core::com::Signals::SignalKeyType SArucoTracker::s_MARKER_DETECTED_SIG = "markerDetected";
 
-const core::com::Slots::SlotKeyType SArucoTracker::s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
-const core::com::Slots::SlotKeyType SArucoTracker::s_SET_INT_PARAMETER_SLOT    = "setIntParameter";
-const core::com::Slots::SlotKeyType SArucoTracker::s_SET_BOOL_PARAMETER_SLOT   = "setBoolParameter";
+const core::com::Slots::SlotKeyType SArucoTracker::s_SET_PARAMETER_SLOT = "setParameter";
 
 //-----------------------------------------------------------------------------
 
@@ -60,9 +58,7 @@ SArucoTracker::SArucoTracker() noexcept :
 {
     newSignal<MarkerDetectedSignalType>(s_MARKER_DETECTED_SIG);
 
-    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SArucoTracker::setDoubleParameter, this);
-    newSlot(s_SET_INT_PARAMETER_SLOT, &SArucoTracker::setIntParameter, this);
-    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SArucoTracker::setBoolParameter, this);
+    newSlot(s_SET_PARAMETER_SLOT, &SArucoTracker::setParameter, this);
 
     // Initialize detector parameters
     m_detectorParams = cv::aruco::DetectorParameters::create();
@@ -220,7 +216,17 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
         std::vector<int> detectedMarkersIds;
 
         cv::Mat undistortGrey;
-        cv::undistort(grey, undistortGrey, m_cameraParams.intrinsic, m_cameraParams.distorsion);
+        {
+            const auto arCam = m_camera.lock();
+            if(arCam->getIsCalibrated())
+            {
+                cv::undistort(grey, undistortGrey, m_cameraParams.intrinsic, m_cameraParams.distorsion);
+            }
+            else
+            {
+                undistortGrey = grey;
+            }
+        }
 
         // Ok, let's detect
         cv::aruco::detectMarkers(
@@ -299,12 +305,12 @@ void SArucoTracker::tracking(core::HiResClock::HiResClockType& timestamp)
 
 //-----------------------------------------------------------------------------
 
-void SArucoTracker::setIntParameter(int _val, std::string _key)
+void SArucoTracker::setParameter(sight::ui::base::parameter_t _val, std::string _key)
 {
     if(_key == "adaptiveThreshWinSizeMin")
     {
         static const int s_ADAPTIVE_THRESH_WIN_SIZE_MIN_VALUE = 3;
-        int val                                               = _val;
+        int val                                               = std::get<int>(_val);
         if(m_detectorParams->adaptiveThreshWinSizeMin < s_ADAPTIVE_THRESH_WIN_SIZE_MIN_VALUE)
         {
             SIGHT_ERROR("Tried to set adaptiveThreshWinSizeMin < 3, let it set to 3");
@@ -321,7 +327,7 @@ void SArucoTracker::setIntParameter(int _val, std::string _key)
     }
     else if(_key == "adaptiveThreshWinSizeMax")
     {
-        int val = _val;
+        int val = std::get<int>(_val);
         if(m_detectorParams->adaptiveThreshWinSizeMin >= val)
         {
             val = m_detectorParams->adaptiveThreshWinSizeMin + 1;
@@ -332,19 +338,19 @@ void SArucoTracker::setIntParameter(int _val, std::string _key)
     }
     else if(_key == "adaptiveThreshWinSizeStep")
     {
-        m_detectorParams->adaptiveThreshWinSizeStep = _val;
+        m_detectorParams->adaptiveThreshWinSizeStep = std::get<int>(_val);
     }
     else if(_key == "minDistanceToBorder")
     {
-        m_detectorParams->minDistanceToBorder = _val;
+        m_detectorParams->minDistanceToBorder = std::get<int>(_val);
     }
     else if(_key == "cornerRefinementWinSize")
     {
-        m_detectorParams->cornerRefinementWinSize = _val;
+        m_detectorParams->cornerRefinementWinSize = std::get<int>(_val);
     }
     else if(_key == "cornerRefinementMaxIterations")
     {
-        int val = _val;
+        int val = std::get<int>(_val);
         if(val <= 0)
         {
             val = 1;
@@ -355,49 +361,39 @@ void SArucoTracker::setIntParameter(int _val, std::string _key)
     }
     else if(_key == "markerBorderBits")
     {
-        m_detectorParams->markerBorderBits = _val;
+        m_detectorParams->markerBorderBits = std::get<int>(_val);
     }
     else if(_key == "perspectiveRemovePixelPerCell")
     {
-        m_detectorParams->perspectiveRemovePixelPerCell = _val;
+        m_detectorParams->perspectiveRemovePixelPerCell = std::get<int>(_val);
     }
-    else
+    else if(_key == "adaptiveThreshConstant")
     {
-        SIGHT_ERROR("The slot key : '" + _key + "' is not handled");
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SArucoTracker::setDoubleParameter(double _val, std::string _key)
-{
-    if(_key == "adaptiveThreshConstant")
-    {
-        m_detectorParams->adaptiveThreshConstant = _val;
+        m_detectorParams->adaptiveThreshConstant = std::get<double>(_val);
     }
     else if(_key == "minMarkerPerimeterRate")
     {
-        m_detectorParams->minMarkerPerimeterRate = _val;
+        m_detectorParams->minMarkerPerimeterRate = std::get<double>(_val);
     }
     else if(_key == "maxMarkerPerimeterRate")
     {
-        m_detectorParams->maxMarkerPerimeterRate = _val;
+        m_detectorParams->maxMarkerPerimeterRate = std::get<double>(_val);
     }
     else if(_key == "polygonalApproxAccuracyRate")
     {
-        m_detectorParams->polygonalApproxAccuracyRate = _val;
+        m_detectorParams->polygonalApproxAccuracyRate = std::get<double>(_val);
     }
     else if(_key == "minCornerDistanceRate")
     {
-        m_detectorParams->minCornerDistanceRate = _val;
+        m_detectorParams->minCornerDistanceRate = std::get<double>(_val);
     }
     else if(_key == "minMarkerDistanceRate")
     {
-        m_detectorParams->minMarkerDistanceRate = _val;
+        m_detectorParams->minMarkerDistanceRate = std::get<double>(_val);
     }
     else if(_key == "cornerRefinementMinAccuracy")
     {
-        double val = _val;
+        double val = std::get<double>(_val);
         if(val <= 0.)
         {
             val = 0.01;
@@ -408,37 +404,27 @@ void SArucoTracker::setDoubleParameter(double _val, std::string _key)
     }
     else if(_key == "perspectiveRemoveIgnoredMarginPerCell")
     {
-        m_detectorParams->perspectiveRemoveIgnoredMarginPerCell = _val;
+        m_detectorParams->perspectiveRemoveIgnoredMarginPerCell = std::get<double>(_val);
     }
     else if(_key == "maxErroneousBitsInBorderRate")
     {
-        m_detectorParams->maxErroneousBitsInBorderRate = _val;
+        m_detectorParams->maxErroneousBitsInBorderRate = std::get<double>(_val);
     }
     else if(_key == "minOtsuStdDev")
     {
-        m_detectorParams->minOtsuStdDev = _val;
+        m_detectorParams->minOtsuStdDev = std::get<double>(_val);
     }
     else if(_key == "errorCorrectionRate")
     {
-        m_detectorParams->errorCorrectionRate = _val;
+        m_detectorParams->errorCorrectionRate = std::get<double>(_val);
     }
-    else
+    else if(_key == "debugMode")
     {
-        SIGHT_ERROR("The slot key : '" + _key + "' is not handled");
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SArucoTracker::setBoolParameter(bool _val, std::string _key)
-{
-    if(_key == "debugMode")
-    {
-        m_debugMarkers = _val;
+        m_debugMarkers = std::get<bool>(_val);
     }
     else if(_key == "corner")
     {
-        if(_val)
+        if(std::get<bool>(_val))
         {
             m_detectorParams->cornerRefinementMethod = cv::aruco::CornerRefineMethod::CORNER_REFINE_SUBPIX;
         }

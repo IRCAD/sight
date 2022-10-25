@@ -25,6 +25,7 @@
 #include "modules/ui/qt/config.hpp"
 
 #include <ui/base/IEditor.hpp>
+#include <ui/base/parameter.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -48,6 +49,7 @@ namespace sight::module::ui::qt
  * @note This service doesn't need any data.
  *
  * @section Signals Signals
+ * - \b parameterChanged(ui::base::parameter_t, std::string): Emitted when any parameter changes.
  * - \b boolChanged(bool, std::string): Emitted when a boolean parameter changes.
  * - \b colorChanged(std::array<std::uint8_t, 4>, std::string): Emitted when a color parameter changes.
  * - \b doubleChanged(double, std::string): Emitted when a real parameter changes.
@@ -62,6 +64,7 @@ namespace sight::module::ui::qt
  * selected item.
  *
  * @section Slots Slots
+ * - \b setParameter(ui::base::parameter_t, std::string): set a parameter.
  * - \b setBoolParameter(bool, std::string): set a boolean parameter.
  * - \b setColorParameter(std::array<std::uint8_t, 4>, std::string): set a color parameter.
  * - \b setDoubleParameter(double, std::string): set a double parameter.
@@ -128,6 +131,9 @@ Q_OBJECT
 public:
 
     SIGHT_DECLARE_SERVICE(SParameters, sight::ui::base::IEditor);
+
+    /// Generic changed signal type
+    typedef core::com::Signal<void (sight::ui::base::parameter_t, std::string)> ChangedSignalType;
 
     /// Boolean changed signal type
     typedef core::com::Signal<void (bool, std::string)> BooleanChangedSignalType;
@@ -341,6 +347,9 @@ private:
      * @name Slots
      * @{
      */
+
+    /// Slot: This method is used to set any parameter.
+    void setParameter(sight::ui::base::parameter_t val, std::string key);
 
     /// Slot: This method is used to set a boolean parameter.
     void setBoolParameter(bool val, std::string key);

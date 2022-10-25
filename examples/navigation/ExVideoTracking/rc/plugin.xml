@@ -16,7 +16,7 @@
             <object uid="frameTL" type="sight::data::FrameTL" >
                 <value>100</value>
             </object>
-            <object uid="tagTL" type="sight::data::MarkerTL" />
+            <object uid="markerMap" type="sight::data::MarkerMap" />
             <object uid="videoImage" type="sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
@@ -73,7 +73,7 @@
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
             <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
-                <scene>
+                <scene renderMode="sync" >
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="default" order="1" />
@@ -153,10 +153,10 @@
             </service>
 
             <service uid="trackerSrv" type="sight::module::navigation::optics::SArucoTracker" worker="tracking" >
-                <in key="timeline" uid="frameTL" autoConnect="true" />
                 <in key="camera" uid="camera" />
-                <inout group="tagTL" >
-                    <key uid="tagTL" />
+                <inout key="frame" uid="videoImage" autoConnect="true" />
+                <inout group="markerMap" >
+                    <key uid="markerMap" />
                 </inout>
                 <track>
                     <marker id="0,1,2,3,4,5,6,7,8,42,100,101,102,103,104,105" />
@@ -167,18 +167,12 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
-                <signal>parameters/boolChanged</signal>
-                <slot>trackerSrv/setBoolParameter</slot>
+                <signal>parameters/parameterChanged</signal>
+                <slot>trackerSrv/setParameter</slot>
             </connect>
-
             <connect>
-                <signal>parameters/intChanged</signal>
-                <slot>trackerSrv/setIntParameter</slot>
-            </connect>
-
-            <connect>
-                <signal>parameters/doubleChanged</signal>
-                <slot>trackerSrv/setDoubleParameter</slot>
+                <signal>markerMap/modified</signal>
+                <slot>genericSceneSrv/requestRender</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

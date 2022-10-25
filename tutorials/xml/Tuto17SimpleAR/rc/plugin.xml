@@ -142,7 +142,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="arucoParamametersSrv" start="true" />
+                    <view sid="arucoParametersSrv" start="true" />
                     <view sid="reprojectionParamametersSrv" start="true" />
                     <view sid="materialOpacityEditor" start="true" />
                 </registry>
@@ -284,7 +284,7 @@
             </service>
 
             <!-- GUI to handle aruco tracking parameters -->
-            <service uid="arucoParamametersSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="arucoParametersSrv" type="sight::module::ui::qt::SParameters" >
                 <parameters>
                     <!-- show marker or not -->
                     <param type="bool" name="Show Marker" key="debugMode" defaultValue="true" />
@@ -486,13 +486,8 @@
 
             <!-- signal/slot connection -->
             <connect>
-                <signal>reprojectionParamametersSrv/colorChanged</signal>
-                <slot>errorSrv/setColorParameter</slot>
-            </connect>
-
-            <connect>
-                <signal>reprojectionParamametersSrv/boolChanged</signal>
-                <slot>errorSrv/setBoolParameter</slot>
+                <signal>reprojectionParamametersSrv/parameterChanged</signal>
+                <slot>errorSrv/setParameter</slot>
             </connect>
 
             <connect>
@@ -501,18 +496,8 @@
             </connect>
 
             <connect>
-                <signal>arucoParamametersSrv/boolChanged</signal>
-                <slot>trackerSrv/setBoolParameter</slot>
-            </connect>
-
-            <connect>
-                <signal>arucoParamametersSrv/intChanged</signal>
-                <slot>trackerSrv/setIntParameter</slot>
-            </connect>
-
-            <connect>
-                <signal>arucoParamametersSrv/doubleChanged</signal>
-                <slot>trackerSrv/setDoubleParameter</slot>
+                <signal>arucoParametersSrv/parameterChanged</signal>
+                <slot>trackerSrv/setParameter</slot>
             </connect>
 
             <connect>
@@ -638,7 +623,7 @@
             <update uid="showParametersAct" />
             <update uid="hideAxisSrv" />
             <update uid="loadMeshSrv" />
-            <update uid="arucoParamametersSrv" />
+            <update uid="arucoParametersSrv" />
             <update uid="reprojectionParamametersSrv" />
 
         </config>

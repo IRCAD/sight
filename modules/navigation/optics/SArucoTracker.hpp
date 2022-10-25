@@ -30,6 +30,8 @@
 
 #include <service/ITracker.hpp>
 
+#include <ui/base/parameter.hpp>
+
 #include <opencv2/aruco.hpp>
 
 namespace sight::module::navigation::optics
@@ -48,6 +50,7 @@ namespace sight::module::navigation::optics
  * - \b track(timestamp) : Slot to fills the timeline with the new positions of the grid
  * - \b startTracking() : Slot called when the user wants to start tracking
  * - \b stopTracking() : Slot called when the user wants to stop tracking
+ * - \b setParameter(ui::base::parameter_t, std::string): set a parameter from the UI.
  *
  * @section XML XML Configuration
  *
@@ -111,9 +114,7 @@ public:
      * @name Slots API
      * @{
      */
-    MODULE_NAVIGATION_OPTICS_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    MODULE_NAVIGATION_OPTICS_API static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
-    MODULE_NAVIGATION_OPTICS_API static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
+    MODULE_NAVIGATION_OPTICS_API static const core::com::Slots::SlotKeyType s_SET_PARAMETER_SLOT;
     /** @} */
 
     typedef std::vector<int> MarkerIDType;
@@ -169,14 +170,8 @@ private:
         cv::Size2i size;
     };
 
-    /// Slot called when a integer value is changed
-    void setIntParameter(int _val, std::string _key);
-
-    /// Slot called when a double value is changed
-    void setDoubleParameter(double _val, std::string _key);
-
     /// Slot called when a boolean value is changed
-    void setBoolParameter(bool _val, std::string _key);
+    void setParameter(sight::ui::base::parameter_t _val, std::string _key);
 
     /// Camera parameters
     Camera m_cameraParams;
@@ -200,11 +195,10 @@ private:
     DetectionDoneSignalType::sptr m_sigDetectionDone;
 
     static constexpr std::string_view s_CAMERA_INPUT           = "camera";
-    static constexpr std::string_view s_TAGTL_INOUT_GROUP      = "frame";
     static constexpr std::string_view s_MARKER_MAP_INOUT_GROUP = "markerMap";
 
-    data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT, true};
-    data::ptr<data::Image, data::Access::inout> m_frame {this, s_TAGTL_INOUT_GROUP};
+    data::ptr<data::Camera, data::Access::in> m_camera {this, s_CAMERA_INPUT};
+    data::ptr<data::Image, data::Access::inout> m_frame {this, s_FRAME_INOUT};
     data::ptr_vector<data::MarkerMap, data::Access::inout> m_markerMap {this, s_MARKER_MAP_INOUT_GROUP};
 };
 
