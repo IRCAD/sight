@@ -503,7 +503,7 @@ deploy_manual:apps-windows-release:
     URL: "IRCAD%20-%20Open/"
   when: manual
 
-deploy:pages:
+pages:
   image: "${SIGHT_CI_UBUNTU22_04}:dev"
   stage: deploy
   dependencies:
