@@ -1,50 +1,52 @@
-<!-- 
-    Standard video widget 
+<!--
+    Standard video widget
     It provides a toolbar for the standard play/pause/stop/loop actions.
     It includes a selector to choose the video source (device/file/stream) and the grabber.
     The camera resolution is handled through preferences and a selector.
-    There are several input and output channels (int/double/bool/enum) to specify capture options 
-    or notify that some options have changed. 
+    There are several input and output channels (int/double/bool/enum) to specify capture options
+    or notify that some options have changed.
     The config outputs a timeline, and does not do any synchronisation.
-    This config aims to be generic fo all kind of videos. As a result, all kind of specific 
+    This config aims to be generic fo all kind of videos. As a result, all kind of specific
     video processing are not expected here.
 
-Inout: 
+Inout:
    camera  [sight::data::Camera]: camera used to display video.
    frameTL  [sight::data::FrameTL]: timeline where to extract the video frames.
 
-ui elements: 
+ui elements:
    TOOLBAR: editor wid of a toolbar in which the play/pause/stop/loop buttons will be displayed.
 
-parameters: 
+parameters:
     videoSupport (optional, default="true") : indicates if the "file" video source is allowed or not
 
-channels - out (optional): 
+channels - out (optional):
 
-    notificationChannel :         channel to signal notifications to display them on screen to user (successes/failures/....)
-    cameraStartedChannelOut :     channel on which a signal is triggered when the camera is started.
-    cameraPausedChannelOut :      channel on which a signal is triggered when the camera is paused.
-    cameraResumePauseChannelOut : channel on which a signal is triggered when the camera pause is resumed.
-    cameraStoppedChannelOut :     channel on which a signal is triggered when the camera is stopped.
-    loopModeToggleChannelOut :    channel on which a signal is triggered when the camera loop mode is toggled.
+    notificationChannel:         channel to signal notifications to display them on screen to user (successes/failures/....)
+    cameraStartedChannelOut:     channel on which a signal is triggered when the camera is started.
+    cameraPausedChannelOut:      channel on which a signal is triggered when the camera is paused.
+    cameraResumePauseChannelOut: channel on which a signal is triggered when the camera pause is resumed.
+    cameraStoppedChannelOut:     channel on which a signal is triggered when the camera is stopped.
+    loopModeToggleChannelOut:    channel on which a signal is triggered when the camera loop mode is toggled.
 
-    boolParameterChannelOut(bool, std::string)             : channel on which a signal is triggered when a named boolean grabber parameter is changed.
-    intParameterChannelOut(int, std::string)               : channel on which a signal is triggered when a named integer grabber parameter is changed.
-    enumParameterChannelOut(std::string, std::string)      : channel on which a signal is triggered when a named list element grabber parameter is changed.
+    boolParameterChannelOut(bool, std::string):              channel on which a signal is triggered when a named boolean grabber parameter is changed.
+    intParameterChannelOut(int, std::string):                channel on which a signal is triggered when a named integer grabber parameter is changed.
+    enumParameterChannelOut(std::string, std::string):       channel on which a signal is triggered when a named list element grabber parameter is changed.
     enumValuesParameterChannelOut(std::string, std::string): channel on which a signal is triggered when a named data list element grabber parameter is changed.
-    
-    videoPositionParameterOut : channel on which a signal is triggered when the position in the video is modified during playing.
-    videoDurationParameterOut : channel on which a signal is triggered when the duration of the video is modified.
-   
-    configuredFileOut : channel on which a signal is triggered the user selects a file as the video source.
-    configuredStreamOut : channel on which a signal is triggered the user selects a stream as the video source.
-    configuredDeviceOut   : channel on which a signal is triggered when the user selects a device as the video source. 
 
-channels - in (optional): 
+    videoPositionParameterOut: channel on which a signal is triggered when the position in the video is modified during playing.
+    videoDurationParameterOut: channel on which a signal is triggered when the duration of the video is modified.
 
-    boolParameterChannelIn(bool, std::string)       : channel on which a signal is expected to notify the grabber that a named boolean parameter is changed.
-    intParameterChannelIn(int, std::string)         : channel on which a signal is expected to notify the grabber that a named integer parameter is changed.
+    configuredFileOut:   channel on which a signal is triggered the user selects a file as the video source.
+    configuredStreamOut: channel on which a signal is triggered the user selects a stream as the video source.
+    configuredDeviceOut: channel on which a signal is triggered when the user selects a device as the video source.
+
+channels - in (optional):
+
+    boolParameterChannelIn(bool, std::string):        channel on which a signal is expected to notify the grabber that a named boolean parameter is changed.
+    intParameterChannelIn(int, std::string):          channel on which a signal is expected to notify the grabber that a named integer parameter is changed.
     enumParameterChannelIn(std::string, std::string): channel on which a signal is expected to notify the grabber that a named list element parameter is changed.
+    addROICenterChannelIn(sight::data::Point):        channel on which a signal is expected to notify the grabber that a new point has been selected.
+    removeROICenterChannelIn(sight::data::Point):     channel on which a signal is expected to notify the grabber that a point has been remove.
 
 Usage:
 
@@ -68,6 +70,8 @@ Usage:
             <parameter replace="configuredFileOut"              by="..." />
             <parameter replace="configuredStreamOut"            by="..." />
             <parameter replace="configuredDeviceOut"            by="..." />
+            <parameter replace="addROICenterChannelIn"          by="..." />
+            <parameter replace="removeROICenterChannelIn"       by="..." />
         </service>
 -->
 <extension implements="sight::service::extension::AppConfig" >
@@ -102,6 +106,9 @@ Usage:
         <param name="configuredFileOut" default="configuredFileOut" />
         <param name="configuredStreamOut" default="configuredStreamOut" />
         <param name="configuredDeviceOut" default="configuredDeviceOut" />
+
+        <param name="addROICenterChannelIn" default="addROICenterChannelIn" />
+        <param name="removeROICenterChannelIn" default="removeROICenterChannelIn" />
 
     </parameters>
     <config>
@@ -246,7 +253,6 @@ Usage:
             <slot>loopVideoAct/enable</slot>
         </connect>
 
-        
         <connect>
             <signal>camera/idModified</signal>
             <slot>grabberProxySrv/stopCamera</slot>
@@ -304,6 +310,14 @@ Usage:
 
         <connect channel="${notificationChannel}">
             <signal>grabberProxySrv/notified</signal>
+        </connect>
+
+        <connect channel="${addROICenterChannelIn}">
+            <slot>grabberProxySrv/addROICenter</slot>
+        </connect>
+
+        <connect channel="${removeROICenterChannelIn}">
+            <slot>grabberProxySrv/removeROICenter</slot>
         </connect>
 
         <start uid="containerViewSrv" />

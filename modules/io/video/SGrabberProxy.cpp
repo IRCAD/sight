@@ -468,21 +468,25 @@ void SGrabberProxy::startCamera()
                     const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
                     SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
 
-                    auto frameTL = this->getInOut<data::FrameTL>(key).lock();
-                    if(frameTL)
+                    auto inout = this->getInOut<data::Object>(key).lock();
+                    if(inout)
                     {
-                        if(m_services.size() > 1)
+                        if(key == IGrabber::s_FRAMETL_INOUT)
                         {
-                            if(inputTLCount == srvCount)
+                            auto frameTL = data::FrameTL::dynamicCast(inout.get_shared());
+                            if(m_services.size() > 1)
                             {
-                                // We are emulating a grabber with several ones, reuse the first TL slot
-                                srv->setInOut(frameTL.get_shared(), s_FRAMETL_INOUT);
-                                break;
+                                if(inputTLCount == srvCount)
+                                {
+                                    // We are emulating a grabber with several ones, reuse the first TL slot
+                                    srv->setInOut(frameTL, IGrabber::s_FRAMETL_INOUT);
+                                    break;
+                                }
                             }
-                        }
-                        else
-                        {
-                            srv->setInOut(frameTL.get_shared(), key);
+                            else
+                            {
+                                srv->setInOut(frameTL, IGrabber::s_FRAMETL_INOUT);
+                            }
                         }
                     }
 
@@ -710,6 +714,32 @@ void SGrabberProxy::requestSettings()
         if(srv != nullptr)
         {
             srv->requestSettings();
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::addROICenter(sight::data::Point::sptr p)
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->addROICenter(p);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::removeROICenter(sight::data::Point::sptr p)
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->removeROICenter(p);
         }
     }
 }

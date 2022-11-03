@@ -26,6 +26,7 @@
 
 #include <data/Camera.hpp>
 #include <data/FrameTL.hpp>
+#include <data/Point.hpp>
 
 #include <service/IService.hpp>
 
@@ -65,6 +66,8 @@ namespace sight::io::base::service
  * - \b setEnumParameter(): Sets a named enum value parameter.
  * - \b setEnumValuesParameter(): Sets a named list of enum values.
  * - \b requestSettings(): Requests the grabber internal settings.
+ * - \b addROICenter(sight::data::Point::sptr): Adds a new region fo interest center.
+ * - \b removeROICenter(sight::data::Point::sptr): Removes a region of interest via its center.
  */
 class IO_BASE_CLASS_API IGrabber : public sight::service::IService
 {
@@ -93,6 +96,8 @@ public:
     IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_ENUM_VALUES_PARAMETER_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_REQUEST_SETTINGS_SLOT;
+    IO_BASE_API static const core::com::Slots::SlotKeyType s_ADD_ROI_CENTER_SLOT;
+    IO_BASE_API static const core::com::Slots::SlotKeyType s_REMOVE_ROI_CENTER_SLOT;
     ///@}
 
     /**
@@ -189,23 +194,29 @@ public:
      */
     IO_BASE_API virtual void setStep(int step, std::string key);
 
-    /// Sets an internal bool value.
+    /// SLOT: Sets an internal bool value.
     IO_BASE_API virtual void setBoolParameter(bool value, std::string key);
 
-    /// Sets an internal double value.
+    /// SLOT: Sets an internal double value.
     IO_BASE_API virtual void setDoubleParameter(double value, std::string key);
 
-    /// Sets an internal int value.
+    /// SLOT: Sets an internal int value.
     IO_BASE_API virtual void setIntParameter(int value, std::string key);
 
-    /// Sets an internal enum value.
+    /// SLOT: Sets an internal enum value.
     IO_BASE_API virtual void setEnumParameter(std::string value, std::string key);
 
-    /// Sets an internal list of enum values.
+    /// SLOT: Sets an internal list of enum values.
     IO_BASE_API virtual void setEnumValuesParameter(std::string value, std::string key);
 
-    /// Requests the grabber internal settings.
+    /// SLOT: Requests the grabber internal settings.
     IO_BASE_API virtual void requestSettings();
+
+    /// SLOT: Adds a region of interest center.
+    IO_BASE_API virtual void addROICenter(sight::data::Point::sptr p);
+
+    /// SLOT: Removes a region of interest center.
+    IO_BASE_API virtual void removeROICenter(sight::data::Point::sptr p);
 
 protected:
 

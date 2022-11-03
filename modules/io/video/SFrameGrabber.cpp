@@ -579,6 +579,8 @@ void SFrameGrabber::grabVideo()
             cv::Mat image;
             m_videoCapture.retrieve(image);
 
+            this->updateZoom(image);
+
             if(!m_isInitialized)
             {
                 const auto width  = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_WIDTH));
@@ -722,6 +724,8 @@ void SFrameGrabber::grabImage()
             timestamp = m_imageTimestamps[m_imageCount];
         }
 
+        this->updateZoom(image);
+
         SIGHT_DEBUG("Reading image index " << m_imageCount << " with timestamp " << timestamp);
 
         const std::size_t width  = static_cast<std::size_t>(image.size().width);
@@ -811,6 +815,39 @@ void SFrameGrabber::grabImage()
     else if(!m_isPaused && m_loopVideo)
     {
         m_imageCount = 0;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SFrameGrabber::updateZoom(cv::Mat image)
+{
+    if(m_zoomCenter.has_value())
+    {
+        // Compute zoom parameters
+        const int width             = image.size().width;
+        const int height            = image.size().height;
+        const int croppedAreaWidth  = width / m_zoomFactor;
+        const int croppedAreaHeight = height / m_zoomFactor;
+
+        // Compute correct position for zoom center
+        const int centerXPix = (m_zoomCenter.value()[0] + width / 2);
+        const int centerYPix = -(m_zoomCenter.value()[1]) + height / 2;
+
+        // Compute starting area of zoom rectangle in pixels
+        const int x1 = centerXPix - croppedAreaWidth / 2;
+        const int y1 = centerYPix - croppedAreaHeight / 2;
+
+        // Compute a padded zoomed area image
+        const auto imageRect    = cv::Rect({}, image.size());
+        const auto roi          = cv::Rect(x1, y1, croppedAreaWidth, croppedAreaHeight);
+        const auto intersection = imageRect & roi;
+        const auto interRoi     = intersection - roi.tl();
+        cv::Mat crop            = cv::Mat::zeros(roi.size(), image.type());
+        image(intersection).copyTo(crop(interRoi));
+
+        // Rescale the zoomed image
+        cv::resize(crop, image, image.size());
     }
 }
 
@@ -916,6 +953,22 @@ void SFrameGrabber::setStep(int step, std::string key)
     {
         SIGHT_WARN("Only 'step' key is supported (current key value is : '" << key << "').");
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SFrameGrabber::addROICenter(sight::data::Point::sptr p)
+{
+    const auto& coord = p->getCoord();
+
+    m_zoomCenter = {{static_cast<int>(std::nearbyint(coord[0])), static_cast<int>(std::nearbyint(coord[1]))}};
+}
+
+//------------------------------------------------------------------------------
+
+void SFrameGrabber::removeROICenter(sight::data::Point::sptr /*p*/)
+{
+    m_zoomCenter.reset();
 }
 
 //------------------------------------------------------------------------------

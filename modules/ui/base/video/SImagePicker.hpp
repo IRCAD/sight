@@ -49,7 +49,7 @@ namespace sight::module::ui::base::video
         <inout key="pointList" uid="..." />
         <inout key="pixelPointList" uid="..." />
         <in key="camera" uid="..." />
-        <config videoReference="center" />
+        <config videoReference="center" useCtrlModifier="true" singlePointMode="false" />
    </service>
    @endcode
  * @section InOut InOut
@@ -57,7 +57,10 @@ namespace sight::module::ui::base::video
  * - \b pixelPointList [sight::data::PointList] : PointList of clicked points, transformed in pixel world.
  *
  * @section Configuration Configuration
- * - \b videoReference: specifies where is the reference system of picker interactor
+ * - \b videoReference: specifies where is the reference system of picker interactor.
+ * - \b useCtrlModifier: whether to require or not the control modifier when clicking a point.
+ * - \b singlePointMode: whether to enable singlePointMode or not. In this mode, clicking adds a point,
+ *                       then removes it, then adds it again and so on.
  * it can be at center of the video plane, or on the top left corner (eg: "center" or "top_left").
  *
  * This is needed to transform picked points from "scene" reference to pixel.
@@ -131,6 +134,12 @@ private:
 
     /// Manages video coordinate system
     VideoReferenceType m_videoRef {VideoReferenceType::CENTER};
+
+    // Whether to require or not the use of the control modifier when clicking.
+    bool m_useCtrlModifier {true};
+
+    // Whether to enable or not use of single point mode (see the service description for more information).
+    bool m_singlePointMode {false};
 
     data::ptr<data::PointList, sight::data::Access::inout> m_pointList {this, "pointList"};
     data::ptr<data::PointList, sight::data::Access::inout> m_pixelPointList {this, "pixelPointList"};

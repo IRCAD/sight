@@ -64,6 +64,9 @@ namespace sight::module::io::video
  * selected grabber.
  * - \b setStep(): set the step value between two images when calling nextImage/previousImage. Does nothing if not
  * supported by the selected grabber.
+ * - \b requestSettings(): Requests the grabber internal settings.
+ * - \b addROICenter(sight::data::Point::sptr): Adds a new region fo interest center.
+ * - \b removeROICenter(sight::data::Point::sptr): Removes a region of interest via its center.
  *
  * @section XML XML Configuration
  *
@@ -181,6 +184,12 @@ protected:
 
     /// SLOT: Requests the grabber internal settings.
     MODULE_IO_VIDEO_API void requestSettings() final;
+
+    /// SLOT: Adds a region of interest center.
+    MODULE_IO_VIDEO_API void addROICenter(sight::data::Point::sptr p) final;
+
+    /// SLOT: Removes a region of interest center.
+    MODULE_IO_VIDEO_API void removeROICenter(sight::data::Point::sptr p) final;
 /** @} */
 
 private:

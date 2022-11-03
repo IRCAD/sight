@@ -60,6 +60,9 @@ const core::com::Slots::SlotKeyType IGrabber::s_SET_ENUM_VALUES_PARAMETER_SLOT =
 
 const core::com::Slots::SlotKeyType IGrabber::s_REQUEST_SETTINGS_SLOT = "requestSettings";
 
+const std::string IGrabber::s_ADD_ROI_CENTER_SLOT    = "addROICenter";
+const std::string IGrabber::s_REMOVE_ROI_CENTER_SLOT = "removeROICenter";
+
 // ----------------------------------------------------------------------------
 
 IGrabber::IGrabber() noexcept
@@ -94,6 +97,9 @@ IGrabber::IGrabber() noexcept
     newSlot(s_SET_ENUM_VALUES_PARAMETER_SLOT, &IGrabber::setEnumValuesParameter, this);
 
     newSlot(s_REQUEST_SETTINGS_SLOT, &IGrabber::requestSettings, this);
+
+    newSlot(s_ADD_ROI_CENTER_SLOT, &IGrabber::addROICenter, this);
+    newSlot(s_REMOVE_ROI_CENTER_SLOT, &IGrabber::removeROICenter, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -171,7 +177,19 @@ void IGrabber::requestSettings()
 {
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+
+void IGrabber::addROICenter(sight::data::Point::sptr /*unused*/)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IGrabber::removeROICenter(sight::data::Point::sptr /*unused*/)
+{
+}
+
+//------------------------------------------------------------------------------
 
 void IGrabber::clearTimeline(data::FrameTL& _tl)
 {

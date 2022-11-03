@@ -71,6 +71,8 @@ namespace sight::module::io::video
  * - \b previousImage() : Read the previous image (in frame-by-frame mode).
  * - \b setStep(int step, std::string key) : set the step value between two images when calling nextImage/previousImage
  * slots on oneShot mode (supported key: "step")
+ * - \b addROICenter(sight::data::Point::sptr): Adds a new region fo interest center.
+ * - \b removeROICenter(sight::data::Point::sptr): Removes a region of interest via its center.
  *
  * @section XML XML Configuration
  *
@@ -154,6 +156,14 @@ protected:
     /// SLOT: Set step used on readPrevious/readNext slots
     void setStep(int step, std::string key) override;
 
+    /// SLOT: Adds a region of interest center. Currently this function implements image zoom.
+    ///       The added point can be forwarded from a picker in singlePointMode for example.
+    void addROICenter(sight::data::Point::sptr p) final;
+
+    /// SLOT: Removes a region of interest center. Currently this function relates to image zoom.
+    ///       The removed point can be forwarded from a picker in singlePointMode for example.
+    void removeROICenter(sight::data::Point::sptr p) final;
+
 private:
 
     typedef std::vector<std::filesystem::path> ImageFilesType;
@@ -176,6 +186,9 @@ private:
 
     /// Reads the next image.
     void grabImage();
+
+    /// Updates the image if zoom is requested
+    void updateZoom(cv::Mat image);
 
     /// State of the loop mode.
     bool m_loopVideo {false};
@@ -202,6 +215,12 @@ private:
 
     /// List of the image timestamps.
     ImageTimestampsType m_imageTimestamps;
+
+    /// Zoom factor
+    int m_zoomFactor {2};
+
+    /// Zoom center, if defined
+    std::optional<std::array<int, 2> > m_zoomCenter;
 
     /// Mutex to protect concurrent access for m_videoCapture and m_imageToRead.
     mutable core::mt::Mutex m_mutex;

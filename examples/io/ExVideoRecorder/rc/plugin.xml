@@ -18,6 +18,9 @@
             </object>
             <object uid="videoImage" type="sight::data::Image" />
 
+            <object uid="2dPoints" type="sight::data::PointList" />
+            <object uid="2dPixels" type="sight::data::PointList" />
+
             <!-- ******************************* UI declaration *********************************** -->
 
             <service uid="videoToolbarConfig" type="sight::service::SConfigController">
@@ -27,6 +30,8 @@
                 <inout key="frameTL" uid="frameTL" />
 
                 <parameter replace="TOOLBAR" by="subToolbarView" />
+                <parameter replace="addROICenterChannelIn" by="addROICenterChannelIn" />
+                <parameter replace="removeROICenterChannelIn" by="removeROICenterChannelIn" />
             </service>
 
             <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
@@ -90,13 +95,25 @@
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="default" order="1" />
+                    <adaptor uid="pickerAdp" />
                     <adaptor uid="videoAdp" />
                 </scene>
+            </service>
+
+            <service uid="pickerAdp" type="sight::module::viz::scene3d::adaptor::SPicker" >
+                <config layer="default" layerOrderDependant="false" />
             </service>
 
             <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
                 <in key="image" uid="videoImage" />
                 <config layer="default" />
+            </service>
+
+            <service uid="imagePickerSrv" type="sight::module::ui::base::video::SImagePicker" >
+                <in key="camera" uid="camera" />
+                <inout key="pointList" uid="2dPoints" />
+                <inout key="pixelPointList" uid="2dPixels" />
+                <config videoReference="top_left" useCtrlModifier="false" singlePointMode="true" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
@@ -156,6 +173,19 @@
                 <slot>videoWriterSrv/toggleRecording</slot>
             </connect>
 
+            <connect>
+                <signal>pickerAdp/picked</signal>
+                <slot>imagePickerSrv/getInteraction</slot>
+            </connect>
+
+            <connect channel="addROICenterChannelIn" >
+                <signal>2dPoints/pointAdded</signal>
+            </connect>
+
+            <connect channel="removeROICenterChannelIn" >
+                <signal>2dPoints/pointRemoved</signal>
+            </connect>
+
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
@@ -163,7 +193,11 @@
             <start uid="frameUpdaterSrv" />
             <start uid="frameWriterSrv" />
             <start uid="videoWriterSrv" />
+
+            <start uid="pickerAdp" />
             <start uid="videoAdp" />
+
+            <start uid="imagePickerSrv" />
 
         </config>
     </extension>
