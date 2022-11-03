@@ -23,6 +23,8 @@
 
 #include "Tester.hpp"
 
+#include <core/spyLog.hpp>
+
 namespace sight::ui::test
 {
 
@@ -393,6 +395,72 @@ std::string KeyboardClick::toString() const
     }
 
     return res;
+}
+
+PinchGesture::PinchGesture(std::pair<QPoint, QPoint> _firstFingerPos, std::pair<QPoint, QPoint> _secondFingerPos) :
+    m_firstFingerPos(std::move(_firstFingerPos)),
+    m_secondFingerPos(std::move(_secondFingerPos))
+{
+    SIGHT_ASSERT(
+        "Two fingers can't be at the same place at the same time",
+        m_firstFingerPos.first != m_secondFingerPos.first && m_firstFingerPos.second != m_secondFingerPos.second
+    );
+}
+
+//------------------------------------------------------------------------------
+
+void PinchGesture::interactWith(QWidget* widget) const
+{
+    interactWith<>(widget);
+}
+
+//------------------------------------------------------------------------------
+
+void PinchGesture::interactWith(QWindow* window) const
+{
+    interactWith<>(window);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+void PinchGesture::interactWith(T thing) const
+{
+    static constexpr T null = nullptr; // Required to avoid ambiguous overload compiler error
+    QTest::touchEvent(thing, Tester::getDummyTouchScreen())
+    .press(0, m_firstFingerPos.first, null)
+    .press(1, m_secondFingerPos.first, null);
+    QTest::touchEvent(thing, Tester::getDummyTouchScreen())
+    .move(0, m_firstFingerPos.first, null)
+    .move(1, m_secondFingerPos.first, null);
+
+    // If the two fingers are too far in one go, Qt will ignore it as it will consider them as spurious. We must
+    // therefore divide the moves in multiple steps.
+    QLineF firstFingerLine(m_firstFingerPos.first, m_firstFingerPos.second);
+    QLineF secondFingerLine(m_secondFingerPos.first, m_secondFingerPos.second);
+    for(int i = 0 ; i < 100 ; i++)
+    {
+        QTest::touchEvent(thing, Tester::getDummyTouchScreen())
+        .move(0, firstFingerLine.pointAt(i / 100.).toPoint(), null)
+        .move(1, secondFingerLine.pointAt(i / 100.).toPoint(), null);
+    }
+
+    QTest::touchEvent(thing, Tester::getDummyTouchScreen())
+    .move(0, m_firstFingerPos.second, null)
+    .move(1, m_secondFingerPos.second, null);
+    QTest::touchEvent(thing, Tester::getDummyTouchScreen())
+    .release(0, m_firstFingerPos.second, null)
+    .release(1, m_secondFingerPos.second, null);
+}
+
+//------------------------------------------------------------------------------
+
+std::string PinchGesture::toString() const
+{
+    return "pinch gesture with first finger going from " + pointToString(m_firstFingerPos.first) + " to "
+           + pointToString(m_firstFingerPos.second) + " and second finger going from " + pointToString(
+        m_secondFingerPos.first
+           ) + " to " + pointToString(m_secondFingerPos.second);
 }
 
 } // namespace sight::ui::test

@@ -25,6 +25,8 @@
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
 
+#include <ui/qt/gestures/QPanGestureRecognizer.hpp>
+
 #include <viz/scene3d/Utils.hpp>
 #include <viz/scene3d/WindowManager.hpp>
 
@@ -531,6 +533,110 @@ void Window::mouseReleaseEvent(QMouseEvent* _e)
     Q_EMIT interacted(info);
 
     this->requestRender();
+}
+
+//------------------------------------------------------------------------------
+
+void Window::gestureEvent(QGestureEvent* _e)
+{
+    // QWindow doesn't support gestures by itself; gesture events are sent by the event filter in WindowInteractor
+    // thanks to GestureFilter.
+    _e->accept();
+    if(QGesture* pinchGesture = _e->gesture(Qt::PinchGesture),
+       *pan2Gesture = _e->gesture(sight::ui::qt::gestures::QPanGestureRecognizer::get<2>());
+       pinchGesture != nullptr || pan2Gesture != nullptr)
+    {
+        if(pan2Gesture != nullptr)
+        {
+            _e->accept(pan2Gesture);
+            auto* pan = static_cast<sight::ui::qt::gestures::PanGesture*>(pan2Gesture);
+            sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
+            info.interactionType =
+                (pan2Gesture->state()
+                 == Qt::GestureFinished ? sight::viz::scene3d::IWindowInteractor::InteractionInfo::PAN2_GESTURE_RELEASE
+                                        : sight::viz::scene3d::IWindowInteractor::InteractionInfo::PAN2_GESTURE_MOVE);
+            QPoint position = mapFromGlobal(pan->position().toPoint());
+            info.x = position.x();
+            info.y = position.y();
+            QPoint deltaPoint = pan->delta().toPoint();
+            info.dx = -deltaPoint.x();
+            info.dy = -deltaPoint.y();
+            Q_EMIT interacted(info);
+            this->requestRender();
+        }
+
+        if(pinchGesture != nullptr)
+        {
+            auto* pinch = static_cast<QPinchGesture*>(pinchGesture);
+            sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
+            info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::PINCH_GESTURE;
+            double delta = pinch->scaleFactor();
+            if(delta == 0)
+            {
+                _e->ignore();
+                return;
+            }
+
+            // scaleFactor is a positive number, where a number inferior to 1 means that the distance between the
+            // fingers
+            // increases, and a number superior to 1 means that the distance between the fingers decreases. In order to
+            // interface with the mouse wheel methods, where angleDelta is positive if the wheel is rotated away from
+            // the
+            // user and negative if the wheel is rotated toward the user, the following transformation is done.
+            if(delta < 1)
+            {
+                info.delta = -1 / delta;
+            }
+            else
+            {
+                info.delta = delta;
+            }
+
+            _e->accept(pinchGesture);
+            QPoint localCenterPoint = mapFromGlobal(pinch->centerPoint().toPoint());
+            info.x = localCenterPoint.x();
+            info.y = localCenterPoint.y();
+            Q_EMIT interacted(info);
+            this->requestRender();
+        }
+    }
+    else if(QGesture* panGesture = _e->gesture(sight::ui::qt::gestures::QPanGestureRecognizer::get<1>()))
+    {
+        _e->accept(panGesture);
+        auto* pan = static_cast<sight::ui::qt::gestures::PanGesture*>(panGesture);
+        sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
+        info.interactionType =
+            (panGesture->state()
+             == Qt::GestureFinished ? sight::viz::scene3d::IWindowInteractor::InteractionInfo::PAN_GESTURE_RELEASE
+                                    : sight::viz::scene3d::IWindowInteractor::InteractionInfo::PAN_GESTURE_MOVE);
+        QPoint position = mapFromGlobal(pan->position().toPoint());
+        info.x = position.x();
+        info.y = position.y();
+        QPoint deltaPoint = pan->delta().toPoint();
+        info.dx = -deltaPoint.x();
+        info.dy = -deltaPoint.y();
+        Q_EMIT interacted(info);
+        this->requestRender();
+    }
+    else if(QGesture* tapGesture = _e->gesture(Qt::TapAndHoldGesture))
+    {
+        if(tapGesture->state() == Qt::GestureFinished)
+        {
+            _e->accept(tapGesture);
+            auto* tap = static_cast<QTapAndHoldGesture*>(tapGesture);
+            sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
+            info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::LONG_TAP_GESTURE;
+            QPoint position = mapFromGlobal(tap->position().toPoint());
+            info.x = position.x();
+            info.y = position.y();
+            Q_EMIT interacted(info);
+            this->requestRender();
+        }
+    }
+    else
+    {
+        _e->ignore();
+    }
 }
 
 // ----------------------------------------------------------------------------

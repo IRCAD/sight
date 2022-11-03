@@ -215,7 +215,7 @@ private:
      * @brief Cancels further interactions.
      * @pre @ref m_interactionEnableState must be true.
      */
-    void wheelEvent(Modifier /*_mods*/, int /*_angleDelta*/, int /*_x*/, int /*_y*/) override;
+    void wheelEvent(Modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/) override;
 
     /**
      * @brief Adds a new point to the lasso.

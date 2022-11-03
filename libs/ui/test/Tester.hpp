@@ -420,6 +420,11 @@ public:
      */
     GUITEST_API static std::filesystem::path getImageOutputPath();
 
+    /**
+     * @brief Returns a dummy touch screen to emulate touch events
+     */
+    static QTouchDevice* getDummyTouchScreen();
+
     /// The default timeout as used in the methods @ref take, @ref doubt, @ref yields and @ref maybeTake
     static const int DEFAULT_TIMEOUT = 5000;
 

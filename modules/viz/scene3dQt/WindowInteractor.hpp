@@ -57,6 +57,36 @@ private:
     QList<QEvent::Type> m_eventsToDispatch;
 };
 
+/// An event filter which forwards gesture event from the window container to the 3D scene window
+class GestureFilter : public QObject
+{
+Q_OBJECT
+
+public:
+
+    /**
+     * @param target The 3D scene window which will get the filtered gesture events
+     */
+    GestureFilter(QPointer<sight::module::viz::scene3dQt::Window> target);
+
+    bool eventFilter(QObject* obj, QEvent* event) override;
+
+private:
+
+    QPointer<sight::module::viz::scene3dQt::Window> m_target;
+};
+
+/// It seems that mouse clicks synthesized by Qt from touch events are shifted of exactly {49, 5}. This event filter fix
+/// this by intercepting the corresponding events.
+class TouchToMouseFixFilter : public QObject
+{
+Q_OBJECT
+
+public:
+
+    bool eventFilter(QObject* watched, QEvent* event) override;
+};
+
 namespace sight::module::viz::scene3dQt
 {
 

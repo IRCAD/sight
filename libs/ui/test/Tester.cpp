@@ -22,6 +22,8 @@
 
 #include "Tester.hpp"
 
+#include <core/spyLog.hpp>
+
 #include <QAction>
 #include <QApplication>
 #include <QMutex>
@@ -818,6 +820,20 @@ QPoint Tester::bottomOf(const QWidget* widget)
 std::filesystem::path Tester::getImageOutputPath()
 {
     return s_imageOutputPath;
+}
+
+//------------------------------------------------------------------------------
+
+QTouchDevice* Tester::getDummyTouchScreen()
+{
+    static QTouchDevice* res = nullptr;
+    if(res == nullptr)
+    {
+        res = QTest::createTouchDevice();
+        res->setMaximumTouchPoints(2);
+    }
+
+    return res;
 }
 
 } // namespace sight::ui::test

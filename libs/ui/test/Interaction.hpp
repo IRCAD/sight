@@ -182,4 +182,28 @@ private:
     Qt::KeyboardModifiers m_modifiers;
 };
 
+/// Represents a pinch gesture with two fingers on a component.
+class PinchGesture : public Interaction
+{
+public:
+
+    /**
+     * @param firstFingerPos the starting position and ending position of the first finger
+     * @param secondFingerPos the starting position and ending position of the second finger
+     */
+    GUITEST_API PinchGesture(std::pair<QPoint, QPoint> firstFingerPos, std::pair<QPoint, QPoint> secondFingerPos);
+
+    void interactWith(QWidget* widget) const override;
+    void interactWith(QWindow* window) const override;
+    [[nodiscard]] std::string toString() const override;
+
+private:
+
+    template<typename T>
+    void interactWith(T thing) const;
+
+    std::pair<QPoint, QPoint> m_firstFingerPos;
+    std::pair<QPoint, QPoint> m_secondFingerPos;
+};
+
 } // namespace sight::ui::test

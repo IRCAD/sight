@@ -362,7 +362,7 @@ std::tuple<Ogre::Vector3, Ogre::Vector3, Ogre::Vector3> SShapeExtruder::getNearF
 
 //-----------------------------------------------------------------------------
 
-void SShapeExtruder::wheelEvent(Modifier /*_mods*/, int /*_angleDelta*/, int /*_x*/, int /*_y*/)
+void SShapeExtruder::wheelEvent(Modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/)
 {
     if(m_interactionEnableState)
     {

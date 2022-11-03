@@ -92,7 +92,15 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void wheelEvent(Modifier /*_modifier*/, int _delta, int _x, int _y) override;
+    MODULE_VIZ_SCENE3D_API void wheelEvent(Modifier /*_modifier*/, double _delta, int _x, int _y) override;
+
+    /**
+     * @brief Zooms in the scene at the center of the pinch.
+     * @param _scalingFactor distance of the fingers
+     * @param _centerX the width coordinate of the center of the pinch
+     * @param _centerY the height coordinate of the center of the pinch
+     */
+    MODULE_VIZ_SCENE3D_API virtual void pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY) override;
 
     /**
      * @brief Interacts with the negato if it was picked by pressing any mouse button.

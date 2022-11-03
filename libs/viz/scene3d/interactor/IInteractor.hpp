@@ -107,7 +107,7 @@ public:
      * @param _x width coordinate of the mouse.
      * @param _y height coordinate of the mouse.
      */
-    VIZ_SCENE3D_API virtual void wheelEvent(Modifier _mods, int _angleDelta, int _x, int _y);
+    VIZ_SCENE3D_API virtual void wheelEvent(Modifier _mods, double _angleDelta, int _x, int _y);
 
     /**
      * @brief Listens to mouse move buttons being released.
@@ -169,6 +169,70 @@ public:
      * @param _height the render window's new height.
      */
     VIZ_SCENE3D_API virtual void resizeEvent(int _width, int _height);
+
+    /**
+     * @brief Listens to pinch gesture events.
+     * @param _scaleFactor the scale factor of the pinch
+     *                     (See @ref https://doc.qt.io/qt-5/qpinchgesture.html#scaleFactor-prop)
+     * @param _centerX the width coordinate of the center of the pinch
+     * @param _centerY the height coordinate of the center of the pinch
+     */
+    VIZ_SCENE3D_API virtual void pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY);
+
+    /**
+     * @brief Listens to pan gesture move events.
+     * @param _x the current width coordinate of the finger
+     * @param _y the current height coordinate of the finger
+     * @param _dx width displacement of the finger since the last event.
+     * @param _dy height displacement of the finger since the last event.
+     *
+     * @note If not overridden, pan gesture move will emulate a mouse move (that is, call
+     * mouseMoveEvent(LEFT, {}, _x, _y, _dx, _dy)).
+     */
+    VIZ_SCENE3D_API virtual void panGestureMoveEvent(int _x, int _y, int _dx, int _dy);
+
+    /**
+     * @brief Listens to pan gesture release events.
+     * @param _x the last width coordinate of the finger
+     * @param _y the last height coordinate of the finger
+     * @param _dx width displacement of the finger since the last event.
+     * @param _dy height displacement of the finger since the last event.
+     *
+     * @note If not overridden, pan gesture release will emulate a mouse button release (that is, call
+     * buttonReleaseEvent(LEFT, {}, _x, _y)).
+     */
+    VIZ_SCENE3D_API virtual void panGestureReleaseEvent(int _x, int _y, int _dx, int _dy);
+
+    /**
+     * @brief Listens to long tap gesture events.
+     * @param _x the width coordinate of the finger
+     * @param _y the height coordinate of the finger
+     */
+    VIZ_SCENE3D_API virtual void longTapGestureEvent(int _x, int _y);
+
+    /**
+     * @brief Listens to pan gesture move events with two fingers.
+     * @param _x the current width coordinate of the center of the two fingers
+     * @param _y the current height coordinate of the center of the two fingers
+     * @param _dx width displacement of the fingers since the last event.
+     * @param _dy height displacement of the fingers since the last event.
+     *
+     * @note If not overridden, pan gesture move with two fingers will emulate a mouse move while holding the middle
+     * button (that is, call mouseMoveEvent(MIDDLE, {}, _x, _y, _dx, _dy)).
+     */
+    VIZ_SCENE3D_API virtual void pan2GestureMoveEvent(int _x, int _y, int _dx, int _dy);
+
+    /**
+     * @brief Listens to pan gesture release events with two fingers.
+     * @param _x the last width coordinate of the center of the two fingers
+     * @param _y the last height coordinate of the center of the two fingers
+     * @param _dx width displacement of the fingers since the last event.
+     * @param _dy height displacement of the fingers since the last event.
+     *
+     * @note If not overridden, pan gesture release will emulate a mouse button release while holding the middle button
+     * (that is, call buttonReleaseEvent(MIDDLE, {}, _x, _y)).
+     */
+    VIZ_SCENE3D_API virtual void pan2GestureReleaseEvent(int _x, int _y, int _dx, int _dy);
 
 protected:
 

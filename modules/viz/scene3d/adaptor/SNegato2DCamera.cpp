@@ -136,7 +136,7 @@ service::IService::KeyConnectionsMap SNegato2DCamera::getAutoConnections() const
 
 //-----------------------------------------------------------------------------
 
-void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
+void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int _y)
 {
     const auto layer = this->getLayer();
 
@@ -205,7 +205,7 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
             // Here we assume that each 120 units of delta correspond to one increment of mouse wheel
             // So we move forward/backward of 1 slice each 120 units.
 
-            int slice_move = _delta / 120;
+            int slice_move = static_cast<int>(_delta) / 120;
 
             // Speed up SHIFT+ wheel: "scrolls" 5% of total slices at each wheel move.
             if(_modifier == Modifier::SHIFT)
@@ -244,6 +244,15 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, int _delta, int _x, int _y)
             sig->asyncEmit(idx[2], idx[1], idx[0]);
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2DCamera::pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY)
+{
+    // 120 here refers to the units of delta needed to do one increment of mouse wheel. Check the method above for a
+    // more detailed explanation.
+    wheelEvent({}, _scaleFactor * 120, _centerX, _centerY);
 }
 
 // ----------------------------------------------------------------------------

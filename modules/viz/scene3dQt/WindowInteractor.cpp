@@ -28,17 +28,21 @@
 #include <core/com/Slots.hxx>
 
 #include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/gestures/QPanGestureRecognizer.hpp>
 
 #include <viz/scene3d/registry/macros.hpp>
 #include <viz/scene3d/SRender.hpp>
 
 #include <QDesktopWidget>
 #include <QEvent>
+#include <QGestureEvent>
 #include <QGuiApplication>
 #include <QRect>
 #include <QShortcut>
 #include <QVBoxLayout>
 #include <QWidget>
+
+#include <utility>
 
 //-----------------------------------------------------------------------------
 
@@ -61,8 +65,46 @@ bool EventDispatcher::eventFilter(QObject* /*watched*/, QEvent* event)
 {
     if(m_eventsToDispatch.contains(event->type()))
     {
-        m_dispatchedTo->event(event);
+        QCoreApplication::sendEvent(m_dispatchedTo, event);
         return true;
+    }
+
+    return false;
+}
+
+GestureFilter::GestureFilter(QPointer<sight::module::viz::scene3dQt::Window> target) :
+    m_target(std::move(target))
+{
+}
+
+//------------------------------------------------------------------------------
+
+bool GestureFilter::eventFilter(QObject* /*watched*/, QEvent* event)
+{
+    if(event->type() == QEvent::Gesture)
+    {
+        auto* ge = static_cast<QGestureEvent*>(event);
+        m_target->gestureEvent(ge);
+        return true;
+    }
+
+    return false;
+}
+
+//------------------------------------------------------------------------------
+
+bool TouchToMouseFixFilter::eventFilter(QObject* watched, QEvent* event)
+{
+    if(event->type() == QEvent::MouseButtonPress)
+    {
+        auto* me = static_cast<QMouseEvent*>(event);
+        if(me->source() == Qt::MouseEventSynthesizedByQt)
+        {
+            QMouseEvent newEvent(QEvent::MouseButtonPress, me->localPos() - QPointF(49, 5), me->button(), me->buttons(),
+                                 me->modifiers());
+            QCoreApplication::sendEvent(watched, &newEvent);
+            return true;
+        }
     }
 
     return false;
@@ -146,6 +188,21 @@ void WindowInteractor::createContainer(
     layout->addWidget(m_windowContainer);
     m_windowContainer->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
     m_windowContainer->setMouseTracking(true);
+
+    m_windowContainer->grabGesture(Qt::PinchGesture);                                         // For zooming
+    m_windowContainer->grabGesture(sight::ui::qt::gestures::QPanGestureRecognizer::get<1>()); // For rotating
+    m_windowContainer->grabGesture(Qt::TapAndHoldGesture);                                    // For placing a landmark
+    m_windowContainer->grabGesture(sight::ui::qt::gestures::QPanGestureRecognizer::get<2>()); // For translating
+    m_windowContainer->installEventFilter(new GestureFilter(m_qOgreWidget));                  // Sends the gesture
+                                                                                              // events
+                                                                                              // to window
+    m_qOgreWidget->installEventFilter(
+        new EventDispatcher(
+            m_windowContainer,
+            {QEvent::TouchBegin, QEvent::TouchCancel, QEvent::TouchEnd, QEvent::TouchUpdate
+            })
+    );
+    m_qOgreWidget->installEventFilter(new TouchToMouseFixFilter);
 
     this->setFullscreen(_fullscreen, -1);
 

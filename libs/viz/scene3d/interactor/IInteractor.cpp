@@ -68,7 +68,7 @@ void IInteractor::mouseMoveEvent(
 
 //------------------------------------------------------------------------------
 
-void IInteractor::wheelEvent(Modifier /*unused*/, int /*unused*/, int /*unused*/, int /*unused*/)
+void IInteractor::wheelEvent(Modifier /*unused*/, double /*unused*/, int /*unused*/, int /*unused*/)
 {
 }
 
@@ -106,6 +106,46 @@ void IInteractor::keyReleaseEvent(int /*unused*/, Modifier /*unused*/, int /*unu
 
 void IInteractor::resizeEvent(int /*unused*/, int /*unused*/)
 {
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::pinchGestureEvent(double /*_scaleFactor*/, int /*_centerX*/, int /*_centerY*/)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::panGestureMoveEvent(int _x, int _y, int _dx, int _dy)
+{
+    mouseMoveEvent(LEFT, {}, _x, _y, _dx, _dy);
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::panGestureReleaseEvent(int _x, int _y, int /*_dx*/, int /*_dy*/)
+{
+    buttonReleaseEvent(LEFT, {}, _x, _y);
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::longTapGestureEvent(int /*_x*/, int /*_y*/)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::pan2GestureMoveEvent(int _x, int _y, int _dx, int _dy)
+{
+    mouseMoveEvent(MIDDLE, {}, _x, _y, _dx, _dy);
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::pan2GestureReleaseEvent(int _x, int _y, int /*_dx*/, int /*_dy*/)
+{
+    buttonReleaseEvent(MIDDLE, {}, _x, _y);
 }
 
 // ----------------------------------------------------------------------------
