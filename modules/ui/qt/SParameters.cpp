@@ -138,42 +138,6 @@ void SParameters::starting()
 
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     qtContainer->getQtContainer()->setObjectName(QString::fromStdString(serviceID));
-    qtContainer->getQtContainer()->setStyleSheet(
-        R"(
-        QAbstractSpinBox::up-button, QAbstractSpinBox::down-button {
-            width: 1.5em;
-            height: 1.5em;
-            subcontrol-origin: border;
-        }
-
-        QAbstractSpinBox::up-button {
-            subcontrol-position: center right;
-        }
-
-        QAbstractSpinBox::down-button {
-            subcontrol-position: center left;
-        }
-
-        QCheckBox::indicator {
-            width: 1.5em;
-            height: 1.5em;
-        }
-
-        QPushButton {
-            width: 1.5em;
-            height: 1.5em;
-        }
-
-        QSlider::handle:horizontal {
-            width: 1.25em;
-            margin: -0.40em 0;
-        }
-
-        QComboBox {
-            height: 1.5em;
-        }
-    )"
-    );
 
     auto* layout            = new QGridLayout();
     QScrollArea* scrollArea = nullptr;

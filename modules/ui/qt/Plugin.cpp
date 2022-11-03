@@ -120,34 +120,56 @@ int Plugin::run() noexcept
 
 void Plugin::loadStyleSheet()
 {
-    if(this->getModule()->hasParameter("resource"))
+    if(QCoreApplication::instance() != nullptr)
     {
-        const std::string resourceFile = this->getModule()->getParameterValue("resource");
-        const auto path                = core::runtime::getModuleResourceFilePath(resourceFile);
-
-        [[maybe_unused]] const bool resourceLoaded = QResource::registerResource(path.string().c_str());
-        SIGHT_ASSERT("Cannot load resources '" + resourceFile + "'.", resourceLoaded);
-    }
-
-    if(this->getModule()->hasParameter("style"))
-    {
-        const std::string style = this->getModule()->getParameterValue("style");
-        qApp->setStyle(QStyleFactory::create(QString::fromStdString(style)));
-    }
-
-    if(this->getModule()->hasParameter("stylesheet"))
-    {
-        const std::string stylesheetFile = this->getModule()->getParameterValue("stylesheet");
-        const auto path                  = core::runtime::getModuleResourceFilePath(stylesheetFile);
-
-        QFile data(QString::fromStdString(path.string()));
-        QString style;
-        if(data.open(QFile::ReadOnly))
+        if(this->getModule()->hasParameter("resource"))
         {
-            QTextStream styleIn(&data);
-            style = styleIn.readAll();
-            data.close();
-            qApp->setStyleSheet(style);
+            const std::string resourceFile = this->getModule()->getParameterValue("resource");
+            const auto path                = core::runtime::getModuleResourceFilePath(resourceFile);
+
+            [[maybe_unused]] const bool resourceLoaded = QResource::registerResource(path.string().c_str());
+            SIGHT_ASSERT("Cannot load resources '" + resourceFile + "'.", resourceLoaded);
+        }
+
+        if(this->getModule()->hasParameter("style"))
+        {
+            const std::string style = this->getModule()->getParameterValue("style");
+            qApp->setStyle(QStyleFactory::create(QString::fromStdString(style)));
+        }
+
+        QString touchFriendlyStyle;
+        if(this->getModule()->getParameterValue("touch_friendly") == "true")
+        {
+            const std::filesystem::path touchFriendlyStylePath = core::runtime::getModuleResourceFilePath(
+                "sight::module::ui::qt/touch-friendly.qss"
+            );
+            {
+                QFile data(QString::fromStdString(touchFriendlyStylePath.string()));
+                if(data.open(QFile::ReadOnly))
+                {
+                    touchFriendlyStyle = QTextStream(&data).readAll();
+                }
+            }
+        }
+
+        QString appStyle;
+        if(this->getModule()->hasParameter("stylesheet"))
+        {
+            const std::string stylesheetValue = this->getModule()->getParameterValue("stylesheet");
+            const std::filesystem::path path  = core::runtime::getModuleResourceFilePath(stylesheetValue);
+            {
+                QFile data(QString::fromStdString(path.string()));
+                if(data.open(QFile::ReadOnly))
+                {
+                    appStyle = QTextStream(&data).readAll();
+                }
+            }
+        }
+
+        QString styleResult = appStyle + touchFriendlyStyle;
+        if(!styleResult.isEmpty())
+        {
+            qApp->setStyleSheet(styleResult);
         }
     }
 }
