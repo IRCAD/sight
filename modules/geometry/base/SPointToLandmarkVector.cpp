@@ -146,9 +146,9 @@ void SPointToLandmarkVector::updating()
     auto sig1 = computedLandmark->signal<data::Landmarks::PointAddedSignalType>(data::Landmarks::s_POINT_ADDED_SIG);
     sig1->asyncEmit(m_groupLabel);
 
-    translationMatrix->setCoefficient(0, 3, pointToTarget[0]);
-    translationMatrix->setCoefficient(1, 3, pointToTarget[1]);
-    translationMatrix->setCoefficient(2, 3, pointToTarget[2]);
+    (*translationMatrix)(0, 3) = pointToTarget[0];
+    (*translationMatrix)(1, 3) = pointToTarget[1];
+    (*translationMatrix)(2, 3) = pointToTarget[2];
 
     auto sig2 = translationMatrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     sig2->asyncEmit();

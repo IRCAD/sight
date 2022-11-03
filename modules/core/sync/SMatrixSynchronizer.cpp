@@ -88,7 +88,7 @@ void SMatrixSynchronizer::updateMatrix(core::HiResClock::HiResClockType timestam
         {
             for(unsigned int j = 0 ; j < 4 ; ++j)
             {
-                matrix3D->setCoefficient(i, j, values[i * std::size_t(4) + j]);
+                (*matrix3D)(i, j) = values[i * std::size_t(4) + j];
             }
         }
 

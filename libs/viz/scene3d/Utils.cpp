@@ -762,10 +762,8 @@ data::Color::sptr Utils::convertOgreColorToFwColor(const Ogre::ColourValue& _ogr
 
 Ogre::Matrix4 Utils::convertTM3DToOgreMx(const data::Matrix4::csptr& _tm3d)
 {
-    const std::array<double, 16> tm3dData = _tm3d->getCoefficients();
-
     std::array<Ogre::Real, 16> floatData {};
-    std::transform(tm3dData.begin(), tm3dData.end(), floatData.begin(), boost::numeric_cast<float, double>);
+    std::transform(_tm3d->begin(), _tm3d->end(), floatData.begin(), boost::numeric_cast<float, double>);
 
     return Ogre::Matrix4(floatData.data());
 }
@@ -778,7 +776,7 @@ void Utils::copyOgreMxToTM3D(const Ogre::Matrix4& _mx, const data::Matrix4::sptr
     {
         for(std::uint8_t c = 0 ; c < 4 ; ++c)
         {
-            _tm3d->setCoefficient(l, c, _mx[l][c]);
+            (*_tm3d)(l, c) = _mx[l][c];
         }
     }
 }

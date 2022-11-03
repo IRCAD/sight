@@ -227,17 +227,14 @@ void SClientListener::manageTimeline(data::Object::sptr obj, std::size_t index)
 
         SPTR(data::MatrixTL::BufferType) matrixBuf;
         matrixBuf = matTL->createBuffer(timestamp);
-        data::Matrix4::TMCoefArray values;
+
         data::Matrix4::sptr t = data::Matrix4::dynamicCast(obj);
-        values = t->getCoefficients();
         std::array<float, 16> floatValues {};
-        std::transform(values.begin(), values.end(), floatValues.begin(), [&](double d){return float(d);});
+        std::transform(t->begin(), t->end(), floatValues.begin(), boost::numeric_cast<float, double>);
+
         matrixBuf->setElement(floatValues, 0);
         matTL->pushObject(matrixBuf);
-        data::TimeLine::ObjectPushedSignalType::sptr sig;
-        sig = matTL->signal<data::TimeLine::ObjectPushedSignalType>(
-            data::TimeLine::s_OBJECT_PUSHED_SIG
-        );
+        auto sig = matTL->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::s_OBJECT_PUSHED_SIG);
         sig->asyncEmit(timestamp);
     }
     //FrameTL

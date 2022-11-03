@@ -310,7 +310,7 @@ bool IParameter::setParameter(Ogre::Technique& technique)
 
             for(std::size_t i = 0 ; i < 16 ; i++)
             {
-                paramValues[i] = static_cast<float>(transValue->getCoefficients()[i]);
+                paramValues[i] = static_cast<float>((*transValue)[i]);
             }
 
             params->setNamedConstant(

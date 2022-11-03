@@ -92,12 +92,10 @@ inline glm::dmat4x4 getMatrixFromTF3D(const sight::data::Matrix4& _trf)
 {
     // Matrix4 is stored row-major
     // glm matrices are stored column-major
-    const auto& coefs = _trf.getCoefficients();
-
-    glm::dmat4x4 mat(coefs[0], coefs[4], coefs[8], coefs[12],
-                     coefs[1], coefs[5], coefs[9], coefs[13],
-                     coefs[2], coefs[6], coefs[10], coefs[14],
-                     coefs[3], coefs[7], coefs[11], coefs[15]);
+    glm::dmat4x4 mat(_trf[0], _trf[4], _trf[8], _trf[12],
+                     _trf[1], _trf[5], _trf[9], _trf[13],
+                     _trf[2], _trf[6], _trf[10], _trf[14],
+                     _trf[3], _trf[7], _trf[11], _trf[15]);
 
     return mat;
 }
@@ -111,7 +109,6 @@ inline void setTF3DFromMatrix(sight::data::Matrix4& _trf, const glm::dmat4x4& _i
 {
     // Matrix4 is stored row-major
     // glm matrices are stored column-major
-    auto& coefs = _trf.getCoefficients();
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
         const std::size_t rowDst = i * 4;
@@ -119,7 +116,7 @@ inline void setTF3DFromMatrix(sight::data::Matrix4& _trf, const glm::dmat4x4& _i
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
             const auto colSrc = static_cast<glm::length_t>(j);
-            coefs[rowDst + j] = _input[colSrc][rowSrc];
+            _trf[rowDst + j] = _input[colSrc][rowSrc];
         }
     }
 }

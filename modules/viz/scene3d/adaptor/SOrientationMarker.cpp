@@ -124,7 +124,7 @@ void SOrientationMarker::updateCameraMatrix()
         {
             for(std::size_t ct = 0 ; ct < 3 ; ct++)
             {
-                ogreMatrix[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
+                ogreMatrix[ct][lt] = static_cast<Ogre::Real>((*transform)(ct, lt));
             }
         }
     }

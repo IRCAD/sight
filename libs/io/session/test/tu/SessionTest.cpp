@@ -1021,8 +1021,7 @@ inline data::Matrix4::sptr generate<data::Matrix4>(const std::size_t /*unused*/)
 {
     auto object = data::Matrix4::New();
 
-    auto& coefficients = object->getCoefficients();
-    for(double& coefficient : coefficients)
+    for(double& coefficient : *object)
     {
         coefficient = random<double>();
     }

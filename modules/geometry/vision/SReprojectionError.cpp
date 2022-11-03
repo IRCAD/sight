@@ -109,7 +109,7 @@ void SReprojectionError::starting()
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
-                m_cvExtrinsic.at<double>(i, j) = extrinsic->getCoefficient(i, j);
+                m_cvExtrinsic.at<double>(i, j) = (*extrinsic)(i, j);
             }
         }
     }
@@ -155,7 +155,7 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
                         {
                             for(std::uint8_t c = 0 ; c < 4 ; ++c)
                             {
-                                mat.at<double>(r, c) = static_cast<double>(matrix->getCoefficient(r, c));
+                                mat.at<double>(r, c) = static_cast<double>((*matrix)(r, c));
                             }
                         }
                     }

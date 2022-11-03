@@ -190,7 +190,7 @@ void MIPMatchingRegistration<PIX>::registerImage(
     data::Matrix4 translation;
     for(std::uint8_t i = 0 ; i != 3 ; ++i)
     {
-        translation.setCoefficient(i, 3, res[i]);
+        translation(i, 3) = res[i];
     }
 
     geometry::data::multiply(translation, *_transform, *_transform);

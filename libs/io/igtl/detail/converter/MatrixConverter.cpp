@@ -58,7 +58,7 @@ MatrixConverter::~MatrixConverter()
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            dest[i][j] = float(srcMatrix->getCoefficient(i, j));
+            dest[i][j] = float((*srcMatrix)(i, j));
         }
     }
 
@@ -79,7 +79,7 @@ data::Object::sptr MatrixConverter::fromIgtlMessage(const ::igtl::MessageBase::P
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            dest->setCoefficient(i, j, matrix[i][j]);
+            (*dest)(i, j) = matrix[i][j];
         }
     }
 

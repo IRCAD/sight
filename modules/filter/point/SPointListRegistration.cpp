@@ -194,7 +194,7 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                matrix->setCoefficient(l, c, m->GetElement(l, c));
+                (*matrix)(l, c) = m->GetElement(l, c);
             }
         }
 

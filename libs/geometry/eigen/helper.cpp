@@ -37,7 +37,7 @@ data::Matrix4::sptr toF4s(const Eigen::Matrix4f& _mat)
     {
         for(unsigned int c = 0 ; c < 4 ; ++c)
         {
-            trf->setCoefficient(r, c, static_cast<double>(_mat(r, c)));
+            (*trf)(r, c) = static_cast<double>(_mat(r, c));
         }
     }
 
@@ -54,7 +54,7 @@ data::Matrix4::sptr toF4s(const Eigen::Matrix4d& _mat)
     {
         for(unsigned int c = 0 ; c < 4 ; ++c)
         {
-            trf->setCoefficient(r, c, _mat(r, c));
+            (*trf)(r, c) = _mat(r, c);
         }
     }
 

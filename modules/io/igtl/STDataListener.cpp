@@ -183,8 +183,7 @@ void STDataListener::manageTimeline(const data::Composite::sptr& obj, double tim
 
     for(const auto& elt : *obj)
     {
-        data::Matrix4::csptr transfoMatrix =
-            data::Matrix4::dynamicConstCast(elt.second);
+        data::Matrix4::csptr transfoMatrix = data::Matrix4::dynamicConstCast(elt.second);
 
         auto it = m_matrixNameIndex.find(elt.first);
 
@@ -192,13 +191,11 @@ void STDataListener::manageTimeline(const data::Composite::sptr& obj, double tim
         {
             std::uint64_t index = it->second;
 
-            data::Matrix4::TMCoefArray values;
-            values = transfoMatrix->getCoefficients();
             std::array<float, 16> matrixValues {};
             bool isZero = true;
             for(unsigned int i = 0 ; i < 16 ; ++i)
             {
-                matrixValues[i] = static_cast<float>(values[i]);
+                matrixValues[i] = static_cast<float>((*transfoMatrix)[i]);
                 //Test if matrix contains only '0' except last value (always '1)
                 isZero &= i < 15 ? (matrixValues[i] == 0.F) : true;
             }

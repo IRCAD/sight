@@ -60,11 +60,11 @@ void Matrix4Reader::read()
     while(!inFile.eof() && readValue < 16)
     {
         inFile >> value;
-        this->getConcreteObject()->getCoefficients()[static_cast<std::size_t>(readValue)] = value;
+        (*this->getConcreteObject())[static_cast<std::size_t>(readValue)] = value;
         readValue++;
     }
 
-    assert(this->getConcreteObject()->getCoefficients().size() == 16);
+    SIGHT_ASSERT("Wrong matrix size", this->getConcreteObject()->size() == 16);
 }
 
 //------------------------------------------------------------------------------

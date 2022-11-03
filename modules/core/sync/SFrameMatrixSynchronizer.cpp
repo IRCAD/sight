@@ -369,7 +369,7 @@ void SFrameMatrixSynchronizer::synchronize()
                     {
                         for(std::uint8_t j = 0 ; j < 4 ; ++j)
                         {
-                            matrix->setCoefficient(i, j, static_cast<double>(values[i * 4 + j]));
+                            (*matrix)(i, j) = static_cast<double>(values[i * 4 + j]);
                         }
                     }
 

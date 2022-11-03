@@ -32,16 +32,32 @@ namespace sight::data
 
 //------------------------------------------------------------------------------
 
-Matrix4::Matrix4() :
-    m_vCoefficients(s_IDENTITY)
+Matrix4::Matrix4()
 {
+    *this = s_IDENTITY;
 }
 
 //------------------------------------------------------------------------------
 
-Matrix4::Matrix4(data::Object::Key /*unused*/) :
-    m_vCoefficients(s_IDENTITY)
+Matrix4::Matrix4(std::initializer_list<value_type> init_list)
 {
+    SIGHT_ASSERT("16 values should be provided to the constructor  of the matrix", init_list.size() == this->size());
+    std::copy(init_list.begin(), init_list.end(), this->begin());
+}
+
+//------------------------------------------------------------------------------
+
+Matrix4::Matrix4(data::Object::Key /*unused*/)
+{
+    *this = s_IDENTITY;
+}
+
+//------------------------------------------------------------------------------
+Matrix4& Matrix4::operator=(std::initializer_list<value_type> init_list)
+{
+    SIGHT_ASSERT("16 values should be provided to the constructor  of the matrix", init_list.size() == this->size());
+    std::copy(init_list.begin(), init_list.end(), this->begin());
+    return *this;
 }
 
 //-----------------------------------------------------------------------------
@@ -57,8 +73,6 @@ void Matrix4::shallowCopy(const Object::csptr& source)
         ),
         !bool(other)
     );
-
-    m_vCoefficients = other->m_vCoefficients;
 
     BaseClass::shallowCopy(other);
 }
@@ -77,29 +91,9 @@ void Matrix4::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCo
         !bool(other)
     );
 
-    m_vCoefficients = other->m_vCoefficients;
-
     BaseClass::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
-
-bool Matrix4::operator==(const Matrix4& other) const noexcept
-{
-    if(!core::tools::is_equal(m_vCoefficients, other.m_vCoefficients))
-    {
-        return false;
-    }
-
-    // Super class last
-    return BaseClass::operator==(other);
-}
-
-//------------------------------------------------------------------------------
-
-bool Matrix4::operator!=(const Matrix4& other) const noexcept
-{
-    return !(*this == other);
-}
 
 } // namespace sight::data

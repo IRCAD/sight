@@ -69,7 +69,7 @@ void TransformTest::testConversion()
     {
         for(std::uint8_t j = 0 ; j < 4 ; j++)
         {
-            CPPUNIT_ASSERT_EQUAL(mat(i, j), sightMat->getCoefficient(i, j));
+            CPPUNIT_ASSERT_EQUAL(mat(i, j), (*sightMat)(i, j));
         }
     }
 

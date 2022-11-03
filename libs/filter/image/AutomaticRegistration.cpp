@@ -165,10 +165,10 @@ void AutomaticRegistration::registerImage(
 
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
-        t[i] = _trf->getCoefficient(i, 3);
+        t[i] = (*_trf)(i, 3);
         for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {
-            m(i, j) = _trf->getCoefficient(i, j);
+            m(i, j) = (*_trf)(i, j);
         }
     }
 
@@ -374,10 +374,10 @@ void AutomaticRegistration::convertToF4sMatrix(
     // Convert itk::RigidTransform to f4s matrix.
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
-        _f4sMat->setCoefficient(i, 3, offset[i]);
+        (*_f4sMat)(i, 3) = offset[i];
         for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {
-            _f4sMat->setCoefficient(i, j, rigidMat(i, j));
+            (*_f4sMat)(i, j) = rigidMat(i, j);
         }
     }
 }

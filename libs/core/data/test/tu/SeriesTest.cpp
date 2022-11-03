@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2015 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -1890,6 +1889,24 @@ void SeriesTest::imageOrientationPatientTest()
         };
 
         CPPUNIT_ASSERT(orientation == actual);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::imageTransformPatientTest()
+{
+    data::Matrix4 matrix = {
+        0., 1., 0., 0.,
+        1., 0., 0., 0.,
+        0., 0., -1., 0.,
+        0., 0., 0., 1.
+    };
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setImageTransformPatient(matrix);
+        CPPUNIT_ASSERT(matrix == series->getImageTransformPatient());
     }
 }
 

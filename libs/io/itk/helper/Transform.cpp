@@ -35,7 +35,7 @@ Transform::MatrixType Transform::convertToITK(const data::Matrix4::csptr& _inTrf
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            itkMat(i, j) = _inTrf->getCoefficient(i, j);
+            itkMat(i, j) = (*_inTrf)(i, j);
         }
     }
 
@@ -52,7 +52,7 @@ void Transform::convertFromITK(const MatrixType& _inTrf, data::Matrix4::sptr& _o
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            _outTrf->setCoefficient(i, j, _inTrf(i, j));
+            (*_outTrf)(i, j) = _inTrf(i, j);
         }
     }
 }

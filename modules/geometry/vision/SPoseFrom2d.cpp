@@ -171,7 +171,6 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timesta
             }
             else
             {
-                data::Matrix4::TMCoefArray matrixValues;
                 cv::Matx44f Rt;
                 if(markers.size() == 1)
                 {
@@ -191,11 +190,9 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timesta
                 {
                     for(std::uint8_t j = 0 ; j < 4 ; ++j)
                     {
-                        matrixValues[4 * i + j] = Rt(i, j);
+                        (*matrix)[4 * i + j] = Rt(i, j);
                     }
                 }
-
-                matrix->setCoefficients(matrixValues);
             }
 
             // Always send the signal even if we did not find anything.
@@ -235,18 +232,18 @@ void SPoseFrom2d::initialize()
             {
                 for(std::uint8_t j = 0 ; j < 3 ; ++j)
                 {
-                    m_extrinsicMat.rotation.at<double>(i, j)  = extrinsicMatrix->getCoefficient(i, j);
-                    m_extrinsicMat.Matrix4x4.at<double>(i, j) = extrinsicMatrix->getCoefficient(i, j);
+                    m_extrinsicMat.rotation.at<double>(i, j)  = (*extrinsicMatrix)(i, j);
+                    m_extrinsicMat.Matrix4x4.at<double>(i, j) = (*extrinsicMatrix)(i, j);
                 }
             }
 
-            m_extrinsicMat.translation.at<double>(0, 0) = extrinsicMatrix->getCoefficient(0, 3);
-            m_extrinsicMat.translation.at<double>(1, 0) = extrinsicMatrix->getCoefficient(1, 3);
-            m_extrinsicMat.translation.at<double>(2, 0) = extrinsicMatrix->getCoefficient(2, 3);
+            m_extrinsicMat.translation.at<double>(0, 0) = (*extrinsicMatrix)(0, 3);
+            m_extrinsicMat.translation.at<double>(1, 0) = (*extrinsicMatrix)(1, 3);
+            m_extrinsicMat.translation.at<double>(2, 0) = (*extrinsicMatrix)(2, 3);
 
-            m_extrinsicMat.Matrix4x4.at<double>(0, 3) = extrinsicMatrix->getCoefficient(0, 3);
-            m_extrinsicMat.Matrix4x4.at<double>(1, 3) = extrinsicMatrix->getCoefficient(1, 3);
-            m_extrinsicMat.Matrix4x4.at<double>(2, 3) = extrinsicMatrix->getCoefficient(2, 3);
+            m_extrinsicMat.Matrix4x4.at<double>(0, 3) = (*extrinsicMatrix)(0, 3);
+            m_extrinsicMat.Matrix4x4.at<double>(1, 3) = (*extrinsicMatrix)(1, 3);
+            m_extrinsicMat.Matrix4x4.at<double>(2, 3) = (*extrinsicMatrix)(2, 3);
         }
 
         m_cameras.push_back(cam);

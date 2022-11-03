@@ -34,7 +34,7 @@ private:
     CPPUNIT_TEST_SUITE(Matrix4Test);
     CPPUNIT_TEST(getterSetterByCoef);
     CPPUNIT_TEST(getterSetterByArray);
-    CPPUNIT_TEST(getterSetterByMatrix);
+    CPPUNIT_TEST(rowMatrixAccessor);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,7 +45,7 @@ public:
 
     static void getterSetterByCoef();
     static void getterSetterByArray();
-    static void getterSetterByMatrix();
+    static void rowMatrixAccessor();
 };
 
 } // namespace sight::data::ut

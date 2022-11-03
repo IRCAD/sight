@@ -81,8 +81,8 @@ void MatrixRegressorTest::identityTest()
 
     for(std::size_t i = 0 ; i < 16 ; ++i)
     {
-        const double expected = id->getCoefficients()[i];
-        const double result   = res->getCoefficients()[i];
+        const double expected = (*id)[i];
+        const double result   = (*res)[i];
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, result, 1e-3);
     }
@@ -130,8 +130,8 @@ void MatrixRegressorTest::avgTranslationTest()
 
     for(std::size_t i = 0 ; i < 16 ; ++i)
     {
-        const double expected = expectedMat.getCoefficients()[i];
-        const double result   = res->getCoefficients()[i];
+        const double expected = expectedMat[i];
+        const double result   = (*res)[i];
 
         CPPUNIT_ASSERT_DOUBLES_EQUAL(expected, result, 1e-3);
     }

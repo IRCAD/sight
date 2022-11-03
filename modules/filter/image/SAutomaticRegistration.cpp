@@ -200,7 +200,7 @@ void SAutomaticRegistration::updating()
 
                 for(std::uint8_t j = 0 ; j < 16 ; ++j)
                 {
-                    transformStream << transform->getCoefficients()[j];
+                    transformStream << (*transform)[j];
 
                     if(j != 15)
                     {

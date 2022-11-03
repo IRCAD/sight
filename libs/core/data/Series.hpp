@@ -24,6 +24,7 @@
 
 #include "data/config.hpp"
 #include "data/factory/new.hpp"
+#include "data/Matrix4.hpp"
 #include "data/Object.hpp"
 #include "data/types.hpp"
 
@@ -315,6 +316,9 @@ public:
         const std::vector<double>& imageOrientationPatient,
         std::size_t instance = 0
     );
+
+    DATA_API sight::data::Matrix4 getImageTransformPatient(std::size_t instance                        = 0) const;
+    DATA_API void setImageTransformPatient(const sight::data::Matrix4& transform, std::size_t instance = 0);
 
     DATA_API std::optional<double> getSliceThickness() const noexcept;
     DATA_API void setSliceThickness(const std::optional<double>& sliceThickness = std::nullopt);

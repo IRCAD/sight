@@ -1132,7 +1132,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
                     QStringList coeffList = value.trimmed().split(QRegularExpression("\\s+"));
                     if(isOkClicked && coeffList.size() == 16)
                     {
-                        data::Matrix4::TMCoefArray coeffs;
+                        data::Matrix4::container_type coeffs;
 
                         bool conversionOK = false;
                         for(int i = 0 ; i < 16 ; ++i)
@@ -1149,7 +1149,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
                             }
                         }
 
-                        trf->setCoefficients(coeffs);
+                        (*trf) = coeffs;
                         _item->setText(int(ColumnObjectType::DESC), value.trimmed());
                     }
                     else if(isOkClicked)

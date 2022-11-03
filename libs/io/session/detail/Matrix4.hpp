@@ -47,7 +47,7 @@ inline static void serialize(
     Helper::writeVersion<data::Matrix4>(tree, 1);
 
     std::size_t index = 0;
-    for(const auto& coefficient : matrix->getCoefficients())
+    for(const auto& coefficient : *matrix)
     {
         tree.put(std::to_string(index++), coefficient);
     }
@@ -69,13 +69,10 @@ inline static data::Matrix4::sptr deserialize(
     // Check version number. Not mandatory, but could help for future release
     Helper::readVersion<data::Matrix4>(tree, 0, 1);
 
-    std::array<double, 16> coefficients {};
-    for(std::size_t index = 0, end = coefficients.size() ; index < end ; ++index)
+    for(std::size_t index = 0 ; index < 16 ; ++index)
     {
-        coefficients[index] = tree.get<double>(std::to_string(index));
+        (*matrix)[index] = tree.get<double>(std::to_string(index));
     }
-
-    matrix->setCoefficients(coefficients);
 
     return matrix;
 }

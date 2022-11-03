@@ -68,7 +68,7 @@ CompositeConverter::~CompositeConverter()
             {
                 for(std::size_t j = 0 ; j < 4 ; ++j)
                 {
-                    matrix[i][j] = float(transfoMatrix->getCoefficient(i, j));
+                    matrix[i][j] = float((*transfoMatrix)(i, j));
                 }
             }
 
@@ -106,7 +106,7 @@ data::Object::sptr CompositeConverter::fromIgtlMessage(const ::igtl::MessageBase
         {
             for(std::size_t j = 0 ; j < 4 ; ++j)
             {
-                transfoMatrix->setCoefficient(i2, j, matrix[i2][j]);
+                (*transfoMatrix)(i2, j) = matrix[i2][j];
             }
         }
     }

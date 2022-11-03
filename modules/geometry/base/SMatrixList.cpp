@@ -126,14 +126,14 @@ void SMatrixList::updating()
         const auto input = m_inputVector[0].lock();
         computedMatrix->deepCopy(input.get_shared());
     }
-    const data::Matrix4::TMCoefArray& coef = computedMatrix->getCoefficients();
+
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
         str += "[ ";
         for(std::size_t j = 0 ; j < 4 ; j++)
         {
             std::ostringstream out;
-            out << std::setprecision(3) << coef[i * 4 + j];
+            out << std::setprecision(3) << (*computedMatrix)[i * 4 + j];
             str += out.str();
             str += " ";
         }

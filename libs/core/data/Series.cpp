@@ -26,7 +26,10 @@
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
+#include <core/tools/compare.hpp>
+
 #include <glm/glm.hpp>
+#include <glm/gtc/epsilon.hpp>
 
 #include <chrono>
 #include <utility>
@@ -1942,6 +1945,46 @@ std::vector<double> Series::getImageOrientationPatient(std::size_t instance) con
 void Series::setImageOrientationPatient(const std::vector<double>& imageOrientationPatient, std::size_t instance)
 {
     m_pimpl->setValues<gdcm::Keywords::ImageOrientationPatient>(imageOrientationPatient, instance);
+}
+
+//------------------------------------------------------------------------------
+
+sight::data::Matrix4 Series::getImageTransformPatient(std::size_t instance) const
+{
+    const auto position = this->getImagePositionPatient(instance);
+    SIGHT_ASSERT("Unexpected orientation vector size", position.size() == 3);
+
+    const auto orientation = this->getImageOrientationPatient(instance);
+    SIGHT_ASSERT("Unexpected orientation vector size", orientation.size() == 6);
+
+    const glm::dvec3 x(orientation[0], orientation[1], orientation[2]);
+    const glm::dvec3 y(orientation[3], orientation[4], orientation[5]);
+    const glm::dvec3 z = glm::cross(x, y);
+
+    return {
+        orientation[0], orientation[3], z[0], position[0],
+        orientation[1], orientation[4], z[1], position[1],
+        orientation[2], orientation[5], z[2], position[2],
+        0., 0., 0., 1.
+    };
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setImageTransformPatient(const sight::data::Matrix4& transform, std::size_t instance)
+{
+    this->setImagePositionPatient({transform[3], transform[7], transform[11]}, instance);
+
+    [[maybe_unused]] const glm::dvec3 x(transform[0], transform[4], transform[8]);
+    [[maybe_unused]] const glm::dvec3 y(transform[1], transform[5], transform[9]);
+    [[maybe_unused]] const glm::dvec3 z(transform[2], transform[6], transform[10]);
+    [[maybe_unused]] const glm::dvec3 computedZ = glm::cross(x, y);
+    SIGHT_ASSERT("Unexpected orientation vector size", glm::all(glm::epsilonEqual(computedZ, z, 1e-5)));
+
+    this->setImageOrientationPatient(
+        {transform[0], transform[4], transform[8], transform[1], transform[5], transform[9]},
+        instance
+    );
 }
 
 //------------------------------------------------------------------------------

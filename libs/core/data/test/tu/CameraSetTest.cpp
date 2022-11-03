@@ -77,8 +77,8 @@ CameraSet::sptr initCameraSet()
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            const auto value = static_cast<data::Matrix4::TM3DType>(2 * i + j);
-            mat->setCoefficient(i, j, value);
+            const auto value = static_cast<data::Matrix4::value_type>(2 * i + j);
+            (*mat)(i, j) = value;
         }
     }
 
@@ -100,8 +100,8 @@ void CameraSetTest::cameraTest()
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            const auto value = static_cast<data::Matrix4::TM3DType>(2 * i + j);
-            mat->setCoefficient(i, j, value);
+            const auto value = static_cast<data::Matrix4::value_type>(2 * i + j);
+            (*mat)(i, j) = value;
         }
     }
 

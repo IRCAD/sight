@@ -72,8 +72,8 @@ void Matrix4Test::identityMatrixTest()
     shouldBeTrue = geometry::data::isIdentity(tm1, 1e-17);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should be identity", true, shouldBeTrue);
 
-    tm1.setCoefficient(0, 2, 3.4);
-    tm1.setCoefficient(1, 3, 18);
+    tm1(0, 2) = 3.4;
+    tm1(1, 3) = 18;
 
     bool shouldBeFalse = geometry::data::isIdentity(tm1);
     CPPUNIT_ASSERT_EQUAL_MESSAGE("Matrix4 should not be identity", false, shouldBeFalse);
@@ -146,7 +146,7 @@ void Matrix4Test::matrixTest()
 
     geometry::data::identity(tm2);
 
-    sight::data::Matrix4::TMCoefArray tm1Coefs;
+    sight::data::Matrix4::container_type tm1Coefs;
     for(std::size_t i = 0 ; i < 16 ; ++i)
     {
         tm1Coefs[i] = double(i + 1);
@@ -156,12 +156,12 @@ void Matrix4Test::matrixTest()
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            tm2.setCoefficient(i, j, fabs(double(i) - double(j)) + 1);
+            tm2(i, j) = std::abs(double(i) - double(j)) + 1.;
         }
     }
 
-    tm1.setCoefficients(tm1Coefs);
-    tm4.setCoefficients(tm1Coefs);
+    tm1 = tm1Coefs;
+    tm4 = tm1Coefs;
 
     // Test matrix-matrix multiplication
     geometry::data::multiply(tm1, tm2, tm3);
@@ -172,59 +172,59 @@ void Matrix4Test::matrixTest()
             double val = 0;
             for(std::size_t k = 0 ; k < 4 ; ++k)
             {
-                val += tm1.getCoefficient(i, k) * tm2.getCoefficient(k, j);
+                val += tm1(i, k) * tm2(k, j);
             }
 
-            CPPUNIT_ASSERT_EQUAL(val, tm3.getCoefficient(i, j));
+            CPPUNIT_ASSERT_EQUAL(val, tm3(i, j));
         }
     }
 
     // Test invert
     geometry::data::invert(tm2, tm4);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.4, tm4.getCoefficient(0, 0), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4.getCoefficient(0, 1), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., tm4.getCoefficient(0, 2), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tm4.getCoefficient(0, 3), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4.getCoefficient(1, 0), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-1., tm4.getCoefficient(1, 1), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4.getCoefficient(1, 2), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., tm4.getCoefficient(1, 3), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., tm4.getCoefficient(2, 0), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4.getCoefficient(2, 1), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-1., tm4.getCoefficient(2, 2), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4.getCoefficient(2, 3), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tm4.getCoefficient(3, 0), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., tm4.getCoefficient(3, 1), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4.getCoefficient(3, 2), 0.00001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.4, tm4.getCoefficient(3, 3), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.4, tm4(0, 0), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4(0, 1), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., tm4(0, 2), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tm4(0, 3), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4(1, 0), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-1., tm4(1, 1), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4(1, 2), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., tm4(1, 3), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., tm4(2, 0), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4(2, 1), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-1., tm4(2, 2), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4(2, 3), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.1, tm4(3, 0), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0., tm4(3, 1), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, tm4(3, 2), 0.00001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.4, tm4(3, 3), 0.00001);
 
-    sight::data::Matrix4::TMCoefArray tm2Coefs = {3.1, 1., -7.9689, 4.9,
-                                                  5., -21., -1.3646, 14.4,
-                                                  9., -7.2, -23.36, 79.04,
-                                                  0.1, -3., -1.234, -49.94
+    sight::data::Matrix4::container_type tm2Coefs = {3.1, 1., -7.9689, 4.9,
+                                                     5., -21., -1.3646, 14.4,
+                                                     9., -7.2, -23.36, 79.04,
+                                                     0.1, -3., -1.234, -49.94
     };
-    tm2.setCoefficients(tm2Coefs);
+    tm2 = tm2Coefs;
     geometry::data::invert(tm2, tm4);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.885131908604589, tm4.getCoefficient(0, 0), 0.0001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.190212289294002, tm4.getCoefficient(0, 1), 0.0001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.29581348830958, tm4.getCoefficient(0, 2), 0.0001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.326489683580158, tm4.getCoefficient(0, 3), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.885131908604589, tm4(0, 0), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.190212289294002, tm4(0, 1), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.29581348830958, tm4(0, 2), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.326489683580158, tm4(0, 3), 0.0001);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.185258037237573, tm4.getCoefficient(1, 0), 0.0001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.00768780306376934, tm4.getCoefficient(1, 1), 0.0001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.0586854220133396, tm4.getCoefficient(1, 2), 0.0001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.0769210199757416, tm4.getCoefficient(1, 3), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.185258037237573, tm4(1, 0), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.00768780306376934, tm4(1, 1), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.0586854220133396, tm4(1, 2), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.0769210199757416, tm4(1, 3), 0.0001);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.232796743379289, tm4.getCoefficient(2, 0), 0.0001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0724476129133489, tm4.getCoefficient(2, 1), 0.0001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.118830425964518, tm4.getCoefficient(2, 2), 0.0001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.144341353618837, tm4.getCoefficient(2, 3), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.232796743379289, tm4(2, 0), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0724476129133489, tm4(2, 1), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.118830425964518, tm4(2, 2), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.144341353618837, tm4(2, 3), 0.0001);
 
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.015108772570731, tm4.getCoefficient(3, 0), 0.0001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.000947451265806253, tm4.getCoefficient(3, 1), 0.0001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.00586927638865189, tm4.getCoefficient(3, 2), 0.0001);
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.0124903619956978, tm4.getCoefficient(3, 3), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.015108772570731, tm4(3, 0), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.000947451265806253, tm4(3, 1), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.00586927638865189, tm4(3, 2), 0.0001);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(-0.0124903619956978, tm4(3, 3), 0.0001);
 
     // Test matrix-vector multiplication
     auto p1 = sight::data::Point::New(1.0F, 2.3F, 5.1F);
@@ -245,14 +245,14 @@ void Matrix4Test::matrixTest()
 
 void Matrix4Test::glmGetterSetterTest()
 {
-    sight::data::Matrix4::TMCoefArray coefs = {2, -2, .3, .12,
-                                               4, 8.9, 4.2, 1.2,
-                                               7.8, -12.1, 2.3, 1.2,
-                                               .3, 1.21, -3.1, 1.2
+    sight::data::Matrix4::container_type coefs = {2, -2, .3, .12,
+                                                  4, 8.9, 4.2, 1.2,
+                                                  7.8, -12.1, 2.3, 1.2,
+                                                  .3, 1.21, -3.1, 1.2
     };
 
     sight::data::Matrix4 mat;
-    mat.setCoefficients(coefs);
+    mat = coefs;
 
     // Test getter
     glm::dmat4x4 glmMat;
@@ -303,7 +303,7 @@ void Matrix4Test::glmGetterSetterTest()
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            CPPUNIT_ASSERT_EQUAL(mat.getCoefficient(i, j), coefs2[i + j * 4]);
+            CPPUNIT_ASSERT_EQUAL(mat(i, j), coefs2[i + j * 4]);
         }
     }
 }

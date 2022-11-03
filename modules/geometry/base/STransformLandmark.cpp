@@ -90,10 +90,9 @@ void STransformLandmark::updating()
         try
         {
             data::Landmarks::PointType& point = landmark->getPoint(m_label, m_index);
-            data::Matrix4::TMCoefArray array  = transform->getCoefficients();
-            point[0] = array[3];
-            point[1] = array[7];
-            point[2] = array[11];
+            point[0] = (*transform)[3];
+            point[1] = (*transform)[7];
+            point[2] = (*transform)[11];
 
             //notify point is modified
             auto sig = landmark->signal<data::Landmarks::PointModifiedSigType>(

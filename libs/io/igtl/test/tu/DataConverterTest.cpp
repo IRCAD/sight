@@ -219,7 +219,7 @@ void DataConverterTest::matrixConverterTest()
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            matrix->setCoefficient(i, j, static_cast<double>(i + j));
+            (*matrix)(i, j) = static_cast<double>(i + j);
         }
     }
 
@@ -233,7 +233,7 @@ void DataConverterTest::matrixConverterTest()
     convertedMatrix->GetMatrix(igtlMatrix);
     for(int i = 0 ; i < 4 ; ++i)
     {
-        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix->getCoefficients().begin() + i * 4LL));
+        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix->begin() + i * 4LL));
     }
 
     data::Object::sptr destObj =
@@ -241,7 +241,7 @@ void DataConverterTest::matrixConverterTest()
     data::Matrix4::sptr matrix2 = data::Matrix4::dynamicCast(destObj);
     for(int i = 0 ; i < 4 ; ++i)
     {
-        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix2->getCoefficients().begin() + i * 4LL));
+        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix2->begin() + i * 4LL));
     }
 }
 
@@ -427,7 +427,7 @@ void DataConverterTest::compositeConverterTest()
     {
         for(std::size_t j = 0 ; j < 4 ; ++j)
         {
-            matrix->setCoefficient(i, j, static_cast<double>(i + j));
+            (*matrix)(i, j) = static_cast<double>(i + j);
         }
     }
 
@@ -452,7 +452,7 @@ void DataConverterTest::compositeConverterTest()
     trackElement->GetMatrix(igtlMatrix);
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix->getCoefficients().begin() + i * 4));
+        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, matrix->begin() + i * 4));
     }
 
     data::Object::sptr destObject =
@@ -465,7 +465,7 @@ void DataConverterTest::compositeConverterTest()
     data::Matrix4::sptr destMatrix = data::Matrix4::dynamicCast(iter->second);
     for(std::size_t i = 0 ; i < 4 ; ++i)
     {
-        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, destMatrix->getCoefficients().begin() + i * 4));
+        CPPUNIT_ASSERT(std::equal(igtlMatrix[i], igtlMatrix[i] + 4, destMatrix->begin() + i * 4));
     }
 }
 

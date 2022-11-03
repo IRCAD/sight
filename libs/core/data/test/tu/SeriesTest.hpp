@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -104,6 +103,7 @@ CPPUNIT_TEST(windowCenterTest);
 CPPUNIT_TEST(windowWidthTest);
 CPPUNIT_TEST(imagePositionPatientTest);
 CPPUNIT_TEST(imageOrientationPatientTest);
+CPPUNIT_TEST(imageTransformPatientTest);
 
 CPPUNIT_TEST(stringConversionTest);
 
@@ -185,6 +185,7 @@ public:
     static void windowWidthTest();
     static void imagePositionPatientTest();
     static void imageOrientationPatientTest();
+    static void imageTransformPatientTest();
 
     static void stringConversionTest();
 

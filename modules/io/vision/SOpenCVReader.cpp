@@ -219,14 +219,7 @@ void SOpenCVReader::updating()
             {
                 for(std::size_t j = 0 ; j < 4 ; ++j)
                 {
-                    extMat->setCoefficient(
-                        i,
-                        j,
-                        extrinsic.at<double>(
-                            static_cast<int>(i),
-                            static_cast<int>(j)
-                        )
-                    );
+                    (*extMat)(i, j) = extrinsic.at<double>(static_cast<int>(i), static_cast<int>(j));
                 }
             }
 

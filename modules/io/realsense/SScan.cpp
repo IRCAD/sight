@@ -356,10 +356,10 @@ void SScan::initialize(const rs2::pipeline_profile& _profile)
                 std::size_t index = 0;
                 for(std::size_t i = 0 ; i < 3 ; ++i)
                 {
-                    matrix->setCoefficient(i, 3, static_cast<double>(extrinsic.translation[i] * s_METERS_TO_MMS));
+                    (*matrix)(i, 3) = static_cast<double>(extrinsic.translation[i] * s_METERS_TO_MMS);
                     for(std::size_t j = 0 ; j < 3 ; ++j)
                     {
-                        matrix->setCoefficient(i, j, static_cast<double>(extrinsic.rotation[index]));
+                        (*matrix)(i, j) = static_cast<double>(extrinsic.rotation[index]);
                         ++index;
                     }
                 }

@@ -76,7 +76,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
     {
         data::Matrix4::sptr mat0 = data::Matrix4::New();
 
-        for(double& coeff : mat0->getCoefficients())
+        for(double& coeff : *mat0)
         {
             coeff = dist(rng);
         }
@@ -87,7 +87,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_EQUAL(mat0->getCoefficient(l, c), double(ogreMat0[l][c]));
+                CPPUNIT_ASSERT_EQUAL((*mat0)(l, c), double(ogreMat0[l][c]));
             }
         }
 
@@ -100,8 +100,8 @@ void UtilsTest::convertOgreMatrixToTM3D()
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_EQUAL(mat0->getCoefficient(l, c), mat0Copy->getCoefficient(l, c));
-                CPPUNIT_ASSERT_EQUAL(double(ogreMat0[l][c]), mat0Copy->getCoefficient(l, c));
+                CPPUNIT_ASSERT_EQUAL((*mat0)(l, c), (*mat0Copy)(l, c));
+                CPPUNIT_ASSERT_EQUAL(double(ogreMat0[l][c]), (*mat0Copy)(l, c));
             }
         }
     }
@@ -124,7 +124,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                CPPUNIT_ASSERT_EQUAL(double(ogreMat1[l][c]), mat1Copy->getCoefficient(l, c));
+                CPPUNIT_ASSERT_EQUAL(double(ogreMat1[l][c]), (*mat1Copy)(l, c));
             }
         }
 
@@ -135,7 +135,7 @@ void UtilsTest::convertOgreMatrixToTM3D()
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
                 CPPUNIT_ASSERT_EQUAL(ogreMat1[l][c], ogreMat1Copy[l][c]);
-                CPPUNIT_ASSERT_EQUAL(mat1Copy->getCoefficient(l, c), double(ogreMat1Copy[l][c]));
+                CPPUNIT_ASSERT_EQUAL((*mat1Copy)(l, c), double(ogreMat1Copy[l][c]));
             }
         }
     }

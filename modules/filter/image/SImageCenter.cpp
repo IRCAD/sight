@@ -99,9 +99,9 @@ void SImageCenter::updating()
     center[1] += origin[1];
     center[2] += origin[2];
 
-    matrix->setCoefficient(0, 3, center[0]);
-    matrix->setCoefficient(1, 3, center[1]);
-    matrix->setCoefficient(2, 3, center[2]);
+    (*matrix)(0, 3) = center[0];
+    (*matrix)(1, 3) = center[1];
+    (*matrix)(2, 3) = center[2];
 
     // output the translation matrix
 

@@ -37,7 +37,7 @@ void Matrix::copyFromCv(const cv::Matx44d& _src, data::Matrix4::sptr& _dst)
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            _dst->setCoefficient(i, j, _src(i, j));
+            (*_dst)(i, j) = _src(i, j);
         }
     }
 }
@@ -52,7 +52,7 @@ void Matrix::copyToCv(const data::Matrix4::csptr& _src, cv::Matx44d& _dst)
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            _dst(i, j) = _src->getCoefficient(i, j);
+            _dst(i, j) = (*_src)(i, j);
         }
     }
 }
@@ -67,7 +67,7 @@ void Matrix::copyFromCv(const cv::Matx44f& _src, data::Matrix4::sptr& _dst)
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            _dst->setCoefficient(i, j, static_cast<double>(_src(i, j)));
+            (*_dst)(i, j) = static_cast<double>(_src(i, j));
         }
     }
 }
@@ -82,7 +82,7 @@ void Matrix::copyToCv(const data::Matrix4::csptr& _src, cv::Matx44f& _dst)
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            _dst(i, j) = static_cast<float>(_src->getCoefficient(i, j));
+            _dst(i, j) = static_cast<float>((*_src)(i, j));
         }
     }
 }
@@ -118,10 +118,10 @@ void Matrix::copyFromCv(const cv::Mat& _rvec, const cv::Mat& _tvec, data::Matrix
     {
         for(std::uint8_t j = 0 ; j < 3 ; ++j)
         {
-            _dst->setCoefficient(i, j, r_mat.at<double>(i, j));
+            (*_dst)(i, j) = r_mat.at<double>(i, j);
         }
 
-        _dst->setCoefficient(i, 3, d_tvec.at<double>(i));
+        (*_dst)(i, 3) = d_tvec.at<double>(i);
     }
 }
 
@@ -167,7 +167,7 @@ void Matrix::copyFromCv(const cv::Mat& _src, data::Matrix4::sptr& _dst)
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            _dst->setCoefficient(i, j, dmat.at<double>(i, j));
+            (*_dst)(i, j) = dmat.at<double>(i, j);
         }
     }
 }
@@ -185,7 +185,7 @@ void Matrix::copyToCv(const data::Matrix4::csptr& _src, cv::Mat& _dst)
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            _dst.at<double>(i, j) = _src->getCoefficient(i, j);
+            _dst.at<double>(i, j) = (*_src)(i, j);
         }
     }
 }

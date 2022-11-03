@@ -56,7 +56,7 @@ void Matrix4::createConfig(core::tools::Object::sptr _obj)
             for(unsigned int k = 0 ; k < 16 ; k++)
             {
                 inputString >> coef;
-                matrix->getCoefficients()[k] = coef;
+                (*matrix)[k] = coef;
             }
         }
     }

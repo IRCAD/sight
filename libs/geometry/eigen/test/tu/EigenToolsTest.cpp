@@ -82,7 +82,7 @@ void EigenToolsTest::eigenToF4s()
                     c
                 ) + ")",
                 mat(r, c),
-                f4sRes->getCoefficient(r, c)
+                (*f4sRes)(r, c)
             );
         }
     }
@@ -100,18 +100,18 @@ void EigenToolsTest::f4sToEigen()
     {
         for(unsigned int c = 0 ; c < 3 ; ++c)
         {
-            mat->setCoefficient(r, c, random<float>(-1.F, 1.F));
+            (*mat)(r, c) = random<float>(-1.F, 1.F);
         }
     }
 
-    mat->setCoefficient(0, 3, 1);
-    mat->setCoefficient(1, 3, 2);
-    mat->setCoefficient(2, 3, 3);
+    (*mat)(0, 3) = 1;
+    (*mat)(1, 3) = 2;
+    (*mat)(2, 3) = 3;
 
-    mat->setCoefficient(3, 0, 0);
-    mat->setCoefficient(3, 1, 0);
-    mat->setCoefficient(3, 2, 0);
-    mat->setCoefficient(3, 3, 1);
+    (*mat)(3, 0) = 0;
+    (*mat)(3, 1) = 0;
+    (*mat)(3, 2) = 0;
+    (*mat)(3, 3) = 1;
 
     eigenRes = geometry::eigen::helper::toEigen<float>(mat);
 
@@ -125,7 +125,7 @@ void EigenToolsTest::f4sToEigen()
                 "Elements differ at (" + std::to_string(r) + "," + std::to_string(
                     c
                 ) + ")",
-                mat->getCoefficient(r, c),
+                (*mat)(r, c),
                 eigenRes(r, c)
                 ,
                 0.0000000001
