@@ -84,7 +84,7 @@ void SMeshWriter::openLocationDialog()
     if(result)
     {
         this->setFile(result->getFile());
-        m_selectedExtension = dialogFile.getCurrentSelection();
+        m_selectedExtension = dialogFile.getSelectedExtensions().front();
         defaultDirectory->setFolder(result->getFile().parent_path());
         dialogFile.saveDefaultLocation(defaultDirectory);
     }

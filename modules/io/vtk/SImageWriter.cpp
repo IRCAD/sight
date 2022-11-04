@@ -33,7 +33,6 @@
 
 #include <io/base/reader/IObjectReader.hpp>
 #include <io/base/service/IWriter.hpp>
-#include <io/vtk/BitmapImageWriter.hpp>
 #include <io/vtk/ImageWriter.hpp>
 #include <io/vtk/MetaImageWriter.hpp>
 #include <io/vtk/VtiImageWriter.hpp>
@@ -78,10 +77,6 @@ void SImageWriter::openLocationDialog()
     dialogFile.addFilter("Vtk", "*.vtk");
     dialogFile.addFilter("Vti", "*.vti");
     dialogFile.addFilter("MetaImage", "*.mhd");
-    dialogFile.addFilter("BMP", "*.bmp");
-    dialogFile.addFilter("JPEG", "*.jpg, *.jpeg");
-    dialogFile.addFilter("PNG", "*.png");
-    dialogFile.addFilter("TIFF", "*.tiff");
     dialogFile.setOption(ui::base::dialog::ILocationDialog::WRITE);
 
     auto result = core::location::SingleFile::dynamicCast(dialogFile.show());
@@ -158,47 +153,12 @@ bool SImageWriter::saveImage(
         mhdWriter->setFile(imgFile);
         myWriter = mhdWriter;
     }
-    else if(ext == ".bmp" || ext == ".jpg" || ext == ".jpeg" || ext == ".png" || ext == ".tiff")
-    {
-        // Get image information
-        std::string type = image->getType().name();
-        std::size_t noc  = image->numComponents();
-
-        // Check type.
-        // All extension handles uint8, and ".png" also handles uint16.
-        if(!(type == "uint8" || (type == "uint16" && ext == ".png")))
-        {
-            sight::ui::base::dialog::MessageDialog::show(
-                "Warning",
-                std::string("Unsupported ") + type + " format for " + ext
-                + " export.\n The image will not be exported.",
-                sight::ui::base::dialog::IMessageDialog::WARNING
-            );
-            return false;
-        }
-
-        // Check number of components
-        if(noc < 1 || noc > 4)
-        {
-            sight::ui::base::dialog::MessageDialog::show(
-                "Warning",
-                "Unsupported number of components (" + std::to_string(noc) + ") for "
-                + ext + " export.\n The image will not be exported.",
-                sight::ui::base::dialog::IMessageDialog::WARNING
-            );
-            return false;
-        }
-
-        sight::io::vtk::BitmapImageWriter::sptr bitmapImageWriter = sight::io::vtk::BitmapImageWriter::New();
-        bitmapImageWriter->setFile(imgFile);
-        myWriter = bitmapImageWriter;
-    }
     else
     {
         SIGHT_THROW_EXCEPTION(
             core::tools::Failed(
                 "Unsupported " + ext + " format (Available formats: "
-                + ".vtk, .vti, .mhd, .bmp, .jpg, .jpeg, .png, .tiff)"
+                + ".vtk, .vti, .mhd)"
             )
         );
     }

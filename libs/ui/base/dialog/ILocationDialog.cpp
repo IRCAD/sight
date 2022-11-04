@@ -32,6 +32,8 @@
 
 #include <ui/base/Preferences.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 namespace sight::ui::base::dialog
 {
 
@@ -155,6 +157,26 @@ void ILocationDialog::saveDefaultLocation(core::location::ILocation::sptr loc)
             // Nothing to do..
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<std::string> ILocationDialog::getSelectedExtensions() const
+{
+    // Get the current selection, remove all "*" characters
+    const std::string& selection = boost::replace_all_copy(getCurrentSelection(), "*", "");
+
+    // Split the selection into a vector of extensions
+    std::vector<std::string> extensions;
+
+    boost::split(
+        extensions,
+        selection,
+        boost::is_any_of(" "),
+        boost::token_compress_on
+    );
+
+    return extensions;
 }
 
 //-----------------------------------------------------------------------------

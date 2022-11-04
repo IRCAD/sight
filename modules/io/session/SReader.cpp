@@ -375,7 +375,7 @@ void SReader::openLocationDialog()
     {
         const auto& filepath = result->getFile();
         setFile(filepath);
-        m_pimpl->m_extension_name = locationDialog.getCurrentSelection();
+        m_pimpl->m_extension_name = locationDialog.getSelectedExtensions().front();
 
         // Save default location for later use
         defaultLocation->setFolder(filepath.parent_path());

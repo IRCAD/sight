@@ -628,7 +628,7 @@ void SOpenvslam::saveTrajectories()
     const std::string trajectories_filename = result->getFile().filename().replace_extension("").string(); // keep only
                                                                                                            // the
     // base filename.
-    m_trajectoriesFormat = dialogFolder.getCurrentSelection();
+    m_trajectoriesFormat = dialogFolder.getSelectedExtensions().front();
 
     const std::unique_lock<std::mutex> lock(m_slamLock);
 

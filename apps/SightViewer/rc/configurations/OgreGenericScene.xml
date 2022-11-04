@@ -321,7 +321,7 @@
 
         <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo">
             <inout key="image" uid="snapshot" />
-            <config layer="defaultLayer" flip="true" />
+            <config layer="defaultLayer" flip="false" />
         </service>
 
         <service uid="orientationMarkerAdp" type="sight::module::viz::scene3d::adaptor::SOrientationMarker" autoConnect="true">
@@ -519,7 +519,8 @@
             <inout key="data" uid="snapshot" />
             <type mode="writer" />
             <selection mode="include" />
-            <addSelection service="sight::module::io::vtk::SImageWriter" />
+            <addSelection service="sight::module::io::bitmap::SWriter" />
+            <config id="SightViewer_snapshot_SrvCfg" service="sight::module::io::bitmap::SWriter" />
         </service>
 
         <service uid="imageExtruderSrv" type="sight::module::filter::image::SImageExtruder" autoConnect="true" worker="EXTRUSION_THREAD" >

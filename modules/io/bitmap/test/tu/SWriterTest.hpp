@@ -24,24 +24,17 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::io::vtk::ut
+namespace sight::module::io::bitmap::ut
 {
 
 /**
- * @brief Test the reader and the writer of Image using VTK.
+ * @brief Test the bitmap writer.
  */
-class ImageReaderWriterTest : public CPPUNIT_NS::TestFixture
+class SWriterTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(ImageReaderWriterTest);
-CPPUNIT_TEST(testVtkImageReader);
-CPPUNIT_TEST(testVtiImageReader);
-CPPUNIT_TEST(testMhdImageReader);
-CPPUNIT_TEST(testImageReaderExtension);
-CPPUNIT_TEST(testVtkImageWriter);
-CPPUNIT_TEST(testVtkImageSeriesWriter);
-CPPUNIT_TEST(testVtiImageWriter);
-CPPUNIT_TEST(testMhdImageWriter);
-CPPUNIT_TEST(testImageWriterExtension);
+CPPUNIT_TEST_SUITE(SWriterTest);
+CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST(configTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -50,15 +43,8 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void testVtkImageReader();
-    static void testVtiImageReader();
-    static void testMhdImageReader();
-    static void testImageReaderExtension();
-    static void testVtkImageWriter();
-    static void testVtkImageSeriesWriter();
-    static void testVtiImageWriter();
-    static void testMhdImageWriter();
-    static void testImageWriterExtension();
+    static void basicTest();
+    static void configTest();
 };
 
-} // namespace sight::module::io::vtk::ut
+} // namespace sight::module::io::bitmap::ut

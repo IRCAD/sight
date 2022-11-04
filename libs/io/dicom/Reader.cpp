@@ -1058,10 +1058,9 @@ public:
     /// @return data::SeriesSet::sptr: A set of series, with their associated files
     /// @throw std::runtime_error if the root directory is not an existing folder
     /// @throw std::runtime_error if there is no dicom files are found
-    [[nodiscard]] inline data::SeriesSet::sptr scanFiles() const
+    [[nodiscard]] inline data::SeriesSet::sptr scanFiles(const std::vector<std::filesystem::path>& files) const
     {
         // Convert std::vector<std::filesystem::path> to std::vector<std::string>
-        const auto& files = m_reader->getFiles();
         gdcm::Directory::FilenamesType gdcm_files;
 
         for(const auto& file : files)
@@ -1361,10 +1360,7 @@ public:
         {
             if(cancelRequested())
             {
-                m_scanned.reset();
-                m_sorted.reset();
-                m_read.reset();
-
+                clear();
                 return;
             }
 
@@ -1399,8 +1395,7 @@ public:
         }
 
         // Not needed anymore, free some memory
-        m_scanned.reset();
-        m_sorted.reset();
+        clear();
     }
 
     //------------------------------------------------------------------------------
@@ -1418,6 +1413,14 @@ public:
         {
             m_job->doneWork(units);
         }
+    }
+
+    //------------------------------------------------------------------------------
+
+    inline void clear()
+    {
+        m_scanned.reset();
+        m_sorted.reset();
     }
 
     /// The default filter to select only some type (Image, Model, ...) of DICOM files.
@@ -1453,7 +1456,7 @@ Reader::~Reader() noexcept = default;
 
 data::SeriesSet::sptr Reader::scan()
 {
-    const auto& files = getFiles();
+    auto files = getFiles();
 
     if(files.empty())
     {
@@ -1479,18 +1482,17 @@ data::SeriesSet::sptr Reader::scan()
         );
 
         // We need to transform std::vector<std::string> to std::vector<std::filesystem::path>
-        for(const auto& file : gdcm_directory.GetFilenames())
-        {
-            addFile(file);
-        }
+        const auto& filenames = gdcm_directory.GetFilenames();
+        std::transform(filenames.cbegin(), filenames.cend(), std::back_inserter(files), [](const auto& v){return v;});
     }
 
     if(m_pimpl->cancelRequested())
     {
+        m_pimpl->clear();
         return nullptr;
     }
 
-    const auto& scanned = m_pimpl->scanFiles();
+    const auto& scanned = m_pimpl->scanFiles(files);
     setScanned(scanned);
 
     m_pimpl->progress(20);
@@ -1509,6 +1511,7 @@ data::SeriesSet::sptr Reader::sort()
 
     if(m_pimpl->cancelRequested())
     {
+        m_pimpl->clear();
         return nullptr;
     }
 
@@ -1531,6 +1534,7 @@ void Reader::read()
 
     if(m_pimpl->cancelRequested())
     {
+        m_pimpl->clear();
         return;
     }
 

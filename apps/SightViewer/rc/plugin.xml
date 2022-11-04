@@ -45,16 +45,15 @@
         </config>
     </extension>
 
+    <!-- Service config used for writing Snapshot -->
     <extension implements="sight::service::extension::Config">
-        <id>SightViewerDicomReaderConfig</id>
-        <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
+        <id>SightViewer_snapshot_SrvCfg</id>
+        <desc>Snapshot</desc>
         <config>
-            <filterType>sight::filter::dicom::custom::DefaultDicomFilter</filterType>
+            <dialog policy="always" />
+            <backends enable="all" mode="best"/>
         </config>
     </extension>
-
-
-
 
     <extension implements="sight::service::extension::AppConfig" >
         <id>SightViewer_AppCfg</id>

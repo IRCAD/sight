@@ -205,18 +205,16 @@ QString LocationDialog::fileFilters()
 
 std::string LocationDialog::getCurrentSelection() const
 {
-    std::string extension;
     for(auto&& [filterName, rawWildcards] : m_filters)
     {
-        const std::string& availableFilters = filterName + " (" + rawWildcards + " ";
+        const std::string& availableFilters = filterName + " (" + rawWildcards + ")";
         if(m_wildcard == availableFilters)
         {
-            extension = &rawWildcards[1];
-            break;
+            return rawWildcards;
         }
     }
 
-    return extension;
+    SIGHT_THROW("No filter found for wildcard '" + m_wildcard + "'");
 }
 
 //------------------------------------------------------------------------------

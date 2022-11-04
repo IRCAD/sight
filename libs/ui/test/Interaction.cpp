@@ -25,6 +25,9 @@
 
 #include <core/spyLog.hpp>
 
+#include <QAbstractButton>
+#include <QTimer>
+
 namespace sight::ui::test
 {
 
@@ -125,7 +128,15 @@ void MouseClick::interactWith(T thing) const
         new TestEvent(
             [*this, thing]
         {
-            QTest::mouseClick(thing, m_button, m_modifiers, m_pos);
+            if(auto* pushButton = qobject_cast<QAbstractButton*>(thing);
+               m_modifiers == Qt::NoModifier && pushButton != nullptr)
+            {
+                QTimer::singleShot(0, pushButton, &QAbstractButton::click);
+            }
+            else
+            {
+                QTest::mouseClick(thing, m_button, m_modifiers, m_pos);
+            }
         })
     );
 }

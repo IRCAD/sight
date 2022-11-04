@@ -69,7 +69,10 @@ void LoadDicom::test()
             tester.take(
                 "ogre scene",
                 [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("genericSceneSrv");});
-            tester.interact(std::make_unique<sight::ui::test::MouseWheel>(QPoint(0, 1200)));
+
+            tester.interact(
+                std::make_unique<sight::ui::test::MouseWheel>(QPoint(0, int(1200 / qApp->devicePixelRatio())))
+            );
 
             saveSnapshot(tester, snapshotPath);
 
