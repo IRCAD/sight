@@ -7,7 +7,7 @@
 #include "TransferFunction.inc.glsl"
 
 uniform sampler3D u_image;
-uniform sampler1D u_s1TFTexture;
+uniform sampler2D u_s2TFTexture;
 uniform vec3 u_f3TFWindow;
 
 uniform float u_sliceDepth;
@@ -21,7 +21,7 @@ out vec4 fragColor;
 
 void main(void)
 {
-    vec4 sampledColor = sampleTransferFunction(texture(u_image, vec3(uv, u_sliceDepth)).r, u_s1TFTexture, u_f3TFWindow);
+    vec4 sampledColor = sampleTransferFunction(texture(u_image, vec3(uv, u_sliceDepth)).r, u_s2TFTexture, u_f3TFWindow);
     sampledColor.a = -log(1-min(sampledColor.a, 0.999));
     fragColor = sampledColor;
 }

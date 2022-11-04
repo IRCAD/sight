@@ -11,7 +11,7 @@
 #define MAX_ITERATIONS 8192
 
 uniform sampler3D u_s3Image;
-uniform sampler1D u_s1TFTexture;
+uniform sampler2D u_s2TFTexture;
 uniform vec3 u_f3TFWindow;
 
 uniform float u_fSampleDis_Ms;
@@ -52,7 +52,7 @@ float modelSpaceToNDC(in vec3 _f3Pos_Ms)
 
 //-----------------------------------------------------------------------------
 
-float firstOpaqueRayDepth(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in float _fRayLen, in float _fSampleDis, in sampler1D _s1TFTexture, in vec3 _f3TFWindow)
+float firstOpaqueRayDepth(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in float _fRayLen, in float _fSampleDis, in sampler2D _s1TFTexture, in vec3 _f3TFWindow)
 {
     int iIterCount = 0;
     float t = 0.;
@@ -118,7 +118,7 @@ void main(void)
     }
 
     float fRayLen = length(f3RayExitPos_Ms - f3RayEntryPos_Ms);
-    float fRayDepth_Ss = firstOpaqueRayDepth(f3RayEntryPos_Ms, f3RayDir_Ms, fRayLen, u_fSampleDis_Ms, u_s1TFTexture, u_f3TFWindow);
+    float fRayDepth_Ss = firstOpaqueRayDepth(f3RayEntryPos_Ms, f3RayDir_Ms, fRayLen, u_fSampleDis_Ms, u_s2TFTexture, u_f3TFWindow);
 
     // If the depth of the first opaque voxel is farther from the exit point, it means there is nothing to display
     if(fRayDepth_Ss >= fRayExitDis_Ss)
