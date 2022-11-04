@@ -29,6 +29,7 @@
 #include <core/base.hpp>
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hpp>
+#include <core/runtime/types.hpp>
 #include <core/tools/Object.hpp>
 
 namespace sight::core::tools
@@ -44,13 +45,6 @@ namespace sight::data
 class Object;
 
 } // namespace sight::data
-
-namespace sight::core::runtime
-{
-
-struct ConfigurationElement;
-
-} // namespace sight::core::runtime
 
 namespace sight::core::com::helper
 {
@@ -91,7 +85,7 @@ public:
      * @param obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
     SERVICE_API static ConnectionInfo parseConnections(
-        const CSPTR(core::runtime::ConfigurationElement)& cfg,
+        const core::runtime::config_t& cfg,
         const CSPTR(core::tools::Object)& obj =
         CSPTR(core::tools::Object)()
     );
@@ -103,7 +97,7 @@ public:
      * @param cfg configuration element containing "<connect>" tags
      */
     SERVICE_API static ProxyConnections parseConnections2(
-        const CSPTR(core::runtime::ConfigurationElement)& connectionCfg,
+        const core::runtime::config_t& connectionCfg,
         const std::string& errMsgHead,
         std::function<std::string()> generateChannelNameFn
     );
@@ -116,24 +110,9 @@ public:
      * @param obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
     SERVICE_API static void createConnections(
-        const CSPTR(core::runtime::ConfigurationElement)& cfg,
+        const core::runtime::config_t& cfg,
         core::com::helper::SigSlotConnection& helper,
         const CSPTR(core::tools::Object)& obj = CSPTR(core::tools::Object)()
-    );
-
-    /**
-     * @brief Parses "<proxy>" tags from given configuration to connect signals and slots using proxies.
-     *
-     * @param objectKey Id of the object
-     * @param cfg configuration element containing "<proxy>" tags
-     * @param proxyMap map containing the proxy's signals and slots connections
-     * @param obj optional object used to retrieve signal if uid is not defined
-     */
-    SERVICE_API static void createProxy(
-        const std::string& objectKey,
-        const CSPTR(core::runtime::ConfigurationElement)& cfg,
-        ProxyConnectionsMapType& proxyMap,
-        const CSPTR(data::Object)& obj = CSPTR(data::Object)()
     );
 
     /// Disconnects all proxies associated to objectKey

@@ -41,7 +41,7 @@ void Viewport::createConfig(core::tools::Object::sptr _obj)
     const data::Viewport::sptr viewport = data::Viewport::dynamicCast(_obj);
     SIGHT_ASSERT("Viewport does not exist.", viewport);
 
-    const auto config = m_cfg.get_child_optional("object.config.<xmlattr>");
+    const auto config = m_cfg.get_child_optional("config.<xmlattr>");
     if(config.has_value())
     {
         const std::string id = config->get("id", "");

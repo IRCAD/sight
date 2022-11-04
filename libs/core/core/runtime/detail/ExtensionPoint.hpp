@@ -58,8 +58,6 @@ class ExtensionPoint : public ModuleElement
 {
 public:
 
-    typedef Extension::Container ConfigurationElementContainer;
-
     /**
      * @brief       constructor
      *
@@ -81,50 +79,6 @@ public:
      * @remark  Assignment is forbidden for this class.
      */
     void operator=(const ExtensionPoint&) noexcept = delete;
-
-    /**
-     * @brief   Retrieves all configuration elements contributed by extensions
-     *          connected to the extension point instance.
-     *
-     * @return  a container with all found configuration elements
-     */
-    ConfigurationElementContainer getAllConfigurationElements() const
-    {
-        typedef std::back_insert_iterator<ConfigurationElementContainer> Inserter;
-
-        ConfigurationElementContainer container;
-        Inserter inserter(container);
-
-        getAllConfigurationElements<Inserter>(inserter);
-
-        return container;
-    }
-
-    /**
-     * @brief       Retrieves all configuration elements contributed by extensions
-     *              connected to the extension point instance.
-     *
-     * @param[out]  output  an output iterator that will be used to store shared
-     *              pointer to the found configuration elements
-     */
-    template<typename OutputIterator>
-    void getAllConfigurationElements(OutputIterator& output) const
-    {
-        // Walk through the collected extensions to extract configuration elements.
-        for(auto extension : getAllExtensions())
-        {
-            if(extension->isEnabled())
-            {
-                std::copy(extension->begin(), extension->end(), output);
-            }
-
-            SIGHT_DEBUG_IF(
-                "getAllConfigurationElements for point=" << extension->getPoint()
-                << " extension" << extension->getIdentifier() << "extension disabled",
-                !extension->isEnabled()
-            );
-        }
-    }
 
     /**
      * @brief   Retrieves all extensions contributed to the point instance.

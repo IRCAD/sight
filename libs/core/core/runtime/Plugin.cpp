@@ -22,8 +22,6 @@
 
 #include "core/runtime/Plugin.hpp"
 
-#include "core/runtime/ConfigurationElement.hpp"
-
 namespace sight::core::runtime
 {
 
@@ -32,12 +30,6 @@ namespace sight::core::runtime
 std::shared_ptr<Module> Plugin::getModule() const noexcept
 {
     return m_module.lock();
-}
-
-//------------------------------------------------------------------------------
-
-void Plugin::setInitializationData(const ConfigurationElement::sptr /*configuration*/) noexcept
-{
 }
 
 //------------------------------------------------------------------------------

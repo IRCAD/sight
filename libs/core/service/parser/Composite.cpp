@@ -50,8 +50,7 @@ void Composite::createConfig(core::tools::Object::sptr _obj)
     data::Composite::sptr dataComposite = data::Composite::dynamicCast(_obj);
     SIGHT_ASSERT("The passed object must be a data::Composite", dataComposite);
 
-    const auto config = m_cfg.get_child("object");
-    for(const auto& elem : config)
+    for(const auto& elem : m_cfg)
     {
         if(elem.first == "item")
         {
@@ -81,7 +80,7 @@ void Composite::createConfig(core::tools::Object::sptr _obj)
 
                 // Create and manage object config
                 auto ctm = service::AppConfigManager::New();
-                ctm->service::IAppConfigManager::setConfig(config);
+                ctm->service::IAppConfigManager::setConfig(elem.second);
 
                 m_ctmContainer.push_back(ctm);
                 ctm->create();

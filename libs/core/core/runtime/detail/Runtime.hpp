@@ -109,26 +109,6 @@ public:
     [[nodiscard]] IExecutable* createExecutableInstance(const std::string& type) const;
 
     /**
-     * @brief   Create an instance of the given executable object type and configuration element.
-     *
-     * An attempt is made to find a registered executable factory. If none
-     * is found, the module of the given configuration element is started in the
-     * hope it will register a executable factory for the given type. Then an
-     * executable factory for the given type is searched once again and the
-     * instantiation procedure goes further.
-     *
-     * @param[in]   type                    a string containing an executable type
-     * @param[in]   configurationElement    a shared pointer to the configuration element to use for the executable
-     * initialization
-     *
-     * @return  a pointer to the created executable instance
-     */
-    [[nodiscard]] IExecutable* createExecutableInstance(
-        const std::string& type,
-        SPTR(ConfigurationElement) configurationElement
-    ) const;
-
-    /**
      * @brief       Retrieves the extension instance matching the specified identifier.
      *
      * @param[in]   identifier  a string containing an extension identifier

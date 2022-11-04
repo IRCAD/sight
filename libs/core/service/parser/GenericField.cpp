@@ -44,7 +44,7 @@ void GenericField::updating()
 
 void GenericField::createConfig(core::tools::Object::sptr _obj)
 {
-    const auto input = m_cfg.get_optional<std::string>("object.value");
+    const auto input = m_cfg.get_optional<std::string>("value");
 
     if(input.has_value())
     {

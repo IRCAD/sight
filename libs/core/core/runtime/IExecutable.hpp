@@ -39,7 +39,6 @@ class GenericExecutableFactory;
 } // namespace utils
 
 class Module;
-struct ConfigurationElement;
 class Runtime;
 
 /**
@@ -66,15 +65,6 @@ public:
      * @return  a pointer to the originating module.
      */
     [[nodiscard]] virtual std::shared_ptr<Module> getModule() const = 0;
-
-    /**
-     * @brief       Initializes the executable instance with the specified
-     *              configuration element.
-     *
-     * @param[in]   configuration   a shared pointer to the configuration element used to
-     *              trigger this execution
-     */
-    virtual void setInitializationData(std::shared_ptr<ConfigurationElement> configuration) = 0;
 
 protected:
 

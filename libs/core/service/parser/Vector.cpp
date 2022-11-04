@@ -50,7 +50,7 @@ void Vector::createConfig(core::tools::Object::sptr _obj)
     auto vector = data::Vector::dynamicCast(_obj);
     SIGHT_ASSERT("The passed object must be a data::Vector", vector);
 
-    for(const auto& elem : m_cfg.get_child("object"))
+    for(const auto& elem : m_cfg)
     {
         if(elem.first == "item")
         {

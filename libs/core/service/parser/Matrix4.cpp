@@ -45,7 +45,7 @@ void Matrix4::createConfig(core::tools::Object::sptr _obj)
     data::Matrix4::sptr matrix = data::Matrix4::dynamicCast(_obj);
     SIGHT_ASSERT("matrix not instanced", matrix);
 
-    for(const auto& elem : m_cfg.get_child("object"))
+    for(const auto& elem : m_cfg)
     {
         if(elem.first == "matrix")
         {

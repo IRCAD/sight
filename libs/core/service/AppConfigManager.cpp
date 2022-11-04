@@ -26,7 +26,6 @@
 
 #include "service/helper/Config.hpp"
 #include "service/op/Get.hpp"
-#include "core/runtime/Convert.hpp"
 #include "core/runtime/runtime.hpp"
 #include <service/registry/Proxy.hpp>
 #include <service/extension/Config.hpp>
@@ -42,6 +41,7 @@
 #include <data/Object.hpp>
 
 #include <boost/foreach.hpp>
+#include <boost/range/iterator_range_core.hpp>
 #include <boost/thread/futures/wait_for_all.hpp>
 
 #include <regex>
@@ -128,11 +128,7 @@ void AppConfigManager::create()
 
     this->createObjects(m_cfgElem);
     this->createConnections();
-    const auto configTree = core::runtime::Convert::toPropertyTree(m_cfgElem);
-    if(configTree.count("config") != 0U)
-    {
-        this->createServices(configTree.get_child("config"));
-    }
+    this->createServices(m_cfgElem);
 
     m_state = STATE_CREATED;
 }
@@ -207,7 +203,7 @@ void AppConfigManager::destroy()
         << service::OSR::getRegistryInformation()
     );
 
-    m_cfgElem.reset();
+    m_cfgElem.clear();
     m_createdObjects.clear();
     m_deferredObjects.clear();
     m_deferredServices.clear();
@@ -411,12 +407,11 @@ void AppConfigManager::processStartItems()
 {
     std::vector<service::IService::SharedFutureType> futures;
 
-    for(const auto& elem : m_cfgElem->getElements())
+    for(const auto& elem : m_cfgElem)
     {
-        if(elem->getName() == "start")
+        if(elem.first == "start")
         {
-            SIGHT_ASSERT("Missing attribute \"uid\".", elem->hasAttribute("uid"));
-            const std::string uid = elem->getAttributeValue("uid");
+            const auto uid = elem.second.get<std::string>("<xmlattr>.uid");
             SIGHT_ASSERT("\"uid\" attribute is empty.", !uid.empty());
 
             if(!core::tools::fwID::exist(uid))
@@ -463,11 +458,11 @@ void AppConfigManager::processUpdateItems()
 {
     std::vector<service::IService::SharedFutureType> futures;
 
-    for(const auto& elem : m_cfgElem->getElements())
+    for(const auto& elem : m_cfgElem)
     {
-        if(elem->getName() == "update")
+        if(elem.first == "update")
         {
-            const std::string uid = elem->getAttributeValue("uid");
+            const auto uid = elem.second.get<std::string>("<xmlattr>.uid");
             SIGHT_ASSERT("\"uid\" attribute is empty.", !uid.empty());
 
             if(!core::tools::fwID::exist(uid))
@@ -508,37 +503,38 @@ void AppConfigManager::processUpdateItems()
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr cfgElem)
+void AppConfigManager::createObjects(const core::runtime::config_t& cfgElem)
 {
-    for(const auto& elem : cfgElem->getElements())
+    for(const auto& elem : cfgElem)
     {
-        if(elem->getName() == "object")
+        if(elem.first == "object")
         {
             // Get attributes
 
             // Id
             ConfigAttribute id("", false);
-            if(elem->hasAttribute("uid"))
+            if(const auto uid = elem.second.get_optional<std::string>("<xmlattr>.uid"); uid.has_value())
             {
-                id.first = elem->getAttributeValue("uid");
+                id.first = uid.value();
                 SIGHT_ASSERT(this->msgHead() + "\"uid\" attribute is empty.", !id.first.empty());
                 id.second = true;
             }
 
             // Type
             ConfigAttribute type("", false);
-            if(elem->hasAttribute("type"))
+            if(const auto typeCfg = elem.second.get_optional<std::string>("<xmlattr>.type"); typeCfg.has_value())
             {
-                type.first = elem->getAttributeValue("type");
+                type.first = typeCfg.value();
                 SIGHT_ASSERT(this->msgHead() + "\"type\" attribute is empty.", !type.first.empty());
                 type.second = true;
             }
 
             // Build mode
             ConfigAttribute buildMode("", false);
-            if(elem->hasAttribute("src"))
+            if(const auto buildModeCfg =
+                   elem.second.get_optional<std::string>("<xmlattr>.src"); buildModeCfg.has_value())
             {
-                buildMode.first = elem->getAttributeValue("src");
+                buildMode.first = buildModeCfg.value();
                 SIGHT_ASSERT("this->msgHead() + \"src\" attribute is empty.", !buildMode.first.empty());
 
                 SIGHT_ASSERT(
@@ -584,7 +580,7 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
 
                 service::IService::sptr srv = srvFactory->create(srvImpl);
                 auto objectParser           = service::IXMLParser::dynamicCast(srv);
-                objectParser->setObjectConfig(core::runtime::Convert::toPropertyTree(elem));
+                objectParser->setObjectConfig(elem.second);
                 objectParser->createConfig(obj);
 
                 m_createdObjects[id.first] = std::make_pair(obj, objectParser);
@@ -595,13 +591,12 @@ void AppConfigManager::createObjects(core::runtime::ConfigurationElement::csptr 
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::createServices(const boost::property_tree::ptree& cfgElem)
+void AppConfigManager::createServices(const core::runtime::config_t& cfgElem)
 {
-    auto serviceCfg = cfgElem.equal_range("service");
-    for(auto itCfg = serviceCfg.first ; itCfg != serviceCfg.second ; ++itCfg)
+    for(const auto& serviceCfg : boost::make_iterator_range(cfgElem.equal_range("service")))
     {
         // Parse the service configuration
-        Config srvConfig = service::helper::Config::parseService(itCfg->second, this->msgHead());
+        Config srvConfig = service::helper::Config::parseService(serviceCfg.second, this->msgHead());
 
         // Check if we can start the service now or if we must deferred its creation
         bool createService = true;
@@ -622,15 +617,6 @@ void AppConfigManager::createServices(const boost::property_tree::ptree& cfgElem
                 {
                     createService = false;
                 }
-            }
-            else
-            {
-                SIGHT_ERROR_IF(
-                    this->msgHead() + "Object '" + objectCfg.m_uid + "' is not deferred but it is used "
-                                                                     "as an optional key in service '" + srvConfig.m_uid + "'. This is useless, so maybe you "
-                                                                                                                           "intended to use a deferred object instead ?",
-                    objectCfg.m_optional
-                );
             }
 
             // Extra check to warn the user that an object is used as output but not marked as deferred
@@ -664,10 +650,9 @@ void AppConfigManager::createServices(const boost::property_tree::ptree& cfgElem
         }
     }
 
-    serviceCfg = cfgElem.equal_range("serviceList");
-    for(auto itCfg = serviceCfg.first ; itCfg != serviceCfg.second ; ++itCfg)
+    for(const auto& serviceCfg : boost::make_iterator_range(cfgElem.equal_range("serviceList")))
     {
-        this->createServices(itCfg->second);
+        this->createServices(serviceCfg.second);
     }
 }
 
@@ -739,18 +724,15 @@ service::IService::sptr AppConfigManager::createService(const service::IService:
 
 void AppConfigManager::createConnections()
 {
-    for(const auto& elem : m_cfgElem->getElements())
+    for(const auto& elem : m_cfgElem)
     {
-        if(elem->getName() == "connect")
+        if(elem.first == "connect")
         {
             // Parse all connections
-            auto genIdFn = [this]()
-                           {
-                               return "Proxy_" + this->getID() + "_" + std::to_string(m_proxyID++);
-                           };
+            auto genIdFn = [this](){return "Proxy_" + this->getID() + "_" + std::to_string(m_proxyID++);};
 
             ProxyConnections connectionInfos = service::helper::Config::parseConnections2(
-                elem,
+                elem.second,
                 this->msgHead(),
                 genIdFn
             );

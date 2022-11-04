@@ -22,7 +22,6 @@
 
 #include "service/extension/Config.hpp"
 
-#include <core/runtime/Convert.hpp>
 #include <core/runtime/runtime.hpp>
 
 namespace sight::service::extension
@@ -49,34 +48,17 @@ void Config::parseBundleInformation()
     extElements = core::runtime::getAllExtensionsForPoint(CONFIG_EXT_POINT);
     for(const ExtensionType& ext : extElements)
     {
-        // Get id
-        SIGHT_ASSERT("Missing id element", ext->hasConfigurationElement("id"));
-        std::string id = ext->findConfigurationElement("id")->getValue();
+        const auto& cfg = ext->getConfig();
 
-        // Get service
-        std::string service;
-        if(ext->hasConfigurationElement("service"))
-        {
-            service = ext->findConfigurationElement("service")->getValue();
-        }
-
-        // Get desc
-        std::string desc = "No description available";
-        if(ext->hasConfigurationElement("desc"))
-        {
-            desc = ext->findConfigurationElement("desc")->getValue();
-        }
+        const auto configId = cfg.get<std::string>("id");
+        const auto desc     = cfg.get<std::string>("desc", "No description available");
+        const auto service  = cfg.get<std::string>("service", "");
 
         // Get config
-        core::runtime::ConfigurationElement::csptr config = ext->findConfigurationElement("config");
+        const auto config = cfg.get_child("config");
 
         // Add service config info
-        this->addServiceConfigInfo(
-            id,
-            service,
-            desc,
-            core::runtime::Convert::toPropertyTree(config).get_child("config")
-        );
+        this->addServiceConfigInfo(configId, service, desc, config);
     }
 }
 

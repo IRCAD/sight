@@ -26,6 +26,8 @@
 #include <activity/IObjectValidator.hpp>
 #include <activity/IValidator.hpp>
 
+#include <core/runtime/helper.hpp>
+
 #include <data/Boolean.hpp>
 #include <data/Composite.hpp>
 #include <data/Float.hpp>
@@ -763,18 +765,17 @@ data::Object::sptr DataView::readObject(
     service::IService::sptr ioSelectorSrv;
     ioSelectorSrv = service::add("sight::module::ui::base::io::SSelector");
 
-    const auto ioConfig = service::extension::Config::getDefault()->getServiceConfig(
+    auto ioConfig = service::extension::Config::getDefault()->getServiceConfig(
         _ioSelectorSrvConfig,
         "sight::module::ui::base::io::SSelector"
     );
 
-    auto srvConfig = ioConfig.get_child("config");
-    srvConfig.add("type.<xmlattr>.class", _classname); // add the class of the output object
+    ioConfig.add("type.<xmlattr>.class", _classname); // add the class of the output object
 
     try
     {
         obj = data::factory::New(_classname);
-        ioSelectorSrv->setConfiguration(srvConfig);
+        ioSelectorSrv->setConfiguration(ioConfig);
         ioSelectorSrv->configure();
         ioSelectorSrv->setInOut(obj, io::base::service::s_DATA_KEY);
         ioSelectorSrv->start();

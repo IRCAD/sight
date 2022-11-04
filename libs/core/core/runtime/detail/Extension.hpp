@@ -23,7 +23,6 @@
 #pragma once
 
 #include "core/config.hpp"
-#include "core/runtime/ConfigurationElementContainer.hpp"
 #include "core/runtime/Extension.hpp"
 
 #include <libxml/tree.h>
@@ -38,7 +37,7 @@ class Module;
 /**
  * @brief   Defines the extension class.
  */
-class Extension : public sight::core::runtime::Extension
+class Extension final : public sight::core::runtime::Extension
 {
 public:
 
@@ -71,7 +70,10 @@ public:
     /**
      * @brief   Destructor
      */
-    ~Extension() override;
+    ~Extension() final;
+
+    /// @copydoc core::runtime::Extension::getConfig
+    const core::runtime::config_t& getConfig() const final;
 
     /**
      * @brief   Retrieves the xml node that represents the extension
@@ -90,12 +92,19 @@ public:
      */
     Validity validate();
 
+    /**
+     * @brief       Sets the configuration of the extension.
+     * @param[in]   element a shared pointer to the configuration element to add
+     */
+    void setConfig(const core::runtime::config_t& config);
+
 private:
 
     xmlDocPtr m_xmlDoc;                    ///< A pointer to the xml document that contains the xml node representing
                                            ///< the extension
     xmlNodePtr m_xmlNode;                  ///< A pointer to the xml node that represents the extension
     Validity m_validity {UnknownValidity}; ///< The validity state of the extension
+    core::runtime::config_t m_config;      ///< Configuration of the extension
 };
 
 } // namespace sight::core::runtime::detail

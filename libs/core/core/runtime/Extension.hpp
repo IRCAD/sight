@@ -23,8 +23,8 @@
 #pragma once
 
 #include "core/config.hpp"
-#include "core/runtime/ConfigurationElementContainer.hpp"
 #include "core/runtime/ModuleElement.hpp"
+#include "core/runtime/types.hpp"
 
 #include <boost/noncopyable.hpp>
 
@@ -39,7 +39,6 @@ class Module;
  * @brief   Defines the extension class.
  */
 class CORE_CLASS_API Extension : public ModuleElement,
-                                 public ConfigurationElementContainer,
                                  public boost::noncopyable
 {
 public:
@@ -73,12 +72,21 @@ public:
      */
     [[nodiscard]] CORE_API const std::string& getPoint() const;
 
+    /**
+     * @brief   Retrieves the extension point configuration.
+     *
+     * @return  a string containing the extension point configuration
+     */
+    [[nodiscard]] CORE_API virtual const config_t& getConfig() const = 0;
+
 private:
 
     /// A string containing the extension identifier
     const std::string m_id;
     /// A string containing the extension point identifier the extension will be connected to
     const std::string m_point;
+    /// The configuration of the extension
+    config_t m_config;
 };
 
 } // namespace sight::core::runtime

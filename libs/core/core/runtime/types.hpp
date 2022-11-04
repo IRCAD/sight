@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,29 +21,11 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <boost/property_tree/ptree.hpp>
 
-namespace sight::core::runtime::ut
+namespace sight::core::runtime
 {
 
-/**
- * @brief   Test the creation of EConfigurationElement
- */
-class EConfigurationElementTest : public CPPUNIT_NS::TestFixture
-{
-CPPUNIT_TEST_SUITE(EConfigurationElementTest);
-CPPUNIT_TEST(testConfiguration);
-CPPUNIT_TEST_SUITE_END();
+using config_t = boost::property_tree::ptree;
 
-protected:
-
-public:
-
-    // interface
-    void setUp() override;
-    void tearDown() override;
-
-    static void testConfiguration();
-};
-
-} // namespace sight::core::runtime::ut
+} // namespace sight::core::runtime

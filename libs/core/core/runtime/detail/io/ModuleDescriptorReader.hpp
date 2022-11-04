@@ -36,7 +36,6 @@ namespace sight::core::runtime
 {
 
 class Module;
-struct ConfigurationElement;
 class Extension;
 
 namespace detail
@@ -81,16 +80,12 @@ public:
     /**
      * @brief   Processes a configuration element XML node.
      *
-     * @param   node    a pointer to the XML node that represents a configuration element
-     * @param   module  a pointer to the module the extension will be attached to
+     * @param   node          a pointer to the XML node that represents a configuration element
+     * @param   parentConfig  the configuration of the parent
      *
      * @return  a pointer to the created configuration element
      */
-    static std::shared_ptr<ConfigurationElement> processConfigurationElement(
-        xmlNodePtr node,
-        const std::shared_ptr<Module> module
-    )
-    ;
+    static void processConfiguration(xmlNodePtr node, core::runtime::config_t& parentConfig);
 
     /**
      * @brief   Processes an extension XML node.
@@ -100,10 +95,7 @@ public:
      *
      * @return  a pointer to the created extension
      */
-    static std::shared_ptr<Extension> processExtension(
-        xmlNodePtr node,
-        const std::shared_ptr<Module> module
-    );
+    static std::shared_ptr<Extension> processExtension(xmlNodePtr node, const std::shared_ptr<Module> module);
 
     /**
      * Processes a node that is a point
@@ -112,10 +104,7 @@ public:
      * @param   module  a pointer to the module the extension will be attached to
      * @return  a pair with the created extension point and extensions
      */
-    static PointExtensionsPairType processPoint(
-        xmlNodePtr node,
-        const std::shared_ptr<Module> module
-    );
+    static PointExtensionsPairType processPoint(xmlNodePtr node, const std::shared_ptr<Module> module);
 
     /**
      * @brief   Processes an extension point XML node.
@@ -125,10 +114,7 @@ public:
      *
      * @return  a pointer to the created extension point
      */
-    static std::shared_ptr<ExtensionPoint> processExtensionPoint(
-        xmlNodePtr node,
-        const std::shared_ptr<Module> module
-    );
+    static std::shared_ptr<ExtensionPoint> processExtensionPoint(xmlNodePtr node, const std::shared_ptr<Module> module);
 
     /**
      * Processes a node that is a plugin element.
@@ -138,10 +124,7 @@ public:
      *
      * @return  a pointer to the created module
      */
-    static std::shared_ptr<detail::Module> processPlugin(
-        xmlNodePtr node,
-        const std::filesystem::path& location
-    );
+    static std::shared_ptr<detail::Module> processPlugin(xmlNodePtr node, const std::filesystem::path& location);
 
     /**
      * Processes a node that is a requirement

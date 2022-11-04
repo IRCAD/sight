@@ -22,7 +22,6 @@
 
 #include "core/runtime/runtime.hpp"
 
-#include "core/runtime/ConfigurationElement.hpp"
 #include "core/runtime/detail/dl/Library.hpp"
 #include "core/runtime/detail/ExtensionPoint.hpp"
 #include "core/runtime/detail/io/ProfileReader.hpp"

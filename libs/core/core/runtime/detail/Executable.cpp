@@ -22,8 +22,6 @@
 
 #include "core/runtime/detail/Executable.hpp"
 
-#include "core/runtime/ConfigurationElement.hpp"
-
 namespace sight::core::runtime::detail
 {
 
@@ -36,23 +34,9 @@ std::shared_ptr<Module> Executable::getModule() const
 
 //------------------------------------------------------------------------------
 
-ConfigurationElement::sptr Executable::getInitializationData() const
-{
-    return m_initializationData;
-}
-
-//------------------------------------------------------------------------------
-
 void Executable::setModule(std::shared_ptr<Module> module)
 {
     m_module = module;
-}
-
-//------------------------------------------------------------------------------
-
-void Executable::setInitializationData(const ConfigurationElement::sptr element)
-{
-    m_initializationData = element;
 }
 
 //------------------------------------------------------------------------------

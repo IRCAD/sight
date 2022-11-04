@@ -138,7 +138,7 @@ private:
     /**
      * @brief Starts the module associated to the config
      * @note  Does nothing if the module is already started or if the config id is not specified (ie. if config is set
-     *        with setConfig(core::runtime::ConfigurationElement::csptr cfgElem) ).
+     *        with setConfig(const core::runtime::config_t& cfgElem) ).
      */
     SERVICE_API virtual void startModule();
 
@@ -166,10 +166,10 @@ private:
     void processUpdateItems();
 
     /// Parses objects section and create objects.
-    void createObjects(core::runtime::ConfigurationElement::csptr cfgElem);
+    void createObjects(const core::runtime::config_t&);
 
     /// Parses services and create all the services that can be instantiated.
-    void createServices(const boost::property_tree::ptree& cfgElem);
+    void createServices(const core::runtime::config_t&);
 
     /// Creates a single service from its configuration.
     service::IService::sptr createService(const Config& srvConfig);

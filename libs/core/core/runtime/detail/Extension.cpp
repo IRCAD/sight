@@ -25,7 +25,6 @@
 #include "core/runtime/detail/ExtensionPoint.hpp"
 #include "core/runtime/detail/io/Validator.hpp"
 #include "core/runtime/detail/Runtime.hpp"
-#include "core/runtime/helper.hpp"
 #include "core/runtime/Module.hpp"
 
 #include <libxml/xmlstring.h>
@@ -105,6 +104,20 @@ Extension::Validity Extension::validate()
     }
 
     return m_validity;
+}
+
+//------------------------------------------------------------------------------
+
+void Extension::setConfig(const core::runtime::config_t& config)
+{
+    m_config = config;
+}
+
+//------------------------------------------------------------------------------
+
+const core::runtime::config_t& Extension::getConfig() const
+{
+    return m_config;
 }
 
 //------------------------------------------------------------------------------

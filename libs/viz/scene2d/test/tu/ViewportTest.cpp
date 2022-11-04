@@ -55,10 +55,7 @@ void ViewportTest::testParser()
 {
     service::IService::ConfigType config;
 
-    std::stringstream config_string;
-    config_string << "<object uid=\"test\" type=\"sight::data::Viewport\">"
-                     "<config x=\"-700\" y=\"0.1\" width=\"100\" height=\"1.3\" />"
-                     "</object>";
+    std::stringstream config_string(R"(<config x="-700" y="0.1" width="100" height="1.3"/>)");
     boost::property_tree::read_xml(config_string, config);
 
     auto parser = sight::service::add<data::parser::Viewport>("sight::viz::scene2d::data::parser::Viewport");

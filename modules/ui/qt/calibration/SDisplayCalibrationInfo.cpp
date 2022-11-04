@@ -123,7 +123,6 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
         data::PointList::csptr pointList1 = calInfo1->getPointList(img1);
         replaceMap["pointListId1"] = pointList1->getID();
 
-        core::runtime::ConfigurationElement::csptr config;
         if(calInfo2)
         {
             strConfig = std::string(s_TWO_IMAGES_CONFIG);
@@ -136,7 +135,11 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
 
         replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
 
-        config = service::extension::AppConfig::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap, true);
+        const auto config = service::extension::AppConfig::getDefault()->getAdaptedTemplateConfig(
+            strConfig,
+            replaceMap,
+            true
+        );
 
         // Launch configuration
         m_configMgr = service::AppConfigManager::New();

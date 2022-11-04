@@ -29,8 +29,6 @@
 #include <core/com/HasSignals.hpp>
 #include <core/com/HasSlots.hpp>
 #include <core/com/helper/SigSlotConnection.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/Convert.hpp>
 #include <core/runtime/helper.hpp>
 #include <core/tools/Object.hpp>
 
@@ -50,7 +48,7 @@ const std::array<std::string, 3> s_DATA_KEYWORDS = {{"in", "out", "inout"}};
 //-----------------------------------------------------------------------------
 
 void Config::createConnections(
-    const core::runtime::ConfigurationElement::csptr& connectionCfg,
+    const core::runtime::config_t& connectionCfg,
     core::com::helper::SigSlotConnection& connections,
     const CSPTR(core::tools::Object)& obj
 )
@@ -77,21 +75,20 @@ void Config::createConnections(
 //-----------------------------------------------------------------------------
 
 Config::ConnectionInfo Config::parseConnections(
-    const core::runtime::ConfigurationElement::csptr& connectionCfg,
+    const core::runtime::config_t& connectionCfg,
     const CSPTR(core::tools::Object)& obj
 )
 {
     ConnectionInfo info;
 
-    std::regex re("(.*)/(.*)");
-    std::smatch match;
-    std::string src;
-    std::string uid;
-    std::string key;
-
-    for(core::runtime::ConfigurationElement::csptr elem : connectionCfg->getElements())
+    for(const auto& elem : connectionCfg)
     {
-        src = elem->getValue();
+        const auto src = elem.second.get_value<std::string>();
+        static const std::regex re("(.*)/(.*)");
+        std::smatch match;
+        std::string uid;
+        std::string key;
+
         if(std::regex_match(src, match, re))
         {
             SIGHT_ASSERT("Wrong value for attribute src: " << src, match.size() >= 3);
@@ -99,11 +96,11 @@ Config::ConnectionInfo Config::parseConnections(
             key.assign(match[2].first, match[2].second);
 
             SIGHT_ASSERT(
-                src << " configuration is not correct for " << elem->getName(),
+                src << " configuration is not correct for " << elem.first,
                 !uid.empty() && !key.empty()
             );
 
-            if(elem->getName() == "signal")
+            if(elem.first == "signal")
             {
                 SIGHT_ASSERT(
                     "There must be only one signal by connection",
@@ -111,7 +108,7 @@ Config::ConnectionInfo Config::parseConnections(
                 );
                 info.m_signal = {uid, key};
             }
-            else if(elem->getName() == "slot")
+            else if(elem.first == "slot")
             {
                 info.m_slots.push_back({uid, key});
             }
@@ -121,7 +118,7 @@ Config::ConnectionInfo Config::parseConnections(
             SIGHT_ASSERT("Object uid is not defined, object used to retrieve signal must be present.", obj);
             uid = obj->getID();
             key = src;
-            SIGHT_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem->getName() == "signal");
+            SIGHT_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem.first == "signal");
             SIGHT_ASSERT(
                 "There must be only one signal by connection",
                 info.m_signal.first.empty() && info.m_signal.second.empty()
@@ -137,7 +134,7 @@ Config::ConnectionInfo Config::parseConnections(
 //-----------------------------------------------------------------------------
 
 ProxyConnections Config::parseConnections2(
-    const core::runtime::ConfigurationElement::csptr& connectionCfg,
+    const core::runtime::config_t& connectionCfg,
     const std::string& errMsgHead,
     std::function<std::string()> generateChannelNameFn
 )
@@ -145,29 +142,18 @@ ProxyConnections Config::parseConnections2(
 #ifndef _DEBUG
     SIGHT_NOT_USED(errMsgHead);
 #endif
-    std::regex re("(.*)/(.*)");
-    std::smatch match;
-    std::string src;
-    std::string uid;
-    std::string key;
-
-    std::string channel;
-    if(connectionCfg->hasAttribute("channel"))
-    {
-        channel = connectionCfg->getAttributeValue("channel");
-        SIGHT_ASSERT(errMsgHead + "Empty 'channel' attribute", !channel.empty());
-    }
-    else
-    {
-        // Generate an UID
-        channel = generateChannelNameFn();
-    }
+    const std::string channel = connectionCfg.get<std::string>("<xmlattr>.channel", generateChannelNameFn());
 
     ProxyConnections proxyCnt(channel);
 
-    for(core::runtime::ConfigurationElement::csptr elem : connectionCfg->getElements())
+    for(const auto& elem : connectionCfg)
     {
-        src = elem->getValue();
+        const static std::regex re("(.*)/(.*)");
+        std::smatch match;
+        std::string uid;
+        std::string key;
+
+        const auto src = elem.second.get_value<std::string>();
         if(std::regex_match(src, match, re))
         {
             SIGHT_ASSERT("errMsgHead + Wrong value for attribute src: " << src, match.size() >= 3);
@@ -175,20 +161,20 @@ ProxyConnections Config::parseConnections2(
             key.assign(match[2].first, match[2].second);
 
             SIGHT_ASSERT(
-                errMsgHead + src << " configuration is not correct for " << elem->getName(),
+                errMsgHead + src << " configuration is not correct for " << elem.first,
                 !uid.empty() && !key.empty()
             );
 
-            if(elem->getName() == "signal")
+            if(elem.first == "signal")
             {
                 proxyCnt.addSignalConnection(uid, key);
             }
-            else if(elem->getName() == "slot")
+            else if(elem.first == "slot")
             {
                 proxyCnt.addSlotConnection(uid, key);
             }
         }
-        else
+        else if(elem.first != "<xmlattr>")
         {
             SIGHT_ASSERT(
                 errMsgHead + "Signal or slot must be written as <signal>fwID/Key</signal> or "
@@ -200,70 +186,6 @@ ProxyConnections Config::parseConnections2(
 
     // This is ok to return like this, thanks to C++11 rvalue there will be no copy of the vectors inside the struct
     return proxyCnt;
-}
-
-//-----------------------------------------------------------------------------
-
-void Config::createProxy(
-    const std::string& objectKey,
-    const CSPTR(core::runtime::ConfigurationElement)& cfg,
-    Config::ProxyConnectionsMapType& proxyMap,
-    const CSPTR(data::Object)& obj
-)
-{
-    service::registry::Proxy::sptr proxy = service::registry::Proxy::getDefault();
-
-    SIGHT_ASSERT("Missing 'channel' attribute", cfg->hasAttribute("channel"));
-    const std::string channel = cfg->getExistingAttributeValue("channel");
-    ProxyConnections proxyCnt(channel);
-
-    std::regex re("(.*)/(.*)");
-    std::smatch match;
-    std::string src;
-    std::string uid;
-    std::string key;
-    for(core::runtime::ConfigurationElement::csptr elem : cfg->getElements())
-    {
-        src = elem->getValue();
-        if(std::regex_match(src, match, re))
-        {
-            SIGHT_ASSERT("Wrong value for attribute src: " + src, match.size() >= 3);
-            uid.assign(match[1].first, match[1].second);
-            key.assign(match[2].first, match[2].second);
-
-            SIGHT_ASSERT(src + " configuration is not correct for " + elem->getName(), !uid.empty() && !key.empty());
-
-            core::tools::Object::sptr channelObj = core::tools::fwID::getObject(uid);
-
-            if(elem->getName() == "signal")
-            {
-                core::com::HasSignals::sptr hasSignals = std::dynamic_pointer_cast<core::com::HasSignals>(channelObj);
-                SIGHT_ASSERT("Can't find the holder of signal '" + key + "'", hasSignals);
-                core::com::SignalBase::sptr sig = hasSignals->signal(key);
-                proxy->connect(channel, sig);
-                proxyCnt.addSignalConnection(uid, key);
-            }
-            else if(elem->getName() == "slot")
-            {
-                core::com::HasSlots::sptr hasSlots = std::dynamic_pointer_cast<core::com::HasSlots>(channelObj);
-                SIGHT_ASSERT("Can't find the holder of slot '" + key + "'", hasSlots);
-                core::com::SlotBase::sptr slot = hasSlots->slot(key);
-                proxy->connect(channel, slot);
-                proxyCnt.addSlotConnection(uid, key);
-            }
-        }
-        else
-        {
-            uid = obj->getID();
-            key = src;
-            SIGHT_ASSERT("Element must be a signal or must be written as <fwID/Key>", elem->getName() == "signal");
-            core::com::SignalBase::sptr sig = obj->signal(key);
-            proxy->connect(channel, sig);
-            proxyCnt.addSignalConnection(uid, key);
-        }
-    }
-
-    proxyMap[objectKey].push_back(proxyCnt);
 }
 
 //-----------------------------------------------------------------------------

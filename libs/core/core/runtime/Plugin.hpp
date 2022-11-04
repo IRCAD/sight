@@ -42,8 +42,6 @@ class CORE_CLASS_API Plugin : public IPlugin
 public:
 
     [[nodiscard]] CORE_API std::shared_ptr<Module> getModule() const noexcept override;
-    CORE_API void setInitializationData(SPTR(ConfigurationElement) configuration) noexcept
-    override;
 
 protected:
 

@@ -48,8 +48,7 @@ void Object::createConfig(core::tools::Object::sptr _obj)
     data::Object::sptr associatedObject = data::Object::dynamicCast(_obj);
     SIGHT_ASSERT("associatedObject not instanced", associatedObject);
 
-    const auto config = m_cfg.get_child("object");
-    for(const auto& elem : config)
+    for(const auto& elem : m_cfg)
     {
         if(elem.first == "item")
         {
@@ -78,7 +77,7 @@ void Object::createConfig(core::tools::Object::sptr _obj)
 
                 // Create and manage object config
                 auto ctm = service::AppConfigManager::New();
-                ctm->service::IAppConfigManager::setConfig(config);
+                ctm->service::IAppConfigManager::setConfig(elem.second);
 
                 m_ctmContainer.push_back(ctm);
                 ctm->create();

@@ -212,11 +212,9 @@ void IWriter::configuring()
     {
         SIGHT_THROW_IF("This reader cannot manage FILE and FILES.", this->getIOPathType() & io::base::service::FILES);
         SIGHT_THROW_IF("No more than one file must be defined in the configuration", config.count("file") > 1);
-        const auto file = config.get_optional<std::string>("file");
-
-        if(file.is_initialized())
+        if(const auto file = config.get_optional<std::string>("file"); file.has_value())
         {
-            this->setFile(*file);
+            this->setFile(std::filesystem::path(*file));
         }
     }
 

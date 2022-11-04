@@ -22,7 +22,6 @@
 
 #include "core/runtime/detail/io/ModuleDescriptorReader.hpp"
 
-#include "core/runtime/ConfigurationElement.hpp"
 #include "core/runtime/detail/dl/Library.hpp"
 #include "core/runtime/detail/ExtensionPoint.hpp"
 #include "core/runtime/detail/io/Validator.hpp"
@@ -30,6 +29,8 @@
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/path.hpp"
 #include "core/runtime/runtime.hpp"
+
+#include <core/runtime/helper.hpp>
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
@@ -173,14 +174,11 @@ std::shared_ptr<Module> ModuleDescriptorReader::createModule(const std::filesyst
 
 //-----------------------------------------------------------------------------
 
-ConfigurationElement::sptr ModuleDescriptorReader::processConfigurationElement(
-    xmlNodePtr node,
-    const std::shared_ptr<Module> module
-)
+void ModuleDescriptorReader::processConfiguration(xmlNodePtr node, core::runtime::config_t& parentConfig)
 {
     // Creates the configuration element.
     const std::string nodeName(reinterpret_cast<const char*>(node->name));
-    ConfigurationElement::sptr configurationElement(ConfigurationElement::New(module, nodeName));
+    core::runtime::config_t config;
 
     // Processes all attributes.
     xmlAttrPtr curAttr = nullptr;
@@ -188,43 +186,57 @@ ConfigurationElement::sptr ModuleDescriptorReader::processConfigurationElement(
     {
         const std::string attrName(reinterpret_cast<const char*>(curAttr->name));
         const std::string value(reinterpret_cast<const char*>(curAttr->children->content));
+        config.add("<xmlattr>." + attrName, value);
+    }
 
-        configurationElement->setAttributeValue(attrName, value);
+    if(nodeName == "service")
+    {
+        curAttr = nullptr;
     }
 
     // Process child nodes.
+    std::string value;
+    core::runtime::config_t children;
     for(xmlNodePtr curChild = node->children ; curChild != nullptr ; curChild = curChild->next)
     {
         if(curChild->type == XML_TEXT_NODE && (xmlIsBlankNode(curChild) == 0))
         {
-            std::string value(reinterpret_cast<const char*>(curChild->content));
+            std::string content(reinterpret_cast<const char*>(curChild->content));
             // Even whitespace (non XML_TEXT_NODE) are considered as valid XML_TEXT_NODE
             SIGHT_WARN_IF(
-                "Module : " << (module ? module->getIdentifier() : "<None>") << ", node: " << nodeName << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
-                (value.find('\n') != std::string::npos || value.find('\t') != std::string::npos)
+                "Node: " << nodeName
+                << ", blanks in xml nodes can result in unexpected behaviour. Consider using <![CDATA[ ... ]]>.",
+                (content.find('\n') != std::string::npos || content.find('\t') != std::string::npos)
             );
 
-            configurationElement->setValue(configurationElement->getValue() + value);
+            value += content;
             continue;
         }
 
         if(curChild->type == XML_CDATA_SECTION_NODE)
         {
-            const std::string value(reinterpret_cast<const char*>(curChild->content));
-            configurationElement->setValue(configurationElement->getValue() + value);
+            value += std::string(reinterpret_cast<const char*>(curChild->content));
             continue;
         }
 
         if(curChild->type == XML_ELEMENT_NODE)
         {
-            ConfigurationElement::sptr element(processConfigurationElement(curChild, module));
-            configurationElement->addConfigurationElement(element);
+            processConfiguration(curChild, config);
             continue;
         }
     }
 
-    // Job's done.
-    return configurationElement;
+    if(!children.empty())
+    {
+        config.add_child(nodeName, children);
+    }
+
+    if(!value.empty())
+    {
+        config.put_value<std::string>(value);
+    }
+
+    parentConfig.add_child(nodeName, config);
 }
 
 //------------------------------------------------------------------------------
@@ -253,20 +265,26 @@ std::shared_ptr<Extension> ModuleDescriptorReader::processExtension(
         }
     }
 
+    if(point == "sight::service::extension::AppConfig")
+    {
+        curAttr = nullptr;
+    }
+
     // Creates the extension instance.
     std::shared_ptr<Extension> extension = std::make_shared<Extension>(module, identifier, point, node);
 
     // Processes child nodes which are configuration elements.
     xmlNodePtr curChild = nullptr;
+    core::runtime::config_t config;
     for(curChild = node->children ; curChild != nullptr ; curChild = curChild->next)
     {
         if(curChild->type == XML_ELEMENT_NODE)
         {
-            ConfigurationElement::sptr element(processConfigurationElement(curChild, module));
-            extension->addConfigurationElement(element);
+            processConfiguration(curChild, config);
         }
     }
 
+    extension->setConfig(config);
     // Job's done.
     return extension;
 }

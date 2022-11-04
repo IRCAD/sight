@@ -26,8 +26,6 @@
 #include "service/extension/AppConfig.hpp"
 
 #include <core/mt/types.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/EConfigurationElement.hpp>
 #include <core/runtime/Extension.hpp>
 #include <core/tools/Object.hpp>
 
@@ -40,7 +38,7 @@ namespace sight::service
 {
 
 /// Associations of <pattern, value>.
-typedef std::map<std::string, std::string> FieldAdaptorType;
+using FieldAdaptorType = std::map<std::string, std::string>;
 
 namespace extension
 {
@@ -54,18 +52,16 @@ public:
     SIGHT_DECLARE_CLASS(AppInfo, core::BaseObject, new AppInfo);
 
     /// Constructor, do nothing.
-    AppInfo()
-    = default;
+    AppInfo() = default;
 
     /// Destructor, do nothing.
-    ~AppInfo() override
-    = default;
+    ~AppInfo() override = default;
 
     std::string group;
     std::string desc;
     typedef std::map<std::string, std::string> ParametersType;
     ParametersType parameters;
-    core::runtime::ConfigurationElement::csptr config;
+    core::runtime::config_t config;
     std::string moduleId;      ///< Module identifier (used to start the module when the appConfig is launched)
     std::string moduleVersion; ///< Module version (used to start the module when the appConfig is launched)
 };
@@ -78,13 +74,10 @@ class SERVICE_CLASS_API AppConfig : public core::BaseObject
 {
 public:
 
-    /// Associations of <pattern, value>.
-    typedef std::map<std::string, std::string> FieldAdaptorType;
-
     SIGHT_DECLARE_CLASS(AppConfig, core::BaseObject, new AppConfig);
 
     /// Destructor
-    SERVICE_API ~AppConfig() override;
+    SERVICE_API ~AppConfig() override = default;
 
     /**
      * @brief Parses module information to retrieve configuration declaration.
@@ -117,7 +110,7 @@ public:
         const std::string& group,
         const std::string& desc,
         const AppInfo::ParametersType& parameters,
-        const core::runtime::ConfigurationElement::csptr& config,
+        const core::runtime::config_t& config,
         const std::string& moduleId
     );
 
@@ -127,7 +120,7 @@ public:
      * @param replaceFields associations between the value and the pattern to replace in the config.
      * @note This method is thread safe.
      */
-    SERVICE_API core::runtime::ConfigurationElement::csptr getAdaptedTemplateConfig(
+    SERVICE_API core::runtime::config_t getAdaptedTemplateConfig(
         const std::string& configId,
         const FieldAdaptorType replaceFields,
         bool autoPrefixId
@@ -139,7 +132,7 @@ public:
      * @param replaceFields composite of association between the value and the pattern to replace in the config.
      * @note This method is thread safe.
      */
-    SERVICE_API core::runtime::ConfigurationElement::csptr getAdaptedTemplateConfig(
+    SERVICE_API core::runtime::config_t getAdaptedTemplateConfig(
         const std::string& configId,
         data::Composite::csptr replaceFields,
         bool autoPrefixId
@@ -197,13 +190,14 @@ private:
     static FieldAdaptorType compositeToFieldAdaptor(data::Composite::csptr fieldAdaptors);
 
     static void collectUIDForParameterReplace(
-        core::runtime::ConfigurationElement::csptr _cfgElem,
+        const std::string& _name,
+        const core::runtime::config_t& _cfgElem,
         UidParameterReplaceType& replaceMap
     );
 
     /// Adapts the configuration : replace field thanks to field adaptors
-    static core::runtime::EConfigurationElement::sptr adaptConfig(
-        core::runtime::ConfigurationElement::csptr _cfgElem,
+    static core::runtime::config_t adaptConfig(
+        const core::runtime::config_t& _cfgElem,
         const FieldAdaptorType& _fieldAdaptors,
         const UidParameterReplaceType& _uidParameterReplace,
         const std::string& _autoPrefixId

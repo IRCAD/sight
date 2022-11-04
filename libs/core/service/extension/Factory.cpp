@@ -25,7 +25,7 @@
 #include "service/IService.hpp"
 
 #include <core/LazyInstantiator.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
+#include <core/runtime/helper.hpp>
 #include <core/runtime/runtime.hpp>
 
 #include <data/Exception.hpp>
@@ -49,42 +49,42 @@ void Factory::parseBundleInformation()
 {
     SrvRegContainer moduleInfoMap;
 
-    using ConfigurationType = core::runtime::ConfigurationElement::sptr;
-    using ExtensionType     = std::shared_ptr<core::runtime::Extension>;
+    using ExtensionType = std::shared_ptr<core::runtime::Extension>;
 
     std::vector<ExtensionType> extElements;
     extElements = core::runtime::getAllExtensionsForPoint("sight::service::extension::Factory");
     for(const ExtensionType& extElt : extElements)
     {
-        std::vector<ConfigurationType> cfgEltVec = extElt->getElements();
+        const core::runtime::config_t& cfgEltVec = extElt->getConfig();
         std::string type;
         std::string service;
         std::vector<std::string> objects;
         std::string desc;
         std::string tags;
 
-        for(const ConfigurationType& cfgElt : cfgEltVec)
+        for(const auto& cfgElt : cfgEltVec)
         {
-            std::string elt = cfgElt->getName();
+            const std::string elt = cfgElt.first;
+            const auto value      = cfgElt.second.get_value<std::string>();
             if(elt == "type")
             {
-                type = core::runtime::filterID(cfgElt->getValue());
+                type = core::runtime::filterID(value);
             }
             else if(elt == "service")
             {
-                service = core::runtime::filterID(cfgElt->getValue());
+                service = core::runtime::filterID(value);
             }
             else if(elt == "object")
             {
-                objects.push_back(core::runtime::filterID(cfgElt->getValue()));
+                objects.push_back(core::runtime::filterID(value));
             }
             else if(elt == "desc")
             {
-                desc = cfgElt->getValue();
+                desc = value;
             }
             else if(elt == "tags")
             {
-                tags = cfgElt->getValue();
+                tags = value;
             }
             else
             {
@@ -101,7 +101,7 @@ void Factory::parseBundleInformation()
         info.objectImpl           = std::move(objects);
         info.desc                 = desc;
         info.tags                 = tags;
-        info.module               = cfgEltVec[0]->getModule();
+        info.module               = extElt->getModule();
         SIGHT_ASSERT("Module not found.", info.module);
 
         moduleInfoMap.emplace(std::make_pair(service, info));

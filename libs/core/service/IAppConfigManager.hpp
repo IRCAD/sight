@@ -25,7 +25,6 @@
 #include "service/config.hpp"
 #include "service/extension/AppConfig.hpp"
 
-#include <core/runtime/Convert.hpp>
 #include <core/tools/Object.hpp>
 
 #include <data/Composite.hpp>
@@ -54,10 +53,7 @@ public:
     bool isStopped() const;
     bool isDestroyed() const;
 
-    /// Set config param
-    void setConfig(core::runtime::ConfigurationElement::csptr cfgElem);
-
-    /// Set config param
+    /// Set configuration
     void setConfig(const config_t& cfg);
 
     /**
@@ -108,7 +104,7 @@ protected:
     };
 
     /// XML Configuration tree
-    core::runtime::ConfigurationElement::csptr m_cfgElem;
+    core::runtime::config_t m_cfgElem;
 
     /// Running state of the app config manager
     ConfigState m_state {STATE_DESTROYED};
@@ -144,16 +140,9 @@ inline bool IAppConfigManager::isDestroyed() const
 
 //------------------------------------------------------------------------------
 
-inline void IAppConfigManager::setConfig(core::runtime::ConfigurationElement::csptr cfgElem)
-{
-    m_cfgElem = cfgElem;
-}
-
-//------------------------------------------------------------------------------
-
 inline void IAppConfigManager::setConfig(const config_t& cfg)
 {
-    m_cfgElem = core::runtime::Convert::fromPropertyTree(cfg);
+    m_cfgElem = cfg;
 }
 
 //------------------------------------------------------------------------------

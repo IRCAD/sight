@@ -31,6 +31,7 @@
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/runtime/helper.hpp>
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 #include <core/TimeStamp.hpp>
@@ -108,9 +109,7 @@ void AppConfigTest::addConfigTest()
 
     const service::IService::ConfigType config = buildConfig();
 
-    const auto configElement = core::runtime::Convert::fromPropertyTree(config);
-
-    currentAppConfig->addAppInfo(configId, group, desc, parameters, configElement, moduleId);
+    currentAppConfig->addAppInfo(configId, group, desc, parameters, config, moduleId);
 
     std::vector<std::string> allConfigs = currentAppConfig->getAllConfigs();
     CPPUNIT_ASSERT_EQUAL(false, allConfigs.empty());
@@ -125,20 +124,11 @@ void AppConfigTest::addConfigTest()
 
     service::FieldAdaptorType replaceFields;
 
-    core::runtime::ConfigurationElement::csptr configEltAdaptedConst;
-    configEltAdaptedConst = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
-
-    core::runtime::ConfigurationElement::sptr configEltAdapted;
-    configEltAdapted = core::runtime::ConfigurationElement::constCast(configEltAdaptedConst);
-
-    std::vector<core::runtime::ConfigurationElement::sptr> objCfg = configEltAdapted->find("object");
-
-    const std::string uid = objCfg.at(0)->getAttributeValue("uid");
+    core::runtime::config_t configAdapted = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
+    const auto uid                        = configAdapted.get<std::string>("object.<xmlattr>.uid");
     CPPUNIT_ASSERT_EQUAL(std::string("image"), uid);
 
-    std::vector<core::runtime::ConfigurationElement::sptr> servicesCfg = configEltAdapted->find("service");
-
-    const std::string serviceUid1 = servicesCfg.at(0)->getAttributeValue("uid");
+    const auto serviceUid1 = configAdapted.get<std::string>("service.<xmlattr>.uid");
     CPPUNIT_ASSERT_EQUAL(std::string("myTestService1"), serviceUid1);
 }
 
@@ -158,23 +148,18 @@ void AppConfigTest::parametersConfigTest()
     auto it                             = std::find(allConfigs.begin(), allConfigs.end(), configId);
     CPPUNIT_ASSERT(it != allConfigs.end());
 
-    core::runtime::ConfigurationElement::csptr configEltAdaptedConst;
-    configEltAdaptedConst = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
+    core::runtime::config_t configAdapted = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
 
-    core::runtime::ConfigurationElement::sptr configEltAdapted;
-    configEltAdapted = core::runtime::ConfigurationElement::constCast(configEltAdaptedConst);
-
-    std::vector<core::runtime::ConfigurationElement::sptr> objCfg = configEltAdapted->find("object");
-
-    const std::string uid = objCfg.at(0)->getAttributeValue("uid");
+    const auto uid = configAdapted.get<std::string>("object.<xmlattr>.uid");
     CPPUNIT_ASSERT_EQUAL(std::string("objectUUID"), uid);
 
-    std::vector<core::runtime::ConfigurationElement::sptr> servicesCfg = configEltAdapted->find("service");
+    auto servicesCfg = configAdapted.equal_range("service");
 
-    const std::string serviceUid1 = servicesCfg.at(0)->getAttributeValue("uid");
+    const auto serviceUid1 = servicesCfg.first->second.get<std::string>("<xmlattr>.uid");
     CPPUNIT_ASSERT_EQUAL(std::string("myTestService1"), serviceUid1);
 
-    const std::string serviceUid2 = servicesCfg.at(1)->getAttributeValue("uid");
+    servicesCfg.first++;
+    const auto serviceUid2 = servicesCfg.first->second.get<std::string>("<xmlattr>.uid");
     CPPUNIT_ASSERT_EQUAL(std::string("myTestService2"), serviceUid2);
 }
 
@@ -1457,10 +1442,7 @@ service::IService::ConfigType AppConfigTest::buildConfig()
     updateCfg.add("<xmlattr>.uid", "myTestService1");
     cfg.add_child("update", updateCfg);
 
-    service::IService::ConfigType appCfg;
-    appCfg.add_child("config", cfg);
-
-    return appCfg;
+    return cfg;
 }
 
 //------------------------------------------------------------------------------

@@ -34,7 +34,7 @@ void Color::createConfig(core::tools::Object::sptr _obj)
     const data::Color::sptr color = data::Color::dynamicCast(_obj);
     SIGHT_ASSERT("Color does not exist.", color);
 
-    const auto hexaColor = m_cfg.get<std::string>("object.value");
+    const auto hexaColor = m_cfg.get<std::string>("value");
     SIGHT_ASSERT(
         "Color string should start with '#' and followed by 6 or 8 "
         "hexadecimal digits. Given color: " << hexaColor,

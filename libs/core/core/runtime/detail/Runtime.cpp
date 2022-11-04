@@ -22,7 +22,6 @@
 
 #include "core/runtime/detail/Runtime.hpp"
 
-#include "core/runtime/ConfigurationElement.hpp"
 #include "core/runtime/detail/ExtensionPoint.hpp"
 #include "core/runtime/detail/io/ModuleDescriptorReader.hpp"
 #include "core/runtime/detail/Module.hpp"
@@ -416,52 +415,6 @@ IExecutable* Runtime::createExecutableInstance(const std::string& type) const
 
     // Creates the executable instance
     IExecutable* result(factory->createExecutable());
-
-    // Job's done.
-    return result;
-}
-
-//------------------------------------------------------------------------------
-
-IExecutable* Runtime::createExecutableInstance(
-    const std::string& type,
-    ConfigurationElement::sptr configurationElement
-) const
-{
-    std::shared_ptr<ExecutableFactory> factory;
-
-    // Retrieves the executable factory.
-    factory = this->findExecutableFactory(type);
-
-    // If there is no factory has been found, it is possible that
-    // it has not been registered since the module of the given configuration element
-    // is not started.
-    // So we start that module and look for the executable factory one more type.
-    if(factory == nullptr)
-    {
-        configurationElement->getModule()->start();
-        factory = this->findExecutableFactory(type);
-    }
-
-    // If we still have not found any executable factory, then notify the problem.
-    if(factory == nullptr)
-    {
-        throw RuntimeException(type + ": no executable factory found for that type.");
-    }
-
-    // Creates the executable instance
-    IExecutable* result(nullptr);
-    try
-    {
-        factory->getModule()->start();
-        result = factory->createExecutable();
-        result->setInitializationData(configurationElement);
-    }
-    catch(const std::exception& e)
-    {
-        std::string message("Unable to create an executable instance. ");
-        throw RuntimeException(message + e.what());
-    }
 
     // Job's done.
     return result;

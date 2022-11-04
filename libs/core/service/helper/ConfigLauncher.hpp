@@ -30,7 +30,6 @@
 #include <activity/extension/Activity.hpp>
 
 #include <core/com/helper/SigSlotConnection.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 
 namespace sight::service::helper

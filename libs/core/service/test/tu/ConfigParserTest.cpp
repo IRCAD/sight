@@ -133,15 +133,9 @@ void ConfigParserTest::testImageParser()
     objCfg.add("color", "#FF459812");
     config.add_child("object", objCfg);
 
-    service::IService::ConfigType serviceCfg;
-    serviceCfg.add_child("config", config);
-
-    // Create object configuration
-    const auto cfg = core::runtime::Convert::fromPropertyTree(serviceCfg);
-
     // Create the object and its services from the configuration
     service::AppConfigManager::sptr configManager = service::AppConfigManager::New();
-    configManager->service::IAppConfigManager::setConfig(cfg);
+    configManager->service::IAppConfigManager::setConfig(config);
     configManager->create();
     auto image = std::dynamic_pointer_cast<data::Image>(core::tools::fwID::getObject(objectUUID));
 
@@ -173,8 +167,7 @@ void ConfigParserTest::testTransferFunctionParser()
     service::IService::ConfigType config;
 
     std::stringstream config_string;
-    config_string << "<object uid=\"test\" type=\"sight::data::TransferFunction\">"
-                     "<colors>"
+    config_string << "<colors>"
                      "<step color=\"#ffff00ff\" value=\"-200\" />"
                      "<step color=\"#000000ff\" value=\"0\" />"
                      "<step color=\"#0000ffff\" value=\"1\" />"
@@ -182,8 +175,7 @@ void ConfigParserTest::testTransferFunctionParser()
                      "<step color=\"#00ff00ff\" value=\"1000\" />"
                      "<step color=\"#ff0000ff\" value=\"1500\" />"
                      "<step color=\"#000000ff\" value=\"5000\" />"
-                     "</colors>"
-                     "</object>";
+                     "</colors>";
     boost::property_tree::read_xml(config_string, config);
 
     auto parser = sight::service::add<sight::service::parser::TransferFunction>(
@@ -264,10 +256,7 @@ service::IService::config_t ConfigParserTest::buildObjectConfig()
     update1.add("<xmlattr>.uid", "myTestService1");
     config.add_child("update", update1);
 
-    service::IService::ConfigType serviceCfg;
-    serviceCfg.add_child("config", config);
-
-    return serviceCfg;
+    return config;
 }
 
 //------------------------------------------------------------------------------
