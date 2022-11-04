@@ -87,27 +87,30 @@ namespace sight::module::sync
             </inout>
             <framerate>30</framerate>
             <tolerance>500</tolerance>
+            <strict>true</strict>
        </service>
    @endcode
  * @subsection Input Input
  * - \b frameTL [sight::data::FrameTL]: defines the frameTL to synchronize. The number of \b frameTL keys must match the
- * number of \b image keys.
+ *      number of \b image keys.
  * - \b matrixTL [::extData::MatrixTL]: defines the matrixTL to synchronize. The number of \b matrixTL keys must match
- * the number of \b matricesX group.
+ *      the number of \b matricesX group.
  *
  * @subsection In-Out In-Out
- * - \b image [sight::data::Image]: defines the images where to extract the image. The number of \b image keys must
- * match
+ * - \b image [sight::data::Image]: defines the images where to extract the image.
+ *      The number of \b image keys must match.
  * the number of \b frameTL keys.
  * - \b matricesX [sight::data::Matrix4]: defines the matrices where to extract the matrices from the
- * timeline. X must be replaced by the index of the associated \b MatrixTL key (index begin at 0).
+ *      timeline. X must be replaced by the index of the associated \b MatrixTL key (index begin at 0).
  *
  * @subsection Configuration Configuration
  * - \b sendStatus defines for each matrix if we want to send the given matrix/Un/Synchronized (default: false)
  * - \b framerate defines the framerate to call synchronization (default: 30). If it is set to 0, then the service does
- * not synchronize periodically. You'll have then to call the slot "synchronize" yourself.
+ *      not synchronize periodically. You'll have then to call the slot "synchronize" yourself.
  * - \b tolerance defines the maximum distance between two frames (default: 500).
- *  If a timeline exceeds this tolerance it will not be synchronized.
+ *      If a timeline exceeds this tolerance it will not be synchronized.
+ * - \b strict (default: true) defines if matrices are required for the synchronizationDone signal to be sent.
+ *      Notably for applications when matrices can be optional.
  */
 class MODULE_SYNC_CLASS_API SFrameMatrixSynchronizer : public service::ISynchronizer
 {
@@ -198,6 +201,9 @@ private:
 
     /// Tolerance to take into account matrix
     core::HiResClock::HiResClockType m_tolerance {500.};
+
+    /// Whether or not matrices are required to trigger the synchronizationDone signal.
+    bool m_strict {true};
 
     /// Check if output images are initialized
     bool m_imagesInitialized {false};

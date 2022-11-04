@@ -84,6 +84,8 @@ void SFrameMatrixSynchronizer::configuring()
     const auto framerate = cfg.get<unsigned int>("framerate", 30);
     m_timeStep  = framerate != 0 ? 1000 / cfg.get<unsigned int>("framerate", 30) : 0;
     m_tolerance = cfg.get<unsigned int>("tolerance", 500);
+
+    m_strict = cfg.get<bool>("strict", true);
 }
 
 // ----------------------------------------------------------------------------
@@ -404,7 +406,7 @@ void SFrameMatrixSynchronizer::synchronize()
 
     m_updateMask = m_timeStep != 0 ? OBJECT_RECEIVED : 0;
 
-    if(matrixFound)
+    if(!m_strict || matrixFound)
     {
         m_sigSynchronizationDone->asyncEmit(matrixTimestamp);
     }
