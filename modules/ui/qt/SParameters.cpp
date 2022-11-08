@@ -130,6 +130,56 @@ void SParameters::configuring()
 
 //-----------------------------------------------------------------------------
 
+static QWidget* recursivelyFindWidgetInLayoutByKey(const QLayout* layout, const std::string& key)
+{
+    for(int i = 0 ; i < layout->count() ; ++i)
+    {
+        auto* item = layout->itemAt(i);
+        if(QWidget* widget = item->widget(); widget != nullptr)
+        {
+            if(key == widget->property("key").toString().toStdString())
+            {
+                return widget;
+            }
+        }
+        else if(QLayout* subLayout = item->layout(); subLayout != nullptr)
+        {
+            if(QWidget* subWidget = recursivelyFindWidgetInLayoutByKey(subLayout, key); subWidget != nullptr)
+            {
+                return subWidget;
+            }
+        }
+    }
+
+    return nullptr;
+}
+
+//------------------------------------------------------------------------------
+
+static QVector<QWidget*> recursivelyFindWidgetsInLayoutByKey(const QLayout* layout, const std::string& key)
+{
+    QVector<QWidget*> res;
+    for(int i = 0 ; i < layout->count() ; ++i)
+    {
+        auto* item = layout->itemAt(i);
+        if(QWidget* widget = item->widget(); widget != nullptr)
+        {
+            if(key == widget->property("key").toString().toStdString())
+            {
+                res.append(widget);
+            }
+        }
+        else if(QLayout* subLayout = item->layout(); subLayout != nullptr)
+        {
+            res.append(recursivelyFindWidgetsInLayoutByKey(subLayout, key));
+        }
+    }
+
+    return res;
+}
+
+//------------------------------------------------------------------------------
+
 void SParameters::starting()
 {
     this->create();
@@ -172,7 +222,9 @@ void SParameters::starting()
 
         if(!name.empty())
         {
-            layout->addWidget(new QLabel(QString(name.c_str())), row, 0);
+            auto* parameterLabel = new QLabel(QString::fromStdString(name));
+            parameterLabel->setWordWrap(true);
+            layout->addWidget(parameterLabel, row, 0);
         }
 
         if(type == "bool")
@@ -291,66 +343,45 @@ void SParameters::starting()
 
         if(!depends.empty())
         {
-            QWidget* widget = nullptr;
-            for(int i = 0 ; i < layout->count() ; ++i)
-            {
-                widget = layout->itemAt(i)->widget();
-                if(widget != nullptr)
-                {
-                    QString foundedKey = widget->property("key").toString();
-                    if(key == foundedKey.toStdString())
-                    {
-                        break;
-                    }
-                }
-            }
+            QVector<QWidget*> widgets = recursivelyFindWidgetsInLayoutByKey(layout, key);
 
-            SIGHT_ASSERT("widget is null", widget != nullptr);
+            SIGHT_ASSERT("there are no widgets", !widgets.isEmpty());
 
-            QWidget* dependsWidget = nullptr;
-            for(int i = 0 ; i < layout->count() ; ++i)
-            {
-                dependsWidget = layout->itemAt(i)->widget();
-                if(dependsWidget != nullptr)
-                {
-                    QString foundedKey = dependsWidget->property("key").toString();
-                    if(depends == foundedKey.toStdString())
-                    {
-                        break;
-                    }
-                }
-            }
+            QWidget* dependsWidget = recursivelyFindWidgetInLayoutByKey(layout, depends);
 
-            widget->installEventFilter(this);
-            auto* checkBox = qobject_cast<QCheckBox*>(dependsWidget);
-            if(checkBox != nullptr)
+            for(QWidget* widget : widgets)
             {
-                QObject::connect(
-                    checkBox,
-                    &QCheckBox::stateChanged,
-                    this,
-                    [ = ]
-                    {
-                        onDependsChanged(checkBox, widget, dependsreverse);
-                    });
-                onDependsChanged(checkBox, widget, dependsreverse);
-            }
-            else
-            {
-                auto* comboBox = qobject_cast<QComboBox*>(dependsWidget);
-                if(comboBox != nullptr)
+                widget->installEventFilter(this);
+                auto* checkBox = qobject_cast<QCheckBox*>(dependsWidget);
+                if(checkBox != nullptr)
                 {
                     QObject::connect(
-                        comboBox,
-                        static_cast<void (QComboBox::*)(
-                                        int
-                                    )>(&QComboBox::currentIndexChanged),
+                        checkBox,
+                        &QCheckBox::stateChanged,
                         this,
                         [ = ]
                         {
-                            onDependsChanged(comboBox, widget, dependsValue, dependsreverse);
+                            onDependsChanged(checkBox, widget, dependsreverse);
                         });
-                    onDependsChanged(comboBox, widget, dependsValue, dependsreverse);
+                    onDependsChanged(checkBox, widget, dependsreverse);
+                }
+                else
+                {
+                    auto* comboBox = qobject_cast<QComboBox*>(dependsWidget);
+                    if(comboBox != nullptr)
+                    {
+                        QObject::connect(
+                            comboBox,
+                            static_cast<void (QComboBox::*)(
+                                            int
+                                        )>(&QComboBox::currentIndexChanged),
+                            this,
+                            [ = ]
+                            {
+                                onDependsChanged(comboBox, widget, dependsValue, dependsreverse);
+                            });
+                        onDependsChanged(comboBox, widget, dependsValue, dependsreverse);
+                    }
                 }
             }
         }
@@ -1021,7 +1052,7 @@ void SParameters::createBoolWidget(
 
     checkbox->setProperty("key", QString(key.c_str()));
     checkbox->setProperty("defaultValue", checkbox->checkState());
-    layout.addWidget(checkbox, row, 2);
+    layout.addWidget(checkbox, row, 1);
     QObject::connect(checkbox, SIGNAL(stateChanged(int)), this, SLOT(onChangeBoolean(int)));
 
     // Reset button
@@ -1029,7 +1060,7 @@ void SParameters::createBoolWidget(
     {
         QPushButton* resetButton = this->createResetButton(key);
 
-        layout.addWidget(resetButton, row, 5);
+        layout.addWidget(resetButton, row, 2);
 
         // Connect reset button to the slider
         QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetBooleanMapped(checkbox);});
@@ -1076,7 +1107,7 @@ void SParameters::createColorWidget(
     colourButton->setProperty("defaultValue", colorQt);
     colourButton->setProperty("color", colorQt);
 
-    layout.addWidget(colourButton, row, 2);
+    layout.addWidget(colourButton, row, 1);
 
     QObject::connect(colourButton, &QPushButton::clicked, this, &SParameters::onColorButton);
 
@@ -1085,7 +1116,7 @@ void SParameters::createColorWidget(
     {
         QPushButton* resetButton = this->createResetButton(key);
 
-        layout.addWidget(resetButton, row, 5);
+        layout.addWidget(resetButton, row, 2);
 
         // Connect reset button to the button
         QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetColorMapped(colourButton);});
@@ -1105,6 +1136,9 @@ void SParameters::createDoubleWidget(
     bool addResetButton
 )
 {
+    auto* subLayout = new QGridLayout();
+    layout.addLayout(subLayout, row, 1);
+
     std::array<QDoubleSpinBox*, 3> spinboxes {};
 
     // Spinboxes
@@ -1136,7 +1170,7 @@ void SParameters::createDoubleWidget(
         spinbox->setProperty("count", count);
         spinbox->setProperty("defaultValue", spinbox->value());
 
-        layout.addWidget(spinbox, row, 2 + int(i));
+        subLayout->addWidget(spinbox, 0, int(i));
 
         QObject::connect(spinbox, SIGNAL(valueChanged(double)), this, SLOT(onChangeDouble(double)));
     }
@@ -1159,7 +1193,7 @@ void SParameters::createDoubleWidget(
     {
         QPushButton* resetButton = this->createResetButton(key);
 
-        layout.addWidget(resetButton, row, 5);
+        layout.addWidget(resetButton, row, 2);
 
         // Connect reset button to the spinbox
         QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetDoubleMapped(spinbox);});
@@ -1180,6 +1214,9 @@ void SParameters::createDoubleSliderWidget(
     bool onRelease
 )
 {
+    auto* subLayout = new QGridLayout();
+    layout.addLayout(subLayout, row, 1);
+
     const double valueRange = max - min;
 
     auto* slider = new QSlider(Qt::Horizontal);
@@ -1220,10 +1257,10 @@ void SParameters::createDoubleSliderWidget(
     valueLabel->setToolTip("Current value.");
     sight::module::ui::qt::SParameters::setLabelMinimumSize(valueLabel, min, max, decimals);
 
-    layout.addWidget(minValueLabel, row, 1);
-    layout.addWidget(slider, row, 2);
-    layout.addWidget(maxValueLabel, row, 3);
-    layout.addWidget(valueLabel, row, 4);
+    subLayout->addWidget(minValueLabel, 0, 0);
+    subLayout->addWidget(slider, 0, 1);
+    subLayout->addWidget(maxValueLabel, 0, 2);
+    subLayout->addWidget(valueLabel, 0, 3);
 
     // Connect slider value with our editor
     QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onChangeDoubleSlider(int)));
@@ -1251,7 +1288,7 @@ void SParameters::createDoubleSliderWidget(
     {
         QPushButton* resetButton = this->createResetButton(key);
 
-        layout.addWidget(resetButton, row, 5);
+        layout.addWidget(resetButton, row, 2);
 
         // Connect reset button to the slider
         QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetDoubleMapped(slider);});
@@ -1271,6 +1308,9 @@ void SParameters::createIntegerSliderWidget(
     bool onRelease
 )
 {
+    auto* subLayout = new QGridLayout();
+    layout.addLayout(subLayout, row, 1);
+
     auto* slider = new QSlider(Qt::Horizontal);
     slider->setObjectName(QString::fromStdString(key));
     slider->setMinimum(min);
@@ -1300,10 +1340,10 @@ void SParameters::createIntegerSliderWidget(
     valueLabel->setToolTip("Current value.");
     sight::module::ui::qt::SParameters::setLabelMinimumSize(valueLabel, min, max);
 
-    layout.addWidget(minValueLabel, row, 1);
-    layout.addWidget(slider, row, 2);
-    layout.addWidget(maxValueLabel, row, 3);
-    layout.addWidget(valueLabel, row, 4);
+    subLayout->addWidget(minValueLabel, 0, 0);
+    subLayout->addWidget(slider, 0, 1);
+    subLayout->addWidget(maxValueLabel, 0, 2);
+    subLayout->addWidget(valueLabel, 0, 3);
 
     slider->setProperty("key", QString(key.c_str()));
     slider->setProperty("count", 1);
@@ -1335,7 +1375,7 @@ void SParameters::createIntegerSliderWidget(
     {
         QPushButton* resetButton = this->createResetButton(key);
 
-        layout.addWidget(resetButton, row, 5);
+        layout.addWidget(resetButton, row, 2);
 
         // Connect reset button to the slider
         QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetIntegerMapped(slider);});
@@ -1355,6 +1395,9 @@ void SParameters::createIntegerSpinWidget(
     bool addResetButton
 )
 {
+    auto* subLayout = new QGridLayout();
+    layout.addLayout(subLayout, row, 1);
+
     std::array<QSpinBox*, 3> spinboxes {};
 
     // Spinboxes
@@ -1371,7 +1414,7 @@ void SParameters::createIntegerSpinWidget(
         spinbox->setProperty("count", count);
         spinbox->setProperty("defaultValue", spinbox->value());
 
-        layout.addWidget(spinbox, row, int(i) + 2);
+        subLayout->addWidget(spinbox, 0, int(i));
 
         // Connect spinbox value with our editor
         QObject::connect(spinbox, SIGNAL(valueChanged(int)), this, SLOT(onChangeInteger(int)));
@@ -1395,7 +1438,7 @@ void SParameters::createIntegerSpinWidget(
     {
         QPushButton* resetButton = this->createResetButton(key);
 
-        layout.addWidget(resetButton, row, 5);
+        layout.addWidget(resetButton, row, 2);
 
         // Connect reset button to the spinbox
         QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetIntegerMapped(spinbox);});
@@ -1469,7 +1512,7 @@ void SParameters::createEnumWidget(
         ++idx;
     }
 
-    layout.addWidget(menu, row, 2);
+    layout.addWidget(menu, row, 1);
 
     QObject::connect(menu, SIGNAL(currentIndexChanged(int)), this, SLOT(onChangeEnum(int)));
 
