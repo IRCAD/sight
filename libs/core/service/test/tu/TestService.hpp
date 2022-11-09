@@ -59,7 +59,7 @@ public:
 
     void configuring() final
     {
-        const ConfigType cfg = this->getConfigTree();
+        const ConfigType cfg = this->getConfiguration();
 
         m_option = cfg.get(s_OPTION_KEY, s_NOT_DEFINED);
     }

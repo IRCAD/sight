@@ -64,7 +64,7 @@ std::string SPacsConfigurationInitializer::getKey(const std::string& subKey) con
 
 void SPacsConfigurationInitializer::configuring()
 {
-    const ConfigType configTree = this->getConfigTree();
+    const ConfigType configTree = this->getConfiguration();
     const auto config           = configTree.get_child("config.<xmlattr>");
 
     // Local application title.

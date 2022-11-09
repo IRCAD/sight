@@ -79,7 +79,7 @@ service::IService::KeyConnectionsMap SFrameMatrixSynchronizer::getAutoConnection
 
 void SFrameMatrixSynchronizer::configuring()
 {
-    const auto cfg = this->getConfigTree();
+    const auto cfg = this->getConfiguration();
 
     const auto framerate = cfg.get<unsigned int>("framerate", 30);
     m_timeStep  = framerate != 0 ? 1000 / cfg.get<unsigned int>("framerate", 30) : 0;
@@ -108,7 +108,7 @@ void SFrameMatrixSynchronizer::starting()
     }
 
     // We need to browser the XML tree to check if a matrix (inside a matrixTL) has or not a `sendStatus` configuration
-    const ConfigType configuration = this->getConfigTree();
+    const ConfigType configuration = this->getConfiguration();
     const auto inoutsConfig        = configuration.equal_range("inout");
     int matrixIndex                = 0;
     for(auto itConfig = inoutsConfig.first ; itConfig != inoutsConfig.second ; ++itConfig)

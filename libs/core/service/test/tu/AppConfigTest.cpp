@@ -1401,7 +1401,7 @@ void AppConfigTest::objectConfigTest()
     CPPUNIT_ASSERT(!srvData1.expired());
     CPPUNIT_ASSERT(srvData1.lock() == compo1);
 
-    auto config = srv1->getConfigTree();
+    auto config = srv1->getConfiguration();
     CPPUNIT_ASSERT_EQUAL(std::string("value1"), config.get<std::string>("param1"));
     CPPUNIT_ASSERT_EQUAL(std::string("value2"), config.get<std::string>("param2"));
 }

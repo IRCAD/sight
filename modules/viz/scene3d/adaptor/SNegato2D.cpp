@@ -80,7 +80,7 @@ void SNegato2D::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
+    const ConfigType configType = this->getConfiguration();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     const std::string orientation = config.get<std::string>(s_SLICE_INDEX_CONFIG, "axial");

@@ -71,7 +71,7 @@ void SLine::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
+    const ConfigType configType = this->getConfiguration();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     // parsing transform or create an "empty" one

@@ -58,7 +58,7 @@ void SThreshold::stopping()
 
 void SThreshold::configuring()
 {
-    const service::IService::ConfigType& srvConfig = this->getConfigTree();
+    const service::IService::ConfigType& srvConfig = this->getConfiguration();
 
     SIGHT_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1);
 

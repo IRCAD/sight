@@ -75,7 +75,7 @@ void SSliceIndexDicomEditor::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     m_dicomReaderType = config.get<std::string>("config.<xmlattr>.dicomReader", m_dicomReaderType);
     m_delay           = config.get<std::size_t>("config.<xmlattr>.delay", m_delay);

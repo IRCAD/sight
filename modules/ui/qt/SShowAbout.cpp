@@ -72,7 +72,7 @@ void SShowAbout::configuring()
 {
     this->sight::ui::base::IAction::initialize();
 
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     const auto filename = config.get<std::string>("filename.<xmlattr>.id");
     // Convert the path from a module location

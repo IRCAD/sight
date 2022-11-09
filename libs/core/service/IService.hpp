@@ -385,12 +385,12 @@ public:
     /**
      * @brief Return the service configuration
      */
-    SERVICE_API ConfigType getConfiguration() const;
+    SERVICE_API const IService::ConfigType& getConfiguration() const;
 
     /**
      * @brief Return the configuration, in an boost property tree
      */
-    SERVICE_API ConfigType getConfigTree() const;
+    [[deprecated("Removed in sight 23.0.")]] SERVICE_API const IService::ConfigType& getConfigTree() const;
 
     //@}
 

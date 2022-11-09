@@ -136,7 +136,7 @@ void SSeriesSetReader::configuring()
 {
     sight::io::base::service::IReader::configuring();
 
-    const service::IService::ConfigType config = this->getConfigTree();
+    const service::IService::ConfigType config = this->getConfiguration();
 
     // Use filter selector
     m_filterConfig = config.get<std::string>("filterConfig", "");

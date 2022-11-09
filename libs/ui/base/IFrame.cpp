@@ -71,7 +71,7 @@ void IFrame::initialize()
 {
     m_viewRegistry = ui::base::registry::View::New(this->getID());
 
-    const auto config = this->getConfigTree();
+    const auto config = this->getConfiguration();
     const auto gui    = config.get_child_optional("gui");
 
     if(gui.has_value())

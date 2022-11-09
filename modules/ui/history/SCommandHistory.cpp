@@ -65,7 +65,7 @@ SCommandHistory::~SCommandHistory()
 
 void SCommandHistory::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     auto maxCommands = config.get_optional<std::size_t>("maxCommands");
     auto maxMemory   = config.get_optional<std::size_t>("maxMemory");

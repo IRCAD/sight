@@ -67,7 +67,7 @@ void SModelSeries::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
+    const ConfigType configType = this->getConfiguration();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     this->setTransformId(

@@ -263,13 +263,11 @@ service::IService::Config Config::parseService(
     if(!config.empty())
     {
         const auto srvCfgFactory = service::extension::Config::getDefault();
-        srvConfig.m_config.add_child("service", srvCfgFactory->getServiceConfig(config, srvConfig.m_type));
+        srvConfig.m_config = srvCfgFactory->getServiceConfig(config, srvConfig.m_type);
     }
     else
     {
-        boost::property_tree::ptree cfg;
-        cfg.add_child("service", srvElem);
-        srvConfig.m_config = cfg;
+        srvConfig.m_config = srvElem;
     }
 
     // Check if user did not bind a service to another service

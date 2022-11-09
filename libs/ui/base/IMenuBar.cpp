@@ -34,7 +34,7 @@ void IMenuBar::initialize()
 {
     m_registry = ui::base::registry::MenuBar::New(this->getID());
 
-    const auto config = this->getConfigTree();
+    const auto config = this->getConfiguration();
 
     // find ViewRegistryManager configuration
     if(const auto registry = config.get_child_optional("registry"); registry.has_value())

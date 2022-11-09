@@ -123,7 +123,7 @@ void SStatus::configuring()
 {
     this->initialize();
 
-    const auto config = this->getConfigTree();
+    const auto config = this->getConfiguration();
 
     m_greenTooltip  = config.get<std::string>("green", "");
     m_redTooltip    = config.get<std::string>("red", "");

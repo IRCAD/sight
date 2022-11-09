@@ -113,7 +113,7 @@ void SliceIndexPositionEditor::configuring()
 {
     this->initialize();
 
-    const auto config = this->getConfigTree();
+    const auto config = this->getConfiguration();
 
     auto orientation = config.get<std::string>("sliceIndex");
 

@@ -62,7 +62,7 @@ void SResizeViewport::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
+    const ConfigType configType = this->getConfiguration();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     float xPos = config.get<float>(s_H_OFFSET_CONFIG, 0.F);

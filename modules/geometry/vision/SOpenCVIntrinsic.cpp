@@ -56,7 +56,7 @@ SOpenCVIntrinsic::~SOpenCVIntrinsic() noexcept =
 
 void SOpenCVIntrinsic::configuring()
 {
-    const auto config   = this->getConfigTree();
+    const auto config   = this->getConfiguration();
     const auto cfgBoard = config.get_child("board.<xmlattr>");
 
     m_widthKey = cfgBoard.get<std::string>("width");

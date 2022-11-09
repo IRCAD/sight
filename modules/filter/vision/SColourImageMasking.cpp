@@ -68,7 +68,7 @@ SColourImageMasking::~SColourImageMasking() noexcept =
 
 void SColourImageMasking::configuring()
 {
-    const service::IService::ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const service::IService::ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
 
     m_scaleFactor          = config.get<float>("scaleFactor", 1.0);
     m_noise                = config.get<double>("noise", 0.0);
@@ -92,7 +92,7 @@ void SColourImageMasking::configuring()
     m_lowerColor = cv::Scalar(0, 0, 0);
     m_upperColor = cv::Scalar(255, 255, 255);
 
-    const service::IService::ConfigType hsvConfig = this->getConfigTree().get_child("HSV");
+    const service::IService::ConfigType hsvConfig = this->getConfiguration().get_child("HSV");
     std::string s_lowerValue                      = hsvConfig.get<std::string>("lower", "");
     std::string s_upperValue                      = hsvConfig.get<std::string>("upper", "");
 

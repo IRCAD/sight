@@ -120,7 +120,7 @@ void SViewer::updating()
 
 void SViewer::configuring()
 {
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
     m_parentView = config.get<std::string>("parentView.<xmlattr>.wid");
 
     const auto& configs = config.get_child("configs");

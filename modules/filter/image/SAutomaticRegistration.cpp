@@ -54,7 +54,7 @@ SAutomaticRegistration::~SAutomaticRegistration()
 
 void SAutomaticRegistration::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     m_minStep = config.get<double>("minStep", -1.);
 

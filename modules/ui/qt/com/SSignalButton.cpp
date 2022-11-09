@@ -75,7 +75,7 @@ void SSignalButton::configuring()
 {
     this->initialize();
 
-    const auto configuration = this->getConfigTree();
+    const auto configuration = this->getConfiguration();
 
     const auto config = configuration.get_child_optional("config");
 

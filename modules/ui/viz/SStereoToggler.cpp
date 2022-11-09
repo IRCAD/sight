@@ -48,7 +48,7 @@ void SStereoToggler::configuring()
 {
     this->initialize();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
 
     m_layerId = config.get<std::string>("layer");
     SIGHT_ASSERT("Empty layer ID.", !m_layerId.empty());

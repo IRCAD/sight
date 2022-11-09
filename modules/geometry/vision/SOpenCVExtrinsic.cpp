@@ -62,7 +62,7 @@ SOpenCVExtrinsic::~SOpenCVExtrinsic() noexcept =
 
 void SOpenCVExtrinsic::configuring()
 {
-    const auto config = this->getConfigTree();
+    const auto config = this->getConfiguration();
     m_camIndex = config.get<std::size_t>("camIndex");
 
     const auto cfgBoard = config.get_child("board.<xmlattr>");

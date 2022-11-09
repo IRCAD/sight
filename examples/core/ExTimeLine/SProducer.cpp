@@ -32,7 +32,7 @@ namespace ExTimeLine
 
 void SProducer::configuring()
 {
-    sight::service::IService::ConfigType config = this->getConfigTree();
+    sight::service::IService::ConfigType config = this->getConfiguration();
 
     m_message      = config.get<std::string>("message");
     m_senderId     = config.get<unsigned int>("id");

@@ -75,7 +75,7 @@ SManage::~SManage() noexcept =
 
 void SManage::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     m_compositeKey = config.get("compositeKey", "");
     m_fieldName    = config.get("field", "");

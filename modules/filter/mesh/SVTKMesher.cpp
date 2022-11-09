@@ -79,7 +79,7 @@ void SVTKMesher::stopping()
 
 void SVTKMesher::configuring()
 {
-    const service::IService::ConfigType& srvConfig = this->getConfigTree();
+    const service::IService::ConfigType& srvConfig = this->getConfiguration();
     SIGHT_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1);
     const service::IService::ConfigType& config = srvConfig.get_child("config");
     m_threshold = config.get<unsigned int>("<xmlattr>.threshold");

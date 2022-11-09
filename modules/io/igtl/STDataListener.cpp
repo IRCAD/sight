@@ -46,7 +46,7 @@ namespace sight::module::io::igtl
 
 void STDataListener::configuring()
 {
-    const auto configuration = this->getConfigTree();
+    const auto configuration = this->getConfiguration();
 
     const auto serverInfo = configuration.get<std::string>("server");
     SIGHT_INFO("OpenIGTLinkListener::configure server: " + serverInfo);

@@ -72,7 +72,7 @@ void SPointToLandmarkVector::stopping()
 
 void SPointToLandmarkVector::configuring()
 {
-    const ConfigType configuration = this->getConfigTree();
+    const ConfigType configuration = this->getConfiguration();
     m_originLabel    = configuration.get<std::string>("originLabel", m_originLabel);
     m_endLabel       = configuration.get<std::string>("endLabel", m_endLabel);
     m_groupLabel     = configuration.get<std::string>("computedLandmarkLabel", m_groupLabel);

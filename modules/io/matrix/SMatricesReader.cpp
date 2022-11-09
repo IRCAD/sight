@@ -93,7 +93,7 @@ void SMatricesReader::configuring()
 {
     sight::io::base::service::IReader::configuring();
 
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     m_fps = config.get<unsigned int>("fps", 30);
     SIGHT_ASSERT("Fps setting is set to " << m_fps << " but should be > 0.", m_fps > 0);

@@ -103,7 +103,7 @@ void SArucoTracker::configuring()
 {
     this->service::ITracker::configuring();
 
-    const auto config = this->getConfigTree();
+    const auto config = this->getConfiguration();
 
     const auto& trackCfg = config.get_child("track");
 

@@ -103,7 +103,7 @@ void MemoryConsumption::configuring()
 {
     this->sight::ui::base::IAction::initialize();
 
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     const auto mode = config.get<std::string>("config.<xmlattr>.mode");
     SIGHT_ASSERT("Wrong value (" << mode << ") for mode tag", mode == "increase" || mode == "decrease");

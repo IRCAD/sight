@@ -53,7 +53,7 @@ void SMeshModifier::configuring()
 {
     this->initialize();
 
-    const ConfigType configType = this->getConfigTree();
+    const ConfigType configType = this->getConfiguration();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_functor = config.get<std::string>(s_FUNCTOR_CONFIG);

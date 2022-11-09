@@ -76,7 +76,7 @@ service::IService::KeyConnectionsMap SDistortion::getAutoConnections() const
 
 void SDistortion::configuring()
 {
-    const auto config = this->getConfigTree();
+    const auto config = this->getConfiguration();
 
     const auto mode = config.get<std::string>("mode");
     if(mode == "undistort")

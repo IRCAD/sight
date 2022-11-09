@@ -58,7 +58,7 @@ void SCameraSetEditor::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
     m_camIndex = config.get<std::size_t>("index", 1);
 }
 

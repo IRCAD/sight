@@ -62,7 +62,7 @@ void SSelectionMenuButton::configuring()
 {
     this->initialize();
 
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     m_text      = config.get<std::string>("text", m_text);
     m_toolTip   = config.get<std::string>("toolTip", m_toolTip);

@@ -72,7 +72,7 @@ SUltrasoundMesh::~SUltrasoundMesh()
 
 void SUltrasoundMesh::configuring()
 {
-    const ConfigType configType = this->getConfigTree();
+    const ConfigType configType = this->getConfiguration();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_resolutionX = config.get<std::size_t>(s_RESOLUTION_X_CONFIG, m_resolutionX);

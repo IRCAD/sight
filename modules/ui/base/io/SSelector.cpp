@@ -76,7 +76,7 @@ SSelector::~SSelector() noexcept =
 
 void SSelector::configuring()
 {
-    const ConfigType srvConfig = this->getConfigTree();
+    const ConfigType srvConfig = this->getConfiguration();
 
     const std::string mode = srvConfig.get<std::string>("type.<xmlattr>.mode", "reader");
     SIGHT_ASSERT(

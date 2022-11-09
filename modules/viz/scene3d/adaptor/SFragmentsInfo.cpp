@@ -99,7 +99,7 @@ void SFragmentsInfo::configuring()
     // IAdaptor handles the layerID.
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
     m_width     = config.get<int>("width", m_width);
     m_height    = config.get<int>("height", m_height);
     m_flipImage = config.get<bool>("flip", m_flipImage);

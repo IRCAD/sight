@@ -68,7 +68,7 @@ SChessboardReprojection::~SChessboardReprojection()
 
 void SChessboardReprojection::configuring()
 {
-    const ConfigType configTree  = this->getConfigTree();
+    const ConfigType configTree  = this->getConfiguration();
     const ConfigType boardConfig = configTree.get_child("board");
     const ConfigType config      = configTree.get_child("config.<xmlattr>");
 

@@ -63,7 +63,7 @@ void SCompositorParameterEditor::configuring()
 {
     this->initialize();
 
-    auto config = this->getConfigTree();
+    auto config = this->getConfiguration();
 
     m_layerID = config.get<std::string>("layer.<xmlattr>.id", "");
 }

@@ -39,7 +39,7 @@ void STimestampSlotCaller::configuring()
 {
     this->initialize();
 
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     const std::regex re("(.*)/(.*)");
 

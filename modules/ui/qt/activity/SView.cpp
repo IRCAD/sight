@@ -61,7 +61,7 @@ void SView::configuring()
 {
     this->sight::ui::base::view::IActivityView::configuring();
 
-    const ConfigType configType = this->getConfigTree();
+    const ConfigType configType = this->getConfiguration();
     const auto config           = configType.get_child_optional("config.<xmlattr>");
 
     if(config)

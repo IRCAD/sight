@@ -58,7 +58,7 @@ void SDicomSeriesSetReader::configuring()
 {
     sight::io::base::service::IReader::configuring();
 
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     m_showLogDialog = config.get<bool>("showLogDialog", m_showLogDialog);
 

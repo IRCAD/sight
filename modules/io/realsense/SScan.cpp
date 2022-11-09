@@ -129,7 +129,7 @@ void SScan::stopping()
 
 void SScan::configuring()
 {
-    const ConfigType configTree = this->getConfigTree();
+    const ConfigType configTree = this->getConfiguration();
     const auto cfg              = configTree.get_child_optional("config.<xmlattr>.");
 
     if(cfg)

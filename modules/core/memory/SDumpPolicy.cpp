@@ -43,7 +43,7 @@ SDumpPolicy::~SDumpPolicy()
 
 void SDumpPolicy::configuring()
 {
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     m_policy = config.get<std::string>("config.policy", m_policy);
 

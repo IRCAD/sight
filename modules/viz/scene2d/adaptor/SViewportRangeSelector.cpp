@@ -48,7 +48,7 @@ void SViewportRangeSelector::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
     m_initialWidth = config.get<double>(s_INITIAL_WIDTH_CONFIG, m_initialWidth);
 
     m_initialX = config.get<double>(s_INITIAL_POS_CONFIG, m_initialX);

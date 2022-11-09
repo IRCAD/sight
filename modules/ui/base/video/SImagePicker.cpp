@@ -63,7 +63,7 @@ void SImagePicker::stopping()
 
 void SImagePicker::configuring()
 {
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
 
     const std::string videoRef = config.get<std::string>("videoReference", "center");
 

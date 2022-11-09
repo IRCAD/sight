@@ -41,7 +41,7 @@ void IToolBar::initialize()
 {
     m_registry = ui::base::registry::ToolBar::New(this->getID());
 
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     // find ViewRegistryManager configuration
     if(const auto registryConfig = config.get_child_optional("registry"); registryConfig.has_value())

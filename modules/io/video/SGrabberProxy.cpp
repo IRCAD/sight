@@ -117,7 +117,7 @@ void SGrabberProxy::stopping()
 
 void SGrabberProxy::configuring()
 {
-    const auto config = this->getConfigTree();
+    const auto config = this->getConfiguration();
 
     auto itSubConfig = config.find("config");
 
@@ -237,7 +237,7 @@ void SGrabberProxy::startCamera()
                 {
                     SIGHT_DEBUG("Evaluating if implementation '" + srvImpl + "' is suitable...");
                     auto objectsType  = srvFactory->getServiceObjects(srvImpl);
-                    const auto config = this->getConfigTree();
+                    const auto config = this->getConfiguration();
 
                     // 1. Verify that we have the same number of timelines
                     objectsType.erase(
@@ -461,7 +461,7 @@ void SGrabberProxy::startCamera()
                 }
 
                 std::size_t inputTLCount = 0;
-                const auto proxyConfig   = this->getConfigTree();
+                const auto proxyConfig   = this->getConfiguration();
                 auto inoutsCfg           = proxyConfig.equal_range("inout");
                 for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
                 {

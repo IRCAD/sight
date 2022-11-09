@@ -40,7 +40,7 @@ void SAction::configuring()
 {
     this->initialize();
 
-    auto config = this->getConfigTree();
+    auto config = this->getConfiguration();
     m_sync = core::runtime::get_ptree_value(config, "sync", m_sync);
 }
 

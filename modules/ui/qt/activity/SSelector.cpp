@@ -84,7 +84,7 @@ void SSelector::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    const auto cfg = this->getConfigTree();
+    const auto cfg = this->getConfiguration();
 
     if(cfg.count("filter") == 1)
     {

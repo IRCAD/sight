@@ -101,7 +101,7 @@ SRender::~SRender() noexcept
 
 void SRender::configuring()
 {
-    const ConfigType config = this->getConfigTree();
+    const ConfigType config = this->getConfiguration();
 
     SIGHT_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
     const ConfigType sceneCfg = config.get_child("scene");
@@ -161,7 +161,7 @@ void SRender::starting()
         this->create();
     }
 
-    const ConfigType config = this->getConfigTree();
+    const ConfigType config = this->getConfiguration();
 
     SIGHT_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
 

@@ -76,7 +76,7 @@ void WindowLevel::configuring()
 {
     this->initialize();
 
-    const ConfigType srvConfig = this->getConfigTree();
+    const ConfigType srvConfig = this->getConfiguration();
 
     if(srvConfig.count("config.<xmlattr>") != 0U)
     {

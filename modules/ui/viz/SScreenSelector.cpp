@@ -56,7 +56,7 @@ void SScreenSelector::configuring()
 {
     this->initialize();
 
-    const auto configTree = this->getConfigTree();
+    const auto configTree = this->getConfiguration();
 
     m_mode = configTree.get("config.<xmlattr>.mode", m_mode);
 

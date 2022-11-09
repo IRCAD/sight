@@ -172,7 +172,7 @@ void SRender::configuring()
 {
     this->initialize();
 
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     const auto sceneCfg = config.get_child_optional("scene");
     SIGHT_ASSERT("There is no implementation between \"scene\" tags", sceneCfg.has_value());

@@ -163,7 +163,7 @@ void SModifyLayout::configuring()
 {
     this->initialize();
 
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     for(const auto& actionCfg : config.get_child("config"))
     {

@@ -58,7 +58,7 @@ ITracker::~ITracker()
 
 void ITracker::configuring()
 {
-    const service::IService::ConfigType config = this->getConfigTree();
+    const service::IService::ConfigType config = this->getConfiguration();
     if(config.count("dropObj") != 0U)
     {
         const auto dropStr = config.get<std::string>("dropObj");

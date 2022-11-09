@@ -74,7 +74,7 @@ void SSeriesSignal::stopping()
 
 void SSeriesSignal::configuring()
 {
-    const service::IService::ConfigType srvconfig = this->getConfigTree();
+    const service::IService::ConfigType srvconfig = this->getConfiguration();
 
     if(srvconfig.count("filter") == 1)
     {

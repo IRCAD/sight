@@ -52,7 +52,7 @@ SLabelGeometryImage::~SLabelGeometryImage()
 
 void SLabelGeometryImage::configuring()
 {
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     const auto& clusters = config.get_child("clusters");
     for(const auto& elt : boost::make_iterator_range(clusters.equal_range("cluster")))

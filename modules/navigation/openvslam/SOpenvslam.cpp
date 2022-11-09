@@ -170,7 +170,7 @@ SOpenvslam::~SOpenvslam() noexcept
 void SOpenvslam::configuring()
 {
     this->service::ITracker::configuring();
-    const ConfigType cfg = this->getConfigTree();
+    const ConfigType cfg = this->getConfiguration();
 
     m_downSampleWidth = cfg.get<std::size_t>(s_DOWNSAMPLE_CONFIG, m_downSampleWidth);
     const std::string mode = cfg.get<std::string>(s_MODE_CONFIG, "MONO");

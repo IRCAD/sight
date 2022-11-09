@@ -125,7 +125,7 @@ void SParameters::configuring()
 {
     this->initialize();
 
-    const ConfigType configTree = this->getConfigTree();
+    const ConfigType configTree = this->getConfiguration();
 }
 
 //-----------------------------------------------------------------------------
@@ -193,7 +193,7 @@ void SParameters::starting()
     QScrollArea* scrollArea = nullptr;
     QWidget* viewport       = nullptr;
 
-    service::IService::ConfigType config               = this->getConfigTree();
+    service::IService::ConfigType config               = this->getConfiguration();
     const service::IService::ConfigType& parametersCfg = config.get_child("parameters");
     const bool scrollable                              = parametersCfg.get<bool>("<xmlattr>.scrollable", false);
     if(scrollable)
@@ -418,7 +418,7 @@ void SParameters::updating()
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
     QWidget* widget  = qtContainer->getQtContainer();
 
-    service::IService::ConfigType config               = this->getConfigTree();
+    service::IService::ConfigType config               = this->getConfiguration();
     const service::IService::ConfigType& parametersCfg = config.get_child("parameters");
 
     // emit signal for each widget

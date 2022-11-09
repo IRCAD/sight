@@ -64,7 +64,7 @@ SNotifier::~SNotifier() noexcept
 
 void SNotifier::configuring()
 {
-    const auto configTree = this->getConfigTree();
+    const auto configTree = this->getConfiguration();
     m_defaultMessage = configTree.get<std::string>("message", m_defaultMessage);
     const std::string position = configTree.get<std::string>("position", "TOP_RIGHT");
 

@@ -47,7 +47,7 @@ SPoseFrom2d::SPoseFrom2d() noexcept
 
 void SPoseFrom2d::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
     m_patternWidth = config.get<double>("patternWidth", m_patternWidth);
     SIGHT_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 

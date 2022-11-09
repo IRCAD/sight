@@ -32,7 +32,7 @@ namespace sight::module::data
 
 void SCopy::configuring()
 {
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
     SIGHT_ASSERT("One 'in' tag is required.", config.get_optional<std::string>("in").has_value());
 
     [[maybe_unused]] const auto inoutCfg = config.get_optional<std::string>("inout");

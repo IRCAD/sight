@@ -53,7 +53,7 @@ void SPdfWriter::configuring()
 {
     this->IWriter::configuring();
 
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     for(const auto& container : boost::make_iterator_range(config.equal_range("container")))
     {

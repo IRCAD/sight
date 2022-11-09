@@ -62,7 +62,7 @@ SCameraConfigLauncher::~SCameraConfigLauncher() noexcept =
 void SCameraConfigLauncher::configuring()
 {
     this->initialize();
-    service::IService::ConfigType configuration = this->getConfigTree();
+    service::IService::ConfigType configuration = this->getConfiguration();
 
     SIGHT_ASSERT(
         "There must be one (and only one) <config/> element.",

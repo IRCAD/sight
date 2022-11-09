@@ -82,7 +82,7 @@ void STransferFunction::configuring()
 {
     this->initialize();
 
-    const ConfigType tree = this->getConfigTree();
+    const ConfigType tree = this->getConfiguration();
     const auto config     = tree.get_child_optional("config");
 
     bool useDefaultPath = true;

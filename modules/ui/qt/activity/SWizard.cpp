@@ -82,7 +82,7 @@ void SWizard::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    const auto config = this->getConfigTree();
+    const auto config = this->getConfiguration();
 
     m_ioSelectorConfig = config.get("ioSelectorConfig", "");
     SIGHT_ASSERT("ioSelector Configuration must not be empty", !m_ioSelectorConfig.empty());

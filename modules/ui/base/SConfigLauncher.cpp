@@ -76,7 +76,7 @@ void SConfigLauncher::configuring()
 {
     this->initialize();
 
-    m_configLauncher->parseConfig(this->getConfigTree(), this->getSptr());
+    m_configLauncher->parseConfig(this->getConfiguration(), this->getSptr());
 }
 
 //-----------------------------------------------------------------------------

@@ -35,7 +35,7 @@ namespace sight::module::geometry::base
 
 void SConcatenateMatrices::configuring()
 {
-    const auto config                    = this->getConfigTree();
+    const auto config                    = this->getConfiguration();
     const auto inCfg                     = config.get_child("in");
     [[maybe_unused]] const auto groupCfg = inCfg.get_child_optional("<xmlattr>.group");
     SIGHT_ASSERT("Config must contain one input group named 'matrix'.", groupCfg.has_value());

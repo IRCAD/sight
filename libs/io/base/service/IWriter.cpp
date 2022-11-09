@@ -187,7 +187,7 @@ void IWriter::clearLocations()
 
 void IWriter::configuring()
 {
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     SIGHT_ASSERT(
         "Generic configuring method is only available for io service that uses paths.",
@@ -243,7 +243,7 @@ void IWriter::configuring()
 
 void IWriter::updateBaseFolder(std::string& outBaseFolder) const
 {
-    const sight::service::IService::ConfigType config = this->getConfigTree();
+    const sight::service::IService::ConfigType config = this->getConfiguration();
 
     const auto baseFolderCfg = config.get<std::string>("baseFolder", "");
 

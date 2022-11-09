@@ -67,7 +67,7 @@ void STransferFunction::configuring()
 {
     this->configureParams();
 
-    const ConfigType tree = this->getConfigTree();
+    const ConfigType tree = this->getConfiguration();
     const auto config     = tree.get_child("config.<xmlattr>");
 
     const std::string polygonColor = config.get("lineColor", "#FFFFFF");

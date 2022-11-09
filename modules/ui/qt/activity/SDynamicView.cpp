@@ -70,7 +70,7 @@ void SDynamicView::configuring()
 {
     this->sight::ui::base::view::IActivityView::configuring();
 
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     m_mainActivityClosable = config.get<bool>("mainActivity.<xmlattr>.closable", m_mainActivityClosable);
     m_documentMode         = config.get<bool>("config.<xmlattr>.document", m_documentMode);

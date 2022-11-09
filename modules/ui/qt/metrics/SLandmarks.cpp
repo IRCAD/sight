@@ -99,7 +99,7 @@ void SLandmarks::configuring()
 {
     this->sight::ui::base::IGuiContainer::initialize();
 
-    const service::IService::ConfigType config = this->getConfigTree();
+    const service::IService::ConfigType config = this->getConfiguration();
 
     m_defaultLandmarkSize = config.get<float>(s_SIZE_CONFIG, m_defaultLandmarkSize);
     SIGHT_FATAL_IF(

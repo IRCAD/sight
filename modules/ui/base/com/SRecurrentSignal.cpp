@@ -44,7 +44,7 @@ SRecurrentSignal::SRecurrentSignal() noexcept :
 
 void SRecurrentSignal::configuring()
 {
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     m_timeStep = config.get<unsigned int>("timeStep", m_timeStep);
 }

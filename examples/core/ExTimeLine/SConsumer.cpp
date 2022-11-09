@@ -52,7 +52,7 @@ SConsumer::~SConsumer() noexcept =
 
 void SConsumer::configuring()
 {
-    sight::service::IService::ConfigType config = this->getConfigTree();
+    sight::service::IService::ConfigType config = this->getConfiguration();
 
     m_receiverId = config.get<unsigned int>("id");
     m_period     = config.get<unsigned int>("period", 0);

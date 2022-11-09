@@ -50,7 +50,7 @@ void SSquare::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
 
     SIGHT_ASSERT("Attribute 'x' is missing", config.count("x"));
     SIGHT_ASSERT("Attribute 'y' is missing", config.count("y"));

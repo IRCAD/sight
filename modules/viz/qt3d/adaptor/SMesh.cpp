@@ -67,7 +67,7 @@ void SMesh::configuring()
 {
     this->configureParams();
 
-    const ConfigType configTree = this->getConfigTree();
+    const ConfigType configTree = this->getConfiguration();
     const auto config           = configTree.get_child_optional("config.<xmlattr>");
 
     if(config)

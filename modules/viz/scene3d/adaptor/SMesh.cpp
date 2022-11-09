@@ -85,7 +85,7 @@ void SMesh::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
+    const ConfigType configType = this->getConfiguration();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     const std::string color = config.get<std::string>("color", "");

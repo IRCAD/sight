@@ -45,7 +45,7 @@ SPointListFromMatrices::~SPointListFromMatrices()
 
 void SPointListFromMatrices::configuring()
 {
-    const ConfigType configTree = this->getConfigTree();
+    const ConfigType configTree = this->getConfiguration();
     const ConfigType config     = configTree.get_child("config.<xmlattr>");
     if(!config.empty())
     {

@@ -61,7 +61,7 @@ void SSliceIndexDicomEditor::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    const ConfigType configType = this->getConfigTree();
+    const ConfigType configType = this->getConfiguration();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_delay                     = config.get<unsigned>(s_DELAY_CONFIG, m_delay);

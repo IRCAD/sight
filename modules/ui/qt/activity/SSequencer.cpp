@@ -90,7 +90,7 @@ void SSequencer::configuring()
 {
     this->sight::ui::base::IGuiContainer::initialize();
 
-    const service::IService::ConfigType config = this->getConfigTree();
+    const service::IService::ConfigType config = this->getConfiguration();
 
     auto pair = config.equal_range("activity");
     auto it   = pair.first;

@@ -67,7 +67,7 @@ SPropagator::~SPropagator()
 
 void SPropagator::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     m_value     = config.get<int>("value", 1);
     m_overwrite = config.get<bool>("overwrite", true);

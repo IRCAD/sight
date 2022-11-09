@@ -190,7 +190,7 @@ void SWriter::configuring()
         m_selected_backend = Writer::Backend::ANY;
     }
 
-    const auto& tree = getConfigTree();
+    const auto& tree = getConfiguration();
 
     // Dialog configuration
     if(const auto& dialog_tree = tree.get_child_optional("dialog.<xmlattr>"); dialog_tree.is_initialized())

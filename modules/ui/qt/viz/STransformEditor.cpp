@@ -69,7 +69,7 @@ void STransformEditor::configuring()
 
     this->initialize();
 
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     const std::string rotation = config.get<std::string>("rotation.<xmlattr>.enabled", "true");
 

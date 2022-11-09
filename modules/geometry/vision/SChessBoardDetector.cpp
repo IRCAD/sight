@@ -71,7 +71,7 @@ void SChessBoardDetector::configuring()
         m_image.size() == m_calInfo.size()
     );
 
-    const ConfigType config      = this->getConfigTree();
+    const ConfigType config      = this->getConfiguration();
     const ConfigType boardConfig = config.get_child("board");
 
     m_widthKey = boardConfig.get<std::string>("<xmlattr>.width");

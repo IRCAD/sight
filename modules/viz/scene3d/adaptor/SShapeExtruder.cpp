@@ -164,7 +164,7 @@ void SShapeExtruder::configuring()
 {
     this->configureParams();
 
-    const ConfigType srvConfig = this->getConfigTree();
+    const ConfigType srvConfig = this->getConfiguration();
     const ConfigType config    = srvConfig.get_child("config.<xmlattr>");
 
     m_priority = config.get<int>(s_PRIORITY_CONFIG, m_priority);

@@ -49,7 +49,7 @@ SClientSender::~SClientSender()
 
 void SClientSender::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     const ConfigType configIn = config.get_child("in");
 

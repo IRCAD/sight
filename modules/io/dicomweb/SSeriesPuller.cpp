@@ -58,7 +58,7 @@ SSeriesPuller::~SSeriesPuller() noexcept =
 
 void SSeriesPuller::configuring()
 {
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     m_dicomReaderType      = config.get<std::string>("config.<xmlattr>.dicomReader", m_dicomReaderType);
     m_dicomReaderSrvConfig = config.get<std::string>("config.<xmlattr>.readerConfig", m_dicomReaderSrvConfig);

@@ -50,7 +50,7 @@ SFolderSelector::~SFolderSelector() noexcept =
 
 void SFolderSelector::configuring()
 {
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
     m_dialogTitle = config.get("dialogTitle", "Select a folder");
 }
 

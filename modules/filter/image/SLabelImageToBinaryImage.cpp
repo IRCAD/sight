@@ -89,7 +89,7 @@ SLabelImageToBinaryImage::~SLabelImageToBinaryImage()
 
 void SLabelImageToBinaryImage::configuring()
 {
-    const ConfigType config = this->getConfigTree();
+    const ConfigType config = this->getConfiguration();
 
     m_labelSetFieldName = config.get_optional<std::string>("config.<xmlattr>.labelsField");
 }

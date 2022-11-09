@@ -57,7 +57,7 @@ SMaterial::~SMaterial() noexcept =
 
 void SMaterial::configuring()
 {
-    const auto configTree = this->getConfigTree();
+    const auto configTree = this->getConfiguration();
     const auto config     = configTree.get_child_optional("config.<xmlattr>");
 
     if(config)

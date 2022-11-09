@@ -54,7 +54,7 @@ SServerSender::~SServerSender()
 
 void SServerSender::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     m_portConfig = config.get("port", "4242");
 

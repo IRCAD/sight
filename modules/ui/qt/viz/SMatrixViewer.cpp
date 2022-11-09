@@ -54,7 +54,7 @@ void SMatrixViewer::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    m_title = this->getConfigTree().get<std::string>("title", "matrix");
+    m_title = this->getConfiguration().get<std::string>("title", "matrix");
 }
 
 // ------------------------------------------------------------------------------

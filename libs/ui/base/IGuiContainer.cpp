@@ -63,7 +63,7 @@ void IGuiContainer::initialize()
     // Create view registry
     m_viewRegistry = ui::base::registry::View::New(this->getID());
 
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     if(const auto registryConfig = config.get_child_optional("registry"); registryConfig.has_value())
     {

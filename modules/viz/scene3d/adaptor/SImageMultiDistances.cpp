@@ -152,7 +152,7 @@ void SImageMultiDistances::configuring()
 {
     this->configureParams();
 
-    const ConfigType srvconfig = this->getConfigTree();
+    const ConfigType srvconfig = this->getConfiguration();
     const ConfigType config    = srvconfig.get_child("config.<xmlattr>");
 
     m_fontSource           = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);

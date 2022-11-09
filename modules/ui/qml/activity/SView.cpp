@@ -59,7 +59,7 @@ SView::~SView()
 
 void SView::configuring()
 {
-    const ConfigType config = this->getConfigTree();
+    const ConfigType config = this->getConfiguration();
 
     this->parseConfiguration(config, this->getInOuts());
 }

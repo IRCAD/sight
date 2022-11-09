@@ -107,7 +107,7 @@ void SPreferencesConfiguration::configuring()
 
     const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
 
-    const auto configuration = this->getConfigTree();
+    const auto configuration = this->getConfiguration();
 
     for(const auto& cfg : boost::make_iterator_range(configuration.equal_range("preference")))
     {

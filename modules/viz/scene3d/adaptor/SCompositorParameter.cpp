@@ -96,7 +96,7 @@ void SCompositorParameter::configuring()
 {
     this->IParameter::configuring();
 
-    const ConfigType configType = this->getConfigTree();
+    const ConfigType configType = this->getConfiguration();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_compositorName = config.get<std::string>(s_COMPOSITOR_NAME_CONFIG);

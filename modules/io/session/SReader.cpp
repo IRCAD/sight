@@ -123,7 +123,7 @@ void SReader::configuring()
 {
     sight::io::base::service::IReader::configuring();
 
-    const auto& tree = this->getConfigTree();
+    const auto& tree = this->getConfiguration();
 
     // Extension configuration
     const auto& dialog = tree.get_child_optional("dialog.<xmlattr>");

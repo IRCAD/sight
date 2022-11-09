@@ -34,7 +34,7 @@ namespace sight::module::ui::qt
 
 void SMaterialOpacityEditor::configuring()
 {
-    const ConfigType configuration = this->getConfigTree();
+    const ConfigType configuration = this->getConfiguration();
     m_label = configuration.get<std::string>("label", m_label);
 
     this->initialize();

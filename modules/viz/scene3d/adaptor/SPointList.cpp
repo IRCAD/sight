@@ -104,7 +104,7 @@ void SPointList::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
+    const ConfigType configType = this->getConfiguration();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     const std::string color = config.get<std::string>(s_COLOR_CONFIG, "");

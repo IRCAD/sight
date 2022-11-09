@@ -86,7 +86,7 @@ SCamera::SCamera() :
 
 void SCamera::configuring()
 {
-    const service::IService::ConfigType config = this->getConfigTree();
+    const service::IService::ConfigType config = this->getConfiguration();
 
     m_bVideoSupport    = config.get<bool>(s_VIDEO_SUPPORT_CONFIG, false);
     m_useAbsolutePath  = config.get<bool>(s_USE_ABSOLUTE_PATH, false);

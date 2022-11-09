@@ -180,7 +180,7 @@ vec2d_t IAdaptor::mapSceneToAdaptor(const vec2d_t& _xy) const
 
 void IAdaptor::configureParams()
 {
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
 
     // If the corresponding attributes are present in the config, set the xAxis, yAxis and the adaptor zValue
     if(config.count("xAxis") != 0U)

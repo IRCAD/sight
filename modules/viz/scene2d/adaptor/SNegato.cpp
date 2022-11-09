@@ -72,7 +72,7 @@ void SNegato::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
 
     if(config.count("orientation") != 0U)
     {

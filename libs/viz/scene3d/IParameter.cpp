@@ -108,7 +108,7 @@ void IParameter::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
 
     m_paramName = config.get<std::string>("parameter", "");
     SIGHT_ERROR_IF("parameter attribute not set", m_paramName.empty());

@@ -83,7 +83,7 @@ void SModelSeriesList::configuring()
 {
     this->initialize();
 
-    const ConfigType configType = this->getConfigTree();
+    const ConfigType configType = this->getConfiguration();
     const auto config           = configType.get_child_optional("config.<xmlattr>");
 
     if(config)

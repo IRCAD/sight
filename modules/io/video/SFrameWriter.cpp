@@ -90,7 +90,7 @@ void SFrameWriter::configuring()
 {
     sight::io::base::service::IWriter::configuring();
 
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     m_format = config.get<std::string>("format", ".tiff");
 }

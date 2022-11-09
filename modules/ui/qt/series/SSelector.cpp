@@ -75,7 +75,7 @@ void SSelector::configuring()
 {
     this->sight::ui::base::IGuiContainer::initialize();
 
-    const ConfigType tree = this->getConfigTree();
+    const ConfigType tree = this->getConfiguration();
 
     if(const auto& icons = tree.get_child_optional("icons"); icons.has_value())
     {

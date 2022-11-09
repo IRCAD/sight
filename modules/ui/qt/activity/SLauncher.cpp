@@ -107,14 +107,14 @@ void SLauncher::configuring()
     using ConfigType = service::IService::ConfigType;
 
     m_parameters.clear();
-    if(this->getConfigTree().count("config") > 0)
+    if(this->getConfiguration().count("config") > 0)
     {
         SIGHT_ASSERT(
             "There must be one (and only one) <config/> element.",
-            this->getConfigTree().count("config") == 1
+            this->getConfiguration().count("config") == 1
         );
 
-        const service::IService::ConfigType srvconfig = this->getConfigTree();
+        const service::IService::ConfigType srvconfig = this->getConfiguration();
         const service::IService::ConfigType& config   = srvconfig.get_child("config");
 
         m_mode = config.get_optional<std::string>("mode").get_value_or("message");

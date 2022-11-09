@@ -76,7 +76,7 @@ void SAxis::configuring()
 {
     this->configureParams(); // Looks for 'xAxis', 'yAxis' and 'zValue'
 
-    const ConfigType srvConfig = this->getConfigTree();
+    const ConfigType srvConfig = this->getConfiguration();
     const ConfigType config    = srvConfig.get_child("config.<xmlattr>");
 
     // 'color'

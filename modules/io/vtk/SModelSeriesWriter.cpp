@@ -164,7 +164,7 @@ void SModelSeriesWriter::stopping()
 void SModelSeriesWriter::configuring()
 {
     sight::io::base::service::IWriter::configuring();
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     auto ext = config.get<std::string>("extension", "");
 

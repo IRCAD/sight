@@ -88,7 +88,7 @@ void SShowHelp::configuring()
      */
     this->sight::ui::base::IAction::initialize();
 
-    const auto configuration = this->getConfigTree();
+    const auto configuration = this->getConfiguration();
     const auto filename      = configuration.get<std::string>("filename.<xmlattr>.id");
     m_fsHelpPath           = std::filesystem::path(filename);
     m_bServiceIsConfigured = std::filesystem::exists(m_fsHelpPath);

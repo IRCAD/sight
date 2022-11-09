@@ -92,7 +92,7 @@ void SCalibrationImagesWriter::configuring()
 {
     sight::io::base::service::IWriter::configuring();
 
-    const auto configTree = this->getConfigTree();
+    const auto configTree = this->getConfiguration();
     m_fileExtension = configTree.get("format", ".tiff");
 }
 

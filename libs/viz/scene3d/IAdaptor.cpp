@@ -69,7 +69,7 @@ void IAdaptor::info(std::ostream& _sstream)
 
 void IAdaptor::configureParams()
 {
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
     m_layerID   = config.get<std::string>(s_LAYER_CONFIG);
     m_isVisible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
 }

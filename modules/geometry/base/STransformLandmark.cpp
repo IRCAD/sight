@@ -71,7 +71,7 @@ void STransformLandmark::stopping()
 
 void STransformLandmark::configuring()
 {
-    const ConfigType configuration = this->getConfigTree();
+    const ConfigType configuration = this->getConfiguration();
     m_label = configuration.get<std::string>("label", m_label);
     if(!m_label.empty())
     {

@@ -57,7 +57,7 @@ SClientListener::~SClientListener()
 
 void SClientListener::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     const ConfigType configInOut = config.get_child("inout");
 

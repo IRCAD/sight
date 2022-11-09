@@ -55,7 +55,7 @@ SPointToLandmarkDistance::~SPointToLandmarkDistance() noexcept =
 
 void SPointToLandmarkDistance::configuring()
 {
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>.");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>.");
     m_unit      = config.get<std::string>("unit", "");
     m_precision = config.get<int>("precision", 6);
     if(!m_unit.empty())

@@ -74,7 +74,7 @@ void SSliceIndexDicomPullerEditor::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    const auto& config = this->getConfigTree();
+    const auto& config = this->getConfiguration();
 
     m_dicomReaderType = config.get<std::string>("config.<xmlattr>.dicomReader", m_dicomReaderType);
     m_delay           = config.get<unsigned int>("config.<xmlattr>.delay", m_delay);
@@ -336,7 +336,7 @@ void SSliceIndexDicomPullerEditor::readImage(sight::data::DicomSeries& dicomSeri
 
 void SSliceIndexDicomPullerEditor::pullInstance(sight::data::DicomSeries& dicomSeries)
 {
-    service::IService::ConfigType configuration = this->getConfigTree();
+    service::IService::ConfigType configuration = this->getConfiguration();
     //Parse server port and hostname
     if(configuration.count("server") != 0U)
     {

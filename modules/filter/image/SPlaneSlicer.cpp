@@ -119,7 +119,7 @@ void SPlaneSlicer::updating()
 
 void SPlaneSlicer::configuring()
 {
-    const auto& srvConf = this->getConfigTree();
+    const auto& srvConf = this->getConfiguration();
 
     const auto& config = srvConf.get_child("config.<xmlattr>");
 

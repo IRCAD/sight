@@ -74,7 +74,7 @@ void SRender::configuring()
     this->initialize();
 
     // Get scene configuration
-    const ConfigType config = this->getConfigTree();
+    const ConfigType config = this->getConfiguration();
     const auto sceneCfg     = config.get_child_optional(s_SCENE_CONFIG);
     SIGHT_ASSERT("One scene must be configured.", sceneCfg);
 

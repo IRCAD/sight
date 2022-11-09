@@ -441,33 +441,24 @@ void IService::setConfiguration(const Config& _configuration)
 
 //-----------------------------------------------------------------------------
 
-void IService::setConfiguration(const ConfigType& ptree)
+void IService::setConfiguration(const ConfigType& serviceConfig)
 {
-    ConfigType serviceConfig;
-    serviceConfig.add_child("service", ptree);
-
     m_configuration      = serviceConfig;
     m_configurationState = UNCONFIGURED;
 }
 
 //-----------------------------------------------------------------------------
 
-IService::ConfigType IService::getConfiguration() const
+const IService::ConfigType& IService::getConfiguration() const
 {
-    return this->getConfigTree();
+    return m_configuration;
 }
 
 //-----------------------------------------------------------------------------
 
-IService::ConfigType IService::getConfigTree() const
+const IService::ConfigType& IService::getConfigTree() const
 {
-    auto srvConfig = m_configuration.get_child_optional("service");
-    if(srvConfig.is_initialized())
-    {
-        return srvConfig.get();
-    }
-
-    return {};
+    return this->getConfiguration();
 }
 
 //-----------------------------------------------------------------------------
@@ -487,7 +478,7 @@ void IService::configure()
             {
                 SIGHT_ERROR("Error while configuring the service '" + this->getID() + "' : " + e.what());
 
-                auto config = this->getConfigTree();
+                auto config = this->getConfiguration();
                 SIGHT_ERROR("With the given configuration:\n" + core::runtime::property_tree::toString(config));
             }
             catch(std::exception& e)

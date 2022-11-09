@@ -70,7 +70,7 @@ void STextStatus::configuring()
 
     this->initialize();
 
-    const auto config = this->getConfigTree();
+    const auto config = this->getConfiguration();
 
     if(const auto label = config.get_optional<std::string>("label"); label.has_value())
     {
