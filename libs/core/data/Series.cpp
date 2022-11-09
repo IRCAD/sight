@@ -1979,7 +1979,7 @@ void Series::setImageTransformPatient(const sight::data::Matrix4& transform, std
     [[maybe_unused]] const glm::dvec3 y(transform[1], transform[5], transform[9]);
     [[maybe_unused]] const glm::dvec3 z(transform[2], transform[6], transform[10]);
     [[maybe_unused]] const glm::dvec3 computedZ = glm::cross(x, y);
-    SIGHT_ASSERT("Unexpected orientation vector size", glm::all(glm::epsilonEqual(computedZ, z, 1e-5)));
+    SIGHT_ASSERT("Unexpected orientation vector size", glm::all(glm::epsilonEqual(computedZ, z, 1e-2)));
 
     this->setImageOrientationPatient(
         {transform[0], transform[4], transform[8], transform[1], transform[5], transform[9]},
