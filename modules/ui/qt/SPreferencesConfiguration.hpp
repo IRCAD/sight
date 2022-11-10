@@ -30,6 +30,7 @@
 #include <data/String.hpp>
 
 #include <ui/base/IAction.hpp>
+#include <ui/base/parameter.hpp>
 
 #include <QCheckBox>
 #include <QComboBox>
@@ -149,7 +150,11 @@ private:
 
     /// Type of signal when parameters are updated.
     typedef core::com::Signal<void ()> ParametersModifiedSignalType;
-    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_PARAMETERS_MODIFIED_SIG;
+    static const core::com::Signals::SignalKeyType s_PARAMETERS_MODIFIED_SIG;
+
+    /// Generic changed signal type
+    typedef core::com::Signal<void (sight::ui::base::parameter_t, std::string)> ChangedSignalType;
+    static const core::com::Signals::SignalKeyType s_PREFERENCE_CHANGED_SIG;
 
     enum class PreferenceType : std::int8_t
     {
@@ -176,11 +181,18 @@ private:
         std::pair<double, double> m_dMinMax {-1000000.0, 1000000.0};
     };
 
+    /// @brief Converts string value from PreferenceElt.m_preferenceValue to real type regarding PreferenceElt.m_type.
+    /// @param _type, the type as PreferenceType
+    /// @param _stringValue: value stored in std::string
+    /// @return std::variant as defined by parameter_t.
+    static sight::ui::base::parameter_t convertValue(const PreferenceType& _type, const std::string& _stringValue);
+
     static void onSelectDir(QPointer<QLineEdit> _lineEdit);
 
     static void onSelectFile(QPointer<QLineEdit> _lineEdit);
 
     ParametersModifiedSignalType::sptr m_sigParametersModified;
+    ChangedSignalType::sptr m_sigPreferenceChanged;
 
     std::vector<PreferenceElt> m_preferences;
 };

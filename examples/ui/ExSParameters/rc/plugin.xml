@@ -23,9 +23,33 @@ This example shows the possibilities of SParameters:
                         <icon>ExSParameters/app.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
+                    <menuBar/>
                 </gui>
                 <registry>
+                    <menuBar sid="menuBarView" start="true" />
                     <view sid="mainview" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="Preferences" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuPreferencesView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuPreferencesView" type="sight::module::ui::base::SMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Preference sync test" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="preferencesAct" start="true" />
                 </registry>
             </service>
 
@@ -133,9 +157,48 @@ This example shows the possibilities of SParameters:
                 </parameters>
             </service>
 
+
+            <service uid="preferencesAct" type="sight::module::ui::qt::SPreferencesConfiguration" >
+                <preference>
+                    <type>int</type>
+                    <name>Integer 1</name>
+                    <key>int_1</key>
+                    <default_value>20</default_value>
+                    <min>0</min>
+                    <max>20</max>
+                </preference>
+                <preference>
+                    <type>combobox</type>
+                    <name>Enum</name>
+                    <key>enum_1</key>
+                    <values>V0,V1,V2,V3</values>
+                    <default_value>V1</default_value>
+                </preference>
+                <preference>
+                    <type>double</type>
+                    <name>Double 1</name>
+                    <key>double_1</key>
+                    <default_value>0.3</default_value>
+                    <min>0.2</min>
+                    <max>0.7</max>
+                </preference>
+                <preference>
+                    <type>checkbox</type>
+                    <name>Boolean</name>
+                    <key>bool_1</key>
+                    <default_value>false</default_value>
+                </preference>
+            </service>
+
             <!-- ******************************* Connections ***************************************** -->
 
             <!-- Connect all the parameters to each other -->
+
+            <connect>
+                <signal>preferencesAct/preferenceChanged</signal>
+                <slot>parameters1Srv/setParameter</slot>
+            </connect>
+
             <connect>
                 <signal>parameters1Srv/boolChanged</signal>
                 <slot>parameters2Srv/setBoolParameter</slot>

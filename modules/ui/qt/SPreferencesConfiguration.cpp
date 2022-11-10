@@ -44,12 +44,54 @@ namespace sight::module::ui::qt
 {
 
 const core::com::Signals::SignalKeyType SPreferencesConfiguration::s_PARAMETERS_MODIFIED_SIG = "parametersModified";
+const core::com::Signals::SignalKeyType SPreferencesConfiguration::s_PREFERENCE_CHANGED_SIG  = "preferenceChanged";
+
+//------------------------------------------------------------------------------
+
+sight::ui::base::parameter_t SPreferencesConfiguration::convertValue(
+    const PreferenceType& _type,
+    const std::string& _stringValue
+)
+{
+    switch(_type)
+    {
+        case PreferenceType::TEXT:
+        case PreferenceType::PATH:
+        case PreferenceType::COMBOBOX:
+        case PreferenceType::FILE:
+        {
+            return _stringValue;
+        }
+
+        case PreferenceType::U_INT:
+        {
+            return std::stoi(_stringValue);
+        }
+
+        case PreferenceType::DOUBLE:
+        {
+            return std::stod(_stringValue);
+        }
+
+        case PreferenceType::CHECKBOX:
+        {
+            return _stringValue == "true";
+        }
+
+        default:
+        {
+            SIGHT_ASSERT("Preference type not handled", false);
+            return {};
+        }
+    }
+}
 
 //-----------------------------------------------------------------------------
 
 SPreferencesConfiguration::SPreferencesConfiguration() noexcept
 {
     m_sigParametersModified = newSignal<ParametersModifiedSignalType>(s_PARAMETERS_MODIFIED_SIG);
+    m_sigPreferenceChanged  = newSignal<ChangedSignalType>(s_PREFERENCE_CHANGED_SIG);
 }
 
 //------------------------------------------------------------------------------
@@ -317,14 +359,20 @@ void SPreferencesConfiguration::updating()
 
         for(PreferenceElt& pref : m_preferences)
         {
+            bool preferenceUpdate = false; // only emit signal for preference that has changed.
+
             if((pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH
                 || pref.m_type == PreferenceType::FILE) && !pref.m_lineEdit->text().isEmpty())
             {
+                preferenceUpdate =
+                    pref.m_preferenceValue != pref.m_lineEdit->text().toStdString();
                 pref.m_preferenceValue = pref.m_lineEdit->text().toStdString();
             }
             else if(pref.m_type == PreferenceType::CHECKBOX)
             {
-                pref.m_preferenceValue = pref.m_checkBox->isChecked() ? "true" : "false";
+                const std::string checked = pref.m_checkBox->isChecked() ? "true" : "false";
+                preferenceUpdate       = pref.m_preferenceValue != checked;
+                pref.m_preferenceValue = checked;
             }
             else if(pref.m_type == PreferenceType::U_INT || pref.m_type == PreferenceType::DOUBLE)
             {
@@ -335,6 +383,8 @@ void SPreferencesConfiguration::updating()
 
                 if(isValid)
                 {
+                    preferenceUpdate =
+                        pref.m_preferenceValue != pref.m_lineEdit->text().toStdString();
                     pref.m_preferenceValue = pref.m_lineEdit->text().toStdString();
                 }
 
@@ -354,10 +404,19 @@ void SPreferencesConfiguration::updating()
             }
             else if(pref.m_type == PreferenceType::COMBOBOX)
             {
+                preferenceUpdate =
+                    pref.m_preferenceValue != pref.m_comboBox->currentText().toStdString();
                 pref.m_preferenceValue = pref.m_comboBox->currentText().toStdString();
             }
 
             preferences.put(pref.m_preferenceKey, pref.m_preferenceValue);
+
+            // Emit preferenceChanged signal with new value and preference key.
+            if(preferenceUpdate)
+            {
+                const auto value = this->convertValue(pref.m_type, pref.m_preferenceValue);
+                m_sigPreferenceChanged->asyncEmit(value, pref.m_preferenceKey);
+            }
         }
 
         m_sigParametersModified->asyncEmit();
