@@ -22,6 +22,7 @@
 
 #include "modules/ui/qt/image/STransferFunction.hpp"
 
+#include <core/com/Slots.hxx>
 #include <core/runtime/path.hpp>
 
 #include <data/Composite.hpp>
@@ -56,10 +57,14 @@ static const std::string s_ICON_HEIGHT_CONFIG       = "iconHeight";
 static const std::string s_CONTEXT_TF = "TF_PRESET";
 static const std::string s_VERSION_TF = "V1";
 
+const core::com::Slots::SlotKeyType s_UPDATE_DEFAULT_PRESET_SLOT = "updateDefaultPreset";
+
 //------------------------------------------------------------------------------
 
 STransferFunction::STransferFunction()
 {
+    newSlot("updateDefaultPreset", &STransferFunction::updateDefaultPreset, this);
+
     const std::filesystem::path modulePath = core::runtime::getModuleResourcePath(std::string("sight::module::ui::qt"));
 
     m_deleteIcon       = modulePath / "delete.png";
@@ -70,11 +75,6 @@ STransferFunction::STransferFunction()
     m_importIcon       = modulePath / "import.png";
     m_exportIcon       = modulePath / "export.png";
 }
-
-//------------------------------------------------------------------------------
-
-STransferFunction::~STransferFunction() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -227,6 +227,8 @@ void STransferFunction::starting()
 
     // Initializes the TF preset from paths.
     this->initializePresets();
+
+    this->updateDefaultPreset();
 }
 
 //------------------------------------------------------------------------------
@@ -240,6 +242,15 @@ void STransferFunction::updating()
 void STransferFunction::stopping()
 {
     this->destroy();
+}
+
+//------------------------------------------------------------------------------
+
+service::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
+{
+    return {
+        {s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_DEFAULT_PRESET_SLOT}
+    };
 }
 
 //------------------------------------------------------------------------------
@@ -277,7 +288,8 @@ void STransferFunction::initializePresets()
         const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
         if(!this->hasPresetName(defaultTFName))
         {
-            const data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
+            const auto image                             = m_image.lock();
+            const data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF(image->getType());
             m_tfPresets[defaultTFName] = defaultTf;
         }
 
@@ -408,6 +420,24 @@ void STransferFunction::setCurrentPreset()
 
 //------------------------------------------------------------------------------
 
+void STransferFunction::updateDefaultPreset()
+{
+    const auto image = m_image.lock();
+    if(image)
+    {
+        const data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF(image->getType());
+        const std::string defaultTFName              = data::TransferFunction::s_DEFAULT_TF_NAME;
+        m_tfPresets[defaultTFName] = defaultTf;
+
+        const auto currentTf = m_currentTF.lock();
+        currentTf->deepCopy(defaultTf);
+        auto sig = currentTf->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
+        sig->asyncEmit();
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void STransferFunction::deletePreset()
 {
     sight::ui::base::dialog::MessageDialog messageBox;
@@ -457,7 +487,11 @@ void STransferFunction::createPreset()
             if(!this->hasPresetName(newName))
             {
                 // Create the new composite.
-                const data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
+                const auto image = m_image.lock();
+                auto defaultTf   = image
+                                   ? data::TransferFunction::createDefaultTF(image->getType())
+                                   : data::TransferFunction::createDefaultTF();
+
                 defaultTf->setName(newName);
 
                 m_tfPresets[newName] = defaultTf;

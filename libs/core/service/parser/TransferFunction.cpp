@@ -81,6 +81,8 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
 
             const bool isClamped = colorCfg.get<bool>("<xmlattr>.isClamped", true);
             tfData->setClamped(isClamped);
+
+            tf->fitWindow();
         }
     }
     else

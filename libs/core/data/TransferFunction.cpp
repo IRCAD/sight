@@ -231,6 +231,34 @@ data::TransferFunction::sptr TransferFunction::createDefaultTF()
 
 //------------------------------------------------------------------------------
 
+data::TransferFunction::sptr TransferFunction::createDefaultTF(core::Type _type)
+{
+    TransferFunction::sptr tf = TransferFunction::New();
+
+    tf->setName(TransferFunction::s_DEFAULT_TF_NAME);
+
+    auto tfData = tf->pieces().emplace_back(data::TransferFunctionPiece::New());
+    tfData->insert({0.0, color_t()});
+    tfData->insert({1.0, color_t(1.0, 1.0, 1.0, 1.0)});
+    tfData->setClamped(false);
+    if(_type == core::Type::INT8 || _type == core::Type::UINT8)
+    {
+        tfData->setWindow(255.);
+        tfData->setLevel(127.);
+    }
+    else
+    {
+        tfData->setWindow(500.);
+        tfData->setLevel(50.);
+    }
+
+    tf->fitWindow();
+
+    return tf;
+}
+
+//------------------------------------------------------------------------------
+
 TransferFunction::TransferFunction(data::Object::Key /*unused*/)
 {
     newSignal<PointsModifiedSignalType>(s_POINTS_MODIFIED_SIG);

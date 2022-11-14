@@ -109,16 +109,6 @@ SPTR(data::Image::BufferType) getPixelInImageSpace(data::Image::sptr image, T & 
 template<typename MINMAXTYPE>
 void getMinMax(data::Image::csptr _img, MINMAXTYPE& _min, MINMAXTYPE& _max);
 
-/**
- * @brief Check if the image has a transfer function pool
- *
- * Create transfer function pool if the pool is not present.
- *
- * If the image has not transfer functions, the pool is
- * created and a grey level transfer function is added.
- */
-DATA_API bool updateDefaultTransferFunction(data::Image& _img);
-
 // Getter/Setter for specific image fields
 
 /**
@@ -240,23 +230,6 @@ DATA_API std::string getLabel(const data::Image& _image);
  * @param _label : std::string the label.
  */
 DATA_API void setLabel(data::Image& _image, const std::string& _label);
-
-/**
- * @brief Helper function to get transfer function from medical image.
- *
- * @param _image : input image reference.
- * @return data::Composite::sptr containing transfer function, can be null.
- */
-DATA_API data::TransferFunction::sptr getTransferFunction(const data::Image& _image);
-
-/**
- * @brief Helper function to set transfer function on medical image.
- *
- * @param _image : input image reference.
- * @param _cmp : data::Composite::sptr containing transfer function.
- * @return DATA_API
- */
-DATA_API void setTransferFunction(data::Image& _image, const data::TransferFunction::sptr& _cmp);
 
 // ------------------------------------------------------------------------------
 

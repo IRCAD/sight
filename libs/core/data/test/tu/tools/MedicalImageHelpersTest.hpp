@@ -42,7 +42,6 @@ CPPUNIT_TEST(testSliceIndex);
 CPPUNIT_TEST(testDistances);
 CPPUNIT_TEST(testDistanceVisibility);
 CPPUNIT_TEST(testLandmarksVisibility);
-CPPUNIT_TEST(testTransferFunction);
 CPPUNIT_TEST(computeHistogram);
 CPPUNIT_TEST_SUITE_END();
 
@@ -85,9 +84,6 @@ public:
 
     /// Tests set/get methods on landmarks visibility.
     static void testLandmarksVisibility();
-
-    /// Tests helper methods around transfer function.
-    static void testTransferFunction();
 
     /// Test the computation of the image histogram
     static void computeHistogram();

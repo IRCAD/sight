@@ -211,8 +211,8 @@ void ConfigParserTest::testTransferFunctionParser()
 
     CPPUNIT_ASSERT_EQUAL(-200., tf->minMax().first);
     CPPUNIT_ASSERT_EQUAL(5000., tf->minMax().second);
-    CPPUNIT_ASSERT_EQUAL(2., tf->window());
-    CPPUNIT_ASSERT_EQUAL(0., tf->level());
+    CPPUNIT_ASSERT_EQUAL(5200., tf->window());
+    CPPUNIT_ASSERT_EQUAL(2400., tf->level());
     ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(1., 1., 0., 1.), tf->sampleLinear(-200));
     ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0., 0., 0., 1.), tf->sampleLinear(0));
     ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0., 0., 1., 1.), tf->sampleLinear(250));

@@ -36,6 +36,7 @@ namespace sight::module::viz::scene3d::adaptor
 {
 
 static const core::com::Slots::SlotKeyType s_RESET_CAMERA_SLOT       = "resetCamera";
+static const core::com::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT    = "resizeViewport";
 static const core::com::Slots::SlotKeyType s_CHANGE_ORIENTATION_SLOT = "changeOrientation";
 static const core::com::Slots::SlotKeyType s_MOVE_BACK_SLOT          = "moveBack";
 
@@ -48,14 +49,10 @@ static const std::string s_ORIENTATION_CONFIG           = "orientation";
 SNegato2DCamera::SNegato2DCamera() noexcept
 {
     newSlot(s_RESET_CAMERA_SLOT, &SNegato2DCamera::resetCamera, this);
+    newSlot(s_RESIZE_VIEWPORT_SLOT, &SNegato2DCamera::resizeViewport, this);
     newSlot(s_CHANGE_ORIENTATION_SLOT, &SNegato2DCamera::changeOrientation, this);
     newSlot(s_MOVE_BACK_SLOT, &SNegato2DCamera::moveBack, this);
 }
-
-//-----------------------------------------------------------------------------
-
-SNegato2DCamera::~SNegato2DCamera() noexcept =
-    default;
 
 //-----------------------------------------------------------------------------
 
@@ -89,6 +86,8 @@ void SNegato2DCamera::configuring()
     {
         m_currentNegatoOrientation = Orientation::X_AXIS;
     }
+
+    m_margin = config.get<float>("margin", m_margin);
 }
 
 //-----------------------------------------------------------------------------
@@ -104,6 +103,13 @@ void SNegato2DCamera::starting()
     Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
     cam->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
 
+    m_layerConnection.connect(
+        this->getLayer(),
+        sight::viz::scene3d::Layer::s_RESIZE_LAYER_SIG,
+        this->getSptr(),
+        s_RESIZE_VIEWPORT_SLOT
+    );
+
     this->resetCamera();
 }
 
@@ -118,6 +124,7 @@ void SNegato2DCamera::updating() noexcept
 
 void SNegato2DCamera::stopping()
 {
+    m_layerConnection.disconnect();
     const auto layer = this->getLayer();
     auto interactor  = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
     layer->removeInteractor(interactor);
@@ -177,6 +184,7 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
 
             // Translate the camera back to the cursor's previous position.
             camNode->translate(mousePosView - newMousePosView);
+            m_hasMoved = true;
         }
         // Wheel alone or other modifier -> moving along slices (SHIFT to speed-up)
         else
@@ -235,7 +243,7 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
                 static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::FRONTAL).value_or(0)),
                 static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL).value_or(0))
             };
-
+            m_hasMoved = true;
             // Send signal.
             auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>(
                 data::Image::s_SLICE_INDEX_MODIFIED_SIG
@@ -286,6 +294,7 @@ void SNegato2DCamera::mouseMoveEvent(
             sight::viz::scene3d::helper::Camera::convertScreenSpaceToViewSpace(*camera, screenPos);
 
         camNode->translate(mousePosView - previousMousePosView);
+        m_hasMoved = true;
     }
     else if(m_isInteracting && _button == MouseButton::RIGHT)
     {
@@ -393,8 +402,8 @@ void SNegato2DCamera::resetCamera()
             case Orientation::Z_AXIS:
                 camNode->rotate(Ogre::Vector3::UNIT_Z, Ogre::Degree(180.F));
                 camNode->rotate(Ogre::Vector3::UNIT_Y, Ogre::Degree(180.F));
-                height = static_cast<double>(size[0]) * spacing[0];
-                width  = static_cast<double>(size[1]) * spacing[1];
+                width  = static_cast<double>(size[0]) * spacing[0];
+                height = static_cast<double>(size[1]) * spacing[1];
                 ratio  = static_cast<float>(width / height);
                 break;
         }
@@ -402,14 +411,14 @@ void SNegato2DCamera::resetCamera()
         if(vpRatio > ratio)
         {
             const auto h = static_cast<Ogre::Real>(height);
-            // Zoom out the camera (add 10% of the height), allow the image to not be stuck on the viewport.
-            camera->setOrthoWindowHeight(h + h * 0.1F);
+            // Zoom out the camera with the margin, allow the image to not be stuck on the viewport.
+            camera->setOrthoWindowHeight(h + h * m_margin);
         }
         else
         {
             const auto w = static_cast<Ogre::Real>(width);
-            // Zoom out the camera (add 10% of the width), allow the image to not be stuck on the viewport.
-            camera->setOrthoWindowWidth(w + w * 0.1F);
+            // Zoom out the camera with the margin, allow the image to not be stuck on the viewport.
+            camera->setOrthoWindowWidth(w + w * m_margin);
         }
 
         const auto orientation = static_cast<std::size_t>(m_currentNegatoOrientation);
@@ -430,7 +439,18 @@ void SNegato2DCamera::resetCamera()
             layer->resetCameraClippingRange(worldBoundingBox);
         }
 
+        m_hasMoved = false;
         this->requestRender();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2DCamera::resizeViewport()
+{
+    if(!m_hasMoved)
+    {
+        this->resetCamera();
     }
 }
 

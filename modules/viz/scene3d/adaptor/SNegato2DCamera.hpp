@@ -55,7 +55,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" >
         <inout key="image" uid="..." autoConnect="true" />
         <inout key="tf" uid="..." />
-        <config layer="..." priority="0" layerOrderDependant="true" orientation="sagittal" />
+        <config layer="..." priority="0" layerOrderDependant="true" orientation="sagittal" margin="0.1"/>
    </service>
    @endcode
  *
@@ -71,6 +71,8 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
  * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  * - \b orientation (optional, sagittal/frontal/axial, default=sagittal): the camera's orientation at start.
+ * - \b margin (optional, default=0.1): margin to the border of the viewport, in percentage of the highest of width
+ *  or height.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SNegato2DCamera final : public sight::viz::scene3d::IAdaptor,
                                                            public sight::viz::scene3d::interactor::IInteractor
@@ -84,7 +86,7 @@ public:
     MODULE_VIZ_SCENE3D_API SNegato2DCamera() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SNegato2DCamera() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SNegato2DCamera() noexcept override = default;
 
     /**
      * @brief Zooms in the scene at the current cursor position.
@@ -189,6 +191,9 @@ private:
     /// SLOT: resets the camera's zoom.
     void resetCamera();
 
+    /// SLOT: resets the display when resizing.
+    void resizeViewport();
+
     /**
      * @brief SLOT: sets the camera's orientation to one of the image's axes.
      * @param _from origin of the orientation.
@@ -219,6 +224,15 @@ private:
 
     /// Defines the mouse position at the time the windowing interaction started.
     Ogre::Vector2i m_initialPos {-1, -1};
+
+    /// Defines the margin to the border of the viewport.
+    float m_margin {0.1F};
+
+    /// This allows us to reset the camera when Qt refreshes the size of the viewport after the start of the adaptor
+    bool m_hasMoved {false};
+
+    /// Handles connection with the layer.
+    core::com::helper::SigSlotConnection m_layerConnection;
 
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     static constexpr std::string_view s_TF_INOUT    = "tf";

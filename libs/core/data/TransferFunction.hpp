@@ -25,6 +25,8 @@
 #include "data/config.hpp"
 #include "data/IContainer.hpp"
 
+#include <core/Type.hpp>
+
 #include <glm/vec4.hpp>
 namespace sight::data
 {
@@ -216,6 +218,9 @@ public:
 
     /// Creates a default TF.
     DATA_API static TransferFunction::sptr createDefaultTF();
+
+    /// Creates a default TF according to the pixel type.
+    DATA_API static TransferFunction::sptr createDefaultTF(core::Type _type);
 
     /// Gets the transfert function name.
     [[nodiscard]] const std::string& name() const;

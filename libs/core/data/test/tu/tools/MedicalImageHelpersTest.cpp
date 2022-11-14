@@ -641,28 +641,6 @@ void MedicalImageHelpersTest::testLandmarksVisibility()
 
 //------------------------------------------------------------------------------
 
-void MedicalImageHelpersTest::testTransferFunction()
-{
-    data::Image::sptr image = generateImage();
-
-    // get transfer function composite (should NOT be nullptr)
-    const auto tfpool_not_null = medImHelper::getTransferFunction(*image);
-    CPPUNIT_ASSERT(tfpool_not_null);
-
-    // set transfer function composite
-
-    data::TransferFunction::sptr tfPool = data::TransferFunction::New();
-
-    medImHelper::setTransferFunction(*image, tfPool);
-
-    const auto new_tf_pool = medImHelper::getTransferFunction(*image);
-    CPPUNIT_ASSERT(new_tf_pool);
-
-    CPPUNIT_ASSERT_EQUAL(tfPool, new_tf_pool);
-}
-
-//------------------------------------------------------------------------------
-
 void MedicalImageHelpersTest::computeHistogram()
 {
     using ImageType = std::int16_t;

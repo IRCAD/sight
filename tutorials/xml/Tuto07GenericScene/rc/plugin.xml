@@ -94,12 +94,14 @@
                         <view proportion="0" minWidth="50" />
                         <view proportion="1" />
                         <view proportion="0" minWidth="30" />
+                        <view proportion="0" visible="false"/>
                     </layout>
                 </gui>
                 <registry>
                     <view sid="showNegatoSrv" start="true" />
                     <view sid="sliderIndexEditorSrv" start="true" />
                     <view sid="snapshotSrv" start="true" />
+                    <view sid="tfm" start="true" />
                 </registry>
             </service>
 
@@ -223,6 +225,12 @@
                 <type mode="writer" />
                 <selection mode="exclude" />
                 <addSelection service="sight::module::io::session::SWriter" />
+            </service>
+
+
+            <service uid="tfm" type="sight::module::ui::qt::image::STransferFunction">
+                <in key="image" uid="image" />
+                <inout key="tf" uid="tf" />
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

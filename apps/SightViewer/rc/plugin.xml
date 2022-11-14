@@ -45,6 +45,14 @@
         </config>
     </extension>
 
+    <extension implements="sight::service::extension::Config">
+        <id>SightViewerDicomReaderConfig</id>
+        <desc>Reader configuration to convert retrieved DicomSeries to ImageSeries</desc>
+        <config>
+            <filterType>sight::filter::dicom::custom::DefaultDicomFilter</filterType>
+        </config>
+    </extension>
+    
     <!-- Service config used for writing Snapshot -->
     <extension implements="sight::service::extension::Config">
         <id>SightViewer_snapshot_SrvCfg</id>

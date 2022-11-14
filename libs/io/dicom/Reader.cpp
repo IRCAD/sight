@@ -1009,7 +1009,6 @@ inline static data::SeriesSet::sptr readImage(const data::Series& source, const 
 
         if(data::helper::MedicalImage::checkImageValidity(image_series))
         {
-            data::helper::MedicalImage::updateDefaultTransferFunction(*image_series);
             data::helper::MedicalImage::checkImageSliceIndex(image_series);
         }
 

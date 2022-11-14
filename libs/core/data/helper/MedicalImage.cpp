@@ -155,38 +155,6 @@ bool isBufNull(const data::Image::BufferType* buf, const unsigned int len)
 
 //------------------------------------------------------------------------------
 
-bool updateDefaultTransferFunction(data::Image& image)
-{
-    bool fieldIsCreated = false;
-
-    auto tf = image.getField<data::TransferFunction>(std::string(id::transferFunction));
-    if(tf == nullptr)
-    {
-        tf = data::TransferFunction::createDefaultTF();
-        image.setField(std::string(id::transferFunction), tf);
-        fieldIsCreated = true;
-    }
-
-    if(const auto& windowWidths = image.getWindowWidth(), windowCenters = image.getWindowCenter();
-       !windowWidths.empty() && !windowCenters.empty() && windowWidths.front() != 0.0 && windowCenters.front() != 0.0)
-    {
-        tf->setWindow(windowWidths.front());
-        tf->setLevel(windowCenters.front());
-    }
-    else if(checkImageValidity(image))
-    {
-        double min = NAN;
-        double max = NAN;
-        getMinMax(image.getSptr(), min, max);
-        data::TransferFunction::min_max_t wlMinMax(min, max);
-        tf->setWindowMinMax(wlMinMax);
-    }
-
-    return fieldIsCreated;
-}
-
-//------------------------------------------------------------------------------
-
 std::optional<std::int64_t> getSliceIndex(
     const data::Image& _image,
     const orientation_t& _orientation

@@ -127,7 +127,6 @@ void Image::generateImage(
     auto lock = image->dump_lock();
     std::fill(image->begin(), image->end(), 0);
 
-    sight::data::helper::MedicalImage::updateDefaultTransferFunction(*image);
     sight::data::helper::MedicalImage::checkImageSliceIndex(image);
 }
 
@@ -162,7 +161,6 @@ void Image::generateRandomImage(data::Image::sptr image, core::Type type, std::u
     image->setWindowWidth({(safeRand() % DOUBLE_SIZE) / double(SIZE / 10.) + 1});
     image->setWindowCenter({(safeRand() % DOUBLE_SIZE - SIZE) / double(SIZE / 10.)});
 
-    sight::data::helper::MedicalImage::updateDefaultTransferFunction(*image);
     sight::data::helper::MedicalImage::checkImageSliceIndex(image);
 }
 
