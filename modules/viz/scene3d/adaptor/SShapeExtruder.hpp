@@ -54,6 +54,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section Slots Slots
  * - \b enableTool(bool): enable or disable the tool, it will be automatically disabled when interactions are finished.
  * - \b deleteLastMesh(): delete the last extruded mesh.
+ * - \b cancelLastClick(): cancel the last point clicked during the extrusion
  *
  * @section Signal Signals
  * - \b toolDisabled(): sent when interactions are finished.
@@ -192,6 +193,12 @@ private:
         Ogre::Vector2 b;
     };
 
+    enum class Action
+    {
+        ADD,
+        REMOVE
+    };
+
     /// Computes the camera direction vector.
     static Ogre::Vector3 getCamDirection(const Ogre::Camera* _cam);
 
@@ -200,6 +207,9 @@ private:
 
     /// Deletes the last extruded mesh.
     void deleteLastMesh();
+
+    /// Cancel the last clicked point during the extrusion
+    void cancelLastClick();
 
     /**
      * @brief Gets the near and far position of the intersection between the ray starting from the camera
@@ -210,6 +220,14 @@ private:
      * @return the tool, near and far 3D intersection in the world space.
      */
     std::tuple<Ogre::Vector3, Ogre::Vector3, Ogre::Vector3> getNearFarRayPositions(int _x, int _y) const;
+
+    /**
+     * @brief Modify the existing lasso
+     * @param _action The option to do on the lasso. Either ADD or REMOVE.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    void modifyLasso(Action _action, int _x = -1, int _y = -1);
 
     /**
      * @brief Cancels further interactions.

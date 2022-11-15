@@ -278,6 +278,7 @@
                         <menuItem name="Show/hide cropping box" icon="sight::module::ui::flaticons/CroppingBox.svg" style="check" />
                         <menuItem name="Reset cropping box" icon="sight::module::ui::flaticons/ResetCroppingBox.svg" />
                         <menuItem name="Shape extruder" icon="sight::module::ui::flaticons/Extrude.svg" style="check" />
+                        <menuItem name="Cancel shape extruder last click" icon="sight::module::ui::flaticons/ExtrudePointRemove.svg" />
                         <menuItem name="Revert shape extruder" icon="sight::module::ui::flaticons/ExtrudeRevert.svg" />
                         <separator/>
                         <menuItem name="Add distance" icon="sight::module::ui::flaticons/AddDistance.svg" />
@@ -298,6 +299,7 @@
                     <menuItem sid="boxWidgetVisibilityAct" start="true" />
                     <menuItem sid="boxWidgetResetAct" start="true" />
                     <menuItem sid="shapeExtruderAct" start="true" />
+                    <menuItem sid="shapeExtruderCancelAct" start="true" />
                     <menuItem sid="shapeExtruderRevertAct" start="true" />
                     <menuItem sid="addDistanceAct" start="false" />
                     <menuItem sid="removeDistanceAct" start="false" />
@@ -424,6 +426,10 @@
                 <state enabled="true" />
             </service>
 
+            <service uid="shapeExtruderCancelAct" type="sight::module::ui::base::com::SSignal" >
+                <state enabled="true" />
+            </service>
+
             <service uid="shapeExtruderRevertAct" type="sight::module::ui::base::com::SSignal" >
                 <state enabled="true" />
             </service>
@@ -461,6 +467,7 @@
                 <parameter replace="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_ENABLE_TOOL_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" by="SHAPE_EXTRUDER_TOOL_DISABLED_RECEIVER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" />
+                <parameter replace="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_SENDER_CHANNEL" />
                 <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="AXIS_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="PICKER_SENDER_CHANNEL" by="PICKER_RECEIVER_CHANNEL" />
                 <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
@@ -585,6 +592,10 @@
 
             <connect channel="SHAPE_EXTRUDER_TOOL_DISABLED_RECEIVER_CHANNEL" >
                 <slot>shapeExtruderAct/uncheck</slot>
+            </connect>
+
+            <connect channel="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_SENDER_CHANNEL" >
+                <signal>shapeExtruderCancelAct/triggered</signal>
             </connect>
 
             <connect channel="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" >
