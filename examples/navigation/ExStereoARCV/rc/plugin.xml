@@ -373,7 +373,9 @@
 
             <service uid="synchroParamsSrv" type="sight::module::ui::qt::SParameters" >
                 <parameters>
-                    <param type="int" name="Delay" key="frameDelay" defaultValue="0" min="0" max="2000" />
+                    <param type="int" name="frameTL1 Timeshift (ms)" key="frameDelay_0" widget="spin" defaultValue="0" min="0" max="2000" />
+                    <param type="int" name="frameTL2 Timeshift (ms)" key="frameDelay_1" widget="spin" defaultValue="0" min="0" max="2000" />
+                    <param type="int" name="matrix Timeshift (ms)" key="matrixDelay_0" widget="spin" defaultValue="0" min="0" max="2000" />
                 </parameters>
             </service>
 
@@ -652,7 +654,7 @@
 
             <connect>
                 <signal>synchroParamsSrv/intChanged</signal>
-                <slot>frameMatrixSynchronizerSrv/setFrameDelay</slot>
+                <slot>frameMatrixSynchronizerSrv/updateDelay</slot>
             </connect>
 
             <connect>

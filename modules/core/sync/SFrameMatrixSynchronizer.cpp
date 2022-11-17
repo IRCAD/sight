@@ -26,6 +26,7 @@
 #include <core/com/Slots.hxx>
 
 #include <cmath>
+#include <string>
 
 namespace sight::module::sync
 {
@@ -41,8 +42,10 @@ const core::com::Signals::SignalKeyType SFrameMatrixSynchronizer::s_MATRIX_UNSYN
 const core::com::Slots::SlotKeyType s_RESET_TIMELINE_SLOT = "reset";
 
 // Public slots
-const core::com::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SYNCHRONIZE_SLOT     = "synchronize";
-const core::com::Slots::SlotKeyType SFrameMatrixSynchronizer::s_SET_FRAME_DELAY_SLOT = "setFrameDelay";
+const core::com::Slots::SlotKeyType s_SYNCHRONIZE_SLOT  = "synchronize";
+const core::com::Slots::SlotKeyType s_UPDATE_DELAY_SLOT = "updateDelay";
+static constexpr std::string_view s_FRAME_DELAY_PREFIX  = "frameDelay_";
+static constexpr std::string_view s_MATRIX_DELAY_PREFIX = "matrixDelay_";
 
 // ----------------------------------------------------------------------------
 
@@ -56,7 +59,7 @@ SFrameMatrixSynchronizer::SFrameMatrixSynchronizer() noexcept :
 {
     newSlot(s_RESET_TIMELINE_SLOT, &SFrameMatrixSynchronizer::resetTimeline, this);
     newSlot(s_SYNCHRONIZE_SLOT, &SFrameMatrixSynchronizer::synchronize, this);
-    newSlot(s_SET_FRAME_DELAY_SLOT, &SFrameMatrixSynchronizer::setFrameDelay, this);
+    newSlot(s_UPDATE_DELAY_SLOT, &SFrameMatrixSynchronizer::updateDelay, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -86,6 +89,12 @@ void SFrameMatrixSynchronizer::configuring()
     m_tolerance = cfg.get<unsigned int>("tolerance", 500);
 
     m_strict = cfg.get<bool>("strict", true);
+
+    const size_t nbrframeTls  = m_frameTLs.size();
+    const size_t nbrMatrixTls = m_matrixTLs.size();
+
+    m_matrixTlDelay = std::vector<int>(nbrMatrixTls, 0);
+    m_frameTlDelay  = std::vector<int>(nbrframeTls, 0);
 }
 
 // ----------------------------------------------------------------------------
@@ -325,7 +334,7 @@ void SFrameMatrixSynchronizer::synchronize()
                 m_imagesInitialized = true;
             }
 
-            buffer = frameTL->getClosestBuffer(matrixTimestamp - m_delay);
+            buffer = frameTL->getClosestBuffer(matrixTimestamp - m_frameTlDelay[i]);
         }
 
         if(!buffer)
@@ -350,7 +359,7 @@ void SFrameMatrixSynchronizer::synchronize()
         CSPTR(data::MatrixTL::BufferType) buffer;
         {
             const auto matrixTL = m_matrixTLs[tlIdx].lock();
-            buffer = matrixTL->getClosestBuffer(matrixTimestamp);
+            buffer = matrixTL->getClosestBuffer(matrixTimestamp - m_matrixTlDelay[tlIdx]);
         }
 
         if(buffer)
@@ -428,11 +437,64 @@ void SFrameMatrixSynchronizer::updating()
 
 //-----------------------------------------------------------------------------
 
-void SFrameMatrixSynchronizer::setFrameDelay(int val, std::string key)
+void SFrameMatrixSynchronizer::updateDelay(int val, std::string key)
 {
-    if(key == "frameDelay")
+    if(val < 0)
     {
-        m_delay = val;
+        SIGHT_ERROR("The delay set for " << key << " is negative. A positive value is expected");
+        return;
+    }
+
+    /**
+     * if the key received is of format frameDelay_i where i is a number,
+     * it means that the value is a delay set for the i th frameTL
+     * This works respectively for matrixDelay_i and matrixTL
+     */
+    if(key.rfind(s_FRAME_DELAY_PREFIX, 0) == 0)
+    {
+        try
+        {
+            static constexpr size_t frameDelayKeySize = std::size(s_FRAME_DELAY_PREFIX) - 1;
+            const size_t frameTlIndex                 = static_cast<size_t>(std::stoul(key.substr(frameDelayKeySize)));
+            if(frameTlIndex < m_frameTlDelay.size())
+            {
+                m_frameTlDelay[frameTlIndex] = val;
+            }
+            else
+            {
+                SIGHT_ERROR(
+                    "The frameTL index " << frameTlIndex
+                    << " provided in the update delay slot is out of bound"
+                );
+            }
+        }
+        catch(...)
+        {
+            SIGHT_ERROR("The frameTL index provided in the update delay slot is not a proper number: " << key);
+        }
+    }
+    else if(key.rfind(s_MATRIX_DELAY_PREFIX, 0) == 0)
+    {
+        try
+        {
+            static constexpr size_t matrixDelayKeySize = std::size(s_MATRIX_DELAY_PREFIX) - 1;
+            const size_t matrixTlIndex                 =
+                static_cast<size_t>(std::stoul(key.substr(matrixDelayKeySize)));
+            if(matrixTlIndex < m_frameTlDelay.size())
+            {
+                m_matrixTlDelay[matrixTlIndex] = val;
+            }
+            else
+            {
+                SIGHT_ERROR(
+                    "The matrixTL index " << matrixTlIndex << " provided in the update delay slot is out of bound"
+                );
+            }
+        }
+        catch(...)
+        {
+            SIGHT_ERROR("The matrixTL index provided in the update delay slot is not a proper number: " << key);
+        }
     }
     else
     {

@@ -56,8 +56,11 @@ namespace sight::module::sync
  *
  * @section Slots Slots
  * - \b synchronize(): Actual synchronization function.
- * - \b setFrameDelay(int, std::string): Apply delay between frames and matrices
- *
+ * - \b updateDelay(int val, std::string key): Apply delay between frames and matrices
+ *  The key needs to be either frameDelay_i or matrixDelay_i where i is the index of the timeline in the input vector
+ *  The value should be a positive value.
+ *  The delay will be applied to the corresponding timeline. Once synchronized, the effective frame/matrix
+ *  picked by the algorithm will be in the past with a temporal offset of delay.
  * @section XML XML Configuration
  *
  * @code{.xml}
@@ -139,14 +142,6 @@ public:
     /** @} */
 
     /**
-     * @name Slots API
-     * @{
-     */
-    MODULE_SYNC_API static const core::com::Slots::SlotKeyType s_SYNCHRONIZE_SLOT;
-    MODULE_SYNC_API static const core::com::Slots::SlotKeyType s_SET_FRAME_DELAY_SLOT;
-    /** @} */
-
-    /**
      * @brief Constructor.
      */
     MODULE_SYNC_API SFrameMatrixSynchronizer() noexcept;
@@ -183,8 +178,14 @@ protected:
     /// Called when new objects are pushed into the timeline.
     MODULE_SYNC_API void updating() override;
 
-    /// Set a delay between frames and matrices.
-    MODULE_SYNC_API void setFrameDelay(int val, std::string key);
+    /** Set a delay between frames and matrices.
+     *  The key needs to be either frameDelay_i or matrixDelay_i where i is the index of the timeline in the input
+     * vector
+     *  The value should be a positive value.
+     *  The delay will be applied to the corresponding timeline. Once synchronized, the effective frame/matrix
+     *  picked by the algorithm will be in the past with a temporal offset of delay.
+     */
+    MODULE_SYNC_API void updateDelay(int val, std::string key);
 
 private:
 
@@ -244,7 +245,8 @@ private:
     std::size_t m_totalOutputMatrices {};
 
     /// Delay in milliseconds between frames and matrices
-    int m_delay {0};
+    std::vector<int> m_matrixTlDelay;
+    std::vector<int> m_frameTlDelay;
 
     /// Timer used for the update
     core::thread::Timer::sptr m_timer;
