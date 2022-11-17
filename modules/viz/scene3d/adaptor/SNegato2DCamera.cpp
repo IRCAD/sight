@@ -372,7 +372,7 @@ void SNegato2DCamera::resetCamera()
     camNode->setPosition(Ogre::Vector3::ZERO);
     camNode->resetOrientation();
 
-    const auto image   = m_image.lock();
+    const auto image   = m_image.const_lock();
     const auto origin  = image->getOrigin();
     const auto size    = image->getSize();
     const auto spacing = image->getSpacing();
@@ -506,7 +506,7 @@ void SNegato2DCamera::updateWindowing(double _dw, double _dl)
     const double newLevel  = m_initialLevel - _dl;
 
     {
-        const auto image = m_image.lock();
+        const auto image = m_image.const_lock();
         const auto tf    = m_tf.lock();
 
         tf->setWindow(newWindow);
