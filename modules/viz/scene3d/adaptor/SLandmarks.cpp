@@ -46,6 +46,7 @@ static const core::com::Slots::SlotKeyType s_DESELECT_POINT_SLOT   = "deselectPo
 static const core::com::Slots::SlotKeyType s_INITIALIZE_IMAGE_SLOT = "initializeImage";
 static const core::com::Slots::SlotKeyType s_SLICE_TYPE_SLOT       = "sliceType";
 static const core::com::Slots::SlotKeyType s_SLICE_INDEX_SLOT      = "sliceIndex";
+static const core::com::Slots::SlotKeyType s_RENAME_GROUP_SLOT     = "renameGroup";
 
 static const std::string s_FONT_SIZE_CONFIG       = "fontSize";
 static const std::string s_FONT_SOURCE_CONFIG     = "fontSource";
@@ -83,6 +84,7 @@ SLandmarks::SLandmarks() noexcept
     newSlot(s_INITIALIZE_IMAGE_SLOT, &SLandmarks::initializeImage, this);
     newSlot(s_SLICE_TYPE_SLOT, &SLandmarks::changeSliceType, this);
     newSlot(s_SLICE_INDEX_SLOT, &SLandmarks::changeSliceIndex, this);
+    newSlot(s_RENAME_GROUP_SLOT, &SLandmarks::renameGroup, this);
 
     newSignal<world_coordinates_signal_t>(s_SEND_WORLD_COORD);
 }
@@ -202,6 +204,7 @@ service::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT);
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_GROUP_REMOVED_SIG, s_REMOVE_GROUP_SLOT);
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_GROUP_MODIFIED_SIG, s_MODIFY_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_GROUP_RENAMED_SIG, s_RENAME_GROUP_SLOT);
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_POINT_MODIFIED_SIG, s_MODIFY_POINT_SLOT);
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT);
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_POINT_REMOVED_SIG, s_REMOVE_POINT_SLOT);
@@ -344,6 +347,44 @@ void SLandmarks::modifyGroup(std::string _groupName)
     for(std::size_t index : indexes)
     {
         this->selectPoint(_groupName, index);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::renameGroup(std::string _oldGroupName, std::string _newGroupName)
+{
+    // Make the context as current.
+    this->getRenderService()->makeCurrent();
+
+    // Get all selected point.
+    std::vector<std::size_t> indexes;
+    for(const std::shared_ptr<SelectedLandmark>& landmark : m_selectedLandmarks)
+    {
+        indexes.push_back(landmark->m_landmark->m_index);
+    }
+
+    // Remove the group.
+    this->removeGroup(_oldGroupName);
+
+    // Get landmarks.
+    const auto landmarks = m_landmarks.lock();
+
+    // Retrieve group.
+    const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_newGroupName);
+
+    std::size_t groupSize = group.m_points.size();
+
+    // Re-create the group.
+    for(std::size_t index = 0 ; index < groupSize ; ++index)
+    {
+        this->insertMyPoint(_newGroupName, index, landmarks.get_shared());
+    }
+
+    // Re-run selected landmark threads
+    for(std::size_t index : indexes)
+    {
+        this->selectPoint(_newGroupName, index);
     }
 }
 

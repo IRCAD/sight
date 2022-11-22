@@ -44,6 +44,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section Slots Slots
  * - \b removeGroup(std::string): removes an entire group.
  * - \b modifyGroup(std::string): removes an entire group and re-create it.
+ * - \b renameGroup(std::string, std::string): replaces and old group's name by a new one.
  * - \b addPoint(std::string): adds the last point of a landmarks group.
  * - \b removePoint(std::string, std::size_t): removes a point.
  * - \b insertPoint(std::string, std::size_t): inserts a point.
@@ -254,6 +255,13 @@ private:
      * @param _groupName name of the group to update.
      */
     void modifyGroup(std::string _groupName);
+
+    /**
+     * @brief SLOT: replaces an entire group and re-create it.
+     * @param _oldGroupName old group name to update.
+     * @param _newGroupName new group name to replace the old one.
+     */
+    void renameGroup(std::string _oldGroupName, std::string _newGroupName);
 
     /**
      * @brief SLOT: removes a point group and update it.
