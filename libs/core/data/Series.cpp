@@ -28,6 +28,11 @@
 
 #include <core/tools/compare.hpp>
 
+#include <gdcmDict.h>
+#include <gdcmDicts.h>
+#include <gdcmGlobal.h>
+#include <gdcmPrivateTag.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/epsilon.hpp>
 
@@ -38,6 +43,35 @@ SIGHT_REGISTER_DATA(sight::data::Series)
 
 namespace sight::data
 {
+
+/// @see https://dicom.nema.org/medical/dicom/current/output/html/part05.html#sect_7.8
+static constexpr std::uint16_t PRIVATE_GROUP {0x0099};
+static constexpr std::uint16_t PRIVATE_CREATOR_ELEMENT {0x0099};
+static constexpr std::uint16_t PRIVATE_DATA_ELEMENT {0x9900};
+static const std::string PRIVATE_CREATOR {"Sight"};
+
+// This allows to register private tags in the private dictionary and so to set and get value from them
+static const class GDCMLoader final
+{
+public:
+
+    GDCMLoader()
+    {
+        // Load the GDCM resource
+        auto& gdcm_instance {gdcm::Global::GetInstance()};
+        gdcm_instance.LoadResourcesFiles();
+
+        // Get the private dictionary
+        auto& dictionaries       = gdcm_instance.GetDicts();
+        auto& private_dictionary = dictionaries.GetPrivateDict();
+
+        // Add private tags to the private dictionary
+        private_dictionary.AddDictEntry(
+            gdcm::PrivateTag(PRIVATE_GROUP, PRIVATE_CREATOR_ELEMENT, PRIVATE_CREATOR.c_str()),
+            gdcm::DictEntry("Sight Private Data", "SightPrivateData", gdcm::VR::UT, gdcm::VM::VM1)
+        );
+    }
+} loader;
 
 /// helper function to get the value of a tag as a string like "(0020,0011)", which can be searched on the internet.
 inline static std::string tagToString(const gdcm::Tag& tag)
@@ -589,6 +623,107 @@ void Series::setByteValues(
 {
     const auto& joined = boost::join(values, detail::BACKSLASH_SEPARATOR);
     setByteValue(group, element, joined, instance);
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::string> Series::getPrivateValue(std::uint8_t element, std::size_t instance) const
+{
+    if(element < 0x10)
+    {
+        SIGHT_WARN(
+            "The private element " << element << " is lower than 0x10. It will be raised to " << element + 0x10 << "."
+        );
+
+        element += 0x10;
+    }
+
+    const auto& dataset = m_pimpl->getDataSet(instance);
+    const gdcm::Tag tag(PRIVATE_GROUP, PRIVATE_DATA_ELEMENT + element);
+
+    if(!dataset.FindDataElement(tag))
+    {
+        return std::nullopt;
+    }
+
+    const auto& data_element = dataset.GetDataElement(tag);
+
+    if(data_element.IsEmpty())
+    {
+        return std::nullopt;
+    }
+
+    const auto* byte_value = data_element.GetByteValue();
+
+    if(byte_value == nullptr || byte_value->GetPointer() == nullptr)
+    {
+        return std::nullopt;
+    }
+
+    return detail::shrink(gdcm::String<>(byte_value->GetPointer(), byte_value->GetLength()).Trim());
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setPrivateValue(std::uint8_t element, const std::optional<std::string>& value, std::size_t instance)
+{
+    if(element < 0x10)
+    {
+        SIGHT_WARN(
+            "The private element " << element << " is lower than 0x10. It will be raised to " << element + 0x10 << "."
+        );
+
+        element += 0x10;
+    }
+
+    // Get the tag
+    gdcm::Tag data_tag(PRIVATE_GROUP, PRIVATE_DATA_ELEMENT + element);
+
+    // Get the dataset
+    auto& dataset = m_pimpl->getDataSet(instance);
+
+    if(!value.has_value())
+    {
+        dataset.Remove(data_tag);
+    }
+    else
+    {
+        // Verify that the creator tag is already there..
+        if(const gdcm::Tag creator_tag(PRIVATE_GROUP, PRIVATE_CREATOR_ELEMENT); !dataset.FindDataElement(creator_tag))
+        {
+            // Add the private creator tag
+            gdcm::DataElement creator_data_element(creator_tag, 0, gdcm::VR::LO);
+            creator_data_element.SetByteValue(PRIVATE_CREATOR.c_str(), std::uint32_t(PRIVATE_CREATOR.size()));
+        }
+
+        // Create the data element
+        gdcm::DataElement data_element(data_tag, 0, gdcm::VR::UT);
+
+        if(!value->empty())
+        {
+            // Get the padding char.
+            const auto [size, fixed, padding] = detail::getVRFormat(gdcm::VR::UT);
+
+            const auto& padded =
+                [&](char padding_char)
+                {
+                    if((value->size() % 2) != 0)
+                    {
+                        std::string padded_value(*value);
+                        padded_value.push_back(padding_char);
+                        return padded_value;
+                    }
+
+                    return *value;
+                }(padding);
+
+            // Create a new data element and assign the buffer from the string
+            data_element.SetByteValue(padded.c_str(), std::uint32_t(padded.size()));
+        }
+
+        // Store back the data element to the data set
+        dataset.Replace(data_element);
+    }
 }
 
 //------------------------------------------------------------------------------

@@ -469,6 +469,9 @@ inline data::Series::sptr generate<data::Series>(const std::size_t variant)
         );
     }
 
+    // Test private tag...
+    object->setPrivateValue(0x10, UUID::generateUUID());
+
     return object;
 }
 

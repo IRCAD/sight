@@ -33,6 +33,7 @@ class SeriesTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(SeriesTest);
 
+CPPUNIT_TEST(privateTagTest);
 CPPUNIT_TEST(attrPatientTest);
 CPPUNIT_TEST(attrStudyTest);
 CPPUNIT_TEST(attrEquipmentTest);
@@ -114,6 +115,8 @@ public:
     // interface
     void setUp() override;
     void tearDown() override;
+
+    static void privateTagTest();
 
     void attrPatientTest();
     void attrStudyTest();

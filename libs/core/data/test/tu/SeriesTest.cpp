@@ -1972,4 +1972,39 @@ void SeriesTest::stringConversionTest()
     }
 }
 
+//------------------------------------------------------------------------------
+
+void SeriesTest::privateTagTest()
+{
+    const std::string expected1 {UUID::generateUUID()};
+    const std::string expected2 {UUID::generateUUID()};
+    const std::string expected3 {UUID::generateUUID()};
+
+    {
+        auto series = data::ImageSeries::New();
+        series->setPrivateValue(0x00, expected1);
+        series->setPrivateValue(0x11, expected2);
+
+        const auto& actual1 = series->getPrivateValue(0x0);
+        CPPUNIT_ASSERT(actual1);
+        CPPUNIT_ASSERT_EQUAL(expected1, *actual1);
+
+        const auto& actual2 = series->getPrivateValue(0x11);
+        CPPUNIT_ASSERT(actual2);
+        CPPUNIT_ASSERT_EQUAL(expected2, *actual2);
+
+        // test that setPrivateValue(0x00) == setPrivateValue(0x10)
+        series->setPrivateValue(0x10, expected3);
+        const auto& actual3 = series->getPrivateValue(0x0);
+        CPPUNIT_ASSERT_EQUAL(expected3, *actual3);
+        const auto& actual4 = series->getPrivateValue(0x10);
+        CPPUNIT_ASSERT_EQUAL(expected3, *actual4);
+
+        // test removing the tag
+        series->setPrivateValue(0x00, std::nullopt);
+        const auto& actual5 = series->getPrivateValue(0x00);
+        CPPUNIT_ASSERT(!actual5.has_value());
+    }
+}
+
 } //namespace sight::data::ut

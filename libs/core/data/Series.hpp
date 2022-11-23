@@ -431,7 +431,7 @@ public:
         std::size_t instance = 0
     ) const;
 
-    /// Value setter using given tag. The string argument is converted to the right, depending of the VR.
+    /// Value setter using given tag. The string argument is converted to the underlying type, depending of the VR.
     /// @throws data::Exception if the data mismatch the tag type
     /// @param[in] group the group tag to set
     /// @param[in] element the element tag to set
@@ -445,6 +445,29 @@ public:
         std::uint16_t group,
         std::uint16_t element,
         const std::string& value,
+        std::size_t instance = 0
+    );
+
+    /// Private value getter.
+    /// @throws data::Exception if tag doesn't exist
+    /// @param[in] element private element number in the range of 0x10 to 0xFF
+    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    ///                     (nullopt means the global common instance, for attributes shared by all instance.)
+    /// @return the private value as a string
+    DATA_API std::optional<std::string> getPrivateValue(
+        std::uint8_t element,
+        std::size_t instance = 0
+    ) const;
+
+    /// Private values setter.
+    /// @throws data::Exception if the data mismatch the tag type
+    /// @param[in] element private element number in the range of 0x10 to 0xFF
+    /// @param[in] value the string to insert. If empty (std::nullopt), the private tag is removed.
+    /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
+    ///                     (nullopt means the global common instance, for attributes shared by all instance.)
+    DATA_API void setPrivateValue(
+        std::uint8_t element,
+        const std::optional<std::string>& value,
         std::size_t instance = 0
     );
 
