@@ -311,7 +311,8 @@ macro(fw_exec SIGHT_TARGET)
                        "rem Check if we have elevated privileges\n"
                        "whoami /all | findstr S-1-16-12288 > nul\n"
                        "rem if we do not have those, restart the script as Admin\n"
-                       "if %errorlevel%==1 (powershell start -verb runas '%0' %* & exit /b)\n"
+                       "if %errorlevel%==1 if not \"%~1\"==\"/noadmin\" "
+                       "(powershell start -verb runas '%~f0' %* & exit /b)\n"
             )
         endif()
 
@@ -788,6 +789,9 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
                 string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
             endif()
 
+            foreach(MODULE ${SIGHT_EXTRA_MODULES})
+                list(APPEND SIGHT_EXTRA_MODULES_OPT "-B \"${MODULE}\"")
+            endforeach()
             configure_file(
                 ${FWCMAKE_RESOURCE_PATH}/build/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY
             )
@@ -813,10 +817,10 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
             set(PROFILE_PATH "${SIGHT_TARGET}/profile.xml")
             if(FW_BUILD_EXTERNAL)
                 set(LAUNCHER_PATH "${Sight_BINARY_DIR}\\${LAUNCHER}")
+                cmake_path(NORMAL_PATH LAUNCHER_PATH)
             else()
                 set(LAUNCHER_PATH "%BINDIR%\\${LAUNCHER}")
             endif()
-
             file(TO_NATIVE_PATH "${PROFILE_PATH}" PROFILE_PATH)
 
             if(${TARGET_REQUIRE_ADMIN})
@@ -826,14 +830,30 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
                            "rem Check if we have elevated privileges\n"
                            "whoami /all | findstr S-1-16-12288 > nul\n"
                            "rem if we do not have those, restart the script as Admin\n"
-                           "if %errorlevel%==1 (powershell start -verb runas '%0' %* & exit /b)\n"
+                           "if %errorlevel%==1 if not \"%~1\"==\"/noadmin\" "
+                           "(powershell start -verb runas '%~f0' %* & exit /b)\n"
                 )
             endif()
 
+            foreach(MODULE ${SIGHT_EXTRA_MODULES})
+                list(APPEND SIGHT_EXTRA_MODULES_OPT "-B \"${MODULE}\"")
+            endforeach()
             configure_file(
-                ${FWCMAKE_RESOURCE_PATH}/install/windows/template.bat.in ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat @ONLY
+                ${FWCMAKE_RESOURCE_PATH}/build/windows/template.bat.in ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat @ONLY
             )
-            install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat DESTINATION bin)
+
+            # For the install, we use relative paths to the module directories
+            set(SIGHT_EXTRA_MODULES_OPT "")
+            foreach(MODULE ${SIGHT_EXTRA_MODULES})
+                cmake_path(GET MODULE FILENAME MODULE_NAME)
+                list(APPEND SIGHT_EXTRA_MODULES_OPT "-B \"../share/${MODULE_NAME}\"")
+            endforeach()
+
+            configure_file(
+                ${FWCMAKE_RESOURCE_PATH}/install/windows/template.bat.in
+                ${CMAKE_CURRENT_BINARY_DIR}/install/${APP_NAME}.bat @ONLY
+            )
+            install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/install/${APP_NAME}.bat DESTINATION bin)
 
             unset(ADMIN_REQUEST)
         endif()
@@ -1170,7 +1190,8 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 
             get_target_property(RC_DIR ${DEP} SIGHT_MODULE_RC_DIR)
             if(RC_DIR)
-                list(APPEND IMPORTED_RC_DIRS ${RC_DIR})
+                string(REGEX REPLACE "(.*)::.*" "\\1" FOLDER ${DEP})
+                list(APPEND IMPORTED_RC_DIRS ${FOLDER},${RC_DIR})
             endif()
         endforeach()
 

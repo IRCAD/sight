@@ -13,10 +13,11 @@ rootdir=`cd "$me/.." ; pwd`
 depslibdir="$rootdir/lib"
 libdir="$rootdir/@SIGHT_MODULE_LIB_PREFIX@"
 moduledir="$rootdir/@SIGHT_MODULE_RC_PREFIX@"
+moduleopt="@SIGHT_EXTRA_MODULES_OPT@"
 
 # export LD_LIBRARY_PATH
 LD_LIBRARY_PATH=$depslibdir:$libdir:${LD_LIBRARY_PATH:+:$LD_LIBRARY_PATH}
 export LD_LIBRARY_PATH
 
 # Use CMAKE Variable of sightrun and Profile.xml path
-exec "$bindir/@LAUNCHER@" \""$moduledir/@PROFILE_PATH@"\" $@
+exec "$bindir/@LAUNCHER@" \""$moduledir/@PROFILE_PATH@"\" $moduleopt $@

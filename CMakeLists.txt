@@ -305,13 +305,15 @@ install(
 )
 
 if(WIN32)
-    install(FILES "${CMAKE_SOURCE_DIR}/cmake/build/windows/template_exe.bat.in"
+    install(FILES "${CMAKE_SOURCE_DIR}/cmake/build/windows/template.bat.in"
+                  "${CMAKE_SOURCE_DIR}/cmake/build/windows/template_exe.bat.in"
             DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/build/windows COMPONENT dev
     )
     install(
         FILES "${CMAKE_SOURCE_DIR}/cmake/install/windows/package.cmake"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/install_plugins.cmake"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/template.bat.in"
+              "${CMAKE_SOURCE_DIR}/cmake/install/windows/template_exe.bat.in"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/setpath.bat.in"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/windows_fixup.cmake.in"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/generate_headers.cmake"

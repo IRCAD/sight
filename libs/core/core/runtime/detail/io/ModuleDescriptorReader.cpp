@@ -34,6 +34,7 @@
 
 #include <boost/algorithm/string/replace.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <boost/dll.hpp>
 
 #include <libxml/parser.h>
 #include <libxml/xinclude.h>
@@ -65,8 +66,18 @@ ModuleDescriptorReader::ModuleContainer ModuleDescriptorReader::createModules(
     const std::filesystem::path& location
 )
 {
-    // Normalizes the path.
-    std::filesystem::path normalizedPath(std::filesystem::weakly_canonical(location));
+    std::filesystem::path normalizedPath(location);
+
+    if(normalizedPath.is_relative())
+    {
+        // Assume we are relative to the location of the executable path
+        // Otherwise, weakly_canonical will make it relative to the current dir,
+        // which forces us to `cd` in the correct directory in the launcher script
+        const auto currentPath = boost::dll::program_location().parent_path().string();
+        normalizedPath = currentPath / normalizedPath;
+    }
+
+    normalizedPath = std::filesystem::weakly_canonical(normalizedPath);
 
     // Asserts that the repository is a valid directory path.
     if(!std::filesystem::exists(normalizedPath)

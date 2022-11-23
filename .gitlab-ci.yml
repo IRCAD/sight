@@ -109,10 +109,10 @@ lint:sheldon:
       metrics: .build/metrics.txt
 
 .linux_deploy_test:
-  extends: .linux_before
   dependencies: []
   stage: deploy-test
   variables:
+    BUILD_TYPE: "Debug"
     SIGHT_TEST_PACKAGES: "OFF"
     SIGHT_TEST_SDK: "OFF"
   script:
@@ -189,6 +189,7 @@ deploy-test:linux-debug:
   dependencies:
     - build:linux-22.04-debug-gcc
   variables:
+    BUILD_TYPE: "Debug"
     SIGHT_TEST_SDK: "ON"
 
 deploy:linux-debug:
@@ -222,6 +223,7 @@ deploy-test:linux-release:
   dependencies:
     - build:linux-22.04-release-gcc
   variables:
+    BUILD_TYPE: "Release"
     SIGHT_TEST_PACKAGES: "ON"
     SIGHT_TEST_SDK: "ON"
 
@@ -348,6 +350,7 @@ deploy_manual:apps-linux-release:
     SIGHT_TEST_PACKAGES: "OFF"
     SIGHT_TEST_SDK: "OFF"
     CACHE: "D:\\gitlab-cache"
+    GIT_STRATEGY: none
   script:
     - $PACKAGE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake" '2>&1'
     - cd build
@@ -379,7 +382,12 @@ deploy_manual:apps-linux-release:
       if("${SIGHT_TEST_SDK}" -eq "ON"){
         Expand-Archive packages/sight-*.zip
         cd sight-*/*/bin
-        $env:PATH += ";$CACHE\$PACKAGE_NAME\installed\x64-windows\bin"
+        if ( ${BUILD_TYPE} -eq "Debug" ) {
+          $env:PATH = "$CACHE\$PACKAGE_NAME\installed\x64-windows\debug\bin;$env:PATH"
+        }
+        else {
+          $env:PATH = "$CACHE\$PACKAGE_NAME\installed\x64-windows\bin\;$env:PATH"
+        }
         ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sightviewer.bat,sightcalibrator.bat,dicomxplorer.bat){
           $programName = Split-Path -Leaf $program
           Write-Host Testing $programName
@@ -424,6 +432,7 @@ deploy-test:window-debug:
   dependencies:
     - build:windows-debug
   variables:
+    BUILD_TYPE: "Debug"
     SIGHT_TEST_SDK: "ON"
 
 deploy:windows-debug:
@@ -454,6 +463,7 @@ deploy-test:windows-release:
   dependencies:
     - build:windows-release
   variables:
+    BUILD_TYPE: "Release"
     SIGHT_TEST_PACKAGES: "ON"
     SIGHT_TEST_SDK: "ON"
 

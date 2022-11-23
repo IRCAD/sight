@@ -14,7 +14,7 @@ libdir="$rootdir/lib/sight"
 sdkdir="@Sight_LIBRARY_DIR@"
 extdir="@Sight_EXTRA_LIBRARY_DIR@"
 moduledir="$rootdir/@SIGHT_MODULE_RC_PREFIX@"
-moduleopt="@SIGHT_EXTRA_MODULES@"
+moduleopt="@SIGHT_EXTRA_MODULES_OPT@"
 sightdepslibs="@SIGHT_EXTERNAL_LIBRARIES_LIB_PATH@"
 
 # compute LD_LIBRARY_PATH
