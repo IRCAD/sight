@@ -30,6 +30,8 @@
 
 #include <service/IService.hpp>
 
+#include <ui/base/parameter.hpp>
+
 namespace sight::io::base::service
 {
 
@@ -43,11 +45,7 @@ namespace sight::io::base::service
  * - \b cameraStarted(): Emitted when camera is started.
  * - \b cameraStopped(): Emitted when camera is stopped.
  * - \b framePresented(): Emitted when a frame is presented.
- * - \b boolChanged(): Emitted when a named boolean grabber parameter is changed.
- * - \b doubleChanged(): Emitted when a named double grabber parameter is changed.
- * - \b intChanged(): Emitted when a named integer grabber parameter is changed.
- * - \b enumChanged(): Emitted when a named list element parameter is changed.
- * - \b enumValuesChanged(): Emitted a named data list parameter is changed for the grabber.
+ * - \b parameterChanged(): Emitted when a named parameter is changed.
  *
  * @section Slots Slots
  * - \b startCamera(): Start playing the camera or the video.
@@ -60,11 +58,7 @@ namespace sight::io::base::service
  * - \b previousImage(): display the previous image in step by step mode. Does nothing if not overridden.
  * - \b setStep(): set the step value between two images when calling nextImage/previousImage. Does nothing if not
  * overridden.
- * - \b setBoolParameter(): Sets a named bool parameter.
- * - \b setDoubleParameter(): Sets a named double parameter.
- * - \b setIntParameter(): Sets a named integer parameter.
- * - \b setEnumParameter(): Sets a named enum value parameter.
- * - \b setEnumValuesParameter(): Sets a named list of enum values.
+ * - \b setParameters(parameters_t, std::string): Sets a parameters with value (variant) and key.
  * - \b requestSettings(): Requests the grabber internal settings.
  * - \b addROICenter(sight::data::Point::sptr): Adds a new region fo interest center.
  * - \b removeROICenter(sight::data::Point::sptr): Removes a region of interest via its center.
@@ -90,11 +84,7 @@ public:
     IO_BASE_API static const core::com::Slots::SlotKeyType s_PREVIOUS_IMAGE_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_NEXT_IMAGE_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_STEP_SLOT;
-    IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
-    IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
-    IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT;
-    IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT;
-    IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_ENUM_VALUES_PARAMETER_SLOT;
+    IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_PARAMETER_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_REQUEST_SETTINGS_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_ADD_ROI_CENTER_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_REMOVE_ROI_CENTER_SLOT;
@@ -120,20 +110,8 @@ public:
     IO_BASE_API static const core::com::Signals::SignalKeyType s_CAMERA_STOPPED_SIG;
     using CameraStoppedSignalType = core::com::Signal<void ()>;
 
-    IO_BASE_API static const core::com::Signals::SignalKeyType s_BOOL_CHANGED_SIG;
-    using BoolChangedSignalType = core::com::Signal<void (bool, std::string)>;
-
-    IO_BASE_API static const core::com::Signals::SignalKeyType s_DOUBLE_CHANGED_SIG;
-    using DoubleChangedSignalType = core::com::Signal<void (double, std::string)>;
-
-    IO_BASE_API static const core::com::Signals::SignalKeyType s_INT_CHANGED_SIG;
-    using IntChangedSignalType = core::com::Signal<void (int, std::string)>;
-
-    IO_BASE_API static const core::com::Signals::SignalKeyType s_ENUM_CHANGED_SIG;
-    using EnumChangedSignalType = core::com::Signal<void (std::string, std::string)>;
-
-    IO_BASE_API static const core::com::Signals::SignalKeyType s_ENUM_VALUES_CHANGED_SIG;
-    using EnumValuesChangedSignalType = core::com::Signal<void (std::string, std::string)>;
+    IO_BASE_API static const core::com::Signals::SignalKeyType s_PARAMETER_CHANGED_SIG;
+    using ParameterChangedSignalType = core::com::Signal<void (ui::base::parameter_t, std::string)>;
 
     /** @} */
 
@@ -194,21 +172,6 @@ public:
      */
     IO_BASE_API virtual void setStep(int step, std::string key);
 
-    /// SLOT: Sets an internal bool value.
-    IO_BASE_API virtual void setBoolParameter(bool value, std::string key);
-
-    /// SLOT: Sets an internal double value.
-    IO_BASE_API virtual void setDoubleParameter(double value, std::string key);
-
-    /// SLOT: Sets an internal int value.
-    IO_BASE_API virtual void setIntParameter(int value, std::string key);
-
-    /// SLOT: Sets an internal enum value.
-    IO_BASE_API virtual void setEnumParameter(std::string value, std::string key);
-
-    /// SLOT: Sets an internal list of enum values.
-    IO_BASE_API virtual void setEnumValuesParameter(std::string value, std::string key);
-
     /// SLOT: Requests the grabber internal settings.
     IO_BASE_API virtual void requestSettings();
 
@@ -217,6 +180,9 @@ public:
 
     /// SLOT: Removes a region of interest center.
     IO_BASE_API virtual void removeROICenter(sight::data::Point::sptr p);
+
+    /// SLOT: Sets a parameter value with its key.
+    IO_BASE_API virtual void setParameter(ui::base::parameter_t value, std::string key);
 
 protected:
 

@@ -70,10 +70,6 @@ static const std::string s_TEMPORAL_SMOOTH_DELTA       = "temporalSmoothDelta";
 static const std::string s_TEMPORAL_PERSISTENCY        = "temporalPersistency";
 static const std::string s_HOLE_FILLING                = "holeFilling";
 
-static const core::com::Slots::SlotKeyType s_SET_ENUM_PARAMETER_SLOT       = "setEnumParameter";
-static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT       = "setBoolParameter";
-static const core::com::Slots::SlotKeyType s_SET_INT_PARAMETER_SLOT        = "setIntParameter";
-static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT     = "setDoubleParameter";
 static const core::com::Slots::SlotKeyType s_CONFIGURE_RECORDING_PATH_SLOT = "configureRecordingPath";
 
 static const core::com::Slots::SlotKeyType s_RECORD = "record";
@@ -89,10 +85,6 @@ static const float s_METERS_TO_MMS = 1000.F;
 
 SScan::SScan() noexcept
 {
-    newSlot(s_SET_ENUM_PARAMETER_SLOT, &SScan::setEnumParameter, this);
-    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SScan::setBoolParameter, this);
-    newSlot(s_SET_INT_PARAMETER_SLOT, &SScan::setIntParameter, this);
-    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SScan::setDoubleParameter, this);
     newSlot(s_CONFIGURE_RECORDING_PATH_SLOT, &SScan::configureRecordingPath, this);
     newSlot(s_RECORD, &SScan::record, this);
 
@@ -760,174 +752,199 @@ void SScan::configureRecordingPath()
     }
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void SScan::setBoolParameter(bool _value, std::string _key)
+void SScan::setParameter(ui::base::parameter_t _value, std::string _key)
 {
-    // IR key
-    if(_key == s_IREMITTER)
+    try
     {
-        // Enable/Disable the IR emitter.
-        try
+        // BOOL
+        // IR key
+        if(_key == s_IREMITTER)
         {
             // Save the value in cameraSettings.
-            m_cameraSettings.irEmitter = _value;
+            m_cameraSettings.irEmitter = std::get<bool>(_value);
 
             // Change the parameter live if grabber is running, otherwise it will be changed on next startCamera.
             if(!m_deviceID.empty() && m_running)
             {
                 auto depthSensor = m_currentDevice.first<rs2::depth_sensor>();
-                depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (_value ? 1.F : 0.F));
+                depthSensor.set_option(RS2_OPTION_EMITTER_ENABLED, (std::get<bool>(_value) ? 1.F : 0.F));
             }
         }
-        catch(const std::exception& e)
+        else if(_key == s_SWITCH_TO_IR)
         {
-            sight::module::io::realsense::SScan::popMessageDialog("RealSense device error:" + std::string(e.what()));
-            return;
+            m_switchInfra2Color = std::get<bool>(_value);
         }
-    }
-    else if(_key == s_SWITCH_TO_IR)
-    {
-        m_switchInfra2Color = _value;
-    }
-    else if(_key == s_ENABLE_SPACIAL_FILTER)
-    {
-        m_filterSettings.enableSpacial = _value;
-    }
-    else if(_key == s_ENABLE_TEMPORAL_FILTER)
-    {
-        m_filterSettings.enableTemporal = _value;
-    }
-    else if(_key == s_ENABLE_HOLES_FILLING_FILTER)
-    {
-        m_filterSettings.enableHolesFilling = _value;
-    }
-    else
-    {
-        SIGHT_ERROR("Key '" + _key + "' is not recognized.");
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SScan::setEnumParameter(std::string _value, std::string _key)
-{
-    // Change preset (advanced option).
-    if(_key == s_PRESET)
-    {
-        const auto presetPathToLoad = m_jsonPresets[_value];
-
-        if(!presetPathToLoad.empty())
+        else if(_key == s_ENABLE_SPACIAL_FILTER)
         {
-            m_cameraSettings.presetPath = presetPathToLoad;
-
-            if(!m_deviceID.empty() && m_running)
-            {
-                // We need to restart the same camera.
-                // Make sure no hard-reset is performed in this particular case.
-                m_cameraSettings.needHardReset = false;
-                this->stopCamera();
-                this->startCamera();
-            }
-
-            // Ok now we should hard-reset if stopCamera() is called.
-            m_cameraSettings.needHardReset = true;
+            m_filterSettings.enableSpacial = std::get<bool>(_value);
         }
-        else
+        else if(_key == s_ENABLE_TEMPORAL_FILTER)
         {
-            SIGHT_ERROR("Cannot load preset named: " + _value + ". Nothing append");
+            m_filterSettings.enableTemporal = std::get<bool>(_value);
         }
-    }
-
-    if(_key == s_ALIGNMENT)
-    {
-        if(this->updateAlignment(_value))
+        else if(_key == s_ENABLE_HOLES_FILLING_FILTER)
         {
-            this->stopCamera();
-            this->startCamera();
+            m_filterSettings.enableHolesFilling = std::get<bool>(_value);
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SScan::setIntParameter(int _value, std::string _key)
-{
-    try
-    {
-        if(_key == "minRange")
+        else if(_key == "minRange")
         {
-            if(_value < s_MIN_DEPTH_RANGE)
+            if(std::get<int>(_value) < s_MIN_DEPTH_RANGE)
             {
                 throw std::runtime_error("cannot set value < 0");
             }
 
-            m_cameraSettings.minRange      = _value;
+            m_cameraSettings.minRange      = std::get<int>(_value);
             m_cameraSettings.needHardReset = true;
         }
         else if(_key == "maxRange")
         {
-            if(_value > s_MAX_DEPTH_RANGE)
+            if(std::get<int>(_value) > s_MAX_DEPTH_RANGE)
             {
                 throw std::runtime_error("cannot set value > 65535");
             }
 
-            m_cameraSettings.maxRange      = _value;
+            m_cameraSettings.maxRange      = std::get<int>(_value);
             m_cameraSettings.needHardReset = true;
         }
         else if(_key == s_SPACIAL_MAGNITUDE)
         {
-            if(_value < 1 || _value > 5)
+            if(std::get<int>(_value) < 1 || std::get<int>(_value) > 5)
             {
                 throw std::runtime_error(s_SPACIAL_MAGNITUDE + " value must be in [1-5].");
             }
 
-            m_filterSettings.spacialMagnitude = static_cast<std::uint8_t>(_value);
+            m_filterSettings.spacialMagnitude = static_cast<std::uint8_t>(std::get<int>(_value));
         }
         else if(_key == s_SPACIAL_SMOOTH_DELTA)
         {
-            if(_value < 1 || _value > 50)
+            if(std::get<int>(_value) < 1 || std::get<int>(_value) > 50)
             {
                 throw std::runtime_error(s_SPACIAL_SMOOTH_DELTA + " value must be in [1-50].");
             }
 
-            m_filterSettings.spacialSmoothDelta = static_cast<std::uint8_t>(_value);
+            m_filterSettings.spacialSmoothDelta = static_cast<std::uint8_t>(std::get<int>(_value));
         }
         else if(_key == s_SPACIAL_HOLE_FILLING)
         {
-            if(_value < 0 || _value > 5)
+            // Skip if we have the value as a string, only use the index.
+            if(std::holds_alternative<std::string>(_value))
+            {
+                return;
+            }
+
+            if(std::get<int>(_value) < 0 || std::get<int>(_value) > 5)
             {
                 throw std::runtime_error(s_SPACIAL_HOLE_FILLING + " value must be in [0-5].");
             }
 
-            m_filterSettings.spacialHoleFilling = static_cast<std::uint8_t>(_value);
+            m_filterSettings.spacialHoleFilling = static_cast<std::uint8_t>(std::get<int>(_value));
         }
         else if(_key == s_TEMPORAL_SMOOTH_DELTA)
         {
-            if(_value < 1 || _value > 100)
+            if(std::get<int>(_value) < 1 || std::get<int>(_value) > 100)
             {
                 throw std::runtime_error(s_TEMPORAL_SMOOTH_DELTA + " value must be in [1-100].");
             }
 
-            m_filterSettings.temporalSmoothDelta = static_cast<std::uint8_t>(_value);
+            m_filterSettings.temporalSmoothDelta = static_cast<std::uint8_t>(std::get<int>(_value));
         }
         else if(_key == s_TEMPORAL_PERSISTENCY)
         {
-            if(_value < 0 || _value > 8)
+            // Skip if we have the value as a string, only use the index.
+            if(std::holds_alternative<std::string>(_value))
+            {
+                return;
+            }
+
+            if(std::get<int>(_value) < 0 || std::get<int>(_value) > 8)
             {
                 throw std::runtime_error(s_TEMPORAL_PERSISTENCY + " value must be in [0-8].");
             }
 
-            m_filterSettings.temporalPersistency = static_cast<std::uint8_t>(_value);
+            m_filterSettings.temporalPersistency = static_cast<std::uint8_t>(std::get<int>(_value));
         }
         else if(_key == s_HOLE_FILLING)
         {
-            if(_value < 0 || _value > 2)
+            // Skip if we have the value as a string, only use the index.
+            if(std::holds_alternative<std::string>(_value))
+            {
+                return;
+            }
+
+            if(std::get<int>(_value) < 0 || std::get<int>(_value) > 2)
             {
                 throw std::runtime_error(s_HOLE_FILLING + " value must be in [0-2].");
             }
 
-            m_filterSettings.holeFilling = static_cast<std::uint8_t>(_value);
+            m_filterSettings.holeFilling = static_cast<std::uint8_t>(std::get<int>(_value));
+        }
+        // ENUM
+        // Change preset (advanced option).
+        else if(_key == s_PRESET)
+        {
+            // Skip value is stored as index.
+            if(std::holds_alternative<int>(_value))
+            {
+                return;
+            }
+
+            const auto presetPathToLoad = m_jsonPresets[std::get<std::string>(_value)];
+
+            if(!presetPathToLoad.empty())
+            {
+                m_cameraSettings.presetPath = presetPathToLoad;
+
+                if(!m_deviceID.empty() && m_running)
+                {
+                    // We need to restart the same camera.
+                    // Make sure no hard-reset is performed in this particular case.
+                    m_cameraSettings.needHardReset = false;
+                    this->stopCamera();
+                    this->startCamera();
+                }
+
+                // Ok now we should hard-reset if stopCamera() is called.
+                m_cameraSettings.needHardReset = true;
+            }
+            else
+            {
+                SIGHT_ERROR("Cannot load preset named: " + std::get<std::string>(_value) + ". Nothing append");
+            }
+        }
+        else if(_key == s_ALIGNMENT)
+        {
+            // Skip value is stored as index.
+            if(std::holds_alternative<int>(_value))
+            {
+                return;
+            }
+
+            if(this->updateAlignment(std::get<std::string>(_value)))
+            {
+                this->stopCamera();
+                this->startCamera();
+            }
+        }
+        // DOUBLE
+        else if(_key == s_SPACIAL_SMOOTH_ALPHA)
+        {
+            if(std::get<double>(_value) < 0.25 || std::get<double>(_value) > 1)
+            {
+                throw std::runtime_error(s_SPACIAL_SMOOTH_ALPHA + " must be in [0.25-1]");
+            }
+
+            m_filterSettings.spacialSmoothAlpha = static_cast<float>(std::get<double>(_value));
+        }
+        else if(_key == s_TEMPORAL_SMOOTH_ALPHA)
+        {
+            if(std::get<double>(_value) < 0 || std::get<double>(_value) > 1)
+            {
+                throw std::runtime_error(s_TEMPORAL_SMOOTH_ALPHA + " must be in [0-1]");
+            }
+
+            m_filterSettings.temporalSmoothAlpha = static_cast<float>(std::get<double>(_value));
         }
         else
         {
@@ -938,42 +955,6 @@ void SScan::setIntParameter(int _value, std::string _key)
         if(!m_deviceID.empty() && m_running)
         {
             this->setMinMaxRange();
-        }
-    }
-    catch(const std::exception& e)
-    {
-        sight::module::io::realsense::SScan::popMessageDialog("RealSense device error:" + std::string(e.what()));
-        return;
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SScan::setDoubleParameter(double _value, std::string _key)
-{
-    try
-    {
-        if(_key == s_SPACIAL_SMOOTH_ALPHA)
-        {
-            if(_value < 0.25 || _value > 1)
-            {
-                throw std::runtime_error(s_SPACIAL_SMOOTH_ALPHA + " must be in [0.25-1]");
-            }
-
-            m_filterSettings.spacialSmoothAlpha = static_cast<float>(_value);
-        }
-        else if(_key == s_TEMPORAL_SMOOTH_ALPHA)
-        {
-            if(_value < 0 || _value > 1)
-            {
-                throw std::runtime_error(s_TEMPORAL_SMOOTH_ALPHA + " must be in [0-1]");
-            }
-
-            m_filterSettings.temporalSmoothAlpha = static_cast<float>(_value);
-        }
-        else
-        {
-            SIGHT_ERROR("Key '" + _key + "' is not recognized.");
         }
     }
     catch(const std::exception& e)

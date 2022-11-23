@@ -441,8 +441,8 @@
             </connect>
 
             <connect>
-                 <signal>enableHoleFillingFilterParamSrv/boolChanged</signal>
-                 <slot>videoGrabberSrv/setBoolParameter</slot>
+                 <signal>enableHoleFillingFilterParamSrv/parameterChanged</signal>
+                 <slot>videoGrabberSrv/setParameter</slot>
             </connect>
 
             <connect>

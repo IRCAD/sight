@@ -674,49 +674,33 @@
             </connect>
 
             <connect>
-                <signal>presetsSrv/enumChanged</signal>
-                <signal>alignmentSrv/enumChanged</signal>
-                <slot>videoGrabberSrv/setEnumParameter</slot>
+                <signal>rangeEditorSrv/parameterChanged</signal>
+                <signal>spacialFilterParamsSrv/parameterChanged</signal>
+                <signal>temporalFilterParamsSrv/parameterChanged</signal>
+                <signal>holeFillingFilterParamsSrv/parameterChanged</signal>
+                <signal>presetsSrv/parameterChanged</signal>
+                <signal>alignmentSrv/parameterChanged</signal>
+                <signal>infraredEmitterSrv/parameterChanged</signal>
+                <signal>switchInfraToColorSrv/parameterChanged</signal>
+                <signal>enableSpacialFilterParamsSrv/parameterChanged</signal>
+                <signal>enableTemporalFilterParamsSrv/parameterChanged</signal>
+                <signal>enableHoleFillingFilterParamsSrv/parameterChanged</signal>
+                 <slot>videoGrabberSrv/setParameter</slot>
             </connect>
 
             <connect>
-                 <signal>infraredEmitterSrv/boolChanged</signal>
-                 <signal>switchInfraToColorSrv/boolChanged</signal>
-                 <signal>enableSpacialFilterParamsSrv/boolChanged</signal>
-                 <signal>enableTemporalFilterParamsSrv/boolChanged</signal>
-                 <signal>enableHoleFillingFilterParamsSrv/boolChanged</signal>
-                 <slot>videoGrabberSrv/setBoolParameter</slot>
+                <signal>enableSpacialFilterParamsSrv/parameterChanged</signal>
+                <slot>spacialFilterParamsSrv/setEnabledByParam</slot>
             </connect>
 
             <connect>
-                <signal>rangeEditorSrv/intChanged</signal>
-                <signal>spacialFilterParamsSrv/intChanged</signal>
-                <signal>spacialFilterParamsSrv/enumIndexChanged</signal>
-                <signal>temporalFilterParamsSrv/intChanged</signal>
-                <signal>temporalFilterParamsSrv/enumIndexChanged</signal>
-                <signal>holeFillingFilterParamsSrv/enumIndexChanged</signal>
-                <slot>videoGrabberSrv/setIntParameter</slot>
+                <signal>enableTemporalFilterParamsSrv/parameterChanged</signal>
+                <slot>temporalFilterParamsSrv/setEnabledByParam</slot>
             </connect>
 
             <connect>
-                <signal>spacialFilterParamsSrv/doubleChanged</signal>
-                <signal>temporalFilterParamsSrv/doubleChanged</signal>
-                <slot>videoGrabberSrv/setDoubleParameter</slot>
-            </connect>
-
-            <connect>
-                <signal>enableSpacialFilterParamsSrv/boolChanged</signal>
-                <slot>spacialFilterParamsSrv/setEnabled</slot>
-            </connect>
-
-            <connect>
-                <signal>enableTemporalFilterParamsSrv/boolChanged</signal>
-                <slot>temporalFilterParamsSrv/setEnabled</slot>
-            </connect>
-
-            <connect>
-                <signal>enableHoleFillingFilterParamsSrv/boolChanged</signal>
-                <slot>holeFillingFilterParamsSrv/setEnabled</slot>
+                <signal>enableHoleFillingFilterParamsSrv/parameterChanged</signal>
+                <slot>holeFillingFilterParamsSrv/setEnabledByParam</slot>
             </connect>
 
             <connect>

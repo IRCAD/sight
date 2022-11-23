@@ -110,7 +110,7 @@ This example shows the possibilities of SParameters:
                     <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="50" min="0" max="100" depends="enable" />
                     <param type="int2"    name="2 Integer" key="int2_1"    widget="spin"   defaultValue="5" min="0" max="100" depends="enable" />
                     <param type="int3"    name="3 Integer" key="int3_1"    widget="spin"   defaultValue="5" min="0" max="100" depends="enable" />
-                    <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V1" values="V0,V1,V2,V3" />
+                    <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V1" values="V0,V1=v1,V2=v2,V3=v3" />
                 </parameters>
             </service>
 
@@ -127,7 +127,7 @@ This example shows the possibilities of SParameters:
                     <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="37" min="0" max="100" depends="enable"  />
                     <param type="int2"    name="2 Integer" key="int2_1"    widget="spin"   defaultValue="8" min="0" max="100" depends="enable"  />
                     <param type="int3"    name="3 Integer" key="int3_1"    widget="spin"   defaultValue="12" min="0" max="100" depends="enable"  />
-                    <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V2" values="V0,V1,V2,V3" depends="enable"  />
+                    <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V2" values="V0,V1=v1,V2=v2,V3=v3" depends="enable"  />
                 </parameters>
             </service>
 
@@ -292,30 +292,30 @@ This example shows the possibilities of SParameters:
             <!-- Connection to update the parameters minimum/maximum -->
             <connect>
                 <signal>minParametersSrv/intChanged</signal>
-                <slot>parameters1Srv/setIntMinParameter</slot>
-                <slot>parameters2Srv/setIntMinParameter</slot>
-                <slot>maxParametersSrv/setIntMinParameter</slot>
+                <slot>parameters1Srv/updateIntMinParameter</slot>
+                <slot>parameters2Srv/updateIntMinParameter</slot>
+                <slot>maxParametersSrv/updateIntMinParameter</slot>
             </connect>
 
             <connect>
                 <signal>maxParametersSrv/intChanged</signal>
-                <slot>parameters1Srv/setIntMaxParameter</slot>
-                <slot>parameters2Srv/setIntMaxParameter</slot>
-                <slot>minParametersSrv/setIntMaxParameter</slot>
+                <slot>parameters1Srv/updateIntMaxParameter</slot>
+                <slot>parameters2Srv/updateIntMaxParameter</slot>
+                <slot>minParametersSrv/updateIntMaxParameter</slot>
             </connect>
 
             <connect>
                 <signal>minParametersSrv/doubleChanged</signal>
-                <slot>parameters1Srv/setDoubleMinParameter</slot>
-                <slot>parameters2Srv/setDoubleMinParameter</slot>
-                <slot>maxParametersSrv/setDoubleMinParameter</slot>
+                <slot>parameters1Srv/updateDoubleMinParameter</slot>
+                <slot>parameters2Srv/updateDoubleMinParameter</slot>
+                <slot>maxParametersSrv/updateDoubleMinParameter</slot>
             </connect>
 
             <connect>
                 <signal>maxParametersSrv/doubleChanged</signal>
-                <slot>parameters1Srv/setDoubleMaxParameter</slot>
-                <slot>parameters2Srv/setDoubleMaxParameter</slot>
-                <slot>minParametersSrv/setDoubleMaxParameter</slot>
+                <slot>parameters1Srv/updateDoubleMaxParameter</slot>
+                <slot>parameters2Srv/updateDoubleMaxParameter</slot>
+                <slot>minParametersSrv/updateDoubleMaxParameter</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

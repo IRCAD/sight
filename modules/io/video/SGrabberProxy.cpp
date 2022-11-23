@@ -54,11 +54,7 @@ const core::com::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera
 
 const core::com::Slots::SlotKeyType s_FWD_NOTIFY_SLOT = "forwardNotify";
 
-const core::com::Slots::SlotKeyType s_FWD_SET_BOOL_PARAMETER_SLOT        = "forwardSetBoolParameter";
-const core::com::Slots::SlotKeyType s_FWD_SET_DOUBLE_PARAMETER_SLOT      = "forwardSetDoubleParameter";
-const core::com::Slots::SlotKeyType s_FWD_SET_INT_PARAMETER_SLOT         = "forwardSetIntParameter";
-const core::com::Slots::SlotKeyType s_FWD_SET_ENUM_PARAMETER_SLOT        = "forwardSetEnumParameter";
-const core::com::Slots::SlotKeyType s_FWD_SET_ENUM_VALUES_PARAMETER_SLOT = "forwardSetEnumValuesParameter";
+const core::com::Slots::SlotKeyType s_FWD_SET_PARAMETER_SLOT = "forwardSetParameter";
 
 const core::com::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
 
@@ -78,11 +74,7 @@ SGrabberProxy::SGrabberProxy() noexcept
 
     newSlot(s_FWD_NOTIFY_SLOT, &SGrabberProxy::fwdNotify, this);
 
-    newSlot(s_FWD_SET_BOOL_PARAMETER_SLOT, &SGrabberProxy::fwdSetBoolParameter, this);
-    newSlot(s_FWD_SET_DOUBLE_PARAMETER_SLOT, &SGrabberProxy::fwdSetDoubleParameter, this);
-    newSlot(s_FWD_SET_INT_PARAMETER_SLOT, &SGrabberProxy::fwdSetIntParameter, this);
-    newSlot(s_FWD_SET_ENUM_PARAMETER_SLOT, &SGrabberProxy::fwdSetEnumParameter, this);
-    newSlot(s_FWD_SET_ENUM_VALUES_PARAMETER_SLOT, &SGrabberProxy::fwdSetEnumValuesParameter, this);
+    newSlot(s_FWD_SET_PARAMETER_SLOT, &SGrabberProxy::fwdSetParameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -514,28 +506,9 @@ void SGrabberProxy::startCamera()
 
                 m_connections.connect(
                     srv,
-                    IGrabber::s_BOOL_CHANGED_SIG,
+                    IGrabber::s_PARAMETER_CHANGED_SIG,
                     this->getSptr(),
-                    s_FWD_SET_BOOL_PARAMETER_SLOT
-                );
-                m_connections.connect(
-                    srv,
-                    IGrabber::s_DOUBLE_CHANGED_SIG,
-                    this->getSptr(),
-                    s_FWD_SET_DOUBLE_PARAMETER_SLOT
-                );
-                m_connections.connect(srv, IGrabber::s_INT_CHANGED_SIG, this->getSptr(), s_FWD_SET_INT_PARAMETER_SLOT);
-                m_connections.connect(
-                    srv,
-                    IGrabber::s_ENUM_CHANGED_SIG,
-                    this->getSptr(),
-                    s_FWD_SET_ENUM_PARAMETER_SLOT
-                );
-                m_connections.connect(
-                    srv,
-                    IGrabber::s_ENUM_VALUES_CHANGED_SIG,
-                    this->getSptr(),
-                    s_FWD_SET_ENUM_VALUES_PARAMETER_SLOT
+                    s_FWD_SET_PARAMETER_SLOT
                 );
 
                 ++srvCount;
@@ -635,72 +608,20 @@ void SGrabberProxy::setStep(int step, std::string key)
     {
         if(srv != nullptr)
         {
-            srv->setStep(step, key);
+            srv->setParameter(step, key);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SGrabberProxy::setBoolParameter(bool value, std::string key)
+void SGrabberProxy::setParameter(ui::base::parameter_t value, std::string key)
 {
     for(auto& srv : m_services)
     {
         if(srv != nullptr)
         {
-            srv->setBoolParameter(value, key);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SGrabberProxy::setDoubleParameter(double value, std::string key)
-{
-    for(auto& srv : m_services)
-    {
-        if(srv != nullptr)
-        {
-            srv->setDoubleParameter(value, key);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SGrabberProxy::setIntParameter(int value, std::string key)
-{
-    for(auto& srv : m_services)
-    {
-        if(srv != nullptr)
-        {
-            srv->setIntParameter(value, key);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SGrabberProxy::setEnumParameter(std::string value, std::string key)
-{
-    for(auto& srv : m_services)
-    {
-        if(srv != nullptr)
-        {
-            srv->setEnumParameter(value, key);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SGrabberProxy::setEnumValuesParameter(std::string value, std::string key)
-{
-    for(auto& srv : m_services)
-    {
-        if(srv != nullptr)
-        {
-            srv->setEnumValuesParameter(value, key);
+            srv->setParameter(value, key);
         }
     }
 }
@@ -813,44 +734,14 @@ void SGrabberProxy::fwdNotify(IService::NotificationType type, const std::string
     sig->asyncEmit(type, message);
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void SGrabberProxy::fwdSetBoolParameter(bool value, std::string key)
+void SGrabberProxy::fwdSetParameter(ui::base::parameter_t value, std::string key)
 {
-    auto sig = this->signal<IGrabber::BoolChangedSignalType>(IGrabber::s_BOOL_CHANGED_SIG);
+    auto sig = this->signal<IGrabber::ParameterChangedSignalType>(IGrabber::s_PARAMETER_CHANGED_SIG);
     sig->asyncEmit(value, key);
 }
 
 //------------------------------------------------------------------------------
-
-void SGrabberProxy::fwdSetDoubleParameter(double value, std::string key)
-{
-    auto sig = this->signal<IGrabber::DoubleChangedSignalType>(IGrabber::s_DOUBLE_CHANGED_SIG);
-    sig->asyncEmit(value, key);
-}
-
-//------------------------------------------------------------------------------
-
-void SGrabberProxy::fwdSetIntParameter(int value, std::string key)
-{
-    auto sig = this->signal<IGrabber::IntChangedSignalType>(IGrabber::s_INT_CHANGED_SIG);
-    sig->asyncEmit(value, key);
-}
-
-//------------------------------------------------------------------------------
-
-void SGrabberProxy::fwdSetEnumParameter(std::string value, std::string key)
-{
-    auto sig = this->signal<IGrabber::EnumChangedSignalType>(IGrabber::s_ENUM_CHANGED_SIG);
-    sig->asyncEmit(value, key);
-}
-
-//------------------------------------------------------------------------------
-
-void SGrabberProxy::fwdSetEnumValuesParameter(std::string value, std::string key)
-{
-    auto sig = this->signal<IGrabber::EnumValuesChangedSignalType>(IGrabber::s_ENUM_VALUES_CHANGED_SIG);
-    sig->asyncEmit(value, key);
-}
 
 } // namespace sight::module::io::video

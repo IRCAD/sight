@@ -196,6 +196,8 @@ public:
 
     /// Destructor. Calls stopCamera()
     MODULE_IO_REALSENSE_API ~SScan() noexcept override;
+    ///SLOT: When "parameter_t" parameter changes
+    MODULE_IO_REALSENSE_API void setParameter(ui::base::parameter_t value, std::string key) override;
 
 protected:
 
@@ -391,18 +393,6 @@ private:
     void onPointCloud(const rs2::points& _pc, const rs2::video_frame& _texture);
 
     // Slots
-
-    ///SLOT: When "boolean" parameter changes
-    void setBoolParameter(bool /*_value*/, std::string /*_key*/);
-
-    /// SLOT: When "enum" parameter changes
-    void setEnumParameter(std::string /*_value*/, std::string /*_key*/);
-
-    ///SLOT: When "int" parameter changes
-    void setIntParameter(int /*_value*/, std::string /*_key*/);
-
-    ///SLOT: When "double" parameter changes
-    void setDoubleParameter(double /*_value*/, std::string /*_key*/);
 
     /// Pop a message dialog to the user with _message.
     /// Title is set to "RealSense Error".

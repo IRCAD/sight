@@ -167,20 +167,8 @@ protected:
     /// Set step used on readPrevious/readNext slots.
     MODULE_IO_VIDEO_API void setStep(int step, std::string key) override;
 
-    /// Sets an internal bool value.
-    MODULE_IO_VIDEO_API void setBoolParameter(bool, std::string) final;
-
-    /// Sets an internal double value.
-    MODULE_IO_VIDEO_API void setDoubleParameter(double, std::string) final;
-
-    /// Sets an internal int value.
-    MODULE_IO_VIDEO_API void setIntParameter(int, std::string) final;
-
-    /// Sets an internal enum value.
-    MODULE_IO_VIDEO_API void setEnumParameter(std::string, std::string) final;
-
-    /// Sets internal enum values.
-    MODULE_IO_VIDEO_API void setEnumValuesParameter(std::string, std::string) final;
+    /// Sets internal parameters values.
+    MODULE_IO_VIDEO_API void setParameter(ui::base::parameter_t value, std::string key) final;
 
     /// SLOT: Requests the grabber internal settings.
     MODULE_IO_VIDEO_API void requestSettings() final;
@@ -225,20 +213,8 @@ private:
     /// A frame is presented in the sub-service.
     void fwdPresentFrame();
 
-    /// A named bool parameter has been emitted in the sub-service.
-    void fwdSetBoolParameter(bool value, std::string key);
-
-    /// A named double parameter has been emitted in the sub-service.
-    void fwdSetDoubleParameter(double value, std::string key);
-
-    /// A named int parameter has been emitted in the sub-service.
-    void fwdSetIntParameter(int value, std::string key);
-
-    /// A named enum parameter has been emitted in the sub-service.
-    void fwdSetEnumParameter(std::string value, std::string key);
-
-    /// A named enum values parameter has been emitted in the sub-service.
-    void fwdSetEnumValuesParameter(std::string value, std::string key);
+    /// A named parameter has been emitted in the sub-service.
+    void fwdSetParameter(ui::base::parameter_t value, std::string key);
 
     // Forwards notifications
     void fwdNotify(IService::NotificationType, const std::string message);

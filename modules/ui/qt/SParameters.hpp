@@ -75,11 +75,13 @@ namespace sight::module::ui::qt
  * - \b setInt3Parameter(int, int, int, std::string): set three int parameters.
  * - \b setEnumParameter(std::string, std::string): set an enum parameter.
  * - \b setEnumIndexParameter(int, std::string): set an enum parameter using the index of the enum.
- * - \b setIntMinParameter(int, std::string): set the minimum value of an integer parameter (int, int2, int3)
- * - \b setIntMaxParameter(int, std::string): set the maximum value of an integer parameter (int, int2, int3)
- * - \b setDoubleMinParameter(double, std::string): set the minimum value of a double parameter (double, double2,
+ * - \b updateEnumRange(std::string, std::string): update range of an existing enum (value can contains a tokenized list
+ * such as value1;value2;value3=test;...)
+ * - \b updateIntMinParameter(int, std::string): set the minimum value of an integer parameter (int, int2, int3)
+ * - \b updateIntMaxParameter(int, std::string): set the maximum value of an integer parameter (int, int2, int3)
+ * - \b updateDoubleMinParameter(double, std::string): set the minimum value of a double parameter (double, double2,
  * double3)
- * - \b setDoubleMaxParameter(double, std::string): set the maximum value of a double parameter (double, double2,
+ * - \b updateDoubleMaxParameter(double, std::string): set the maximum value of a double parameter (double, double2,
  * double3)
  *
  * @section XML XML Configuration
@@ -132,30 +134,68 @@ public:
 
     SIGHT_DECLARE_SERVICE(SParameters, sight::ui::base::IEditor);
 
-    /// Generic changed signal type
-    typedef core::com::Signal<void (sight::ui::base::parameter_t, std::string)> ChangedSignalType;
+    /// @brief  Struct to handle all signals.
+    struct signals
+    {
+        using signal_t = core::com::Signals::SignalKeyType;
+        /// Generic changed signal type
+        typedef core::com::Signal<void (sight::ui::base::parameter_t, std::string)> ChangedSignalType;
 
-    /// Boolean changed signal type
-    typedef core::com::Signal<void (bool, std::string)> BooleanChangedSignalType;
+        /// Boolean changed signal type
+        typedef core::com::Signal<void (bool, std::string)> BooleanChangedSignalType;
 
-    /// Color changed signal type
-    typedef core::com::Signal<void (std::array<std::uint8_t, 4>, std::string)> ColorChangedSignalType;
+        /// Color changed signal type
+        typedef core::com::Signal<void (std::array<std::uint8_t, 4>, std::string)> ColorChangedSignalType;
 
-    /// Double changed signal type
-    typedef core::com::Signal<void (double, std::string)> DoubleChangedSignalType;
-    typedef core::com::Signal<void (double, double, std::string)> Double2ChangedSignalType;
-    typedef core::com::Signal<void (double, double, double, std::string)> Double3ChangedSignalType;
+        /// Double changed signal type
+        typedef core::com::Signal<void (double, std::string)> DoubleChangedSignalType;
+        typedef core::com::Signal<void (double, double, std::string)> Double2ChangedSignalType;
+        typedef core::com::Signal<void (double, double, double, std::string)> Double3ChangedSignalType;
 
-    /// Integer changed signal type
-    typedef core::com::Signal<void (int, std::string)> IntegerChangedSignalType;
-    typedef core::com::Signal<void (int, int, std::string)> Integer2ChangedSignalType;
-    typedef core::com::Signal<void (int, int, int, std::string)> Integer3ChangedSignalType;
+        /// Integer changed signal type
+        typedef core::com::Signal<void (int, std::string)> IntegerChangedSignalType;
+        typedef core::com::Signal<void (int, int, std::string)> Integer2ChangedSignalType;
+        typedef core::com::Signal<void (int, int, int, std::string)> Integer3ChangedSignalType;
 
-    /// Enum changed signal type
-    typedef core::com::Signal<void (std::string, std::string)> EnumChangedSignalType;
-    typedef core::com::Signal<void (int, std::string)> EnumChangedIndexSignalType;
+        /// Enum changed signal type
+        typedef core::com::Signal<void (std::string, std::string)> EnumChangedSignalType;
+        typedef core::com::Signal<void (int, std::string)> EnumChangedIndexSignalType;
 
-    /// Constructor. Initializes signals
+        inline static const signal_t PARAMETER_CHANGED_SIG  = "parameterChanged";
+        inline static const signal_t BOOLEAN_CHANGED_SIG    = "boolChanged";
+        inline static const signal_t COLOR_CHANGED_SIG      = "colorChanged";
+        inline static const signal_t DOUBLE_CHANGED_SIG     = "doubleChanged";
+        inline static const signal_t DOUBLE2_CHANGED_SIG    = "double2Changed";
+        inline static const signal_t DOUBLE3_CHANGED_SIG    = "double3Changed";
+        inline static const signal_t INTEGER_CHANGED_SIG    = "intChanged";
+        inline static const signal_t INTEGER2_CHANGED_SIG   = "int2Changed";
+        inline static const signal_t INTEGER3_CHANGED_SIG   = "int3Changed";
+        inline static const signal_t ENUM_CHANGED_SIG       = "enumChanged";
+        inline static const signal_t ENUM_INDEX_CHANGED_SIG = "enumIndexChanged";
+    };
+
+    /// @brief  Struct to handle all slots
+    struct slots
+    {
+        using slots_t = core::com::Slots::SlotKeyType;
+
+        inline static const slots_t s_SET_PARAMETER_SLOT               = "setParameter";
+        inline static const slots_t s_SET_BOOL_PARAMETER_SLOT          = "setBoolParameter";
+        inline static const slots_t s_SET_COLOR_PARAMETER_SLOT         = "setColorParameter";
+        inline static const slots_t s_SET_DOUBLE_PARAMETER_SLOT        = "setDoubleParameter";
+        inline static const slots_t s_SET_DOUBLE2_PARAMETER_SLOT       = "setDouble2Parameter";
+        inline static const slots_t s_SET_DOUBLE3_PARAMETER_SLOT       = "setDouble3Parameter";
+        inline static const slots_t s_SET_INT_PARAMETER_SLOT           = "setIntParameter";
+        inline static const slots_t s_SET_INT2_PARAMETER_SLOT          = "setInt2Parameter";
+        inline static const slots_t s_SET_INT3_PARAMETER_SLOT          = "setInt3Parameter";
+        inline static const slots_t s_SET_ENUM_PARAMETER_SLOT          = "setEnumParameter";
+        inline static const slots_t s_SET_ENUM_INDEX_PARAMETER_SLOT    = "setEnumIndexParameter";
+        inline static const slots_t s_UPDATE_ENUM_RANGE_SLOT           = "updateEnumRange";
+        inline static const slots_t s_UPDATE_INT_MIN_PARAMETER_SLOT    = "updateIntMinParameter";
+        inline static const slots_t s_UPDATE_INT_MAX_PARAMETER_SLOT    = "updateIntMaxParameter";
+        inline static const slots_t s_UPDATE_DOUBLE_MIN_PARAMETER_SLOT = "updateDoubleMinParameter";
+        inline static const slots_t s_UPDATE_DOUBLE_MAX_PARAMETER_SLOT = "updateDoubleMaxParameter";
+    };
     MODULE_UI_QT_API SParameters() noexcept;
 
     /// Destructor. Does nothing
@@ -319,8 +359,8 @@ private:
     /// Parses the string for an enum
     static void parseEnumString(
         const std::string& options,
-        std::vector<std::string>& values,
-        std::vector<std::string>& data,
+        std::vector<std::string>& labels,
+        std::vector<std::string>& keys,
         std::string separators = ", ;"
     );
 
@@ -381,22 +421,26 @@ private:
     /// SLOT: This method sets an enum parameter using the index of the enum
     void setEnumIndexParameter(int /*val*/, std::string key);
 
-    /// SLOT: This method sets the enum values
-    void setEnumValues(std::string options, std::string key);
+    /// SLOT: This method updates the all enum values using a tokenized string ("value1;value2")
+    void updateEnumRange(std::string options, std::string key);
 
-    /// Slot: Set the minimum value of an integer parameter (int, int2, int3)
-    void setIntMinParameter(int min, std::string key);
+    /// Slot: Updates the minimum value of an integer parameter (int, int2, int3)
+    void updateIntMinParameter(int min, std::string key);
 
-    /// Slot: Set the maximum value of an integer parameter (int, int2, int3)
-    void setIntMaxParameter(int max, std::string key);
+    /// Slot: Updates the maximum value of an integer parameter (int, int2, int3)
+    void updateIntMaxParameter(int max, std::string key);
 
-    /// Slot: Set the minimum value of a double parameter (double, double2, double3)
-    void setDoubleMinParameter(double min, std::string key);
+    /// Slot: Updates the minimum value of a double parameter (double, double2, double3)
+    void updateDoubleMinParameter(double min, std::string key);
 
-    /// Slot: Set the maximum value of a double parameter (double, double2, double3)
-    void setDoubleMaxParameter(double max, std::string key);
+    /// Slot: Updates the maximum value of a double parameter (double, double2, double3)
+    void updateDoubleMaxParameter(double max, std::string key);
 
     /// @}
+
+    /// Internal function that updates enum widget value using a list of string (each element can contains value & data
+    /// ex:"Value=data")
+    void updateEnumList(const std::vector<std::string>& _list, const std::string _key);
 
     /// Return the widget of the parameter with the given key, or nullptr if it does not exist
     QWidget* getParamWidget(const std::string& key);

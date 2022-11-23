@@ -37,21 +37,25 @@
 namespace sight::ui::base
 {
 
-const core::com::Slots::SlotKeyType IGuiContainer::s_SET_ENABLED_SLOT = "setEnabled";
-const core::com::Slots::SlotKeyType IGuiContainer::s_ENABLE_SLOT      = "enable";
-const core::com::Slots::SlotKeyType IGuiContainer::s_DISABLE_SLOT     = "disable";
-const core::com::Slots::SlotKeyType IGuiContainer::s_SET_VISIBLE_SLOT = "setVisible";
-const core::com::Slots::SlotKeyType IGuiContainer::s_SHOW_SLOT        = "show";
-const core::com::Slots::SlotKeyType IGuiContainer::s_HIDE_SLOT        = "hide";
+const core::com::Slots::SlotKeyType IGuiContainer::s_SET_ENABLED_SLOT          = "setEnabled";
+const core::com::Slots::SlotKeyType IGuiContainer::s_SET_ENABLED_BY_PARAM_SLOT = "setEnabledByParam";
+const core::com::Slots::SlotKeyType IGuiContainer::s_ENABLE_SLOT               = "enable";
+const core::com::Slots::SlotKeyType IGuiContainer::s_DISABLE_SLOT              = "disable";
+const core::com::Slots::SlotKeyType IGuiContainer::s_SET_VISIBLE_SLOT          = "setVisible";
+const core::com::Slots::SlotKeyType IGuiContainer::s_SET_VISIBLE_BY_PARAM_SLOT = "setVisibleByParam";
+const core::com::Slots::SlotKeyType IGuiContainer::s_SHOW_SLOT                 = "show";
+const core::com::Slots::SlotKeyType IGuiContainer::s_HIDE_SLOT                 = "hide";
 
 //-----------------------------------------------------------------------------
 
 IGuiContainer::IGuiContainer()
 {
     newSlot(s_SET_ENABLED_SLOT, &IGuiContainer::setEnabled, this);
+    newSlot(s_SET_ENABLED_BY_PARAM_SLOT, &IGuiContainer::setEnabledByParameter, this);
     newSlot(s_ENABLE_SLOT, &IGuiContainer::enable, this);
     newSlot(s_DISABLE_SLOT, &IGuiContainer::disable, this);
     newSlot(s_SET_VISIBLE_SLOT, &IGuiContainer::setVisible, this);
+    newSlot(s_SET_VISIBLE_BY_PARAM_SLOT, &IGuiContainer::setVisibleByParameter, this);
     newSlot(s_SHOW_SLOT, &IGuiContainer::show, this);
     newSlot(s_HIDE_SLOT, &IGuiContainer::hide, this);
 }
@@ -297,6 +301,17 @@ void IGuiContainer::setEnabled(bool isEnabled)
 
 //-----------------------------------------------------------------------------
 
+void IGuiContainer::setEnabledByParameter(ui::base::parameter_t isEnabled)
+{
+    // Only consider boolean alternative, skip all other type of the variant.
+    if(std::holds_alternative<bool>(isEnabled))
+    {
+        this->setEnabled(std::get<bool>(isEnabled));
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void IGuiContainer::enable()
 {
     this->setEnabled(true);
@@ -315,6 +330,17 @@ void IGuiContainer::setVisible(bool isVisible)
 {
     ui::base::container::fwContainer::sptr container = m_viewRegistry->getParent();
     container->setVisible(isVisible);
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainer::setVisibleByParameter(ui::base::parameter_t isVisible)
+{
+    // Only consider boolean alternative, skip all other type of the variant.
+    if(std::holds_alternative<bool>(isVisible))
+    {
+        this->setVisible(std::get<bool>(isVisible));
+    }
 }
 
 //-----------------------------------------------------------------------------

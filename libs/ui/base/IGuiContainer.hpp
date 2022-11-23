@@ -27,6 +27,7 @@
 #include <service/IService.hpp>
 
 #include <ui/base/GuiBaseObject.hpp>
+#include <ui/base/parameter.hpp>
 
 namespace sight::ui::base
 {
@@ -65,9 +66,13 @@ class ISlideViewBuilder;
  * @section Slots Slots
  *
  * - \b setEnabled(bool isEnabled) : this slot enables the container (if isEnabled = true) or disables it.
+ * - \b setEnabledByParam(ui::base::parameter_t isEnabled) : this slot enables the container (if isEnabled holds boolean
+ * alternative) or disables it.
  * - \b enable() : this slot enables the container.
  * - \b disable() : this slot disables the container
  * - \b setVisible(bool isVisible) : this slot shows the container (if isVisible = true) or hides it.
+ * - \b setVisibleByParam(ui::base::parameter_t isVisible) : this slot shows the container (if isEnabled holds boolean
+ * alternative) or hides it.
  * - \b show() : this slot shows the container.
  * - \b hide() : this slot hides the container.
  *
@@ -166,6 +171,7 @@ protected:
 
     /// Slot to enable/disable the action
     UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_ENABLED_SLOT;
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_ENABLED_BY_PARAM_SLOT;
 
     /// Slot to enable the container
     UI_BASE_API static const core::com::Slots::SlotKeyType s_ENABLE_SLOT;
@@ -175,6 +181,7 @@ protected:
 
     /// Slot to show/hide the container
     UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_VISIBLE_BY_PARAM_SLOT;
 
     /// Slot to show the container
     UI_BASE_API static const core::com::Slots::SlotKeyType s_SHOW_SLOT;
@@ -185,6 +192,9 @@ protected:
     /// SLOT: enable/disable the container
     UI_BASE_API void setEnabled(bool isEnabled);
 
+    /// SLOT: enable/disable the container using parameter_t (only testing bool alternative).
+    UI_BASE_API void setEnabledByParameter(ui::base::parameter_t);
+
     /// SLOT: enable the container
     UI_BASE_API void enable();
 
@@ -193,6 +203,9 @@ protected:
 
     /// SLOT: show/hide the container
     UI_BASE_API void setVisible(bool isVisible);
+
+    /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
+    UI_BASE_API void setVisibleByParameter(ui::base::parameter_t);
 
     /// SLOT: show the container
     UI_BASE_API void show();

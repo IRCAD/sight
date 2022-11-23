@@ -118,6 +118,8 @@ public:
     /// Destructor. Do nothing.
     MODULE_IO_VIDEO_API ~SFrameGrabber() noexcept override;
 
+    MODULE_IO_VIDEO_API void setParameter(ui::base::parameter_t value, std::string key) override;
+
 protected:
 
     /// Initialize the layout and the camera.

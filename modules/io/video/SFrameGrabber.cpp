@@ -944,10 +944,11 @@ void SFrameGrabber::previousImage()
 
 //-----------------------------------------------------------------------------
 
-void SFrameGrabber::setStep(int step, std::string key)
+void SFrameGrabber::setParameter(ui::base::parameter_t value, std::string key)
 {
     if(key == "step")
     {
+        const int step = std::get<int>(value);
         SIGHT_ASSERT("Needed step value (" << step << ") should be > 0.", step > 0);
         // Save the changed step value
         m_stepChanged = static_cast<std::uint64_t>(step);
@@ -956,6 +957,13 @@ void SFrameGrabber::setStep(int step, std::string key)
     {
         SIGHT_WARN("Only 'step' key is supported (current key value is : '" << key << "').");
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SFrameGrabber::setStep(int step, std::string key)
+{
+    this->setParameter(step, key);
 }
 
 //------------------------------------------------------------------------------

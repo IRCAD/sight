@@ -28,10 +28,7 @@ channels - out (optional):
     cameraStoppedChannelOut:     channel on which a signal is triggered when the camera is stopped.
     loopModeToggleChannelOut:    channel on which a signal is triggered when the camera loop mode is toggled.
 
-    boolParameterChannelOut(bool, std::string):              channel on which a signal is triggered when a named boolean grabber parameter is changed.
-    intParameterChannelOut(int, std::string):                channel on which a signal is triggered when a named integer grabber parameter is changed.
-    enumParameterChannelOut(std::string, std::string):       channel on which a signal is triggered when a named list element grabber parameter is changed.
-    enumValuesParameterChannelOut(std::string, std::string): channel on which a signal is triggered when a named data list element grabber parameter is changed.
+    parameterChannelOut(ui::base::parameter_t, std::string): channel on which a signal is triggered when a named grabber parameter is changed.
 
     videoPositionParameterOut: channel on which a signal is triggered when the position in the video is modified during playing.
     videoDurationParameterOut: channel on which a signal is triggered when the duration of the video is modified.
@@ -42,9 +39,7 @@ channels - out (optional):
 
 channels - in (optional):
 
-    boolParameterChannelIn(bool, std::string):        channel on which a signal is expected to notify the grabber that a named boolean parameter is changed.
-    intParameterChannelIn(int, std::string):          channel on which a signal is expected to notify the grabber that a named integer parameter is changed.
-    enumParameterChannelIn(std::string, std::string): channel on which a signal is expected to notify the grabber that a named list element parameter is changed.
+    parameterChannelIn(ui::base::parameter_t, std::string) : channel on which a signal is expected to notify the grabber that a named parameter is changed.
     addROICenterChannelIn(sight::data::Point):        channel on which a signal is expected to notify the grabber that a new point has been selected.
     removeROICenterChannelIn(sight::data::Point):     channel on which a signal is expected to notify the grabber that a point has been remove.
 
@@ -62,11 +57,8 @@ Usage:
             <parameter replace="cameraResumePauseChannelOut"    by="..." />
             <parameter replace="cameraStoppedChannelOut"        by="..." />
             <parameter replace="loopModeToggleChannelOut"       by="..." />
-            <parameter replace="intParameterChannelIn"          by="..." />
-            <parameter replace="intParameterChannelOut"         by="..." />
-            <parameter replace="enumParameterChannelIn"         by="..." />
-            <parameter replace="enumParameterChannelOut"        by="..." />
-            <parameter replace="enumValuesParameterChannelOut"  by="..." />
+            <parameter replace="parameterChannelIn"             by="..." />
+            <parameter replace="parameterChannelOut"            by="..." />
             <parameter replace="configuredFileOut"              by="..." />
             <parameter replace="configuredStreamOut"            by="..." />
             <parameter replace="configuredDeviceOut"            by="..." />
@@ -91,13 +83,8 @@ Usage:
         <param name="cameraStoppedChannelOut" default="cameraStoppedChannelOut" />
         <param name="loopModeToggleChannelOut" default="loopModeToggleChannelOut" />
 
-        <param name="boolParameterChannelIn" default="boolParameterChannelIn" />
-        <param name="boolParameterChannelOut" default="boolParameterChannelOut" />
-        <param name="intParameterChannelIn" default="intParameterChannelIn" />
-        <param name="intParameterChannelOut" default="intParameterChannelOut" />
-        <param name="enumParameterChannelIn" default="enumParameterChannelIn" />
-        <param name="enumParameterChannelOut" default="enumParameterChannelOut" />
-        <param name="enumValuesParameterChannelOut" default="enumValuesParameterChannelOut" />
+        <param name="parameterChannelIn" default="parameterChannelIn" />
+        <param name="parameterChannelOut" default="parameterChannelOut" />
 
         <param name="videoPositionParameterIn" default="videoPositionParameterIn" />
         <param name="videoPositionParameterOut" default="videoPositionParameterOut" />
@@ -268,32 +255,12 @@ Usage:
             <slot>stopVideoAct/update</slot>
         </connect>
 
-        <connect channel="${boolParameterChannelIn}" >
-            <slot>grabberProxySrv/setBoolParameter</slot>
+        <connect channel="${parameterChannelIn}" >
+            <slot>grabberProxySrv/setParameter</slot>
         </connect>
 
-        <connect channel="${boolParameterChannelOut}" >
-            <signal>grabberProxySrv/boolChanged</signal>
-        </connect>
-
-        <connect channel="${intParameterChannelIn}">
-            <slot>grabberProxySrv/setIntParameter</slot>
-        </connect>
-
-        <connect channel="${intParameterChannelOut}">
-            <signal>grabberProxySrv/intChanged</signal>
-        </connect>
-
-        <connect channel="${enumParameterChannelIn}">
-            <slot>grabberProxySrv/setEnumParameter</slot>
-        </connect>
-
-        <connect channel="${enumParameterChannelOut}">
-            <signal>grabberProxySrv/enumChanged</signal>
-        </connect>
-
-        <connect channel="${enumValuesParameterChannelOut}">
-            <signal>grabberProxySrv/enumValuesChanged</signal>
+        <connect channel="${parameterChannelOut}" >
+            <signal>grabberProxySrv/parameterChanged</signal>
         </connect>
 
         <connect channel="${videoPositionParameterIn}">

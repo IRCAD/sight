@@ -36,11 +36,7 @@ const core::com::Signals::SignalKeyType IGrabber::s_CAMERA_STOPPED_SIG = "camera
 
 const core::com::Signals::SignalKeyType IGrabber::s_FRAME_PRESENTED_SIG = "framePresented";
 
-const core::com::Signals::SignalKeyType IGrabber::s_BOOL_CHANGED_SIG        = "boolChanged";
-const core::com::Signals::SignalKeyType IGrabber::s_DOUBLE_CHANGED_SIG      = "doubleChanged";
-const core::com::Signals::SignalKeyType IGrabber::s_INT_CHANGED_SIG         = "intChanged";
-const core::com::Signals::SignalKeyType IGrabber::s_ENUM_CHANGED_SIG        = "enumChanged";
-const core::com::Signals::SignalKeyType IGrabber::s_ENUM_VALUES_CHANGED_SIG = "enumValuesChanged";
+const core::com::Signals::SignalKeyType IGrabber::s_PARAMETER_CHANGED_SIG = "parameterChanged";
 
 const core::com::Slots::SlotKeyType IGrabber::s_START_CAMERA_SLOT       = "startCamera";
 const core::com::Slots::SlotKeyType IGrabber::s_STOP_CAMERA_SLOT        = "stopCamera";
@@ -52,11 +48,7 @@ const core::com::Slots::SlotKeyType IGrabber::s_PREVIOUS_IMAGE_SLOT     = "previ
 const core::com::Slots::SlotKeyType IGrabber::s_NEXT_IMAGE_SLOT         = "nextImage";
 const core::com::Slots::SlotKeyType IGrabber::s_SET_STEP_SLOT           = "setStep";
 
-const core::com::Slots::SlotKeyType IGrabber::s_SET_BOOL_PARAMETER_SLOT        = "setBoolParameter";
-const core::com::Slots::SlotKeyType IGrabber::s_SET_DOUBLE_PARAMETER_SLOT      = "setDoubleParameter";
-const core::com::Slots::SlotKeyType IGrabber::s_SET_INT_PARAMETER_SLOT         = "setIntParameter";
-const core::com::Slots::SlotKeyType IGrabber::s_SET_ENUM_PARAMETER_SLOT        = "setEnumParameter";
-const core::com::Slots::SlotKeyType IGrabber::s_SET_ENUM_VALUES_PARAMETER_SLOT = "setEnumValuesParameter";
+const core::com::Slots::SlotKeyType IGrabber::s_SET_PARAMETER_SLOT = "setParameter";
 
 const core::com::Slots::SlotKeyType IGrabber::s_REQUEST_SETTINGS_SLOT = "requestSettings";
 
@@ -74,11 +66,7 @@ IGrabber::IGrabber() noexcept
     newSignal<CameraStoppedSignalType>(s_CAMERA_STOPPED_SIG);
     newSignal<FramePresentedSignalType>(s_FRAME_PRESENTED_SIG);
 
-    newSignal<BoolChangedSignalType>(s_BOOL_CHANGED_SIG);
-    newSignal<DoubleChangedSignalType>(s_DOUBLE_CHANGED_SIG);
-    newSignal<IntChangedSignalType>(s_INT_CHANGED_SIG);
-    newSignal<EnumChangedSignalType>(s_ENUM_CHANGED_SIG);
-    newSignal<EnumValuesChangedSignalType>(s_ENUM_VALUES_CHANGED_SIG);
+    newSignal<ParameterChangedSignalType>(s_PARAMETER_CHANGED_SIG);
 
     newSlot(s_START_CAMERA_SLOT, &IGrabber::startCamera, this);
     newSlot(s_STOP_CAMERA_SLOT, &IGrabber::stopCamera, this);
@@ -90,11 +78,7 @@ IGrabber::IGrabber() noexcept
     newSlot(s_NEXT_IMAGE_SLOT, &IGrabber::nextImage, this);
     newSlot(s_SET_STEP_SLOT, &IGrabber::setStep, this);
 
-    newSlot(s_SET_BOOL_PARAMETER_SLOT, &IGrabber::setBoolParameter, this);
-    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &IGrabber::setDoubleParameter, this);
-    newSlot(s_SET_INT_PARAMETER_SLOT, &IGrabber::setIntParameter, this);
-    newSlot(s_SET_ENUM_PARAMETER_SLOT, &IGrabber::setEnumParameter, this);
-    newSlot(s_SET_ENUM_VALUES_PARAMETER_SLOT, &IGrabber::setEnumValuesParameter, this);
+    newSlot(s_SET_PARAMETER_SLOT, &IGrabber::setParameter, this);
 
     newSlot(s_REQUEST_SETTINGS_SLOT, &IGrabber::requestSettings, this);
 
@@ -141,33 +125,9 @@ void IGrabber::setStep(int /*step*/, std::string /*key*/)
     SIGHT_WARN("Frame by frame mode not implemented for this grabber type.");
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void IGrabber::setBoolParameter(bool /*unused*/, std::string /*unused*/)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void IGrabber::setDoubleParameter(double /*unused*/, std::string /*unused*/)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void IGrabber::setIntParameter(int /*unused*/, std::string /*unused*/)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void IGrabber::setEnumParameter(std::string /*unused*/, std::string /*unused*/)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void IGrabber::setEnumValuesParameter(std::string /*unused*/, std::string /*unused*/)
+void IGrabber::setParameter(ui::base::parameter_t /*unused*/, std::string /*unused*/)
 {
 }
 
