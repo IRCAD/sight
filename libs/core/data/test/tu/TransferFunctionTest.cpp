@@ -514,4 +514,37 @@ void TransferFunctionTest::piecewiseFunctionTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(50.0, pieces[1]->window(), s_EPSILON);
 }
 
+//------------------------------------------------------------------------------
+
+void TransferFunctionTest::equalityTest()
+{
+    auto function1 = data::TransferFunction::New();
+    auto function2 = data::TransferFunction::New();
+
+    CPPUNIT_ASSERT(*function1 == *function2 && !(*function1 != *function2));
+
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(op) \
+    function1->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Transfer functions should be different when using " #op " on the first one", \
+        *function1 != *function2 && !(*function1 == *function2) \
+    ); \
+    function2->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Transfer functions should be equal when using " #op " on both", \
+        *function1 == *function2 && !(*function1 != *function2) \
+    );
+
+    // TransferFunction::setWindow and TransferFunction::setLevel aren't tested here, as the behavior is
+    // counterintuitive: The equality of the TransferFunction isn't changed by setWindow et setLevel if the list of
+    // TransferFunctionPiece is empty. Whether this is the correct behavior or not is still to be determined.
+
+    TEST(setName("3"));
+    TEST(setBackgroundColor({4, 5, 6, 7}));
+    TEST(pieces().push_back(data::TransferFunctionPiece::New()));
+
+    #undef TEST
+}
+
 } // namespace sight::data::ut

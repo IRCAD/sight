@@ -270,4 +270,34 @@ void FrameTLTest::copyTest()
 
 //------------------------------------------------------------------------------
 
+void FrameTLTest::equalityTest()
+{
+    auto frame1 = data::FrameTL::New();
+    auto frame2 = data::FrameTL::New();
+
+    CPPUNIT_ASSERT(*frame1 == *frame2 && !(*frame1 != *frame2));
+
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(...) \
+    frame1->initPoolSize(__VA_ARGS__); \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Frames must be different when the first is set with " #__VA_ARGS__, \
+        *frame1 != *frame2 && !(*frame1 == *frame2) \
+    ); \
+    frame2->initPoolSize(__VA_ARGS__); \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Frames must be equal when they are both set with " #__VA_ARGS__, \
+        *frame1 == *frame2 && !(*frame1 != *frame2) \
+    );
+
+    TEST(1, 1, core::Type::UINT8, data::FrameTL::PixelFormat::RGBA);
+    TEST(1, 2, core::Type::UINT8, data::FrameTL::PixelFormat::RGBA);
+    TEST(1, 1, core::Type::INT8, data::FrameTL::PixelFormat::RGBA);
+    TEST(1, 1, core::Type::UINT8, data::FrameTL::PixelFormat::RGB);
+
+    #undef TEST
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace sight::data::ut

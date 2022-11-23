@@ -679,6 +679,34 @@ void GenericTLTest::objectValid()
     CPPUNIT_ASSERT_EQUAL(true, timeline2->isObjectValid(data2));
 }
 
+//------------------------------------------------------------------------------
+
+void GenericTLTest::equalityTest()
+{
+    auto timeline1 = data::Float3TL::New();
+    auto timeline2 = data::Float3TL::New();
+
+    CPPUNIT_ASSERT(*timeline1 == *timeline2 && !(*timeline1 != *timeline2));
+
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(value) \
+    timeline1->initPoolSize(value); \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Timelines should be different when the first is initialized with " #value, \
+        *timeline1 != *timeline2 && !(*timeline1 == *timeline2) \
+    ); \
+    timeline2->initPoolSize(value); \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Timelines should be equal when they are both initialized with " #value, \
+        *timeline1 == *timeline2 && !(*timeline1 != *timeline2) \
+    );
+
+    TEST(1);
+    TEST(2);
+
+    #undef TEST
+}
+
 } //namespace ut
 
 } //namespace sight::data

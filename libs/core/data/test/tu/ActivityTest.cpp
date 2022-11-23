@@ -23,6 +23,7 @@
 #include "ActivityTest.hpp"
 
 #include <data/Composite.hpp>
+#include <data/Integer.hpp>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ActivityTest);
@@ -80,6 +81,28 @@ void ActivityTest::dataTest()
     series2->setData(m_activity->getData());
     series2->setActivityConfigId(m_activity->getActivityConfigId());
     CPPUNIT_ASSERT(*series2 == *m_activity);
+}
+
+//------------------------------------------------------------------------------
+
+void ActivityTest::equalityTest()
+{
+    auto activity1 = data::Activity::New();
+    auto activity2 = data::Activity::New();
+
+    CPPUNIT_ASSERT(*activity1 == *activity2 && !(*activity1 != *activity2));
+
+    activity1->setActivityConfigId("1");
+    CPPUNIT_ASSERT(*activity1 != *activity2 && !(*activity1 == *activity2));
+    activity2->setActivityConfigId(activity1->getActivityConfigId());
+    CPPUNIT_ASSERT(*activity1 == *activity2 && !(*activity1 != *activity2));
+
+    auto composite = data::Composite::New();
+    (*composite)["data"] = data::Integer::New(2);
+    activity1->setData(composite);
+    CPPUNIT_ASSERT(*activity1 != *activity2 && !(*activity1 == *activity2));
+    activity2->setData(activity1->getData());
+    CPPUNIT_ASSERT(*activity1 == *activity2 && !(*activity1 != *activity2));
 }
 
 } //namespace sight::data::ut

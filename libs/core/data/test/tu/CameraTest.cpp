@@ -218,4 +218,47 @@ void CameraTest::deepCopyTest()
     CPPUNIT_ASSERT(*camera == *camera2);
 }
 
+//------------------------------------------------------------------------------
+
+void CameraTest::equalityTest()
+{
+    auto camera1 = data::Camera::New();
+    auto camera2 = data::Camera::New();
+
+    CPPUNIT_ASSERT(*camera1 == *camera2 && !(*camera1 != *camera2));
+
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(op) \
+    camera1->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "The cameras must be different when applying " #op " to the first", \
+        *camera1 != *camera2 && !(*camera1 == *camera2) \
+    ); \
+    camera2->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "The cameras must be equal when applying " #op " to both", \
+        *camera1 == *camera2 && !(*camera1 != *camera2) \
+    );
+
+    TEST(setCx(1));
+    TEST(setCy(2));
+    TEST(setFx(3));
+    TEST(setFy(4));
+    TEST(setSkew(5));
+    TEST(setDistortionCoefficient(6, 7, 8, 9, 10));
+    TEST(setDescription("11"));
+    TEST(setCameraID("12"));
+    TEST(setWidth(13));
+    TEST(setHeight(14));
+    TEST(setMaximumFrameRate(15));
+    TEST(setPixelFormat(data::Camera::AYUV444_PREMULTIPLIED));
+    TEST(setVideoFile("17"));
+    TEST(setStreamUrl("18"));
+    TEST(setScale(19));
+    TEST(setIsCalibrated(true));
+    TEST(setCameraSource(data::Camera::DEVICE));
+
+    #undef TEST
+}
+
 } // namespace sight::data::ut

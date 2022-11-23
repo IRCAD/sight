@@ -45,6 +45,7 @@ private:
     CPPUNIT_TEST(benchmarkIterator);
     CPPUNIT_TEST(imageDeepCopy);
     CPPUNIT_TEST(emptyIteratorTest);
+    CPPUNIT_TEST(equalityTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -66,6 +67,7 @@ public:
     static void benchmarkIterator();
     static void imageDeepCopy();
     static void emptyIteratorTest();
+    static void equalityTest();
 };
 
 } // namespace sight::data::ut

@@ -914,4 +914,48 @@ void ImageTest::emptyIteratorTest()
     CPPUNIT_ASSERT_EQUAL(*maxIter, maxValue);
 }
 
+//------------------------------------------------------------------------------
+
+void ImageTest::equalityTest()
+{
+    static constexpr std::array whitePixel {std::uint8_t(0), std::uint8_t(0), std::uint8_t(0)};
+    static constexpr std::array blackPixel {std::uint8_t(255), std::uint8_t(255), std::uint8_t(255)};
+    auto image1 = data::Image::New();
+    auto image2 = data::Image::New();
+
+    CPPUNIT_ASSERT(*image1 == *image2 && !(*image1 != *image2));
+
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(op) \
+    image1->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Images should be different when applying " #op " to the first one", \
+        *image1 != *image2 && !(*image1 == *image2) \
+    ); \
+    image2->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Images should be equal when applying " #op " to both", \
+        *image1 == *image2 && !(*image1 != *image2) \
+    );
+
+    TEST(setSpacing({1, 2, 3}));
+    TEST(setOrigin({4, 5, 6}));
+    TEST(setWindowCenter({7, 8, 9}));
+    TEST(setWindowWidth({10, 11, 12}));
+    image1->resize({1, 0, 0}, core::Type::UINT8, data::Image::PixelFormat::RGB);
+    CPPUNIT_ASSERT(*image1 != *image2 && !(*image1 == *image2));
+    image2->resize({1, 0, 0}, core::Type::UINT8, data::Image::PixelFormat::RGB);
+    auto lock1 = image1->dump_lock();
+    auto lock2 = image2->dump_lock();
+    image1->setPixel(0, whitePixel.data());
+    image2->setPixel(0, whitePixel.data());
+    TEST(resize({1, 1, 0}, core::Type::UINT8, data::Image::PixelFormat::RGB));
+    TEST(resize({1, 1, 1}, core::Type::UINT8, data::Image::PixelFormat::RGB));
+    TEST(resize({0, 0, 0}, core::Type::INT8, data::Image::PixelFormat::RGB));
+    TEST(resize({0, 0, 0}, core::Type::UINT8, data::Image::PixelFormat::BGR));
+    TEST(setPixel(0, blackPixel.data()));
+
+    #undef TEST
+}
+
 } // namespace sight::data::ut

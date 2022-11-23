@@ -35,6 +35,7 @@ CPPUNIT_TEST_SUITE(ModelSeriesTest);
 CPPUNIT_TEST(modelTest);
 CPPUNIT_TEST(deepCopyTest);
 CPPUNIT_TEST(shallowCopyTest);
+CPPUNIT_TEST(equalityTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,6 +47,7 @@ public:
     void modelTest();
     void deepCopyTest();
     void shallowCopyTest();
+    static void equalityTest();
 
 private:
 

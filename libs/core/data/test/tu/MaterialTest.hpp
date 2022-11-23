@@ -33,6 +33,7 @@ private:
 
     CPPUNIT_TEST_SUITE(MaterialTest);
     CPPUNIT_TEST(methode1);
+    CPPUNIT_TEST(equalityTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,6 +43,7 @@ public:
     void tearDown() override;
 
     static void methode1();
+    static void equalityTest();
 };
 
 } // namespace sight::data::ut

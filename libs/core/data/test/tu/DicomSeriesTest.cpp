@@ -90,22 +90,22 @@ void DicomSeriesTest::equalityTest()
     auto dicomSeries1 = data::DicomSeries::New();
     auto dicomSeries2 = data::DicomSeries::New();
 
-    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2);
+    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2 && !(*dicomSeries1 != *dicomSeries2));
 
     dicomSeries1->setNumberOfInstances(666);
-    CPPUNIT_ASSERT(*dicomSeries1 != *dicomSeries2);
+    CPPUNIT_ASSERT(*dicomSeries1 != *dicomSeries2 && !(*dicomSeries1 == *dicomSeries2));
     dicomSeries2->setNumberOfInstances(dicomSeries1->numInstances());
-    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2);
+    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2 && !(*dicomSeries1 != *dicomSeries2));
 
     dicomSeries1->setSOPClassUIDs({"1", "2", "3"});
-    CPPUNIT_ASSERT(*dicomSeries1 != *dicomSeries2);
+    CPPUNIT_ASSERT(*dicomSeries1 != *dicomSeries2 && !(*dicomSeries1 == *dicomSeries2));
     dicomSeries2->setSOPClassUIDs(dicomSeries1->getSOPClassUIDs());
-    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2);
+    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2 && !(*dicomSeries1 != *dicomSeries2));
 
     dicomSeries1->setComputedTagValues({{"4", "4"}, {"5", "5"}, {"6", "6"}});
-    CPPUNIT_ASSERT(*dicomSeries1 != *dicomSeries2);
+    CPPUNIT_ASSERT(*dicomSeries1 != *dicomSeries2 && !(*dicomSeries1 == *dicomSeries2));
     dicomSeries2->setComputedTagValues(dicomSeries1->getComputedTagValues());
-    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2);
+    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2 && !(*dicomSeries1 != *dicomSeries2));
 
     auto bufferObject = core::memory::BufferObject::New();
     bufferObject->allocate(2);
@@ -115,14 +115,19 @@ void DicomSeriesTest::equalityTest()
     buffer[1] = '\0';
 
     dicomSeries1->setDicomContainer({{7, bufferObject}});
-    CPPUNIT_ASSERT(*dicomSeries1 != *dicomSeries2);
+    CPPUNIT_ASSERT(*dicomSeries1 != *dicomSeries2 && !(*dicomSeries1 == *dicomSeries2));
     dicomSeries2->setDicomContainer(dicomSeries1->getDicomContainer());
-    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2);
+    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2 && !(*dicomSeries1 != *dicomSeries2));
+
+    dicomSeries1->setFirstInstanceNumber(1);
+    CPPUNIT_ASSERT(*dicomSeries1 != *dicomSeries2 && !(*dicomSeries1 == *dicomSeries2));
+    dicomSeries2->setFirstInstanceNumber(dicomSeries1->getFirstInstanceNumber());
+    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries2 && !(*dicomSeries1 != *dicomSeries2));
 
     // Test also deepcopy, just for fun
     auto dicomSeries3 = data::DicomSeries::New();
     dicomSeries3->deepCopy(dicomSeries1);
-    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries3);
+    CPPUNIT_ASSERT(*dicomSeries1 == *dicomSeries3 && !(*dicomSeries1 != *dicomSeries3));
 }
 
 //------------------------------------------------------------------------------

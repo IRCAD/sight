@@ -1401,4 +1401,48 @@ void MeshTest::benchmarkIterator()
     }
 }
 
+//------------------------------------------------------------------------------
+
+void MeshTest::equalityTest()
+{
+    auto mesh1 = data::Mesh::New();
+    auto mesh2 = data::Mesh::New();
+
+    CPPUNIT_ASSERT(*mesh1 == *mesh2 && !(*mesh1 != *mesh2));
+
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(op) \
+    mesh1->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Meshes should be different when applying " #op " to the first", \
+        *mesh1 != *mesh2 && !(*mesh1 == *mesh2) \
+    ); \
+    mesh2->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Meshes should be equal when " #op " to both", \
+        *mesh1 == *mesh2 && !(*mesh1 != *mesh2) \
+    );
+
+    mesh1->resize(1, 1, data::Mesh::CellType::QUAD, data::Mesh::Attributes::NONE);
+    CPPUNIT_ASSERT(*mesh1 != *mesh2 && !(*mesh1 == *mesh2));
+    mesh2->resize(1, 1, data::Mesh::CellType::QUAD, data::Mesh::Attributes::NONE);
+    auto lock1 = mesh1->dump_lock();
+    auto lock2 = mesh2->dump_lock();
+    mesh1->setPoint(0, {1, 2, 3});
+    mesh2->setPoint(0, {1, 2, 3});
+    mesh1->setCell(0, {1, 2, 3, 4});
+    mesh2->setCell(0, {1, 2, 3, 4});
+    CPPUNIT_ASSERT(*mesh1 == *mesh2 && !(*mesh1 != *mesh2));
+
+    mesh1->resize(1, 1, data::Mesh::CellType::QUAD, data::Mesh::Attributes::POINT_COLORS);
+    CPPUNIT_ASSERT(*mesh1 != *mesh2 && !(*mesh1 == *mesh2));
+    mesh2->resize(1, 1, data::Mesh::CellType::QUAD, data::Mesh::Attributes::POINT_COLORS);
+    TEST(setPointColor(0, {1, 2, 3}));
+
+    TEST(resize(1, 1, data::Mesh::CellType::TETRA, data::Mesh::Attributes::POINT_COLORS));
+    TEST(resize(1, 1, data::Mesh::CellType::QUAD, data::Mesh::Attributes::NONE));
+
+    #undef TEST
+}
+
 } // namespace sight::data::ut

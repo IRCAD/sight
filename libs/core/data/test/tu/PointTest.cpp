@@ -114,4 +114,34 @@ void PointTest::labelTest()
 
 //------------------------------------------------------------------------------
 
+void PointTest::equalityTest()
+{
+    auto point1 = data::Point::New();
+    auto point2 = data::Point::New();
+
+    CPPUNIT_ASSERT(*point1 == *point2 && !(*point1 != *point2));
+
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(op) \
+    point1->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Points should be different when using " #op " on the first one", \
+        *point1 != *point2 && !(*point1 == *point2) \
+    ); \
+    point2->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Points should be equal when using " #op " on both", \
+        *point1 == *point2 && !(*point1 != *point2) \
+    );
+
+    TEST(setCoord({1, 0, 0}));
+    TEST(setCoord({0, 1, 0}));
+    TEST(setCoord({0, 0, 1}));
+    TEST(setLabel("1"));
+
+    #undef TEST
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace sight::data::ut

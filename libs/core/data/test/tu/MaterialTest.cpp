@@ -78,4 +78,42 @@ void MaterialTest::methode1()
     CPPUNIT_ASSERT(*material == *material2);
 }
 
+//------------------------------------------------------------------------------
+
+void MaterialTest::equalityTest()
+{
+    auto material1 = data::Material::New();
+    auto material2 = data::Material::New();
+
+    CPPUNIT_ASSERT(*material1 == *material2 && !(*material1 != *material2));
+
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(op) \
+    material1->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Materials should be different when using " #op " on the first one", \
+        *material1 != *material2 && !(*material1 == *material2) \
+    ); \
+    material2->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Materials should be equal when using " #op " on both", \
+        *material1 == *material2 && !(*material1 != *material2) \
+    );
+
+    TEST(setAmbient(data::Color::New(1, 0, 0)));
+    TEST(setAmbient(data::Color::New(0, 1, 0)));
+    TEST(setAmbient(data::Color::New(0, 0, 1)));
+    TEST(setDiffuse(data::Color::New(1, 0, 0)));
+    TEST(setDiffuse(data::Color::New(0, 1, 0)));
+    TEST(setDiffuse(data::Color::New(0, 0, 1)));
+    TEST(setDiffuseTexture(data::Image::New()));
+    TEST(setShadingMode(data::Material::AMBIENT));
+    TEST(setRepresentationMode(data::Material::POINT));
+    TEST(setOptionsMode(data::Material::NORMALS));
+    TEST(setDiffuseTextureFiltering(data::Material::LINEAR));
+    TEST(setDiffuseTextureWrapping(data::Material::CLAMP));
+
+    #undef TEST
+}
+
 } // namespace sight::data::ut

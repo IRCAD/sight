@@ -35,6 +35,7 @@ private:
     CPPUNIT_TEST(methode1);
     CPPUNIT_TEST(methode2);
     CPPUNIT_TEST(methode3);
+    CPPUNIT_TEST(equalityTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,6 +47,7 @@ public:
     static void methode1();
     static void methode2();
     static void methode3();
+    static void equalityTest();
 };
 
 } // namespace sight::data::ut

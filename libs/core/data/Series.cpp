@@ -1902,7 +1902,7 @@ std::optional<double> Series::getRescaleIntercept(std::size_t instance) const no
 
 void Series::setRescaleIntercept(const std::optional<double>& rescaleIntercept, std::size_t instance)
 {
-    m_pimpl->setValue<gdcm::Keywords::ContrastBolusIngredientConcentration>(rescaleIntercept, instance);
+    m_pimpl->setValue<gdcm::Keywords::RescaleIntercept>(rescaleIntercept, instance);
 }
 
 //------------------------------------------------------------------------------
@@ -1916,7 +1916,7 @@ std::optional<double> Series::getRescaleSlope(std::size_t instance) const noexce
 
 void Series::setRescaleSlope(const std::optional<double>& rescaleSlope, std::size_t instance)
 {
-    m_pimpl->setValue<gdcm::Keywords::ContrastBolusIngredientConcentration>(rescaleSlope, instance);
+    m_pimpl->setValue<gdcm::Keywords::RescaleSlope>(rescaleSlope, instance);
 }
 
 //------------------------------------------------------------------------------

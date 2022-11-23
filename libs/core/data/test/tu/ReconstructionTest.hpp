@@ -34,6 +34,7 @@ private:
     CPPUNIT_TEST_SUITE(ReconstructionTest);
     CPPUNIT_TEST(methode1);
     CPPUNIT_TEST(image);
+    CPPUNIT_TEST(equalityTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,6 +45,7 @@ public:
 
     static void methode1();
     static void image();
+    static void equalityTest();
 };
 
 } // namespace sight::data::ut

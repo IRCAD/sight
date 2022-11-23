@@ -131,4 +131,34 @@ void ColorTest::methode3()
     CPPUNIT_ASSERT(*color == *color2);
 }
 
+//------------------------------------------------------------------------------
+
+void ColorTest::equalityTest()
+{
+    auto color1 = data::Color::New();
+    auto color2 = data::Color::New();
+
+    CPPUNIT_ASSERT(*color1 == *color2 && !(*color1 != *color2));
+
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(...) \
+    color1->setRGBA(__VA_ARGS__); \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "The colors should be different when the first is set with " #__VA_ARGS__, \
+        *color1 != *color2 && !(*color1 == *color2) \
+    ); \
+    color2->setRGBA(color1->getRGBA()); \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "The colors should be equal when both are set with " #__VA_ARGS__, \
+        *color1 == *color2 && !(*color1 != *color2) \
+    );
+
+    TEST(1, 0, 0, 0);
+    TEST(0, 1, 0, 0);
+    TEST(0, 0, 1, 0);
+    TEST(0, 0, 0, 1);
+
+    #undef TEST
+}
+
 } // namespace sight::data::ut

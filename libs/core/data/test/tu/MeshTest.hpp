@@ -40,6 +40,7 @@ private:
     CPPUNIT_TEST(iteratorTest);
     CPPUNIT_TEST(iteratorCopyTest);
     CPPUNIT_TEST(benchmarkIterator);
+    CPPUNIT_TEST(equalityTest);
     CPPUNIT_TEST_SUITE_END();
 
     const float EPSILON = std::numeric_limits<float>::epsilon();
@@ -56,6 +57,7 @@ public:
     void iteratorTest();
     static void iteratorCopyTest();
     static void benchmarkIterator();
+    static void equalityTest();
 };
 
 } // namespace sight::data::ut

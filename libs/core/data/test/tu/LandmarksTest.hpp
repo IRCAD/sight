@@ -39,6 +39,7 @@ private:
     CPPUNIT_TEST(copyTest);
     CPPUNIT_TEST(groupTest);
     CPPUNIT_TEST(pointsTest);
+    CPPUNIT_TEST(equalityTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -55,6 +56,8 @@ public:
 
     /// test to add/ remove points in group
     static void pointsTest();
+
+    static void equalityTest();
 };
 
 } // namespace sight::data::ut

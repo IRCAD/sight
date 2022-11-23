@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -27,26 +26,14 @@
 namespace sight::data::ut
 {
 
-class FrameTLTest : public CPPUNIT_NS::TestFixture
+class StructureTraitsTest : public CPPUNIT_NS::TestFixture
 {
-public:
-
-    CPPUNIT_TEST_SUITE(FrameTLTest);
-    CPPUNIT_TEST(initTest);
-    CPPUNIT_TEST(pushTest);
-    CPPUNIT_TEST(copyTest);
-    CPPUNIT_TEST(equalityTest);
-    CPPUNIT_TEST_SUITE_END();
+CPPUNIT_TEST_SUITE(StructureTraitsTest);
+CPPUNIT_TEST(equalityTest);
+CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    // interface
-    void setUp() override;
-    void tearDown() override;
-
-    static void initTest();
-    static void pushTest();
-    static void copyTest();
     static void equalityTest();
 };
 

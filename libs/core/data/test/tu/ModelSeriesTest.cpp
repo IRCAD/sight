@@ -144,4 +144,32 @@ void ModelSeriesTest::shallowCopyTest()
 
 //------------------------------------------------------------------------------
 
+void ModelSeriesTest::equalityTest()
+{
+    auto series1 = data::ModelSeries::New();
+    auto series2 = data::ModelSeries::New();
+
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(op) \
+    series1->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Series must be different when using " #op " on the first one", \
+        *series1 != *series2 && !(*series1 == *series2) \
+    ); \
+    series2->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Series must be equal when using " #op " on both", \
+        *series1 == *series2 && !(*series1 != *series2) \
+    );
+
+    TEST(setReconstructionDB({data::Reconstruction::New()}));
+    TEST(setDicomReference(data::DicomSeries::New()));
+
+    #undef TEST
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace sight::data::ut
