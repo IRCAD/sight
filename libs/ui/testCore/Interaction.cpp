@@ -28,7 +28,7 @@
 #include <QAbstractButton>
 #include <QTimer>
 
-namespace sight::ui::test
+namespace sight::ui::testCore
 {
 
 //------------------------------------------------------------------------------
@@ -474,4 +474,4 @@ std::string PinchGesture::toString() const
            ) + " to " + pointToString(m_secondFingerPos.second);
 }
 
-} // namespace sight::ui::test
+} // namespace sight::ui::testCore

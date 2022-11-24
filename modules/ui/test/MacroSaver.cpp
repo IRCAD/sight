@@ -420,7 +420,7 @@ void MacroSaver::save()
     write(cpp, 0, "#include \"GuiTest.hpp\"");
     write(cpp, 0, "");
     write(cpp, 0, "#include <core/runtime/path.hpp>");
-    write(cpp, 0, "#include <ui/test/Tester.hpp>");
+    write(cpp, 0, "#include <ui/testCore/Tester.hpp>");
     write(cpp, 0, "");
     QStringList dependencies {"QObject"};
     for(const std::shared_ptr<PreInteraction>& interaction : m_interactions)
@@ -607,7 +607,7 @@ void MacroSaver::save()
     write(cpp, 0, "void GuiTest::test()");
     write(cpp, 0, "{");
     write(cpp, 4, "start(\"GuiTest\",");
-    write(cpp, 8, "[](sight::ui::test::Tester& tester)");
+    write(cpp, 8, "[](sight::ui::testCore::Tester& tester)");
     write(cpp, 4, "{");
 
     intptr_t currentItemId = 0;
@@ -670,7 +670,7 @@ void MacroSaver::save()
                     write(
                         cpp,
                         12,
-                        "return sight::ui::test::Tester::getWidgetFromAction(qobject_cast<QAction*>(old));"
+                        "return sight::ui::testCore::Tester::getWidgetFromAction(qobject_cast<QAction*>(old));"
                     );
                     write(cpp, 8, "});");
                 }
@@ -714,7 +714,9 @@ void MacroSaver::save()
             write(
                 cpp,
                 8,
-                QString("tester.interact(std::make_unique<sight::ui::test::MouseClick>(Qt::MouseButton::%1, %2, %3));")
+                QString(
+                    "tester.interact(std::make_unique<sight::ui::testCore::MouseClick>(Qt::MouseButton::%1, %2, %3));"
+                )
                 .arg(mouseButton.valueToKey(static_cast<int>(im->button))).arg(modifiersToString(im->modifiers))
                 .arg(QTest::toString(im->from))
             );
@@ -726,7 +728,7 @@ void MacroSaver::save()
                 cpp,
                 8,
                 QString(
-                    "tester.interact(std::make_unique<sight::ui::test::MouseDrag>(%1, %2, Qt::MouseButton::%3, %4));"
+                    "tester.interact(std::make_unique<sight::ui::testCore::MouseDrag>(%1, %2, Qt::MouseButton::%3, %4));"
                 )
                 .arg(QTest::toString(im->from)).arg(QTest::toString(im->to))
                 .arg(mouseButton.valueToKey(static_cast<int>(im->button))).arg(modifiersToString(im->modifiers))
@@ -739,7 +741,7 @@ void MacroSaver::save()
             write(
                 cpp,
                 8,
-                QString("tester.interact(std::make_unique<sight::ui::test::KeyboardClick>(Qt::Key::%1, %2));")
+                QString("tester.interact(std::make_unique<sight::ui::testCore::KeyboardClick>(Qt::Key::%1, %2));")
                 .arg(key.valueToKey(static_cast<int>(ik->key))).arg(modifiersToString(ik->modifiers))
             );
         }
@@ -750,7 +752,7 @@ void MacroSaver::save()
             write(
                 cpp,
                 8,
-                QString("tester.interact(std::make_unique<sight::ui::test::KeyboardSequence>(\"%1\", %2));")
+                QString("tester.interact(std::make_unique<sight::ui::testCore::KeyboardSequence>(\"%1\", %2));")
                 .arg(ik->sequence).arg(modifiersToString(ik->modifiers))
             );
         }
@@ -778,13 +780,13 @@ void MacroSaver::save()
     hpp.open(QIODevice::WriteOnly);
     write(hpp, 0, "#pragma once");
     write(hpp, 0, "");
-    write(hpp, 0, "#include <ui/test/ITest.hpp>");
+    write(hpp, 0, "#include <ui/testCore/ITest.hpp>");
     write(hpp, 0, "");
     write(hpp, 0, "#include <core/runtime/profile/Profile.hpp>");
     write(hpp, 0, "");
     write(hpp, 0, "#include <cppunit/extensions/HelperMacros.h>");
     write(hpp, 0, "");
-    write(hpp, 0, "class GuiTest : public sight::ui::test::ITest");
+    write(hpp, 0, "class GuiTest : public sight::ui::testCore::ITest");
     write(hpp, 0, "{");
     write(hpp, 0, "CPPUNIT_TEST_SUITE(GuiTest);");
     write(hpp, 0, "CPPUNIT_TEST(test);");

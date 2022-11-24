@@ -37,14 +37,14 @@ void AxialNegato::test()
 {
     const std::string testName               = "sightViewerAxialNegatoTest";
     const std::string imageName              = testName + ".png";
-    const std::filesystem::path snapshotPath = sight::ui::test::Tester::getImageOutputPath() / imageName;
+    const std::filesystem::path snapshotPath = sight::ui::testCore::Tester::getImageOutputPath() / imageName;
     std::filesystem::remove(snapshotPath);
 
     const std::filesystem::path referencePath = utestData::Data::dir() / "sight/ui/SightViewer" / imageName;
 
     start(
         testName,
-        [&snapshotPath, &referencePath](sight::ui::test::Tester& tester)
+        [&snapshotPath, &referencePath](sight::ui::testCore::Tester& tester)
         {
             openFile(
                 tester,
@@ -57,7 +57,7 @@ void AxialNegato::test()
                 "Show/hide volume button",
                 [&tester]() -> QWidget*
             {
-                return sight::ui::test::Tester::getWidgetFromAction(
+                return sight::ui::testCore::Tester::getWidgetFromAction(
                     tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Show/hide volume"
                     )
@@ -65,20 +65,20 @@ void AxialNegato::test()
             },
                 // We want to click on it, so it should be clickable
                 [](QWidget* obj) -> bool {return obj->isEnabled();});
-            tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
 
             // Then we want to display the negato view, we must click on the Negato view button to achieve this
             tester.take(
                 "Negato view button",
                 [&tester]() -> QObject*
             {
-                return sight::ui::test::Tester::getWidgetFromAction(
+                return sight::ui::testCore::Tester::getWidgetFromAction(
                     tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Negato view"
                     )
                 );
             });
-            tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
 
             // For the test to work, we must first reset all negatos to 0
             resetNegatos(tester);
@@ -98,10 +98,10 @@ void AxialNegato::test()
             for(int i = 0 ; i < 14 ; i++)
             {
                 tester.interact(
-                    std::make_unique<sight::ui::test::MouseClick>(
+                    std::make_unique<sight::ui::testCore::MouseClick>(
                         Qt::LeftButton,
                         Qt::NoModifier,
-                        sight::ui::test::Tester::rightOf(negatoSlider)
+                        sight::ui::testCore::Tester::rightOf(negatoSlider)
                     )
                 );
             }

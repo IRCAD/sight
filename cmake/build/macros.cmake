@@ -469,7 +469,6 @@ endmacro()
 # Create a GUI test
 macro(sight_gui_test SIGHT_TARGET)
     sight_generic_test(${SIGHT_TARGET} REQUIRE_X ON)
-    target_link_libraries(${SIGHT_TARGET} PUBLIC guiTest)
 
     # Set test command
     if(UNIX)

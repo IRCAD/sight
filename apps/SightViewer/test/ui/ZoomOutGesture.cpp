@@ -34,7 +34,7 @@ void ZoomOutGesture::test()
 {
     const std::string testName  = "sightViewerZoomOutGestureTest";
     const std::string imageName = testName + ".png";
-    const std::filesystem::path snapshotPath(sight::ui::test::Tester::getImageOutputPath() / imageName);
+    const std::filesystem::path snapshotPath(sight::ui::testCore::Tester::getImageOutputPath() / imageName);
     if(std::filesystem::exists(snapshotPath))
     {
         std::filesystem::remove(snapshotPath);
@@ -46,7 +46,7 @@ void ZoomOutGesture::test()
 
     start(
         testName,
-        [&snapshotPath, &referencePath](sight::ui::test::Tester& tester)
+        [&snapshotPath, &referencePath](sight::ui::testCore::Tester& tester)
         {
             openFile(
                 tester,
@@ -63,7 +63,7 @@ void ZoomOutGesture::test()
             auto* ogreScene = tester.get<QWidget*>();
             tester.interact(
                 // Pinch fingers...
-                std::make_unique<sight::ui::test::PinchGesture>(
+                std::make_unique<sight::ui::testCore::PinchGesture>(
                     // ...with the first finger going to the center from 300 pixels higher...
                     std::pair(ogreScene->rect().center() + QPoint(0, 300), ogreScene->rect().center() + QPoint(0, 1)),
                     // ...and the second finger going to the center from 300 pixels lower

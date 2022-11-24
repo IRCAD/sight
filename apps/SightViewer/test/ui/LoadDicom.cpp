@@ -37,14 +37,14 @@ void LoadDicom::test()
 {
     const std::string testName               = "sightViewerLoadDicomTest";
     const std::string imageName              = testName + ".png";
-    const std::filesystem::path snapshotPath = sight::ui::test::Tester::getImageOutputPath() / imageName;
+    const std::filesystem::path snapshotPath = sight::ui::testCore::Tester::getImageOutputPath() / imageName;
     std::filesystem::remove(snapshotPath);
 
     const std::filesystem::path referencePath(utestData::Data::dir() / "sight/ui/SightViewer" / imageName);
 
     start(
         testName,
-        [&snapshotPath, &referencePath](sight::ui::test::Tester& tester)
+        [&snapshotPath, &referencePath](sight::ui::testCore::Tester& tester)
         {
             openFile(
                 tester,
@@ -56,14 +56,14 @@ void LoadDicom::test()
                 "Show/hide volume button",
                 [&tester]() -> QWidget*
             {
-                return sight::ui::test::Tester::getWidgetFromAction(
+                return sight::ui::testCore::Tester::getWidgetFromAction(
                     tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Show/hide volume"
                     )
                 );
             },
                 [](QWidget* obj) -> bool {return obj->isEnabled();});
-            tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
 
             // The image appears small, zoom in with the mouse to make it bigger
             tester.take(
@@ -71,7 +71,7 @@ void LoadDicom::test()
                 [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("genericSceneSrv");});
 
             tester.interact(
-                std::make_unique<sight::ui::test::MouseWheel>(QPoint(0, int(1200 / qApp->devicePixelRatio())))
+                std::make_unique<sight::ui::testCore::MouseWheel>(QPoint(0, int(1200 / qApp->devicePixelRatio())))
             );
 
             saveSnapshot(tester, snapshotPath);

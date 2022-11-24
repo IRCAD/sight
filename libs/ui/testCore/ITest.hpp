@@ -23,7 +23,7 @@
 
 #include "Tester.hpp"
 
-#include "ui/test/config.hpp"
+#include "ui/testCore/config.hpp"
 
 #include <core/runtime/profile/Profile.hpp>
 
@@ -32,7 +32,7 @@
 #include <QEvent>
 #include <QObject>
 
-namespace sight::ui::test
+namespace sight::ui::testCore
 {
 
 class GUITEST_CLASS_API ITest : public CPPUNIT_NS::TestFixture
@@ -45,7 +45,7 @@ protected:
 
     GUITEST_API void start(const std::string& testName, std::function<void(Tester&)> test, bool verboseMode = false);
 
-    GUITEST_API virtual const char* getProfilePath() = 0;
+    GUITEST_API virtual std::filesystem::path getProfilePath() = 0;
 
     GUITEST_API static void compareImages(const std::filesystem::path& a, const std::filesystem::path& b);
 
@@ -54,4 +54,4 @@ private:
     sight::core::runtime::Profile::sptr m_profile;
 };
 
-} // namespace sight::ui::test
+} // namespace sight::ui::testCore

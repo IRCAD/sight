@@ -33,11 +33,11 @@
 #include <thread>
 #include <filesystem>
 
-#include "ui/test/config.hpp"
+#include "ui/testCore/config.hpp"
 
 #include "Interaction.hpp"
 
-namespace sight::ui::test
+namespace sight::ui::testCore
 {
 
 /// An event which has a function as a payload. Useful to execute arbitrary code on the main GUI thread.
@@ -453,6 +453,6 @@ private:
     static std::filesystem::path s_imageOutputPath;
 };
 
-} // namespace sight::ui::test
+} // namespace sight::ui::testCore
 
 #include "Tester.hxx"

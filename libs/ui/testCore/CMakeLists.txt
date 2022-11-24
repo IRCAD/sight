@@ -1,8 +1,5 @@
 sight_add_target(guiTest TYPE LIBRARY FAST_DEBUG ON)
 
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5Test REQUIRED)
-
 set(CMAKE_AUTOMOC ON)
 set_target_properties(guiTest PROPERTIES AUTOMOC TRUE)
 

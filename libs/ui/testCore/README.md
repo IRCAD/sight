@@ -1,4 +1,4 @@
-# sight::ui::test
+# sight::ui::testCore
 
 Contains tools to test graphical user interfaces.
 

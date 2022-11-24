@@ -21,6 +21,9 @@
 
 #include "ITest.hpp"
 
+#include <core/runtime/path.hpp>
+#include <core/runtime/runtime.hpp>
+
 #include <QAction>
 #include <QFileDialog>
 #include <QLineEdit>
@@ -34,15 +37,16 @@ namespace sight::sightviewer::test::ui
 
 //------------------------------------------------------------------------------
 
-const char* ITest::getProfilePath()
+std::filesystem::path ITest::getProfilePath()
 {
-    return "share/sight/SightViewer/profile.xml";
+    const std::filesystem::path cwd = sight::core::runtime::getWorkingPath();
+    return cwd / "share/sight/SightViewer/profile.xml";
 }
 
 //------------------------------------------------------------------------------
 
 void ITest::openFile(
-    sight::ui::test::Tester& tester,
+    sight::ui::testCore::Tester& tester,
     const std::string& format,
     const std::filesystem::path& path
 )
@@ -57,16 +61,16 @@ void ITest::openFile(
             auto* action = tester.getMainWindow()->findChild<QAction*>("toolBarView/Load series");
             // It is actually an action, which is an "abstract" component we can't interact with, we must get an
             // interactable component
-            return sight::ui::test::Tester::getWidgetFromAction(action);
+            return sight::ui::testCore::Tester::getWidgetFromAction(action);
         });
     // The, we can click on the button with the left button of the mouse
-    tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+    tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
     // Once we clicked the button, a modal window should appear
     tester.yields<QWidget*>(
         "format selection window",
         [](QObject*) -> QWidget* {return qApp->activeModalWidget();},
         [](QWidget* obj) -> bool {return obj->isVisible();},
-        sight::ui::test::Tester::DEFAULT_TIMEOUT*4
+        sight::ui::testCore::Tester::DEFAULT_TIMEOUT*4
     );
     // We'll need that modal window later, let's keep a reference to it
     auto* formatSelectionWindow = tester.get<QWidget*>();
@@ -97,7 +101,7 @@ void ITest::openFile(
         "ok button",
         [](QObject* obj) -> QObject* {return obj->findChildren<QPushButton*>()[0];});
     // ...and click on it
-    tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+    tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
 
     /* Fill the file dialog, tap PATH */
     // Once we clicked the button, another modal window should appear
@@ -113,7 +117,7 @@ void ITest::openFile(
     // Put the filename using QLineEdit::setText. This method is thread-safe, so we can use doSomething
     tester.doSomething<QLineEdit*>([&path](QLineEdit* obj){obj->setText(QString::fromStdString(path.string()));});
     // Press the Enter key to confirm
-    tester.interact(std::make_unique<sight::ui::test::KeyboardClick>(Qt::Key_Enter));
+    tester.interact(std::make_unique<sight::ui::testCore::KeyboardClick>(Qt::Key_Enter));
     // The modal window should now be closed
     tester.doubt("the file window is closed", [fileWindow](QObject*) -> bool {return !fileWindow->isVisible();});
 
@@ -124,14 +128,14 @@ void ITest::openFile(
             "Show/hide volume button",
             [&tester]() -> QWidget*
             {
-                return sight::ui::test::Tester::getWidgetFromAction(
+                return sight::ui::testCore::Tester::getWidgetFromAction(
                     tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Show/hide volume"
                     )
                 );
             },
             [](QWidget* obj) -> bool {return obj->isEnabled();},
-            sight::ui::test::Tester::DEFAULT_TIMEOUT*2
+            sight::ui::testCore::Tester::DEFAULT_TIMEOUT*2
         );
         QTest::qWait(10000);
     }
@@ -142,14 +146,14 @@ void ITest::openFile(
             "Show/hide volume button",
             [&tester]() -> QWidget*
             {
-                return sight::ui::test::Tester::getWidgetFromAction(
+                return sight::ui::testCore::Tester::getWidgetFromAction(
                     tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Show/hide volume"
                     )
                 );
             },
             [](QWidget* obj) -> bool {return obj->isEnabled();},
-            sight::ui::test::Tester::DEFAULT_TIMEOUT*2
+            sight::ui::testCore::Tester::DEFAULT_TIMEOUT*2
         );
     }
     else if(format == "VTK")
@@ -159,7 +163,7 @@ void ITest::openFile(
             "Show/hide mesh button",
             [&tester]() -> QWidget*
             {
-                return sight::ui::test::Tester::getWidgetFromAction(
+                return sight::ui::testCore::Tester::getWidgetFromAction(
                     tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Show/hide mesh"
                     )
@@ -171,7 +175,7 @@ void ITest::openFile(
 
 //------------------------------------------------------------------------------
 
-void ITest::saveSnapshot(sight::ui::test::Tester& tester, const std::filesystem::path& path)
+void ITest::saveSnapshot(sight::ui::testCore::Tester& tester, const std::filesystem::path& path)
 {
     /* Click on the "snapshot" button */
     // First, we need the main window
@@ -184,18 +188,18 @@ void ITest::saveSnapshot(sight::ui::test::Tester& tester, const std::filesystem:
             // We get the component using its name
             auto* action = obj->findChild<QAction*>("topToolbarView/Snapshot");
             // This component is actually a QAction, we must get its associated button in order to interact with it.
-            return sight::ui::test::Tester::getWidgetFromAction(action);
+            return sight::ui::testCore::Tester::getWidgetFromAction(action);
         });
     // We can finally click that button
-    tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+    tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
 
     /* Fill the file dialog, tap PATH and press Enter. */
     // Once we clicked that button, a modal window should appear
     tester.yields(
         "save snapshot file window",
         [](QObject*) -> QObject* {return qApp->activeModalWidget();},
-        sight::ui::test::alwaysTrue,
-        sight::ui::test::Tester::DEFAULT_TIMEOUT*16
+        sight::ui::testCore::alwaysTrue,
+        sight::ui::testCore::Tester::DEFAULT_TIMEOUT*16
     );
     // In that window, there is a text field to enter the file name
     tester.yields(
@@ -204,12 +208,12 @@ void ITest::saveSnapshot(sight::ui::test::Tester& tester, const std::filesystem:
     // We can fill this text field using QLineEdit::setText
     tester.doSomething<QLineEdit*>([&path](QLineEdit* obj){obj->setText(QString::fromStdString(path.string()));});
     // We can then press Enter to confirm
-    tester.interact(std::make_unique<sight::ui::test::KeyboardClick>(Qt::Key_Enter));
+    tester.interact(std::make_unique<sight::ui::testCore::KeyboardClick>(Qt::Key_Enter));
     // Once we have pressed Enter, the path must be created...
     tester.doubt(
         "the snapshot is saved",
         [&path](QObject*) -> bool {return std::filesystem::exists(path);},
-        sight::ui::test::Tester::DEFAULT_TIMEOUT*2
+        sight::ui::testCore::Tester::DEFAULT_TIMEOUT*2
     );
     // ...and the image should be valid.
     bool ok = QTest::qWaitFor([&path]() -> bool {return !QImage(QString::fromStdString(path.string())).isNull();});
@@ -218,7 +222,7 @@ void ITest::saveSnapshot(sight::ui::test::Tester& tester, const std::filesystem:
 
 //------------------------------------------------------------------------------
 
-void ITest::resetNegatos(sight::ui::test::Tester& tester)
+void ITest::resetNegatos(sight::ui::testCore::Tester& tester)
 {
     const std::array negatos {"axial", "frontal", "sagittal"};
     for(std::string negato : negatos)

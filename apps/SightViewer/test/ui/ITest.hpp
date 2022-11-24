@@ -21,20 +21,24 @@
 
 #pragma once
 
-#include <ui/test/ITest.hpp>
+#include <ui/testCore/ITest.hpp>
 
 namespace sight::sightviewer::test::ui
 {
 
-class ITest : public sight::ui::test::ITest
+class ITest : public sight::ui::testCore::ITest
 {
 public:
 
-    const char* getProfilePath() override;
+    std::filesystem::path getProfilePath() override;
 
-    static void openFile(sight::ui::test::Tester& tester, const std::string& format, const std::filesystem::path& path);
-    static void saveSnapshot(sight::ui::test::Tester& tester, const std::filesystem::path& path);
-    static void resetNegatos(sight::ui::test::Tester& tester);
+    static void openFile(
+        sight::ui::testCore::Tester& tester,
+        const std::string& format,
+        const std::filesystem::path& path
+    );
+    static void saveSnapshot(sight::ui::testCore::Tester& tester, const std::filesystem::path& path);
+    static void resetNegatos(sight::ui::testCore::Tester& tester);
 };
 
 } // namespace sight::sightviewer::test::ui

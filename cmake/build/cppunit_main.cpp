@@ -107,6 +107,25 @@ struct Options
             {
                 this->listTests = true;
             }
+            else if(arg == "-B")
+            {
+                ++args;
+                if(args >= argsEnd)
+                {
+                    std::cerr << "value for -B is missing" << std::endl;
+                    return false;
+                }
+
+                const std::filesystem::path externalBundel {std::string(*args)};
+                if(!std::filesystem::exists(externalBundel) || !std::filesystem::is_directory(externalBundel))
+                {
+                    std::cerr << "The external bundle provided in argument is not a consistent directory : "
+                    << externalBundel.string() << std::endl;
+                    return false;
+                }
+
+                sight::core::runtime::addModules(externalBundel);
+            }
             else
             {
                 this->testsToRun.push_back(arg);

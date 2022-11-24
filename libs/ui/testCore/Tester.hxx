@@ -21,7 +21,7 @@
 
 #pragma once
 
-namespace sight::ui::test
+namespace sight::ui::testCore
 {
 
 //------------------------------------------------------------------------------
@@ -212,4 +212,4 @@ T Tester::get()
     return qobject_cast<T>(m_graphicComponent);
 }
 
-} // namespace sight::ui::test
+} // namespace sight::ui::testCore

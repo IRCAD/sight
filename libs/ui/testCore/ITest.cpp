@@ -26,7 +26,7 @@
 #include <core/runtime/path.hpp>
 #include <core/runtime/runtime.hpp>
 
-namespace sight::ui::test
+namespace sight::ui::testCore
 {
 
 //------------------------------------------------------------------------------
@@ -34,11 +34,23 @@ namespace sight::ui::test
 void ITest::setUp()
 {
     sight::core::runtime::init();
-    const std::filesystem::path cwd  = sight::core::runtime::getWorkingPath();
-    const std::filesystem::path path = cwd / getProfilePath();
-    m_profile = sight::core::runtime::io::ProfileReader::createProfile(path);
+
+    const auto profileFilePath = getProfilePath();
+
+    //load the profiles' project modules
+    const auto profileModulePath = profileFilePath.parent_path().parent_path();
+    if(std::filesystem::exists(profileModulePath) && std::filesystem::is_directory(profileModulePath))
+    {
+        sight::core::runtime::addModules(profileModulePath);
+    }
+    else
+    {
+        SIGHT_ERROR("Module path " << profileModulePath << " does not exists or is not a directory.");
+    }
+
+    m_profile = sight::core::runtime::io::ProfileReader::createProfile(profileFilePath);
     m_profile->start();
-    sight::ui::test::Tester::init();
+    sight::ui::testCore::Tester::init();
 }
 
 //------------------------------------------------------------------------------
@@ -74,4 +86,4 @@ void ITest::compareImages(const std::filesystem::path& a, const std::filesystem:
     CPPUNIT_ASSERT_MESSAGE(message + " (Voodoo)\n" + score, voodoo > 0.96);
 }
 
-} // namespace sight::ui::test
+} // namespace sight::ui::testCore

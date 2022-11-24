@@ -1,3 +1,3 @@
 sight_add_target(sightViewerGuiTest TYPE GUI_TEST)
 
-add_dependencies(sightViewerGuiTest SightViewer)
+target_link_libraries(sightViewerGuiTest guiTest SightViewer)

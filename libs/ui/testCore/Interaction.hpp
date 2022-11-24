@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "ui/test/config.hpp"
+#include "ui/testCore/config.hpp"
 
 #include <QPoint>
 #include <QWidget>
@@ -29,7 +29,7 @@
 
 #include <string>
 
-namespace sight::ui::test
+namespace sight::ui::testCore
 {
 
 /// Represents a user interaction on the interace, such as a mouse click, keyboard tap...
@@ -206,4 +206,4 @@ private:
     std::pair<QPoint, QPoint> m_secondFingerPos;
 };
 
-} // namespace sight::ui::test
+} // namespace sight::ui::testCore

@@ -34,7 +34,7 @@
 #include <cmath>
 #include <iostream>
 
-namespace sight::ui::test
+namespace sight::ui::testCore
 {
 
 //------------------------------------------------------------------------------
@@ -64,8 +64,12 @@ bool TestEventFilter::eventFilter(QObject* obj, QEvent* event)
     if(event->type() == QEvent::User)
     {
         auto* testEvent = dynamic_cast<TestEvent*>(event);
-        testEvent->function()();
-        return true;
+        // the event catched here might not be a TestEvent, in which case, testEvent will be nullptr
+        if(testEvent != nullptr)
+        {
+            testEvent->function()();
+            return true;
+        }
     }
 
     return QObject::eventFilter(obj, event);
@@ -836,4 +840,4 @@ QTouchDevice* Tester::getDummyTouchScreen()
     return res;
 }
 
-} // namespace sight::ui::test
+} // namespace sight::ui::testCore
