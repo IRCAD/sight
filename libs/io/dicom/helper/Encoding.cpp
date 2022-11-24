@@ -104,20 +104,20 @@ const Encoding::DefinedTermToCharsetMapType Encoding::s_DEFINED_TERM_TO_CHARSET 
 };
 
 const Encoding::EscapeSequenceToCharsetMapType Encoding::s_ESCAPE_SEQUENCE_TO_CHARSET = {
-    {{0x28, 0x42}, {"ISO 2022 IR 6", ""}},             // ASCII
-    {{0x2d, 0x41}, {"ISO 2022 IR 100", "ISO-8859-1"}}, // Latin alphabet No. 1
-    {{0x2d, 0x42}, {"ISO 2022 IR 101", "ISO-8859-2"}}, // Latin alphabet No. 2
-    {{0x2d, 0x43}, {"ISO 2022 IR 109", "ISO-8859-3"}}, // Latin alphabet No. 3
-    {{0x2d, 0x44}, {"ISO 2022 IR 110", "ISO-8859-4"}}, // Latin alphabet No. 4
-    {{0x2d, 0x4c}, {"ISO 2022 IR 144", "ISO-8859-5"}}, // Cyrillic
-    {{0x2d, 0x47}, {"ISO 2022 IR 127", "ISO-8859-6"}}, // Arabic
-    {{0x2d, 0x46}, {"ISO 2022 IR 126", "ISO-8859-7"}}, // Greek
-    {{0x2d, 0x48}, {"ISO 2022 IR 138", "ISO-8859-8"}}, // Hebrew
-    {{0x2d, 0x4d}, {"ISO 2022 IR 148", "ISO-8859-9"}}, // Latin alphabet No. 5
-    {{0x29, 0x49}, {"ISO 2022 IR 13", "JIS_X0201"}},   // Japanese { may require "ISO-IR-13"}
-    {{0x28, 0x4a}, {"ISO 2022 IR 13", "ISO-IR-14"}},   // Japanese
-    {{0x2d, 0x54}, {"ISO 2022 IR 166", "ISO-IR-166"}}, // Thai
-    {{0x24, 0x42}, {"ISO 2022 IR 87", "ISO-IR-87"}} // Japanese { multi-byte}
+    {{char(0x28), char(0x42)}, {"ISO 2022 IR 6", ""}},             // ASCII
+    {{char(0x2d), char(0x41)}, {"ISO 2022 IR 100", "ISO-8859-1"}}, // Latin alphabet No. 1
+    {{char(0x2d), char(0x42)}, {"ISO 2022 IR 101", "ISO-8859-2"}}, // Latin alphabet No. 2
+    {{char(0x2d), char(0x43)}, {"ISO 2022 IR 109", "ISO-8859-3"}}, // Latin alphabet No. 3
+    {{char(0x2d), char(0x44)}, {"ISO 2022 IR 110", "ISO-8859-4"}}, // Latin alphabet No. 4
+    {{char(0x2d), char(0x4c)}, {"ISO 2022 IR 144", "ISO-8859-5"}}, // Cyrillic
+    {{char(0x2d), char(0x47)}, {"ISO 2022 IR 127", "ISO-8859-6"}}, // Arabic
+    {{char(0x2d), char(0x46)}, {"ISO 2022 IR 126", "ISO-8859-7"}}, // Greek
+    {{char(0x2d), char(0x48)}, {"ISO 2022 IR 138", "ISO-8859-8"}}, // Hebrew
+    {{char(0x2d), char(0x4d)}, {"ISO 2022 IR 148", "ISO-8859-9"}}, // Latin alphabet No. 5
+    {{char(0x29), char(0x49)}, {"ISO 2022 IR 13", "JIS_X0201"}},   // Japanese { may require "ISO-IR-13"}
+    {{char(0x28), char(0x4a)}, {"ISO 2022 IR 13", "ISO-IR-14"}},   // Japanese
+    {{char(0x2d), char(0x54)}, {"ISO 2022 IR 166", "ISO-IR-166"}}, // Thai
+    {{char(0x24), char(0x42)}, {"ISO 2022 IR 87", "ISO-IR-87"}} // Japanese { multi-byte}
 };
 
 //------------------------------------------------------------------------------

@@ -279,7 +279,7 @@ data::Image::sptr createImageFromPixelBuffer()
 
     // Zero the buffer
     const auto dumpLock = image->dump_lock();
-    std::fill(image->begin(), image->end(), 0);
+    std::fill(image->begin(), image->end(), std::int8_t(0));
 
     return image;
 }

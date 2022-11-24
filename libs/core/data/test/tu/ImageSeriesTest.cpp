@@ -265,12 +265,12 @@ void ImageSeriesTest::equalityTest()
     series2->setWindowWidth(series1->getWindowWidth());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setRows(42);
+    series1->setRows(std::uint16_t(42));
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
     series2->setRows(series1->getRows());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setColumns(43);
+    series1->setColumns(std::uint16_t(43));
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
     series2->setColumns(series1->getColumns());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));

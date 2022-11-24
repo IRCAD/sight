@@ -252,7 +252,7 @@ void ImageTest::testSetGetPixel()
             CPPUNIT_ASSERT_EQUAL(*iterImg1, *iterImg2);
         }
     }
-    std::fill(img->begin(), img->end(), 0);
+    std::fill(img->begin(), img->end(), std::int8_t(0));
 
     for(const auto& element : *img)
     {
@@ -397,7 +397,7 @@ void ImageTest::testSetGetPixelRGBA()
             CPPUNIT_ASSERT_EQUAL(iterImg1->a, iterImg2->a);
         }
     }
-    std::fill(img->begin(), img->end(), 0);
+    std::fill(img->begin(), img->end(), std::int8_t(0));
 
     for(const auto& element : *img)
     {

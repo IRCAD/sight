@@ -28,7 +28,6 @@
 #include <data/Matrix4.hpp>
 
 #include <filter/image/AutomaticRegistration.hpp>
-#include <filter/image/Metric.hpp>
 
 #include <service/IFilter.hpp>
 

@@ -168,10 +168,10 @@ void FrameTLTest::pushTest()
 
     SPTR(data::FrameTL::BufferType) data1 = timeline->createBuffer(time1);
     std::uint8_t* bufferData1 = data1->addElement(0);
-    std::fill(bufferData1, bufferData1 + (10LL * 20 * 3), 1);
+    std::memset(bufferData1, 1, (10LL * 20 * 3));
     SPTR(data::FrameTL::BufferType) data2 = timeline->createBuffer(time2);
     std::uint8_t* bufferData2 = data2->addElement(0);
-    std::fill(bufferData2, bufferData2 + (10LL * 20 * 3), 2);
+    std::memset(bufferData2, 2, (10LL * 20 * 3));
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
@@ -221,10 +221,10 @@ void FrameTLTest::copyTest()
 
     SPTR(data::FrameTL::BufferType) data1 = timeline->createBuffer(time1);
     std::uint8_t* bufferData1 = data1->addElement(0);
-    std::fill(bufferData1, bufferData1 + (11LL * 22 * 4), 1);
+    std::memset(bufferData1, 1, (11LL * 22 * 4));
     SPTR(data::FrameTL::BufferType) data2 = timeline->createBuffer(time2);
     std::uint8_t* bufferData2 = data2->addElement(0);
-    std::fill(bufferData2, bufferData2 + (11LL * 22 * 4), 2);
+    std::memset(bufferData2, 2, (11LL * 22 * 4));
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);

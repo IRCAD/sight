@@ -19,27 +19,19 @@
  *
  ***********************************************************************/
 
-// cspell:ignore NOLINTNEXTLINE
+// cspell:ignore NOLINTNEXTLINE Wclass memaccess
 
 #pragma once
 
 #include "core/config.hpp"
 
 #include <algorithm>
+#include <cstring>
 #include <memory>
 #include <string>
 
 namespace sight::core::crypto
 {
-
-/// Zeroes the pointed memory
-/// @param p memory address
-/// @param n length to zero
-inline constexpr void cleanse(void* p, std::size_t n) noexcept
-{
-    // "volatile" guard from unwanted optimization
-    std::fill_n(static_cast<volatile char*>(p), n, 0);
-}
 
 /// This class is an implementation of basic_string Allocator. Its main feature is secure deletion of allocated data
 /// See https://en.cppreference.com/w/cpp/named_req/Allocator
@@ -50,25 +42,25 @@ struct allocator
     using propagate_on_container_move_assignment =
         typename std::allocator_traits<std::allocator<T> >::propagate_on_container_move_assignment;
 
-    inline constexpr allocator() = default;
+    constexpr allocator() = default;
 
     template<class U>
-    inline constexpr allocator(const allocator<U>& /*unused*/) noexcept
+    constexpr allocator(const allocator<U>& /*unused*/) noexcept
     {
     }
 
     //------------------------------------------------------------------------------
 
-    inline constexpr static T* allocate(std::size_t n)
+    constexpr static T* allocate(std::size_t n)
     {
         return std::allocator<T> {}.allocate(n);
     }
 
     //------------------------------------------------------------------------------
 
-    inline static void deallocate(T* p, std::size_t n) noexcept
+    constexpr static void deallocate(T* p, std::size_t n) noexcept
     {
-        cleanse(p, n * sizeof(T));
+        std::fill_n(((volatile char*) p), sizeof(T) * n, static_cast<char>(0));
         std::allocator<T> {}.deallocate(p, n);
     }
 };
@@ -76,7 +68,7 @@ struct allocator
 //------------------------------------------------------------------------------
 
 template<typename T, typename U>
-inline constexpr bool operator==(allocator<T> /*unused*/, allocator<U> /*unused*/) noexcept
+constexpr bool operator==(allocator<T> /*unused*/, allocator<U> /*unused*/) noexcept
 {
     return true;
 }
@@ -84,7 +76,7 @@ inline constexpr bool operator==(allocator<T> /*unused*/, allocator<U> /*unused*
 //------------------------------------------------------------------------------
 
 template<typename T, typename U>
-inline constexpr bool operator!=(allocator<T> /*unused*/, allocator<U> /*unused*/) noexcept
+constexpr bool operator!=(allocator<T> /*unused*/, allocator<U> /*unused*/) noexcept
 {
     return false;
 }
@@ -105,6 +97,8 @@ inline sight::core::crypto::secure_string::~basic_string()
 {
     clear();
     shrink_to_fit();
-    // NOLINTNEXTLINE(bugprone-sizeof-container) the "metadata" of the container is cleansed here, not its content
-    sight::core::crypto::cleanse(this, sizeof(*this));
+
+    // The "metadata" of the container is cleansed here, not its content
+    // NOLINTNEXTLINE(bugprone-sizeof-container)
+    std::fill_n(((volatile char*) this), sizeof(*this), static_cast<char>(0));
 }

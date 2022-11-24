@@ -50,6 +50,8 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 #include <filesystem>
 
 namespace sight::module::io::vtk
@@ -171,11 +173,7 @@ void SModelSeriesWriter::configuring()
     if(!ext.empty())
     {
         // Make sure to lowercase extension
-        std::transform(
-            ext.begin(),
-            ext.end(),
-            ext.begin(),
-            [](unsigned char c){return std::tolower(c);});
+        boost::to_lower(ext);
 
         if(ext != "vtk" && ext != "vtp" && ext != "stl" && ext != "ply" && ext != "obj")
         {

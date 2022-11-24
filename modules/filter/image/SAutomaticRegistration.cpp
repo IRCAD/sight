@@ -22,11 +22,6 @@
 
 #include "SAutomaticRegistration.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-
-#include <filter/image/AutomaticRegistration.hpp>
-
 #include <service/macros.hpp>
 
 #include <ui/base/dialog/ProgressDialog.hpp>

@@ -28,8 +28,6 @@
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
 
-#include <itkEuler3DTransform.h>
-#include <itkImageRegistrationMethodv4.h>
 #include <itkIntTypes.h>
 #include <itkRegularStepGradientDescentOptimizerv4.h>
 
@@ -46,16 +44,19 @@ class FILTER_IMAGE_CLASS_API AutomaticRegistration
 public:
 
     /// Numeric type used for internal computations.
-    typedef double RealType;
+    using RealType = double;
 
-    typedef typename itk::Image<float, 3> RegisteredImageType;
+    using RegisteredImageType = itk::Image<float, 3>;
 
-    typedef typename itk::RegularStepGradientDescentOptimizerv4<RealType> OptimizerType;
+    using OptimizerType = itk::RegularStepGradientDescentOptimizerv4<RealType>;
 
     /// Shrink factors per level and smoothing sigmas per level
-    typedef std::vector<std::pair<itk::SizeValueType, RealType> > MultiResolutionParametersType;
+    using MultiResolutionParametersType = std::vector<std::pair<itk::SizeValueType, RealType> >;
 
-    typedef std::function<void ()> IterationCallbackType;
+    using IterationCallbackType = std::function<void ()>;
+
+    FILTER_IMAGE_API AutomaticRegistration() noexcept;
+    FILTER_IMAGE_API virtual ~AutomaticRegistration() noexcept;
 
     /**
      * @brief find a rigid transform matching the reference image with the target image.
@@ -108,20 +109,9 @@ public:
 
 private:
 
-    typedef typename itk::Euler3DTransform<RealType> TransformType;
-
-    typedef typename itk::ImageRegistrationMethodv4<RegisteredImageType, RegisteredImageType, TransformType>
-        RegistrationMethodType;
-
-    OptimizerType::Pointer m_optimizer {nullptr};
-
-    RegistrationMethodType::Pointer m_registrator {nullptr};
-
-    bool m_invert {false};
-
-    void convertToF4sMatrix(const TransformType* _itkMat, const data::Matrix4::sptr& _f4sMat) const;
-
-    static double computeVolume(const data::Image::csptr& _img);
+    /// PImpl
+    class AutomaticRegistrationImpl;
+    std::unique_ptr<AutomaticRegistrationImpl> m_pimpl;
 };
 
 } // namespace sight::filter::image

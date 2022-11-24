@@ -22,12 +22,7 @@
 
 #include "SImageCenter.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-
 #include <data/helper/MedicalImage.hpp>
-
-#include <filter/image/AutomaticRegistration.hpp>
 
 #include <geometry/data/Matrix4.hpp>
 
@@ -35,16 +30,6 @@
 
 namespace sight::module::filter::image
 {
-
-//------------------------------------------------------------------------------
-
-SImageCenter::SImageCenter()
-= default;
-
-//------------------------------------------------------------------------------
-
-SImageCenter::~SImageCenter()
-= default;
 
 //------------------------------------------------------------------------------
 

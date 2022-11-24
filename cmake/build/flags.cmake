@@ -39,6 +39,9 @@ if(MSVC)
 
     # Basically needed for DCMTK
     add_compile_options("/Zc:__cplusplus")
+
+    # Add support for __VA_OPT__
+    add_compile_options("/Zc:preprocessor")
 endif()
 
 # Add a global compile definition to help strip __FILE__ to show a relative file path
@@ -49,7 +52,7 @@ add_compile_definitions(SIGHT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 add_compile_options(
     "$<$<CXX_COMPILER_ID:GNU,Clang>:-march=${SIGHT_ARCH};-mtune=generic;-mfpmath=sse>"
     "$<$<AND:$<CXX_COMPILER_ID:Clang>,$<CONFIG:Debug>>:-fno-limit-debug-info>" # Needed to debug STL classes
-    "$<$<CXX_COMPILER_ID:MSVC>:/favor:blend;/fp:precise;/Qfast_transcendentals;/arch:${SIGHT_ARCH};/MP;/bigobj;/FC>"
+    "$<$<CXX_COMPILER_ID:MSVC>:/favor:blend;/fp:precise;/Qfast_transcendentals;/arch:${SIGHT_ARCH};/bigobj;/FC>"
     "$<$<CONFIG:Debug>:-DDEBUG;-D_DEBUG>"
 )
 
@@ -59,7 +62,7 @@ if(OPENMP_CXX_FOUND)
     add_compile_options(${OpenMP_CXX_FLAGS})
 endif()
 
-add_compile_definitions("$<$<CXX_COMPILER_ID:MSVC>:/D_ENABLE_EXTENDED_ALIGNED_STORAGE>")
+add_compile_definitions("$<$<CXX_COMPILER_ID:MSVC>:_ENABLE_EXTENDED_ALIGNED_STORAGE>")
 
 # C/C++ standard
 set(CMAKE_CXX_STANDARD 20)
@@ -99,7 +102,10 @@ endif()
 
 # -fuse-ld=gold will make use of gold linker, which is faster and allows --gdb-index
 # -Wl,--gdb-index pass the --gdb-index option to the linker to generate indexes that will speedup gdb start
-add_link_options("$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<CONFIG:Debug>>:-fuse-ld=gold;-Wl,--gdb-index>")
+add_link_options(
+    "$<$<AND:$<CXX_COMPILER_ID:GNU>,$<CONFIG:Debug>>:-fuse-ld=gold;-Wl,--gdb-index>"
+    "$<$<AND:$<CXX_COMPILER_ID:Clang>,$<CONFIG:Debug>>:-fuse-ld=lld;-Wl,--gdb-index>"
+)
 
 # General linker optimization
 add_link_options(

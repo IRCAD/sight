@@ -161,7 +161,7 @@ void IGrabber::clearTimeline(data::FrameTL& _tl)
         SPTR(data::FrameTL::BufferType) buffer = _tl.createBuffer(timestamp);
         auto* destBuffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
 
-        std::fill(destBuffer, destBuffer + _tl.getWidth() * _tl.getHeight() * _tl.numComponents(), 0);
+        std::memset(destBuffer, 0, _tl.getWidth() * _tl.getHeight() * _tl.numComponents());
 
         // push buffer and notify
         _tl.clearTimeline();

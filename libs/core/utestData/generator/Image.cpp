@@ -125,7 +125,7 @@ void Image::generateImage(
     image->setOrigin(origin);
 
     auto lock = image->dump_lock();
-    std::fill(image->begin(), image->end(), 0);
+    std::fill(image->begin(), image->end(), std::int8_t(0));
 
     sight::data::helper::MedicalImage::checkImageSliceIndex(image);
 }

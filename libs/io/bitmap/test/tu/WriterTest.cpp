@@ -22,7 +22,6 @@
 
 #include "WriterTest.hpp"
 
-#include <core/Profiling.hpp>
 #include <core/tools/System.hpp>
 #include <core/tools/UUID.hpp>
 
@@ -34,6 +33,7 @@
 #include <io/opencv/Type.hpp>
 
 #include <utest/Filter.hpp>
+#include <utest/profiling.hpp>
 
 #include <utestData/Data.hpp>
 
@@ -387,26 +387,26 @@ inline static void profileWriter(
     }
 
     // Now profile writing
-    for(std::size_t i = 0 ; const auto& image : images)
-    {
-        FW_PROFILE(LABEL.c_str());
-
-        writer->setObject(image);
-
-        // Profile writing "loop" time
-        for(std::size_t j = 0 ; j < loop ; ++j)
+    SIGHT_PROFILE_FUNC(
+        [&]
+            (std::size_t i)
         {
-            const auto& tmpPath = tmp_folder / (std::to_string(i) + "_" + std::to_string(j) + FILE_SUFFIX);
-            writer->setFile(tmpPath);
+            for(std::size_t j = 0 ; const auto& image : images)
+            {
+                writer->setObject(image);
+                const auto& tmpPath = tmp_folder / (std::to_string(i) + "_" + std::to_string(j++) + FILE_SUFFIX);
+                writer->setFile(tmpPath);
 
-            CPPUNIT_ASSERT_NO_THROW(writer->write(backend, mode));
+                CPPUNIT_ASSERT_NO_THROW(writer->write(backend, mode));
 
-            // Schedule cleanup
-            tasks.emplace_back(std::async(std::launch::deferred, [ = ]{std::filesystem::remove_all(tmpPath);}));
-        }
-
-        ++i;
-    }
+                // Schedule cleanup
+                tasks.emplace_back(std::async(std::launch::deferred, [ = ]{std::filesystem::remove_all(tmpPath);}));
+            }
+        },
+        loop,
+        LABEL,
+        0.1
+    );
 
     // Wait for all file delete task to finish
     while(!tasks.empty())
@@ -440,7 +440,7 @@ inline static void profileOpenCVWriter(
     // Get size, psnr, ...
     for(std::size_t i = 0 ; const auto& image : images)
     {
-        const auto& tmpPath = tmp_folder / (std::to_string(i) + FILE_SUFFIX);
+        const auto& tmpPath = tmp_folder / (std::to_string(i++) + FILE_SUFFIX);
 
         // Convert Image to OpenCV Mat
         const cv::Mat& mat = imageToMat(image);
@@ -476,29 +476,27 @@ inline static void profileOpenCVWriter(
 
         // Cleanup
         std::filesystem::remove_all(tmpPath);
-        ++i;
     }
 
     // Now profile writing
-    for(std::size_t i = 0 ; const auto& image : images)
-    {
-        FW_PROFILE(LABEL.c_str());
-
-        // Profile writing "loop" time
-        for(std::size_t j = 0 ; j < loop ; ++j)
+    SIGHT_PROFILE_FUNC(
+        [&]
+            (std::size_t i)
         {
-            const auto& tmpPath = tmp_folder / (std::to_string(i) + "_" + std::to_string(j) + FILE_SUFFIX);
-
-            // Convert Image to OpenCV Mat
-            const cv::Mat& mat = imageToMat(image);
-
-            // Write image
-            if(mode == Writer::Mode::BEST)
+            for(std::size_t j = 0 ; const auto& image : images)
             {
-                CPPUNIT_ASSERT(
-                    cv::imwrite(
-                        tmpPath.string(),
-                        mat,
+                const auto& tmpPath = tmp_folder / (std::to_string(i) + "_" + std::to_string(j++) + FILE_SUFFIX);
+
+                // Convert Image to OpenCV Mat
+                const cv::Mat& mat = imageToMat(image);
+
+                // Write image
+                if(mode == Writer::Mode::BEST)
+                {
+                    CPPUNIT_ASSERT(
+                        cv::imwrite(
+                            tmpPath.string(),
+                            mat,
                     {
                         cv::IMWRITE_JPEG_QUALITY, 100,
                         cv::IMWRITE_JPEG_CHROMA_QUALITY, 100,
@@ -507,19 +505,21 @@ inline static void profileOpenCVWriter(
                         cv::IMWRITE_PNG_COMPRESSION, 9,
                         cv::IMWRITE_PNG_STRATEGY, cv::IMWRITE_PNG_STRATEGY_DEFAULT
                     })
-                );
-            }
-            else
-            {
-                CPPUNIT_ASSERT(cv::imwrite(tmpPath.string(), mat));
-            }
+                    );
+                }
+                else
+                {
+                    CPPUNIT_ASSERT(cv::imwrite(tmpPath.string(), mat));
+                }
 
-            // Schedule cleanup
-            tasks.emplace_back(std::async(std::launch::deferred, [ = ]{std::filesystem::remove_all(tmpPath);}));
-        }
-
-        ++i;
-    }
+                // Schedule cleanup
+                tasks.emplace_back(std::async(std::launch::deferred, [ = ]{std::filesystem::remove_all(tmpPath);}));
+            }
+        },
+        loop,
+        LABEL,
+        0.1
+    );
 
     // Wait for all file delete task to finish
     while(!tasks.empty())
@@ -995,24 +995,6 @@ void WriterTest::profilingTest()
             Writer::Mode::BEST,
             tasks
         );
-
-        profileWriter(
-            images,
-            tmp_folder,
-            LOOP_COUNT,
-            Writer::Backend::NVJPEG2K_J2K,
-            Writer::Mode::FAST,
-            tasks
-        );
-
-        profileWriter(
-            images,
-            tmp_folder,
-            LOOP_COUNT,
-            Writer::Backend::NVJPEG2K_J2K,
-            Writer::Mode::BEST,
-            tasks
-        );
     }
 
     // libJPEG
@@ -1085,15 +1067,6 @@ void WriterTest::profilingTest()
             tmp_folder,
             LOOP_COUNT,
             Writer::Backend::OPENJPEG,
-            Writer::Mode::DEFAULT,
-            tasks
-        );
-
-        profileWriter(
-            images,
-            tmp_folder,
-            LOOP_COUNT,
-            Writer::Backend::OPENJPEG_J2K,
             Writer::Mode::DEFAULT,
             tasks
         );
