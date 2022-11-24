@@ -100,24 +100,28 @@ function(get_header_file_install_destination)
     endif()
 
     if("${ROOT}" STREQUAL "libs")
-        set(HEADER_FILE_DESTINATION_REL "${PROJECT_PATH}" PARENT_SCOPE)
+        set(HEADER_FILE_DESTINATION_REL "${PROJECT_PATH}")
     else()
         if("${ROOT}" STREQUAL "modules" OR "${ROOT}" STREQUAL "activities")
-            set(HEADER_FILE_DESTINATION_REL "${ROOT}/${PROJECT_PATH}" PARENT_SCOPE)
+            set(HEADER_FILE_DESTINATION_REL "${ROOT}/${PROJECT_PATH}")
         else()
-            set(HEADER_FILE_DESTINATION_REL "${PROJECT}" PARENT_SCOPE)
+            set(HEADER_FILE_DESTINATION_REL "${PROJECT}")
         endif()
     endif()
+    set(HEADER_FILE_DESTINATION_REL "${HEADER_FILE_DESTINATION_REL}" PARENT_SCOPE)
+    set(HEADER_FILE_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/include/${HEADER_FILE_DESTINATION_REL}" PARENT_SCOPE)
 endfunction()
 
 # Configure header template
-macro(configure_header_file SIGHT_TARGET FILENAME HEADER_FILE_DESTINATION_REL)
-    set(HEADER_FILE_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/include/${HEADER_FILE_DESTINATION_REL}")
-    configure_file("${FWCMAKE_BUILD_FILES_DIR}/${FILENAME}.in" ${HEADER_FILE_DESTINATION}/${FILENAME} IMMEDIATE @ONLY)
+macro(configure_header_file SIGHT_TARGET FILENAME HEADER_FILE_DESTINATION HEADER_FILE_DESTINATION_REL)
 
-    install(FILES ${HEADER_FILE_DESTINATION}/${FILENAME}
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
-    )
+    configure_file("${FWCMAKE_BUILD_FILES_DIR}/${FILENAME}.in" ${HEADER_FILE_DESTINATION}/${FILENAME} IMMEDIATE @ONLY)
+    # On windows, we must replace the _API macros before, so we install it later with all other headers
+    if(UNIX)
+        install(FILES ${HEADER_FILE_DESTINATION}/${FILENAME}
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
+        )
+    endif()
 endmacro()
 
 # Initialize the project and set basic variables
@@ -587,19 +591,49 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
 
     # create the config.hpp for the current library
     get_header_file_install_destination()
-    configure_header_file(${SIGHT_TARGET} "config.hpp" "${HEADER_FILE_DESTINATION_REL}")
+    configure_header_file(${SIGHT_TARGET} "config.hpp" "${HEADER_FILE_DESTINATION}" "${HEADER_FILE_DESTINATION_REL}")
 
     # export and install target
     if(NOT ${SIGHT_TARGET} MATCHES "^pch.*")
-        install(
-            DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
-            FILES_MATCHING
-            PATTERN "*.h"
-            PATTERN "*.hpp"
-            PATTERN "*.hxx"
-            PATTERN "test/*" EXCLUDE
-        )
+        if(WIN32)
+            set(HEADERS_TO_INSTALL "${${SIGHT_TARGET}_HEADERS}")
+            foreach(HEADER ${HEADERS_TO_INSTALL})
+                cmake_path(RELATIVE_PATH HEADER)
+                list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/install/${HEADER})
+            endforeach()
+            list(APPEND HEADERS_TO_INSTALL "${HEADER_FILE_DESTINATION}/config.hpp")
+            list(APPEND GENERATED_HEADERS "${CMAKE_CURRENT_BINARY_DIR}/install/config.hpp")
+
+            # Did not find any simple way to pass a list as argument, semi-columns are always replaced by spaces...
+            # Thus, we hack this by using an another separator character
+            string(REPLACE ";" "," HEADERS_REMAKE "${HEADERS_TO_INSTALL}")
+
+            add_custom_command(
+                OUTPUT ${GENERATED_HEADERS}
+                COMMAND
+                    ${CMAKE_COMMAND} ARGS -DSOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+                    -DCONFIG_SOURCE_DIR="${HEADER_FILE_DESTINATION}" -DTARGET_DIR="${CMAKE_CURRENT_BINARY_DIR}/install"
+                    -DHEADERS="${HEADERS_REMAKE}" -P "${FWCMAKE_RESOURCE_PATH}/install/windows/generate_headers.cmake"
+                DEPENDS ${HEADERS_TO_INSTALL}
+                COMMENT "Generate headers for ${SIGHT_TARGET}"
+            )
+            add_custom_target("${SIGHT_TARGET}_headers" ALL DEPENDS ${GENERATED_HEADERS} COMMENT "Copy headers")
+
+            install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/install/
+                    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
+            )
+        else()
+            install(
+                DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
+                FILES_MATCHING
+                PATTERN "*.h"
+                PATTERN "*.hpp"
+                PATTERN "*.hxx"
+                PATTERN "test/*" EXCLUDE
+            )
+        endif()
+
         set(TARGETS_TO_EXPORT ${SIGHT_TARGET})
 
         if(${OBJECT_LIBRARY})
@@ -701,7 +735,9 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
 
         # create the config.hpp for the current module
         get_header_file_install_destination()
-        configure_header_file(${SIGHT_TARGET} "config.hpp" "${HEADER_FILE_DESTINATION_REL}")
+        configure_header_file(
+            ${SIGHT_TARGET} "config.hpp" "${HEADER_FILE_DESTINATION}" "${HEADER_FILE_DESTINATION_REL}"
+        )
 
         # Allows include of type <ui/config.hpp>
         target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>)

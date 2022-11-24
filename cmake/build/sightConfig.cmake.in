@@ -61,7 +61,6 @@ endif()
 
 foreach(sight_comp ${sight_FIND_COMPONENTS})
     if(NOT ${sight_comp}_FOUND)
-        message(STATUS "Looking for sight component: ${sight_comp}")
         if (NOT sight_comp IN_LIST SIGHT_SUPPORTED_COMPONENTS)
             set(sight_FOUND False)
             set(sight_NOT_FOUND_MESSAGE "Unsupported component: ${sight_comp}")
