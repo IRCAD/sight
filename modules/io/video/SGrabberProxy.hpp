@@ -53,6 +53,7 @@ namespace sight::module::io::video
  *
  * @section Slots Slots
  * - \b startCamera(): Start playing the camera or the video.
+ * - \b startTargetCamera(std::string): Start playing the specified camera or the video.
  * - \b stopCamera(): Stop playing the camera or the video.
  * - \b pauseCamera(): Pause the video, it has no effect when playing a camera.
  * - \b loopVideo(): Toggle the loop of the playing.
@@ -115,14 +116,23 @@ public:
     /// Destructor. Do nothing.
     MODULE_IO_VIDEO_API ~SGrabberProxy() noexcept override;
 
-    /**
-     * @name Slots API
-     *
-     * @{
-     */
-    /// Slot: called to start the tracking.
-    MODULE_IO_VIDEO_API static const core::com::Slots::SlotKeyType s_RECONFIGURE_SLOT;
-/** @} */
+    /// Internal wrapper holding slots keys.
+    struct slots
+    {
+        using key_t = sight::core::com::Slots::SlotKeyType;
+
+        static inline const key_t RECONFIGURE         = "reconfigure";
+        static inline const key_t START_TARGET_CAMERA = "startTargetCamera";
+
+        static inline const key_t MODIFY_POSITION = "modifyPosition";
+        static inline const key_t MODIFY_DURATION = "modifyDuration";
+
+        static inline const key_t FWD_START_CAMERA  = "forwardStartCamera";
+        static inline const key_t FWD_STOP_CAMERA   = "forwardStopCamera";
+        static inline const key_t FWD_NOTIFY        = "forwardNotify";
+        static inline const key_t FWD_SET_PARAMETER = "forwardSetParameter";
+        static inline const key_t FWD_PRESENT_FRAME = "forwardPresentFrame";
+    };
 
 protected:
 
@@ -145,6 +155,9 @@ protected:
      */
     /// Initialize and start camera (restart camera if is already started).
     MODULE_IO_VIDEO_API void startCamera() final;
+
+    /// Initialize and start camera (restart camera if is already started).
+    MODULE_IO_VIDEO_API void startTargetCamera(std::string impl);
 
     /// Stop camera.
     MODULE_IO_VIDEO_API void stopCamera() final;

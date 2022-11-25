@@ -44,37 +44,24 @@ namespace sight::module::io::video
 
 //-----------------------------------------------------------------------------
 
-const core::com::Slots::SlotKeyType SGrabberProxy::s_RECONFIGURE_SLOT = "reconfigure";
-
-const core::com::Slots::SlotKeyType s_MODIFY_POSITION = "modifyPosition";
-const core::com::Slots::SlotKeyType s_MODIFY_DURATION = "modifyDuration";
-
-const core::com::Slots::SlotKeyType s_FWD_START_CAMERA_SLOT = "forwardStartCamera";
-const core::com::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera";
-
-const core::com::Slots::SlotKeyType s_FWD_NOTIFY_SLOT = "forwardNotify";
-
-const core::com::Slots::SlotKeyType s_FWD_SET_PARAMETER_SLOT = "forwardSetParameter";
-
-const core::com::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
-
 using sight::io::base::service::IGrabber;
 
 //-----------------------------------------------------------------------------
 
 SGrabberProxy::SGrabberProxy() noexcept
 {
-    newSlot(s_RECONFIGURE_SLOT, &SGrabberProxy::reconfigure, this);
+    newSlot(slots::RECONFIGURE, &SGrabberProxy::reconfigure, this);
+    newSlot(slots::START_TARGET_CAMERA, &SGrabberProxy::startTargetCamera, this);
 
-    newSlot(s_MODIFY_POSITION, &SGrabberProxy::modifyPosition, this);
-    newSlot(s_MODIFY_DURATION, &SGrabberProxy::modifyDuration, this);
-    newSlot(s_FWD_START_CAMERA_SLOT, &SGrabberProxy::fwdStartCamera, this);
-    newSlot(s_FWD_STOP_CAMERA_SLOT, &SGrabberProxy::fwdStopCamera, this);
-    newSlot(s_FWD_PRESENT_FRAME_SLOT, &SGrabberProxy::fwdPresentFrame, this);
+    newSlot(slots::MODIFY_POSITION, &SGrabberProxy::modifyPosition, this);
+    newSlot(slots::MODIFY_DURATION, &SGrabberProxy::modifyDuration, this);
+    newSlot(slots::FWD_START_CAMERA, &SGrabberProxy::fwdStartCamera, this);
+    newSlot(slots::FWD_STOP_CAMERA, &SGrabberProxy::fwdStopCamera, this);
+    newSlot(slots::FWD_PRESENT_FRAME, &SGrabberProxy::fwdPresentFrame, this);
 
-    newSlot(s_FWD_NOTIFY_SLOT, &SGrabberProxy::fwdNotify, this);
+    newSlot(slots::FWD_NOTIFY, &SGrabberProxy::fwdNotify, this);
 
-    newSlot(s_FWD_SET_PARAMETER_SLOT, &SGrabberProxy::fwdSetParameter, this);
+    newSlot(slots::FWD_SET_PARAMETER, &SGrabberProxy::fwdSetParameter, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -175,6 +162,13 @@ void SGrabberProxy::updating()
 
 void SGrabberProxy::startCamera()
 {
+    this->startTargetCamera("");
+}
+
+//-----------------------------------------------------------------------------
+
+void SGrabberProxy::startTargetCamera(std::string impl)
+{
     if(m_services.empty())
     {
         if(m_grabberImpl.empty())
@@ -194,6 +188,18 @@ void SGrabberProxy::startCamera()
             );
 
             std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
+
+            // If we asked for a specific implementation
+            // Filter the other out
+            if(!impl.empty())
+            {
+                std::erase_if(
+                    grabbersImpl,
+                    [&](std::string g)
+                    {
+                        return g != impl;
+                    });
+            }
 
             data::Camera::SourceType sourceType = data::Camera::UNKNOWN;
 
@@ -496,19 +502,19 @@ void SGrabberProxy::startCamera()
                 srv->setWorker(m_associatedWorker);
                 srv->start();
 
-                m_connections.connect(srv, IGrabber::s_POSITION_MODIFIED_SIG, this->getSptr(), s_MODIFY_POSITION);
-                m_connections.connect(srv, IGrabber::s_DURATION_MODIFIED_SIG, this->getSptr(), s_MODIFY_DURATION);
-                m_connections.connect(srv, IGrabber::s_CAMERA_STARTED_SIG, this->getSptr(), s_FWD_START_CAMERA_SLOT);
-                m_connections.connect(srv, IGrabber::s_CAMERA_STOPPED_SIG, this->getSptr(), s_FWD_STOP_CAMERA_SLOT);
-                m_connections.connect(srv, IGrabber::s_FRAME_PRESENTED_SIG, this->getSptr(), s_FWD_PRESENT_FRAME_SLOT);
+                m_connections.connect(srv, IGrabber::s_POSITION_MODIFIED_SIG, this->getSptr(), slots::MODIFY_POSITION);
+                m_connections.connect(srv, IGrabber::s_DURATION_MODIFIED_SIG, this->getSptr(), slots::MODIFY_DURATION);
+                m_connections.connect(srv, IGrabber::s_CAMERA_STARTED_SIG, this->getSptr(), slots::FWD_START_CAMERA);
+                m_connections.connect(srv, IGrabber::s_CAMERA_STOPPED_SIG, this->getSptr(), slots::FWD_STOP_CAMERA);
+                m_connections.connect(srv, IGrabber::s_FRAME_PRESENTED_SIG, this->getSptr(), slots::FWD_PRESENT_FRAME);
 
-                m_connections.connect(srv, IService::s_NOTIFIED_SIG, this->getSptr(), s_FWD_NOTIFY_SLOT);
+                m_connections.connect(srv, IService::s_NOTIFIED_SIG, this->getSptr(), slots::FWD_NOTIFY);
 
                 m_connections.connect(
                     srv,
                     IGrabber::s_PARAMETER_CHANGED_SIG,
                     this->getSptr(),
-                    s_FWD_SET_PARAMETER_SLOT
+                    slots::FWD_SET_PARAMETER
                 );
 
                 ++srvCount;
