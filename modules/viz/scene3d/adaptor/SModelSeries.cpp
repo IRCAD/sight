@@ -43,12 +43,6 @@ namespace sight::module::viz::scene3d::adaptor
 
 static const core::com::Slots::SlotKeyType s_CHANGE_FIELD_SLOT = "changeField";
 
-static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
-static const std::string s_MATERIAL_CONFIG         = "material";
-static const std::string s_DYNAMIC_CONFIG          = "dynamic";
-static const std::string s_DYNAMIC_VERTICES_CONFIG = "dynamicVertices";
-static const std::string s_QUERY_CONFIG            = "queryFlags";
-
 //------------------------------------------------------------------------------
 
 SModelSeries::SModelSeries() noexcept
@@ -58,17 +52,11 @@ SModelSeries::SModelSeries() noexcept
 
 //------------------------------------------------------------------------------
 
-SModelSeries::~SModelSeries() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void SModelSeries::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfiguration();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
     this->setTransformId(
         config.get<std::string>(
@@ -76,6 +64,12 @@ void SModelSeries::configuring()
             this->getID() + "_transform"
         )
     );
+
+    static const std::string s_AUTORESET_CAMERA_CONFIG = s_CONFIG + "autoresetcamera";
+    static const std::string s_MATERIAL_CONFIG         = s_CONFIG + "material";
+    static const std::string s_DYNAMIC_CONFIG          = s_CONFIG + "dynamic";
+    static const std::string s_DYNAMIC_VERTICES_CONFIG = s_CONFIG + "dynamicVertices";
+    static const std::string s_QUERY_CONFIG            = s_CONFIG + "queryFlags";
 
     m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
 

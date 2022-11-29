@@ -28,24 +28,24 @@
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
-                <layer id="default" order="1" transparency="HybridTransparency" numPeels="4" />
-
-                <adaptor uid="interactor4Negato" />
-                <adaptor uid="seriesAdaptor" />
+                <layer id="default" order="1" transparency="HybridTransparency" numPeels="4">
+                    <adaptor uid="interactor4Negato" />
+                    <adaptor uid="seriesAdaptor" />
+                </layer>
 
             </scene>
         </service>
 
-        <service uid="interactor4Negato" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
+        <service uid="interactor4Negato" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true">
             <inout key="image" uid="${objectID}" />
             <inout key="tf" uid="tf" />
-            <config layer="default" priority="0" orientation="${orientation}" />
+            <config priority="0" orientation="${orientation}" />
         </service>
 
         <service uid="seriesAdaptor" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true">
             <in key="image" uid="${objectID}" />
             <in key="tf" uid="tf" />
-            <config layer="default" autoresetcamera="true" sliceIndex="${orientation}" />
+            <config autoresetcamera="true" sliceIndex="${orientation}" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->

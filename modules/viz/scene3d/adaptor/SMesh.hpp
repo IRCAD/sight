@@ -81,7 +81,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SMesh" >
         <in key="mesh" uid="..." />
-        <config layer="..." transform="..." visible="true" materialName="..." shadingMode="phong" textureName="..."
+        <config transform="..." visible="true" materialName="..." shadingMode="phong" textureName="..."
         queryFlags="0x40000000" />
     </service>
    @endcode
@@ -90,7 +90,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b mesh [sight::data::Mesh]: adapted mesh.
  *
  * @subsection Configuration Configuration:
- *  - \b layer (mandatory, string): defines the mesh's layer
  *  - \b autoresetcamera (optional, true/false, default=true): reset the camera when this mesh is modified, "true" or
  *"false".
  *  - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it

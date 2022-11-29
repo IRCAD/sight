@@ -55,12 +55,11 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SVector">
-        <config layer="..." transform="..." length="30" color="#FFFFFF" visible="true"/>
+        <config transform="..." length="30" color="#FFFFFF" visible="true"/>
     </service>
    @endcode
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *      was specified in the STransform adaptor.
  * - \b length (optional, float, default=1.): axis length in mm.
@@ -80,27 +79,27 @@ public:
     MODULE_VIZ_SCENE3D_API SVector() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SVector() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SVector() noexcept final = default;
 
 protected:
 
     /// Configures the adaptor
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Initialize the main node and the material.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /// Deletes resources.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
     /// Create with the specified length the vector.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /**
      * @brief Sets the vector visibility.
      * @param _visible the visibility status of the vector.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
 
 private:
 

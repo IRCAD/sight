@@ -41,11 +41,6 @@ namespace sight::module::viz::scene3d::adaptor
 
 static const core::com::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT = "updateLength";
 
-static const std::string s_LENGTH_CONFIG     = "length";
-static const std::string s_DASHED_CONFIG     = "dashed";
-static const std::string s_DASHLENGTH_CONFIG = "dashLength";
-static const std::string s_COLOR_CONFIG      = "color";
-
 //-----------------------------------------------------------------------------
 
 SLine::SLine() noexcept
@@ -71,8 +66,7 @@ void SLine::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfiguration();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
     // parsing transform or create an "empty" one
     this->setTransformId(
@@ -81,6 +75,11 @@ void SLine::configuring()
             this->getID() + "_transform"
         )
     );
+
+    static const std::string s_LENGTH_CONFIG     = s_CONFIG + "length";
+    static const std::string s_DASHED_CONFIG     = s_CONFIG + "dashed";
+    static const std::string s_DASHLENGTH_CONFIG = s_CONFIG + "dashLength";
+    static const std::string s_COLOR_CONFIG      = s_CONFIG + "color";
 
     m_length = config.get<float>(s_LENGTH_CONFIG, m_length);
 
@@ -116,12 +115,13 @@ void SLine::starting()
         "sight::module::viz::scene3d::adaptor::SMaterial"
     );
     m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
-    m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setRenderService(this->getRenderService());
-    m_materialAdaptor->setLayerID(m_layerID);
-    m_materialAdaptor->setShadingMode("ambient");
-    m_materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_materialAdaptor->configure(
+        this->getID() + m_materialAdaptor->getID(),
+        this->getID() + m_materialAdaptor->getID(),
+        this->getRenderService(),
+        m_layerID,
+        "ambient"
+    );
     m_materialAdaptor->start();
 
     m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);

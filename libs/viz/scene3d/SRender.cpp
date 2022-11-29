@@ -111,7 +111,7 @@ void SRender::configuring()
 
     if(nbInouts == 1)
     {
-        const std::string key = config.get<std::string>("inout.<xmlattr>.key", "");
+        const auto key = config.get<std::string>("inout.<xmlattr>.key", "");
         m_offScreen = (key == s_OFFSCREEN_INOUT);
 
         SIGHT_ASSERT("'" + key + "' is not a valid key. Only '" << s_OFFSCREEN_INOUT << "' is accepted.", m_offScreen);
@@ -127,7 +127,7 @@ void SRender::configuring()
 
     m_fullscreen = sceneCfg.get<bool>("<xmlattr>.fullscreen", false);
 
-    const std::string renderMode = sceneCfg.get<std::string>("<xmlattr>.renderMode", "auto");
+    const auto renderMode = sceneCfg.get<std::string>("<xmlattr>.renderMode", "auto");
     if(renderMode == "auto")
     {
         m_renderMode = RenderMode::AUTO;
@@ -141,12 +141,27 @@ void SRender::configuring()
         SIGHT_ERROR("Unknown rendering mode '" + renderMode + "', use the default 'auto'.");
     }
 
-    auto adaptorConfigs = sceneCfg.equal_range("adaptor");
-    for(auto it = adaptorConfigs.first ; it != adaptorConfigs.second ; ++it)
+    auto& adaptorRegistry = viz::scene3d::registry::getAdaptorRegistry();
+
+    /// New config
+    auto layerConfigs = sceneCfg.equal_range("layer");
+    for(const auto& itLayer : boost::make_iterator_range(layerConfigs))
     {
-        const auto uid = it->second.get<std::string>("<xmlattr>.uid");
-        auto& registry = viz::scene3d::registry::getAdaptorRegistry();
-        registry[uid] = this->getID();
+        const auto layerId  = itLayer.second.get<std::string>("<xmlattr>.id");
+        auto adaptorConfigs = itLayer.second.equal_range("adaptor");
+        for(const auto& it : boost::make_iterator_range(adaptorConfigs))
+        {
+            const auto uid = it.second.get<std::string>("<xmlattr>.uid");
+            adaptorRegistry[uid] = {this->getID(), layerId};
+        }
+    }
+
+    /// Old config
+    auto adaptorConfigs = sceneCfg.equal_range("adaptor");
+    for(const auto& it : boost::make_iterator_range(adaptorConfigs))
+    {
+        const auto uid = it.second.get<std::string>("<xmlattr>.uid");
+        adaptorRegistry[uid] = {this->getID(), ""};
     }
 }
 

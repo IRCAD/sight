@@ -65,7 +65,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b specularColor [sight::data::Color]: specular color of the light.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the light's layer.
  * - \b name (mandatory, string): defines a name for the associated Ogre light.
  * - \b transform (optional, string, default=""): transform applied to the frustum's scene node.
  * - \b switchedOn (optional, bool, default=true): defines if the light is activated or not.
@@ -86,113 +85,113 @@ public:
     MODULE_VIZ_SCENE3D_API SLight(sight::viz::scene3d::ILight::Key key);
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SLight() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SLight() noexcept final = default;
 
     /**
      * @brief Gets the name of the light.
      * @return The name of the light.
      */
-    MODULE_VIZ_SCENE3D_API const std::string& getName() const override;
+    MODULE_VIZ_SCENE3D_API const std::string& getName() const final;
 
     /**
      * @brief Sets the name of the light.
      * @param _name the new light name.
      */
-    MODULE_VIZ_SCENE3D_API void setName(const std::string& _name) override;
+    MODULE_VIZ_SCENE3D_API void setName(const std::string& _name) final;
 
     /**
      * @brief Gets the type of the light.
      * @return The light type.
      */
-    MODULE_VIZ_SCENE3D_API Ogre::Light::LightTypes getType() const override;
+    MODULE_VIZ_SCENE3D_API Ogre::Light::LightTypes getType() const final;
 
     /**
      * @brief Sets the type of the light.
      * @param _type the new light type.
      */
-    MODULE_VIZ_SCENE3D_API void setType(Ogre::Light::LightTypes _type) override;
+    MODULE_VIZ_SCENE3D_API void setType(Ogre::Light::LightTypes _type) final;
 
     /**
      * @brief Gets the diffuse color of the light.
      * @return The light diffuse color.
      */
-    MODULE_VIZ_SCENE3D_API Ogre::ColourValue getDiffuseColor() const override;
+    MODULE_VIZ_SCENE3D_API Ogre::ColourValue getDiffuseColor() const final;
 
     /**
      * @brief Sets the diffuse color of the light.
      * @param _diffuseColor the new light diffuse color.
      */
-    MODULE_VIZ_SCENE3D_API void setDiffuseColor(Ogre::ColourValue _diffuseColor) override;
+    MODULE_VIZ_SCENE3D_API void setDiffuseColor(Ogre::ColourValue _diffuseColor) final;
 
     /**
      * @brief Gets the specular color of the light.
      * @return The light specular color.
      */
-    MODULE_VIZ_SCENE3D_API Ogre::ColourValue getSpecularColor() const override;
+    MODULE_VIZ_SCENE3D_API Ogre::ColourValue getSpecularColor() const final;
 
     /**
      * @brief Sets the specular color of the light.
      * @param _specularColor the new light specular color.
      */
-    MODULE_VIZ_SCENE3D_API void setSpecularColor(Ogre::ColourValue _specularColor) override;
+    MODULE_VIZ_SCENE3D_API void setSpecularColor(Ogre::ColourValue _specularColor) final;
 
     /**
      * @brief Gets the light activation state.
      * @return The light activation state.
      */
-    MODULE_VIZ_SCENE3D_API bool isSwitchedOn() const override;
+    MODULE_VIZ_SCENE3D_API bool isSwitchedOn() const final;
 
     /**
      * @brief Sets the light activation state.
      * @param _on the light new activation state.
      */
-    MODULE_VIZ_SCENE3D_API void switchOn(bool _on) override;
+    MODULE_VIZ_SCENE3D_API void switchOn(bool _on) final;
 
     /**
      * @brief Gets the angle in degrees defining the rotation of the light around x axis.
      * @return The theta offset of the light.
      */
-    MODULE_VIZ_SCENE3D_API float getThetaOffset() const override;
+    MODULE_VIZ_SCENE3D_API float getThetaOffset() const final;
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around x axis.
      * @param _thetaOffset the value of the theta offset.
      * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
-    MODULE_VIZ_SCENE3D_API void setThetaOffset(float _thetaOffset) override;
+    MODULE_VIZ_SCENE3D_API void setThetaOffset(float _thetaOffset) final;
 
     /**
      * @brief Gets the angle in degrees defining the rotation of the light around y axis.
      * @return The phi of the light.
      */
-    MODULE_VIZ_SCENE3D_API float getPhiOffset() const override;
+    MODULE_VIZ_SCENE3D_API float getPhiOffset() const final;
 
     /**
      * @brief Sets the angle in degrees defining the rotation of the light around y axis.
      * @param _phiOffset the phi of the theta offset.
      * @pre The type of the light must be Ogre::Light::LT_DIRECTIONAL to used this value.
      */
-    MODULE_VIZ_SCENE3D_API void setPhiOffset(float _phiOffset) override;
+    MODULE_VIZ_SCENE3D_API void setPhiOffset(float _phiOffset) final;
 
     /**
      * @brief Enables the light visual feedback.
      * @param _enable the visual feedback visibility state.
      */
-    MODULE_VIZ_SCENE3D_API void enableVisualFeedback(bool _enable) override;
+    MODULE_VIZ_SCENE3D_API void enableVisualFeedback(bool _enable) final;
 
     /**
      * @brief Indicates if the visual feedback is enabled.
      * @return True if the visual feedback is activated.
      */
-    MODULE_VIZ_SCENE3D_API bool isVisualFeedbackOn() const override;
+    MODULE_VIZ_SCENE3D_API bool isVisualFeedbackOn() const final;
 
 protected:
 
     /// Configures the service.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Adds a new light to the scene manager.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -201,13 +200,13 @@ protected:
      * Connect data::Color::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to s_UPDATE_SLOT
      * Connect data::Color::s_MODIFIED_SIG of s_DIFFUSE_COLOR_INOUT to s_UPDATE_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 
     /// Updates the light position and orientation.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /// Removes the light from the scene manager.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
 private:
 

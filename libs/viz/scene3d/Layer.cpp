@@ -156,11 +156,6 @@ Layer::Layer()
 
 //-----------------------------------------------------------------------------
 
-Layer::~Layer()
-= default;
-
-//-----------------------------------------------------------------------------
-
 void Layer::setRenderTarget(Ogre::RenderTarget* _renderTarget)
 {
     m_renderTarget = _renderTarget;

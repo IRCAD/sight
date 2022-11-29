@@ -36,13 +36,6 @@ namespace sight::module::viz::scene3d::adaptor
 static const core::com::Slots::SlotKeyType s_REVERT_SLOT = "revert";
 static const core::com::Slots::SlotKeyType s_RESIZE_SLOT = "resize";
 
-static const std::string s_WIDTH_CONFIG    = "width";
-static const std::string s_HEIGHT_CONFIG   = "height";
-static const std::string s_H_OFFSET_CONFIG = "hOffset";
-static const std::string s_V_OFFSET_CONFIG = "vOffset";
-static const std::string s_H_ALIGN_CONFIG  = "hAlign";
-static const std::string s_V_ALIGN_CONFIG  = "vAlign";
-
 //------------------------------------------------------------------------------
 
 SResizeViewport::SResizeViewport() noexcept
@@ -53,17 +46,18 @@ SResizeViewport::SResizeViewport() noexcept
 
 //------------------------------------------------------------------------------
 
-SResizeViewport::~SResizeViewport() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void SResizeViewport::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfiguration();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_WIDTH_CONFIG    = s_CONFIG + "width";
+    static const std::string s_HEIGHT_CONFIG   = s_CONFIG + "height";
+    static const std::string s_H_OFFSET_CONFIG = s_CONFIG + "hOffset";
+    static const std::string s_V_OFFSET_CONFIG = s_CONFIG + "vOffset";
+    static const std::string s_H_ALIGN_CONFIG  = s_CONFIG + "hAlign";
+    static const std::string s_V_ALIGN_CONFIG  = s_CONFIG + "vAlign";
 
     float xPos = config.get<float>(s_H_OFFSET_CONFIG, 0.F);
     float yPos = config.get<float>(s_V_OFFSET_CONFIG, 0.F);

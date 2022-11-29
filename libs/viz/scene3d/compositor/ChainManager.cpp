@@ -270,11 +270,11 @@ void ChainManager::updateCompositorAdaptors(
                             shaderParamService->setRenderService(_renderService);
 
                             service::IService::ConfigType config;
-                            config.add("config.<xmlattr>.layer", _layerId);
                             config.add("config.<xmlattr>.compositorName", _compositorName);
                             config.add("config.<xmlattr>.parameter", constantName);
                             config.add("config.<xmlattr>.shaderType", shaderTypeStr);
 
+                            shaderParamService->setLayerID(_layerId);
                             shaderParamService->setConfiguration(config);
                             shaderParamService->configure();
                             shaderParamService->start();

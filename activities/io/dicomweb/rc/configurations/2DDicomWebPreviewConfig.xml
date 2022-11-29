@@ -24,26 +24,27 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="gs" type="sight::viz::scene3d::SRender" >
+        <service uid="gs" type="sight::viz::scene3d::SRender">
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
-                <layer id="defaultLayer" order="1" />
-                <adaptor uid="pNegatoAdp" />
-                <adaptor uid="pNegatoCameraAdp" />
+                <layer id="defaultLayer" order="1">
+                    <adaptor uid="pNegatoAdp" />
+                    <adaptor uid="pNegatoCameraAdp" />
+                </layer>
             </scene>
         </service>
 
-        <service uid="pNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
+        <service uid="pNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true">
             <in key="image" uid="image" />
             <in key="tf" uid="tf" />
-            <config layer="defaultLayer" sliceIndex="axial" filtering="anisotropic" />
+            <config sliceIndex="axial" filtering="anisotropic" />
         </service>
 
-        <service uid="pNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
+        <service uid="pNegatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true">
             <inout key="image" uid="image" />
             <inout key="tf" uid="tf" />
-            <config layer="defaultLayer" priority="0" orientation="axial" />
+            <config priority="0" orientation="axial" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->

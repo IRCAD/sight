@@ -130,7 +130,7 @@ public:
     VIZ_SCENE3D_API Layer();
 
     /// Destoyres Ogre resources.
-    VIZ_SCENE3D_API ~Layer() override;
+    VIZ_SCENE3D_API ~Layer() override = default;
 
     /// Sets the render window containing this layer.
     VIZ_SCENE3D_API void setRenderTarget(Ogre::RenderTarget* _renderTarget);

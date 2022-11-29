@@ -76,7 +76,6 @@ namespace sight::module::viz::scene3d::adaptor
  *      of the adaptor.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b materialTemplate (optional, string, default=""): name of the base Ogre material/
  * - \b materialName (optional, string, default=""): name of the Ogre material. This is necessary to bind a
  *      sight::module::viz::scene3d:SMesh or a sight::module::viz::scene3d:SModelSeries to this material;
@@ -116,7 +115,17 @@ public:
     MODULE_VIZ_SCENE3D_API SMaterial() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SMaterial() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SMaterial() noexcept override = default;
+
+    /// Configures the adaptor without using the XML configuration.
+    MODULE_VIZ_SCENE3D_API void configure(
+        const std::string& _id,
+        const std::string& _name,
+        sight::viz::scene3d::SRender::sptr _service,
+        const std::string& _layer,
+        const std::string& _shadingMode = "",
+        const std::string& _template    = sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME
+    );
 
     /// Gets Ogre associated material.
     MODULE_VIZ_SCENE3D_API Ogre::MaterialPtr getMaterial();

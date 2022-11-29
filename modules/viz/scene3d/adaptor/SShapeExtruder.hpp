@@ -63,7 +63,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SShapeExtruder">
         <inout key="extrudedMeshes" uid="..." />
-        <config layer="..." priority="2" extrude="true" />
+        <config priority="2" extrude="true" />
     </service>
    @endcode
  *
@@ -71,7 +71,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b extrudedMeshes [sight::data::ModelSeries]: model series where all extruded meshes are stored.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string) : defines the layer.
  * - \b extrude (optional, bool, true) : sets if the extrusion is done or not (3D or 2D shape).
  * - \b priority (optional, int, default=2): interaction priority, higher priority interactions are performed first.
  */
@@ -88,21 +87,21 @@ public:
     MODULE_VIZ_SCENE3D_API SShapeExtruder() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SShapeExtruder() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SShapeExtruder() noexcept final = default;
 
 protected:
 
     /// Configures the service.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Creates Ogre resources and materials.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /// Destroys all Ogre resources.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
 private:
 
@@ -233,7 +232,7 @@ private:
      * @brief Cancels further interactions.
      * @pre @ref m_interactionEnableState must be true.
      */
-    void wheelEvent(Modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/) override;
+    void wheelEvent(Modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/) final;
 
     /**
      * @brief Adds a new point to the lasso.
@@ -242,7 +241,7 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    void buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) override;
+    void buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) final;
 
     /**
      * @brief Closes the lasso shape.
@@ -251,7 +250,7 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    void buttonDoublePressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) override;
+    void buttonDoublePressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) final;
 
     /**
      * @brief Draws the last lasso line or add a point to the lasso in the mouse is dragged.
@@ -260,13 +259,13 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    void mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/) override;
+    void mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/) final;
 
     /**
      * @brief Ends the drag interaction.
      * @pre @ref m_interactionEnableState and @ref m_leftButtonMoveState must be true.
      */
-    void buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/) override;
+    void buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/) final;
 
     /// Draws the lasso from @ref m_lassoNearPositions.
     void drawLasso();

@@ -62,7 +62,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service type="sight::module::viz::scene3d::adaptor::SNegato3D">
         <in key="image" uid="..." />
         <inout key="tf" uid="..." />
-        <config layer="default" sliceIndex="axial" filtering="none" tfAlpha="true" />
+        <config sliceIndex="axial" filtering="none" tfAlpha="true" />
     </service>
    @endcode
  *
@@ -74,7 +74,6 @@ namespace sight::module::viz::scene3d::adaptor
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): id of the layer where this adaptor applies.
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato.
  * - \b tfAlpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.

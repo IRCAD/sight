@@ -84,25 +84,15 @@ static std::unique_ptr<FragmentsInfoMaterialListener> s_MATERIAL_LISTENER = null
 
 //-----------------------------------------------------------------------------
 
-SFragmentsInfo::SFragmentsInfo() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
-SFragmentsInfo::~SFragmentsInfo() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
 void SFragmentsInfo::configuring()
 {
     // IAdaptor handles the layerID.
     this->configureParams();
 
-    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
-    m_width     = config.get<int>("width", m_width);
-    m_height    = config.get<int>("height", m_height);
-    m_flipImage = config.get<bool>("flip", m_flipImage);
+    const ConfigType config = this->getConfiguration();
+    m_width     = config.get<int>(s_CONFIG + "width", m_width);
+    m_height    = config.get<int>(s_CONFIG + "height", m_height);
+    m_flipImage = config.get<bool>(s_CONFIG + "flip", m_flipImage);
 
     // If Both width & height are found we fix the size.
     if(m_width > 0 && m_height > 0)

@@ -32,18 +32,6 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const std::string s_PARENT_CONFIG = "parent";
-
-//------------------------------------------------------------------------------
-
-STransform::STransform() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
-STransform::~STransform() noexcept =
-    default;
-
 //-----------------------------------------------------------------------------
 
 service::IService::KeyConnectionsMap STransform::getAutoConnections() const
@@ -59,12 +47,11 @@ void STransform::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfiguration();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
     this->setTransformId(config.get<std::string>(s_TRANSFORM_CONFIG));
 
-    m_parentTransformId = config.get<std::string>(s_PARENT_CONFIG, m_parentTransformId);
+    m_parentTransformId = config.get<std::string>(s_CONFIG + "parent", m_parentTransformId);
 }
 
 //------------------------------------------------------------------------------

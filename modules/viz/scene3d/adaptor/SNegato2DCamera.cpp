@@ -40,10 +40,6 @@ static const core::com::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT    = "resizeVi
 static const core::com::Slots::SlotKeyType s_CHANGE_ORIENTATION_SLOT = "changeOrientation";
 static const core::com::Slots::SlotKeyType s_MOVE_BACK_SLOT          = "moveBack";
 
-static const std::string s_PRIORITY_CONFIG              = "priority";
-static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
-static const std::string s_ORIENTATION_CONFIG           = "orientation";
-
 //-----------------------------------------------------------------------------
 
 SNegato2DCamera::SNegato2DCamera() noexcept
@@ -60,13 +56,12 @@ void SNegato2DCamera::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfiguration();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
-    m_priority            = config.get<int>(s_PRIORITY_CONFIG, m_priority);
-    m_layerOrderDependant = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layerOrderDependant);
+    m_priority            = config.get<int>(s_CONFIG + "priority", m_priority);
+    m_layerOrderDependant = config.get<bool>(s_CONFIG + "layerOrderDependant", m_layerOrderDependant);
 
-    const std::string orientation = config.get<std::string>(s_ORIENTATION_CONFIG, "sagittal");
+    const std::string orientation = config.get<std::string>(s_CONFIG + "orientation", "sagittal");
 
     SIGHT_ERROR_IF(
         "Unknown orientation: '" + orientation
@@ -87,7 +82,7 @@ void SNegato2DCamera::configuring()
         m_currentNegatoOrientation = Orientation::X_AXIS;
     }
 
-    m_margin = config.get<float>("margin", m_margin);
+    m_margin = config.get<float>(s_CONFIG + "margin", m_margin);
 }
 
 //-----------------------------------------------------------------------------

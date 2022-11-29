@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2021 IRCAD France
+ * Copyright (C) 2019-2022 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,12 +44,11 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::STrackballCamera">
-        <config layer="..." priority="0" layerOrderDependant="true" />
+        <config priority="0" layerOrderDependant="true" />
    </service>
    @endcode
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): layer on which the trackball interactions are added.
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
  * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  */
@@ -61,24 +60,24 @@ public:
     SIGHT_DECLARE_SERVICE(STrackballCamera, sight::viz::scene3d::IAdaptor);
 
     /// Constructor.
-    MODULE_VIZ_SCENE3D_API STrackballCamera() noexcept;
+    MODULE_VIZ_SCENE3D_API STrackballCamera() noexcept = default;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~STrackballCamera() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~STrackballCamera() noexcept final = default;
 
 protected:
 
     /// Configures the layer and the interaction priority.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Adds trackball interactions to the layer.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /// Updates the service. Unused here.
-    MODULE_VIZ_SCENE3D_API void updating() noexcept override;
+    MODULE_VIZ_SCENE3D_API void updating() noexcept final;
 
     /// Removes trackball interactions from the layer.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
 private:
 

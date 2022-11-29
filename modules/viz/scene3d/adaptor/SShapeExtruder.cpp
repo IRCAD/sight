@@ -44,11 +44,6 @@ static const core::com::Slots::SlotKeyType s_CANCEL_LAST_CLICK_SLOT = "cancelLas
 
 static const core::com::Slots::SlotKeyType s_TOOL_DISABLED_SIG = "toolDisabled";
 
-static const std::string s_PRIORITY_CONFIG   = "priority";
-static const std::string s_EXTRUDE_CONFIG    = "extrude";
-static const std::string s_LINE_COLOR_CONFIG = "lineColor";
-static const std::string s_EDGE_COLOR_CONFIG = "edgeColor";
-
 SShapeExtruder::Triangle2D::Triangle2D(
     const Ogre::Vector2& _a,
     const Ogre::Vector2& _b,
@@ -155,17 +150,16 @@ SShapeExtruder::SShapeExtruder() noexcept
 
 //-----------------------------------------------------------------------------
 
-SShapeExtruder::~SShapeExtruder() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
 void SShapeExtruder::configuring()
 {
     this->configureParams();
 
-    const ConfigType srvConfig = this->getConfiguration();
-    const ConfigType config    = srvConfig.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_PRIORITY_CONFIG   = s_CONFIG + "priority";
+    static const std::string s_EXTRUDE_CONFIG    = s_CONFIG + "extrude";
+    static const std::string s_LINE_COLOR_CONFIG = s_CONFIG + "lineColor";
+    static const std::string s_EDGE_COLOR_CONFIG = s_CONFIG + "edgeColor";
 
     m_priority = config.get<int>(s_PRIORITY_CONFIG, m_priority);
     m_extrude  = config.get<bool>(s_EXTRUDE_CONFIG, m_extrude);
@@ -219,12 +213,13 @@ void SShapeExtruder::starting()
         "sight::module::viz::scene3d::adaptor::SMaterial"
     );
     m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
-    m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setRenderService(this->getRenderService());
-    m_materialAdaptor->setLayerID(m_layerID);
-    m_materialAdaptor->setShadingMode("ambient");
-    m_materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_materialAdaptor->configure(
+        this->getID() + m_materialAdaptor->getID(),
+        this->getID() + m_materialAdaptor->getID(),
+        this->getRenderService(),
+        m_layerID,
+        "ambient"
+    );
     m_materialAdaptor->start();
     m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
     m_materialAdaptor->update();

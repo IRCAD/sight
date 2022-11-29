@@ -78,8 +78,7 @@ namespace sight::module::viz::scene3d::adaptor
         <in key="image" uid="..." autoConnect="true" />
         <in key="tf" uid="..." />
         <inout key="clippingMatrix" uid="..." />
-        <config layer="default"
-                samples="1024" preintegration="true" dynamic="false" ao="false" colorBleeding="false" shadows="false"
+        <config samples="1024" preintegration="true" dynamic="false" ao="false" colorBleeding="false" shadows="false"
                 satSizeRatio="0.25" satShells="3" satShellRadius="7" satConeAngle="0.1" satConeSamples="50"
                 aoFactor="0.5" colorBleedingFactor="0.5" autoresetcamera="true" transform="..."/>
     </service>
@@ -94,7 +93,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b clippingMatrix [sight::data::Matrix4]: matrix used to clip the volume.
  *
  * @subsection Configuration Configuration
- * - \b layer (mandatory, string): id of the layer where this adaptor applies.
  * - \b samples (optional, unsigned int, default=512): maximum number of samples per ray or number of slices.
  * - \b preintegration (optional, true/false, default=false): use pre-integration.
  * - \b dynamic (optional, bool, default=false): enables background buffering for dynamic images.
@@ -148,23 +146,23 @@ protected:
     ///@brief Internal wrapper holding config defines.
     struct config
     {
-        static inline const std::string AUTORESET_CAMERA      = "autoresetcamera";
-        static inline const std::string PREINTEGRATION        = "preintegration";
-        static inline const std::string DYNAMIC               = "dynamic";
-        static inline const std::string WIDGETS               = "widgets";
-        static inline const std::string PRIORITY              = "priority";
-        static inline const std::string LAYER_ORDER_DEPENDANT = "layerOrderDependant";
-        static inline const std::string SAMPLES               = "samples";
-        static inline const std::string SAT_SIZE_RATIO        = "satSizeRatio";
-        static inline const std::string SAT_SHELLS            = "satShells";
-        static inline const std::string SAT_SHELL_RADIUS      = "satShellRadius";
-        static inline const std::string SAT_CONE_ANGLE        = "satConeAngle";
-        static inline const std::string SAT_CONE_SAMPLES      = "satConeSamples";
-        static inline const std::string AO_FACTOR             = "aoFactor";
-        static inline const std::string COLOR_BLEEDING_FACTOR = "colorBleedingFactor";
-        static inline const std::string AO                    = "ao";
-        static inline const std::string COLOR_BLEEDING        = "colorBleeding";
-        static inline const std::string SHADOWS               = "shadows";
+        static inline const std::string AUTORESET_CAMERA      = s_CONFIG + "autoresetcamera";
+        static inline const std::string PREINTEGRATION        = s_CONFIG + "preintegration";
+        static inline const std::string DYNAMIC               = s_CONFIG + "dynamic";
+        static inline const std::string WIDGETS               = s_CONFIG + "widgets";
+        static inline const std::string PRIORITY              = s_CONFIG + "priority";
+        static inline const std::string LAYER_ORDER_DEPENDANT = s_CONFIG + "layerOrderDependant";
+        static inline const std::string SAMPLES               = s_CONFIG + "samples";
+        static inline const std::string SAT_SIZE_RATIO        = s_CONFIG + "satSizeRatio";
+        static inline const std::string SAT_SHELLS            = s_CONFIG + "satShells";
+        static inline const std::string SAT_SHELL_RADIUS      = s_CONFIG + "satShellRadius";
+        static inline const std::string SAT_CONE_ANGLE        = s_CONFIG + "satConeAngle";
+        static inline const std::string SAT_CONE_SAMPLES      = s_CONFIG + "satConeSamples";
+        static inline const std::string AO_FACTOR             = s_CONFIG + "aoFactor";
+        static inline const std::string COLOR_BLEEDING_FACTOR = s_CONFIG + "colorBleedingFactor";
+        static inline const std::string AO                    = s_CONFIG + "ao";
+        static inline const std::string COLOR_BLEEDING        = s_CONFIG + "colorBleeding";
+        static inline const std::string SHADOWS               = s_CONFIG + "shadows";
     };
 
     /// Internal wrapper holding the inital config

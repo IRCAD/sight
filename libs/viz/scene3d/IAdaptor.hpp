@@ -49,12 +49,11 @@ namespace sight::viz::scene3d
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="...">
-        <config layer="default" visible="true" />
+        <config visible="true" />
     </service>
    @endcode
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string) : defines the adaptor's layer.
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  */
 class VIZ_SCENE3D_CLASS_API IAdaptor :
@@ -64,6 +63,9 @@ class VIZ_SCENE3D_CLASS_API IAdaptor :
 friend class SRender;
 
 public:
+
+    /// Configuration helper string that stores "config.<xmlattr>."
+    VIZ_SCENE3D_API static const std::string s_CONFIG;
 
     /// Generates default methods.
     SIGHT_DECLARE_CLASS(IAdaptor, service::IService);
@@ -93,18 +95,15 @@ public:
 protected:
 
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_SLOT;
-
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
-
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SHOW_SLOT;
-
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_HIDE_SLOT;
 
     /// Initializes slots.
     VIZ_SCENE3D_API IAdaptor() noexcept;
 
     /// Destroys the adaptor.
-    VIZ_SCENE3D_API ~IAdaptor() noexcept override;
+    VIZ_SCENE3D_API ~IAdaptor() noexcept override = default;
 
     /**
      * @brief Write information in a stream.
@@ -143,6 +142,9 @@ protected:
 
     /// Defines the layer ID:
     std::string m_layerID;
+
+    /// TEMP: configured layer ID until we remove it
+    std::string m_cfgLayerID;
 
     /// Contains the t=render service which this adaptor is attached.
     viz::scene3d::SRender::wptr m_renderService;

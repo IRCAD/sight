@@ -60,7 +60,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service type="sight::module::viz::scene3d::adaptor::SNegato2D">
         <in key="image" uid="..." />
         <in key="tf" uid="..." />
-        <config layer="default" sliceIndex="axial" filtering="none" tfAlpha="true" visible="true" />
+        <config sliceIndex="axial" filtering="none" tfAlpha="true" visible="true" />
    </service>
    @endcode
  *
@@ -70,7 +70,6 @@ namespace sight::module::viz::scene3d::adaptor
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): id of the layer where this adaptor applies.
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato.
  * - \b tfAlpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
@@ -96,16 +95,16 @@ public:
     MODULE_VIZ_SCENE3D_API SNegato2D() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SNegato2D() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SNegato2D() noexcept final = default;
 
 protected:
 
     /// Configures the service.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Instantiates the texture, material, pass and texture unit state.
     /// Sets the connection between attached data and the received slot.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -116,19 +115,19 @@ protected:
      * Connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INOUT to s_SLICETYPE_SLOT
      * Connect data::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INOUT to s_SLICEINDEX_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 
     /// Uploads the input image into the texture buffer and recomputes the negato geometry.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /// Disconnects the attached data from the received slot.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
     /**
      * @brief Sets the negato visibility.
      * @param _visible the visibility status of the negato.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
 
 private:
 
@@ -143,7 +142,7 @@ private:
      * @param _dx the cursor's width displacement since the last event.
      * @param _dy the cursor's height displacement since the last event.
      */
-    void mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int _dx, int _dy) override;
+    void mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int _dx, int _dy) final;
 
     /**
      * @brief Attempts to pick the negato and starts interactions if picking was successful.
@@ -151,10 +150,10 @@ private:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    void buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) override;
+    void buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) final;
 
     /// Ends all interactions, regardless of the input.
-    void buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/) override;
+    void buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/) final;
 
     /// Updates the displayed transfer function.
     void updateTF();

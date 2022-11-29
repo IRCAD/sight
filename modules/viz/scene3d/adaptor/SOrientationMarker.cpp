@@ -39,27 +39,16 @@ namespace sight::module::viz::scene3d::adaptor
 
 //-----------------------------------------------------------------------------
 
-SOrientationMarker::SOrientationMarker() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
-SOrientationMarker::~SOrientationMarker() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
 void SOrientationMarker::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfiguration();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
     // Set the resource this use, if it has been set via xml
-    m_patientMeshRc = config.get<std::string>("resource", m_patientMeshRc);
+    m_patientMeshRc = config.get<std::string>(s_CONFIG + "resource", m_patientMeshRc);
 
-    m_markerDepth = config.get<float>("depth", m_markerDepth);
+    m_markerDepth = config.get<float>(s_CONFIG + "depth", m_markerDepth);
 }
 
 //-----------------------------------------------------------------------------
@@ -84,11 +73,12 @@ void SOrientationMarker::starting()
             "sight::module::viz::scene3d::adaptor::SMaterial"
         );
     materialAdaptor->setInOut(m_material, sight::module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
-    materialAdaptor->setID(this->getID() + materialAdaptor->getID());
-    materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
-    materialAdaptor->setRenderService(this->getRenderService());
-    materialAdaptor->setLayerID(m_layerID);
-    materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    materialAdaptor->configure(
+        this->getID() + materialAdaptor->getID(),
+        this->getID() + materialAdaptor->getID(),
+        this->getRenderService(),
+        m_layerID
+    );
     materialAdaptor->start();
     materialAdaptor->update();
 

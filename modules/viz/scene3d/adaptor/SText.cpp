@@ -36,15 +36,6 @@ namespace sight::module::viz::scene3d::adaptor
 
 static const core::com::Slots::SlotKeyType s_SET_TEXT_SLOT = "setText";
 
-static const std::string s_TEXT_CONFIG        = "text";
-static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
-static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
-static const std::string s_H_ALIGN_CONFIG     = "hAlign";
-static const std::string s_V_ALIGN_CONFIG     = "vAlign";
-static const std::string s_X_CONFIG           = "x";
-static const std::string s_Y_CONFIG           = "y";
-static const std::string s_COLOR_CONFIG       = "color";
-
 //----------------------------------------------------------------------------
 
 SText::SText() noexcept
@@ -54,17 +45,20 @@ SText::SText() noexcept
 
 //----------------------------------------------------------------------------
 
-SText::~SText() noexcept =
-    default;
-
-//----------------------------------------------------------------------------
-
 void SText::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfiguration();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_TEXT_CONFIG        = s_CONFIG + "text";
+    static const std::string s_FONT_SIZE_CONFIG   = s_CONFIG + "fontSize";
+    static const std::string s_FONT_SOURCE_CONFIG = s_CONFIG + "fontSource";
+    static const std::string s_H_ALIGN_CONFIG     = s_CONFIG + "hAlign";
+    static const std::string s_V_ALIGN_CONFIG     = s_CONFIG + "vAlign";
+    static const std::string s_X_CONFIG           = s_CONFIG + "x";
+    static const std::string s_Y_CONFIG           = s_CONFIG + "y";
+    static const std::string s_COLOR_CONFIG       = s_CONFIG + "color";
 
     m_textString = config.get<std::string>(s_TEXT_CONFIG, "");
 

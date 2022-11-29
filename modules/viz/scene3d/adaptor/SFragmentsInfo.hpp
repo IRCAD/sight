@@ -50,7 +50,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b primitiveID [sight::data::Image] (optional): image containing the primitive ID of the layer.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory): defines the mesh's layer.
  * - \b width (optional): fixed width of snapshot.
  * - \b height (optional): fixed height of snaphot.
  *      NOTE: if width & height are missing (or one of them), size of the snapshot will be connected to the layer:
@@ -68,10 +67,10 @@ public:
     SIGHT_DECLARE_SERVICE(SFragmentsInfo, sight::viz::scene3d::IAdaptor);
 
     /// Initializes the adaptor.
-    MODULE_VIZ_SCENE3D_API SFragmentsInfo() noexcept;
+    MODULE_VIZ_SCENE3D_API SFragmentsInfo() noexcept = default;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SFragmentsInfo() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SFragmentsInfo() noexcept override = default;
 
     /**
      * @brief Resizes the global render target, called by the related viewport since this adaptor is a listener.

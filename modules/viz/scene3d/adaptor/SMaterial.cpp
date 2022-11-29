@@ -54,11 +54,6 @@ const core::com::Slots::SlotKeyType SMaterial::s_REMOVE_TEXTURE_SLOT = "removeTe
 
 const std::string SMaterial::s_MATERIAL_INOUT = "material";
 
-static const std::string s_MATERIAL_TEMPLATE_NAME_CONFIG = "materialTemplate";
-static const std::string s_MATERIAL_NAME_CONFIG          = "materialName";
-static const std::string s_TEXTURE_NAME_CONFIG           = "textureName";
-static const std::string s_SHADING_MODE_CONFIG           = "shadingMode";
-
 //------------------------------------------------------------------------------
 
 SMaterial::SMaterial() noexcept
@@ -76,17 +71,16 @@ SMaterial::SMaterial() noexcept
 
 //------------------------------------------------------------------------------
 
-SMaterial::~SMaterial() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void SMaterial::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfiguration();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_MATERIAL_TEMPLATE_NAME_CONFIG = s_CONFIG + "materialTemplate";
+    static const std::string s_MATERIAL_NAME_CONFIG          = s_CONFIG + "materialName";
+    static const std::string s_TEXTURE_NAME_CONFIG           = s_CONFIG + "textureName";
+    static const std::string s_SHADING_MODE_CONFIG           = s_CONFIG + "shadingMode";
 
     m_materialTemplateName = config.get(s_MATERIAL_TEMPLATE_NAME_CONFIG, m_materialTemplateName);
     m_materialName         = config.get(s_MATERIAL_NAME_CONFIG, this->getID());
@@ -104,6 +98,25 @@ void SMaterial::configuring()
         );
         m_representationMode = "SURFACE";
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SMaterial::configure(
+    const std::string& _id,
+    const std::string& _name,
+    sight::viz::scene3d::SRender::sptr _service,
+    const std::string& _layer,
+    const std::string& _shadingMode,
+    const std::string& _template
+)
+{
+    this->setID(_id);
+    this->setMaterialName(_name);
+    this->setRenderService(_service);
+    this->setLayerID(_layer);
+    this->setShadingMode(_shadingMode);
+    this->setMaterialTemplateName(_template);
 }
 
 //------------------------------------------------------------------------------
@@ -275,11 +288,11 @@ void SMaterial::createShaderParameterAdaptors()
             srv->setRenderService(this->getRenderService());
 
             service::IService::ConfigType config;
-            config.add("config.<xmlattr>.layer", m_layerID);
             config.add("config.<xmlattr>.parameter", constantName);
             config.add("config.<xmlattr>.shaderType", shaderTypeStr);
             config.add("config.<xmlattr>.materialName", m_materialName);
 
+            srv->setLayerID(m_layerID);
             srv->setConfiguration(config);
             srv->configure();
             srv->start();

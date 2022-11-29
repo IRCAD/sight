@@ -53,12 +53,11 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SLine">
-        <config layer="default" transform="transformUID" length="30" dashLength="2.5" color="#0000FF" dashed="false" />
+        <config transform="transformUID" length="30" dashLength="2.5" color="#0000FF" dashed="false" />
     </service>
    @endcode
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the line's layer
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *      was specified in the STransform adaptor
  * - \b length (optional, float, default=50.0): length of the line in mm (default 50)

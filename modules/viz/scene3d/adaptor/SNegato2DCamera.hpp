@@ -55,7 +55,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" >
         <inout key="image" uid="..." autoConnect="true" />
         <inout key="tf" uid="..." />
-        <config layer="..." priority="0" layerOrderDependant="true" orientation="sagittal" margin="0.1"/>
+        <config priority="0" layerOrderDependant="true" orientation="sagittal" margin="0.1"/>
    </service>
    @endcode
  *
@@ -67,7 +67,6 @@ namespace sight::module::viz::scene3d::adaptor
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): layer on which the negato camera interactions are added.
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
  * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  * - \b orientation (optional, sagittal/frontal/axial, default=sagittal): the camera's orientation at start.

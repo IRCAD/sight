@@ -46,7 +46,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SText">
         <in key="object" uid="..." />
-        <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32"
+        <config fontSource="DejaVuSans.ttf" fontSize="32"
                 hAlign="right" vAlign="bottom" color="#ff3396" />
     </service>
    @endcode
@@ -56,7 +56,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SText">
         <text>Hello World!</text>
-        <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32"
+        <config fontSource="DejaVuSans.ttf" fontSize="32"
                 hAlign="right" vAlign="bottom" color="#ff3396" />
     </service>
    @endcode
@@ -65,7 +65,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b object (optional): "GenericField" object that can be casted to a text string.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): not really used but it is needed to be bound to a render service.
  * - \b color (optional, hexadecimal, default=#FFFFFF): the color and opacity of the text.
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
@@ -86,15 +85,15 @@ public:
     MODULE_VIZ_SCENE3D_API SText() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SText() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SText() noexcept final = default;
 
 protected:
 
     /// Configures the service.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Creates the text object and adds it to the scene.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -102,13 +101,13 @@ protected:
      *
      * Connect data::Object::s_OBJECT_INPUT of s_POINTLIST_INPUT to s_UPDATE_SLOT
      */
-    MODULE_VIZ_SCENE3D_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API KeyConnectionsMap getAutoConnections() const final;
 
     /// Updates the displayed text from the input object.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /// Removes the text from the ogre scene and deletes it.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
 private:
 

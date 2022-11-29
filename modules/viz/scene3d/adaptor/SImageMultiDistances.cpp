@@ -49,14 +49,6 @@ static const core::com::Signals::SignalKeyType s_ADD_DISTANCES_SLOT             
 static const core::com::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT              = "removeDistances";
 static const core::com::Signals::SignalKeyType s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
 
-static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
-static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
-static const std::string s_RADIUS_CONFIG      = "radius";
-static const std::string s_INTERACTIVE_CONFIG = "interactive";
-static const std::string s_PRIORITY_CONFIG    = "priority";
-static const std::string s_QUERY_MASK_CONFIG  = "queryMask";
-static const std::string s_QUERY_FLAGS_CONFIG = "distanceQueryFlags";
-
 static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = sight::viz::scene3d::rq::s_SURFACE_ID;
 
 //------------------------------------------------------------------------------
@@ -143,17 +135,19 @@ SImageMultiDistances::SImageMultiDistances() noexcept
 
 //------------------------------------------------------------------------------
 
-SImageMultiDistances::~SImageMultiDistances() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void SImageMultiDistances::configuring()
 {
     this->configureParams();
 
-    const ConfigType srvconfig = this->getConfiguration();
-    const ConfigType config    = srvconfig.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_FONT_SOURCE_CONFIG = s_CONFIG + "fontSource";
+    static const std::string s_FONT_SIZE_CONFIG   = s_CONFIG + "fontSize";
+    static const std::string s_RADIUS_CONFIG      = s_CONFIG + "radius";
+    static const std::string s_INTERACTIVE_CONFIG = s_CONFIG + "interactive";
+    static const std::string s_PRIORITY_CONFIG    = s_CONFIG + "priority";
+    static const std::string s_QUERY_MASK_CONFIG  = s_CONFIG + "queryMask";
+    static const std::string s_QUERY_FLAGS_CONFIG = s_CONFIG + "distanceQueryFlags";
 
     m_fontSource           = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_fontSize             = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);

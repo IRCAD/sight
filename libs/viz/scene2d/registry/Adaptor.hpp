@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,10 +35,10 @@ class IAdaptor;
 namespace registry
 {
 
-typedef std::map<std::string, std::string> AdaptorRegistryType;
+typedef std::map<std::string, std::string> adaptor_registry_t;
 
 /// Returns map containing Adaptor-SRender association
-VIZ_SCENE2D_API AdaptorRegistryType& getAdaptorRegistry();
+VIZ_SCENE2D_API adaptor_registry_t& getAdaptorRegistry();
 
 } // namespace registry
 

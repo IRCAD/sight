@@ -51,21 +51,6 @@ namespace sight::module::viz::scene3d::adaptor
 
 //-----------------------------------------------------------------------------
 
-static const std::string s_COLOR_CONFIG             = "color";
-static const std::string s_VISIBLE_CONFIG           = "visible";
-static const std::string s_AUTORESET_CAMERA_CONFIG  = "autoresetcamera";
-static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
-static const std::string s_FIXED_SIZE_CONFIG        = "fixedSize";
-static const std::string s_TEXTURE_NAME_CONFIG      = "textureName";
-static const std::string s_QUERY_CONFIG             = "queryFlags";
-static const std::string s_RADIUS_CONFIG            = "radius";
-static const std::string s_DISPLAY_LABEL_CONFIG     = "displayLabel";
-static const std::string s_LABEL_COLOR_CONFIG       = "labelColor";
-static const std::string s_FONT_SOURCE_CONFIG       = "fontSource";
-static const std::string s_FONT_SIZE_CONFIG         = "fontSize";
-
-//-----------------------------------------------------------------------------
-
 SPointList::SPointList() noexcept
 {
     m_material = data::Material::New();
@@ -104,8 +89,20 @@ void SPointList::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfiguration();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_COLOR_CONFIG             = s_CONFIG + "color";
+    static const std::string s_VISIBLE_CONFIG           = s_CONFIG + "visible";
+    static const std::string s_AUTORESET_CAMERA_CONFIG  = s_CONFIG + "autoresetcamera";
+    static const std::string s_MATERIAL_TEMPLATE_CONFIG = s_CONFIG + "materialTemplate";
+    static const std::string s_FIXED_SIZE_CONFIG        = s_CONFIG + "fixedSize";
+    static const std::string s_TEXTURE_NAME_CONFIG      = s_CONFIG + "textureName";
+    static const std::string s_QUERY_CONFIG             = s_CONFIG + "queryFlags";
+    static const std::string s_RADIUS_CONFIG            = s_CONFIG + "radius";
+    static const std::string s_DISPLAY_LABEL_CONFIG     = s_CONFIG + "displayLabel";
+    static const std::string s_LABEL_COLOR_CONFIG       = s_CONFIG + "labelColor";
+    static const std::string s_FONT_SOURCE_CONFIG       = s_CONFIG + "fontSource";
+    static const std::string s_FONT_SIZE_CONFIG         = s_CONFIG + "fontSize";
 
     const std::string color = config.get<std::string>(s_COLOR_CONFIG, "");
 
@@ -464,18 +461,18 @@ scene3d::adaptor::SMaterial::sptr SPointList::createMaterialService(const std::s
     );
     materialAdaptor->setInOut(m_material, "material", true);
 
-    materialAdaptor->setID(this->getID() + "_" + materialAdaptor->getID());
-    materialAdaptor->setRenderService(this->getRenderService());
-    materialAdaptor->setLayerID(m_layerID);
+    const auto tplName =
+        !m_materialTemplateName.empty() ? m_materialTemplateName : sight::viz::scene3d::Material::
+        DEFAULT_MATERIAL_TEMPLATE_NAME;
 
-    if(!m_materialTemplateName.empty())
-    {
-        materialAdaptor->setMaterialTemplateName(m_materialTemplateName);
-    }
-
-    const std::string mtlName = _meshId + "_" + materialAdaptor->getID();
-
-    materialAdaptor->setMaterialName(mtlName);
+    materialAdaptor->configure(
+        this->getID() + "_" + materialAdaptor->getID(),
+        _meshId + "_" + materialAdaptor->getID(),
+        this->getRenderService(),
+        m_layerID,
+        "",
+        tplName
+    );
 
     return materialAdaptor;
 }

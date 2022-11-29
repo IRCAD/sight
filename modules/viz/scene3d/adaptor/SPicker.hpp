@@ -42,12 +42,11 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
         <service type="sight::module::viz::scene3d::adaptor::SPicker">
-            <config layer="..." priority="0" queryMask="0xFFFFFFFF" layerOrderDependant="true" />
+            <config priority="0" queryMask="0xFFFFFFFF" layerOrderDependant="true" />
        </service>
    @endcode
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): layer on which the adaptor picks points.
  * - \b priority (optional, int, default=0): picking priority, higher priority interactions are performed first.
  * - \b queryMask (optional, uint32, default=0xFFFFFFFF): filters out entities with mismatching flags when picking.
  * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
@@ -63,21 +62,21 @@ public:
     MODULE_VIZ_SCENE3D_API SPicker() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SPicker() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SPicker() noexcept final = default;
 
 protected:
 
     /// Configures the picker's query mask and priority.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Creates the interactor and adds it to the layer.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /// Updates the service. Doesn't do anything here.
-    MODULE_VIZ_SCENE3D_API void updating() noexcept override;
+    MODULE_VIZ_SCENE3D_API void updating() noexcept final;
 
     /// Destroys the interactor and removes it from the layer.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
 private:
 

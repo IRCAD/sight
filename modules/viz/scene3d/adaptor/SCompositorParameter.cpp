@@ -78,27 +78,15 @@ private:
     module::viz::scene3d::adaptor::SCompositorParameter::wptr m_adaptor;
 };
 
-static const std::string s_COMPOSITOR_NAME_CONFIG = "compositorName";
-
-//------------------------------------------------------------------------------
-
-SCompositorParameter::SCompositorParameter() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
-SCompositorParameter::~SCompositorParameter() noexcept =
-    default;
-
 //------------------------------------------------------------------------------
 
 void SCompositorParameter::configuring()
 {
     this->IParameter::configuring();
 
-    const ConfigType configType = this->getConfiguration();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
+    static const std::string s_COMPOSITOR_NAME_CONFIG = s_CONFIG + "compositorName";
     m_compositorName = config.get<std::string>(s_COMPOSITOR_NAME_CONFIG);
     SIGHT_ERROR_IF("'" + s_COMPOSITOR_NAME_CONFIG + "' attribute not set", m_compositorName.empty());
 }

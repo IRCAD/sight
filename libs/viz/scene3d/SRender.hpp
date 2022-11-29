@@ -67,11 +67,11 @@ class Layer;
 
             <layer id="..." order="1">
                 <viewport hOffset="0.03" vOffset="0.03" width="0.3" height="0.3" hAlign="right" vAlign="top"/>
+                <adaptor uid="..."/>
             </layer>
-            <layer id="..." order="2" compositors="Invert;Laplace;Posterize" defaultLight="false" overlays="..."/>
-
-            <adaptor uid="..."/>
-            <adaptor uid="..."/>
+            <layer id="..." order="2" compositors="Invert;Laplace;Posterize" defaultLight="false" overlays="...">
+                <adaptor uid="..."/>
+            </layer>
         </scene>
     </service>
    @endcode
@@ -117,8 +117,8 @@ class Layer;
  *    - \b defaultLight (optional, true/false, default=true): Sets if a default light is created in the layer.
  *    - \b overlays (optional, string): list of overlay names (separated by semicolons) rendered on top of the layer's
  *         viewport.
- *  - \b adaptor
- *    - \b uid (mandatory): the identifier of the adaptor.
+ *    - \b adaptor
+ *      - \b uid (mandatory): the identifier of the adaptor.
  */
 class VIZ_SCENE3D_CLASS_API SRender final : public viz::base::IRender
 {

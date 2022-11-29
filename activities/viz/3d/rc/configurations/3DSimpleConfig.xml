@@ -21,24 +21,23 @@
 
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="gs" type="sight::viz::scene3d::SRender" >
+        <service uid="gs" type="sight::viz::scene3d::SRender">
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
-                
-                <layer id="default" order="1"/>
 
-                <adaptor uid="cameraInteractorAdaptor" />
-                <adaptor uid="modelAdaptor" />
+                <layer id="default" order="1">
+                    <adaptor uid="cameraInteractorAdaptor" />
+                    <adaptor uid="modelAdaptor" />
+                </layer>
             </scene>
         </service>
 
-        <service uid="cameraInteractorAdaptor" type="sight::module::viz::scene3d::adaptor::STrackballCamera" >
-            <config layer="default" priority="0" orientation="${orientation}" />
+        <service uid="cameraInteractorAdaptor" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
+            <config priority="0" orientation="${orientation}" />
         </service>
 
-        <service uid="modelAdaptor" type="sight::module::viz::scene3d::adaptor::SModelSeries" >
+        <service uid="modelAdaptor" type="sight::module::viz::scene3d::adaptor::SModelSeries">
             <in key="model" uid="${objectID}" autoConnect="true" />
-            <config layer="default" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->

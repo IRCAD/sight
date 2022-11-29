@@ -56,20 +56,21 @@
         <service uid="imageScene" type="sight::viz::scene3d::SRender">
             <scene overlay="true">
                 <background color="#36393E" />
-                <layer id="default" order="1" />
+                <layer id="default" order="1" >
                 <adaptor uid="cameraInteractorAdaptor" />
                 <adaptor uid="volumeRender" />
+                </layer>
             </scene>
         </service>
 
         <service uid="cameraInteractorAdaptor" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
-            <config layer="default" priority="0" />
+            <config priority="0" />
         </service>
 
         <service uid="volumeRender" type="sight::module::viz::scene3d::adaptor::SVolumeRender">
             <in key="image" uid="${imageSeries}" />
             <in key="tf" uid="tf" />
-            <config layer="default" widgets="false" preintegration="false" autoresetcamera="true" />
+            <config widgets="false" preintegration="false" autoresetcamera="true" />
         </service>
 
         <service uid="tfm" type="sight::module::ui::qt::image::STransferFunction">

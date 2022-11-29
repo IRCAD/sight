@@ -44,12 +44,11 @@ class PostWindowRenderListener;
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="renderStatsAdaptor" type="sight::module::viz::scene3d::adaptor::SRenderStats">
-        <config layer="default" color="#ff0000" fontSize="12"/>
+        <config color="#ff0000" fontSize="12"/>
     </service>
    @endcode
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): not really used but it is needed to be bound to a render service.
  * - \b color (optional, hexadecimal, default=#FFFFFF): stats' text color
  * - \b fontSize (optional, unsigned int, default=12): stats font size in points.
  */
@@ -64,21 +63,21 @@ public:
     MODULE_VIZ_SCENE3D_API SRenderStats() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SRenderStats() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SRenderStats() noexcept final;
 
 protected:
 
     /// Configures stats color and size.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Initializes the overlay text displaying the stats.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /// Destroys the overlay text.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
 private:
 

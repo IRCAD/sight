@@ -116,27 +116,27 @@
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
-                <layer id="default" order="1" />
-                <adaptor uid="modelSeriesAdp" />
-                <adaptor uid="negatoAdp" />
-                <adaptor uid="snapshotAdp" />
+                <layer id="default" order="1">
+                    <adaptor uid="modelSeriesAdp" />
+                    <adaptor uid="negatoAdp" />
+                    <adaptor uid="snapshotAdp" />
+                </layer>
             </scene>
         </service>
 
         <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true">
             <in key="model" uid="modelSeries" />
-            <config layer="default" picker="" />
+            <config picker="" />
         </service>
 
-        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" >
+        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D">
             <in key="image" uid="${imageSeries}" />
             <inout key="tf" uid="tf" />
-            <config layer="default" sliceIndex="axial" />
+            <config sliceIndex="axial" />
         </service>
 
         <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo">
             <inout key="image" uid="snapshot" />
-            <config layer="default" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->

@@ -57,7 +57,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SReconstruction">
         <in key="reconstruction" uid="..." />
-        <config layer="..." transform="..." autoresetcamera="true" queryFlags="0x40000000" />
+        <config transform="..." autoresetcamera="true" queryFlags="0x40000000" />
    </service>
    @endcode
  *
@@ -65,7 +65,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b reconstruction [sight::data::Reconstruction]: reconstruction to display.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b transform (optional, string, default=""): the transformation matrix to associate to the adaptor.
  * - \b autoresetcamera (optional, true/false, default=true): reset the camera when this mesh is modified, "true" or
  *"false".
@@ -85,7 +84,7 @@ public:
     MODULE_VIZ_SCENE3D_API SReconstruction() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SReconstruction() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SReconstruction() noexcept final = default;
 
     /**
      * @brief Enables/disables automatic reset on camera.
@@ -114,10 +113,10 @@ public:
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Creates the mesh service.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -126,19 +125,19 @@ protected:
      * Connect data::Reconstruction::s_MESH_CHANGED_SIG of s_RECONSTRUCTION_INPUT to s_CHANGE_MESH_SLOT
      * Connect data::Reconstruction::s_VISIBILITY_MODIFIED_SIG of s_RECONSTRUCTION_INPUT to s_VISIBILITY_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 
     /// Stops and unregisters created services.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
     /// Updates the mesh adaptor according to the reconstruction or creates it if it hasn't been yet.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /**
      * @brief Sets the reconstruction visibility.
      * @param _visible the visibility status of the reconstruction.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
 
 private:
 

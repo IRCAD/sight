@@ -58,7 +58,6 @@ namespace sight::module::viz::scene3d::adaptor
         <inout key="transform" uid="..." />
         <in key="calibration" uid="..." />
         <in key="cameraSet" uid="..." />
-        <config layer="..." />
     </service>
  * @endcode
  *
@@ -68,9 +67,6 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection InOut InOut
  * - \b transform [sight::data::Matrix4]: transform matrix for the camera.
- *
- * @subsection Configuration Configuration
- * - \b layer (mandatory, string): defines the camera's layer
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SCamera final : public sight::viz::scene3d::IAdaptor
 {

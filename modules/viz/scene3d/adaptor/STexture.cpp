@@ -45,12 +45,6 @@ const core::com::Signals::SignalKeyType module::viz::scene3d::adaptor::STexture:
 
 const std::string DEFAULT_TEXTURE_FILENAME = "default.png";
 
-static const std::string s_TEXTURE_NAME_CONFIG = "textureName";
-static const std::string s_FILTERING_CONFIG    = "filtering";
-static const std::string s_WRAPPING_CONFIG     = "wrapping";
-static const std::string s_USE_ALPHA_CONFIG    = "useAlpha";
-static const std::string s_DYNAMIC_CONFIG      = "dynamic";
-
 //------------------------------------------------------------------------------
 
 STexture::STexture() noexcept
@@ -60,17 +54,17 @@ STexture::STexture() noexcept
 
 //------------------------------------------------------------------------------
 
-STexture::~STexture() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void STexture::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfiguration();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_TEXTURE_NAME_CONFIG = "textureName";
+    static const std::string s_FILTERING_CONFIG    = "filtering";
+    static const std::string s_WRAPPING_CONFIG     = "wrapping";
+    static const std::string s_USE_ALPHA_CONFIG    = "useAlpha";
+    static const std::string s_DYNAMIC_CONFIG      = "dynamic";
 
     // Choose a default name if not provided, this is very important otherwise
     // the texture may be lost if it is unloaded (which is very likely to happen when playing with techniques)

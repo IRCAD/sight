@@ -48,15 +48,6 @@ static const core::com::Slots::SlotKeyType s_SLICE_TYPE_SLOT       = "sliceType"
 static const core::com::Slots::SlotKeyType s_SLICE_INDEX_SLOT      = "sliceIndex";
 static const core::com::Slots::SlotKeyType s_RENAME_GROUP_SLOT     = "renameGroup";
 
-static const std::string s_FONT_SIZE_CONFIG       = "fontSize";
-static const std::string s_FONT_SOURCE_CONFIG     = "fontSource";
-static const std::string s_LABEL_CONFIG           = "label";
-static const std::string s_ORIENTATION_CONFIG     = "orientation";
-static const std::string s_LANDMARKS_FLAGS_CONFIG = "landmarksQueryFlags";
-static const std::string s_INTERACTIVE_CONFIG     = "interactive";
-static const std::string s_PRIORITY_CONFIG        = "priority";
-static const std::string s_QUERY_MASK_CONFIG      = "queryMask";
-
 const core::com::Signals::SignalKeyType SLandmarks::s_SEND_WORLD_COORD = "sendWorldCoord";
 
 //------------------------------------------------------------------------------
@@ -91,17 +82,11 @@ SLandmarks::SLandmarks() noexcept
 
 //-----------------------------------------------------------------------------
 
-SLandmarks::~SLandmarks() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
 void SLandmarks::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfiguration();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
     this->setTransformId(
         config.get<std::string>(
@@ -109,6 +94,15 @@ void SLandmarks::configuring()
             this->getID() + "_transform"
         )
     );
+
+    static const std::string s_FONT_SIZE_CONFIG       = s_CONFIG + "fontSize";
+    static const std::string s_FONT_SOURCE_CONFIG     = s_CONFIG + "fontSource";
+    static const std::string s_LABEL_CONFIG           = s_CONFIG + "label";
+    static const std::string s_ORIENTATION_CONFIG     = s_CONFIG + "orientation";
+    static const std::string s_LANDMARKS_FLAGS_CONFIG = s_CONFIG + "landmarksQueryFlags";
+    static const std::string s_INTERACTIVE_CONFIG     = s_CONFIG + "interactive";
+    static const std::string s_PRIORITY_CONFIG        = s_CONFIG + "priority";
+    static const std::string s_QUERY_MASK_CONFIG      = s_CONFIG + "queryMask";
 
     m_fontSource   = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_fontSize     = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
@@ -173,11 +167,12 @@ void SLandmarks::starting()
         "sight::module::viz::scene3d::adaptor::SMaterial"
     );
     m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
-    m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setRenderService(this->getRenderService());
-    m_materialAdaptor->setLayerID(m_layerID);
-    m_materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_materialAdaptor->configure(
+        this->getID() + m_materialAdaptor->getID(),
+        this->getID() + m_materialAdaptor->getID(),
+        this->getRenderService(),
+        m_layerID
+    );
     m_materialAdaptor->start();
 
     m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);

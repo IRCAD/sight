@@ -52,7 +52,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
         <service type="sight::module::viz::scene3d::adaptor::SVoxelPicker">
             <in key="image" uid="..." />
-            <config layer="..." priority="2" orientation="sagittal" mode="2D" layerOrderDependant="true"
+            <config priority="2" orientation="sagittal" mode="2D" layerOrderDependant="true"
                 moveOnPick="false" />
        </service>
    @endcode
@@ -61,7 +61,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b image [sight::data::Image]: image to pick.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): layer on which the adaptor picks points.
  * - \b priority (optional, int, default=0): picking priority, higher priority interactions are performed first.
  * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  * - \b orientation (optional, sagittal/frontal/axial, default=sagittal): orientation of the image.
@@ -82,21 +81,21 @@ public:
     MODULE_VIZ_SCENE3D_API SVoxelPicker() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SVoxelPicker() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SVoxelPicker() noexcept final = default;
 
     /// Runs a picking query when a mouse button is pressed.
-    MODULE_VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
+    MODULE_VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y) final;
 
     /// Runs a picking query when a mouse button is released.
-    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
+    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier _mod, int _x, int _y) final;
 
 protected:
 
     /// Configures the picker.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Adds the interactor to the layer.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -104,13 +103,13 @@ protected:
      *
      * Connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_SLICETYPE_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_API void updating() noexcept override;
+    MODULE_VIZ_SCENE3D_API void updating() noexcept final;
 
     /// Removes the interactor from the layer.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
 private:
 

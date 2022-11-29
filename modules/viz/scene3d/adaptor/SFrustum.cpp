@@ -41,10 +41,6 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const std::string s_NEAR_CONFIG  = "near";
-static const std::string s_FAR_CONFIG   = "far";
-static const std::string s_COLOR_CONFIG = "color";
-
 //-----------------------------------------------------------------------------
 
 SFrustum::SFrustum() noexcept =
@@ -61,8 +57,7 @@ void SFrustum::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfiguration();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
     this->setTransformId(
         config.get<std::string>(
@@ -70,6 +65,10 @@ void SFrustum::configuring()
             this->getID() + "_transform"
         )
     );
+
+    static const std::string s_NEAR_CONFIG  = s_CONFIG + "near";
+    static const std::string s_FAR_CONFIG   = s_CONFIG + "far";
+    static const std::string s_COLOR_CONFIG = s_CONFIG + "color";
 
     m_near  = config.get<float>(s_NEAR_CONFIG, m_near);
     m_far   = config.get<float>(s_FAR_CONFIG, m_far);
@@ -118,12 +117,13 @@ void SFrustum::starting()
             "sight::module::viz::scene3d::adaptor::SMaterial"
         );
     materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
-    materialAdaptor->setID(this->getID() + materialAdaptor->getID());
-    materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
-    materialAdaptor->setRenderService(this->getRenderService());
-    materialAdaptor->setLayerID(this->m_layerID);
-    materialAdaptor->setShadingMode("ambient");
-    materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    materialAdaptor->configure(
+        this->getID() + materialAdaptor->getID(),
+        this->getID() + materialAdaptor->getID(),
+        this->getRenderService(),
+        m_layerID,
+        "ambient"
+    );
     materialAdaptor->start();
     materialAdaptor->update();
 
