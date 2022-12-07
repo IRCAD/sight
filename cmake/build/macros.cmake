@@ -421,6 +421,12 @@ macro(sight_generic_test SIGHT_TARGET)
             string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
         endif()
 
+        #fill the external modules
+        set(SIGHT_EXTRA_MODULES_OPT "")
+        foreach(MODULE ${SIGHT_EXTRA_MODULES})
+            list(APPEND SIGHT_EXTRA_MODULES_OPT "-B \"${MODULE}\"")
+        endforeach()
+
         # Build the shell script from template_test.sh.in
         configure_file(
             ${FWCMAKE_RESOURCE_PATH}/build/linux/template_test.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${SIGHT_TEST_SCRIPT}
@@ -430,10 +436,15 @@ macro(sight_generic_test SIGHT_TARGET)
         # Cleanup
         unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIR)
     else()
-        # Build the bat script from template_exe.bat.in
+        # Build the bat script from template_test.bat.in
+        set(SIGHT_EXTRA_MODULES_OPT "")
+        foreach(MODULE ${SIGHT_EXTRA_MODULES})
+            list(APPEND SIGHT_EXTRA_MODULES_OPT "-B \"${MODULE}\"")
+        endforeach()
+
         configure_file(
-            ${FWCMAKE_RESOURCE_PATH}/build/windows/template_exe.bat.in ${CMAKE_CURRENT_BINARY_DIR}/${SIGHT_TEST_SCRIPT}
-            @ONLY
+            ${FWCMAKE_RESOURCE_PATH}/build/windows/template_test.bat.in
+            ${CMAKE_CURRENT_BINARY_DIR}/${SIGHT_TEST_SCRIPT} @ONLY
         )
     endif()
 
