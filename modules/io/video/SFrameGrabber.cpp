@@ -108,6 +108,13 @@ void SFrameGrabber::updating()
 
 void SFrameGrabber::startCamera()
 {
+    // Make sure the video is not paused
+    if(m_timer && m_isPaused)
+    {
+        m_isPaused = false;
+        m_timer->start();
+    }
+
     if(this->started())
     {
         // Do not reset if we are already started
