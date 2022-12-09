@@ -132,6 +132,7 @@ public:
         static inline const key_t FWD_NOTIFY        = "forwardNotify";
         static inline const key_t FWD_SET_PARAMETER = "forwardSetParameter";
         static inline const key_t FWD_PRESENT_FRAME = "forwardPresentFrame";
+        static inline const key_t FWD_CREATE_JOB    = "forwardCreateJob";
     };
 
 protected:
@@ -231,6 +232,9 @@ private:
 
     /// A named parameter has been emitted in the sub-service.
     void fwdSetParameter(ui::base::parameter_t value, std::string key);
+
+    /// A job has been created in the proxied service.
+    void fwdCreateJob(sight::core::jobs::IJob::sptr job);
 
     // Forwards notifications
     void fwdNotify(IService::NotificationType, const std::string message);

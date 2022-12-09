@@ -38,6 +38,8 @@ const core::com::Signals::SignalKeyType IGrabber::s_FRAME_PRESENTED_SIG = "frame
 
 const core::com::Signals::SignalKeyType IGrabber::s_PARAMETER_CHANGED_SIG = "parameterChanged";
 
+const core::com::Signals::SignalKeyType IGrabber::s_JOB_CREATED_SIG = "jobCreated";
+
 const core::com::Slots::SlotKeyType IGrabber::s_START_CAMERA_SLOT       = "startCamera";
 const core::com::Slots::SlotKeyType IGrabber::s_STOP_CAMERA_SLOT        = "stopCamera";
 const core::com::Slots::SlotKeyType IGrabber::s_PAUSE_CAMERA_SLOT       = "pauseCamera";
@@ -68,6 +70,7 @@ IGrabber::IGrabber() noexcept
     newSignal<FramePresentedSignalType>(s_FRAME_PRESENTED_SIG);
 
     newSignal<ParameterChangedSignalType>(s_PARAMETER_CHANGED_SIG);
+    newSignal<JobCreatedSignalType>(s_JOB_CREATED_SIG);
 
     newSlot(s_START_CAMERA_SLOT, &IGrabber::startCamera, this);
     newSlot(s_STOP_CAMERA_SLOT, &IGrabber::stopCamera, this);

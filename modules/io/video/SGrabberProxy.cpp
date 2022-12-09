@@ -62,6 +62,7 @@ SGrabberProxy::SGrabberProxy() noexcept
     newSlot(slots::FWD_NOTIFY, &SGrabberProxy::fwdNotify, this);
 
     newSlot(slots::FWD_SET_PARAMETER, &SGrabberProxy::fwdSetParameter, this);
+    newSlot(slots::FWD_CREATE_JOB, &SGrabberProxy::fwdCreateJob, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -517,6 +518,13 @@ void SGrabberProxy::startTargetCamera(std::string impl)
                     slots::FWD_SET_PARAMETER
                 );
 
+                m_connections.connect(
+                    srv,
+                    IGrabber::s_JOB_CREATED_SIG,
+                    this->getSptr(),
+                    slots::FWD_CREATE_JOB
+                );
+
                 ++srvCount;
             }
         }
@@ -759,6 +767,14 @@ void SGrabberProxy::fwdSetParameter(ui::base::parameter_t value, std::string key
 {
     auto sig = this->signal<IGrabber::ParameterChangedSignalType>(IGrabber::s_PARAMETER_CHANGED_SIG);
     sig->asyncEmit(value, key);
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::fwdCreateJob(sight::core::jobs::IJob::sptr job)
+{
+    auto sig = this->signal<IGrabber::JobCreatedSignalType>(IGrabber::s_JOB_CREATED_SIG);
+    sig->asyncEmit(job);
 }
 
 //------------------------------------------------------------------------------

@@ -24,6 +24,8 @@
 
 #include "io/base/config.hpp"
 
+#include <core/jobs/IJob.hpp>
+
 #include <data/Camera.hpp>
 #include <data/FrameTL.hpp>
 #include <data/Point.hpp>
@@ -46,6 +48,7 @@ namespace sight::io::base::service
  * - \b cameraStopped(): Emitted when camera is stopped.
  * - \b framePresented(): Emitted when a frame is presented.
  * - \b parameterChanged(): Emitted when a named parameter is changed.
+ * - \b jobCreated(sight::core::jobs::IJob::sptr): Emitted when a long running job has been launched.
  *
  * @section Slots Slots
  * - \b startCamera(): Start playing the camera or the video.
@@ -114,6 +117,9 @@ public:
 
     IO_BASE_API static const core::com::Signals::SignalKeyType s_PARAMETER_CHANGED_SIG;
     using ParameterChangedSignalType = core::com::Signal<void (ui::base::parameter_t, std::string)>;
+
+    IO_BASE_API static const core::com::Signals::SignalKeyType s_JOB_CREATED_SIG;
+    using JobCreatedSignalType = core::com::Signal<void (core::jobs::IJob::sptr)>;
 
     /** @} */
 
