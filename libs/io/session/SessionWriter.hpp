@@ -101,12 +101,12 @@ public:
     /// Set a serialization function for an object
     /// @param className the name of the object to serialize
     /// @param serializer the function pointer to the serialization function
-    IO_SESSION_API void setSerializer(const std::string& className, serializer_t serializer = nullptr);
+    IO_SESSION_API void setCustomSerializer(const std::string& className, serializer_t serializer = nullptr);
 
     /// Set a default serialization function for an object
     /// @param className the name of the object to serialize
     /// @param serializer the function pointer to the serialization function
-    IO_SESSION_API static void setDefaultSerializer(const std::string& className, serializer_t serializer = nullptr);
+    IO_SESSION_API static void setSerializer(const std::string& className, serializer_t serializer = nullptr);
 
 private:
 

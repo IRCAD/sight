@@ -21,7 +21,7 @@
 
 #include "SessionReader.hpp"
 
-#include "detail/SessionDeserializer.hpp"
+#include "io/session/detail/core/SessionDeserializer.hpp"
 
 #include <core/crypto/PasswordKeeper.hpp>
 
@@ -138,16 +138,16 @@ void SessionReader::setArchiveFormat(const Archive::ArchiveFormat archiveFormat)
 
 //------------------------------------------------------------------------------
 
-void SessionReader::setDeserializer(const std::string& className, deserializer_t deserializer)
+void SessionReader::setCustomDeserializer(const std::string& className, deserializer_t deserializer)
 {
-    m_pimpl->m_sessionDeserializer.setDeserializer(className, deserializer);
+    m_pimpl->m_sessionDeserializer.setCustomDeserializer(className, deserializer);
 }
 
 //------------------------------------------------------------------------------
 
-void SessionReader::setDefaultDeserializer(const std::string& className, deserializer_t deserializer)
+void SessionReader::setDeserializer(const std::string& className, deserializer_t deserializer)
 {
-    detail::SessionDeserializer::setDefaultDeserializer(className, deserializer);
+    detail::SessionDeserializer::setDeserializer(className, deserializer);
 }
 
 } // namespace sight::io::session

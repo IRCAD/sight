@@ -66,8 +66,8 @@
 #include <geometry/data/Mesh.hpp>
 
 #include <io/dicom/reader/SeriesSet.hpp>
-#include <io/session/detail/SessionDeserializer.hpp>
-#include <io/session/detail/SessionSerializer.hpp>
+#include <io/session/detail/core/SessionDeserializer.hpp>
+#include <io/session/detail/core/SessionSerializer.hpp>
 #include <io/session/Helper.hpp>
 #include <io/session/SessionReader.hpp>
 #include <io/session/SessionWriter.hpp>
@@ -1621,10 +1621,6 @@ void SessionTest::customSerializerTest()
     const auto testPath = tmpfolder / "customSerializerTest.zip";
     std::filesystem::remove(testPath);
 
-    // Register custom serializers
-    io::session::SessionWriter::setDefaultSerializer(data::String::classname(), customSerialize);
-    io::session::SessionReader::setDefaultDeserializer(data::String::classname(), customDeserialize);
-
     // Test serialization
     {
         // Create the data object
@@ -1638,7 +1634,10 @@ void SessionTest::customSerializerTest()
         sessionWriter->setObject(object);
         sessionWriter->setFile(testPath);
 
-        // Write the session
+        // Change the session serializer by setting a new one using setCustomSerializer
+        sessionWriter->setCustomSerializer(data::String::classname(), customSerialize);
+
+        // Write the new session
         CPPUNIT_ASSERT_NO_THROW(sessionWriter->write());
 
         CPPUNIT_ASSERT(std::filesystem::exists(testPath));
@@ -1652,44 +1651,16 @@ void SessionTest::customSerializerTest()
         // Configure the session reader
         sessionReader->setFile(testPath);
 
-        // Read the session
+        // Read the session: it should fail since the serializer has been modified by a custom one
+        CPPUNIT_ASSERT_THROW(sessionReader->read(), sight::core::Exception);
+
+        // Set the new customDeserializer
+        sessionReader->setCustomDeserializer(data::String::classname(), customDeserialize);
         CPPUNIT_ASSERT_NO_THROW(sessionReader->read());
 
         // Test value
         auto object = std::dynamic_pointer_cast<data::String>(sessionReader->getObject());
         compare<data::String>(object, 0);
-    }
-
-    // Restore default serializers
-    io::session::SessionWriter::setDefaultSerializer(data::String::classname());
-    io::session::SessionReader::setDefaultDeserializer(data::String::classname());
-
-    // Test again deserialization, it should fail since the deserializer is not the good one
-    {
-        auto sessionReader = io::session::SessionReader::New();
-        CPPUNIT_ASSERT(sessionReader);
-
-        // Configure the session reader
-        sessionReader->setFile(testPath);
-
-        // Read the session, since we don't use version 666 anymore, an exception should be raised
-        CPPUNIT_ASSERT_THROW(sessionReader->read(), sight::core::Exception);
-
-        // Retry with the custom deserializer on deserializer instance
-        sessionReader->setDeserializer(data::String::classname(), customDeserialize);
-        CPPUNIT_ASSERT_NO_THROW(sessionReader->read());
-    }
-
-    // Test again deserialization, to be sure the custom instance deserializer is really gone
-    {
-        auto sessionReader = io::session::SessionReader::New();
-        CPPUNIT_ASSERT(sessionReader);
-
-        // Configure the session reader
-        sessionReader->setFile(testPath);
-
-        // Read the session, since we don't use version 666 anymore, an exception should be raised
-        CPPUNIT_ASSERT_THROW(sessionReader->read(), sight::core::Exception);
     }
 }
 

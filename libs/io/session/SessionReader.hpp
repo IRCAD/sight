@@ -100,12 +100,12 @@ public:
     /// Set a deserialization function for an object
     /// @param className the name of the object to serialize
     /// @param deserializer the function pointer to the deserialization function
-    IO_SESSION_API void setDeserializer(const std::string& className, deserializer_t deserializer = nullptr);
+    IO_SESSION_API void setCustomDeserializer(const std::string& className, deserializer_t deserializer = nullptr);
 
     /// Set a default deserialization function for an object
     /// @param className the name of the object to serialize
     /// @param deserializer the function pointer to the deserialization function
-    IO_SESSION_API static void setDefaultDeserializer(
+    IO_SESSION_API static void setDeserializer(
         const std::string& className,
         deserializer_t deserializer = nullptr
     );
