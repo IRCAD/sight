@@ -186,6 +186,9 @@ protected:
     /// SLOT: Requests the grabber internal settings.
     MODULE_IO_VIDEO_API void requestSettings() final;
 
+    /// SLOT: Calls optimization functions defined in the grabber (e.g. hardware related).
+    MODULE_IO_VIDEO_API void optimize() final;
+
     /// SLOT: Adds a region of interest center.
     MODULE_IO_VIDEO_API void addROICenter(sight::data::Point::sptr p) final;
 
@@ -200,7 +203,7 @@ private:
     enum class CameraType : std::uint8_t
     {
         RGB,
-        RGBD,
+        RGBD
     };
 
     /**

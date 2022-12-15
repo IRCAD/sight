@@ -51,6 +51,7 @@ const core::com::Slots::SlotKeyType IGrabber::s_SET_STEP_SLOT           = "setSt
 const core::com::Slots::SlotKeyType IGrabber::s_SET_PARAMETER_SLOT = "setParameter";
 
 const core::com::Slots::SlotKeyType IGrabber::s_REQUEST_SETTINGS_SLOT = "requestSettings";
+const core::com::Slots::SlotKeyType IGrabber::s_OPTIMIZE_SLOT         = "optimize";
 
 const std::string IGrabber::s_ADD_ROI_CENTER_SLOT    = "addROICenter";
 const std::string IGrabber::s_REMOVE_ROI_CENTER_SLOT = "removeROICenter";
@@ -81,6 +82,7 @@ IGrabber::IGrabber() noexcept
     newSlot(s_SET_PARAMETER_SLOT, &IGrabber::setParameter, this);
 
     newSlot(s_REQUEST_SETTINGS_SLOT, &IGrabber::requestSettings, this);
+    newSlot(s_OPTIMIZE_SLOT, &IGrabber::optimize, this);
 
     newSlot(s_ADD_ROI_CENTER_SLOT, &IGrabber::addROICenter, this);
     newSlot(s_REMOVE_ROI_CENTER_SLOT, &IGrabber::removeROICenter, this);
@@ -134,6 +136,12 @@ void IGrabber::setParameter(ui::base::parameter_t /*unused*/, std::string /*unus
 // ----------------------------------------------------------------------------
 
 void IGrabber::requestSettings()
+{
+}
+
+// ----------------------------------------------------------------------------
+
+void IGrabber::optimize()
 {
 }
 

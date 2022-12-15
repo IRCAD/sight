@@ -60,6 +60,7 @@ namespace sight::io::base::service
  * overridden.
  * - \b setParameters(parameters_t, std::string): Sets a parameters with value (variant) and key.
  * - \b requestSettings(): Requests the grabber internal settings.
+ * - \b optimize(): Calls grabber-specific optimization function (e.g. hardware related).
  * - \b addROICenter(sight::data::Point::sptr): Adds a new region fo interest center.
  * - \b removeROICenter(sight::data::Point::sptr): Removes a region of interest via its center.
  */
@@ -86,6 +87,7 @@ public:
     IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_STEP_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_PARAMETER_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_REQUEST_SETTINGS_SLOT;
+    IO_BASE_API static const core::com::Slots::SlotKeyType s_OPTIMIZE_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_ADD_ROI_CENTER_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_REMOVE_ROI_CENTER_SLOT;
     ///@}
@@ -174,6 +176,9 @@ public:
 
     /// SLOT: Requests the grabber internal settings.
     IO_BASE_API virtual void requestSettings();
+
+    /// SLOT: Calls optimization functions defined in the grabber (e.g. hardware related function).
+    IO_BASE_API virtual void optimize();
 
     /// SLOT: Adds a region of interest center.
     IO_BASE_API virtual void addROICenter(sight::data::Point::sptr p);

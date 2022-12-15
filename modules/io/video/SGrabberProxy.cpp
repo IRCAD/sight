@@ -647,6 +647,19 @@ void SGrabberProxy::requestSettings()
 
 //------------------------------------------------------------------------------
 
+void SGrabberProxy::optimize()
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->optimize();
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SGrabberProxy::addROICenter(sight::data::Point::sptr p)
 {
     for(auto& srv : m_services)
