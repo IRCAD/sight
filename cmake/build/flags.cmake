@@ -141,10 +141,8 @@ if(MSVC)
         set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX "/external:I ")
     endif()
 
-    if(SIGHT_ENABLE_PCH)
-        # Store debug information in the .obj file instead of a PDB.
-        replace_flags("/Z[iI]" "/Z7")
-    endif()
+    # Store debug information in the .obj file instead of a PDB.
+    replace_flags("/Z[iI]" "/Z7")
 
     # Remove leading and trailing spaces in compile flags.
     # Required to remove unnecessary spaces added after each cmake-configure.
@@ -166,16 +164,12 @@ if(MSVC)
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}" CACHE STRING "" FORCE)
     set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}" CACHE STRING "" FORCE)
 
-    if(MSVC)
-        # On MSVC, we want different optimizations depending on the target
-        # CMake does allow us to override CXX_FLAGS, so we reset them here and
-        # restore them later, modified or not, in restore_cxx_flags()
-        set(SIGHT_CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG_INIT} CACHE STRING "" FORCE)
-        set(CMAKE_CXX_FLAGS_DEBUG "" CACHE STRING "" FORCE)
-
-    else()
-        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}" CACHE STRING "" FORCE)
-    endif()
+    # On MSVC, we want different optimizations depending on the target
+    # CMake does allow us to override CXX_FLAGS, so we reset them here and
+    # restore them later, modified or not, in restore_cxx_flags()
+    string(REGEX REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_DEBUG_INIT ${CMAKE_CXX_FLAGS_DEBUG_INIT})
+    set(SIGHT_CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG_INIT} CACHE STRING "" FORCE)
+    set(CMAKE_CXX_FLAGS_DEBUG "" CACHE STRING "" FORCE)
 endif()
 
 # Color for ninja and Clang on Linux and OSX

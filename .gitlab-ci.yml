@@ -290,7 +290,7 @@ deploy_manual:apps-linux-release:
     - $PACKAGE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake" '2>&1'
     # Build the project on the merge result.
     - cd "${env:CI_PROJECT_DIR}/build"
-    - cmake "$env:CI_PROJECT_DIR" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$CACHE\$PACKAGE_NAME\$TOOLCHAIN" -DCMAKE_INSTALL_PREFIX="$env:CI_PROJECT_DIR/install" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DSIGHT_BUILD_TESTS=ON -DSIGHT_ENABLE_PCH=ON
+    - cmake "$env:CI_PROJECT_DIR" -G Ninja -DCMAKE_TOOLCHAIN_FILE="$CACHE\$PACKAGE_NAME\$TOOLCHAIN" -DCMAKE_INSTALL_PREFIX="$env:CI_PROJECT_DIR/install" -DCMAKE_BUILD_TYPE="$BUILD_TYPE" -DSIGHT_BUILD_TESTS=ON -DSIGHT_ENABLE_PCH=OFF -DCMAKE_CXX_COMPILER_LAUNCHER="ccache"
     - $env:TMP="$CACHE\tmp"
     - $env:TEMP="$CACHE\tmp"
     - ninja
@@ -302,19 +302,22 @@ deploy_manual:apps-linux-release:
     - $env:DISABLE_ABORT_DIALOG="1"
     # Launch tests
     - ctest --timeout 480 --output-on-failure -O ctest.log -j6 --output-junit junit.xml
+    # Cleanup, to be sure there is nothing left from previous run
+    - (Remove-Item -Path "${env:CI_PROJECT_DIR}/build/packages" -Force -Recurse -ErrorAction Ignore)
+    - (Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse -ErrorAction Ignore)
     - |
       if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
         ninja SightViewer_package
-        Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse
+        (Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse -ErrorAction Ignore)
 
         ninja SightCalibrator_package
-        Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse
+        (Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse -ErrorAction Ignore)
       }
     - |
       if ("${SIGHT_BUILD_SDK}" -eq "ON") {
         ninja install
         # Check if the package is relocatable
-         Try {
+        Try {
           if (Select-String -Pattern "[A-Z]:[\/\\]\w+" -Path "${env:CI_PROJECT_DIR}/install/lib/cmake/sight/*.cmake") {
             echo "The package is not relocatable, some absolute paths are present"
             exit 1
@@ -380,14 +383,15 @@ deploy_manual:apps-linux-release:
       }
     - |
       if("${SIGHT_TEST_SDK}" -eq "ON"){
-        Expand-Archive packages/sight-*.zip
-        cd sight-*/*/bin
         if ( ${BUILD_TYPE} -eq "Debug" ) {
+          Get-ChildItem packages | Where-Object { $_.Name -match 'sight.*Debug.*zip'  } | Expand-Archive -Force
           $env:PATH = "$CACHE\$PACKAGE_NAME\installed\x64-windows\debug\bin;$env:PATH"
         }
         else {
+          Get-ChildItem packages | Where-Object { $_.Name -notmatch 'Debug' -and $_.Name -match 'sight.*zip'  } | Expand-Archive -Force
           $env:PATH = "$CACHE\$PACKAGE_NAME\installed\x64-windows\bin\;$env:PATH"
         }
+        cd sight-*/*/bin
         ForEach($program in Get-ChildItem ex*.bat,tuto*.bat,sightviewer.bat,sightcalibrator.bat,dicomxplorer.bat){
           $programName = Split-Path -Leaf $program
           Write-Host Testing $programName
