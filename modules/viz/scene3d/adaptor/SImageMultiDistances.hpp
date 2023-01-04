@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -131,7 +131,7 @@ protected:
      * Connect data::Image::s_DISTANCE_ADDED_SIG to s_ADD_DISTANCE_SLOT
      * Connect data::Image::s_DISTANCE_REMOVED_SIG to s_REMOVE_DISTANCE_SLOT
      * Connect data::Image::s_DISTANCE_DISPLAYED_SIG to s_UPDATE_VISIBILITY_SLOT
-     * Connect data::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
+     * Connect data::Image::s_MODIFIED_SIG to IService::slots::s_UPDATE
      */
     MODULE_VIZ_SCENE3D_API KeyConnectionsMap getAutoConnections() const override;
 

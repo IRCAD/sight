@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -202,8 +202,8 @@ void SLight::starting()
 service::IService::KeyConnectionsMap SLight::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_DIFFUSE_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_SPECULAR_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_DIFFUSE_COLOR_INOUT, data::Color::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_SPECULAR_COLOR_INOUT, data::Color::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

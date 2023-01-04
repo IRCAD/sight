@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,6 +53,54 @@ class SigSlotConnection;
 
 } // namespace sight::core::com::helper
 
+namespace sight::service::detail
+{
+
+/// Used to store object configuration in a service.
+struct ObjectServiceConfig
+{
+    /// Object key name, may contains a suffix #N with the number of the key if it is part of a group
+    std::string m_key;
+
+    /// Object identifier
+    std::string m_uid;
+
+    /// Object access (INPUT, INOUT, OUTPUT)
+    data::Access m_access {data::Access::INOUT};
+
+    /// True if the service is autoConnected this object according to the auto-connection map
+    bool m_autoConnect {false};
+
+    /// True if the object is optional (i.e. the service can start even if the object is not present)
+    bool m_optional {false};
+};
+/// Used to store a service configuration.
+struct ServiceConfig
+{
+    /// Service uid
+    std::string m_uid;
+
+    /// Service implementation
+    std::string m_type;
+
+    /// True if the service is autoConnected to all of its inputs/inouts according to the auto-connection map
+    bool m_globalAutoConnect {false};
+
+    /// Service worker
+    std::string m_worker;
+
+    /// list of required objects information (inputs, inouts and outputs), indexed by key name and index
+    std::map<std::pair<std::string, std::optional<std::size_t> >, ObjectServiceConfig> m_objects;
+
+    /// list of required object groups information (inputs, inouts and outputs), indexed by key name
+    std::map<std::string, ObjectServiceConfig> m_groups;
+
+    /// Service configuration (only used with XML config)
+    IService::config_t m_config;
+};
+
+}
+
 namespace sight::service::helper
 {
 
@@ -70,7 +118,6 @@ public:
     typedef std::string ObjectIdType;
     typedef std::vector<ProxyConnections> ProxyConnectionsVectType;
     typedef std::map<ObjectIdType, ProxyConnectionsVectType> ProxyConnectionsMapType;
-
     struct ConnectionInfo
     {
         SignalInfoType m_signal;
@@ -122,17 +169,17 @@ public:
     );
 
     /// Parse a service and return a service configuration
-    SERVICE_API static service::IService::Config parseService(
+    SERVICE_API static service::detail::ServiceConfig parseService(
         const boost::property_tree::ptree& srvElem,
         const std::string& errMsgHead
     );
 
-    SERVICE_API static const service::IService::ObjectServiceConfig* getKeyProps(
+    SERVICE_API static std::pair<bool, bool> getKeyProps(
         const std::string& serviceType,
         const std::string& key
     );
 
-    SERVICE_API static void clearKeyProps();
+    SERVICE_API static void clearProps();
 };
 
 } // namespace sight::service::helper

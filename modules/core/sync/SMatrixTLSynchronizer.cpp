@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -120,7 +120,7 @@ void SMatrixTLSynchronizer::synchronize()
 
 service::IService::KeyConnectionsMap SMatrixTLSynchronizer::getAutoConnections() const
 {
-    return {{s_MATRIXTL_INPUT, data::MatrixTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT}};
+    return {{s_MATRIXTL_INPUT, data::MatrixTL::s_OBJECT_PUSHED_SIG, IService::slots::s_UPDATE}};
 }
 
 // ----------------------------------------------------------------------------

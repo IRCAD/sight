@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,8 +23,10 @@
 #include "service/extension/Config.hpp"
 #include "service/helper/Config.hpp"
 
+#include "core/com/Proxy.hpp"
+
+#include "service/detail/Service.hpp"
 #include "service/extension/Factory.hpp"
-#include "service/registry/Proxy.hpp"
 
 #include <core/com/HasSignals.hpp>
 #include <core/com/HasSlots.hpp>
@@ -44,6 +46,9 @@ namespace sight::service::helper
 
 /// container for the data keywords for a service configuration
 const std::array<std::string, 3> s_DATA_KEYWORDS = {{"in", "out", "inout"}};
+
+static std::map<std::string, service::IService::sptr> s_servicesProps;
+static std::mutex s_servicesPropsMutex;
 
 //-----------------------------------------------------------------------------
 
@@ -195,7 +200,7 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
     auto iter = proxyMap.find(objectKey);
     if(iter != proxyMap.end())
     {
-        service::registry::Proxy::sptr proxy = service::registry::Proxy::getDefault();
+        core::com::Proxy::sptr proxy = core::com::Proxy::get();
 
         ProxyConnectionsVectType vectProxyConnections = iter->second;
 
@@ -225,7 +230,7 @@ void Config::disconnectProxies(const std::string& objectKey, Config::ProxyConnec
 
 //-----------------------------------------------------------------------------
 
-service::IService::Config Config::parseService(
+service::detail::ServiceConfig Config::parseService(
     const boost::property_tree::ptree& srvElem,
     const std::string& errMsgHead
 )
@@ -235,7 +240,7 @@ service::IService::Config Config::parseService(
 #endif
 
     // Get attributes
-    service::IService::Config srvConfig;
+    service::detail::ServiceConfig srvConfig;
 
     srvConfig.m_uid = srvElem.get<std::string>("<xmlattr>.uid");
     SIGHT_ASSERT(errMsgHead + "'uid' attribute is empty.", !srvConfig.m_uid.empty());
@@ -300,7 +305,7 @@ service::IService::Config Config::parseService(
     for(const auto& cfg : objectCfgs)
     {
         // Access type
-        service::IService::ObjectServiceConfig objConfig;
+        service::detail::ObjectServiceConfig objConfig;
         if(cfg.first == "in")
         {
             objConfig.m_access = data::Access::in;
@@ -324,12 +329,12 @@ service::IService::Config Config::parseService(
         {
             auto keyCfgs           = cfg.second.equal_range("key");
             const std::string& key = group.value();
-            const auto* defaultCfg = getKeyProps(srvConfig.m_type, key);
+            const auto defaultCfg  = getKeyProps(srvConfig.m_type, key);
 
             objConfig.m_autoConnect = core::runtime::get_ptree_value(
                 cfg.second,
                 "<xmlattr>.autoConnect",
-                defaultCfg != nullptr ? defaultCfg->m_autoConnect : false
+                defaultCfg.first
             );
 
             // Optional is global to all keys in the group
@@ -338,7 +343,7 @@ service::IService::Config Config::parseService(
                 objConfig.m_optional = core::runtime::get_ptree_value(
                     cfg.second,
                     "<xmlattr>.optional",
-                    defaultCfg != nullptr ? defaultCfg->m_optional : false
+                    defaultCfg.second
                 );
             }
             else
@@ -349,7 +354,7 @@ service::IService::Config Config::parseService(
             std::size_t count = 0;
             for(auto groupCfg = keyCfgs.first ; groupCfg != keyCfgs.second ; ++groupCfg)
             {
-                service::IService::ObjectServiceConfig groupObjConfig = objConfig;
+                service::detail::ObjectServiceConfig groupObjConfig = objConfig;
 
                 // Identifier
                 groupObjConfig.m_uid = groupCfg->second.get<std::string>("<xmlattr>.uid", "");
@@ -358,8 +363,7 @@ service::IService::Config Config::parseService(
                     !groupObjConfig.m_uid.empty()
                 );
 
-                const std::size_t index = count++;
-                groupObjConfig.m_key = KEY_GROUP_NAME(key, index);
+                groupObjConfig.m_key = key;
 
                 // AutoConnect can be overriden by element in the group
                 groupObjConfig.m_autoConnect = core::runtime::get_ptree_value(
@@ -383,7 +387,7 @@ service::IService::Config Config::parseService(
                 }
 
                 // Assign the current object config in the service config
-                srvConfig.m_objects[{key, index}] = groupObjConfig;
+                srvConfig.m_objects[{key, count++}] = groupObjConfig;
             }
         }
         else
@@ -402,13 +406,13 @@ service::IService::Config Config::parseService(
                 !objConfig.m_key.empty()
             );
 
-            const auto* defaultCfg = getKeyProps(srvConfig.m_type, objConfig.m_key);
+            const auto defaultCfg = getKeyProps(srvConfig.m_type, objConfig.m_key);
 
             // AutoConnect
             objConfig.m_autoConnect = core::runtime::get_ptree_value(
                 cfg.second,
                 "<xmlattr>.autoConnect",
-                defaultCfg != nullptr ? defaultCfg->m_autoConnect : false
+                defaultCfg.first
             );
 
             // Optional
@@ -417,7 +421,7 @@ service::IService::Config Config::parseService(
                 objConfig.m_optional = core::runtime::get_ptree_value(
                     cfg.second,
                     "<xmlattr>.optional",
-                    defaultCfg != nullptr ? defaultCfg->m_optional : false
+                    defaultCfg.second
                 );
             }
             else
@@ -433,17 +437,15 @@ service::IService::Config Config::parseService(
     return srvConfig;
 }
 
-// ----------------------------------------------------------------------------
-
-static std::map<std::string, service::IService::sptr> s_servicesProps;
-
 //------------------------------------------------------------------------------
 
-const service::IService::ObjectServiceConfig* Config::getKeyProps(
+std::pair<bool, bool> Config::getKeyProps(
     const std::string& serviceType,
     const std::string& key
 )
 {
+    std::lock_guard guard(s_servicesPropsMutex);
+
     service::IService::sptr srv;
     auto it = s_servicesProps.find(serviceType);
     if(it == s_servicesProps.end())
@@ -457,13 +459,14 @@ const service::IService::ObjectServiceConfig* Config::getKeyProps(
         srv = it->second;
     }
 
-    return srv->_getObjInfoFromKey(key);
+    return srv->m_pimpl->getKeyProps(key);
 }
 
 // ----------------------------------------------------------------------------
 
-void Config::clearKeyProps()
+void Config::clearProps()
 {
+    std::lock_guard guard(s_servicesPropsMutex);
     s_servicesProps.clear();
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -228,7 +228,7 @@ void SUltrasoundMesh::createQuadMesh(const data::Mesh::sptr& _mesh) const
     geometry::data::Mesh::generatePointNormals(_mesh);
 
     const auto sig = _mesh->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-    core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+    core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
     sig->asyncEmit();
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,7 +30,6 @@
 #include <io/base/service/IWriter.hpp>
 
 #include <service/IService.hpp>
-#include <service/IService.hxx>
 #include <service/op/Add.hpp>
 
 // Registers the fixture into the 'registry'
@@ -118,7 +117,7 @@ inline static void basicTest(const bool raw = false)
         writer->stop().wait();
 
         // Cleanup
-        service::OSR::unregisterService(writer);
+        service::unregisterService(writer);
     }
 
     // The file should have been created
@@ -148,7 +147,7 @@ inline static void basicTest(const bool raw = false)
         reader->stop().wait();
 
         // Cleanup
-        service::OSR::unregisterService(reader);
+        service::unregisterService(reader);
 
         // Final test
         CPPUNIT_ASSERT_EQUAL(expected, outString->getValue());

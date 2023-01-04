@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,7 +77,7 @@ protected:
     UI_BASE_API IActivityView();
 
     /// Destructor. Do nothing.
-    UI_BASE_API ~IActivityView() override;
+    UI_BASE_API ~IActivityView() override = default;
 
     /// Parses the configuration
     UI_BASE_API void configuring() override;
@@ -96,6 +96,9 @@ protected:
 
     /// Create the activity given in 'mainActivity' configuration
     UI_BASE_API data::Activity::sptr createMainActivity() const override;
+
+    /// Input data to pass to the configuration
+    data::ptr_vector<data::Object, data::Access::inout> m_data {this, "data"};
 };
 
 } // namespace sight::ui::base::view

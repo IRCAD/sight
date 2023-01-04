@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@
 
 #include <data/tools/Color.hpp>
 
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <boost/tokenizer.hpp>
 

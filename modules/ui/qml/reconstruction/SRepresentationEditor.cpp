@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -180,7 +180,7 @@ void SRepresentationEditor::notifyMaterial()
 service::IService::KeyConnectionsMap SRepresentationEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_RECONSTRUCTION_INOUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     return connections;
 }
 

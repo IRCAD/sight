@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,16 +50,23 @@ namespace sight::module::ui::base
  * @section Slots Slots
  * - \b stopConfig(): called to stop the running configuration
  *
- *
  * @section XML XML Configuration
  *
  * @code{.xml}
         <service type="sight::service::SConfigController" >
             <appConfig id="IdOfConfig" />
+            <inout group="data">
+                <key name="object1" uid="..." />
+                <key name="object2" uid="..." />
+                ...
+            </inout>
             <parameter replace="channel" by="changeValueChannel"  />
             <parameter replace="service" by="serviceUid" />
         </service>
    @endcode
+ * @subsection In-Out In-Out:
+ * - \b data [sight::data::Object]: \b key specifies the name of the parameter in the target configuration and \b uid
+ * identifies the objects whose uid are passed as value of the parameter.
  * @subsection Configuration Configuration:
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of
  * this parameter. The variable GENERIC_UID can be used as unique identifier when the configuration is launched.
@@ -111,11 +118,12 @@ protected:
      * @code{.xml}
        <service impl="sight::module::ui::base::SConfigLauncher" type="ui::base::IAction">
            <config>
-                <appConfig id="Visu2DID" >
-                    <parameters>
-                        <parameter replace="SERIES_SET" by="medicalData" />
-                    </parameters>
-                </appConfig>
+                <appConfig id="Visu2DID" />
+                <inout group="data">
+                    <key name="param1" uid="..." />
+                    <key name="param2" uid="..." />
+                </inout>
+                <parameter replace="SERIES_SET" by="medicalData" />
             </config>
        </service>
         @endcode
@@ -134,6 +142,9 @@ protected:
 
     service::helper::ConfigLauncher::uptr m_configLauncher;
     std::string m_proxychannel; ///< Name of the channel used to connect stopConfig slot to the config frame closing.
+
+    /// Input data to pass to the configuration
+    data::ptr_vector<data::Object, data::Access::inout> m_data {this, service::helper::ConfigLauncher::s_DATA_GROUP};
 };
 
 } // namespace sight::module::ui::base

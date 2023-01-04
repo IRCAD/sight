@@ -75,6 +75,7 @@
 
         <service uid="tfm" type="sight::module::ui::qt::image::STransferFunction">
             <inout key="tf" uid="tf" />
+            <in key="image" uid="${imageSeries}" />
         </service>
 
         <!-- ******************************* Start services ***************************************** -->

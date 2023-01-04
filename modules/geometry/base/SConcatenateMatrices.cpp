@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,7 @@ void SConcatenateMatrices::updating()
 
     auto sig = outputMatrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 }
@@ -99,7 +99,7 @@ void SConcatenateMatrices::updating()
 
 service::IService::KeyConnectionsMap SConcatenateMatrices::getAutoConnections() const
 {
-    return {{s_MATRIX_GROUP_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT}};
+    return {{s_MATRIX_GROUP_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE}};
 }
 
 // ----------------------------------------------------------------------------

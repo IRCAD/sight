@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,7 @@ void SSliceIndexDicomPullerEditor::configuring()
         m_delayTimer.reset();
     }
 
-    m_delayTimer = m_associatedWorker->createTimer();
+    m_delayTimer = this->worker()->createTimer();
     m_delayTimer->setFunction(
         [ =, this]()
         {

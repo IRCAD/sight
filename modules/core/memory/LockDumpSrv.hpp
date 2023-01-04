@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,9 +63,6 @@ protected:
 
     /// Dump unlock the associated data
     MODULE_MEMORY_API void stopping() override;
-
-    /// Does nothing
-    MODULE_MEMORY_API void reconfiguring() override;
 
     /// Does nothing
     MODULE_MEMORY_API void updating() override;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,7 +99,7 @@ void SView::starting()
 
     parentContainer->setLayout(layout);
 
-    m_configManager = service::AppConfigManager::New();
+    m_configManager = service::IAppConfigManager::New();
 
     if(!m_mainActivityId.empty())
     {

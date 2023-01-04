@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -265,11 +265,11 @@ void SAutomaticRegistration::stopping()
 service::IService::KeyConnectionsMap SAutomaticRegistration::getAutoConnections() const
 {
     return {
-        {s_TARGET_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
-        {s_TARGET_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
-        {s_REFERENCE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
-        {s_REFERENCE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
-        {s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT}
+        {s_TARGET_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_TARGET_IN, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_REFERENCE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_REFERENCE_IN, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE}
     };
 }
 

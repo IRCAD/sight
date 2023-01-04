@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -228,7 +228,7 @@ public:
     void swapping(std::string_view key) final
     {
         m_swappedObjectKey = key;
-        m_swappedObject    = this->getInput<data::Object>(key).lock().get_shared();
+        m_swappedObject    = this->getInput(key).lock().get_shared();
     }
 
     //-------------------------------------------------------------------------
@@ -250,15 +250,15 @@ public:
     IService::KeyConnectionsMap getAutoConnections() const override
     {
         return {
-            {"data", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
-            {"data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
-            {"data2", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
-            {"data3", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
-            {"data4", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
-            {"data5", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
-            {"dataGroup", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
-            {"dataGroup0", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
-            {"dataGroup1", data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT}
+            {"data", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
+            {"data1", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
+            {"data2", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
+            {"data3", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
+            {"data4", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
+            {"data5", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
+            {"dataGroup", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
+            {"dataGroup0", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
+            {"dataGroup1", data::Image::s_BUFFER_MODIFIED_SIG, slots::s_UPDATE}
         };
     }
 
@@ -330,7 +330,7 @@ public:
     IService::KeyConnectionsMap getAutoConnections() const override
     {
         return {
-            {"data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+            {"data1", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
             {"data2", data::Object::s_MODIFIED_SIG, s_SLOT_1},
         };
     }
@@ -390,7 +390,7 @@ public:
     IService::KeyConnectionsMap getAutoConnections() const override
     {
         return {
-            {"data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+            {"data1", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
             {"data2", data::Object::s_MODIFIED_SIG, s_SLOT_1},
             {"data3", data::Object::s_MODIFIED_SIG, s_SLOT_1},
         };
@@ -427,7 +427,7 @@ public:
     IService::KeyConnectionsMap getAutoConnections() const override
     {
         KeyConnectionsMap connections;
-        connections.push("data1", data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+        connections.push("data1", data::Object::s_MODIFIED_SIG, slots::s_UPDATE);
         connections.push("data2", data::Object::s_MODIFIED_SIG, s_SLOT_1);
         connections.push("data3", data::Object::s_MODIFIED_SIG, s_SLOT_1);
         return connections;

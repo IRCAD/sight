@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,7 @@
 
 #include <data/String.hpp>
 
-#include <service/AppConfigManager.hpp>
-#include <service/extension/AppConfig.hpp>
-#include <service/macros.hpp>
 #include <service/op/Add.hpp>
-#include <service/registry/ObjectService.hpp>
 
 #include <QApplication>
 #include <QMainWindow>
@@ -84,7 +80,7 @@ void GuiQtTest::testDefaultFrame()
     CPPUNIT_ASSERT_EQUAL(std::string("guiQtUnitTest"), window->windowTitle().toStdString());
 
     srv->stop();
-    service::OSR::unregisterService(srv);
+    service::unregisterService(srv);
 }
 
 //------------------------------------------------------------------------------

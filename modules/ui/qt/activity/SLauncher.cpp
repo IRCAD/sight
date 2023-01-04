@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,8 +34,8 @@
 
 #include <data/Activity.hpp>
 
-#include <service/AppConfigManager.hpp>
 #include <service/extension/AppConfig.hpp>
+#include <service/IAppConfigManager.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
@@ -438,7 +438,7 @@ void SLauncher::buildActivity(
         auto replacementMap             = msg.getReplacementMap();
         replacementMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier();
 
-        auto helper = service::AppConfigManager::New();
+        auto helper = service::IAppConfigManager::New();
         helper->setConfig(viewConfigID, replacementMap);
         helper->launch();
         helper->stopAndDestroy();

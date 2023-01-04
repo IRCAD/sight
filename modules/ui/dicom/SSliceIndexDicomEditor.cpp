@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,7 +90,7 @@ void SSliceIndexDicomEditor::configuring()
 
 void SSliceIndexDicomEditor::starting()
 {
-    m_delayTimer2 = m_associatedWorker->createTimer();
+    m_delayTimer2 = this->worker()->createTimer();
 
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());

@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
- * Copyright (C) 2021 IHU Strasbourg
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,10 +21,11 @@
 
 #pragma once
 
-#include <data/mt/weak_ptr.hpp>
-#include <data/Object.hpp>
+#include "data/config.hpp"
 
-#include <charconv>
+#include <data/IHasData.hpp>
+#include <data/mt/shared_ptr.hpp>
+
 #include <optional>
 #include <string_view>
 #include <system_error>
@@ -33,71 +33,10 @@
 namespace sight::data
 {
 
-//------------------------------------------------------------------------------
-
-enum class Access : std::uint8_t
-{
-    in     = 0,
-    INPUT  = in,
-    out    = 1,
-    OUTPUT = out,
-    inout  = 2,
-    INOUT  = inout,
-};
-
-//------------------------------------------------------------------------------
-
-// Traits that provides the const or not-const pointer depending on Access
-template<class DATATYPE, data::Access access>
-struct access_typed_traits;
-
-template<class DATATYPE>
-struct access_typed_traits<DATATYPE, data::Access::in>
-{
-    using value  = CSPTR(DATATYPE);
-    using object = const DATATYPE;
-    static constexpr bool optional = false;
-};
-
-template<class DATATYPE>
-struct access_typed_traits<DATATYPE, data::Access::inout>
-{
-    using value  = SPTR(DATATYPE);
-    using object = DATATYPE;
-    static constexpr bool optional = false;
-};
-
-template<class DATATYPE>
-struct access_typed_traits<DATATYPE, data::Access::out>
-{
-    using value  = SPTR(DATATYPE);
-    using object = DATATYPE;
-    static constexpr bool optional = true;
-};
-
-template<data::Access access>
-struct assignable_traits;
-
-template<>
-struct assignable_traits<data::Access::in>
-{
-    static constexpr bool value = false;
-};
-
-template<>
-struct assignable_traits<data::Access::inout>
-{
-    static constexpr bool value = false;
-};
-
-template<>
-struct assignable_traits<data::Access::out>
-{
-    static constexpr bool value = true;
-};
-
-template<data::Access access>
-using access_traits = access_typed_traits<sight::data::Object, access>;
+template<class DATATYPE, data::Access ACCESS>
+using ptr_type_traits = std::conditional_t<ACCESS == data::Access::out,
+                                           data::mt::shared_ptr<typename access_type_traits<DATATYPE, ACCESS>::object>,
+                                           data::mt::weak_ptr<typename access_type_traits<DATATYPE, ACCESS>::object> >;
 
 class IHasData;
 
@@ -106,109 +45,78 @@ class IHasData;
  *
  * It provides an abstract assignment method, whatever the type and access type of the data.
  */
-class base_ptr
+class DATA_CLASS_API base_ptr
 {
 public:
 
-    base_ptr(IHasData* _holder, std::string_view _key) :
-        m_holder(_holder),
-        m_key(_key)
-    {
-    }
+    DATA_API base_ptr(
+        IHasData* _holder,
+        std::string_view _key,
+        bool _autoConnect,
+        bool _optional,
+        Access _access,
+        std::optional<std::size_t> _index = std::nullopt
+    );
+    DATA_API virtual ~base_ptr();
 
-    virtual ~base_ptr() = default;
+    [[nodiscard]] std::string_view key() const;
+    [[nodiscard]] bool autoConnect() const;
+    [[nodiscard]] bool optional() const;
+    [[nodiscard]] Access access() const;
 
-    /// Assignment operator
+    // Generic getter
+    DATA_API virtual sight::data::Object::csptr get() = 0;
+
+protected:
+
+    /// Only the owner of the pointer can update the content of the pointer
+    friend class IHasData;
+
+    /// Internal setter of the pointer
     DATA_API virtual void set(
         const sight::data::Object::sptr& _obj,
-        std::optional<std::size_t> index = std::nullopt
+        std::optional<bool> autoConnect,
+        std::optional<bool> optional,
+        std::optional<std::size_t> index = std::nullopt,
+        bool signal                      = false
     )                                    = 0;
 
-protected:
+    DATA_API virtual void setDeferredId(const std::string& _id, std::optional<std::size_t> index = std::nullopt) = 0;
 
-    IHasData* m_holder;
+    IHasData* m_holder {nullptr};
     std::string_view m_key;
+    bool m_autoConnect {false};
+    bool m_optional {false};
+    Access m_access {Access::in};
 };
 
-/**
- * @brief Interface that defines a owner of data::ptr and data::ptr_vector.
- *
- * It allows to register the pointers at instantiation time and set the actual content of the pointer.
- */
-class IHasData
+//------------------------------------------------------------------------------
+
+inline std::string_view base_ptr::key() const
 {
-public:
+    return m_key;
+}
 
-    IHasData()          = default;
-    virtual ~IHasData() = default;
+//------------------------------------------------------------------------------
 
-    /**
-     * @brief Define an object required by this service.
-     *
-     * This method defines the required objects to use the service.
-     * hasAllRequiredObjects() can then be called to know if the service can be started.
-     *
-     * @param[in] _key key of the object
-     * @param[in] _access access to the object (in or inout)
-     * @param[in] _autoConnect if true, the service will be connected to the object's signals
-     * @param[in] _optional if true, the service can be started even if the objet is not present
-     */
-    DATA_API virtual void _registerObject(
-        std::string_view _key,
-        Access _access,
-        std::optional<std::size_t> index,
-        bool _autoConnect = false,
-        bool _optional    = false
-    )                     = 0;
+inline bool base_ptr::autoConnect() const
+{
+    return m_autoConnect;
+}
 
-    /**
-     * @brief Define an object group required by this service.
-     *
-     * This method defines the required objects to use the service.
-     * hasAllRequiredObjects() can then be called to know if the service can be started.
-     *
-     * @param[in] _key key of the object
-     * @param[in] _access access to the object (in or inout)
-     * @param[in] _autoConnect if true, the service will be connected to the object's signals
-     * @param[in] _optional if true, the service can be started even if the objet is not present
-     *
-     * @note This method will register maxNbObject in the group named (<key>#0, <key>#1, ... <key>#<maxNbObject>). The
-     * first Nth objects (minNbObject) are required, the _other are optional.
-     */
-    DATA_API virtual void _registerObjectGroup(
-        std::string_view _key,
-        data::Access _access,
-        bool _autoConnect,
-        bool _optional
-    ) = 0;
+//------------------------------------------------------------------------------
 
-    /// Registers a pointer
-    void _registerPtr(std::string_view _key, base_ptr* _data, std::size_t /*unused*/ = 0)
-    {
-        m_dataContainer[_key] = _data;
-    }
+inline bool base_ptr::optional() const
+{
+    return m_optional;
+}
 
-    DATA_API virtual void _setOutput(
-        std::string_view key,
-        data::Object::sptr object,
-        std::optional<std::size_t> index = std::nullopt
-    )                                    = 0;
+//------------------------------------------------------------------------------
 
-protected:
-
-    /// Set the actual content of the pointer
-    template<Access A>
-    void setPtrObject(
-        std::string_view _key,
-        const typename access_traits<A>::value& _obj,
-        std::optional<std::size_t> index = std::nullopt
-    );
-
-private:
-
-    /// Map of pointers indexed by key name
-    std::map<std::string_view, base_ptr*> m_dataContainer;
-};
+inline Access base_ptr::access() const
+{
+    return m_access;
+}
 
 /**
  * @brief This class holds a non-owning ("weak") reference on a data object.
@@ -217,24 +125,26 @@ private:
  * It must be converted to a locked_ptr via the lock() function in order to access the referenced object.
  */
 template<class DATATYPE, data::Access ACCESS>
-class ptr final : public data::mt::weak_ptr<typename access_typed_traits<DATATYPE,
-                                                                         ACCESS>::object>,
+class ptr final : public ptr_type_traits<DATATYPE,
+                                         ACCESS>,
                   public base_ptr
 {
 public:
+
+    using base_ptr_t = ptr_type_traits<DATATYPE, ACCESS>;
 
     /// Constructor that registers the pointer into the owner, i.e. a service instance.
     ptr(
         IHasData* _holder,
         std::string_view _key,
-        bool _autoConnect = false,
-        bool _optional    = access_typed_traits<DATATYPE, ACCESS>::optional
-    ) noexcept :
-        base_ptr(_holder, _key)
+        bool _autoConnect                 = false,
+        bool _optional                    = access_type_traits<DATATYPE, ACCESS>::optional,
+        std::optional<std::size_t> _index = {}) noexcept :
+        base_ptr(_holder, _key, _autoConnect, _optional, ACCESS, _index)
     {
-        _holder->_registerObject(_key, ACCESS, std::nullopt, _autoConnect, _optional);
-        _holder->_registerPtr(_key, this);
     }
+
+    ~ptr() final = default;
 
     /// Forbids default constructors, destructor and assignment operators
     ptr()                      = delete;
@@ -245,11 +155,9 @@ public:
 
     /// This method is only available if it is an output
     template<data::Access A = ACCESS, typename = typename std::enable_if_t<assignable_traits<A>::value> >
-    ptr& operator=(const typename access_typed_traits<DATATYPE, ACCESS>::value& _obj)
+    ptr& operator=(const typename access_type_traits<DATATYPE, ACCESS>::value& _obj)
     {
-        m_holder->_setOutput(m_key, _obj, std::nullopt);
-        using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
-        data::mt::weak_ptr<target_t>::operator=(_obj);
+        this->set(_obj, {}, {}, {}, true);
         return *this;
     }
 
@@ -257,36 +165,89 @@ public:
     template<data::Access A = ACCESS, typename = typename std::enable_if_t<assignable_traits<A>::value> >
     void reset()
     {
-        m_holder->_setOutput(m_key, nullptr, std::nullopt);
-        using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
-        data::mt::weak_ptr<target_t>::reset();
+        this->set(nullptr, {}, {}, {}, true);
     }
 
 private:
 
     /// Only the owner of the pointer can update the content of the pointer
     friend class IHasData;
+    template<class, data::Access>
+    friend class ptr_vector;
+
+    //------------------------------------------------------------------------------
+
+    sight::data::Object::csptr get() final
+    {
+        return std::dynamic_pointer_cast<const data::Object>(base_ptr_t::get_shared());
+    }
 
     /// Assign the content of the pointer
-    void set(const sight::data::Object::sptr& _obj, std::optional<std::size_t> /*index*/ = std::nullopt) override
+    void set(
+        const sight::data::Object::sptr& _obj,
+        std::optional<bool> autoConnect,
+        std::optional<bool> optional,
+        std::optional<std::size_t> /*index*/ = std::nullopt,
+        bool signal                          = false
+    ) final
     {
+        if constexpr(ACCESS == data::Access::out)
+        {
+            if(signal)
+            {
+                const auto ptr = this->lock();
+                if(ptr)
+                {
+                    m_holder->notifyUnregisterOut(ptr.get_shared(), m_deferredId);
+                }
+            }
+        }
+
         if(_obj == nullptr)
         {
-            using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
-            data::mt::weak_ptr<target_t>::reset();
+            base_ptr_t::reset();
         }
         else
         {
-            using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
+            using target_t = typename access_type_traits<DATATYPE, ACCESS>::object;
             auto typedObj = std::dynamic_pointer_cast<target_t>(_obj);
             SIGHT_ASSERT(
                 "Can not convert pointer type from '" + _obj->getClassname()
                 + "' to '" + target_t::classname() + "'",
                 typedObj
             );
-            data::mt::weak_ptr<target_t>::operator=(typedObj);
+            base_ptr_t::operator=(typedObj);
+
+            if(autoConnect.has_value())
+            {
+                m_autoConnect = autoConnect.value();
+            }
+
+            if(optional.has_value())
+            {
+                m_optional = optional.value();
+            }
+
+            if constexpr(ACCESS == data::Access::out)
+            {
+                if(signal)
+                {
+                    m_holder->notifyRegisterOut(_obj, m_deferredId);
+                }
+            }
         }
     }
+
+    //------------------------------------------------------------------------------
+
+    void setDeferredId(const std::string& _id, std::optional<std::size_t> = std::nullopt) final
+    {
+        m_deferredId = _id;
+    }
+
+    // Pointer on deferred objects (created at runtime) may reference different objects over time
+    // To reference the same object amongst different services, we use a specific label
+    std::string m_deferredId;
 };
 
 /**
@@ -299,89 +260,23 @@ class ptr_vector final : public base_ptr
 {
 public:
 
-    class ptr_t final : public data::mt::weak_ptr<typename access_typed_traits<DATATYPE,
-                                                                               ACCESS>::object>
-    {
-    friend class ptr_vector;
-
-    public:
-
-        ptr_t(
-            IHasData* _holder,
-            std::string_view _key,
-            std::size_t _index
-        ) noexcept :
-            m_holder(_holder),
-            m_key(_key),
-            m_index(_index)
-        {
-        }
-
-        ptr_t() = default;
-        ptr_t(const ptr_t& _other) :
-            m_holder(_other.m_holder),
-            m_key(_other.m_key),
-            m_index(_other.m_index)
-        {
-        }
-
-        ptr_t(ptr_t&& _other) noexcept :
-            m_holder(_other.m_holder),
-            m_key(_other.m_key),
-            m_index(_other.m_index)
-        {
-        }
-
-        //------------------------------------------------------------------------------
-
-        ptr_t& operator=(const ptr_t& _other) = default;
-
-        //------------------------------------------------------------------------------
-
-        ptr_t& operator=(ptr_t&& _other)
-        noexcept
-        {
-            m_holder = _other.m_holder;
-            m_key    = _other.m_key;
-            m_index  = _other.m_index;
-            return *this;
-        }
-
-        /// This method is only available if it is an output
-        template<data::Access A = ACCESS, typename = typename std::enable_if<assignable_traits<A>::value>::type>
-        ptr_t& operator=(const typename access_typed_traits<DATATYPE, ACCESS>::value& _obj)
-        {
-            m_holder->_setOutput(m_key, _obj, m_index);
-            return *this;
-        }
-
-    private:
-
-        /// Pointer assignment
-        void set(typename access_typed_traits<DATATYPE, ACCESS>::value _obj)
-        {
-            using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
-            data::mt::weak_ptr<target_t>::operator=(_obj);
-        }
-
-        IHasData* m_holder {};
-        std::string_view m_key;
-        std::size_t m_index {};
-    };
-
-    using container_ptr_t = std::map<std::size_t, ptr_t>;
+    using ptr_t           = data::ptr<DATATYPE, ACCESS>;
+    using container_ptr_t = std::map<std::size_t, ptr_t*>;
 
     /// Constructor that registers the pointer into the owner, i.e. a service instance.
     ptr_vector(
         IHasData* _holder,
         std::string_view _key,
         bool _autoConnect = false,
-        bool _optional    = access_typed_traits<DATATYPE, ACCESS>::optional
+        bool _optional    = access_type_traits<DATATYPE, ACCESS>::optional
     ) noexcept :
-        base_ptr(_holder, _key)
+        base_ptr(_holder, _key, _autoConnect, _optional, ACCESS, {})
     {
-        _holder->_registerObjectGroup(_key, ACCESS, _autoConnect, _optional);
-        _holder->_registerPtr(_key, this);
+    }
+
+    ~ptr_vector() final
+    {
+        std::for_each(m_ptrs.begin(), m_ptrs.end(), [](const auto& p){delete p.second;});
     }
 
     /// Default constructors, destructor and assignment operators
@@ -398,10 +293,10 @@ public:
         if(m_ptrs.find(_index) == m_ptrs.end())
         {
             // Initializes members
-            m_ptrs.emplace(std::make_pair(_index, ptr_t(m_holder, m_key, _index)));
+            m_ptrs.emplace(std::make_pair(_index, new ptr_t(m_holder, m_key, m_autoConnect, m_optional, _index)));
         }
 
-        return m_ptrs[_index];
+        return *m_ptrs[_index];
     }
 
     /// Accessor for individual weak pointers
@@ -449,17 +344,32 @@ private:
     /// Only the owner of the pointer can update the content of the pointer
     friend class IHasData;
 
+    //------------------------------------------------------------------------------
+
+    sight::data::Object::csptr get() final
+    {
+        return nullptr;
+    }
+
     /// Pointer assignment
-    void set(const sight::data::Object::sptr& _obj, std::optional<std::size_t> _index = std::nullopt) override
+    void set(
+        const sight::data::Object::sptr& _obj,
+        std::optional<bool> autoConnect,
+        std::optional<bool> optional,
+        std::optional<std::size_t> _index = std::nullopt,
+        bool signal                       = false
+    ) final
     {
         auto index = _index.value();
         if(_obj == nullptr)
         {
+            m_ptrs[index]->set(nullptr, {}, {}, signal);
+            delete m_ptrs[index];
             m_ptrs.erase(index);
         }
         else
         {
-            using target_t = typename access_typed_traits<DATATYPE, ACCESS>::object;
+            using target_t = typename access_type_traits<DATATYPE, ACCESS>::object;
             auto typedObj = std::dynamic_pointer_cast<target_t>(_obj);
             SIGHT_ASSERT(
                 "Can not convert pointer type from '" + _obj->getClassname()
@@ -469,11 +379,23 @@ private:
 
             if(m_ptrs.find(index) == m_ptrs.end())
             {
-                m_ptrs.emplace(std::make_pair(index, ptr_t(m_holder, m_key, index)));
+                m_ptrs.emplace(std::make_pair(index, new ptr_t(m_holder, m_key, *autoConnect, *optional, index)));
             }
 
-            m_ptrs[index].set(typedObj);
+            m_ptrs[index]->set(_obj, autoConnect, optional, signal);
         }
+    }
+
+    //------------------------------------------------------------------------------
+
+    void setDeferredId(const std::string& _id, std::optional<std::size_t> index = std::nullopt) final
+    {
+        if(m_ptrs.find(*index) == m_ptrs.end())
+        {
+            m_ptrs.emplace(std::make_pair(index.value(), new ptr_t(m_holder, m_key, m_autoConnect, m_optional, index)));
+        }
+
+        m_ptrs[*index]->m_deferredId = _id;
     }
 
     /// Collection of data, indexed by key
@@ -481,25 +403,5 @@ private:
 };
 
 //------------------------------------------------------------------------------
-
-template<Access A>
-inline void IHasData::setPtrObject(
-    std::string_view _key,
-    const typename access_traits<A>::value& _obj,
-    std::optional<std::size_t> index
-)
-{
-    auto itData = m_dataContainer.find(_key);
-    if(itData != m_dataContainer.end())
-    {
-        itData->second->set(std::const_pointer_cast<sight::data::Object>(_obj), index);
-    }
-    else
-    {
-        SIGHT_WARN("Could not find any registered ptr with key '" << _key << "'");
-    }
-}
-
-//-----------------------------------------------------------------------------
 
 } // namespace sight::data

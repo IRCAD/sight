@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <core/runtime/runtime.hpp>
 
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 namespace sight::service
 {
@@ -75,7 +75,7 @@ void IHasServices::unregisterService(const core::tools::fwID::IDType& _id)
         if(service && (service->getID() == _id))
         {
             service->stop().wait();
-            service::OSR::unregisterService(service);
+            service::unregisterService(service);
             itSrv = m_subServices.erase(itSrv);
         }
         else
@@ -101,7 +101,7 @@ void IHasServices::unregisterService(const IService::sptr& _service)
     m_subServices.erase(iter);
 
     _service->stop().wait();
-    service::OSR::unregisterService(_service);
+    service::unregisterService(_service);
 }
 
 //------------------------------------------------------------------------------
@@ -125,7 +125,7 @@ void IHasServices::unregisterServices(const std::string& _classname)
         if(srv && (classname.empty() || srv->getClassname() == classname))
         {
             srv->stop().wait();
-            service::OSR::unregisterService(srv);
+            service::unregisterService(srv);
             itSrv = m_subServices.erase(itSrv);
         }
         else

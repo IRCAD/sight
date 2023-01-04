@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,8 +72,8 @@ void SImage::starting()
     service::IService::ConfigType negatoCfg;
     negatoCfg.put("<xmlattr>.uid", this->getID() + "negato3DAdaptor");
 
-    renderConfig.add_child("scene.adaptor", interactorCfg);
-    renderConfig.add_child("scene.adaptor", negatoCfg);
+    renderConfig.add_child("scene.layer.adaptor", interactorCfg);
+    renderConfig.add_child("scene.layer.adaptor", negatoCfg);
 
     m_renderSrv = service::add("sight::viz::scene3d::SRender");
     m_renderSrv->setConfiguration(renderConfig);
@@ -81,10 +81,7 @@ void SImage::starting()
 
     m_renderSrv->configure();
 
-    service::IService::ConfigType interactorConfig;
-    interactorConfig.put("config.<xmlattr>.layer", "default");
     m_interactorSrv = service::add("sight::module::viz::scene3d::adaptor::STrackballCamera");
-    m_interactorSrv->setConfiguration(interactorConfig);
     m_interactorSrv->setID(this->getID() + "interactorAdaptor");
     m_interactorSrv->configure();
 
@@ -93,7 +90,6 @@ void SImage::starting()
 
     auto image = m_image.lock();
     service::IService::ConfigType negatoConfig;
-    negatoConfig.put("config.<xmlattr>.layer", "default");
     negatoConfig.put("config.<xmlattr>.interactive", "true");
     m_negatoSrv = service::add("sight::module::viz::scene3d::adaptor::SNegato3D");
     m_negatoSrv->setConfiguration(negatoConfig);
@@ -114,7 +110,7 @@ service::IService::KeyConnectionsMap SImage::getAutoConnections() const
     // This is actually useless since the sub-service already listens to the data,
     // but this prevents a warning in fwServices from being raised.
     KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }
@@ -135,9 +131,9 @@ void SImage::stopping()
 
     sight::ui::base::GuiRegistry::unregisterSIDContainer(this->getID() + "-genericScene");
 
-    service::OSR::unregisterService(m_negatoSrv);
-    service::OSR::unregisterService(m_interactorSrv);
-    service::OSR::unregisterService(m_renderSrv);
+    service::unregisterService(m_negatoSrv);
+    service::unregisterService(m_interactorSrv);
+    service::unregisterService(m_renderSrv);
 
     m_negatoSrv.reset();
     m_interactorSrv.reset();

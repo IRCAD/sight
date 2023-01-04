@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -108,9 +108,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::ModelSeries::s_VERTEX_MODIFIED_SIG to s_UPDATE_SLOT
-     * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to s_UPDATE_SLOT
-     * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to s_UPDATE_SLOT
+     * Connect data::ModelSeries::s_VERTEX_MODIFIED_SIG to IService::slots::s_UPDATE
+     * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to IService::slots::s_UPDATE
+     * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to IService::slots::s_UPDATE
      * Connect data::ModelSeries::s_ADDED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
      * Connect data::ModelSeries::s_REMOVED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
      * Connect data::ModelSeries::s_CHANGED_FIELDS_SIG to s_CHANGE_FIELD_SLOT

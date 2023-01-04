@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,31 +22,29 @@
 
 // cspell:ignore NOLINTNEXTLINE
 
-#include "service/AppConfigManager.hpp"
+#include "service/detail/AppConfigManager.hpp"
 
 #include "service/helper/Config.hpp"
 #include "service/op/Get.hpp"
-#include "core/runtime/runtime.hpp"
-#include <service/registry/Proxy.hpp>
+#include <core/runtime/runtime.hpp>
+#include <core/com/Proxy.hpp>
 #include <service/extension/Config.hpp>
 #include <service/extension/Factory.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
+#include <service/detail/Service.hpp>
 
 #include <core/com/Slots.hxx>
 
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
 
-#include <data/Composite.hpp>
 #include <data/Object.hpp>
 
 #include <boost/foreach.hpp>
 #include <boost/range/iterator_range_core.hpp>
 #include <boost/thread/futures/wait_for_all.hpp>
 
-#include <regex>
-
-namespace sight::service
+namespace sight::service::detail
 {
 
 // ------------------------------------------------------------------------
@@ -60,9 +58,6 @@ AppConfigManager::AppConfigManager()
 {
     newSlot(s_ADD_OBJECTS_SLOT, &AppConfigManager::addObjects, this);
     newSlot(s_REMOVE_OBJECTS_SLOT, &AppConfigManager::removeObjects, this);
-
-    auto defaultWorker = core::thread::getDefaultWorker();
-    core::com::HasSlots::m_slots.setWorker(defaultWorker);
 }
 
 // ------------------------------------------------------------------------
@@ -74,11 +69,15 @@ AppConfigManager::~AppConfigManager()
 
 // ------------------------------------------------------------------------
 
-void AppConfigManager::setConfig(const std::string& _configId, const FieldAdaptorType& _replaceFields)
+void AppConfigManager::setConfig(
+    const std::string& _configId,
+    const FieldAdaptorType& _replaceFields,
+    bool autoPrefixId
+)
 {
     m_configId = _configId;
     m_cfgElem  =
-        extension::AppConfig::getDefault()->getAdaptedTemplateConfig(_configId, _replaceFields, !m_isUnitTest);
+        extension::AppConfig::getDefault()->getAdaptedTemplateConfig(_configId, _replaceFields, autoPrefixId);
 }
 
 // ------------------------------------------------------------------------
@@ -106,7 +105,7 @@ void AppConfigManager::stopAndDestroy()
 void AppConfigManager::startModule()
 {
     SIGHT_ERROR_IF("Module is not specified, it can not be started.", m_configId.empty());
-    if(!m_configId.empty() && !m_isUnitTest)
+    if(!m_configId.empty())
     {
         std::shared_ptr<core::runtime::Module> module = extension::AppConfig::getDefault()->getModule(m_configId);
         module->start();
@@ -119,12 +118,8 @@ void AppConfigManager::create()
 {
     SIGHT_ASSERT("Manager already running.", m_state == STATE_DESTROYED);
 
-    // Create the dummy object for new services that don't work on any object
-    // For now this dummy object will also contain all the "deferred" objects
-    m_tmpRootObject = data::Composite::New();
-
-    m_addObjectConnection    = service::OSR::getRegisterSignal()->connect(this->slot(s_ADD_OBJECTS_SLOT));
-    m_removeObjectConnection = service::OSR::getUnregisterSignal()->connect(this->slot(s_REMOVE_OBJECTS_SLOT));
+    m_addObjectConnection    = service::detail::Service::connectRegisterOut(this->slot(s_ADD_OBJECTS_SLOT));
+    m_removeObjectConnection = service::detail::Service::connectUnregisterOut(this->slot(s_REMOVE_OBJECTS_SLOT));
 
     this->createObjects(m_cfgElem);
     this->createConnections();
@@ -138,6 +133,8 @@ void AppConfigManager::create()
 void AppConfigManager::start()
 {
     SIGHT_ASSERT("Manager must be created first.", m_state == STATE_CREATED || m_state == STATE_STOPPED);
+
+    core::com::HasSlots::m_slots.setWorker(core::thread::getDefaultWorker());
 
     this->processStartItems();
     for(auto& createdObject : m_createdObjects)
@@ -165,8 +162,8 @@ void AppConfigManager::stop()
 {
     SIGHT_ASSERT("Manager is not started, cannot stop.", m_state == STATE_STARTED);
 
-    service::OSR::getRegisterSignal()->disconnect(this->slot(s_ADD_OBJECTS_SLOT));
-    service::OSR::getUnregisterSignal()->disconnect(this->slot(s_REMOVE_OBJECTS_SLOT));
+    m_addObjectConnection.disconnect();
+    m_removeObjectConnection.disconnect();
 
     // Disconnect configuration connections
     this->destroyProxies();
@@ -178,10 +175,7 @@ void AppConfigManager::stop()
 
     this->stopStartedServices();
 
-    SIGHT_DEBUG(
-        "Parsing OSR after stopping the config :" << std::endl
-        << service::OSR::getRegistryInformation()
-    );
+    service::helper::Config::clearProps();
     m_state = STATE_STOPPED;
 }
 
@@ -200,7 +194,7 @@ void AppConfigManager::destroy()
 
     SIGHT_DEBUG(
         "Parsing OSR after destroying the config :" << std::endl
-        << service::OSR::getRegistryInformation()
+        << service::getRegistryInformation()
     );
 
     m_cfgElem.clear();
@@ -212,13 +206,6 @@ void AppConfigManager::destroy()
     m_servicesProxies.clear();
 
     m_state = STATE_DESTROYED;
-}
-
-// ------------------------------------------------------------------------
-
-void AppConfigManager::setIsUnitTest(bool _isUnitTest)
-{
-    m_isUnitTest = _isUnitTest;
 }
 
 // ------------------------------------------------------------------------
@@ -240,7 +227,7 @@ data::Object::sptr AppConfigManager::getConfigRoot() const
 {
     if(m_createdObjects.empty())
     {
-        return m_tmpRootObject;
+        return nullptr;
     }
 
     return m_createdObjects.begin()->second.first;
@@ -392,10 +379,9 @@ void AppConfigManager::destroyCreatedServices()
             srv->stop().wait();
         }
 
-        service::OSR::unregisterService(srv);
+        service::unregisterService(srv);
     }
     m_createdSrv.clear();
-    service::helper::Config::clearKeyProps();
 
     std::ranges::for_each(m_createdWorkers, [](auto& x){core::thread::removeWorker(x);});
     m_createdWorkers.clear();
@@ -596,7 +582,7 @@ void AppConfigManager::createServices(const core::runtime::config_t& cfgElem)
     for(const auto& serviceCfg : boost::make_iterator_range(cfgElem.equal_range("service")))
     {
         // Parse the service configuration
-        Config srvConfig = service::helper::Config::parseService(serviceCfg.second, this->msgHead());
+        auto srvConfig = service::helper::Config::parseService(serviceCfg.second, this->msgHead());
 
         // Check if we can start the service now or if we must deferred its creation
         bool createService = true;
@@ -658,11 +644,11 @@ void AppConfigManager::createServices(const core::runtime::config_t& cfgElem)
 
 // ------------------------------------------------------------------------
 
-service::IService::sptr AppConfigManager::createService(const service::IService::Config& srvConfig)
+service::IService::sptr AppConfigManager::createService(const detail::ServiceConfig& srvConfig)
 {
     // Create and bind service
     service::IService::sptr srv = this->getNewService(srvConfig.m_uid, srvConfig.m_type);
-    service::OSR::registerService(srv);
+    service::registerService(srv);
     m_createdSrv.push_back(srv);
 
     if(!srvConfig.m_worker.empty())
@@ -679,11 +665,11 @@ service::IService::sptr AppConfigManager::createService(const service::IService:
     }
 
     const std::string errMsgTail = " when creating service '" + srvConfig.m_uid + "'.";
-    srv->setConfiguration(srvConfig);
+    srv->setConfiguration(srvConfig.m_config);
 
     for(const auto& [key, objectCfg] : srvConfig.m_objects)
     {
-        srv->setObjectId(key.first, objectCfg.m_uid, key.second);
+        srv->setDeferredId(key.first, objectCfg.m_uid, key.second);
 
         data::Object::sptr obj = this->findObject(objectCfg.m_uid, errMsgTail);
 
@@ -698,7 +684,7 @@ service::IService::sptr AppConfigManager::createService(const service::IService:
                 key.first,
                 key.second,
                 objectCfg.m_access,
-                objectCfg.m_autoConnect,
+                objectCfg.m_autoConnect || srvConfig.m_globalAutoConnect,
                 objectCfg.m_optional
             );
         }
@@ -710,7 +696,7 @@ service::IService::sptr AppConfigManager::createService(const service::IService:
     {
         for(const auto& itProxy : itSrvProxy->second.m_proxyCnt)
         {
-            srv->_addProxyConnection(itProxy.second);
+            srv->m_pimpl->m_connections.add(itProxy.second);
         }
     }
 
@@ -813,7 +799,7 @@ void AppConfigManager::destroyProxy(
     data::Object::csptr _hintObj
 )
 {
-    service::registry::Proxy::sptr proxy = service::registry::Proxy::getDefault();
+    core::com::Proxy::sptr proxy = core::com::Proxy::get();
 
     for(const ProxyConnections::ProxyEltType& signalElt : _proxyCfg.m_signals)
     {
@@ -907,11 +893,11 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
     FW_PROFILE("addObjects");
 
     // Local map used to process services only once
-    std::map<std::string, const Config*> servicesMapCfg;
+    std::map<std::string, const detail::ServiceConfig*> servicesMapCfg;
 
     // Local vector used to store services and keep the declare order (we could use only this one but the map is used
     // to speedup the search
-    std::vector<const Config*> servicesCfg;
+    std::vector<const detail::ServiceConfig*> servicesCfg;
 
     // Are there services that were waiting for this object ?
     auto itDeferredObj = m_deferredObjects.find(_id);
@@ -982,13 +968,13 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
                     if(objCfg.m_optional)
                     {
                         // Check if we already registered an object at this key
-                        auto registeredObj = srv->getObject(key.first, objCfg.m_access, key.second);
+                        auto registeredObj = srv->IHasData::getObject(key.first, objCfg.m_access, key.second);
                         if(registeredObj != nullptr)
                         {
                             // If this is not the object we have to swap, then unregister it
                             if(registeredObj != object)
                             {
-                                srv->resetObject(key.first, key.second, objCfg.m_access);
+                                srv->resetObject(key.first, key.second);
                             }
                         }
 
@@ -1000,7 +986,7 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
                                 key.first,
                                 key.second,
                                 objCfg.m_access,
-                                objCfg.m_autoConnect,
+                                objCfg.m_autoConnect || srvCfg->m_globalAutoConnect,
                                 objCfg.m_optional
                             );
 
@@ -1107,9 +1093,9 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
                         optional &= objCfg.m_optional;
                         if(objCfg.m_optional)
                         {
-                            if(srv->getObject(key.first, objCfg.m_access, key.second))
+                            if(srv->IHasData::getObject(key.first, objCfg.m_access, key.second))
                             {
-                                srv->resetObject(key.first, key.second, objCfg.m_access);
+                                srv->resetObject(key.first, key.second);
 
                                 if(srv->isStarted())
                                 {
@@ -1143,7 +1129,7 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
                         "Service " << srv->getID() << " must be stopped before destruction.",
                         srv->isStopped()
                     );
-                    service::OSR::unregisterService(srv);
+                    service::unregisterService(srv);
 
                     for(auto it = m_createdSrv.begin() ; it != m_createdSrv.end() ; ++it)
                     {
@@ -1176,8 +1162,8 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
                     service::IService::sptr srv = service::get(srvCfg.m_uid);
                     SIGHT_ASSERT(this->msgHead() + "No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
 
-                    srv->_autoDisconnect();
-                    srv->_autoConnect();
+                    srv->m_pimpl->autoDisconnect();
+                    srv->m_pimpl->autoConnect();
                 }
             }
         }
@@ -1188,7 +1174,7 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
 
 void AppConfigManager::connectProxy(const std::string& _channel, const ProxyConnections& _connectCfg)
 {
-    service::registry::Proxy::sptr proxy = service::registry::Proxy::getDefault();
+    core::com::Proxy::sptr proxy = core::com::Proxy::get();
 
     for(const auto& signalCfg : _connectCfg.m_signals)
     {
@@ -1268,4 +1254,4 @@ std::string AppConfigManager::getUIDListAsString(const std::vector<std::string>&
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::service
+} // namespace sight::service::detail

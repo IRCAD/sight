@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <data/Vector.hpp>
 
-#include <service/AppConfigManager.hpp>
+#include <service/IAppConfigManager.hpp>
 #include <service/IController.hpp>
 
 #include <map>
@@ -72,10 +72,10 @@ public:
     SIGHT_DECLARE_SERVICE(SViewer, service::IController);
 
     /// Constructor
-    MODULE_UI_QT_API SViewer();
+    MODULE_UI_QT_API SViewer() = default;
 
     /// Destructor
-    MODULE_UI_QT_API ~SViewer() noexcept override;
+    MODULE_UI_QT_API ~SViewer() noexcept override = default;
 
 protected:
 
@@ -102,8 +102,8 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Vector::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT
-     * Connect Vector::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect Vector::s_ADDED_OBJECTS_SIG to this::IService::slots::s_UPDATE
+     * Connect Vector::s_REMOVED_OBJECTS_SIG to this::IService::slots::s_UPDATE
      */
     MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 

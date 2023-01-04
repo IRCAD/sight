@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,19 +20,14 @@
  *
  ***********************************************************************/
 
-#include "service/registry/Proxy.hpp"
+#include "core/com/Proxy.hpp"
 
-namespace sight::service::registry
+namespace sight::core::com
 {
 
 //-----------------------------------------------------------------------------
 
-Proxy::sptr Proxy::s_currentProxy = Proxy::New();
-
-//-----------------------------------------------------------------------------
-
-Proxy::Proxy()
-= default;
+Proxy::sptr s_currentProxy = std::make_shared<Proxy>();
 
 //-----------------------------------------------------------------------------
 
@@ -43,9 +38,9 @@ Proxy::~Proxy()
 
 //-----------------------------------------------------------------------------
 
-Proxy::sptr Proxy::getDefault()
+Proxy::sptr Proxy::get()
 {
-    return Proxy::s_currentProxy;
+    return s_currentProxy;
 }
 
 //-----------------------------------------------------------------------------
@@ -180,4 +175,4 @@ void Proxy::disconnect(ChannelKeyType channel, core::com::SlotBase::sptr slot)
 
 //-----------------------------------------------------------------------------
 
-} // namespace sight::service::registry
+} // namespace sight::core::com

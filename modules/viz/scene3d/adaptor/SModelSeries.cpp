@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,9 +109,9 @@ void SModelSeries::starting()
 service::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_MODEL_INPUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, IService::slots::s_UPDATE);
     connections.push(s_MODEL_INPUT, data::ModelSeries::s_ADDED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
     connections.push(s_MODEL_INPUT, data::ModelSeries::s_REMOVED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
     connections.push(s_MODEL_INPUT, data::ModelSeries::s_CHANGED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);

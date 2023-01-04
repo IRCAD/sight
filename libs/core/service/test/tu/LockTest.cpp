@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -105,12 +105,6 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void reconfiguring() final
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
     void updating() final
     {
     }
@@ -140,7 +134,7 @@ void LockTest::tearDown()
     // Clean up after the test run.
     // unregister the services that have not been unregistered because a test failed.
 
-    const auto& services = service::OSR::getServices<service::IService>();
+    const auto& services = service::getServices<service::IService>();
     for(const auto& service : services)
     {
         if(service->isStarted())
@@ -148,7 +142,7 @@ void LockTest::tearDown()
             service->stop();
         }
 
-        service::OSR::unregisterService(service);
+        service::unregisterService(service);
     }
 }
 
@@ -172,7 +166,6 @@ void LockTest::testScopedLock()
     lockedService->setInput(input, service::ut::LockedService::s_INPUT);
     lockedService->setInOut(inout, service::ut::LockedService::s_INOUT);
     lockedService->setOutput(service::ut::LockedService::s_OUTPUT, output);
-    CPPUNIT_ASSERT_EQUAL(true, lockedService->hasAllRequiredObjects());
 
     // Test basic scoped lock
     data::mt::weak_ptr<const data::Integer> weakInput(input);
@@ -235,7 +228,7 @@ void LockTest::testScopedLock()
     }
 
     // cleanup
-    service::OSR::unregisterService(lockedService);
+    service::unregisterService(lockedService);
 }
 
 //------------------------------------------------------------------------------
@@ -354,7 +347,6 @@ void LockTest::testThreadedLock()
     lockedService->setInput(input, service::ut::LockedService::s_INPUT);
     lockedService->setInOut(inout, service::ut::LockedService::s_INOUT);
     lockedService->setOutput(service::ut::LockedService::s_OUTPUT, output);
-    CPPUNIT_ASSERT_EQUAL(true, lockedService->hasAllRequiredObjects());
 
     // Test that inputLock doesn't block other reader
     {
@@ -405,7 +397,7 @@ void LockTest::testThreadedLock()
     }
 
     // cleanup
-    service::OSR::unregisterService(lockedService);
+    service::unregisterService(lockedService);
 }
 
 } // namespace sight::service::ut

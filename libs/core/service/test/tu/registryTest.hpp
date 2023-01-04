@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,12 +35,10 @@ namespace sight::service::ut
 /**
  * @brief
  */
-class ObjectServiceTest : public CPPUNIT_NS::TestFixture
+class registryTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(ObjectServiceTest);
+CPPUNIT_TEST_SUITE(registryTest);
 CPPUNIT_TEST(registerKeyTest);
-// Disable registerConnectionTest because it fails randomly on a busy computer (see #72)
-//CPPUNIT_TEST( registerConnectionTest );
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -49,19 +47,6 @@ public:
     void setUp() override;
     void tearDown() override;
     static void registerKeyTest();
-    void registerConnectionTest();
-
-private:
-
-    void registerService(data::Object::sptr obj, const std::string& id);
-    void unregisterService(data::Object::sptr obj, const std::string& id);
-
-    /// Synchronization with slots
-    std::mutex m_mutex;
-    std::condition_variable m_condition;
-
-    std::string m_ret;
-    data::Object::csptr m_obj;
 };
 
 } // namespace sight::service::ut

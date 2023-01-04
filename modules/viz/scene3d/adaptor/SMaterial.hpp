@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -169,7 +169,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Material::s_MODIFIED_SIG of s_MATERIAL_INOUT to s_UPDATE_SLOT
+     * Connect data::Material::s_MODIFIED_SIG of s_MATERIAL_INOUT to IService::slots::s_UPDATE
      * Connect data::Material::s_ADDED_FIELDS_SIG of s_MATERIAL_INOUT to s_UPDATE_FIELD_SLOT
      * Connect data::Material::s_CHANGED_FIELDS_SIG of s_MATERIAL_INOUT to s_UPDATE_FIELD_SLOT
      * Connect data::Material::s_ADDED_TEXTURE_SIG of s_MATERIAL_INOUT to s_ADD_TEXTURE_SLOT

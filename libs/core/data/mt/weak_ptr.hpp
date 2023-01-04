@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,12 +27,6 @@
 namespace sight::service
 {
 
-namespace registry
-{
-
-class ObjectService;
-
-} // namespace registry
 class IService;
 
 } // namespace sight::service
@@ -80,7 +74,7 @@ public:
 
     /// Constructor
     inline explicit weak_ptr(const locked_ptr<DATATYPE>& data) noexcept :
-        m_data(data.getShared())
+        m_data(data.get_shared())
     {
     }
 
@@ -94,7 +88,7 @@ public:
     /// Assignment operator
     inline weak_ptr& operator=(const locked_ptr<DATATYPE>& data) noexcept
     {
-        m_data = data.getShared();
+        m_data = data.get_shared();
         return *this;
     }
 
@@ -128,25 +122,26 @@ public:
         return weak_ptr<CASTED_DATATYPE>(std::dynamic_pointer_cast<CASTED_DATATYPE>(m_data.lock()));
     }
 
-private:
+protected:
 
-    /// @todo remove me when IService and ObjectService will be ready to use lock()
+    /// @todo remove me when IService will be ready to use lock()
     friend class service::IService;
-    friend class service::registry::ObjectService;
 
     /// Convenience getter for weak_ptr
-    /// @todo remove me when IService and ObjectService will be ready to use lock()
-    [[nodiscard]] inline std::weak_ptr<DATATYPE> getWeak() const noexcept
+    /// @todo remove me when IService will be ready to use lock()
+    [[nodiscard]] inline std::weak_ptr<DATATYPE> get_weak() const noexcept
     {
         return m_data;
     }
 
     /// Convenience getter shared_ptr
     /// @todo remove me when IService and ObjectService will be ready to use lock()
-    [[nodiscard]] inline std::shared_ptr<DATATYPE> getShared() const noexcept
+    [[nodiscard]] inline std::shared_ptr<DATATYPE> get_shared() const noexcept
     {
         return m_data.lock();
     }
+
+private:
 
     /// The data to guard
     std::weak_ptr<DATATYPE> m_data;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -209,7 +209,7 @@ protected:
      * Connect data::Mesh::s_POINT_COLORS_MODIFIED_SIG to s_MODIFY_COLORS_SLOT
      * Connect data::Mesh::s_CELL_COLORS_MODIFIED_SIG to s_MODIFY_COLORS_SLOT
      * Connect data::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG to s_MODIFY_POINT_TEX_COORDS_SLOT
-     * Connect data::Mesh::s_MODIFIED_SIG to s_UPDATE_SLOT
+     * Connect data::Mesh::s_MODIFIED_SIG to IService::slots::s_UPDATE
      */
     MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 

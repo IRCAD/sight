@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,8 +86,7 @@ void SStereoToggler::updating()
 {
     if(this->confirmAction())
     {
-        service::registry::ObjectService::ServiceVectorType renderers =
-            service::OSR::getServices("sight::viz::scene3d::SRender");
+        const auto renderers = service::getServices("sight::viz::scene3d::SRender");
 
         const bool enableStereo = this->checked() && this->enabled();
         const auto stereoMode   = enableStereo ? m_stereoMode : StereoModeType::NONE;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,8 +73,8 @@ service::IService::KeyConnectionsMap SFrameMatrixSynchronizer::getAutoConnection
 {
     return {
         {s_FRAMETL_INPUT, data::TimeLine::s_CLEARED_SIG, s_RESET_TIMELINE_SLOT},
-        {s_FRAMETL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT},
-        {s_MATRIXTL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT}
+        {s_FRAMETL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, IService::slots::s_UPDATE},
+        {s_MATRIXTL_INPUT, data::TimeLine::s_OBJECT_PUSHED_SIG, IService::slots::s_UPDATE}
     };
 }
 
@@ -148,10 +148,10 @@ void SFrameMatrixSynchronizer::starting()
         }
     }
 
-    SIGHT_ASSERT("No valid worker for timer.", m_associatedWorker);
+    SIGHT_ASSERT("No valid worker for timer.", this->worker());
     if(m_timeStep != 0U)
     {
-        m_timer = m_associatedWorker->createTimer();
+        m_timer = this->worker()->createTimer();
         const auto duration = std::chrono::milliseconds(m_timeStep);
         m_timer->setFunction([this](auto&& ...){synchronize();});
         m_timer->setDuration(duration);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -212,7 +212,7 @@ service::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT);
     connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_MODIFIED_SIG, s_MODIFY_POINT_SLOT);
     connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_SELECTED_SIG, s_SELECT_POINT_SLOT);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -160,7 +160,7 @@ void SOrientationMarker::setVisible(bool _visible)
 service::IService::KeyConnectionsMap SOrientationMarker::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_MATRIX_IN, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_IN, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     return connections;
 }
 

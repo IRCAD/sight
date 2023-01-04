@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -364,13 +364,13 @@ void SOrganTransformation::addMeshTransform()
 service::IService::KeyConnectionsMap SOrganTransformation::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_MODEL_SERIES, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
-    connections.push(s_COMPOSITE, data::Composite::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_COMPOSITE, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_COMPOSITE, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_COMPOSITE, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_SERIES, data::ModelSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_COMPOSITE, data::Composite::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_COMPOSITE, data::Composite::s_ADDED_OBJECTS_SIG, IService::slots::s_UPDATE);
+    connections.push(s_COMPOSITE, data::Composite::s_CHANGED_OBJECTS_SIG, IService::slots::s_UPDATE);
+    connections.push(s_COMPOSITE, data::Composite::s_REMOVED_OBJECTS_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,7 +79,7 @@ void Composite::createConfig(core::tools::Object::sptr _obj)
                 );
 
                 // Create and manage object config
-                auto ctm = service::AppConfigManager::New();
+                auto ctm = service::IAppConfigManager::New();
                 ctm->service::IAppConfigManager::setConfig(elem.second);
 
                 m_ctmContainer.push_back(ctm);

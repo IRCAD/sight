@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,6 @@
 #include "modules/geometry/base/config.hpp"
 
 #include <core/base.hpp>
-#include <core/com/helper/SigSlotConnection.hpp>
 
 #include <data/Matrix4.hpp>
 
@@ -87,7 +86,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Matrix4::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Matrix4::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
      */
     MODULE_GEOMETRY_BASE_API KeyConnectionsMap getAutoConnections() const override;
 

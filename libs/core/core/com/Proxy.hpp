@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "service/config.hpp"
+#include "core/config.hpp"
 
 #include <core/base.hpp>
 #include <core/com/SignalBase.hpp>
@@ -32,7 +32,7 @@
 #include <map>
 #include <vector>
 
-namespace sight::service::registry
+namespace sight::core::com
 {
 
 /**
@@ -40,13 +40,35 @@ namespace sight::service::registry
  *
  * @note All the signals registered in a Proxy's channel are connected to all slots registered in the same channel.
  */
-class SERVICE_CLASS_API Proxy : public core::BaseObject
+class CORE_CLASS_API Proxy
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Proxy, core::BaseObject, std::make_shared<Proxy>);
+    using sptr           = std::shared_ptr<Proxy>;
+    using ChannelKeyType = std::string;
 
-    typedef std::string ChannelKeyType;
+    /// Constructor, does nothing
+    CORE_API Proxy() = default;
+
+    /// Destructor, does nothing
+    CORE_API ~Proxy();
+
+    /// Returns an instance of Proxy.
+    CORE_API static Proxy::sptr get();
+
+    /// Registers a signal in the channel. It will be connected to all slots in the channel.
+    CORE_API void connect(ChannelKeyType channel, core::com::SignalBase::sptr signal);
+
+    /// Registers a slot in the channel. It will be connected to all signals in the channel.
+    CORE_API void connect(ChannelKeyType channel, core::com::SlotBase::sptr slot);
+
+    /// Unregisters the signal. Disconnects it from the slots in channel
+    CORE_API void disconnect(ChannelKeyType channel, core::com::SignalBase::sptr signal);
+
+    /// Unregisters the slot. Disconnects it from the signals in channel
+    CORE_API void disconnect(ChannelKeyType channel, core::com::SlotBase::sptr slot);
+
+private:
 
     /**
      * @brief Structure to regsiter signal and slot informations
@@ -54,8 +76,8 @@ public:
      */
     struct SigSlots
     {
-        typedef std::set<core::com::SignalBase::sptr> SignalContainerType;
-        typedef std::set<core::com::SlotBase::sptr> SlotContainerType;
+        using SignalContainerType = std::set<core::com::SignalBase::sptr>;
+        using SlotContainerType   = std::set<core::com::SlotBase::sptr>;
         SignalContainerType m_signals;
         SlotContainerType m_slots;
         SlotContainerType::iterator m_lastConnectedSlot;
@@ -63,39 +85,13 @@ public:
         core::mt::ReadWriteMutex m_mutex;
     };
 
-    typedef std::map<ChannelKeyType, SPTR(SigSlots)> ChannelMapType;
-
-    /// Constructor, does nothing
-    SERVICE_API Proxy();
-
-    /// Destructor, does nothing
-    SERVICE_API ~Proxy() override;
-
-    /// Returns an instance of Proxy.
-    SERVICE_API static Proxy::sptr getDefault();
-
-    /// Registers a signal in the channel. It will be connected to all slots in the channel.
-    SERVICE_API void connect(ChannelKeyType channel, core::com::SignalBase::sptr signal);
-
-    /// Registers a slot in the channel. It will be connected to all signals in the channel.
-    SERVICE_API void connect(ChannelKeyType channel, core::com::SlotBase::sptr slot);
-
-    /// Unregisters the signal. Disconnects it from the slots in channel
-    SERVICE_API void disconnect(ChannelKeyType channel, core::com::SignalBase::sptr signal);
-
-    /// Unregisters the slot. Disconnects it from the signals in channel
-    SERVICE_API void disconnect(ChannelKeyType channel, core::com::SlotBase::sptr slot);
-
-protected:
+    using ChannelMapType = std::map<ChannelKeyType, SPTR(SigSlots)>;
 
     /// Association channels, SigSlot
     ChannelMapType m_channels;
 
     /// Used to protect the m_channels access.
     mutable core::mt::ReadWriteMutex m_channelMutex;
-
-    /// The global instance of the proxy.
-    static Proxy::sptr s_currentProxy;
 };
 
-} // namespace sight::service::registry
+} // namespace sight::core::com

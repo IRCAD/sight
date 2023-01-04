@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,6 @@
 #include "activity/extension/Activity.hpp"
 
 #include <data/Activity.hpp>
-#include <data/mt/weak_ptr.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 
@@ -46,14 +45,13 @@ public:
     typedef activity::extension::ActivityAppConfigParam ParameterType;
     typedef activity::extension::ActivityAppConfigParamsType ParametersType;
     typedef std::map<std::string, std::string> ReplaceMapType;
-    typedef std::map<std::pair<std::string, std::optional<std::size_t> >,
-                     data::mt::weak_ptr<data::Object> > InOutMapType;
+    typedef std::vector<std::string> InOutMapType;
 
     /// Constructor. Do nothing.
-    ACTIVITY_API IActivityLauncher();
+    ACTIVITY_API IActivityLauncher() = default;
 
     /// Destructor. Do nothing.
-    ACTIVITY_API virtual ~IActivityLauncher();
+    ACTIVITY_API virtual ~IActivityLauncher() = default;
 
 protected:
 

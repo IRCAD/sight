@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -91,12 +91,12 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Vector::s_ADDED_OBJECTS_SIG of s_MATRIX_LIST_IN to s_UPDATE_SLOT
-     * Connect data::Vector::s_REMOVED_OBJECTS_SIG of s_MATRIX_LIST_IN to s_UPDATE_SLOT
-     * Connect data::Vector::s_MODIFIED_SIG of s_MATRIX_LIST_IN to s_UPDATE_SLOT
-     * Connect data::PointList::s_POINT_ADDED_SIG of s_POINT_LIST_IN to s_UPDATE_SLOT
-     * Connect data::PointList::s_POINT_REMOVED_SIG of s_POINT_LIST_IN to s_UPDATE_SLOT
-     * Connect data::PointList::s_MODIFIED_SIG of s_POINT_LIST_IN to s_UPDATE_SLOT
+     * Connect data::Vector::s_ADDED_OBJECTS_SIG of s_MATRIX_LIST_IN to IService::slots::s_UPDATE
+     * Connect data::Vector::s_REMOVED_OBJECTS_SIG of s_MATRIX_LIST_IN to IService::slots::s_UPDATE
+     * Connect data::Vector::s_MODIFIED_SIG of s_MATRIX_LIST_IN to IService::slots::s_UPDATE
+     * Connect data::PointList::s_POINT_ADDED_SIG of s_POINT_LIST_IN to IService::slots::s_UPDATE
+     * Connect data::PointList::s_POINT_REMOVED_SIG of s_POINT_LIST_IN to IService::slots::s_UPDATE
+     * Connect data::PointList::s_MODIFIED_SIG of s_POINT_LIST_IN to IService::slots::s_UPDATE
      */
     MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
 

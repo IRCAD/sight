@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,6 @@
 #include "viz/scene2d/data/Event.hpp"
 #include "viz/scene2d/data/Viewport.hpp"
 #include "viz/scene2d/vec2d.hpp"
-
-#include <core/com/helper/SigSlotConnection.hpp>
 
 #include <service/helper/Config.hpp>
 

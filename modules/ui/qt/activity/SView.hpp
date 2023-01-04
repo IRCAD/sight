@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 
 #include <data/Activity.hpp>
 
-#include <service/AppConfigManager.hpp>
+#include <service/IAppConfigManager.hpp>
 
 #include <ui/base/view/IActivityView.hpp>
 

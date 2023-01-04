@@ -23,10 +23,10 @@
 
             <service uid="videoToolbarConfig" type="sight::service::SConfigController">
                 <appConfig id="sight::config::io::video::controls" />
-
-                <inout key="camera" uid="camera" />
-                <inout key="frameTL" uid="frameTL" />
-
+                <inout group="data">
+                    <key name="camera" uid="camera" />
+                    <key name="frameTL" uid="frameTL" />
+                </inout>
                 <parameter replace="TOOLBAR" by="subToolbarView" />
             </service>
 

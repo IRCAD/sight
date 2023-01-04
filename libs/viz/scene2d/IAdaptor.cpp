@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "viz/scene2d/Scene2DGraphicsView.hpp"
 
 #include <service/macros.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <QGraphicsItemGroup>
 

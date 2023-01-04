@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -148,12 +148,12 @@ void SPlaneSlicer::configuring()
 service::IService::KeyConnectionsMap SPlaneSlicer::getAutoConnections() const
 {
     return {
-        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
-        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_DEFAULT_VALUE_SLOT},
-        {s_EXTENT_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_EXTENT_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_EXTENT_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT},
-        {s_AXES_IN, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT}
+        {s_AXES_IN, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE}
     };
 }
 

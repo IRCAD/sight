@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -101,18 +101,15 @@ void SGetVectorTest::extractsElementFromVector()
     getVector->start().wait();
     getVector->update().wait();
 
-    auto outputSeries = getVector->getOutputs();
-    SIGHT_ASSERT("index should have size two", outputSeries.size() == 2);
-
-    CPPUNIT_ASSERT_EQUAL(getVector->getOutput<sight::data::Object>("objects", 0).lock()->getID(), index_0ID);
-    CPPUNIT_ASSERT_EQUAL(getVector->getOutput<sight::data::Object>("objects", 1).lock()->getID(), index_3ID);
+    CPPUNIT_ASSERT_EQUAL(getVector->getOutput("objects", 0).lock()->getID(), index_0ID);
+    CPPUNIT_ASSERT_EQUAL(getVector->getOutput("objects", 1).lock()->getID(), index_3ID);
 
     vector->clear();
 
     getVector->update().wait();
 
-    CPPUNIT_ASSERT(getVector->getOutput<sight::data::Object>("objects", 0).lock() == nullptr);
-    CPPUNIT_ASSERT(getVector->getOutput<sight::data::Object>("objects", 1).lock() == nullptr);
+    CPPUNIT_ASSERT(getVector->getOutput("objects", 0).lock() == nullptr);
+    CPPUNIT_ASSERT(getVector->getOutput("objects", 1).lock() == nullptr);
 
     getVector->stop().wait();
     sight::service::remove(getVector);

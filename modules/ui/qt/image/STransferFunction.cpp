@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -288,9 +288,13 @@ void STransferFunction::initializePresets()
         const std::string defaultTFName = data::TransferFunction::s_DEFAULT_TF_NAME;
         if(!this->hasPresetName(defaultTFName))
         {
-            const auto image                             = m_image.lock();
-            const data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF(image->getType());
-            m_tfPresets[defaultTFName] = defaultTf;
+            const auto image = m_image.lock();
+            if(image)
+            {
+                const data::TransferFunction::sptr defaultTf =
+                    data::TransferFunction::createDefaultTF(image->getType());
+                m_tfPresets[defaultTFName] = defaultTf;
+            }
         }
 
         // Test if transfer function composite has few TF

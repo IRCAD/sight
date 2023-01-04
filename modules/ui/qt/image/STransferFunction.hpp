@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -111,7 +111,7 @@ private:
 
     /**
      * @brief
-     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
      * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
      */
     MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;

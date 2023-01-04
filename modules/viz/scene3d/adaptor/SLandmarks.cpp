@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -194,9 +194,9 @@ service::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
 
-    connections.push(s_TRANSFORM_CONFIG, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TRANSFORM_CONFIG, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
-    connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_GROUP_REMOVED_SIG, s_REMOVE_GROUP_SLOT);
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_GROUP_MODIFIED_SIG, s_MODIFY_GROUP_SLOT);
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_GROUP_RENAMED_SIG, s_RENAME_GROUP_SLOT);
@@ -596,7 +596,7 @@ void SLandmarks::selectPoint(std::string _groupName, std::size_t _index)
 
                 // Create thread data.
                 std::shared_ptr<SelectedLandmark> selectedLandmark =
-                    std::make_shared<SelectedLandmark>(m_associatedWorker->createTimer(), m_manualObject);
+                    std::make_shared<SelectedLandmark>(this->worker()->createTimer(), m_manualObject);
                 m_selectedLandmarks.push_back(selectedLandmark);
 
                 // Run a thread that change the selected point.

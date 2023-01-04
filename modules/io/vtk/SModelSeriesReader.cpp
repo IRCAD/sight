@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -180,7 +180,7 @@ void SModelSeriesReader::updating()
             data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG
         );
         {
-            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
             sig->asyncEmit(addedRecs);
         }
     }

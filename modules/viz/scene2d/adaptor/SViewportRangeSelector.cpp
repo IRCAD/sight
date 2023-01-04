@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,10 +62,10 @@ void SViewportRangeSelector::configuring()
 service::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections() const
 {
     return {
-        {s_SELECTED_VIEWPORT_INOUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT},
-        {s_IMAGE_INPUT, sight::data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
-        {s_IMAGE_INPUT, sight::data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
-        {s_TF_INPUT, sight::data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_SLOT}
+        {s_SELECTED_VIEWPORT_INOUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_IMAGE_INPUT, sight::data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_IMAGE_INPUT, sight::data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_TF_INPUT, sight::data::TransferFunction::s_POINTS_MODIFIED_SIG, IService::slots::s_UPDATE}
     };
 }
 
@@ -172,7 +172,7 @@ void SViewportRangeSelector::updating()
 
     auto sig = viewport->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 
@@ -350,7 +350,7 @@ void SViewportRangeSelector::processInteraction(sight::viz::scene2d::data::Event
                     data::Object::s_MODIFIED_SIG
                 );
                 {
-                    core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
                     sig->asyncEmit();
                 }
             }

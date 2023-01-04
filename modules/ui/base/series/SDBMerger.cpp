@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,7 +101,7 @@ void SDBMerger::updating()
     service::IService::sptr ioSelectorSrv;
     ioSelectorSrv = service::add("sight::module::ui::base::io::SSelector");
     ioSelectorSrv->setInOut(local_series_set, io::base::service::s_DATA_KEY);
-    ioSelectorSrv->setWorker(m_associatedWorker);
+    ioSelectorSrv->setWorker(this->worker());
 
     auto jobCreatedSignal = ioSelectorSrv->signal("jobCreated");
     if(jobCreatedSignal)

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -117,7 +117,7 @@ void SPdfWriter::updating()
             for(const auto& imagePtr : m_images)
             {
                 std::shared_future<QImage> future;
-                auto lockedImage = imagePtr.second.lock();
+                auto lockedImage = imagePtr.second->lock();
                 auto fn          = [&]{return SPdfWriter::convertFwImageToQImage(*lockedImage);};
                 lockedImages.push_back(std::move(lockedImage));
                 futuresQImage.emplace_back(std::async(std::launch::async, fn));

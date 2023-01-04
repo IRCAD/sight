@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -87,7 +87,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG of s_MESH_INOUT to s_UPDATE_SLOT.
+     * Connect data::Image::s_MODIFIED_SIG of s_MESH_INOUT to IService::slots::s_UPDATE.
      * Connect data::Image::s_VERTEX_MODIFIED_SIG of s_MESH_INOUT to s_MODIFY_VERTICES_SLOT.
      */
     MODULE_VIZ_QT3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;

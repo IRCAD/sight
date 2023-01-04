@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
 
-#include <service/AppConfigManager.hpp>
+#include <service/IAppConfigManager.hpp>
 #include <service/IXMLParser.hpp>
 
 namespace sight::service::parser

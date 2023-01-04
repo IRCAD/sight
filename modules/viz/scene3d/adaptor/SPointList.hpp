@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -125,11 +125,11 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::PointList::s_POINT_ADDED_SIG of s_POINTLIST_INPUT to s_UPDATE_SLOT
-     * Connect data::PointList::s_POINT_REMOVED_SIG of s_POINTLIST_INPUT to s_UPDATE_SLOT
-     * Connect data::PointList::s_MODIFIED_SIG of s_POINTLIST_INPUT to s_UPDATE_SLOT
-     * Connect data::Mesh::s_VERTEX_MODIFIED_SIG of s_MESH_INPUT to s_UPDATE_SLOT
-     * Connect data::Mesh::s_MODIFIED_SIG of s_MESH_INPUT to s_UPDATE_SLOT
+     * Connect data::PointList::s_POINT_ADDED_SIG of s_POINTLIST_INPUT to IService::slots::s_UPDATE
+     * Connect data::PointList::s_POINT_REMOVED_SIG of s_POINTLIST_INPUT to IService::slots::s_UPDATE
+     * Connect data::PointList::s_MODIFIED_SIG of s_POINTLIST_INPUT to IService::slots::s_UPDATE
+     * Connect data::Mesh::s_VERTEX_MODIFIED_SIG of s_MESH_INPUT to IService::slots::s_UPDATE
+     * Connect data::Mesh::s_MODIFIED_SIG of s_MESH_INPUT to IService::slots::s_UPDATE
      */
     MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 

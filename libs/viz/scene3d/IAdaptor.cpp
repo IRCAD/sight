@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <service/helper/Config.hpp>
 #include <service/macros.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <viz/scene3d/registry/Adaptor.hpp>
 #include <viz/scene3d/Utils.hpp>
@@ -80,7 +80,7 @@ void IAdaptor::initialize()
 {
     if(m_renderService.expired())
     {
-        auto servicesVector = service::OSR::getServices("sight::viz::scene3d::SRender");
+        auto servicesVector = service::getServices("sight::viz::scene3d::SRender");
 
         auto& registry = viz::scene3d::registry::getAdaptorRegistry();
         auto layerCfg  = registry[this->getID()];

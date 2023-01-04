@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -200,12 +200,12 @@ void SPointList::starting()
 service::IService::KeyConnectionsMap SPointList::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_REMOVED_SIG, s_UPDATE_SLOT);
-    connections.push(s_POINTLIST_INPUT, data::PointList::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_ADDED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_POINTLIST_INPUT, data::PointList::s_POINT_REMOVED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_POINTLIST_INPUT, data::PointList::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
-    connections.push(s_MESH_INPUT, data::Mesh::s_VERTEX_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MESH_INPUT, data::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MESH_INPUT, data::Mesh::s_VERTEX_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_MESH_INPUT, data::Mesh::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }
@@ -529,7 +529,7 @@ void SPointList::updateMaterialAdaptor(const std::string& _meshId)
 
         m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
 
-        m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->run();
+        m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::IService::slots::s_UPDATE)->run();
     }
 }
 

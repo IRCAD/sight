@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ public:
     SIGHT_DECLARE_SERVICE(SVTKMesher, sight::service::IFilter);
 
     MODULE_FILTER_MESH_API SVTKMesher() noexcept;
-    MODULE_FILTER_MESH_API ~SVTKMesher() noexcept override;
+    MODULE_FILTER_MESH_API ~SVTKMesher() noexcept override = default;
 
 protected:
 
@@ -81,12 +81,10 @@ private:
     unsigned int m_threshold {0};
     void updateThreshold(int);
 
-    static constexpr std::string_view s_MODELSERIES_OUT = "modelSeries";
-
     /// Input image mask
     data::ptr<data::ImageSeries, data::Access::in> m_image {this, "imageSeries", false};
     /// Output segmentation
-    data::ptr<data::ModelSeries, data::Access::out> m_model {this, s_MODELSERIES_OUT, false};
+    data::ptr<data::ModelSeries, data::Access::out> m_model {this, "modelSeries", false};
 };
 
 } // namespace sight::module::filter::mesh

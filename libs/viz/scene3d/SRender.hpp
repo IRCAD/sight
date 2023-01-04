@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -303,7 +303,7 @@ private:
 template<class T>
 std::vector<SPTR(T)> SRender::getAdaptors() const
 {
-    auto servicesVector = service::OSR::getServices("sight::viz::scene3d::IAdaptor");
+    auto servicesVector = service::getServices("sight::viz::scene3d::IAdaptor");
     std::vector<SPTR(T)> resultVector;
 
     for(const auto& sceneAdaptor : servicesVector)

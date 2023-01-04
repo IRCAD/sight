@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -122,7 +122,7 @@ protected:
      * @brief   This method initializes class member parameters from configuration elements.
      *
      * The method verifies if the configuration is well written and retrieves user parameter values.
-     * Thanks to this method, SSelector::m_selectedServices value is up to date (cleared before reconfiguring).
+     * Thanks to this method, SSelector::m_selectedServices value is up to date.
      **/
     MODULE_UI_BASE_API void configuring() override;
 

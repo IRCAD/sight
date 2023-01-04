@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,25 +26,14 @@
 #include "activity/IValidator.hpp"
 
 #include <core/runtime/runtime.hpp>
-#include <core/tools/dateAndTime.hpp>
-#include <core/tools/UUID.hpp>
 
 #include <data/Composite.hpp>
 #include <data/mt/locked_ptr.hpp>
-#include <data/String.hpp>
+
+#include <boost/range/iterator_range_core.hpp>
 
 namespace sight::activity
 {
-
-//-----------------------------------------------------------------------------
-
-IActivityLauncher::IActivityLauncher()
-= default;
-
-//-----------------------------------------------------------------------------
-
-IActivityLauncher::~IActivityLauncher()
-= default;
 
 //------------------------------------------------------------------------------
 
@@ -53,32 +42,36 @@ void IActivityLauncher::parseConfiguration(const ConfigurationType& config, cons
     m_mainActivityId = config.get<std::string>("mainActivity.<xmlattr>.id", "");
     SIGHT_DEBUG_IF("main activity 'id' is not defined", m_mainActivityId.empty());
 
-    const auto inoutsCfg = config.equal_range("inout");
-    for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
+    if(const auto inoutsCfg = config.get_child_optional("inout"); inoutsCfg.has_value())
     {
-        const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
-        SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
-
-        const auto uid = itCfg->second.get<std::string>("<xmlattr>.uid");
-        SIGHT_ASSERT("Missing 'uid' tag.", !uid.empty());
-
-        const bool optional = itCfg->second.get<bool>("<xmlattr>.optional", false);
-        const auto it       = inouts.find({key, std::nullopt});
-        SIGHT_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
-        auto obj = it->second.lock();
-        ParameterType param;
-        param.replace = key;
-        if(optional)
+        const auto group = inoutsCfg->get<std::string>("<xmlattr>.group");
+        if(group == "data")
         {
-            param.by = uid;
-        }
-        else
-        {
-            SIGHT_ASSERT(std::string("Object key '") + key + "'with uid '" + uid + "' does not exists.", obj);
-            param.by = obj->getID();
-        }
+            std::size_t i = 0;
+            for(const auto& itCfg : boost::make_iterator_range(inoutsCfg->equal_range("key")))
+            {
+                const auto key = itCfg.second.get<std::string>("<xmlattr>.name");
+                SIGHT_ASSERT("Missing 'name' tag.", !key.empty());
 
-        m_parameters.push_back(param);
+                const auto uid = itCfg.second.get<std::string>("<xmlattr>.uid");
+                SIGHT_ASSERT("Missing 'uid' tag.", !uid.empty());
+
+                const bool optional = itCfg.second.get<bool>("<xmlattr>.optional", false);
+                const auto& objId   = inouts[i++];
+                ParameterType param;
+                param.replace = key;
+                if(optional)
+                {
+                    param.by = uid;
+                }
+                else
+                {
+                    param.by = objId;
+                }
+
+                m_parameters.push_back(param);
+            }
+        }
     }
 
     ConfigurationType configParams = config.get_child("parameters");

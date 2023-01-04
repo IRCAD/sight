@@ -67,16 +67,20 @@
 
         <service uid="negato1Srv" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
-            <inout key="image" uid="${imageSeries}" />
-            <inout key="landmarks" uid="landmarks1" />
+            <inout group="data">
+                <key name="image" uid="${imageSeries}" />
+                <key name="landmarks" uid="landmarks1" />
+            </inout>
             <parameter replace="WID_PARENT" by="negato1View" />
             <parameter replace="patient_name" by="Source Image" />
         </service>
 
         <service uid="negato2Srv" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
-            <inout key="image" uid="${imageSeriesMask}" />
-            <inout key="landmarks" uid="landmarks2" />
+            <inout group="data">
+                <key name="image" uid="${imageSeriesMask}" />
+                <key name="landmarks" uid="landmarks2" />
+            </inout>
             <parameter replace="WID_PARENT" by="negato2View" />
             <parameter replace="patient_name" by="Mask Image" />
         </service>

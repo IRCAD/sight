@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -144,7 +144,7 @@ service::IService::KeyConnectionsMap SColourImageMasking::getAutoConnections() c
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_VIDEO_TL_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT);
+    connections.push(s_VIDEO_TL_KEY, data::FrameTL::s_OBJECT_PUSHED_SIG, IService::slots::s_UPDATE);
     connections.push(s_VIDEO_TL_KEY, data::FrameTL::s_CLEARED_SIG, s_CLEAR_MASKTL_SLOT);
 
     return connections;
@@ -179,7 +179,7 @@ void SColourImageMasking::updating()
         auto sig_ = videoTL->signal<data::FrameTL::ObjectPushedSignalType>(
             data::FrameTL::s_OBJECT_PUSHED_SIG
         );
-        core::com::Connection::Blocker blocker(sig_->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker blocker(sig_->getConnection(slot(IService::slots::s_UPDATE)));
 
         // Get the timestamp from the latest video frame
         core::HiResClock::HiResClockType currentTimestamp = videoTL->getNewerTimestamp();

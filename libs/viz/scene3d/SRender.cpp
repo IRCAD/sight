@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -213,7 +213,7 @@ void SRender::starting()
         ogreLayer->setRenderService(viz::scene3d::SRender::dynamicCast(this->shared_from_this()));
         ogreLayer->setID("backgroundLayer");
         ogreLayer->setOrder(0);
-        ogreLayer->setWorker(m_associatedWorker);
+        ogreLayer->setWorker(this->worker());
         ogreLayer->setBackgroundColor("#000000", "#000000");
         ogreLayer->setBackgroundScale(0, 0.5);
         ogreLayer->setHasDefaultLight(false);
@@ -349,7 +349,7 @@ void SRender::configureLayer(const ConfigType& _cfg)
     ogreLayer->setRenderService(viz::scene3d::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(id);
     ogreLayer->setOrder(layerOrder);
-    ogreLayer->setWorker(m_associatedWorker);
+    ogreLayer->setWorker(this->worker());
     ogreLayer->setCoreCompositorEnabled(true, transparencyTechnique, numPeels, layerStereoMode);
     ogreLayer->setCompositorChainEnabled(compositors);
     ogreLayer->setViewportConfig(viewportConfig);
@@ -375,7 +375,7 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg)
     ogreLayer->setRenderService(viz::scene3d::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(s_OGREBACKGROUNDID);
     ogreLayer->setOrder(0);
-    ogreLayer->setWorker(m_associatedWorker);
+    ogreLayer->setWorker(this->worker());
     ogreLayer->setHasDefaultLight(false);
 
     if(attributes.count("color") != 0U)

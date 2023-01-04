@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -194,7 +194,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     info.replacementMap["WID_PARENT"]  = info.wid;
     info.replacementMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier(info.viewConfigID);
 
-    auto helper = service::AppConfigManager::New();
+    auto helper = service::IAppConfigManager::New();
 
     try
     {

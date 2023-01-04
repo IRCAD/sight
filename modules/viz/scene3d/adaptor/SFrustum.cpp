@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -143,8 +143,8 @@ void SFrustum::starting()
 service::IService::KeyConnectionsMap SFrustum::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT);
+    connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

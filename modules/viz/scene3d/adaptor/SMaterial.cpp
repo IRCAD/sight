@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -201,7 +201,7 @@ void SMaterial::starting()
 service::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     connections.push(s_MATERIAL_INOUT, data::Material::s_ADDED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
     connections.push(s_MATERIAL_INOUT, data::Material::s_CHANGED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
     connections.push(s_MATERIAL_INOUT, data::Material::s_ADDED_TEXTURE_SIG, s_ADD_TEXTURE_SLOT);

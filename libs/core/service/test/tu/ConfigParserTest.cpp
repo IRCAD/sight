@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,8 +31,8 @@
 #include <data/Mesh.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <service/AppConfigManager.hpp>
 #include <service/base.hpp>
+#include <service/IAppConfigManager.hpp>
 #include <service/parser/Image.hpp>
 #include <service/parser/TransferFunction.hpp>
 
@@ -88,7 +88,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
     const auto config = buildObjectConfig();
 
     // Create the object and its services from the configuration
-    service::AppConfigManager::sptr configManager = service::AppConfigManager::New();
+    auto configManager = service::IAppConfigManager::New();
     configManager->service::IAppConfigManager::setConfig(config);
     configManager->create();
     auto image = data::Image::dynamicCast(configManager->getConfigRoot());
@@ -104,7 +104,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
     CPPUNIT_ASSERT(srv2->isStarted());
 
     // Test if object's service is created
-    CPPUNIT_ASSERT(image == srv1->getObject("data", data::Access::in));
+    CPPUNIT_ASSERT(image == srv1->data::IHasData::getObject("data", data::Access::in));
 
     // Test update services
     configManager->update();
@@ -134,7 +134,7 @@ void ConfigParserTest::testImageParser()
     config.add_child("object", objCfg);
 
     // Create the object and its services from the configuration
-    service::AppConfigManager::sptr configManager = service::AppConfigManager::New();
+    auto configManager = service::IAppConfigManager::New();
     configManager->service::IAppConfigManager::setConfig(config);
     configManager->create();
     auto image = std::dynamic_pointer_cast<data::Image>(core::tools::fwID::getObject(objectUUID));

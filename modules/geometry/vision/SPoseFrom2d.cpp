@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -145,7 +145,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timesta
             // For each camera timeline
             for(const auto& markerMap : m_markerMap)
             {
-                const auto marker_ptr = markerMap.second.lock();
+                const auto marker_ptr = markerMap.second->lock();
                 const auto* marker    = marker_ptr->getMarker(markerKey);
 
                 if(marker != nullptr)
@@ -291,7 +291,7 @@ cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _markerCa
 service::IService::KeyConnectionsMap SPoseFrom2d::getAutoConnections() const
 {
     return {
-        {s_MARKERMAP_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_MARKERMAP_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_CAMERA_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_CAMERA_SLOT},
         {s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_CAMERA_SLOT}
     };

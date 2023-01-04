@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,7 +24,7 @@
 #include <service/macros.hpp>
 #include <service/op/Add.hpp>
 #include <service/op/Get.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 namespace sight::service
 {
@@ -36,7 +36,7 @@ namespace sight::service
  */
 inline void remove(const SPTR(service::IService)& _srv)
 {
-    service::OSR::unregisterService(_srv);
+    service::unregisterService(_srv);
 }
 
 //------------------------------------------------------------------------------

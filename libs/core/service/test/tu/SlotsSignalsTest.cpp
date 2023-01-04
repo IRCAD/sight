@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include "SlotsSignalsStuff.hpp"
 
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <utest/Exception.hpp>
 
@@ -63,7 +63,7 @@ void SlotsSignalsTest::basicTest()
     core::thread::addWorker("test", worker);
 
     SBasicTest::sptr basicTestSrv = service::factory::New<SBasicTest>();
-    service::OSR::registerService(basicTestSrv);
+    service::registerService(basicTestSrv);
     basicTestSrv->setInOut(buffer, SBasicTest::s_BUFFER_INOUT);
 
     basicTestSrv->setWorker(worker);
@@ -88,7 +88,7 @@ void SlotsSignalsTest::basicTest()
     stopFuture.wait();
     CPPUNIT_ASSERT(basicTestSrv->getStatus() == IService::STOPPED);
 
-    service::OSR::unregisterService(basicTestSrv);
+    service::unregisterService(basicTestSrv);
 
     core::thread::removeWorker("test");
 }
@@ -105,15 +105,15 @@ void SlotsSignalsTest::comObjectServiceTest()
     Buffer::sptr buffer = Buffer::New();
     {
         SReaderTest::sptr readerTestSrv = service::factory::New<SReaderTest>();
-        service::OSR::registerService(readerTestSrv);
+        service::registerService(readerTestSrv);
         readerTestSrv->setInOut(buffer, IBasicTest::s_BUFFER_INOUT);
 
         SShowTest::sptr showTestSrv = service::factory::New<SShowTest>();
-        service::OSR::registerService(showTestSrv);
+        service::registerService(showTestSrv);
         showTestSrv->setInOut(buffer, IBasicTest::s_BUFFER_INOUT);
         showTestSrv->setWorker(worker1);
 
-        buffer->signal(data::Object::s_MODIFIED_SIG)->connect(showTestSrv->slot(IService::s_UPDATE_SLOT));
+        buffer->signal(data::Object::s_MODIFIED_SIG)->connect(showTestSrv->slot(IService::slots::s_UPDATE));
 
         readerTestSrv->start();
         showTestSrv->start();
@@ -127,24 +127,24 @@ void SlotsSignalsTest::comObjectServiceTest()
 
         CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 
-        buffer->signal(data::Object::s_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::s_UPDATE_SLOT));
+        buffer->signal(data::Object::s_MODIFIED_SIG)->disconnect(showTestSrv->slot(IService::slots::s_UPDATE));
 
-        service::OSR::unregisterService(readerTestSrv);
-        service::OSR::unregisterService(showTestSrv);
+        service::unregisterService(readerTestSrv);
+        service::unregisterService(showTestSrv);
     }
 
     {
         SReaderTest::sptr readerTestSrv = service::factory::New<SReaderTest>();
-        service::OSR::registerService(readerTestSrv);
+        service::registerService(readerTestSrv);
         readerTestSrv->setInOut(buffer, IBasicTest::s_BUFFER_INOUT);
 
         SReaderTest::sptr reader2TestSrv = service::factory::New<SReaderTest>();
-        service::OSR::registerService(reader2TestSrv);
+        service::registerService(reader2TestSrv);
         reader2TestSrv->setInOut(buffer, IBasicTest::s_BUFFER_INOUT);
         reader2TestSrv->setWorker(worker2);
 
         SShowTest::sptr showTestSrv = service::factory::New<SShowTest>();
-        service::OSR::registerService(showTestSrv);
+        service::registerService(showTestSrv);
         showTestSrv->setInOut(buffer, IBasicTest::s_BUFFER_INOUT, true);
         showTestSrv->setWorker(worker1);
 
@@ -166,9 +166,9 @@ void SlotsSignalsTest::comObjectServiceTest()
 
         CPPUNIT_ASSERT_EQUAL(2, showTestSrv->m_receiveCount);
 
-        service::OSR::unregisterService(readerTestSrv);
-        service::OSR::unregisterService(reader2TestSrv);
-        service::OSR::unregisterService(showTestSrv);
+        service::unregisterService(readerTestSrv);
+        service::unregisterService(reader2TestSrv);
+        service::unregisterService(showTestSrv);
     }
 
     core::thread::removeWorker("worker1");
@@ -185,11 +185,11 @@ void SlotsSignalsTest::comServiceToServiceTest()
     core::thread::addWorker("worker1", worker1);
 
     SReader2Test::sptr readerTestSrv = service::factory::New<SReader2Test>();
-    service::OSR::registerService(readerTestSrv);
+    service::registerService(readerTestSrv);
     readerTestSrv->setInOut(buffer, IBasicTest::s_BUFFER_INOUT);
 
     SShowTest::sptr showTestSrv = service::factory::New<SShowTest>();
-    service::OSR::registerService(showTestSrv);
+    service::registerService(showTestSrv);
     showTestSrv->setInOut(buffer, IBasicTest::s_BUFFER_INOUT);
     showTestSrv->setWorker(worker1);
 
@@ -209,8 +209,8 @@ void SlotsSignalsTest::comServiceToServiceTest()
 
     CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_changeCount);
 
-    service::OSR::unregisterService(readerTestSrv);
-    service::OSR::unregisterService(showTestSrv);
+    service::unregisterService(readerTestSrv);
+    service::unregisterService(showTestSrv);
 
     core::thread::removeWorker("worker1");
 }
@@ -225,11 +225,11 @@ void SlotsSignalsTest::blockConnectionTest()
     core::thread::addWorker("worker1", worker1);
 
     SReaderTest::sptr readerTestSrv = service::factory::New<SReaderTest>();
-    service::OSR::registerService(readerTestSrv);
+    service::registerService(readerTestSrv);
     readerTestSrv->setInOut(buffer, IBasicTest::s_BUFFER_INOUT);
 
     SShow2Test::sptr showTestSrv = service::factory::New<SShow2Test>();
-    service::OSR::registerService(showTestSrv);
+    service::registerService(showTestSrv);
     showTestSrv->setInOut(buffer, IBasicTest::s_BUFFER_INOUT);
     showTestSrv->setWorker(worker1);
 

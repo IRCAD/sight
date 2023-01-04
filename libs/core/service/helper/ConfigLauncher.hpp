@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,13 @@
 
 #pragma once
 
-#include "service/AppConfigManager.hpp"
 #include "service/config.hpp"
 #include "service/extension/AppConfig.hpp"
+#include "service/IAppConfigManager.hpp"
 #include "service/IService.hpp"
 
 #include <activity/extension/Activity.hpp>
 
-#include <core/com/helper/SigSlotConnection.hpp>
 #include <core/tools/Failed.hpp>
 
 namespace sight::service::helper
@@ -37,34 +36,20 @@ namespace sight::service::helper
 
 /**
  * @brief This class provides few methods to manage AppConfig (parsing, starting, stopping...).
- *
- * @code{.xml}
-    <service type="sight::service::SConfigController" >
-        <appConfig id="IdOfConfig" />
-        <inout key="object" uid="..." />
-        <parameter replace="channel" by="changeValueChannel"  />
-        <parameter replace="service" by="serviceUid" />
-    </service>
-   @endcode
  */
-class SERVICE_CLASS_API ConfigLauncher
+class SERVICE_CLASS_API ConfigLauncher final
 {
 public:
 
-    typedef std::unique_ptr<ConfigLauncher> uptr;
-
-    /// Initializes member.
-    SERVICE_API ConfigLauncher();
-
-    /// Does nothing.
-    SERVICE_API virtual ~ConfigLauncher();
+    using uptr = std::unique_ptr<ConfigLauncher>;
+    static constexpr std::string_view s_DATA_GROUP = "data";
 
     /**
      * @brief Parses a configuration.
      * @param _config The config to parse.
      * @param _service Related service.
      */
-    SERVICE_API virtual void parseConfig(
+    SERVICE_API void parseConfig(
         const service::IService::ConfigType& _config,
         const service::IService::sptr& _service
     );
@@ -74,19 +59,19 @@ public:
      * @param _srv  service to connect with config root object.
      * @param _optReplaceMap optional replace map used to replace patterns (concatenated with parsed parameter).
      */
-    SERVICE_API virtual void startConfig(
+    SERVICE_API void startConfig(
         service::IService::sptr _srv,
         const FieldAdaptorType& _optReplaceMap = FieldAdaptorType()
     );
 
     /// Stops/destroys AppConfig and disconnect connection with config root object.
-    SERVICE_API virtual void stopConfig();
+    SERVICE_API void stopConfig();
 
     /**
      * @brief Gets the running status of the configuration.
      * @return True if the configuration is running.
      */
-    [[nodiscard]] virtual bool configIsRunning() const
+    [[nodiscard]] bool configIsRunning() const
     {
         return m_configIsRunning;
     }
@@ -100,7 +85,7 @@ private:
     bool m_configIsRunning {false};
 
     /// Stores the config manager.
-    service::AppConfigManager::sptr m_appConfigManager;
+    service::IAppConfigManager::sptr m_appConfigManager;
 
     /// Defines a special key to defines the associated object him self.
     static const std::string s_SELF_KEY;
@@ -109,7 +94,7 @@ private:
     static const std::string s_GENERIC_UID_KEY;
 
     /// Stores key and uid of optional inputs.
-    std::map<std::string, std::string> m_optionalInputs;
+    std::map<std::string, std::pair<std::string, size_t> > m_optionalInputs;
 };
 
 } // namespace sight::service::helper

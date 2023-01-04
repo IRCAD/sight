@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ SMatrixSynchronizer::SMatrixSynchronizer() noexcept
     m_slotUpdateMatrix = core::com::newSlot(&SMatrixSynchronizer::updateMatrix, this);
 
     core::com::HasSlots::m_slots(s_UPDATE_MATRIX_SLOT, m_slotUpdateMatrix);
-    core::com::HasSlots::m_slots.setWorker(m_associatedWorker);
+    core::com::HasSlots::m_slots.setWorker(this->worker());
 }
 
 // ----------------------------------------------------------------------------

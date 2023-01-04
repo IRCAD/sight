@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -88,8 +88,8 @@ protected:
     /**
      * @brief Signal-slot auto-connection proposals
      *
-     * Connect Image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Image::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::IService::slots::s_UPDATE
      */
     MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
 

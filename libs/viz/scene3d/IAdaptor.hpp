@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,6 @@
 
 #include "viz/scene3d/config.hpp"
 #include "viz/scene3d/SRender.hpp"
-
-#include <core/com/helper/SigSlotConnection.hpp>
 
 #include <service/IHasServices.hpp>
 #include <service/IService.hpp>

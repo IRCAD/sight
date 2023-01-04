@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,16 +52,23 @@ SView::SView() :
 
 //------------------------------------------------------------------------------
 
-SView::~SView()
-= default;
-
-//------------------------------------------------------------------------------
-
 void SView::configuring()
 {
     const ConfigType config = this->getConfiguration();
 
-    this->parseConfiguration(config, this->getInOuts());
+    sight::activity::IActivityLauncher::InOutMapType inoutMap;
+    std::for_each(
+        m_data.begin(),
+        m_data.end(),
+        [&inoutMap](const auto& p)
+        {
+            const auto obj = p.second->lock();
+            if(obj != nullptr)
+            {
+                inoutMap.push_back(obj->getID());
+            }
+        });
+    this->parseConfiguration(config, inoutMap);
 }
 
 //------------------------------------------------------------------------------

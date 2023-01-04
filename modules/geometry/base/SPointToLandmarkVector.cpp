@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -158,7 +158,7 @@ void SPointToLandmarkVector::updating()
 
 service::IService::KeyConnectionsMap SPointToLandmarkVector::getAutoConnections() const
 {
-    return {{s_LANDMARK_INPUT, data::Landmarks::s_POINT_ADDED_SIG, s_UPDATE_SLOT}};
+    return {{s_LANDMARK_INPUT, data::Landmarks::s_POINT_ADDED_SIG, IService::slots::s_UPDATE}};
 }
 
 // -----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -107,7 +107,7 @@ void SSliceIndexDicomEditor::starting()
     SIGHT_ASSERT("'" + m_dicomReaderImplementation + "' is not started", m_dicomReader->isStarted());
 
     // Create the timer used to retrieve a slice.
-    m_sliceTrigger = m_associatedWorker->createTimer();
+    m_sliceTrigger = this->worker()->createTimer();
     m_sliceTrigger->setFunction(
         [&]()
         {
@@ -149,7 +149,7 @@ void SSliceIndexDicomEditor::starting()
 service::IService::KeyConnectionsMap SSliceIndexDicomEditor::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_DICOMSERIES_INOUT, data::DicomSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_DICOMSERIES_INOUT, data::DicomSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

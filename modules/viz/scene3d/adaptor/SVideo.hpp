@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -105,8 +105,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT
-     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to IService::slots::s_UPDATE
+     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to IService::slots::s_UPDATE
      * Connect data::TransferFunction::s_MODIFIED_SIG of s_TF_INPUT to :s_UPDATE_TF_SLOT
      * Connect data::TransferFunction::s_POINTS_MODIFIED_SIG of s_TF_INPUT to s_UPDATE_TF_SLOT
      * Connect data::TransferFunction::s_WINDOWING_MODIFIED_SIG of s_TF_INPUT to s_UPDATE_TF_SLOT

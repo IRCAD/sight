@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -106,8 +106,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
-     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
+     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to IService::slots::s_UPDATE
+     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to IService::slots::s_UPDATE
      */
     MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 

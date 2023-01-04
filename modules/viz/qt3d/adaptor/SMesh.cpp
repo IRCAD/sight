@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -100,7 +100,7 @@ void SMesh::starting()
 service::IService::KeyConnectionsMap SMesh::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_MESH_INOUT, data::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MESH_INOUT, data::Mesh::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     return connections;
 }
 
@@ -125,7 +125,7 @@ void SMesh::updating()
     if(!m_materialName.empty())
     {
         // A material adaptor has been configured in the XML scene
-        auto mtlAdaptors = service::OSR::getServices<module::viz::qt3d::adaptor::SMaterial>();
+        auto mtlAdaptors = service::getServices<module::viz::qt3d::adaptor::SMaterial>();
 
         auto result =
             std::find_if(

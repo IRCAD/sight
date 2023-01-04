@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -499,7 +499,7 @@ void SWriter::updating()
 
             running_job.done();
         },
-        m_associatedWorker
+        this->worker()
     );
 
     core::jobs::Aggregator::sptr jobs = core::jobs::Aggregator::New(file_path.string() + " writer");

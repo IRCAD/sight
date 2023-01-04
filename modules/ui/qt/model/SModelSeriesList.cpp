@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -183,13 +183,11 @@ void SModelSeriesList::starting()
 
 service::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-
-    connections.push(s_MODEL_SERIES, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
-
-    return connections;
+    return {
+        {s_MODEL_SERIES, data::ModelSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, IService::slots::s_UPDATE},
+        {s_MODEL_SERIES, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, IService::slots::s_UPDATE}
+    };
 }
 
 //------------------------------------------------------------------------------

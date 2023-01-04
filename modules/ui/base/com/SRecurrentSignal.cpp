@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ void SRecurrentSignal::configuring()
 
 void SRecurrentSignal::starting()
 {
-    m_timer = m_associatedWorker->createTimer();
+    m_timer = this->worker()->createTimer();
     core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(m_timeStep);
     m_timer->setFunction([this](auto&& ...){updating();});
     m_timer->setDuration(duration);

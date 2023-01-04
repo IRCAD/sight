@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 
 #include <service/extension/Config.hpp>
 #include <service/macros.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
@@ -258,7 +258,7 @@ void SGrabberProxy::startTargetCamera(std::string impl)
 
                         const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
                         SIGHT_DEBUG("Evaluating if key '" + key + "' is suitable...");
-                        const auto obj = this->getInOut<data::Object>(key).lock();
+                        const auto obj = this->getInOut(key).lock();
                         SIGHT_ASSERT("Object key '" + key + "' not found", obj);
                         if(obj->getClassname() == "data::FrameTL")
                         {
@@ -467,7 +467,7 @@ void SGrabberProxy::startTargetCamera(std::string impl)
                     const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
                     SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
 
-                    auto inout = this->getInOut<data::Object>(key).lock();
+                    auto inout = this->getInOut(key).lock();
                     if(inout)
                     {
                         if(key == IGrabber::s_FRAMETL_INOUT)
@@ -500,7 +500,7 @@ void SGrabberProxy::startTargetCamera(std::string impl)
                     srv->configure();
                 }
 
-                srv->setWorker(m_associatedWorker);
+                srv->setWorker(this->worker());
                 srv->start();
 
                 m_connections.connect(srv, IGrabber::s_POSITION_MODIFIED_SIG, this->getSptr(), slots::MODIFY_POSITION);
@@ -509,7 +509,7 @@ void SGrabberProxy::startTargetCamera(std::string impl)
                 m_connections.connect(srv, IGrabber::s_CAMERA_STOPPED_SIG, this->getSptr(), slots::FWD_STOP_CAMERA);
                 m_connections.connect(srv, IGrabber::s_FRAME_PRESENTED_SIG, this->getSptr(), slots::FWD_PRESENT_FRAME);
 
-                m_connections.connect(srv, IService::s_NOTIFIED_SIG, this->getSptr(), slots::FWD_NOTIFY);
+                m_connections.connect(srv, IService::signals::s_NOTIFIED, this->getSptr(), slots::FWD_NOTIFY);
 
                 m_connections.connect(
                     srv,
@@ -757,7 +757,7 @@ void SGrabberProxy::fwdPresentFrame()
 
 void SGrabberProxy::fwdNotify(IService::NotificationType type, const std::string message)
 {
-    auto sig = this->signal<IService::notification_signal_type>(IService::s_NOTIFIED_SIG);
+    auto sig = this->signal<IService::signals::notification_t>(IService::signals::s_NOTIFIED);
     sig->asyncEmit(type, message);
 }
 

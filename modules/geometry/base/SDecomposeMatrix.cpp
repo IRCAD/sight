@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ void SDecomposeMatrix::stopping()
 
 service::IService::KeyConnectionsMap SDecomposeMatrix::getAutoConnections() const
 {
-    return {{s_SOURCE_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT}};
+    return {{s_SOURCE_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE}};
 }
 
 // ----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -172,8 +172,8 @@ service::IService::KeyConnectionsMap ImageInfo::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_IMAGE, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_IMAGE, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

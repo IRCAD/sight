@@ -396,9 +396,11 @@
             <!-- PACS manager -->
             <service uid="pacsAct" type="sight::module::ui::base::SConfigLauncher" >
                 <appConfig id="PACSSelector_AppCfg" />
+                <inout group="data">
+                    <key name="outputSeriesSet" uid="pacsSeriesSet" />
+                </inout>
                 <parameter replace="WINDOW_TITLE" by="PACS" />
                 <parameter replace="WINDOW_ICON" by="SightViewer/Ogre_logo.svg" />
-                <inout key="outputSeriesSet" uid="pacsSeriesSet" />
             </service>
 
             <!-- Adaptors visibility -->
@@ -472,33 +474,41 @@
                 <parameter replace="PICKER_SENDER_CHANNEL" by="PICKER_RECEIVER_CHANNEL" />
                 <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
                 <parameter replace="NEGATO3D_TRANSPARENCY_CHANNEL" by="NEGATO3D_TRANSPARENCY_CHANNEL" />
-                <inout key="modelSeries" uid="modelSeries" optional="true"/>
-                <inout key="image" uid="image" optional="true"/>
-                <inout key="volumeTF" uid="volumeTF" />
-                <inout key="extrudedModelSeries" uid="extrudedModelSeries" />
-                <inout key="landmarks" uid="landmarks" />
+                <inout group="data">
+                    <key name="modelSeries" uid="modelSeries" optional="true"/>
+                    <key name="image" uid="image" optional="true"/>
+                    <key name="volumeTF" uid="volumeTF" />
+                    <key name="extrudedModelSeries" uid="extrudedModelSeries" />
+                    <key name="landmarks" uid="landmarks" />
+                </inout>
             </service>
 
             <!-- TF manager -->
             <service uid="TFManagerCfg"  type="sight::service::SConfigController" >
                 <appConfig id="TransferFunctionWidgetCfg" />
                 <parameter replace="WID_PARENT" by="TFCfgParameterView" />
-                <inout key="image" uid="image" />
-                <inout key="currentTF" uid="volumeTF" />
+                <inout group="data">
+                    <key name="image" uid="image" />
+                    <key name="currentTF" uid="volumeTF" />
+                </inout>
             </service>
 
             <service uid="organManagerCfg"  type="sight::service::SConfigController" >
                 <appConfig id="OgreOrganManager" />
                 <parameter replace="WID_PARENT" by="organsParameterView" />
                 <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
-                <inout key="organManagerModelSeries" uid="modelSeries" />
+                <inout group="data">
+                    <key name="organManagerModelSeries" uid="modelSeries" />
+                </inout>
             </service>
 
             <service uid="extrudedMeshesManagerCfg"  type="sight::service::SConfigController" >
                 <appConfig id="OgreOrganManager" />
                 <parameter replace="WID_PARENT" by="extrudedMeshesParameterView" />
                 <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
-                <inout key="organManagerModelSeries" uid="extrudedModelSeries" />
+                <inout group="data">
+                    <key name="organManagerModelSeries" uid="extrudedModelSeries" />
+                </inout>
             </service>
 
             <!-- ******************************* Services ***************************************** -->

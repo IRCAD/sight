@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -121,7 +121,7 @@ void STextStatus::starting()
 service::IService::KeyConnectionsMap STextStatus::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_STRING_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_STRING_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

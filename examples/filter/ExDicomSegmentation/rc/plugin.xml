@@ -71,7 +71,9 @@
             <!-- ******************************* Services ***************************************** -->
 
             <service uid="dynamicViewSrv" type="sight::module::ui::qt::activity::SDynamicView">
-                <inout key="seriesSet" uid="seriesSet" />
+                <inout group="data">
+                    <key name="seriesSet" uid="seriesSet" />
+                </inout>
                 <mainActivity id="ExDicomSegmentation_Base_Activity" closable="false" />
                 <parameters>
                     <parameter replace="ICON_PATH" by="ExDicomSegmentation/tuto.ico" />

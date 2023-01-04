@@ -47,8 +47,10 @@ Usage:
 
         <service uid="..." type="sight::service::SConfigController">
             <appConfig id="sight::config::io::video::controls" />
-            <inout key="camera" uid="..." />
-            <inout key="frameTL" uid="..." />
+            <inout group="data">
+                <key name="camera" uid="..." />
+                <key name="frameTL" uid="..." />
+            </inout>
             <parameter replace="TOOLBAR"                        by="..." />
             <parameter replace="videoSupport"                   by="..." />
             <parameter replace="notificationChannel"            by="..." />

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -274,13 +274,13 @@ void SReader::updating()
 
             auto sig = data->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
             {
-                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
                 sig->asyncEmit();
             }
 
             runningJob.done();
         },
-        m_associatedWorker
+        this->worker()
     );
 
     core::jobs::Aggregator::sptr jobs = core::jobs::Aggregator::New(filepath.string() + " reader");

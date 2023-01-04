@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,19 +22,18 @@
 
 #include "ProxyTest.hpp"
 
+#include <core/com/Proxy.hpp>
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
 
-#include <service/registry/Proxy.hpp>
-
 #include <utest/wait.hpp>
 
 // Registers the fixture into the 'registry'
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::service::ut::ProxyTest);
+CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::ut::ProxyTest);
 
-namespace sight::service::ut
+namespace sight::core::ut
 {
 
 //------------------------------------------------------------------------------
@@ -95,7 +94,7 @@ void ProxyTest::basicTest()
 {
     const std::string CHANNEL = "channel";
 
-    service::registry::Proxy::sptr proxy = service::registry::Proxy::getDefault();
+    core::com::Proxy::sptr proxy = core::com::Proxy::get();
 
     core::com::Signal<void(int, int)>::sptr sig        = core::com::Signal<void(int, int)>::New();
     core::com::Signal<void(int, int, char)>::sptr sig2 = core::com::Signal<void(int, int, char)>::New();
@@ -152,4 +151,4 @@ void ProxyTest::basicTest()
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::service::ut
+} // namespace sight::core::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,15 +43,19 @@ namespace sight::service
  *
  * @code{.xml}
         <service type="sight::service::SConfigController" >
-            <appConfig id="IdOfConfig" />
-            <inout key="object" uid="..." />
+            <appConfig id="configId" />
+            <inout group="data">
+                <key name="object1" uid="..." />
+                <key name="object2" uid="..." />
+                ...
+            </inout>
             <parameter replace="channel" by="changeValueChannel"  />
             <parameter replace="service" by="serviceUid" />
         </service>
    @endcode
  * @subsection In-Out In-Out:
- * - \b object [sight::data::Object]: \b key specifies the name of the parameter in the target configuration and \b uid
- * identifies the object whose uid is passed as value of the parameter.
+ * - \b data [sight::data::Object]: \b key specifies the name of the parameter in the target configuration and \b uid
+ * identifies the objects whose uid are passed as value of the parameter.
  * @subsection Configuration Configuration:
  * - \b parameter: \b replace specifies the name of the parameter in the target configuration and \b by the value of
  * this parameter. The variable GENERIC_UID can be used as unique identifier when the configuration is launched.
@@ -79,25 +83,7 @@ protected:
     /// Does nothing
     void updating() override;
 
-    /**
-     * @brief Declare the configuration to associate with an operator type and a view config
-     *
-     * Call the IAction::configuring()
-     *
-     * Example of this service configuration
-     * @code{.xml}
-       <service impl="sight::service::SConfigController" type="sight::service::IController">
-            <config>
-                <appConfig id="IdOfConfig" >
-                    <parameters>
-                        <parameter replace="SERIES_SET" by="medicalData" />
-                    </parameters>
-                </appConfig>
-            </config>
-       </service>
-        @endcode
-     * It MUST have at least one key node and at least one replace node.
-     */
+    /// Configures the service
     void configuring() override;
 
     /// Overrides
@@ -107,6 +93,9 @@ private:
 
     /// AppConfig manager
     service::helper::ConfigLauncher::uptr m_configLauncher;
+
+    /// Input data to pass to the configuration
+    data::ptr_vector<data::Object, data::Access::inout> m_data {this, service::helper::ConfigLauncher::s_DATA_GROUP};
 };
 
 } // namespace sight::service

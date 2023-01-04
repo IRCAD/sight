@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -91,14 +91,14 @@ void SGetCameraTest::extractsCameraFromCameraSet()
     boost::property_tree::read_xml(config_string, config);
 
     getCameraSrv->setConfiguration(config);
-    getCameraSrv->setInput(camera_set, "cameraSet");
+    getCameraSrv->setInOut(camera_set, "cameraSet");
     getCameraSrv->configure();
     getCameraSrv->start().wait();
 
     CPPUNIT_ASSERT_NO_THROW(getCameraSrv->update().get());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput<sight::data::Object>("camera", 0).lock()->getID(), camera1->getID());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput<sight::data::Object>("camera", 1).lock()->getID(), camera2->getID());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput<sight::data::Object>("extrinsic", 0).lock()->getID(), matrix->getID());
+    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput("camera", 0).lock()->getID(), camera1->getID());
+    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput("camera", 1).lock()->getID(), camera2->getID());
+    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput("extrinsic", 0).lock()->getID(), matrix->getID());
 
     getCameraSrv->stop().wait();
     sight::service::remove(getCameraSrv);
@@ -123,7 +123,7 @@ void SGetCameraTest::extractsInvalidCameraSet()
     boost::property_tree::read_xml(config_string, config);
 
     getCameraSrv->setConfiguration(config);
-    getCameraSrv->setInput(nullptr, "cameraSet");
+    getCameraSrv->setInOut(nullptr, "cameraSet");
     getCameraSrv->configure();
     getCameraSrv->start().wait();
 
@@ -158,13 +158,13 @@ void SGetCameraTest::extractsValidExtrinsic()
     boost::property_tree::read_xml(config_string, config);
 
     getCameraSrv->setConfiguration(config);
-    getCameraSrv->setInput(camera_set, "cameraSet");
+    getCameraSrv->setInOut(camera_set, "cameraSet");
     getCameraSrv->configure();
     getCameraSrv->start().wait();
 
     CPPUNIT_ASSERT_NO_THROW(getCameraSrv->update().get());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput<sight::data::Object>("camera", 0).lock()->getID(), camera1->getID());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput<sight::data::Object>("camera", 1).lock()->getID(), camera2->getID());
+    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput("camera", 0).lock()->getID(), camera1->getID());
+    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput("camera", 1).lock()->getID(), camera2->getID());
     getCameraSrv->stop().wait();
     sight::service::remove(getCameraSrv);
 }
@@ -198,13 +198,13 @@ void SGetCameraTest::extractsValidExtrinsic1()
     boost::property_tree::read_xml(config_string, config);
 
     getCameraSrv->setConfiguration(config);
-    getCameraSrv->setInput(camera_set, "cameraSet");
+    getCameraSrv->setInOut(camera_set, "cameraSet");
     getCameraSrv->configure();
     getCameraSrv->start().wait();
 
     CPPUNIT_ASSERT_NO_THROW(getCameraSrv->update().get());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput<sight::data::Object>("camera", 0).lock()->getID(), camera1->getID());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput<sight::data::Object>("camera", 1).lock()->getID(), camera2->getID());
+    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput("camera", 0).lock()->getID(), camera1->getID());
+    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput("camera", 1).lock()->getID(), camera2->getID());
     getCameraSrv->stop().wait();
     sight::service::remove(getCameraSrv);
 }
@@ -239,7 +239,7 @@ void SGetCameraTest::extractsCameraOutOfBoundIndex()
     boost::property_tree::read_xml(config_string, config);
 
     getCameraSrv->setConfiguration(config);
-    getCameraSrv->setInput(camera_set, "cameraSet");
+    getCameraSrv->setInOut(camera_set, "cameraSet");
     getCameraSrv->configure();
     getCameraSrv->start().wait();
 
@@ -278,7 +278,7 @@ void SGetCameraTest::extractsExtrinsicOutOfBoundIndex()
     boost::property_tree::read_xml(config_string, config);
 
     getCameraSrv->setConfiguration(config);
-    getCameraSrv->setInput(camera_set, "cameraSet");
+    getCameraSrv->setInOut(camera_set, "cameraSet");
     getCameraSrv->configure();
     getCameraSrv->start().wait();
 
@@ -318,13 +318,13 @@ void SGetCameraTest::extractsInvalidExtrinsic()
     boost::property_tree::read_xml(config_string, config);
 
     getCameraSrv->setConfiguration(config);
-    getCameraSrv->setInput(camera_set, "cameraSet");
+    getCameraSrv->setInOut(camera_set, "cameraSet");
     getCameraSrv->configure();
     getCameraSrv->start().wait();
 
     CPPUNIT_ASSERT_THROW(getCameraSrv->update().get(), core::Exception);
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput<sight::data::Object>("camera", 0).lock()->getID(), camera1->getID());
-    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput<sight::data::Object>("camera", 1).lock()->getID(), camera2->getID());
+    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput("camera", 0).lock()->getID(), camera1->getID());
+    CPPUNIT_ASSERT_EQUAL(getCameraSrv->getOutput("camera", 1).lock()->getID(), camera2->getID());
 
     getCameraSrv->stop().wait();
     sight::service::remove(getCameraSrv);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,7 +93,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Matrix4::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
+     * Connect data::Matrix4::s_MODIFIED_SIG of s_TRANSFORM_INOUT to IService::slots::s_UPDATE
      * Connect data::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CALIBRATION_INPUT to s_CALIBRATE_SLOT
      * Connect data::CameraSet::s_MODIFIED_SIG of s_CAMERA_SET_INPUT to s_CALIBRATE_SLOT
      * Connect data::CameraSet::s_EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SET_INPUT to s_CALIBRATE_SLOT

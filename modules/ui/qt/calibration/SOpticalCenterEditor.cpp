@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -154,9 +154,9 @@ service::IService::KeyConnectionsMap SOpticalCenterEditor::getAutoConnections() 
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_CAMERA, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT);
-    connections.push(s_CAMERA, data::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MATRIX, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_CAMERA, data::Camera::s_INTRINSIC_CALIBRATED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_CAMERA, data::Camera::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_MATRIX, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }
@@ -176,7 +176,7 @@ void SOpticalCenterEditor::onCxSliderChanged(int value)
 
     auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 }
@@ -196,7 +196,7 @@ void SOpticalCenterEditor::onCySliderChanged(int value)
 
     auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 }
@@ -216,7 +216,7 @@ void SOpticalCenterEditor::onFySliderChanged(int value)
 
     auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 }

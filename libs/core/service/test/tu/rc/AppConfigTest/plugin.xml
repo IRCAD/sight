@@ -326,8 +326,10 @@
 
             <service uid="TestService2Uid" type="sight::service::SConfigController" >
                 <appConfig id="parameterReplaceTestSubConfig" />
-                <inout key="data1" uid="${data1}" />
-                <inout key="data2" uid="data2Id" />
+                <inout group="data">
+                    <key name="data1" uid="${data1}" />
+                    <key name="data2" uid="data2Id" />
+                </inout>
                 <parameter replace="patient" by="name" />
                 <parameter replace="channel1" by="Channel No5" />
                 <parameter replace="channel2" by="disneyChannel" />

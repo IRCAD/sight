@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -120,8 +120,8 @@ void SFlip::flipAxisZ()
 service::IService::KeyConnectionsMap SFlip::getAutoConnections() const
 {
     return {
-        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
-        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT}
+        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE}
     };
 }
 

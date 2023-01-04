@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -100,9 +100,9 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect ModelSeries::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
-     * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
+     * Connect ModelSeries::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
+     * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::IService::slots::s_UPDATE
+     * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::IService::slots::s_UPDATE
      */
     KeyConnectionsMap getAutoConnections() const override;
 

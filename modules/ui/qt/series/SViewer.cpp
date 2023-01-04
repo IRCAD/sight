@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,18 +28,9 @@
 #include <service/extension/AppConfig.hpp>
 
 #include <boost/range/iterator_range_core.hpp>
+
 namespace sight::module::ui::qt::series
 {
-
-//------------------------------------------------------------------------------
-
-SViewer::SViewer()
-= default;
-
-//------------------------------------------------------------------------------
-
-SViewer::~SViewer() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -107,7 +98,7 @@ void SViewer::updating()
             }
 
             // Init manager
-            m_configTemplateManager = service::AppConfigManager::New();
+            m_configTemplateManager = service::IAppConfigManager::New();
             m_configTemplateManager->setConfig(configId, replaceMap);
 
             // Launch config
@@ -161,8 +152,8 @@ service::IService::KeyConnectionsMap SViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_SERIES, data::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_SERIES, data::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_SERIES, data::Vector::s_ADDED_OBJECTS_SIG, IService::slots::s_UPDATE);
+    connections.push(s_SERIES, data::Vector::s_REMOVED_OBJECTS_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

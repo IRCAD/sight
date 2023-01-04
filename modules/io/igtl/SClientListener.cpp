@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,14 +23,13 @@
 #include "SClientListener.hpp"
 
 #include <core/com/Signal.hxx>
+#include <core/tools/Failed.hpp>
 
 #include <data/FrameTL.hpp>
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
 #include <data/MatrixTL.hpp>
 #include <data/Object.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/Preferences.hpp>
@@ -114,7 +113,7 @@ void SClientListener::runClient()
         if(this->getStatus() == STARTED)
         {
             sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
-            this->slot(s_STOP_SLOT)->asyncRun();
+            this->slot(IService::slots::s_STOP)->asyncRun();
         }
         else
         {
@@ -166,7 +165,7 @@ void SClientListener::runClient()
         if(this->getStatus() == STARTED)
         {
             sight::ui::base::dialog::MessageDialog::show("Error", ex.what());
-            this->slot(s_STOP_SLOT)->asyncRun();
+            this->slot(IService::slots::s_STOP)->asyncRun();
         }
         else
         {

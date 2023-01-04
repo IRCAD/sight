@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -118,10 +118,10 @@ void STransferFunction::starting()
 service::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     connections.push(s_CURRENT_TF_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_TF_SLOT);
-    connections.push(s_CURRENT_TF_INOUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_CURRENT_TF_INOUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_CURRENT_TF_INOUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_CURRENT_TF_INOUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, IService::slots::s_UPDATE);
     return connections;
 }
 
@@ -1080,7 +1080,7 @@ void STransferFunction::mouseMoveOnPointEvent(
         data::TransferFunction::s_POINTS_MODIFIED_SIG
     );
     {
-        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 }
@@ -1164,7 +1164,7 @@ void STransferFunction::rightButtonClickOnPointEvent(
         data::TransferFunction::s_POINTS_MODIFIED_SIG
     );
     {
-        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 
@@ -1242,7 +1242,7 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(
             data::TransferFunction::s_POINTS_MODIFIED_SIG
         );
         {
-            const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
             sig->asyncEmit();
         }
 
@@ -1337,7 +1337,7 @@ void STransferFunction::leftButtonDoubleClickEvent(const sight::viz::scene2d::da
             data::TransferFunction::s_POINTS_MODIFIED_SIG
         );
         {
-            const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
             sig->asyncEmit();
         }
     }
@@ -1425,7 +1425,7 @@ void STransferFunction::mouseMoveOnPieceViewEvent(const sight::viz::scene2d::dat
             data::TransferFunction::s_WINDOWING_MODIFIED_SIG
         );
         {
-            const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
             sig->asyncEmit(tf->window(), tf->level());
         }
     }
@@ -1594,7 +1594,7 @@ void STransferFunction::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event
                 data::TransferFunction::s_MODIFIED_SIG
             );
             {
-                const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
                 sig->asyncEmit();
             }
         }
@@ -1626,7 +1626,7 @@ void STransferFunction::removeCurrentTF()
         tf->fitWindow();
         // Block notifier
         auto sig = tf->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         {
             sig->asyncEmit();
         }
@@ -1653,7 +1653,7 @@ void STransferFunction::clampCurrentTF(bool _clamp)
     // Sends the signal.
     const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(data::TransferFunction::s_MODIFIED_SIG);
     {
-        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 
@@ -1690,7 +1690,7 @@ void STransferFunction::toggleLinearCurrentTF(bool _linear)
     // Sends the signal.
     const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(data::TransferFunction::s_MODIFIED_SIG);
     {
-        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 
@@ -1723,7 +1723,7 @@ void STransferFunction::addNewTF(const data::TransferFunctionPiece::sptr _tf)
         tf->fitWindow();
         // Block notifier
         auto sig = tf->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
-        const core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         {
             sig->asyncEmit();
         }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ service::IService::KeyConnectionsMap SDepthImageMasking::getAutoConnections() co
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_DEPTH_IMAGE_KEY, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_DEPTH_IMAGE_KEY, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

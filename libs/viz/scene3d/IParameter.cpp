@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,7 +99,7 @@ const std::string& IParameter::getParamName() const
 
 service::IService::KeyConnectionsMap IParameter::getAutoConnections() const
 {
-    return {{s_PARAMETER_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT}};
+    return {{s_PARAMETER_INOUT, data::Object::s_MODIFIED_SIG, slots::s_UPDATE}};
 }
 
 //------------------------------------------------------------------------------

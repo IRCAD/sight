@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,6 +32,7 @@
 
 #include <core/com/HasSignals.hpp>
 #include <core/com/HasSlots.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
 #include <core/com/Slot.hpp>
 #include <core/thread/Worker.hpp>
 

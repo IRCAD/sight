@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -207,7 +207,7 @@ void STargeting::updating()
 
 service::IService::KeyConnectionsMap STargeting::getAutoConnections() const
 {
-    return {{s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT}};
+    return {{s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE}};
 }
 
 // -----------------------------------------------------------------------------

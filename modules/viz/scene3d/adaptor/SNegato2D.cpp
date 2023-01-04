@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -382,8 +382,8 @@ void SNegato2D::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, 
 service::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
 {
     return {
-        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
-        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT},
         {s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT},
         {s_TF_IN, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},

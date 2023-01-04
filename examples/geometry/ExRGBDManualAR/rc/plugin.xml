@@ -173,7 +173,9 @@
 
             <service uid="organManagerAct" type="sight::module::ui::base::SConfigLauncher">
                 <appConfig id="ModelSeriesManagerWindow" />
-                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
+                <inout group="data">
+                    <key name="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
+                </inout>
                 <parameter replace="ICON_PATH" by="ExRGBDManualAR/app.ico" />
             </service>
 

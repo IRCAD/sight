@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -285,7 +285,7 @@ void SSelector::updating()
                     reader->setInOut(obj.get_shared(), io::base::service::s_DATA_KEY);
                 }
 
-                reader->setWorker(m_associatedWorker);
+                reader->setWorker(this->worker());
 
                 if(hasConfigForService)
                 {
@@ -310,7 +310,7 @@ void SSelector::updating()
                     cursor.setDefaultCursor();
 
                     reader->stop();
-                    service::OSR::unregisterService(reader);
+                    service::unregisterService(reader);
                 }
                 catch(std::exception& e)
                 {
@@ -335,7 +335,7 @@ void SSelector::updating()
                     writer->setInput(obj.get_shared(), io::base::service::s_DATA_KEY);
                 }
 
-                writer->setWorker(m_associatedWorker);
+                writer->setWorker(this->worker());
 
                 if(hasConfigForService)
                 {
@@ -360,7 +360,7 @@ void SSelector::updating()
                     cursor.setDefaultCursor();
 
                     writer->stop();
-                    service::OSR::unregisterService(writer);
+                    service::unregisterService(writer);
                 }
                 catch(std::exception& e)
                 {

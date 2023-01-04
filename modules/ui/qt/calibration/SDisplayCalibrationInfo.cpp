@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,13 +22,13 @@
 
 #include "modules/ui/qt/calibration/SDisplayCalibrationInfo.hpp"
 
+#include <core/com/Proxy.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
 
 #include <data/String.hpp>
 
 #include <service/extension/AppConfig.hpp>
-#include <service/registry/Proxy.hpp>
 
 #include <sstream>
 
@@ -71,7 +71,7 @@ void SDisplayCalibrationInfo::stopping()
 {
     if(m_configMgr)
     {
-        service::registry::Proxy::sptr proxies = service::registry::Proxy::getDefault();
+        core::com::Proxy::sptr proxies = core::com::Proxy::get();
         proxies->disconnect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
         m_configMgr->stopAndDestroy();
         m_configMgr.reset();
@@ -142,12 +142,12 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
         );
 
         // Launch configuration
-        m_configMgr = service::AppConfigManager::New();
-        m_configMgr->service::IAppConfigManager::setConfig(config);
+        m_configMgr = service::IAppConfigManager::New();
+        m_configMgr->setConfig(config);
         m_configMgr->launch();
 
         // Proxy to be notified of the window closure
-        service::registry::Proxy::sptr proxies = service::registry::Proxy::getDefault();
+        core::com::Proxy::sptr proxies = core::com::Proxy::get();
         proxies->connect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
     }
 }

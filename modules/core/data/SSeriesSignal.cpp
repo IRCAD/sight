@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -139,7 +139,7 @@ service::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
 {
     return {
         {s_SERIES_SET_INPUT, sight::data::SeriesSet::s_ADDED_OBJECTS_SIG, s_REPORT_SERIES_SLOT},
-        {s_SERIES_SET_INPUT, sight::data::SeriesSet::s_MODIFIED_SIG, s_UPDATE_SLOT}
+        {s_SERIES_SET_INPUT, sight::data::SeriesSet::s_MODIFIED_SIG, IService::slots::s_UPDATE}
     };
 }
 

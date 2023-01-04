@@ -55,7 +55,9 @@
 
         <service uid="action_editPacsConfiguration" type="sight::module::ui::base::SConfigLauncher">
             <appConfig id="PacsConfigurationManager" />
-            <inout key="PACS_CONFIGURATION" uid="pacsConfiguration"  />
+            <inout group="data">
+                <key name="PACS_CONFIGURATION" uid="pacsConfiguration" />
+            </inout>
             <parameter replace="ICON_PATH" by="sight::module::ui::icons/Settings.svg"  />
         </service>
 

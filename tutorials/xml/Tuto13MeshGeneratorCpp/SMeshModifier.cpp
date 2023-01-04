@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -156,7 +156,7 @@ void SMeshModifier::updating()
             m_animator.computeDeformation(mesh.get_shared(), 100, 50);
             const auto sig = mesh->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
             {
-                sight::core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                sight::core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
                 sig->asyncEmit();
             }
         }

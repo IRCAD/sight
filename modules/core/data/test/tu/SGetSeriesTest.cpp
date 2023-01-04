@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -103,19 +103,9 @@ void SGetSeriesTest::extractsSeriesFromSeriesSet()
     getSeries->configure();
     getSeries->start().wait();
     getSeries->update().wait();
-    auto outputSeries = getSeries->getOutputs();
-    SIGHT_ASSERT("index should have size two", outputSeries.size() == 2);
-    std::vector<std::string> seriesID;
-    seriesID.reserve(2);
-    for(auto& entry : outputSeries)
-    {
-        auto sObject = entry.second.lock();
-        auto ID      = sObject.get_shared();
-        seriesID.push_back(ID->getID());
-    }
 
-    CPPUNIT_ASSERT_EQUAL(index_0ID, seriesID[0]);
-    CPPUNIT_ASSERT_EQUAL(index_3ID, seriesID[1]);
+    CPPUNIT_ASSERT_EQUAL(index_0ID, getSeries->getOutput("series", 0).lock()->getID());
+    CPPUNIT_ASSERT_EQUAL(index_3ID, getSeries->getOutput("series", 1).lock()->getID());
 
     getSeries->stop().wait();
 

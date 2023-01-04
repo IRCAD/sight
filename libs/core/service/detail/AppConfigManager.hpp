@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2022 IRCAD France
+ * Copyright (C) 2015-2023 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ class Composite;
 
 } // namespace sight::data
 
-namespace sight::service
+namespace sight::service::detail
 {
 
 /**
@@ -57,63 +57,54 @@ namespace sight::service
  * - \b addObject(data::Object::sptr, const std::string&): adds objects to the configuration.
  * - \b removeObject(data::Object::sptr, const std::string&): removes objects from the configuration.
  */
-class SERVICE_CLASS_API AppConfigManager : public service::IAppConfigManager,
-                                           public core::com::HasSlots
+class AppConfigManager : public service::IAppConfigManager,
+                         public core::com::HasSlots
 {
 public:
 
     SIGHT_DECLARE_CLASS(AppConfigManager, service::IAppConfigManager, std::make_shared<AppConfigManager>);
 
     SIGHT_ALLOW_SHARED_FROM_THIS()
-
     /// Creates slots.
-    SERVICE_API AppConfigManager();
+    AppConfigManager();
 
     /// Does nothing.
-    SERVICE_API ~AppConfigManager() override;
+    ~AppConfigManager() override;
 
     /**
      * @brief Sets configuration.
      * @param _configId The identifier of the requested config.
      * @param _replaceFields The associations between the value and the pattern to replace in the config.
      */
-    SERVICE_API void setConfig(
+    void setConfig(
         const std::string& _configId,
-        const FieldAdaptorType& _replaceFields = FieldAdaptorType()
+        const FieldAdaptorType& _replaceFields = FieldAdaptorType(),
+        bool autoPrefixId                      = true
     ) override;
 
-    /**
-     * @brief Get the configuration root.
-     * @return The configuration root.
-     */
-    SERVICE_API data::Object::sptr getConfigRoot() const override;
+    /// Get the configuration root.
+    data::Object::sptr getConfigRoot() const override;
 
     /// Calls methods : create, start then update.
-    SERVICE_API void launch() override;
+    void launch() override;
 
     /// Stops and destroys services specified in config, then resets the configRoot sptr.
-    SERVICE_API void stopAndDestroy() override;
+    void stopAndDestroy() override;
 
     /// Creates objects and services from config.
-    SERVICE_API void create() override;
+    void create() override;
 
     /// Starts services specified in config.
-    SERVICE_API void start() override;
+    void start() override;
 
     /// Updates services specified in config.
-    SERVICE_API void update() override;
+    void update() override;
 
     /// Stops services specified in config.
-    SERVICE_API void stop() override;
+    void stop() override;
 
     /// Destroys services specified in config.
-    SERVICE_API void destroy() override;
-
-    /**
-     * @brief Sets if we are testing the class.
-     * @param _isUnitTest Use true to set it as a test.
-     */
-    SERVICE_API void setIsUnitTest(bool _isUnitTest);
+    void destroy() override;
 
     /**
      * @brief Adds an existing deferred object to the deferred objects map.
@@ -127,20 +118,19 @@ public:
      * @param _obj The object to add.
      * @param _uid The uid of this object.
      */
-    SERVICE_API void addExistingDeferredObject(const data::Object::sptr& _obj, const std::string& _uid);
+    void addExistingDeferredObject(const data::Object::sptr& _obj, const std::string& _uid);
 
 private:
 
     typedef std::pair<std::string, bool> ConfigAttribute;
     typedef service::helper::ProxyConnections ProxyConnections;
-    typedef service::IService::Config Config;
 
     /**
      * @brief Starts the module associated to the config
      * @note  Does nothing if the module is already started or if the config id is not specified (ie. if config is set
      *        with setConfig(const core::runtime::config_t& cfgElem) ).
      */
-    SERVICE_API virtual void startModule();
+    virtual void startModule();
 
     data::Object::sptr findObject(const std::string& uid, std::string_view errMsgTail) const;
 
@@ -172,7 +162,7 @@ private:
     void createServices(const core::runtime::config_t&);
 
     /// Creates a single service from its configuration.
-    service::IService::sptr createService(const Config& srvConfig);
+    service::IService::sptr createService(const detail::ServiceConfig& srvConfig);
 
     /// Parses connection sections and creates them.
     void createConnections();
@@ -215,7 +205,7 @@ private:
 
     struct DeferredObjectType
     {
-        std::vector<Config> m_servicesCfg;
+        std::vector<detail::ServiceConfig> m_servicesCfg;
         std::unordered_map<std::string, ProxyConnections> m_proxyCnt;
 
         /// Copy of the object pointer necessary to access signals/slots when destroying proxy.
@@ -257,11 +247,6 @@ private:
     /// List of created workers
     std::vector<core::thread::Worker::sptr> m_createdWorkers;
 
-    /// While we need to maintain old and new services behavior, we need a dummy data for new services
-    /// that don't work on any data.
-    /// TODO: Remove with V1.
-    data::Composite::sptr m_tmpRootObject;
-
     /// Counter used to generate a unique proxy name.
     unsigned int m_proxyID {0};
 
@@ -270,9 +255,6 @@ private:
 
     /// Keep the connection between the OSR and `removeObjects`.
     core::com::Connection m_removeObjectConnection;
-
-    /// Hack to know if we are doing a unit test. We skip some code in this case to be able to launch a configuration.
-    bool m_isUnitTest {false};
 };
 
 // ------------------------------------------------------------------------
@@ -282,4 +264,4 @@ inline std::string AppConfigManager::msgHead() const
     return "[" + m_configId + "] ";
 }
 
-} // namespace sight::service
+} // namespace sight::service::detail

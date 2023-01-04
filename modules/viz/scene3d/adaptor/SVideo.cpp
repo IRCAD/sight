@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -183,8 +183,8 @@ void SVideo::starting()
 service::IService::KeyConnectionsMap SVideo::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     connections.push(s_TF_INPUT, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT);
     connections.push(s_TF_INPUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT);

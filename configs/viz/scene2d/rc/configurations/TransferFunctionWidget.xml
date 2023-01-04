@@ -139,8 +139,8 @@
             </scene>
         </service>
 
-        <service uid="VSHistogramAdp" type="sight::module::viz::scene2d::adaptor::SHistogram" autoConnect="true">
-            <in key="image" uid="${image}" />
+        <service uid="VSHistogramAdp" type="sight::module::viz::scene2d::adaptor::SHistogram">
+            <in key="image" uid="${image}" autoConnect="true"/>
             <inout key="viewport" uid="viewportShutter" />
             <config color="#FFC66D" xAxis="xAxis" yAxis="axeHistogramY" zValue="1" />
         </service>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@
 #include <service/extension/Config.hpp>
 #include <service/IService.hpp>
 #include <service/op/Add.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <QApplication>
 #include <QDropEvent>
@@ -781,7 +781,7 @@ data::Object::sptr DataView::readObject(
         ioSelectorSrv->start();
         ioSelectorSrv->update();
         ioSelectorSrv->stop();
-        service::OSR::unregisterService(ioSelectorSrv);
+        service::unregisterService(ioSelectorSrv);
     }
     catch(std::exception& e)
     {
@@ -795,7 +795,7 @@ data::Object::sptr DataView::readObject(
             ioSelectorSrv->stop();
         }
 
-        service::OSR::unregisterService(ioSelectorSrv);
+        service::unregisterService(ioSelectorSrv);
     }
     return obj;
 }

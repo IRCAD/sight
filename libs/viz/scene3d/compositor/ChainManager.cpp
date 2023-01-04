@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 #include "viz/scene3d/SRender.hpp"
 
 #include <service/op/Add.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 

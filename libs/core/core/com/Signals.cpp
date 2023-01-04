@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,29 +20,18 @@
  *
  ***********************************************************************/
 
-#ifdef DEBUG
-#include "core/spyLog.hpp"
-#endif
+#include "core/com/Signals.hpp"
 
 #include "core/com/SignalBase.hpp"
-#include "core/com/Signals.hpp"
 
 namespace sight::core::com
 {
-
-Signals::Signals()
-= default;
-
-//-----------------------------------------------------------------------------
-
-Signals::~Signals()
-= default;
 
 //-----------------------------------------------------------------------------
 
 Signals& Signals::operator()(const SignalKeyType& key, const SignalBase::sptr& Signal)
 {
-    m_signals.insert(SignalMapType::value_type(key, Signal));
+    m_signals.insert({key, Signal});
     return *this;
 }
 
@@ -65,7 +54,7 @@ SignalBase::sptr Signals::operator[](const SignalKeyType& key) const
 Signals::SignalKeyContainerType Signals::getSignalKeys() const
 {
     Signals::SignalKeyContainerType SignalKeys;
-    for(const SignalMapType::value_type& elem : m_signals)
+    for(const auto& elem : m_signals)
     {
         SignalKeys.push_back(elem.first);
     }

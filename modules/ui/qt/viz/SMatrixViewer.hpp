@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -73,7 +73,7 @@ public:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Matrix4::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Matrix4::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
      */
     MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 

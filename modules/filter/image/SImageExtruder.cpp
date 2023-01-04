@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,12 +63,12 @@ void SImageExtruder::starting()
 service::IService::KeyConnectionsMap SImageExtruder::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_MESHES_INPUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MESHES_INPUT, data::ModelSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     connections.push(s_MESHES_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_ADD_RECONSTRUCTIONS_SLOT);
-    connections.push(s_MESHES_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MESHES_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, IService::slots::s_UPDATE);
 
-    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }
