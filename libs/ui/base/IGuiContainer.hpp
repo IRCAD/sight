@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -190,28 +190,28 @@ protected:
     UI_BASE_API static const core::com::Slots::SlotKeyType s_HIDE_SLOT;
 
     /// SLOT: enable/disable the container
-    UI_BASE_API void setEnabled(bool isEnabled);
+    UI_BASE_API virtual void setEnabled(bool isEnabled);
 
     /// SLOT: enable/disable the container using parameter_t (only testing bool alternative).
-    UI_BASE_API void setEnabledByParameter(ui::base::parameter_t);
+    UI_BASE_API virtual void setEnabledByParameter(ui::base::parameter_t);
 
     /// SLOT: enable the container
-    UI_BASE_API void enable();
+    UI_BASE_API virtual void enable();
 
     /// SLOT: disable the container
-    UI_BASE_API void disable();
+    UI_BASE_API virtual void disable();
 
     /// SLOT: show/hide the container
-    UI_BASE_API void setVisible(bool isVisible);
+    UI_BASE_API virtual void setVisible(bool isVisible);
 
     /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
-    UI_BASE_API void setVisibleByParameter(ui::base::parameter_t);
+    UI_BASE_API virtual void setVisibleByParameter(ui::base::parameter_t);
 
     /// SLOT: show the container
-    UI_BASE_API void show();
+    UI_BASE_API virtual void show();
 
     /// SLOT: hide the container
-    UI_BASE_API void hide();
+    UI_BASE_API virtual void hide();
 
 /**
  * @}

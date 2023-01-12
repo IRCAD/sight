@@ -395,7 +395,7 @@
 
             <!-- PACS manager -->
             <service uid="pacsAct" type="sight::module::ui::base::SConfigLauncher" >
-                <appConfig id="PACSSelector_AppCfg" />
+                <appConfig id="PACSSelectorWindow_AppCfg" />
                 <inout group="data">
                     <key name="outputSeriesSet" uid="pacsSeriesSet" />
                 </inout>

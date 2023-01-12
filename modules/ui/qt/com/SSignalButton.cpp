@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2022 IRCAD France
+ * Copyright (C) 2015-2023 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,15 +37,15 @@ namespace sight::module::ui::qt::com
 static const core::com::Signals::SignalKeyType s_CLICKED_SIG = "clicked";
 static const core::com::Signals::SignalKeyType s_TOGGLED_SIG = "toggled";
 
-static const core::com::Slots::SlotKeyType s_SET_CHECKED_SLOT       = "setChecked";
-static const core::com::Slots::SlotKeyType s_CHECK_SLOT             = "check";
-static const core::com::Slots::SlotKeyType s_UNCHECK_SLOT           = "uncheck";
-static const core::com::Slots::SlotKeyType s_SET_IS_EXECUTABLE_SLOT = "setEnabled";
-static const core::com::Slots::SlotKeyType s_SET_EXECUTABLE_SLOT    = "setExecutable";
-static const core::com::Slots::SlotKeyType s_SET_INEXECUTABLE_SLOT  = "setInexecutable";
-static const core::com::Slots::SlotKeyType s_SET_VISIBLE_SLOT       = "setVisible";
-static const core::com::Slots::SlotKeyType s_SHOW_SLOT              = "show";
-static const core::com::Slots::SlotKeyType s_HIDE_SLOT              = "hide";
+static const core::com::Slots::SlotKeyType s_SET_CHECKED_SLOT = "setChecked";
+static const core::com::Slots::SlotKeyType s_CHECK_SLOT       = "check";
+static const core::com::Slots::SlotKeyType s_UNCHECK_SLOT     = "uncheck";
+static const core::com::Slots::SlotKeyType s_SET_ENABLED_SLOT = "setEnabled";
+static const core::com::Slots::SlotKeyType s_ENABLE_SLOT      = "enable";
+static const core::com::Slots::SlotKeyType s_DISABLE_SLOT     = "disable";
+static const core::com::Slots::SlotKeyType s_SET_VISIBLE_SLOT = "setVisible";
+static const core::com::Slots::SlotKeyType s_SHOW_SLOT        = "show";
+static const core::com::Slots::SlotKeyType s_HIDE_SLOT        = "hide";
 
 //-----------------------------------------------------------------------------
 
@@ -56,9 +56,9 @@ SSignalButton::SSignalButton() noexcept :
     newSlot(s_SET_CHECKED_SLOT, &SSignalButton::setChecked, this);
     newSlot(s_CHECK_SLOT, &SSignalButton::check, this);
     newSlot(s_UNCHECK_SLOT, &SSignalButton::uncheck, this);
-    newSlot(s_SET_IS_EXECUTABLE_SLOT, &SSignalButton::setEnabled, this);
-    newSlot(s_SET_EXECUTABLE_SLOT, &SSignalButton::setExecutable, this);
-    newSlot(s_SET_INEXECUTABLE_SLOT, &SSignalButton::setInexecutable, this);
+    newSlot(s_SET_ENABLED_SLOT, &SSignalButton::setEnabled, this);
+    newSlot(s_ENABLE_SLOT, &SSignalButton::enable, this);
+    newSlot(s_DISABLE_SLOT, &SSignalButton::disable, this);
     newSlot(s_SET_VISIBLE_SLOT, &SSignalButton::setVisible, this);
     newSlot(s_SHOW_SLOT, &SSignalButton::show, this);
     newSlot(s_HIDE_SLOT, &SSignalButton::hide, this);
@@ -83,7 +83,7 @@ void SSignalButton::configuring()
     {
         m_checkable    = config->get<bool>("checkable", m_checkable);
         m_checkAtStart = config->get<bool>("checked", m_checkAtStart);
-        m_executable   = config->get<bool>("executable", m_executable);
+        m_enable       = config->get<bool>("enable", m_enable);
 
         m_text    = config->get<std::string>("text", m_text);
         m_text2   = config->get<std::string>("text2", m_text2);
@@ -114,7 +114,7 @@ void SSignalButton::starting()
 
     auto* layout = new QVBoxLayout();
     m_button = new QPushButton(QString::fromStdString(m_text));
-    m_button->setEnabled(m_executable);
+    m_button->setEnabled(m_enable);
     layout->addWidget(m_button);
     qtContainer->setLayout(layout);
 
@@ -242,16 +242,16 @@ void SSignalButton::setEnabled(bool _isEnabled)
 
 //-----------------------------------------------------------------------------
 
-void SSignalButton::setExecutable()
+void SSignalButton::enable()
 {
-    m_button->setEnabled(true);
+    this->setEnabled(true);
 }
 
 //-----------------------------------------------------------------------------
 
-void SSignalButton::setInexecutable()
+void SSignalButton::disable()
 {
-    m_button->setEnabled(false);
+    this->setEnabled(false);
 }
 
 //-----------------------------------------------------------------------------

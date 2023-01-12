@@ -1,9 +1,7 @@
 <extension implements="sight::service::extension::AppConfig">
-    <id>PACSSelector_AppCfg</id>
+    <id>PACSSelectorWidget_AppCfg</id>
     <parameters>
-        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
-        <param name="WINDOW_TITLE" />
-        <param name="WINDOW_ICON" />
+        <param name="WID_PARENT" />
         <param name="outputSeriesSet" />
     </parameters>
     <config>
@@ -28,20 +26,6 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="mainView" type="sight::module::ui::base::SFrame">
-            <window onclose="notify" />
-            <gui>
-                <frame>
-                    <name>${WINDOW_TITLE}</name>
-                    <icon>${WINDOW_ICON}</icon>
-                    <minSize width="720" height="390" />
-                </frame>
-            </gui>
-            <registry>
-                <view sid="containerView" start="true" />
-            </registry>
-        </service>
-
         <service uid="containerView" type="sight::module::ui::base::SView">
             <gui>
                 <layout type="sight::ui::base::LineLayoutManager">
@@ -51,6 +35,7 @@
                 </layout>
             </gui>
             <registry>
+                <parent wid="${WID_PARENT}" />
                 <view sid="queryView" start="true" />
                 <view sid="selectorsView" start="true" />
             </registry>
@@ -311,7 +296,7 @@
         <service uid="exportImageAct" type="sight::module::ui::qt::com::SSignalButton">
             <config>
                 <checkable>false</checkable>
-                <executable>false</executable>
+                <enable>false</enable>
                 <icon>sight::module::ui::flaticons/YellowPull.svg</icon>
                 <iconWidth>24</iconWidth>
                 <iconHeight>24</iconHeight>
@@ -463,12 +448,8 @@
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <connect channel="${CLOSE_CONFIG_CHANNEL}">
-            <signal>mainView/closed</signal>
-        </connect>
-
         <connect>
-            <signal>mainView/started</signal>
+            <signal>containerView/started</signal>
             <slot>previewSceneSliderView/show</slot>
             <slot>localSceneSliderView/show</slot>
         </connect>
@@ -517,6 +498,7 @@
             <slot>extractLocalImageSeriesSrv/update</slot>
             <slot>hideAdvancedQueryEditorSrv/update</slot>
             <slot>hidePACSConfigurationSrv/update</slot>
+            
         </connect>
 
         <connect>
@@ -580,9 +562,8 @@
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->
-
         <start uid="configurePACSInitializerSrv" />
-        <start uid="mainView" />
+        <start uid="containerView" />
         <start uid="leftNotifierSrv" />
         <start uid="rightNotifierSrv" />
         <start uid="resetPreviewSrv" />
