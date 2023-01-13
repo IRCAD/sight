@@ -302,9 +302,6 @@ deploy_manual:apps-linux-release:
     - $env:DISABLE_ABORT_DIALOG="1"
     # Launch tests
     - ctest --timeout 480 --output-on-failure -O ctest.log -j6 --output-junit junit.xml
-    # Cleanup, to be sure there is nothing left from previous run
-    - (Remove-Item -Path "${env:CI_PROJECT_DIR}/build/packages" -Force -Recurse -ErrorAction Ignore)
-    - (Remove-Item -Path "${env:CI_PROJECT_DIR}/install" -Force -Recurse -ErrorAction Ignore)
     - |
       if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
         ninja SightViewer_package
@@ -353,7 +350,8 @@ deploy_manual:apps-linux-release:
     SIGHT_TEST_PACKAGES: "OFF"
     SIGHT_TEST_SDK: "OFF"
     CACHE: "D:\\gitlab-cache"
-    GIT_STRATEGY: none
+    # Ideally, we would like to use `none` but we need the `git clean -ddfx` to be performed to clean previous artifacts
+    GIT_STRATEGY: fetch
   script:
     - $PACKAGE_NAME = cmd /c cmake -DGET_ARCHIVE_FOLDER=ON -P "${env:CI_PROJECT_DIR}\cmake\build\download_deps.cmake" '2>&1'
     - cd build
@@ -382,13 +380,12 @@ deploy_manual:apps-linux-release:
         }
       }
     - |
+      Expand-Archive packages/sight-*.zip
       if("${SIGHT_TEST_SDK}" -eq "ON"){
         if ( ${BUILD_TYPE} -eq "Debug" ) {
-          Get-ChildItem packages | Where-Object { $_.Name -match 'sight.*Debug.*zip'  } | Expand-Archive -Force
           $env:PATH = "$CACHE\$PACKAGE_NAME\installed\x64-windows\debug\bin;$env:PATH"
         }
         else {
-          Get-ChildItem packages | Where-Object { $_.Name -notmatch 'Debug' -and $_.Name -match 'sight.*zip'  } | Expand-Archive -Force
           $env:PATH = "$CACHE\$PACKAGE_NAME\installed\x64-windows\bin\;$env:PATH"
         }
         cd sight-*/*/bin
