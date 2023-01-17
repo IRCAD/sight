@@ -366,15 +366,13 @@ void DataView::fillInformation(const data::Activity::sptr& _activity)
     );
     m_activityInfo = info;
 
-    data::Composite::sptr activityData = _activity->getData();
-
     this->fillInformation(info);
 
     for(std::size_t i = 0 ; i < m_activityInfo.requirements.size() ; ++i)
     {
         ActivityRequirement req = m_activityInfo.requirements[i];
 
-        auto obj = activityData->get(req.name);
+        auto obj = _activity->get(req.name);
         if(obj)
         {
             if((req.minOccurs == 0 && req.maxOccurs == 0)
@@ -561,8 +559,6 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
 
 bool DataView::checkAndComputeData(const data::Activity::sptr& activity, std::string& errorMsg)
 {
-    data::Composite::sptr composite = activity->getData();
-
     bool ok = true;
     errorMsg += "The required data are not correct:";
 
@@ -574,7 +570,7 @@ bool DataView::checkAndComputeData(const data::Activity::sptr& activity, std::st
         data::Object::sptr obj = this->checkData(i, msg);
         if(obj)
         {
-            (*composite)[req.name] = obj;
+            (*activity)[req.name] = obj;
         }
         else
         {

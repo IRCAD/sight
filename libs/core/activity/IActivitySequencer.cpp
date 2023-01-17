@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,9 +85,8 @@ void IActivitySequencer::storeActivityData(
     SIGHT_ASSERT("ActivitySet does not contain enough activities.", activity_set.size() > index);
     const auto& activity = activity_set[index];
     SIGHT_ASSERT("ActivitySet contains an unknown activity.", activity);
-    const auto& composite = activity->getData();
 
-    for(const auto& [key, value] : *composite)
+    for(const auto& [key, value] : *activity)
     {
         // Do not store overriden requirements
         if(!overrides || overrides->count(key) == 0)
@@ -115,7 +114,6 @@ data::Activity::sptr IActivitySequencer::getActivity(
     {
         activity = activity_set[index];
         SIGHT_ASSERT("ActivitySet contains an unknown activity.", activity);
-        auto composite = activity->getData();
 
         // FIXME: update all the data or only the requirement ?
         for(const auto& req : info.requirements)
@@ -124,7 +122,7 @@ data::Activity::sptr IActivitySequencer::getActivity(
             {
                 if(const auto& it = overrides->find(req.name); it != overrides->cend())
                 {
-                    composite->insert_or_assign(req.name, it->second);
+                    activity->insert_or_assign(req.name, it->second);
 
                     // Look for the next requirement
                     continue;
@@ -134,7 +132,7 @@ data::Activity::sptr IActivitySequencer::getActivity(
             // Look at the non overriden requirements
             if(const auto& it = m_requirements.find(req.name); it != m_requirements.cend())
             {
-                composite->insert_or_assign(req.name, it->second);
+                activity->insert_or_assign(req.name, it->second);
             }
         }
     }
@@ -152,15 +150,13 @@ data::Activity::sptr IActivitySequencer::getActivity(
         activity->setActivityConfigId(info.id);
         activity->setDescription(info.description);
 
-        auto composite = activity->getData();
-
         for(const auto& req : info.requirements)
         {
             if(overrides)
             {
                 if(const auto& it = overrides->find(req.name); it != overrides->cend())
                 {
-                    composite->insert_or_assign(req.name, it->second);
+                    activity->insert_or_assign(req.name, it->second);
 
                     // Look for the next requirement
                     continue;
@@ -170,20 +166,20 @@ data::Activity::sptr IActivitySequencer::getActivity(
             // Look at the non overriden requirements
             if(const auto& it = m_requirements.find(req.name); it != m_requirements.cend())
             {
-                composite->insert_or_assign(req.name, it->second);
+                activity->insert_or_assign(req.name, it->second);
             }
             else if(req.create || (req.minOccurs == 0 && req.maxOccurs == 0))
             {
                 // Create the new data
                 auto object = data::factory::New(req.type);
-                composite->insert_or_assign(req.name, object);
+                activity->insert_or_assign(req.name, object);
                 m_requirements.insert_or_assign(req.name, object);
             }
             else if(req.minOccurs == 0)
             {
                 // Create an empty composite for optional data
                 auto object = data::Composite::New();
-                composite->insert_or_assign(req.name, object);
+                activity->insert_or_assign(req.name, object);
                 m_requirements.insert_or_assign(req.name, object);
             }
         }

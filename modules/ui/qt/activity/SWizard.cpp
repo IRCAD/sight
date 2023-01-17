@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -269,8 +269,7 @@ void SWizard::createActivity(std::string activityID)
         for(const auto& req : info.requirements)
         {
             SIGHT_ASSERT("minOccurs and maxOccurs should be 0", req.minOccurs == 0 && req.maxOccurs == 0);
-            data::Composite::sptr data = m_new_activity->getData();
-            (*data)[req.name] = data::factory::New(req.type);
+            (*m_new_activity)[req.name] = data::factory::New(req.type);
         }
 
         const auto activity_set = m_activity_set.lock();
@@ -420,15 +419,10 @@ void SWizard::onBuildActivity()
             bool ok = m_DataView->checkAndComputeData(m_new_activity, errorMsg);
             if(ok)
             {
-                data::Composite::sptr data = m_new_activity->getData();
-
                 if(m_mode == Mode::CREATE)
                 {
                     // Add the new activity in activity_set
-                    ActivityInfo info;
-                    info = Activity::getDefault()->getInfo(
-                        m_new_activity->getActivityConfigId()
-                    );
+                    ActivityInfo info = Activity::getDefault()->getInfo(m_new_activity->getActivityConfigId());
 
                     std::string description = sight::ui::base::dialog::InputDialog::showInputDialog(
                         "Activity creation",

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -29,6 +29,7 @@
 #include <data/Activity.hpp>
 #include <data/Composite.hpp>
 
+#include <ranges>
 namespace sight::io::session
 {
 
@@ -50,12 +51,11 @@ inline static void write(
 {
     const auto activity = Helper::safe_cast<data::Activity>(object);
 
-    // Add a version number. Not mandatory, but could help for future release
-    Helper::writeVersion<data::Activity>(tree, 1);
+    Helper::writeVersion<data::Activity>(tree, 2);
 
     // Now serialize the remaining
     // Serialize children properties
-    children[s_Data] = activity->getData();
+    children = std::map<std::string, data::Object::csptr>(activity->cbegin(), activity->cend());
 
     // Serialize trivial properties
     Helper::writeString(tree, s_ActivityConfigId, activity->getActivityConfigId());
@@ -75,11 +75,19 @@ inline static data::Activity::sptr read(
     auto activity = Helper::cast_or_create<data::Activity>(object);
 
     // Check version number. Not mandatory, but could help for future release
-    Helper::readVersion<data::Activity>(tree, 0, 1);
+    const int version = Helper::readVersion<data::Activity>(tree, 0, 2);
 
     // Deserialize the remaining
     // Deserialize children properties
-    activity->setData(std::dynamic_pointer_cast<data::Composite>(children.at(s_Data)));
+    if(version < 2)
+    {
+        auto composite = std::dynamic_pointer_cast<data::Composite>(children.at(s_Data));
+        std::ranges::copy(*composite, std::inserter(*activity, activity->begin()));
+    }
+    else
+    {
+        std::ranges::copy(children, std::inserter(*activity, activity->begin()));
+    }
 
     // Deserialize trivial properties
     activity->setActivityConfigId(Helper::readString(tree, s_ActivityConfigId));

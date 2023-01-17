@@ -501,7 +501,10 @@ inline data::Activity::sptr generate<data::Activity>(const std::size_t variant)
 {
     auto object = data::Activity::New();
 
-    object->setData(create<data::Composite>(variant));
+    (*object)[data::Boolean::classname()] = create<data::Boolean>(variant);
+    (*object)[data::Integer::classname()] = create<data::Integer>(variant);
+    (*object)[data::Float::classname()]   = create<data::Float>(variant);
+    (*object)[data::String::classname()]  = create<data::String>(variant);
 
     return object;
 }

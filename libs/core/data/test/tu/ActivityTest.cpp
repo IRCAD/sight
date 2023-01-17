@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,8 @@
 
 #include <data/Composite.hpp>
 #include <data/Integer.hpp>
+
+#include <ranges>
 
 // Registers the fixture into the 'registry'
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::data::ut::ActivityTest);
@@ -56,31 +58,28 @@ void ActivityTest::activityConfigIdTest()
     m_activity->setActivityConfigId(activityConfigId);
     CPPUNIT_ASSERT_EQUAL(activityConfigId, m_activity->getActivityConfigId());
 
-    auto series2 = data::Activity::New();
-    CPPUNIT_ASSERT(*series2 != *m_activity);
+    auto activity2 = data::Activity::New();
+    CPPUNIT_ASSERT(*activity2 != *m_activity);
 
-    series2->setData(m_activity->getData());
-    series2->setActivityConfigId(m_activity->getActivityConfigId());
-    CPPUNIT_ASSERT(*series2 == *m_activity);
+    std::ranges::copy(*m_activity, std::inserter(*activity2, activity2->begin()));
+    activity2->setActivityConfigId(m_activity->getActivityConfigId());
+    CPPUNIT_ASSERT(*activity2 == *m_activity);
 }
 
 //------------------------------------------------------------------------------
 
 void ActivityTest::dataTest()
 {
-    auto data = data::Composite::New();
+    auto activity2 = data::Activity::New();
     CPPUNIT_ASSERT(m_activity);
-    CPPUNIT_ASSERT(data);
-    m_activity->setData(data);
-    CPPUNIT_ASSERT_EQUAL(data, m_activity->getData());
+    CPPUNIT_ASSERT(activity2);
 
-    auto series2 = data::Activity::New();
     // Both data are "empty"
-    CPPUNIT_ASSERT(*series2 == *m_activity);
+    CPPUNIT_ASSERT(*activity2 == *m_activity);
 
-    series2->setData(m_activity->getData());
-    series2->setActivityConfigId(m_activity->getActivityConfigId());
-    CPPUNIT_ASSERT(*series2 == *m_activity);
+    std::ranges::copy(*m_activity, std::inserter(*activity2, activity2->begin()));
+    activity2->setActivityConfigId(m_activity->getActivityConfigId());
+    CPPUNIT_ASSERT(*activity2 == *m_activity);
 }
 
 //------------------------------------------------------------------------------
@@ -97,11 +96,9 @@ void ActivityTest::equalityTest()
     activity2->setActivityConfigId(activity1->getActivityConfigId());
     CPPUNIT_ASSERT(*activity1 == *activity2 && !(*activity1 != *activity2));
 
-    auto composite = data::Composite::New();
-    (*composite)["data"] = data::Integer::New(2);
-    activity1->setData(composite);
+    (*activity1)["data"] = data::Integer::New(2);
     CPPUNIT_ASSERT(*activity1 != *activity2 && !(*activity1 == *activity2));
-    activity2->setData(activity1->getData());
+    std::ranges::copy(*activity1, std::inserter(*activity2, activity2->begin()));
     CPPUNIT_ASSERT(*activity1 == *activity2 && !(*activity1 != *activity2));
 }
 

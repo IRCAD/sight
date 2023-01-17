@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -87,9 +87,6 @@ void DefaultActivityTest::requirementsTest()
 
     activity::IValidator::ValidationType validation;
 
-    data::Composite::sptr data = data::Composite::New();
-    activity->setData(data);
-
     data::ImageSeries::sptr imageSeries  = data::ImageSeries::New();
     data::ImageSeries::sptr imageSeries2 = data::ImageSeries::New();
     data::ModelSeries::sptr modelSeries  = data::ModelSeries::New();
@@ -104,14 +101,14 @@ void DefaultActivityTest::requirementsTest()
     }
     {
         // data with only an image should NOT be valid
-        (*data)["imageSeries"] = imageSeries;
+        (*activity)["imageSeries"] = imageSeries;
 
         validation = activityValidator->checkRequirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("data with only an image should NOT be valid", false, validation.first);
     }
     {
         // data with an image and an empty model composite should be valid
-        (*data)["modelSeries"] = modelCompo;
+        (*activity)["modelSeries"] = modelCompo;
 
         validation = activityValidator->checkRequirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
@@ -167,8 +164,8 @@ void DefaultActivityTest::requirementsTest()
     {
         // data with a null image and a model in the composite should NOT be valid
         modelCompo->erase("key2");
-        (*data)["imageSeries"] = nullptr;
-        validation             = activityValidator->checkRequirements(activity);
+        (*activity)["imageSeries"] = nullptr;
+        validation                 = activityValidator->checkRequirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "data with a null image and a model in the composite should NOT be valid",
             false,
@@ -177,9 +174,9 @@ void DefaultActivityTest::requirementsTest()
     }
     {
         // data with a null image and a wrong key in the model composite should NOT be valid
-        (*modelCompo)["myKey"] = modelSeries2;
-        (*data)["imageSeries"] = imageSeries;
-        validation             = activityValidator->checkRequirements(activity);
+        (*modelCompo)["myKey"]     = modelSeries2;
+        (*activity)["imageSeries"] = imageSeries;
+        validation                 = activityValidator->checkRequirements(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "data with a null image and a wrong key in the model composite should NOT be valid",
             false,
@@ -275,9 +272,6 @@ void DefaultActivityTest::validatorTest()
 
     activity::IValidator::ValidationType validation;
 
-    data::Composite::sptr data = data::Composite::New();
-    activity->setData(data);
-
     data::ImageSeries::sptr imageSeries  = data::ImageSeries::New();
     data::ImageSeries::sptr imageSeries2 = data::ImageSeries::New();
     data::ModelSeries::sptr modelSeries  = data::ModelSeries::New();
@@ -294,14 +288,14 @@ void DefaultActivityTest::validatorTest()
     }
     {
         // data with only an image should NOT be valid
-        (*data)["imageSeries"] = imageSeries;
+        (*activity)["imageSeries"] = imageSeries;
 
         validation = activityValidator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("data with only an image should NOT be valid", false, validation.first);
     }
     {
         // data with an image and an empty model composite should be valid
-        (*data)["modelSeries"] = modelCompo;
+        (*activity)["modelSeries"] = modelCompo;
 
         validation = activityValidator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
@@ -357,8 +351,8 @@ void DefaultActivityTest::validatorTest()
     {
         // data with a null image and a model in the composite should NOT be valid
         modelCompo->erase("key2");
-        (*data)["imageSeries"] = nullptr;
-        validation             = activityValidator->validate(activity);
+        (*activity)["imageSeries"] = nullptr;
+        validation                 = activityValidator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "data with a null image and a model in the composite should NOT be valid",
             false,
@@ -367,9 +361,9 @@ void DefaultActivityTest::validatorTest()
     }
     {
         // data with a null image and a wrong key in the model composite should NOT be valid
-        (*modelCompo)["myKey"] = modelSeries2;
-        (*data)["imageSeries"] = imageSeries;
-        validation             = activityValidator->validate(activity);
+        (*modelCompo)["myKey"]     = modelSeries2;
+        (*activity)["imageSeries"] = imageSeries;
+        validation                 = activityValidator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "data with a null image and a wrong key in the model composite should NOT be valid",
             false,
@@ -394,9 +388,6 @@ void DefaultActivityTest::bigActivityTest()
     activity->setActivityConfigId("TestValidator1");
 
     activity::IValidator::ValidationType validation;
-
-    data::Composite::sptr data = data::Composite::New();
-    activity->setData(data);
 
     data::ImageSeries::sptr imageSeries1 = data::ImageSeries::New();
     data::ImageSeries::sptr imageSeries2 = data::ImageSeries::New();
@@ -436,39 +427,39 @@ void DefaultActivityTest::bigActivityTest()
     imageVector->push_back(imageSeries2);
     imageVector->push_back(imageSeries3);
 
-    (*data)["imageSeries"]          = imageSeries1;
-    (*data)["modelSeries"]          = modelSeries1;
-    (*data)["vectorImage"]          = imageVector;
-    (*data)["vectorModel"]          = modelVector;
-    (*data)["transformationMatrix"] = matrix;
-    (*data)["float"]                = floatObj;
-    (*data)["int"]                  = intObj;
-    (*data)["boolean"]              = boolObj;
-    (*data)["String"]               = compoStr;
+    (*activity)["imageSeries"]          = imageSeries1;
+    (*activity)["modelSeries"]          = modelSeries1;
+    (*activity)["vectorImage"]          = imageVector;
+    (*activity)["vectorModel"]          = modelVector;
+    (*activity)["transformationMatrix"] = matrix;
+    (*activity)["float"]                = floatObj;
+    (*activity)["int"]                  = intObj;
+    (*activity)["boolean"]              = boolObj;
+    (*activity)["String"]               = compoStr;
 
     {
         validation = activityValidator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE("Activity with correct data should be valid", true, validation.first);
     }
     {
-        data->erase("int");
+        activity->erase("int");
         validation = activityValidator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Activity without an autogenerated data should NOT be valid",
             false,
             validation.first
         );
-        (*data)["int"] = intObj;
+        (*activity)["int"] = intObj;
     }
     {
-        data->erase("transformationMatrix");
+        activity->erase("transformationMatrix");
         validation = activityValidator->validate(activity);
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Activity without an autocreated data should NOT be valid",
             false,
             validation.first
         );
-        (*data)["transformationMatrix"] = matrix;
+        (*activity)["transformationMatrix"] = matrix;
     }
     {
         validation = activityValidator->validate(activity);

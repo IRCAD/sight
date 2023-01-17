@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,15 +42,13 @@ IValidator::ValidationType IActivityValidator::checkRequirements(const data::Act
     activity::extension::ActivityInfo info;
     info = activity::extension::Activity::getDefault()->getInfo(activity->getActivityConfigId());
 
-    data::Composite::csptr composite = activity->getData();
-
     for(const activity::extension::ActivityRequirement& req : info.requirements)
     {
         if((req.minOccurs == 1 && req.maxOccurs == 1)
            || (req.minOccurs == 0 && req.maxOccurs == 0)
            || req.create) // One object is required
         {
-            data::Object::csptr obj = composite->get(req.name);
+            data::Object::csptr obj = activity->get(req.name);
             if(!obj)
             {
                 validation.first   = false;
@@ -73,7 +71,7 @@ IValidator::ValidationType IActivityValidator::checkRequirements(const data::Act
         }
         else if(req.container == "vector")
         {
-            data::Vector::csptr vector = data::Vector::dynamicConstCast(composite->get(req.name));
+            data::Vector::csptr vector = data::Vector::dynamicConstCast(activity->get(req.name));
             if(!vector)
             {
                 validation.first   = false;
@@ -133,7 +131,7 @@ IValidator::ValidationType IActivityValidator::checkRequirements(const data::Act
         }
         else // container == composite
         {
-            auto currentComposite = data::Composite::dynamicConstCast(composite->get(req.name));
+            auto currentComposite = data::Composite::dynamicConstCast(activity->get(req.name));
             if(!currentComposite)
             {
                 validation.first   = false;

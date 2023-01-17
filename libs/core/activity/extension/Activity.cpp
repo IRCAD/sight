@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -383,16 +383,13 @@ std::map<std::string, std::string> Activity::getReplacementMap(
 {
     std::map<std::string, std::string> replacement_map;
 
-    // Get the composite
-    const auto& composite = activity.getData();
-
     // First, use requirements to populate replacement map with an object from the root composite
     for(const auto& requirement : info.requirements)
     {
         // Use the name as "key" for the AppConfig parameter
-        const auto& it = composite->find(requirement.name);
+        const auto& it = activity.find(requirement.name);
 
-        if(it != composite->end() && it->second)
+        if(it != activity.end() && it->second)
         {
             replacement_map[requirement.name] = it->second->getID();
         }

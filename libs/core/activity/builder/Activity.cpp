@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,7 +76,6 @@ data::Activity::sptr Activity::buildData(
     auto activity = data::Activity::New();
 
     activity->setActivityConfigId(activityInfo.id);
-    data::Composite::sptr data = activity->getData();
 
     namespace ActReg = activity::extension;
 
@@ -88,7 +87,7 @@ data::Activity::sptr Activity::buildData(
         if(req.maxOccurs == 1 && req.minOccurs == 1)
         {
             SIGHT_ASSERT("No param name " << req.name << " with type " << req.type, !vectorType->empty());
-            (*data)[req.name] = (*vectorType)[0];
+            (*activity)[req.name] = (*vectorType)[0];
         }
         else
         {
@@ -100,11 +99,11 @@ data::Activity::sptr Activity::buildData(
             );
             if(req.container == "vector")
             {
-                (*data)[req.name] = vectorType;
+                (*activity)[req.name] = vectorType;
             }
             else if(req.container == "composite" || req.container.empty())
             {
-                (*data)[req.name] = vectorToComposite(vectorType, req);
+                (*activity)[req.name] = vectorToComposite(vectorType, req);
             }
         }
     }

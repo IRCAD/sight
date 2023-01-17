@@ -148,12 +148,11 @@ data::Activity::sptr IActivityLauncher::createMainActivity() const
     auto activity = data::Activity::New();
     if(!info.requirements.empty())
     {
-        data::Composite::sptr data = activity->getData();
         for(const auto& req : info.requirements)
         {
             if((req.minOccurs == 0 && req.maxOccurs == 0) || req.create)
             {
-                (*data)[req.name] = data::factory::New(req.type);
+                (*activity)[req.name] = data::factory::New(req.type);
             }
             else
             {
