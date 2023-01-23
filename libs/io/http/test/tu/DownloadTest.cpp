@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -55,14 +55,14 @@ void DownloadTest::downloadTestSuccess()
 
     CPPUNIT_ASSERT_NO_THROW(
         io::http::downloadFile(
-            "https://cloud.ircad.fr/index.php/s/xGt4afRfMiWyeo4/download",
+            "https://cloud.ircad.fr/s/tqYHyjZ2cgHT4mG/download",
             dir / "sample.bin"
         )
     );
 
     CPPUNIT_ASSERT_NO_THROW(
         io::http::downloadFile(
-            "https://cloud.ircad.fr/index.php/s/M2CESbGgH3NPoDo/download",
+            "https://cloud.ircad.fr/s/5GA5bjqsEYwenPT/download",
             dir / "sample.txt"
         )
     );

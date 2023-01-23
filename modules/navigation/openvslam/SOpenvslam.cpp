@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -136,7 +136,7 @@ SOpenvslam::SOpenvslam() noexcept :
 
                 if(env_download_url.empty())
                 {
-                    url = "https://cloud.ircad.fr/index.php/s/tojArWTZcK223Fq/download";
+                    url = "https://cloud.ircad.fr/s/2QxjHtxNpjXDAqK/download";
                 }
                 else
                 {
