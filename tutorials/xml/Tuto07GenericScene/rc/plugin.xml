@@ -147,7 +147,6 @@
 
             <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo">
                 <inout key="image" uid="snapshot" />
-                <config flip="true" />
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
@@ -221,13 +220,11 @@
             </service>
 
             <!-- Write the snapshot image -->
-            <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector">
-                <inout key="data" uid="snapshot" />
-                <type mode="writer" />
-                <selection mode="exclude" />
-                <addSelection service="sight::module::io::session::SWriter" />
+            <service uid="imageWriterSrv" type="sight::module::io::bitmap::SWriter">
+                <in key="data" uid="snapshot" />
+                <dialog policy="always" />
+                <backends enable="all" mode="best"/>
             </service>
-
 
             <service uid="tfm" type="sight::module::ui::qt::image::STransferFunction">
                 <in key="image" uid="image" />

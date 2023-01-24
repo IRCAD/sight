@@ -13,6 +13,7 @@ add_dependencies(
     module_ui_flaticons
     module_io_matrix
     module_io_vtk
+    module_io_bitmap
 )
 
 # Allow dark theme via module_ui_qt

@@ -78,7 +78,7 @@
         <service uid="negato2Srv" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
             <inout group="data">
-                <key name="image" uid="${imageSeriesMask}" />
+                <key name="image" uid="imageSeriesMask" />
                 <key name="landmarks" uid="landmarks2" />
             </inout>
             <parameter replace="WID_PARENT" by="negato2View" />

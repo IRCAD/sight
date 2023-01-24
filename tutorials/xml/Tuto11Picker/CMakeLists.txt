@@ -14,6 +14,7 @@ add_dependencies(
     module_ui_flaticons
     module_io_matrix
     module_io_vtk
+    module_io_bitmap
     module_data
 )
 
