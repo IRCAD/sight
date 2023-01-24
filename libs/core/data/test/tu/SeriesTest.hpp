@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -43,10 +43,10 @@ CPPUNIT_TEST(attrDateTest);
 CPPUNIT_TEST(attrTimeTest);
 CPPUNIT_TEST(attrPerformingPhysicianNameTest);
 CPPUNIT_TEST(attrDescriptionTest);
+
 CPPUNIT_TEST(equalityTest);
 
 CPPUNIT_TEST(sopClassUIDTest);
-CPPUNIT_TEST(sopClassNameTest);
 CPPUNIT_TEST(sopInstanceUIDTest);
 CPPUNIT_TEST(specificCharacterSetTest);
 CPPUNIT_TEST(encodingTest);
@@ -105,7 +105,10 @@ CPPUNIT_TEST(windowWidthTest);
 CPPUNIT_TEST(imagePositionPatientTest);
 CPPUNIT_TEST(imageOrientationPatientTest);
 CPPUNIT_TEST(imageTransformPatientTest);
-
+CPPUNIT_TEST(frameAcquisitionDateTimeTest);
+CPPUNIT_TEST(frameAcquisitionTimePointTest);
+CPPUNIT_TEST(frameCommentsTest);
+CPPUNIT_TEST(frameLabelTest);
 CPPUNIT_TEST(stringConversionTest);
 
 CPPUNIT_TEST_SUITE_END();
@@ -127,10 +130,10 @@ public:
     void attrTimeTest();
     void attrPerformingPhysicianNameTest();
     void attrDescriptionTest();
+
     static void equalityTest();
 
     static void sopClassUIDTest();
-    static void sopClassNameTest();
     static void sopInstanceUIDTest();
     static void specificCharacterSetTest();
     static void encodingTest();
@@ -189,6 +192,10 @@ public:
     static void imagePositionPatientTest();
     static void imageOrientationPatientTest();
     static void imageTransformPatientTest();
+    static void frameAcquisitionDateTimeTest();
+    static void frameAcquisitionTimePointTest();
+    static void frameCommentsTest();
+    static void frameLabelTest();
 
     static void stringConversionTest();
 

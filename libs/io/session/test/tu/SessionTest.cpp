@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -141,6 +141,13 @@ inline static std::string generateDA(std::size_t variant)
     dd << std::setfill('0') << std::setw(2) << ((variant + 2) % 32);
 
     return yyyy.str() + mm.str() + dd.str();
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string generateDT(std::size_t variant)
+{
+    return generateDA(variant) + generateTM(variant);
 }
 
 //------------------------------------------------------------------------------
@@ -406,6 +413,7 @@ inline data::Series::sptr generate<data::Series>(const std::size_t variant)
     auto object = data::Series::New();
 
     // Fill trivial attributes
+    object->setSOPKeyword(sight::data::dicom::sop::Keyword::CTImageStorage);
     object->setModality(UUID::generateUUID());
     object->setSeriesDescription(UUID::generateUUID());
     object->setSeriesInstanceUID(UUID::generateUUID());
@@ -467,6 +475,10 @@ inline data::Series::sptr generate<data::Series>(const std::size_t variant)
             },
             i
         );
+
+        object->setFrameAcquisitionDateTime(generateDT(variant + i), i);
+        object->setFrameComments(UUID::generateUUID(), i);
+        object->setFrameLabel(UUID::generateUUID(), i);
     }
 
     // Test private tag...

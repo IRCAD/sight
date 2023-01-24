@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -92,6 +92,9 @@ public:
     // This constructor is only used to initialize static members
     constexpr Type(Type_t t);
 
+    // This allows to use a Type in switch case
+    constexpr operator Type_t() const;
+
 private:
 
     // Internal map that stores type properties
@@ -128,6 +131,13 @@ constexpr bool Type::operator!=(const Type& t) const
 constexpr bool Type::operator<(const Type& t) const
 {
     return m_type < t.m_type;
+}
+
+//------------------------------------------------------------------------------
+
+constexpr Type::operator Type_t() const
+{
+    return m_type;
 }
 
 //------------------------------------------------------------------------------

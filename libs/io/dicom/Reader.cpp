@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,6 +24,7 @@
 #include <core/macros.hpp>
 #include <core/tools/compare.hpp>
 
+#include <data/dicom/Sop.hpp>
 #include <data/helper/MedicalImage.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
@@ -1170,19 +1171,13 @@ public:
                 return false;
             }
 
-            // Convert the time to a number
-            // *INDENT-OFF*
-            using namespace std::chrono_literals;
-            std::chrono::hours hh = 0h;
-            // *INDENT-ON*
-
             // Start to parse DICOM time
-            ///@note Maybe it would be a good idea to export this function as DICOM TS are used elsewhere...
+            std::chrono::hours hours;
             if(value.length() >= 2)
             {
                 try
                 {
-                    hh = std::chrono::hours(std::stoi(value.substr(0, 2)));
+                    hours = std::chrono::hours(std::stoi(value.substr(0, 2)));
                 }
                 catch(...)
                 {
@@ -1195,13 +1190,12 @@ public:
                 return false;
             }
 
-            std::chrono::minutes mm = 0min;
-
+            std::chrono::minutes minutes;
             if(value.length() >= 4)
             {
                 try
                 {
-                    mm = std::chrono::minutes(std::stoi(value.substr(2, 4)));
+                    minutes = std::chrono::minutes(std::stoi(value.substr(2, 2)));
                 }
                 catch(...)
                 {
@@ -1210,13 +1204,12 @@ public:
                 }
             }
 
-            std::chrono::seconds ss = 0s;
-
+            std::chrono::seconds seconds;
             if(value.length() >= 6)
             {
                 try
                 {
-                    ss = std::chrono::seconds(std::stoi(value.substr(4, 6)));
+                    seconds = std::chrono::seconds(std::stoi(value.substr(4, 2)));
                 }
                 catch(...)
                 {
@@ -1225,8 +1218,7 @@ public:
                 }
             }
 
-            std::chrono::microseconds ffffff = 0us;
-
+            std::chrono::microseconds microseconds;
             if(value.length() >= 8)
             {
                 try
@@ -1237,7 +1229,7 @@ public:
                     // Fill with trailing 0 to always have microseconds
                     us.resize(6, '0');
 
-                    ffffff = std::chrono::microseconds(std::stoi(us));
+                    microseconds = std::chrono::microseconds(std::stoi(us));
                 }
                 catch(...)
                 {
@@ -1247,8 +1239,10 @@ public:
             }
 
             // Let the map sort the frames
-            const std::int64_t index =
-                std::chrono::duration_cast<std::chrono::microseconds>(hh + mm + ss + ffffff).count();
+            const std::int64_t index = std::chrono::duration_cast<std::chrono::microseconds>(
+                hours + minutes + seconds + microseconds
+            ).count();
+
             sorter.insert_or_assign(index, instance);
         }
 
@@ -1379,7 +1373,7 @@ public:
             }
             else
             {
-                SIGHT_THROW("Unsupported DICOM IOD '" << source->getSOPClassName() << "'.");
+                SIGHT_THROW("Unsupported DICOM IOD '" << data::dicom::sop::get(source->getSOPKeyword()).m_name << "'.");
             }
 
             // Add the read series to the set

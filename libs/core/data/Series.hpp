@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,11 +23,14 @@
 #pragma once
 
 #include "data/config.hpp"
+#include "data/dicom/Attribute.hpp"
+#include "data/dicom/Sop.hpp"
 #include "data/factory/new.hpp"
 #include "data/Matrix4.hpp"
 #include "data/Object.hpp"
 #include "data/types.hpp"
 
+#include <chrono>
 #include <functional>
 #include <optional>
 
@@ -65,9 +68,9 @@ public:
 
     /// Getter/Setter of DICOM SOP Common Module related attributes
     /// @{
-    DATA_API std::string getSOPClassUID() const noexcept;
-    DATA_API std::string getSOPClassName() const noexcept;
-    DATA_API void setSOPClassUID(const std::string& sopClassUID);
+    DATA_API dicom::sop::Keyword getSOPKeyword() const noexcept;
+    DATA_API void setSOPKeyword(dicom::sop::Keyword keyword);
+    DATA_API std::string_view getSOPClassName() const noexcept;
 
     DATA_API std::string getSOPInstanceUID() const noexcept;
     DATA_API void setSOPInstanceUID(const std::string& sopInstanceUID);
@@ -302,6 +305,7 @@ public:
     /// @}
 
     /// Getter/Setter of DICOM Image Plane Module related attributes
+    /// ...and Multi-frame Functional Groups Module
     /// @{
     DATA_API std::vector<double> getImagePositionPatient(std::size_t instance = 0) const;
 
@@ -322,6 +326,54 @@ public:
 
     DATA_API std::optional<double> getSliceThickness() const noexcept;
     DATA_API void setSliceThickness(const std::optional<double>& sliceThickness = std::nullopt);
+    /// @}
+
+    /// Getter/Setter of DICOM Multi-frame Functional Groups Module related attributes
+    /// @{
+    DATA_API std::vector<double> getImagePositionVolume(std::size_t frameIndex = 0) const;
+
+    DATA_API void setImagePositionVolume(
+        const std::vector<double>& imagePositionVolume,
+        std::size_t frameIndex = 0
+    );
+
+    DATA_API std::vector<double> getImageOrientationVolume(std::size_t frameIndex = 0) const;
+
+    DATA_API void setImageOrientationVolume(
+        const std::vector<double>& imageOrientationVolume,
+        std::size_t frameIndex = 0
+    );
+
+    DATA_API std::optional<std::string> getFrameAcquisitionDateTime(std::size_t frameIndex = 0) const;
+
+    DATA_API void setFrameAcquisitionDateTime(
+        const std::optional<std::string>& frameAcquisitionDateTime = std::nullopt,
+        std::size_t frameIndex                                     = 0
+    );
+
+    DATA_API std::optional<std::chrono::system_clock::time_point> getFrameAcquisitionTimePoint(
+        std::size_t frameIndex = 0
+    ) const noexcept;
+
+    DATA_API void setFrameAcquisitionTimePoint(
+        const std::optional<std::chrono::system_clock::time_point>& timePoint = std::nullopt,
+        std::size_t frameIndex                                                = 0
+    );
+
+    DATA_API std::optional<std::string> getFrameComments(std::size_t frameIndex = 0) const;
+
+    DATA_API void setFrameComments(
+        const std::optional<std::string>& frameComments = std::nullopt,
+        std::size_t frameIndex                          = 0
+    );
+
+    DATA_API std::optional<std::string> getFrameLabel(std::size_t frameIndex = 0) const;
+
+    DATA_API void setFrameLabel(
+        const std::optional<std::string>& frameLabel = std::nullopt,
+        std::size_t frameIndex                       = 0
+    );
+
     /// @}
 
     /// Equality comparison operators
@@ -348,17 +400,17 @@ public:
     /// @throws data::Exception if an errors occurs during copy
     /// @param source source object to copy from
     /// @{
-    DATA_API void copyPatientModule(const Series::csptr& source);
-    DATA_API void copyClinicalTrialSubjectModule(const Series::csptr& source);
-    DATA_API void copyGeneralStudyModule(const Series::csptr& source);
-    DATA_API void copyPatientStudyModule(const Series::csptr& source);
-    DATA_API void copyClinicalTrialStudyModule(const Series::csptr& source);
-    DATA_API void copyGeneralSeriesModule(const Series::csptr& source);
-    DATA_API void copyClinicalTrialSeriesModule(const Series::csptr& source);
-    DATA_API void copyGeneralEquipmentModule(const Series::csptr& source);
-    DATA_API void copyFrameOfReferenceModule(const Series::csptr& source);
-    DATA_API void copySOPCommonModule(const Series::csptr& source);
-    DATA_API void copyGeneralImageModule(const Series::csptr& source);
+    DATA_API void copyPatientModule(const Series::csptr& source, std::size_t instance              = 0);
+    DATA_API void copyClinicalTrialSubjectModule(const Series::csptr& source, std::size_t instance = 0);
+    DATA_API void copyGeneralStudyModule(const Series::csptr& source, std::size_t instance         = 0);
+    DATA_API void copyPatientStudyModule(const Series::csptr& source, std::size_t instance         = 0);
+    DATA_API void copyClinicalTrialStudyModule(const Series::csptr& source, std::size_t instance   = 0);
+    DATA_API void copyGeneralSeriesModule(const Series::csptr& source, std::size_t instance        = 0);
+    DATA_API void copyClinicalTrialSeriesModule(const Series::csptr& source, std::size_t instance  = 0);
+    DATA_API void copyGeneralEquipmentModule(const Series::csptr& source, std::size_t instance     = 0);
+    DATA_API void copyFrameOfReferenceModule(const Series::csptr& source, std::size_t instance     = 0);
+    DATA_API void copySOPCommonModule(const Series::csptr& source, std::size_t instance            = 0);
+    DATA_API void copyGeneralImageModule(const Series::csptr& source, std::size_t instance         = 0);
     /// @}
 
     /// Value getter using given tag. The returned string is used as a Byte buffer and is not necessarily a string.
@@ -368,11 +420,10 @@ public:
     /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @return the values as a string
-    DATA_API std::string getByteValue(
-        std::uint16_t group,
-        std::uint16_t element,
-        std::size_t instance = 0
-    ) const;
+    /// @{
+    DATA_API std::string getByteValue(std::uint16_t group, std::uint16_t element, std::size_t instance = 0) const;
+    DATA_API std::string getByteValue(dicom::attribute::Keyword tag, std::size_t instance              = 0) const;
+    /// @}
 
     /// Value setter using given tag. The string argument is used as a Byte buffer and is not necessarily a string.
     /// @throws data::Exception if the data mismatch the tag type
@@ -384,12 +435,21 @@ public:
     /// @throw data::Exception if tag doesn't exist
     /// @throw data::Exception if value size is not correct
     /// @throw data::Exception if instance index is out of bounds
+    /// @{
     DATA_API void setByteValue(
         std::uint16_t group,
         std::uint16_t element,
         const std::string& value,
         std::size_t instance = 0
     );
+
+    DATA_API void setByteValue(
+        dicom::attribute::Keyword tag,
+        const std::string& value,
+        std::size_t instance = 0
+    );
+
+    /// @}
 
     /// Values getter using given tag. Initial string is split using DICOM delimiter '\'.
     /// @throws data::Exception if tag doesn't exist
@@ -398,11 +458,15 @@ public:
     /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @return the values as a vector of strings
+    /// @{
     DATA_API std::vector<std::string> getByteValues(
         std::uint16_t group,
         std::uint16_t element,
         std::size_t instance = 0
     ) const;
+
+    DATA_API std::vector<std::string> getByteValues(dicom::attribute::Keyword tag, std::size_t instance = 0) const;
+    /// @}
 
     /// Values setter using given tag. Strings are joined using DICOM delimiter '\'.
     /// @throws data::Exception if the data mismatch the tag type
@@ -411,12 +475,20 @@ public:
     /// @param[in] value the vector of value to insert
     /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
+    /// @{
     DATA_API void setByteValues(
         std::uint16_t group,
         std::uint16_t element,
         const std::vector<std::string>& values,
         std::size_t instance = 0
     );
+
+    DATA_API void setByteValues(
+        dicom::attribute::Keyword tag,
+        const std::vector<std::string>& values,
+        std::size_t instance = 0
+    );
+    /// @}
 
     /// Value getter using given tag. The value is converted to string, depending of the VR.
     /// @throws data::Exception if tag doesn't exist
@@ -425,13 +497,17 @@ public:
     /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     /// @return the values as a string
+    /// @{
     DATA_API std::string getStringValue(
         std::uint16_t group,
         std::uint16_t element,
         std::size_t instance = 0
     ) const;
 
-    /// Value setter using given tag. The string argument is converted to the underlying type, depending of the VR.
+    DATA_API std::string getStringValue(dicom::attribute::Keyword tag, std::size_t instance = 0) const;
+    /// @}
+
+    /// Value setter using given tag. The string argument is converted to the right, depending of the VR.
     /// @throws data::Exception if the data mismatch the tag type
     /// @param[in] group the group tag to set
     /// @param[in] element the element tag to set
@@ -441,12 +517,16 @@ public:
     /// @throw data::Exception if tag doesn't exist
     /// @throw data::Exception if value size is not correct
     /// @throw data::Exception if instance index is out of bounds
+    /// @{
     DATA_API void setStringValue(
         std::uint16_t group,
         std::uint16_t element,
         const std::string& value,
         std::size_t instance = 0
     );
+
+    DATA_API void setStringValue(dicom::attribute::Keyword tag, const std::string& value, std::size_t instance = 0);
+    /// @}
 
     /// Private value getter.
     /// @throws data::Exception if tag doesn't exist
@@ -548,6 +628,18 @@ public:
     /// Utility function that sort instances according to a sorted map of instance index.
     /// @param[in] sorted the sorted vector of instance.
     DATA_API bool sort(const std::vector<std::size_t>& sorted);
+
+    /// Returns true if the series is multi-frame.
+    DATA_API bool isMultiFrame() const noexcept;
+
+    /// Returns the number of frames in the series.
+    DATA_API std::size_t numFrames() const noexcept;
+
+    /// Helper function to convert a DICOM date time string to/from a std::chrono::system_clock::time_point
+    DATA_API static std::chrono::system_clock::time_point dateTimeToTimePoint(const std::string& dateTime);
+
+    /// Helper function to convert a std::chrono::system_clock::time_point to /from DICOM date time string
+    DATA_API static std::string timePointToDateTime(const std::chrono::system_clock::time_point& timePoint);
 
 protected:
 

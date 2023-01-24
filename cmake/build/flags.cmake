@@ -78,6 +78,13 @@ add_compile_options("$<$<CXX_COMPILER_ID:GNU,Clang>:-fvisibility=hidden;-fvisibi
 # Warning level
 add_compile_options("$<$<CXX_COMPILER_ID:GNU,Clang>:-Wall;-Wextra;-Wconversion>" "$<$<CXX_COMPILER_ID:MSVC>:/W4>")
 
+# Disable "undefined-var-template" for Clang, because it only helps to diagnose early linking errors when some
+# specialized template are defined in another translation unit, and the "fix" would imply a lot of boilerplate code to
+# declare the missing definitions as "extern". Because, in case of wrong code or bad linking, linking errors will anyway
+# occur, the internet consensus about this, is to disable it, to avoid boilerplate code and to have the same behavior as
+# GCC or MSVC.
+add_compile_options("$<$<CXX_COMPILER_ID:Clang>:-Wno-undefined-var-template>")
+
 # AES support is enabled with pragmas on GCC, Clang needs the explicit CLI flag
 add_compile_options("$<$<CXX_COMPILER_ID:Clang>:-maes>")
 

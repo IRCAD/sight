@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -281,7 +281,11 @@ public:
 
     /// Retrieve a DICOM tag value. If the tag is not found, an null optional is returned.
     template<typename A>
-    [[nodiscard]] constexpr std::optional<typename A::ArrayType> getValue(std::size_t instance = 0) const
+    [[nodiscard]] constexpr std::conditional_t<
+        std::is_base_of_v<std::string, typename A::ArrayType>,
+        std::optional<std::string>,
+        std::optional<typename A::ArrayType>
+    > getValue(std::size_t instance = 0) const
     {
         const auto& dataset = getDataSet(instance);
 
@@ -304,7 +308,16 @@ public:
                     A attribute {};
 
                     attribute.SetFromDataSet(dataset);
-                    return attribute.GetValue();
+
+                    if constexpr(std::is_base_of_v<std::string, typename A::ArrayType>)
+                    {
+                        // Use trimmed string, as we don't care about DICOM string padding with space
+                        return shrink(attribute.GetValue().Trim());
+                    }
+                    else
+                    {
+                        return attribute.GetValue();
+                    }
                 }
             }
         }
@@ -323,7 +336,7 @@ public:
             if constexpr(std::is_base_of_v<std::string, typename A::ArrayType>)
             {
                 // Use trimmed string, as we don't care about DICOM string padding with space
-                return shrink(value->Trim());
+                return *value;
             }
             else
             {
@@ -347,16 +360,33 @@ public:
 
         if(count > 0)
         {
-            auto values_pointer = attribute.GetValues();
+            auto* values_pointer = attribute.GetValues();
 
-            // Pointer can be treated as iterator ;)
-            return std::vector<typename A::ArrayType>(
-                values_pointer,
-                values_pointer + count
-            );
+            if constexpr(std::is_base_of_v<std::string, typename A::ArrayType>)
+            {
+                std::vector<typename A::ArrayType> vector;
+                vector.reserve(count);
+
+                // Use trimmed string, as we don't care about DICOM string padding with space
+                std::transform(
+                    values_pointer,
+                    values_pointer + count,
+                    std::back_inserter(vector),
+                    [](const auto& value){return shrink(value.Trim());});
+
+                return vector;
+            }
+            else
+            {
+                // Pointer can be treated as iterator ;)
+                return std::vector<typename A::ArrayType>(
+                    values_pointer,
+                    values_pointer + count
+                );
+            }
         }
 
-        return std::vector<typename A::ArrayType>();
+        return {};
     }
 
     /// Retrieve multi-value DICOM tag as a single joined string. Use '\' as separator.
@@ -376,18 +406,19 @@ public:
         const auto values = attribute.GetValues();
 
         std::vector<std::string> vector;
+        vector.reserve(attribute.GetNumberOfValues());
 
         for(std::size_t i = 0 ; i < attribute.GetNumberOfValues() ; ++i)
         {
             if constexpr(std::is_base_of_v<std::string, typename A::ArrayType>)
             {
                 // Use trimmed string, as we don't care about DICOM string padding with space
-                vector.push_back(shrink(values[i].Trim()));
+                vector.emplace_back(shrink(values[i].Trim()));
             }
             else
             {
                 static_assert(std::is_arithmetic_v<typename A::ArrayType>, "Arithmetic type expected");
-                vector.push_back(arithmeticToString(values[i], A::GetVR()));
+                vector.emplace_back(arithmeticToString(values[i], A::GetVR()));
             }
         }
 
@@ -565,6 +596,252 @@ public:
         }
 
         return {};
+    }
+
+    /// Return the GDCM dataset associated to a sequence attribute of a sequence group like `FrameAcquisitionDateTime`
+    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
+    /// @tparam S Sequence Attribute (like Frame Content Sequence)
+    /// @param frameIndex index of the frame
+    /// @return GDCM dataset of the attribute
+    template<typename G, typename S>
+    [[nodiscard]] inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFrameSequence(
+        std::size_t frameIndex = 0
+    ) const
+    {
+        /// @note We assume that multi-frame dicom have only one instance, IE no instance "Concatenation" here
+        /// @note See "Concatenation" related attributes ((0020,9228) and (0020,9162))
+        const auto& dataset   = getDataSet(0);
+        const auto& group_tag = G::GetTag();
+
+        if(!dataset.FindDataElement(group_tag))
+        {
+            return {};
+        }
+
+        // Retrieve the Functional Groups Sequence
+        const auto& frame_sequence = dataset.GetDataElement(group_tag).GetValueAsSQ();
+
+        if(frame_sequence->GetNumberOfItems() <= frameIndex)
+        {
+            return {};
+        }
+
+        // Retrieve the frame item and dataset
+        const auto& frame_item    = frame_sequence->GetItem(frameIndex + 1);
+        const auto& frame_dataset = frame_item.GetNestedDataSet();
+
+        const auto& attribute_sequence_tag = S::GetTag();
+
+        if(!frame_dataset.FindDataElement(attribute_sequence_tag))
+        {
+            return {};
+        }
+
+        // Retrieve the attribute sequence
+        const auto& attribute_sequence = frame_dataset.GetDataElement(attribute_sequence_tag).GetValueAsSQ();
+
+        if(attribute_sequence->GetNumberOfItems() == 0)
+        {
+            return {};
+        }
+
+        return attribute_sequence;
+    }
+
+    /// Retrieve DICOM tag value from a multi-frame sequence attribute of a sequence group like
+    /// `FrameAcquisitionDateTime`
+    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
+    /// @tparam S Sequence Attribute (like Frame Content Sequence)
+    /// @tparam A Attribute (like Frame Acquisition DateTime)
+    /// @param frameIndex index of the frame
+    /// @return attribute value. If the tag is not found, an empty vector is returned.
+    template<typename G, typename S, typename A>
+    [[nodiscard]] inline std::optional<typename A::ArrayType> getMultiFrameValue(std::size_t frameIndex = 0) const
+    {
+        const auto& attribute_sequence = getMultiFrameSequence<G, S>(frameIndex);
+
+        if(!attribute_sequence || attribute_sequence->IsEmpty())
+        {
+            return std::nullopt;
+        }
+
+        // Finally get the value...
+        A attribute {};
+        attribute.SetFromDataSet(attribute_sequence->GetItem(1).GetNestedDataSet());
+        return attribute.GetValue();
+    }
+
+    /// Return the GDCM dataset associated to a sequence attribute of a sequence group like `FrameAcquisitionDateTime`
+    /// Construct intermediate DataElements if they don't exist.
+    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
+    /// @tparam S Sequence Attribute (like Frame Content Sequence)
+    /// @param frameIndex index of the frame
+    /// @return GDCM dataset of the attribute
+    template<typename G, typename S>
+    inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFrameSequence(std::size_t frameIndex = 0)
+    {
+        /// @note We assume that multi-frame dicom have only one instance, IE no instance "Concatenation" here
+        /// @note See "Concatenation" related attributes ((0020,9228) and (0020,9162))
+        auto& dataset         = getDataSet(0);
+        const auto& group_tag = G::GetTag();
+
+        if(!dataset.FindDataElement(group_tag))
+        {
+            // No Frame Sequence found, create it
+            gdcm::SmartPointer<gdcm::SequenceOfItems> group_sequence = new gdcm::SequenceOfItems();
+            group_sequence->SetLengthToUndefined();
+
+            gdcm::DataElement group_element(group_tag);
+            group_element.SetVR(gdcm::VR::SQ);
+            group_element.SetVLToUndefined();
+            group_element.SetValue(*group_sequence);
+
+            dataset.Insert(group_element);
+        }
+
+        // Retrieve the Frame Sequence
+        auto group_sequence = dataset.GetDataElement(group_tag).GetValueAsSQ();
+
+        while(group_sequence->GetNumberOfItems() <= frameIndex)
+        {
+            // Create all intermediate items, as needed
+            gdcm::Item frame_item;
+            frame_item.SetVLToUndefined();
+            group_sequence->AddItem(frame_item);
+        }
+
+        // Adjust the number of frames
+        setValue<gdcm::Keywords::NumberOfFrames>(int(group_sequence->GetNumberOfItems()));
+
+        // Retrieve the frame item and dataset
+        auto& frame_item    = group_sequence->GetItem(frameIndex + 1);
+        auto& frame_dataset = frame_item.GetNestedDataSet();
+
+        const auto& attribute_sequence_tag = S::GetTag();
+
+        if(!frame_dataset.FindDataElement(attribute_sequence_tag))
+        {
+            // No Attribute Sequence found, create it
+            gdcm::SmartPointer<gdcm::SequenceOfItems> attribute_sequence = new gdcm::SequenceOfItems();
+            attribute_sequence->SetLengthToUndefined();
+
+            gdcm::DataElement attribute_sequence_element(attribute_sequence_tag);
+            attribute_sequence_element.SetVR(gdcm::VR::SQ);
+            attribute_sequence_element.SetVLToUndefined();
+            attribute_sequence_element.SetValue(*attribute_sequence);
+
+            frame_dataset.Insert(attribute_sequence_element);
+        }
+
+        // Retrieve the attribute sequence
+        auto attribute_sequence = frame_dataset.GetDataElement(attribute_sequence_tag).GetValueAsSQ();
+
+        if(attribute_sequence->GetNumberOfItems() == 0)
+        {
+            // Add the missing item
+            gdcm::Item attribute_item;
+            attribute_item.SetVLToUndefined();
+            attribute_sequence->AddItem(attribute_item);
+        }
+
+        return attribute_sequence;
+    }
+
+    /// Set a DICOM tag value to a multi-frame sequence attribute of a sequence group like `FrameAcquisitionDateTime`
+    /// Construct intermediate DataElements if they don't exist.
+    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
+    /// @tparam S Sequence Attribute (like Frame Content Sequence)
+    /// @tparam A Attribute (like Frame Acquisition DateTime)
+    /// @param frameIndex index of the frame
+    template<typename G, typename S, typename A>
+    inline void setMultiFrameValue(const std::optional<typename A::ArrayType>& value, std::size_t frameIndex = 0)
+    {
+        auto attribute_sequence = getMultiFrameSequence<G, S>(frameIndex);
+        auto& attribute_dataset = attribute_sequence->GetItem(1).GetNestedDataSet();
+
+        if(value)
+        {
+            A attribute {};
+            attribute.SetFromDataSet(attribute_dataset);
+            attribute.SetValue(*value);
+            attribute_dataset.Replace(attribute.GetAsDataElement());
+        }
+        else
+        {
+            // We need to put an "empty" value. Since GDCM doesn't allow us to do it with non string values, we need to
+            // hack the system. Sorry GDCM, but an Integer String definitively could be "unknown" and an empty string
+            // **IS** valid..
+            attribute_dataset.Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
+        }
+    }
+
+    /// Retrieve multi-value DICOM tag from a multi-frame sequence attribute of a sequence group.
+    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
+    /// @tparam S Sequence Attribute (like Frame Content Sequence)
+    /// @tparam A Attribute (like Frame Acquisition DateTime)
+    /// @param frameIndex index of the frame
+    /// @return attribute value. If the tag is not found, an empty vector is returned.
+    template<typename G, typename S, typename A>
+    [[nodiscard]] inline std::vector<typename A::ArrayType> getMultiFrameValues(std::size_t frameIndex = 0) const
+    {
+        const auto& attribute_sequence = getMultiFrameSequence<G, S>(frameIndex);
+
+        if(!attribute_sequence || attribute_sequence->IsEmpty())
+        {
+            return {};
+        }
+
+        const auto& attribute_dataset = attribute_sequence->GetItem(1).GetNestedDataSet();
+
+        // Finally get the value...
+        A attribute {};
+        attribute.SetFromDataSet(attribute_dataset);
+        const auto count = attribute.GetNumberOfValues();
+
+        if(count == 0)
+        {
+            return {};
+        }
+
+        // Pointer can be treated as iterator ;)
+        const auto values_pointer = attribute.GetValues();
+        return std::vector<typename A::ArrayType>(values_pointer, values_pointer + count);
+    }
+
+    /// Set a multi-value DICOM tag to a multi-frame sequence attribute of a sequence group.
+    /// Construct intermediate DataElements if they don't exist.
+    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
+    /// @tparam S Sequence Attribute (like Frame Content Sequence)
+    /// @tparam A Attribute (like Frame Acquisition DateTime)
+    /// @param frameIndex index of the frame
+    template<typename G, typename S, typename A>
+    inline void setMultiFrameValues(const std::vector<typename A::ArrayType>& values, std::size_t frameIndex = 0)
+    {
+        auto attribute_sequence = getMultiFrameSequence<G, S>(frameIndex);
+        auto& attribute_dataset = attribute_sequence->GetItem(1).GetNestedDataSet();
+
+        if(values.empty())
+        {
+            // Force a real emtpy value..
+            attribute_dataset.Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
+        }
+        else
+        {
+            // Finally set the value...
+            A attribute {};
+            attribute.SetFromDataSet(attribute_dataset);
+
+            if constexpr(HasFixedMultiplicity<A>::value)
+            {
+                attribute.SetValues(values.data(), std::uint32_t(values.size()));
+            }
+            else
+            {
+                attribute.SetValues(values.data(), std::uint32_t(values.size()), true);
+            }
+
+            attribute_dataset.Replace(attribute.GetAsDataElement());
+        }
     }
 
     //------------------------------------------------------------------------------

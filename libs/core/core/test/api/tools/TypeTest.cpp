@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -124,6 +124,92 @@ void TypeTest::typeToStringTest()
 
     CPPUNIT_ASSERT_EQUAL("1"s, core::Type::INT32.toString(&integer));
     CPPUNIT_ASSERT_EQUAL("2.000000"s, core::Type::DOUBLE.toString(&floating));
+}
+
+//------------------------------------------------------------------------------
+
+void TypeTest::typeSwitchTest()
+{
+    static constexpr auto TYPES = {
+        core::Type::INT8,
+        core::Type::INT16,
+        core::Type::INT32,
+        core::Type::INT64,
+        core::Type::UINT8,
+        core::Type::UINT16,
+        core::Type::UINT32,
+        core::Type::UINT64,
+        core::Type::FLOAT,
+        core::Type::DOUBLE
+    };
+
+    std::map<core::Type, bool> found {
+        {core::Type::INT8, false},
+        {core::Type::INT16, false},
+        {core::Type::INT32, false},
+        {core::Type::INT64, false},
+        {core::Type::UINT8, false},
+        {core::Type::UINT16, false},
+        {core::Type::UINT32, false},
+        {core::Type::UINT64, false},
+        {core::Type::FLOAT, false},
+        {core::Type::DOUBLE, false},
+    };
+
+    for(const auto& type : TYPES)
+    {
+        switch(type)
+        {
+            case core::Type::INT8:
+                found[core::Type::INT8] = true;
+                break;
+
+            case core::Type::UINT8:
+                found[core::Type::UINT8] = true;
+                break;
+
+            case core::Type::INT16:
+                found[core::Type::INT16] = true;
+                break;
+
+            case core::Type::UINT16:
+                found[core::Type::UINT16] = true;
+                break;
+
+            case core::Type::INT32:
+                found[core::Type::INT32] = true;
+                break;
+
+            case core::Type::UINT32:
+                found[core::Type::UINT32] = true;
+                break;
+
+            case core::Type::INT64:
+                found[core::Type::INT64] = true;
+                break;
+
+            case core::Type::UINT64:
+                found[core::Type::UINT64] = true;
+                break;
+
+            case core::Type::FLOAT:
+                found[core::Type::FLOAT] = true;
+                break;
+
+            case core::Type::DOUBLE:
+                found[core::Type::DOUBLE] = true;
+                break;
+
+            default:
+                CPPUNIT_FAIL("Unknown type");
+                break;
+        }
+    }
+
+    for(const auto& pair : found)
+    {
+        CPPUNIT_ASSERT_MESSAGE("Type " + pair.first.name() + " not found", pair.second);
+    }
 }
 
 } // namespace sight::core::tools::ut

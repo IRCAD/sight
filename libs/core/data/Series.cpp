@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,8 @@
 #include "data/ImageSeries.hpp"
 #include "data/ModelSeries.hpp"
 
-#include "data/detail/SeriesImpl.hpp"
+#include "data/detail/SeriesImpl.hxx"
+#include "data/dicom/Sop.hpp"
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
@@ -36,7 +37,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/epsilon.hpp>
 
-#include <chrono>
+#include <iomanip>
 #include <utility>
 
 SIGHT_REGISTER_DATA(sight::data::Series)
@@ -94,6 +95,101 @@ Series::~Series() noexcept = default;
 
 //------------------------------------------------------------------------------
 
+std::chrono::system_clock::time_point Series::dateTimeToTimePoint(const std::string& dateTime)
+{
+    // DICOM date time format is YYYYMMDDHHMMSS.FFFFFF, but may include null components
+    /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
+
+    std::tm time_info {};
+
+    if(dateTime.length() >= 4)
+    {
+        time_info.tm_year = std::stoi(dateTime.substr(0, 4)) - 1900;
+    }
+
+    if(dateTime.length() >= 6)
+    {
+        time_info.tm_mon = std::stoi(dateTime.substr(4, 2)) - 1;
+    }
+
+    if(dateTime.length() >= 8)
+    {
+        time_info.tm_mday = std::stoi(dateTime.substr(6, 2));
+    }
+    else
+    {
+        time_info.tm_mday = 1;
+    }
+
+    if(dateTime.length() >= 10)
+    {
+        time_info.tm_hour = std::stoi(dateTime.substr(8, 2));
+    }
+
+    if(dateTime.length() >= 12)
+    {
+        time_info.tm_min = std::stoi(dateTime.substr(10, 2));
+    }
+
+    if(dateTime.length() >= 14)
+    {
+        time_info.tm_sec = std::stoi(dateTime.substr(12, 2));
+    }
+
+#ifdef _WIN32
+    // cspell:ignore mkgmtime
+    std::time_t time = _mkgmtime(&time_info);
+#else
+    std::time_t time = timegm(&time_info);
+#endif
+
+    std::chrono::microseconds microseconds {0};
+
+    if(dateTime.length() > 15)
+    {
+        // Do not forget '.' after the seconds
+        auto us = dateTime.substr(15);
+
+        // Fill with trailing 0 to always have microseconds
+        us.resize(6, '0');
+
+        microseconds = std::chrono::microseconds(std::stoi(us));
+    }
+
+    return std::chrono::system_clock::from_time_t(time) + microseconds;
+}
+
+//------------------------------------------------------------------------------
+
+std::string Series::timePointToDateTime(const std::chrono::system_clock::time_point& timePoint)
+{
+    // DICOM date time format is YYYYMMDDHHMMSS.FFFFFF, but may include null components
+    /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
+
+    // Get the date
+    const auto days_time_point = std::chrono::floor<std::chrono::days>(timePoint);
+    const std::chrono::year_month_day year_month_day {days_time_point};
+
+    // Get the time
+    const auto microseconds_time_point = std::chrono::floor<std::chrono::microseconds>(timePoint - days_time_point);
+    const std::chrono::hh_mm_ss hh_mm_ss {microseconds_time_point};
+
+    // Build the string
+    std::stringstream ss;
+    ss << std::setfill('0') << std::setw(4) << static_cast<int>(year_month_day.year());
+    ss << std::setfill('0') << std::setw(2) << static_cast<unsigned>(year_month_day.month());
+    ss << std::setfill('0') << std::setw(2) << static_cast<unsigned>(year_month_day.day());
+    ss << std::setfill('0') << std::setw(2) << hh_mm_ss.hours().count();
+    ss << std::setfill('0') << std::setw(2) << hh_mm_ss.minutes().count();
+    ss << std::setfill('0') << std::setw(2) << hh_mm_ss.seconds().count();
+    ss << ".";
+    ss << std::setfill('0') << std::setw(6) << std::right << hh_mm_ss.subseconds().count();
+
+    return ss.str();
+}
+
+//------------------------------------------------------------------------------
+
 void Series::shallowCopy(const Object::csptr& source)
 {
     const auto& other = dynamicConstCast(source);
@@ -130,279 +226,339 @@ void Series::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCop
 
 //------------------------------------------------------------------------------
 
-void Series::copyPatientModule(const Series::csptr& source)
+void Series::copyPatientModule(const Series::csptr& source, std::size_t instance)
 {
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->getDataSet();
-    m_pimpl->copyElement<gdcm::Keywords::PatientName>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::IssuerOfPatientID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::IssuerOfPatientIDQualifiersSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientBirthDate>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientSex>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ReferencedPatientSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientBirthTime>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::OtherPatientIDs>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::OtherPatientIDsSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::OtherPatientNames>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::EthnicGroup>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientComments>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientSpeciesDescription>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientSpeciesCodeSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientBreedDescription>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientBreedCodeSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::BreedRegistrationSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ResponsiblePerson>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ResponsiblePersonRole>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ResponsibleOrganization>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientIdentityRemoved>(source_dataset);
+    const auto& source_dataset = source->getDataSet(instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientName>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::IssuerOfPatientID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::IssuerOfPatientIDQualifiersSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientBirthDate>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientSex>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ReferencedPatientSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientBirthTime>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::OtherPatientIDs>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::OtherPatientIDsSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::OtherPatientNames>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::EthnicGroup>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientComments>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientSpeciesDescription>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientSpeciesCodeSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientBreedDescription>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientBreedCodeSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::BreedRegistrationSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ResponsiblePerson>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ResponsiblePersonRole>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ResponsibleOrganization>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientIdentityRemoved>(source_dataset, instance);
     // cspell:ignore Deidentification
-    m_pimpl->copyElement<gdcm::Keywords::DeidentificationMethod>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::DeidentificationMethodCodeSequence>(source_dataset);
+    m_pimpl->copyElement<gdcm::Keywords::DeidentificationMethod>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::DeidentificationMethodCodeSequence>(source_dataset, instance);
 }
 
 //------------------------------------------------------------------------------
 
-void Series::copyClinicalTrialSubjectModule(const Series::csptr& source)
+void Series::copyClinicalTrialSubjectModule(const Series::csptr& source, std::size_t instance)
 {
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->getDataSet();
-    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSponsorName>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialProtocolID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialProtocolName>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSiteID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSiteName>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSubjectID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSubjectReadingID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialProtocolEthicsCommitteeName>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialProtocolEthicsCommitteeApprovalNumber>(source_dataset);
+    const auto& source_dataset = source->getDataSet(instance);
+    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSponsorName>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialProtocolID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialProtocolName>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSiteID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSiteName>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSubjectID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSubjectReadingID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialProtocolEthicsCommitteeName>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialProtocolEthicsCommitteeApprovalNumber>(source_dataset, instance);
 }
 
 //------------------------------------------------------------------------------
 
-void Series::copyGeneralStudyModule(const Series::csptr& source)
+void Series::copyGeneralStudyModule(const Series::csptr& source, std::size_t instance)
 {
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->getDataSet();
-    m_pimpl->copyElement<gdcm::Keywords::StudyInstanceUID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::StudyDate>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::StudyTime>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ReferringPhysicianName>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ReferringPhysicianIdentificationSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::StudyID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::AccessionNumber>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::IssuerOfAccessionNumberSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::StudyDescription>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PhysiciansOfRecord>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PhysiciansOfRecordIdentificationSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::NameOfPhysiciansReadingStudy>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PhysiciansReadingStudyIdentificationSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::RequestingServiceCodeSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ReferencedStudySequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ProcedureCodeSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ReasonForPerformedProcedureCodeSequence>(source_dataset);
+    const auto& source_dataset = source->getDataSet(instance);
+    m_pimpl->copyElement<gdcm::Keywords::StudyInstanceUID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::StudyDate>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::StudyTime>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ReferringPhysicianName>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ReferringPhysicianIdentificationSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::StudyID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::AccessionNumber>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::IssuerOfAccessionNumberSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::StudyDescription>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PhysiciansOfRecord>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PhysiciansOfRecordIdentificationSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::NameOfPhysiciansReadingStudy>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PhysiciansReadingStudyIdentificationSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::RequestingServiceCodeSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ReferencedStudySequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ProcedureCodeSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ReasonForPerformedProcedureCodeSequence>(source_dataset, instance);
 }
 
 //------------------------------------------------------------------------------
 
-void Series::copyPatientStudyModule(const Series::csptr& source)
+void Series::copyPatientStudyModule(const Series::csptr& source, std::size_t instance)
 {
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->getDataSet();
-    m_pimpl->copyElement<gdcm::Keywords::AdmittingDiagnosesDescription>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::AdmittingDiagnosesCodeSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientAge>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientSize>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientWeight>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientSizeCodeSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::Occupation>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::AdditionalPatientHistory>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::AdmissionID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::IssuerOfAdmissionIDSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ServiceEpisodeID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::IssuerOfServiceEpisodeIDSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ServiceEpisodeDescription>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientSexNeutered>(source_dataset);
+    const auto& source_dataset = source->getDataSet(instance);
+    m_pimpl->copyElement<gdcm::Keywords::AdmittingDiagnosesDescription>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::AdmittingDiagnosesCodeSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientAge>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientSize>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientWeight>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientSizeCodeSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::Occupation>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::AdditionalPatientHistory>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::AdmissionID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::IssuerOfAdmissionIDSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ServiceEpisodeID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::IssuerOfServiceEpisodeIDSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ServiceEpisodeDescription>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientSexNeutered>(source_dataset, instance);
 }
 
 //------------------------------------------------------------------------------
 
-void Series::copyClinicalTrialStudyModule(const Series::csptr& source)
+void Series::copyClinicalTrialStudyModule(const Series::csptr& source, std::size_t instance)
 {
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->getDataSet();
-    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialTimePointID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialTimePointDescription>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ConsentForClinicalTrialUseSequence>(source_dataset);
+    const auto& source_dataset = source->getDataSet(instance);
+    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialTimePointID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialTimePointDescription>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ConsentForClinicalTrialUseSequence>(source_dataset, instance);
 }
 
 //------------------------------------------------------------------------------
 
-void Series::copyGeneralSeriesModule(const Series::csptr& source)
+void Series::copyGeneralSeriesModule(const Series::csptr& source, std::size_t instance)
 {
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->getDataSet();
-    m_pimpl->copyElement<gdcm::Keywords::Modality>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::SeriesInstanceUID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::SeriesNumber>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::Laterality>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::SeriesDate>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::SeriesTime>(source_dataset);
+    const auto& source_dataset = source->getDataSet(instance);
+    m_pimpl->copyElement<gdcm::Keywords::Modality>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::SeriesInstanceUID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::SeriesNumber>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::Laterality>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::SeriesDate>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::SeriesTime>(source_dataset, instance);
     m_pimpl->copyElement<gdcm::Keywords::PerformingPhysicianName>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PerformingPhysicianIdentificationSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ProtocolName>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::SeriesDescription>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::SeriesDescriptionCodeSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::OperatorsName>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::OperatorIdentificationSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ReferencedPerformedProcedureStepSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::RelatedSeriesSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::BodyPartExamined>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientPosition>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::RequestAttributesSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PerformedProcedureStepID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PerformedProcedureStepStartDate>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PerformedProcedureStepStartTime>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PerformedProcedureStepEndDate>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PerformedProcedureStepEndTime>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PerformedProcedureStepDescription>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PerformedProtocolCodeSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::CommentsOnThePerformedProcedureStep>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::AnatomicalOrientationType>(source_dataset);
+    m_pimpl->copyElement<gdcm::Keywords::PerformingPhysicianIdentificationSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ProtocolName>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::SeriesDescription>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::SeriesDescriptionCodeSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::OperatorsName>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::OperatorIdentificationSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ReferencedPerformedProcedureStepSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::RelatedSeriesSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::BodyPartExamined>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientPosition>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::RequestAttributesSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PerformedProcedureStepID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PerformedProcedureStepStartDate>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PerformedProcedureStepStartTime>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PerformedProcedureStepEndDate>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PerformedProcedureStepEndTime>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PerformedProcedureStepDescription>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PerformedProtocolCodeSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::CommentsOnThePerformedProcedureStep>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::AnatomicalOrientationType>(source_dataset, instance);
 
     // GDCM assert for this, when using gdcm::Keywords...
-    m_pimpl->copyElement(source_dataset, gdcm::Tag(0x0028, 0x0108)); // SmallestImagePixelValue
-    m_pimpl->copyElement(source_dataset, gdcm::Tag(0x0028, 0x0109)); // LargestPixelValueInSeries
+    m_pimpl->copyElement(source_dataset, gdcm::Tag(0x0028, 0x0108), instance); // SmallestImagePixelValue
+    m_pimpl->copyElement(source_dataset, gdcm::Tag(0x0028, 0x0109), instance); // LargestPixelValueInSeries
 }
 
 //------------------------------------------------------------------------------
 
-void Series::copyClinicalTrialSeriesModule(const Series::csptr& source)
+void Series::copyClinicalTrialSeriesModule(const Series::csptr& source, std::size_t instance)
 {
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->getDataSet();
-    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialCoordinatingCenterName>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSeriesID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSeriesDescription>(source_dataset);
+    const auto& source_dataset = source->getDataSet(instance);
+    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialCoordinatingCenterName>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSeriesID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ClinicalTrialSeriesDescription>(source_dataset, instance);
 }
 
 //------------------------------------------------------------------------------
 
-void Series::copyGeneralEquipmentModule(const Series::csptr& source)
+void Series::copyGeneralEquipmentModule(const Series::csptr& source, std::size_t instance)
 {
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->getDataSet();
-    m_pimpl->copyElement<gdcm::Keywords::Manufacturer>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::InstitutionName>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::InstitutionAddress>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::StationName>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::InstitutionalDepartmentName>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ManufacturerModelName>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::DeviceSerialNumber>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::SoftwareVersions>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::GantryID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::SpatialResolution>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::DateOfLastCalibration>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::TimeOfLastCalibration>(source_dataset);
+    const auto& source_dataset = source->getDataSet(instance);
+    m_pimpl->copyElement<gdcm::Keywords::Manufacturer>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::InstitutionName>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::InstitutionAddress>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::StationName>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::InstitutionalDepartmentName>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ManufacturerModelName>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::DeviceSerialNumber>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::SoftwareVersions>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::GantryID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::SpatialResolution>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::DateOfLastCalibration>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::TimeOfLastCalibration>(source_dataset, instance);
 
     // GDCM assert for this, when using gdcm::Keywords...
-    m_pimpl->copyElement(source_dataset, gdcm::Tag(0x0028, 0x0120)); // PixelPaddingValue
+    m_pimpl->copyElement(source_dataset, gdcm::Tag(0x0028, 0x0120), instance); // PixelPaddingValue
 }
 
 //------------------------------------------------------------------------------
 
-void Series::copyFrameOfReferenceModule(const Series::csptr& source)
+void Series::copyFrameOfReferenceModule(const Series::csptr& source, std::size_t instance)
 {
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->getDataSet();
-    m_pimpl->copyElement<gdcm::Keywords::FrameOfReferenceUID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PositionReferenceIndicator>(source_dataset);
+    const auto& source_dataset = source->getDataSet(instance);
+    m_pimpl->copyElement<gdcm::Keywords::FrameOfReferenceUID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PositionReferenceIndicator>(source_dataset, instance);
 }
 
 //------------------------------------------------------------------------------
 
-void Series::copySOPCommonModule(const Series::csptr& source)
+void Series::copySOPCommonModule(const Series::csptr& source, std::size_t instance)
 {
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->getDataSet();
-    m_pimpl->copyElement<gdcm::Keywords::SOPClassUID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::SOPInstanceUID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::SpecificCharacterSet>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::InstanceCreationDate>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::InstanceCreationTime>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::InstanceCreatorUID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::RelatedGeneralSOPClassUID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::OriginalSpecializedSOPClassUID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::CodingSchemeIdentificationSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::TimezoneOffsetFromUTC>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ContributingEquipmentSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::InstanceNumber>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::SOPInstanceStatus>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::SOPAuthorizationDateTime>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::SOPAuthorizationComment>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::AuthorizationEquipmentCertificationNumber>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::MACParametersSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::DigitalSignaturesSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::EncryptedAttributesSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::OriginalAttributesSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::HL7StructuredDocumentReferenceSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::LongitudinalTemporalInformationModified>(source_dataset);
+    const auto& source_dataset = source->getDataSet(instance);
+    m_pimpl->copyElement<gdcm::Keywords::SOPClassUID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::SOPInstanceUID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::SpecificCharacterSet>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::InstanceCreationDate>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::InstanceCreationTime>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::InstanceCreatorUID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::RelatedGeneralSOPClassUID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::OriginalSpecializedSOPClassUID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::CodingSchemeIdentificationSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::TimezoneOffsetFromUTC>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ContributingEquipmentSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::InstanceNumber>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::SOPInstanceStatus>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::SOPAuthorizationDateTime>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::SOPAuthorizationComment>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::AuthorizationEquipmentCertificationNumber>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::MACParametersSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::DigitalSignaturesSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::EncryptedAttributesSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::OriginalAttributesSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::HL7StructuredDocumentReferenceSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::LongitudinalTemporalInformationModified>(source_dataset, instance);
 }
 
 //------------------------------------------------------------------------------
 
-void Series::copyGeneralImageModule(const Series::csptr& source)
+void Series::copyGeneralImageModule(const Series::csptr& source, std::size_t instance)
 {
     // Unfortunately and contrary to DCMTK, GDCM does not provide a way to copy a module.
     // We have to copy each element, one bye one. This is a bit inelegant, but it is the only way.
     /// @note list of tag borrowed from DCMTK modhelp.cc
-    const auto& source_dataset = source->getDataSet();
-    m_pimpl->copyElement<gdcm::Keywords::InstanceNumber>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PatientOrientation>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ContentDate>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ContentTime>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ImageType>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::AcquisitionNumber>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::AcquisitionDate>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::AcquisitionTime>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::AcquisitionDateTime>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ReferencedImageSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::DerivationDescription>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::DerivationCodeSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::SourceImageSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ReferencedInstanceSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ImagesInAcquisition>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::ImageComments>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::QualityControlImage>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::BurnedInAnnotation>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::RecognizableVisualFeatures>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::LossyImageCompression>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::LossyImageCompressionRatio>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::LossyImageCompressionMethod>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::IconImageSequence>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::PresentationLUTShape>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::IrradiationEventUID>(source_dataset);
-    m_pimpl->copyElement<gdcm::Keywords::RealWorldValueMappingSequence>(source_dataset);
+    const auto& source_dataset = source->getDataSet(instance);
+    m_pimpl->copyElement<gdcm::Keywords::InstanceNumber>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PatientOrientation>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ContentDate>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ContentTime>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ImageType>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::AcquisitionNumber>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::AcquisitionDate>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::AcquisitionTime>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::AcquisitionDateTime>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ReferencedImageSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::DerivationDescription>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::DerivationCodeSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::SourceImageSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ReferencedInstanceSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ImagesInAcquisition>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::ImageComments>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::QualityControlImage>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::BurnedInAnnotation>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::RecognizableVisualFeatures>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::LossyImageCompression>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::LossyImageCompressionRatio>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::LossyImageCompressionMethod>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::IconImageSequence>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::PresentationLUTShape>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::IrradiationEventUID>(source_dataset, instance);
+    m_pimpl->copyElement<gdcm::Keywords::RealWorldValueMappingSequence>(source_dataset, instance);
+}
+
+/// Recursive DES equality check
+inline static bool isEqual(const gdcm::DataSet::DataElementSet& des, const gdcm::DataSet::DataElementSet& other_des)
+{
+    if(des != other_des)
+    {
+        return false;
+    }
+
+    // Check each element, std::set is ordered so we can use iterators
+    for(auto it = des.cbegin(), other_it = other_des.cbegin() ;
+        it != des.cend() && other_it != other_des.cend() ;
+        ++it, ++other_it)
+    {
+        if(*it != *other_it)
+        {
+            return false;
+        }
+
+        // Check if the element is a sequence
+        const auto& sq       = it->GetValueAsSQ();
+        const auto& other_sq = other_it->GetValueAsSQ();
+
+        if((sq.GetPointer() != nullptr && other_sq.GetPointer() == nullptr)
+           || (sq.GetPointer() == nullptr && other_sq.GetPointer() != nullptr))
+        {
+            return false;
+        }
+
+        // If both are sequences, check each item recursively
+        if(sq.GetPointer() != nullptr && other_sq.GetPointer() != nullptr)
+        {
+            if(sq->GetNumberOfItems() != other_sq->GetNumberOfItems())
+            {
+                return false;
+            }
+
+            for(gdcm::SequenceOfItems::SizeType i = 1, end = sq->GetNumberOfItems() ; i <= end ; ++i)
+            {
+                const auto& item       = sq->GetItem(i);
+                const auto& other_item = other_sq->GetItem(i);
+
+                if(item != other_item)
+                {
+                    return false;
+                }
+
+                const auto& nested_dataset       = item.GetNestedDataSet();
+                const auto& other_nested_dataset = other_item.GetNestedDataSet();
+
+                if(!isEqual(nested_dataset.GetDES(), other_nested_dataset.GetDES()))
+                {
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -418,7 +574,12 @@ bool Series::operator==(const Series& other) const noexcept
     // Check frames specific attributes
     for(std::size_t i = 0, end = m_pimpl->m_frame_datasets.size() ; i < end ; ++i)
     {
-        if(m_pimpl->m_frame_datasets[i].first.GetDES() != other.m_pimpl->m_frame_datasets[i].first.GetDES())
+        const auto& des       = m_pimpl->m_frame_datasets[i].first.GetDES();
+        const auto& other_des = other.m_pimpl->m_frame_datasets[i].first.GetDES();
+
+        // gdcm::DataSet::DataElementSet is a std::set, so we would use operator==, but unfortunately, it is not
+        // implemented correctly and we must do it ourselves
+        if(!isEqual(des, other_des))
         {
             return false;
         }
@@ -459,6 +620,14 @@ std::string Series::getByteValue(std::uint16_t group, std::uint16_t element, std
 
 //------------------------------------------------------------------------------
 
+std::string Series::getByteValue(dicom::attribute::Keyword tag, std::size_t instance) const
+{
+    const auto& attribute = dicom::attribute::get(tag);
+    return getByteValue(attribute.m_group, attribute.m_element, instance);
+}
+
+//------------------------------------------------------------------------------
+
 void Series::setByteValue(std::uint16_t group, std::uint16_t element, const std::string& value, std::size_t instance)
 {
     // Get the VR
@@ -488,6 +657,18 @@ void Series::setByteValue(std::uint16_t group, std::uint16_t element, const std:
 
     // Store back the data element to the data set
     m_pimpl->getDataSet(instance).Replace(data_element);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setByteValue(
+    dicom::attribute::Keyword tag,
+    const std::string& value,
+    std::size_t instance
+)
+{
+    const auto& attribute = dicom::attribute::get(tag);
+    setByteValue(attribute.m_group, attribute.m_element, value, instance);
 }
 
 //------------------------------------------------------------------------------
@@ -541,6 +722,14 @@ void Series::setStringValue(std::uint16_t group, std::uint16_t element, const st
     {
         SIGHT_THROW_EXCEPTION(Exception("The value at " + tagToString(tag) + " cannot be converted from a string."));
     }
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setStringValue(dicom::attribute::Keyword tag, const std::string& value, std::size_t instance)
+{
+    const auto& attribute = dicom::attribute::get(tag);
+    setStringValue(attribute.m_group, attribute.m_element, value, instance);
 }
 
 //------------------------------------------------------------------------------
@@ -602,6 +791,14 @@ std::string Series::getStringValue(std::uint16_t group, std::uint16_t element, s
 
 //------------------------------------------------------------------------------
 
+std::string Series::getStringValue(dicom::attribute::Keyword tag, std::size_t instance) const
+{
+    const auto& attribute = dicom::attribute::get(tag);
+    return getStringValue(attribute.m_group, attribute.m_element, instance);
+}
+
+//------------------------------------------------------------------------------
+
 std::vector<std::string> Series::getByteValues(std::uint16_t group, std::uint16_t element, std::size_t instance) const
 {
     std::vector<std::string> values;
@@ -610,6 +807,14 @@ std::vector<std::string> Series::getByteValues(std::uint16_t group, std::uint16_
     boost::split(values, joined, boost::is_any_of(detail::BACKSLASH_SEPARATOR));
 
     return values;
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<std::string> Series::getByteValues(dicom::attribute::Keyword tag, std::size_t instance) const
+{
+    const auto& attribute = dicom::attribute::get(tag);
+    return getByteValues(attribute.m_group, attribute.m_element, instance);
 }
 
 //------------------------------------------------------------------------------
@@ -623,6 +828,14 @@ void Series::setByteValues(
 {
     const auto& joined = boost::join(values, detail::BACKSLASH_SEPARATOR);
     setByteValue(group, element, joined, instance);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setByteValues(dicom::attribute::Keyword tag, const std::vector<std::string>& values, std::size_t instance)
+{
+    const auto& attribute = dicom::attribute::get(tag);
+    setByteValues(attribute.m_group, attribute.m_element, values, instance);
 }
 
 //------------------------------------------------------------------------------
@@ -770,6 +983,60 @@ std::size_t Series::numInstances() const noexcept
 
 //------------------------------------------------------------------------------
 
+bool Series::isMultiFrame() const noexcept
+{
+    switch(getSOPKeyword())
+    {
+        // Multi-frame SOP Classes
+        // Found using dicom_parser.py --mandatory-tags "(0018,9074)"
+        case dicom::sop::Keyword::EnhancedCTImageStorage:
+        case dicom::sop::Keyword::LegacyConvertedEnhancedCTImageStorage:
+        case dicom::sop::Keyword::EnhancedMRImageStorage:
+        case dicom::sop::Keyword::EnhancedMRColorImageStorage:
+        case dicom::sop::Keyword::LegacyConvertedEnhancedMRImageStorage:
+        case dicom::sop::Keyword::EnhancedUSVolumeStorage:
+        case dicom::sop::Keyword::MultiFrameGrayscaleByteSecondaryCaptureImageStorage:
+        case dicom::sop::Keyword::MultiFrameGrayscaleWordSecondaryCaptureImageStorage:
+        case dicom::sop::Keyword::MultiFrameTrueColorSecondaryCaptureImageStorage:
+        case dicom::sop::Keyword::EnhancedXAImageStorage:
+        case dicom::sop::Keyword::EnhancedXRFImageStorage:
+        case dicom::sop::Keyword::XRay3DAngiographicImageStorage:
+        case dicom::sop::Keyword::XRay3DCraniofacialImageStorage:
+        case dicom::sop::Keyword::BreastTomosynthesisImageStorage:
+        case dicom::sop::Keyword::BreastProjectionXRayImageStorageForPresentation:
+        case dicom::sop::Keyword::BreastProjectionXRayImageStorageForProcessing:
+        case dicom::sop::Keyword::IntravascularOpticalCoherenceTomographyImageStorageForPresentation:
+        case dicom::sop::Keyword::IntravascularOpticalCoherenceTomographyImageStorageForProcessing:
+        case dicom::sop::Keyword::ParametricMapStorage:
+        case dicom::sop::Keyword::SegmentationStorage:
+        case dicom::sop::Keyword::OphthalmicTomographyImageStorage:
+        case dicom::sop::Keyword::OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage:
+        case dicom::sop::Keyword::VLWholeSlideMicroscopyImageStorage:
+        case dicom::sop::Keyword::EnhancedPETImageStorage:
+        case dicom::sop::Keyword::LegacyConvertedEnhancedPETImageStorage:
+            return true;
+
+        // Single-frame SOP Classes or no SOP Class
+        default:
+            return false;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+std::size_t Series::numFrames() const noexcept
+{
+    if(isMultiFrame())
+    {
+        const auto& numberOfFrames = m_pimpl->getValue<gdcm::Keywords::NumberOfFrames>();
+        return std::size_t(numberOfFrames.value_or(0));
+    }
+
+    return numInstances();
+}
+
+//------------------------------------------------------------------------------
+
 bool Series::sort(const std::vector<std::size_t>& sorted)
 {
     // Some checks to be sure everything is fine
@@ -799,32 +1066,52 @@ bool Series::sort(const std::vector<std::size_t>& sorted)
 
 //------------------------------------------------------------------------------
 
-std::string Series::getSOPClassUID() const noexcept
-{
-    return m_pimpl->getStringValue<gdcm::Keywords::SOPClassUID>();
-}
-
-//------------------------------------------------------------------------------
-
-std::string Series::getSOPClassName() const noexcept
+dicom::sop::Keyword Series::getSOPKeyword() const noexcept
 {
     if(const auto& sop_class_uid = m_pimpl->getValue<gdcm::Keywords::SOPClassUID>(); sop_class_uid)
     {
-        gdcm::UIDs uid {};
-        if(uid.SetFromUID(*sop_class_uid))
+        try
         {
-            return {uid.GetName()};
+            const auto& sop_class = dicom::sop::get(*sop_class_uid);
+            return sop_class.m_keyword;
+        }
+        catch(...)
+        {
+            if(sop_class_uid)
+            {
+                SIGHT_ERROR("Unable to find SOP class name for SOP class UID '" << *sop_class_uid << "'.");
+            }
+            else
+            {
+                SIGHT_ERROR("SOP class UID is not set.");
+            }
         }
     }
 
-    return getClassname();
+    return dicom::sop::Keyword::INVALID;
 }
 
 //------------------------------------------------------------------------------
 
-void Series::setSOPClassUID(const std::string& sopClassUID)
+void Series::setSOPKeyword(dicom::sop::Keyword keyword)
 {
-    m_pimpl->setValue<gdcm::Keywords::SOPClassUID>(sopClassUID);
+    const auto& sop = dicom::sop::get(keyword);
+
+    m_pimpl->setValue<gdcm::Keywords::SOPClassUID>(std::string(sop.m_uid));
+}
+
+//------------------------------------------------------------------------------
+
+std::string_view Series::getSOPClassName() const noexcept
+{
+    const auto& sop_keyword = getSOPKeyword();
+
+    if(sop_keyword != dicom::sop::Keyword::INVALID)
+    {
+        return dicom::sop::get(sop_keyword).m_name;
+    }
+
+    return getClassname();
 }
 
 //------------------------------------------------------------------------------
@@ -1613,85 +1900,81 @@ Series::DicomType Series::getDicomType() const noexcept
 
 Series::DicomType Series::getDicomType(const std::string& sop_class_uid) noexcept
 {
-    gdcm::UIDs uid {};
-    if(uid.SetFromUID(sop_class_uid.c_str()))
+    // cspell:ignore Multiframe Radiofluoroscopic Tomosynthesis Bscan Dermoscopic
+    switch(dicom::sop::keyword(sop_class_uid))
     {
-        // cspell:ignore Multiframe Radiofluoroscopic Tomosynthesis Bscan
-        const unsigned int ts = uid;
+        // Found using dicom_parser.py --mandatory-tags "(0062,0002)" "(0066,0002)" "(0066,0011)"
+        case dicom::sop::Keyword::GenericImplantTemplateStorage:
+        case dicom::sop::Keyword::SegmentationStorage:
+        case dicom::sop::Keyword::SurfaceSegmentationStorage:
+        case dicom::sop::Keyword::SurfaceScanMeshStorage:
+        case dicom::sop::Keyword::SurfaceScanPointCloudStorage:
+            return DicomType::MODEL;
 
-        switch(ts)
-        {
-            case gdcm::UIDs::SurfaceSegmentationStorage:
-            case gdcm::UIDs::SurfaceScanMeshStorage:
-            case gdcm::UIDs::SurfaceScanPointCloudStorage:
-                return DicomType::MODEL;
+        // Found using dicom_parser.py --mandatory-tags "(7FE0,0010)"
+        case dicom::sop::Keyword::ComputedRadiographyImageStorage:
+        case dicom::sop::Keyword::DigitalXRayImageStorageForPresentation:
+        case dicom::sop::Keyword::DigitalXRayImageStorageForProcessing:
+        case dicom::sop::Keyword::DigitalMammographyXRayImageStorageForPresentation:
+        case dicom::sop::Keyword::DigitalMammographyXRayImageStorageForProcessing:
+        case dicom::sop::Keyword::DigitalIntraOralXRayImageStorageForPresentation:
+        case dicom::sop::Keyword::DigitalIntraOralXRayImageStorageForProcessing:
+        case dicom::sop::Keyword::CTImageStorage:
+        case dicom::sop::Keyword::EnhancedCTImageStorage:
+        case dicom::sop::Keyword::LegacyConvertedEnhancedCTImageStorage:
+        case dicom::sop::Keyword::UltrasoundMultiFrameImageStorage:
+        case dicom::sop::Keyword::MRImageStorage:
+        case dicom::sop::Keyword::EnhancedMRImageStorage:
+        case dicom::sop::Keyword::EnhancedMRColorImageStorage:
+        case dicom::sop::Keyword::LegacyConvertedEnhancedMRImageStorage:
+        case dicom::sop::Keyword::UltrasoundImageStorage:
+        case dicom::sop::Keyword::EnhancedUSVolumeStorage:
+        case dicom::sop::Keyword::SecondaryCaptureImageStorage:
+        case dicom::sop::Keyword::MultiFrameSingleBitSecondaryCaptureImageStorage:
+        case dicom::sop::Keyword::MultiFrameGrayscaleByteSecondaryCaptureImageStorage:
+        case dicom::sop::Keyword::MultiFrameGrayscaleWordSecondaryCaptureImageStorage:
+        case dicom::sop::Keyword::MultiFrameTrueColorSecondaryCaptureImageStorage:
+        case dicom::sop::Keyword::XRayAngiographicImageStorage:
+        case dicom::sop::Keyword::EnhancedXAImageStorage:
+        case dicom::sop::Keyword::XRayRadiofluoroscopicImageStorage:
+        case dicom::sop::Keyword::EnhancedXRFImageStorage:
+        case dicom::sop::Keyword::XRay3DAngiographicImageStorage:
+        case dicom::sop::Keyword::XRay3DCraniofacialImageStorage:
+        case dicom::sop::Keyword::BreastTomosynthesisImageStorage:
+        case dicom::sop::Keyword::BreastProjectionXRayImageStorageForPresentation:
+        case dicom::sop::Keyword::BreastProjectionXRayImageStorageForProcessing:
+        case dicom::sop::Keyword::IntravascularOpticalCoherenceTomographyImageStorageForPresentation:
+        case dicom::sop::Keyword::IntravascularOpticalCoherenceTomographyImageStorageForProcessing:
+        case dicom::sop::Keyword::NuclearMedicineImageStorage:
+        case dicom::sop::Keyword::ParametricMapStorage:
+        case dicom::sop::Keyword::VLEndoscopicImageStorage:
+        case dicom::sop::Keyword::VideoEndoscopicImageStorage:
+        case dicom::sop::Keyword::VLMicroscopicImageStorage:
+        case dicom::sop::Keyword::VideoMicroscopicImageStorage:
+        case dicom::sop::Keyword::VLSlideCoordinatesMicroscopicImageStorage:
+        case dicom::sop::Keyword::VLPhotographicImageStorage:
+        case dicom::sop::Keyword::VideoPhotographicImageStorage:
+        case dicom::sop::Keyword::OphthalmicPhotography8BitImageStorage:
+        case dicom::sop::Keyword::OphthalmicPhotography16BitImageStorage:
+        case dicom::sop::Keyword::OphthalmicTomographyImageStorage:
+        case dicom::sop::Keyword::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage:
+        case dicom::sop::Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage:
+        case dicom::sop::Keyword::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage:
+        case dicom::sop::Keyword::OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage:
+        case dicom::sop::Keyword::VLWholeSlideMicroscopyImageStorage:
+        case dicom::sop::Keyword::DermoscopicPhotographyImageStorage:
+        case dicom::sop::Keyword::OphthalmicThicknessMapStorage:
+        case dicom::sop::Keyword::CornealTopographyMapStorage:
+        case dicom::sop::Keyword::PositronEmissionTomographyImageStorage:
+        case dicom::sop::Keyword::EnhancedPETImageStorage:
+        case dicom::sop::Keyword::LegacyConvertedEnhancedPETImageStorage:
+        case dicom::sop::Keyword::RTImageStorage:
+        case dicom::sop::Keyword::RTDoseStorage:
+            return DicomType::IMAGE;
 
-            case gdcm::UIDs::ComputedRadiographyImageStorage:
-            case gdcm::UIDs::CTImageStorage:
-            case gdcm::UIDs::MRImageStorage:
-            case gdcm::UIDs::NuclearMedicineImageStorage:
-            case gdcm::UIDs::UltrasoundImageStorage:
-            case gdcm::UIDs::UltrasoundMultiframeImageStorage:
-            case gdcm::UIDs::SecondaryCaptureImageStorage:
-            case gdcm::UIDs::MultiframeSingleBitSecondaryCaptureImageStorage:
-            case gdcm::UIDs::MultiframeGrayscaleByteSecondaryCaptureImageStorage:
-            case gdcm::UIDs::MultiframeGrayscaleWordSecondaryCaptureImageStorage:
-            case gdcm::UIDs::MultiframeTrueColorSecondaryCaptureImageStorage:
-            case gdcm::UIDs::XRayAngiographicImageStorage:
-            case gdcm::UIDs::XRayRadiofluoroscopicImageStorage:
-            case gdcm::UIDs::RTImageStorage:
-            case gdcm::UIDs::RTDoseStorage:
-            case gdcm::UIDs::PositronEmissionTomographyImageStorage:
-            case gdcm::UIDs::DigitalXRayImageStorageForPresentation:
-            case gdcm::UIDs::DigitalXRayImageStorageForProcessing:
-            case gdcm::UIDs::DigitalMammographyXRayImageStorageForPresentation:
-            case gdcm::UIDs::DigitalMammographyXRayImageStorageForProcessing:
-            case gdcm::UIDs::DigitalIntraoralXRayImageStorageForPresentation:
-            case gdcm::UIDs::DigitalIntraoralXRayImageStorageForProcessing:
-            case gdcm::UIDs::VLEndoscopicImageStorage:
-            case gdcm::UIDs::VLMicroscopicImageStorage:
-            case gdcm::UIDs::VLSlideCoordinatesMicroscopicImageStorage:
-            case gdcm::UIDs::VLPhotographicImageStorage:
-            case gdcm::UIDs::VideoEndoscopicImageStorage:
-            case gdcm::UIDs::VideoMicroscopicImageStorage:
-            case gdcm::UIDs::VideoPhotographicImageStorage:
-            case gdcm::UIDs::VLWholeSlideMicroscopyImageStorage:
-            case gdcm::UIDs::EnhancedMRImageStorage:
-            case gdcm::UIDs::EnhancedMRColorImageStorage:
-            case gdcm::UIDs::EnhancedCTImageStorage:
-            case gdcm::UIDs::OphthalmicPhotography8BitImageStorage:
-            case gdcm::UIDs::OphthalmicPhotography16BitImageStorage:
-            case gdcm::UIDs::EnhancedXAImageStorage:
-            case gdcm::UIDs::EnhancedXRFImageStorage:
-            case gdcm::UIDs::SegmentationStorage:
-            case gdcm::UIDs::OphthalmicTomographyImageStorage:
-            case gdcm::UIDs::XRay3DAngiographicImageStorage:
-            case gdcm::UIDs::XRay3DCraniofacialImageStorage:
-            case gdcm::UIDs::BreastTomosynthesisImageStorage:
-            case gdcm::UIDs::EnhancedPETImageStorage:
-            case gdcm::UIDs::EnhancedUSVolumeStorage:
-            case gdcm::UIDs::IntravascularOpticalCoherenceTomographyImageStorageForPresentation:
-            case gdcm::UIDs::IntravascularOpticalCoherenceTomographyImageStorageForProcessing:
-            case gdcm::UIDs::OphthalmicThicknessMapStorage:
-            case gdcm::UIDs::LegacyConvertedEnhancedCTImageStorage:
-            case gdcm::UIDs::LegacyConvertedEnhancedMRImageStorage:
-            case gdcm::UIDs::LegacyConvertedEnhancedPETImageStorage:
-            case gdcm::UIDs::CornealTopographyMapStorage:
-            case gdcm::UIDs::BreastProjectionXRayImageStorageForPresentation:
-            case gdcm::UIDs::BreastProjectionXRayImageStorageForProcessing:
-            case gdcm::UIDs::ParametricMapStorage:
-            case gdcm::UIDs::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage:
-            case gdcm::UIDs::WideFieldOphthalmicPhotography3DCoordinatesImageStorage:
-            case gdcm::UIDs::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage:
-            case gdcm::UIDs::OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage:
-                return DicomType::IMAGE;
-
-            default:
-                return DicomType::UNKNOWN;
-        }
+        default:
+            return DicomType::UNKNOWN;
     }
-
-    return DicomType::UNKNOWN;
 }
 
 //------------------------------------------------------------------------------
@@ -2058,6 +2341,53 @@ void Series::setRescaleSlope(const std::optional<double>& rescaleSlope, std::siz
 
 std::vector<double> Series::getImagePositionPatient(std::size_t instance) const
 {
+    // Assert if the SOP class is not set
+    SIGHT_ASSERT(
+        "SOP class is not set, please call Series::setSOPClassUID before calling Series::getImagePositionPatient",
+        getSOPKeyword() != dicom::sop::Keyword::INVALID
+    );
+
+    if(isMultiFrame())
+    {
+        // If we deal with Enhanced US Volume, we need to look in:
+        // {Multi-frame Functional Groups Module}
+        // |
+        // <Per-frame Functional Groups Sequence Attribute>
+        // |
+        // -- frame 1
+        //    <Plane Position Sequence Attribute>
+        //    |
+        //    -- <Image Position (Patient) Attribute>
+        //
+        // -- frame 2
+        // ...
+        // <shared Functional Groups Sequence Attribute>
+        // | ...
+
+        // Try with Per-Frame Functional Groups
+        if(auto imagePositionPatient =
+               m_pimpl->getMultiFrameValues<
+                   gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+                   gdcm::Keywords::PlanePositionSequence,
+                   gdcm::Keywords::ImagePositionPatient
+               >(instance); !imagePositionPatient.empty())
+        {
+            return imagePositionPatient;
+        }
+
+        // Try with shared Functional Groups
+        if(auto imagePositionPatient =
+               m_pimpl->getMultiFrameValues<
+                   gdcm::Keywords::SharedFunctionalGroupsSequence,
+                   gdcm::Keywords::PlanePositionSequence,
+                   gdcm::Keywords::ImagePositionPatient
+               >(0); !imagePositionPatient.empty())
+        {
+            return imagePositionPatient;
+        }
+    }
+
+    // Default case use simple ImagePositionPatient tag values.
     return m_pimpl->getValues<gdcm::Keywords::ImagePositionPatient>(instance);
 }
 
@@ -2065,13 +2395,100 @@ std::vector<double> Series::getImagePositionPatient(std::size_t instance) const
 
 void Series::setImagePositionPatient(const std::vector<double>& imagePositionPatient, std::size_t instance)
 {
-    m_pimpl->setValues<gdcm::Keywords::ImagePositionPatient>(imagePositionPatient, instance);
+    // Assert if the SOP class is not set
+    SIGHT_ASSERT(
+        "SOP class is not set, please call Series::setSOPClassUID before calling Series::setImagePositionPatient",
+        getSOPKeyword() != dicom::sop::Keyword::INVALID
+    );
+
+    if(isMultiFrame())
+    {
+        // If we deal with Enhanced US Volume, we need to look in:
+        // {Multi-frame Functional Groups Module}
+        // |
+        // <Per-frame Functional Groups Sequence Attribute>
+        // |
+        // -- frame 1
+        //    <Plane Position Sequence Attribute>
+        //    |
+        //    -- <Image Position (Patient) Attribute>
+        //
+        // -- frame 2
+        // ...
+        // <shared Functional Groups Sequence Attribute>
+        // | ...
+        m_pimpl->setMultiFrameValues<
+            gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+            gdcm::Keywords::PlanePositionSequence,
+            gdcm::Keywords::ImagePositionPatient
+        >(imagePositionPatient, instance);
+
+        // Also set for the shared for first frame
+        if(instance == 0)
+        {
+            m_pimpl->setMultiFrameValues<
+                gdcm::Keywords::SharedFunctionalGroupsSequence,
+                gdcm::Keywords::PlanePositionSequence,
+                gdcm::Keywords::ImagePositionPatient
+            >(imagePositionPatient, instance);
+        }
+    }
+    else
+    {
+        m_pimpl->setValues<gdcm::Keywords::ImagePositionPatient>(imagePositionPatient, instance);
+    }
 }
 
 //------------------------------------------------------------------------------
 
 std::vector<double> Series::getImageOrientationPatient(std::size_t instance) const
 {
+    SIGHT_ASSERT(
+        "SOP class is not set, please call Series::setSOPClassUID before calling Series::getImageOrientationPatient",
+        getSOPKeyword() != dicom::sop::Keyword::INVALID
+    );
+
+    if(isMultiFrame())
+    {
+        // If we deal with Enhanced US Volume, we need to look in:
+        // {Multi-frame Functional Groups Module}
+        // |
+        // <Per-frame Functional Groups Sequence Attribute>
+        // |
+        // -- frame 1
+        //    <Plane Orientation Sequence Attribute>
+        //    |
+        //    -- <Image Orientation (Patient) Attribute>
+        //
+        // -- frame 2
+        // ...
+        // <shared Functional Groups Sequence Attribute>
+        // | ...
+        // Assert if the SOP class is not set
+
+        // Try with Per-Frame Functional Groups
+        if(auto imageOrientationPatient =
+               m_pimpl->getMultiFrameValues<
+                   gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+                   gdcm::Keywords::PlaneOrientationSequence,
+                   gdcm::Keywords::ImageOrientationPatient
+               >(instance); !imageOrientationPatient.empty())
+        {
+            return imageOrientationPatient;
+        }
+
+        // Try with shared Functional Groups
+        if(auto imageOrientationPatient =
+               m_pimpl->getMultiFrameValues<
+                   gdcm::Keywords::SharedFunctionalGroupsSequence,
+                   gdcm::Keywords::PlaneOrientationSequence,
+                   gdcm::Keywords::ImageOrientationPatient
+               >(0); !imageOrientationPatient.empty())
+        {
+            return imageOrientationPatient;
+        }
+    }
+
     return m_pimpl->getValues<gdcm::Keywords::ImageOrientationPatient>(instance);
 }
 
@@ -2079,7 +2496,465 @@ std::vector<double> Series::getImageOrientationPatient(std::size_t instance) con
 
 void Series::setImageOrientationPatient(const std::vector<double>& imageOrientationPatient, std::size_t instance)
 {
-    m_pimpl->setValues<gdcm::Keywords::ImageOrientationPatient>(imageOrientationPatient, instance);
+    SIGHT_ASSERT(
+        "SOP class is not set, please call Series::setSOPClassUID before calling Series::setImageOrientationPatient",
+        getSOPKeyword() != dicom::sop::Keyword::INVALID
+    );
+
+    if(isMultiFrame())
+    {
+        // If we deal with Enhanced US Volume, we need to look in:
+        // {Multi-frame Functional Groups Module}
+        // |
+        // <Per-frame Functional Groups Sequence Attribute>
+        // |
+        // -- frame 1
+        //    <Plane Position Sequence Attribute>
+        //    |
+        //    -- <Image Position (Patient) Attribute>
+        //
+        // -- frame 2
+        // ...
+        // <shared Functional Groups Sequence Attribute>
+        // | ...
+        m_pimpl->setMultiFrameValues<
+            gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+            gdcm::Keywords::PlaneOrientationSequence,
+            gdcm::Keywords::ImageOrientationPatient
+        >(imageOrientationPatient, instance);
+
+        // Also set for the shared for first frame
+        if(instance == 0)
+        {
+            m_pimpl->setMultiFrameValues<
+                gdcm::Keywords::SharedFunctionalGroupsSequence,
+                gdcm::Keywords::PlaneOrientationSequence,
+                gdcm::Keywords::ImageOrientationPatient
+            >(imageOrientationPatient, instance);
+        }
+    }
+    else
+    {
+        m_pimpl->setValues<gdcm::Keywords::ImageOrientationPatient>(imageOrientationPatient, instance);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<double> Series::getImagePositionVolume(std::size_t frameIndex) const
+{
+    // If we deal with Enhanced US Volume, we need to look in:
+    // {Multi-frame Functional Groups Module}
+    // |
+    // <Per-frame Functional Groups Sequence Attribute>
+    // |
+    // -- frame 1
+    //    <Plane Position Volume Sequence Attribute>
+    //    |
+    //    -- <Image Position (Volume) Attribute>
+    //
+    // -- frame 2
+    // ...
+    // <shared Functional Groups Sequence Attribute>
+    // | ...
+
+    // Try with Per-Frame Functional Groups
+    if(auto imagePositionVolume =
+           m_pimpl->getMultiFrameValues<
+               gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+               gdcm::Keywords::PlanePositionVolumeSequence,
+               gdcm::Keywords::ImagePositionVolume
+           >(frameIndex); !imagePositionVolume.empty())
+    {
+        return imagePositionVolume;
+    }
+
+    // Try with shared Functional Groups
+    return m_pimpl->getMultiFrameValues<
+        gdcm::Keywords::SharedFunctionalGroupsSequence,
+        gdcm::Keywords::PlanePositionVolumeSequence,
+        gdcm::Keywords::ImagePositionVolume
+    >(0);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setImagePositionVolume(const std::vector<double>& imagePositionVolume, std::size_t frameIndex)
+{
+    // If we deal with Enhanced US Volume, we need to look in:
+    // {Multi-frame Functional Groups Module}
+    // |
+    // <Per-frame Functional Groups Sequence Attribute>
+    // |
+    // -- frame 1
+    //    <Plane Position Volume Sequence Attribute>
+    //    |
+    //    -- <Image Position (Volume) Attribute>
+    //
+    // -- frame 2
+    // ...
+    // <shared Functional Groups Sequence Attribute>
+    // | ...
+    m_pimpl->setMultiFrameValues<
+        gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+        gdcm::Keywords::PlanePositionSequence,
+        gdcm::Keywords::ImagePositionVolume
+    >(imagePositionVolume, frameIndex);
+
+    // Also set for the shared for first frame
+    if(frameIndex == 0)
+    {
+        m_pimpl->setMultiFrameValues<
+            gdcm::Keywords::SharedFunctionalGroupsSequence,
+            gdcm::Keywords::PlanePositionSequence,
+            gdcm::Keywords::ImagePositionVolume
+        >(imagePositionVolume, frameIndex);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+std::vector<double> Series::getImageOrientationVolume(std::size_t frameIndex) const
+{
+    // If we deal with Enhanced US Volume, we need to look in:
+    // {Multi-frame Functional Groups Module}
+    // |
+    // <Per-frame Functional Groups Sequence Attribute>
+    // |
+    // -- frame 1
+    //    <Plane Orientation Volume Sequence Attribute>
+    //    |
+    //    -- <Image Orientation (Volume) Attribute>
+    //
+    // -- frame 2
+    // ...
+    // <shared Functional Groups Sequence Attribute>
+    // | ...
+
+    // Try with Per-Frame Functional Groups
+    if(auto imageOrientationVolume =
+           m_pimpl->getMultiFrameValues<
+               gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+               gdcm::Keywords::PlaneOrientationVolumeSequence,
+               gdcm::Keywords::ImageOrientationVolume
+           >(frameIndex); !imageOrientationVolume.empty())
+    {
+        return imageOrientationVolume;
+    }
+
+    // Try with shared Functional Groups
+    return m_pimpl->getMultiFrameValues<
+        gdcm::Keywords::SharedFunctionalGroupsSequence,
+        gdcm::Keywords::PlaneOrientationVolumeSequence,
+        gdcm::Keywords::ImageOrientationVolume
+    >(0);
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setImageOrientationVolume(const std::vector<double>& imageOrientationVolume, std::size_t frameIndex)
+{
+    // If we deal with Enhanced US Volume, we need to look in:
+    // {Multi-frame Functional Groups Module}
+    // |
+    // <Per-frame Functional Groups Sequence Attribute>
+    // |
+    // -- frame 1
+    //    <Plane Orientation Volume Sequence Attribute>
+    //    |
+    //    -- <Image Orientation (Volume) Attribute>
+    //
+    // -- frame 2
+    // ...
+    // <shared Functional Groups Sequence Attribute>
+    // | ...
+    m_pimpl->setMultiFrameValues<
+        gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+        gdcm::Keywords::PlaneOrientationSequence,
+        gdcm::Keywords::ImageOrientationVolume
+    >(imageOrientationVolume, frameIndex);
+
+    // Also set for the shared for first frame
+    if(frameIndex == 0)
+    {
+        m_pimpl->setMultiFrameValues<
+            gdcm::Keywords::SharedFunctionalGroupsSequence,
+            gdcm::Keywords::PlaneOrientationSequence,
+            gdcm::Keywords::ImageOrientationVolume
+        >(imageOrientationVolume, frameIndex);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::string> Series::getFrameAcquisitionDateTime(std::size_t frameIndex) const
+{
+    // If we deal with Enhanced US Volume, we need to look in:
+    // {Multi-frame Functional Groups Module}
+    // |
+    // <Per-frame Functional Groups Sequence Attribute>
+    // |
+    // -- frame 1
+    //    <Frame Content Sequence Attribute>
+    //    |
+    //    -- <Frame Acquisition DateTime Attribute>
+    //
+    // -- frame 2
+    // ...
+    // <shared Functional Groups Sequence Attribute>
+    // | ...
+
+    // Try with Per-Frame Functional Groups
+    if(auto frameAcquisitionDateTime =
+           m_pimpl->getMultiFrameValue<
+               gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+               gdcm::Keywords::FrameContentSequence,
+               gdcm::Keywords::FrameAcquisitionDateTime
+           >(frameIndex); frameAcquisitionDateTime.has_value())
+    {
+        // frameAcquisitionDateTime can have padding...
+        return detail::shrink(frameAcquisitionDateTime->Trim());
+    }
+
+    // Try with shared Functional Groups
+    return detail::shrink(
+        m_pimpl->getMultiFrameValue<
+            gdcm::Keywords::SharedFunctionalGroupsSequence,
+            gdcm::Keywords::FrameContentSequence,
+            gdcm::Keywords::FrameAcquisitionDateTime
+        >(0)->Trim()
+    );
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setFrameAcquisitionDateTime(
+    const std::optional<std::string>& frameAcquisitionDateTime,
+    std::size_t frameIndex
+)
+{
+    // If we deal with Enhanced US Volume, we need to look in:
+    // {Multi-frame Functional Groups Module}
+    // |
+    // <Per-frame Functional Groups Sequence Attribute>
+    // |
+    // -- frame 1
+    //    <Frame Content Sequence Attribute>
+    //    |
+    //    -- <Frame Acquisition DateTime Attribute>
+    //
+    // -- frame 2
+    // ...
+    // <shared Functional Groups Sequence Attribute>
+    // | ...
+    m_pimpl->setMultiFrameValue<
+        gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+        gdcm::Keywords::FrameContentSequence,
+        gdcm::Keywords::FrameAcquisitionDateTime
+    >(frameAcquisitionDateTime, frameIndex);
+
+    // Also set for the shared for first frame
+    if(frameIndex == 0)
+    {
+        m_pimpl->setMultiFrameValue<
+            gdcm::Keywords::SharedFunctionalGroupsSequence,
+            gdcm::Keywords::FrameContentSequence,
+            gdcm::Keywords::FrameAcquisitionDateTime
+        >(frameAcquisitionDateTime, frameIndex);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::chrono::system_clock::time_point> Series::getFrameAcquisitionTimePoint(
+    std::size_t frameIndex
+) const noexcept
+{
+    try
+    {
+        // Get the acquisition date time.
+        const auto& optional = getFrameAcquisitionDateTime(frameIndex);
+
+        // Convert from YYYYMMDDHHMMSS.FFFFFF
+        /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
+        return dateTimeToTimePoint(*optional);
+    }
+    catch(...)
+    {
+        return std::nullopt;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setFrameAcquisitionTimePoint(
+    const std::optional<std::chrono::system_clock::time_point>& timePoint,
+    std::size_t frameIndex
+)
+{
+    if(timePoint)
+    {
+        // Convert to YYYYMMDDHHMMSS.FFFFFF
+        /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
+        const auto& dateTime = timePointToDateTime(*timePoint);
+        setFrameAcquisitionDateTime(dateTime, frameIndex);
+    }
+    else
+    {
+        setFrameAcquisitionDateTime(std::nullopt, frameIndex);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::string> Series::getFrameComments(std::size_t frameIndex) const
+{
+    // If we deal with Enhanced US Volume, we need to look in:
+    // {Multi-frame Functional Groups Module}
+    // |
+    // <Per-frame Functional Groups Sequence Attribute>
+    // |
+    // -- frame 1
+    //    <Frame Content Sequence Attribute>
+    //    |
+    //    -- <Frame Comments Attribute>
+    //
+    // -- frame 2
+    // ...
+    // <shared Functional Groups Sequence Attribute>
+    // | ...
+
+    // Try with Per-Frame Functional Groups
+    if(auto frameComments =
+           m_pimpl->getMultiFrameValue<
+               gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+               gdcm::Keywords::FrameContentSequence,
+               gdcm::Keywords::FrameComments
+           >(frameIndex); frameComments.has_value())
+    {
+        // frameAcquisitionDateTime can have padding...
+        return detail::shrink(frameComments->Trim());
+    }
+
+    // Try with shared Functional Groups
+    return detail::shrink(
+        m_pimpl->getMultiFrameValue<
+            gdcm::Keywords::SharedFunctionalGroupsSequence,
+            gdcm::Keywords::FrameContentSequence,
+            gdcm::Keywords::FrameComments
+        >(0)->Trim()
+    );
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setFrameComments(const std::optional<std::string>& frameComments, std::size_t frameIndex)
+{
+    // If we deal with Enhanced US Volume, we need to look in:
+    // {Multi-frame Functional Groups Module}
+    // |
+    // <Per-frame Functional Groups Sequence Attribute>
+    // |
+    // -- frame 1
+    //    <Frame Content Sequence Attribute>
+    //    |
+    //    -- <Frame Comments>
+    //
+    // -- frame 2
+    // ...
+    // <shared Functional Groups Sequence Attribute>
+    // | ...
+    m_pimpl->setMultiFrameValue<
+        gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+        gdcm::Keywords::FrameContentSequence,
+        gdcm::Keywords::FrameComments
+    >(frameComments, frameIndex);
+
+    // Also set for the shared for first frame
+    if(frameIndex == 0)
+    {
+        m_pimpl->setMultiFrameValue<
+            gdcm::Keywords::SharedFunctionalGroupsSequence,
+            gdcm::Keywords::FrameContentSequence,
+            gdcm::Keywords::FrameComments
+        >(frameComments, frameIndex);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::string> Series::getFrameLabel(std::size_t frameIndex) const
+{
+    // If we deal with Enhanced US Volume, we need to look in:
+    // {Multi-frame Functional Groups Module}
+    // |
+    // <Per-frame Functional Groups Sequence Attribute>
+    // |
+    // -- frame 1
+    //    <Frame Content Sequence Attribute>
+    //    |
+    //    -- <Frame Label Attribute>
+    //
+    // -- frame 2
+    // ...
+    // <shared Functional Groups Sequence Attribute>
+    // | ...
+
+    // Try with Per-Frame Functional Groups
+    if(auto frameLabel =
+           m_pimpl->getMultiFrameValue<
+               gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+               gdcm::Keywords::FrameContentSequence,
+               gdcm::Keywords::FrameLabel
+           >(frameIndex); frameLabel.has_value())
+    {
+        // frameAcquisitionDateTime can have padding...
+        return detail::shrink(frameLabel->Trim());
+    }
+
+    // Try with shared Functional Groups
+    return detail::shrink(
+        m_pimpl->getMultiFrameValue<
+            gdcm::Keywords::SharedFunctionalGroupsSequence,
+            gdcm::Keywords::FrameContentSequence,
+            gdcm::Keywords::FrameLabel
+        >(0)->Trim()
+    );
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setFrameLabel(const std::optional<std::string>& frameLabel, std::size_t frameIndex)
+{
+    // If we deal with Enhanced US Volume, we need to look in:
+    // {Multi-frame Functional Groups Module}
+    // |
+    // <Per-frame Functional Groups Sequence Attribute>
+    // |
+    // -- frame 1
+    //    <Frame Content Sequence Attribute>
+    //    |
+    //    -- <Frame Label>
+    //
+    // -- frame 2
+    // ...
+    // <shared Functional Groups Sequence Attribute>
+    // | ...
+    m_pimpl->setMultiFrameValue<
+        gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+        gdcm::Keywords::FrameContentSequence,
+        gdcm::Keywords::FrameLabel
+    >(frameLabel, frameIndex);
+
+    // Also set for the shared for first frame
+    if(frameIndex == 0)
+    {
+        m_pimpl->setMultiFrameValue<
+            gdcm::Keywords::SharedFunctionalGroupsSequence,
+            gdcm::Keywords::FrameContentSequence,
+            gdcm::Keywords::FrameLabel
+        >(frameLabel, frameIndex);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -2126,6 +3001,7 @@ void Series::setImageTransformPatient(const sight::data::Matrix4& transform, std
 
 std::optional<double> Series::getSliceThickness() const noexcept
 {
+    /// @todo
     return m_pimpl->getValue<gdcm::Keywords::SliceThickness>();
 }
 
@@ -2133,6 +3009,7 @@ std::optional<double> Series::getSliceThickness() const noexcept
 
 void Series::setSliceThickness(const std::optional<double>& sliceThickness)
 {
+    /// @todo
     m_pimpl->setValue<gdcm::Keywords::SliceThickness>(sliceThickness);
 }
 

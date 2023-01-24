@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include <core/runtime/path.hpp>
 #include <core/tools/fwID.hpp>
 
+#include <data/dicom/Sop.hpp>
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
@@ -285,7 +286,7 @@ void SelectorModel::addSeries(data::Series::sptr _series)
             }
 
             // If there is no description, build some information string from the series.
-            std::string infos   = _series->getSOPClassName();
+            std::string infos(_series->getSOPClassName());
             const auto& rows    = _series->getRows();
             const auto& columns = _series->getColumns();
             if(rows && columns)

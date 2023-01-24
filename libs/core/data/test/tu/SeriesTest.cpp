@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,6 +23,8 @@
 
 #include <core/tools/compare.hpp>
 #include <core/tools/UUID.hpp>
+
+#include <data/dicom/Attribute.hpp>
 
 #include <boost/algorithm/string/classification.hpp>
 #include <boost/algorithm/string/join.hpp>
@@ -379,9 +381,9 @@ void SeriesTest::equalityTest()
     series2->setInstitutionName(series1->getInstitutionName());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
-    series1->setSOPClassUID("39");
+    series1->setSOPKeyword(dicom::sop::Keyword::CTImageStorage);
     CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
-    series2->setSOPClassUID(series1->getSOPClassUID());
+    series2->setSOPKeyword(series1->getSOPKeyword());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
     series1->setSOPInstanceUID("40");
@@ -434,6 +436,21 @@ void SeriesTest::equalityTest()
     series2->setSliceThickness(series1->getSliceThickness());
     CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 
+    series1->setFrameAcquisitionDateTime("57");
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->setFrameAcquisitionDateTime(series1->getFrameAcquisitionDateTime());
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->setFrameComments("58");
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->setFrameComments(series1->getFrameComments());
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    series1->setFrameLabel("59");
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+    series2->setFrameLabel(series1->getFrameLabel());
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
     // Test also deepcopy, just for fun
     auto series3 = data::Series::New();
     series3->deepCopy(series1);
@@ -444,34 +461,27 @@ void SeriesTest::equalityTest()
 
 void SeriesTest::sopClassUIDTest()
 {
-    static const std::string sopClassUID(UUID::generateUUID());
+    static const dicom::sop::Keyword keyword = dicom::sop::Keyword::CTImageStorage;
 
     {
         auto series = data::Series::New();
-        series->setSOPClassUID(sopClassUID);
-        CPPUNIT_ASSERT_EQUAL(sopClassUID, series->getSOPClassUID());
-        CPPUNIT_ASSERT_EQUAL(sopClassUID, series->getByteValue(0x0008, 0x0016));
+        series->setSOPKeyword(keyword);
+        CPPUNIT_ASSERT_EQUAL(keyword, series->getSOPKeyword());
+        CPPUNIT_ASSERT_EQUAL(
+            keyword,
+            dicom::sop::get(series->getByteValue(dicom::attribute::Keyword::SOPClassUID)).m_keyword
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0008, 0x0016, sopClassUID);
-        CPPUNIT_ASSERT_EQUAL(sopClassUID, series->getSOPClassUID());
-        CPPUNIT_ASSERT_EQUAL(sopClassUID, series->getByteValue(0x0008, 0x0016));
+        series->setByteValue(dicom::attribute::Keyword::SOPClassUID, std::string(dicom::sop::get(keyword).m_uid));
+        CPPUNIT_ASSERT_EQUAL(keyword, series->getSOPKeyword());
+        CPPUNIT_ASSERT_EQUAL(
+            keyword,
+            dicom::sop::get(series->getByteValue(dicom::attribute::Keyword::SOPClassUID)).m_keyword
+        );
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SeriesTest::sopClassNameTest()
-{
-    // This can be found in DICOM PS 3.3 (or gdcmSOPClassUIDToIOD.cxx)
-    static constexpr auto SOPClassUID  = "1.2.840.10008.5.1.4.1.1.2";
-    static constexpr auto SOPClassName = "CT Image Storage";
-
-    auto series = data::Series::New();
-    series->setSOPClassUID(SOPClassUID);
-    CPPUNIT_ASSERT_EQUAL(std::string(SOPClassName), series->getSOPClassName());
 }
 
 //------------------------------------------------------------------------------
@@ -484,14 +494,14 @@ void SeriesTest::sopInstanceUIDTest()
         auto series = data::Series::New();
         series->setSOPInstanceUID(sopInstanceUID);
         CPPUNIT_ASSERT_EQUAL(sopInstanceUID, series->getSOPInstanceUID());
-        CPPUNIT_ASSERT_EQUAL(sopInstanceUID, series->getByteValue(0x0008, 0x0018));
+        CPPUNIT_ASSERT_EQUAL(sopInstanceUID, series->getByteValue(data::dicom::attribute::Keyword::SOPInstanceUID));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0008, 0x0018, sopInstanceUID);
+        series->setByteValue(data::dicom::attribute::Keyword::SOPInstanceUID, sopInstanceUID);
         CPPUNIT_ASSERT_EQUAL(sopInstanceUID, series->getSOPInstanceUID());
-        CPPUNIT_ASSERT_EQUAL(sopInstanceUID, series->getByteValue(0x0008, 0x0018));
+        CPPUNIT_ASSERT_EQUAL(sopInstanceUID, series->getByteValue(data::dicom::attribute::Keyword::SOPInstanceUID));
     }
 }
 
@@ -505,14 +515,20 @@ void SeriesTest::specificCharacterSetTest()
         auto series = data::Series::New();
         series->setSpecificCharacterSet(specificCharacterSet);
         CPPUNIT_ASSERT_EQUAL(specificCharacterSet, series->getSpecificCharacterSet());
-        CPPUNIT_ASSERT_EQUAL(specificCharacterSet, series->getByteValue(0x0008, 0x0005));
+        CPPUNIT_ASSERT_EQUAL(
+            specificCharacterSet,
+            series->getByteValue(data::dicom::attribute::Keyword::SpecificCharacterSet)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0008, 0x0005, specificCharacterSet);
+        series->setByteValue(data::dicom::attribute::Keyword::SpecificCharacterSet, specificCharacterSet);
         CPPUNIT_ASSERT_EQUAL(specificCharacterSet, series->getSpecificCharacterSet());
-        CPPUNIT_ASSERT_EQUAL(specificCharacterSet, series->getByteValue(0x0008, 0x0005));
+        CPPUNIT_ASSERT_EQUAL(
+            specificCharacterSet,
+            series->getByteValue(data::dicom::attribute::Keyword::SpecificCharacterSet)
+        );
     }
 }
 
@@ -570,14 +586,14 @@ void SeriesTest::seriesDateTest()
         auto series = data::Series::New();
         series->setSeriesDate(seriesDate);
         CPPUNIT_ASSERT_EQUAL(seriesDate, series->getSeriesDate());
-        CPPUNIT_ASSERT_EQUAL(seriesDate, series->getByteValue(0x0008, 0x0021));
+        CPPUNIT_ASSERT_EQUAL(seriesDate, series->getByteValue(data::dicom::attribute::Keyword::SeriesDate));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0008, 0x0021, seriesDate);
+        series->setByteValue(data::dicom::attribute::Keyword::SeriesDate, seriesDate);
         CPPUNIT_ASSERT_EQUAL(seriesDate, series->getSeriesDate());
-        CPPUNIT_ASSERT_EQUAL(seriesDate, series->getByteValue(0x0008, 0x0021));
+        CPPUNIT_ASSERT_EQUAL(seriesDate, series->getByteValue(data::dicom::attribute::Keyword::SeriesDate));
     }
 }
 
@@ -591,14 +607,14 @@ void SeriesTest::seriesTimeTest()
         auto series = data::Series::New();
         series->setSeriesTime(seriesTime);
         CPPUNIT_ASSERT_EQUAL(seriesTime, series->getSeriesTime());
-        CPPUNIT_ASSERT_EQUAL(seriesTime, series->getByteValue(0x0008, 0x0031));
+        CPPUNIT_ASSERT_EQUAL(seriesTime, series->getByteValue(data::dicom::attribute::Keyword::SeriesTime));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0008, 0x0031, seriesTime);
+        series->setByteValue(data::dicom::attribute::Keyword::SeriesTime, seriesTime);
         CPPUNIT_ASSERT_EQUAL(seriesTime, series->getSeriesTime());
-        CPPUNIT_ASSERT_EQUAL(seriesTime, series->getByteValue(0x0008, 0x0031));
+        CPPUNIT_ASSERT_EQUAL(seriesTime, series->getByteValue(data::dicom::attribute::Keyword::SeriesTime));
     }
 }
 
@@ -612,14 +628,14 @@ void SeriesTest::modalityTest()
         auto series = data::Series::New();
         series->setModality(modality);
         CPPUNIT_ASSERT_EQUAL(modality, series->getModality());
-        CPPUNIT_ASSERT_EQUAL(modality, series->getByteValue(0x0008, 0x0060));
+        CPPUNIT_ASSERT_EQUAL(modality, series->getByteValue(data::dicom::attribute::Keyword::Modality));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0008, 0x0060, modality);
+        series->setByteValue(data::dicom::attribute::Keyword::Modality, modality);
         CPPUNIT_ASSERT_EQUAL(modality, series->getModality());
-        CPPUNIT_ASSERT_EQUAL(modality, series->getByteValue(0x0008, 0x0060));
+        CPPUNIT_ASSERT_EQUAL(modality, series->getByteValue(data::dicom::attribute::Keyword::Modality));
     }
 }
 
@@ -633,14 +649,20 @@ void SeriesTest::seriesDescriptionTest()
         auto series = data::Series::New();
         series->setSeriesDescription(seriesDescription);
         CPPUNIT_ASSERT_EQUAL(seriesDescription, series->getSeriesDescription());
-        CPPUNIT_ASSERT_EQUAL(seriesDescription, series->getByteValue(0x0008, 0x103e));
+        CPPUNIT_ASSERT_EQUAL(
+            seriesDescription,
+            series->getByteValue(data::dicom::attribute::Keyword::SeriesDescription)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0008, 0x103e, seriesDescription);
+        series->setByteValue(data::dicom::attribute::Keyword::SeriesDescription, seriesDescription);
         CPPUNIT_ASSERT_EQUAL(seriesDescription, series->getSeriesDescription());
-        CPPUNIT_ASSERT_EQUAL(seriesDescription, series->getByteValue(0x0008, 0x103e));
+        CPPUNIT_ASSERT_EQUAL(
+            seriesDescription,
+            series->getByteValue(data::dicom::attribute::Keyword::SeriesDescription)
+        );
     }
 }
 
@@ -660,40 +682,64 @@ void SeriesTest::performingPhysicianNameTest()
         auto series = data::Series::New();
         series->setPerformingPhysicianNames(performingPhysicianNames);
         CPPUNIT_ASSERT(performingPhysicianNames == series->getPerformingPhysicianNames());
-        CPPUNIT_ASSERT(performingPhysicianNames == series->getByteValues(0x0008, 0x1050));
+        CPPUNIT_ASSERT(
+            performingPhysicianNames
+            == series->getByteValues(data::dicom::attribute::Keyword::PerformingPhysicianName)
+        );
 
         CPPUNIT_ASSERT_EQUAL(performingPhysicianName, series->getPerformingPhysicianName());
-        CPPUNIT_ASSERT_EQUAL(performingPhysicianName, series->getByteValue(0x0008, 0x1050));
+        CPPUNIT_ASSERT_EQUAL(
+            performingPhysicianName,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformingPhysicianName)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValues(0x0008, 0x1050, performingPhysicianNames);
+        series->setByteValues(data::dicom::attribute::Keyword::PerformingPhysicianName, performingPhysicianNames);
         CPPUNIT_ASSERT(performingPhysicianNames == series->getPerformingPhysicianNames());
-        CPPUNIT_ASSERT(performingPhysicianNames == series->getByteValues(0x0008, 0x1050));
+        CPPUNIT_ASSERT(
+            performingPhysicianNames
+            == series->getByteValues(data::dicom::attribute::Keyword::PerformingPhysicianName)
+        );
 
         CPPUNIT_ASSERT_EQUAL(performingPhysicianName, series->getPerformingPhysicianName());
-        CPPUNIT_ASSERT_EQUAL(performingPhysicianName, series->getByteValue(0x0008, 0x1050));
+        CPPUNIT_ASSERT_EQUAL(
+            performingPhysicianName,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformingPhysicianName)
+        );
     }
 
     {
         auto series = data::Series::New();
         series->setPerformingPhysicianName(performingPhysicianName);
         CPPUNIT_ASSERT(performingPhysicianNames == series->getPerformingPhysicianNames());
-        CPPUNIT_ASSERT(performingPhysicianNames == series->getByteValues(0x0008, 0x1050));
+        CPPUNIT_ASSERT(
+            performingPhysicianNames
+            == series->getByteValues(data::dicom::attribute::Keyword::PerformingPhysicianName)
+        );
 
         CPPUNIT_ASSERT_EQUAL(performingPhysicianName, series->getPerformingPhysicianName());
-        CPPUNIT_ASSERT_EQUAL(performingPhysicianName, series->getByteValue(0x0008, 0x1050));
+        CPPUNIT_ASSERT_EQUAL(
+            performingPhysicianName,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformingPhysicianName)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0008, 0x1050, performingPhysicianName);
+        series->setByteValue(data::dicom::attribute::Keyword::PerformingPhysicianName, performingPhysicianName);
         CPPUNIT_ASSERT(performingPhysicianNames == series->getPerformingPhysicianNames());
-        CPPUNIT_ASSERT(performingPhysicianNames == series->getByteValues(0x0008, 0x1050));
+        CPPUNIT_ASSERT(
+            performingPhysicianNames
+            == series->getByteValues(data::dicom::attribute::Keyword::PerformingPhysicianName)
+        );
 
         CPPUNIT_ASSERT_EQUAL(performingPhysicianName, series->getPerformingPhysicianName());
-        CPPUNIT_ASSERT_EQUAL(performingPhysicianName, series->getByteValue(0x0008, 0x1050));
+        CPPUNIT_ASSERT_EQUAL(
+            performingPhysicianName,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformingPhysicianName)
+        );
     }
 }
 
@@ -707,14 +753,20 @@ void SeriesTest::anatomicalOrientationTypeTest()
         auto series = data::Series::New();
         series->setAnatomicalOrientationType(anatomicalOrientationType);
         CPPUNIT_ASSERT_EQUAL(anatomicalOrientationType, series->getAnatomicalOrientationType());
-        CPPUNIT_ASSERT_EQUAL(anatomicalOrientationType, series->getByteValue(0x0010, 0x2210));
+        CPPUNIT_ASSERT_EQUAL(
+            anatomicalOrientationType,
+            series->getByteValue(data::dicom::attribute::Keyword::AnatomicalOrientationType)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0010, 0x2210, anatomicalOrientationType);
+        series->setByteValue(data::dicom::attribute::Keyword::AnatomicalOrientationType, anatomicalOrientationType);
         CPPUNIT_ASSERT_EQUAL(anatomicalOrientationType, series->getAnatomicalOrientationType());
-        CPPUNIT_ASSERT_EQUAL(anatomicalOrientationType, series->getByteValue(0x0010, 0x2210));
+        CPPUNIT_ASSERT_EQUAL(
+            anatomicalOrientationType,
+            series->getByteValue(data::dicom::attribute::Keyword::AnatomicalOrientationType)
+        );
     }
 }
 
@@ -728,14 +780,14 @@ void SeriesTest::bodyPartExaminedTest()
         auto series = data::Series::New();
         series->setBodyPartExamined(bodyPartExamined);
         CPPUNIT_ASSERT_EQUAL(bodyPartExamined, series->getBodyPartExamined());
-        CPPUNIT_ASSERT_EQUAL(bodyPartExamined, series->getByteValue(0x0018, 0x0015));
+        CPPUNIT_ASSERT_EQUAL(bodyPartExamined, series->getByteValue(data::dicom::attribute::Keyword::BodyPartExamined));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0018, 0x0015, bodyPartExamined);
+        series->setByteValue(data::dicom::attribute::Keyword::BodyPartExamined, bodyPartExamined);
         CPPUNIT_ASSERT_EQUAL(bodyPartExamined, series->getBodyPartExamined());
-        CPPUNIT_ASSERT_EQUAL(bodyPartExamined, series->getByteValue(0x0018, 0x0015));
+        CPPUNIT_ASSERT_EQUAL(bodyPartExamined, series->getByteValue(data::dicom::attribute::Keyword::BodyPartExamined));
     }
 }
 
@@ -749,14 +801,14 @@ void SeriesTest::protocolNameTest()
         auto series = data::Series::New();
         series->setProtocolName(protocolName);
         CPPUNIT_ASSERT_EQUAL(protocolName, series->getProtocolName());
-        CPPUNIT_ASSERT_EQUAL(protocolName, series->getByteValue(0x0018, 0x1030));
+        CPPUNIT_ASSERT_EQUAL(protocolName, series->getByteValue(data::dicom::attribute::Keyword::ProtocolName));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0018, 0x1030, protocolName);
+        series->setByteValue(data::dicom::attribute::Keyword::ProtocolName, protocolName);
         CPPUNIT_ASSERT_EQUAL(protocolName, series->getProtocolName());
-        CPPUNIT_ASSERT_EQUAL(protocolName, series->getByteValue(0x0018, 0x1030));
+        CPPUNIT_ASSERT_EQUAL(protocolName, series->getByteValue(data::dicom::attribute::Keyword::ProtocolName));
     }
 }
 
@@ -770,14 +822,14 @@ void SeriesTest::patientPositionTest()
         auto series = data::Series::New();
         series->setPatientPosition(patientPosition);
         CPPUNIT_ASSERT_EQUAL(patientPosition, series->getPatientPosition());
-        CPPUNIT_ASSERT_EQUAL(patientPosition, series->getByteValue(0x0018, 0x5100));
+        CPPUNIT_ASSERT_EQUAL(patientPosition, series->getByteValue(data::dicom::attribute::Keyword::PatientPosition));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0018, 0x5100, patientPosition);
+        series->setByteValue(data::dicom::attribute::Keyword::PatientPosition, patientPosition);
         CPPUNIT_ASSERT_EQUAL(patientPosition, series->getPatientPosition());
-        CPPUNIT_ASSERT_EQUAL(patientPosition, series->getByteValue(0x0018, 0x5100));
+        CPPUNIT_ASSERT_EQUAL(patientPosition, series->getByteValue(data::dicom::attribute::Keyword::PatientPosition));
     }
 }
 
@@ -791,14 +843,20 @@ void SeriesTest::seriesInstanceUIDTest()
         auto series = data::Series::New();
         series->setSeriesInstanceUID(seriesInstanceUID);
         CPPUNIT_ASSERT_EQUAL(seriesInstanceUID, series->getSeriesInstanceUID());
-        CPPUNIT_ASSERT_EQUAL(seriesInstanceUID, series->getByteValue(0x0020, 0x000e));
+        CPPUNIT_ASSERT_EQUAL(
+            seriesInstanceUID,
+            series->getByteValue(data::dicom::attribute::Keyword::SeriesInstanceUID)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0020, 0x000e, seriesInstanceUID);
+        series->setByteValue(data::dicom::attribute::Keyword::SeriesInstanceUID, seriesInstanceUID);
         CPPUNIT_ASSERT_EQUAL(seriesInstanceUID, series->getSeriesInstanceUID());
-        CPPUNIT_ASSERT_EQUAL(seriesInstanceUID, series->getByteValue(0x0020, 0x000e));
+        CPPUNIT_ASSERT_EQUAL(
+            seriesInstanceUID,
+            series->getByteValue(data::dicom::attribute::Keyword::SeriesInstanceUID)
+        );
     }
 }
 
@@ -812,14 +870,20 @@ void SeriesTest::seriesNumberTest()
         auto series = data::Series::New();
         series->setSeriesNumber(seriesNumber);
         CPPUNIT_ASSERT_EQUAL(seriesNumber, *series->getSeriesNumber());
-        CPPUNIT_ASSERT_EQUAL(std::to_string(seriesNumber), series->getByteValue(0x0020, 0x0011));
+        CPPUNIT_ASSERT_EQUAL(
+            std::to_string(seriesNumber),
+            series->getByteValue(data::dicom::attribute::Keyword::SeriesNumber)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0020, 0x0011, std::to_string(seriesNumber));
+        series->setByteValue(data::dicom::attribute::Keyword::SeriesNumber, std::to_string(seriesNumber));
         CPPUNIT_ASSERT_EQUAL(seriesNumber, *series->getSeriesNumber());
-        CPPUNIT_ASSERT_EQUAL(std::to_string(seriesNumber), series->getByteValue(0x0020, 0x0011));
+        CPPUNIT_ASSERT_EQUAL(
+            std::to_string(seriesNumber),
+            series->getByteValue(data::dicom::attribute::Keyword::SeriesNumber)
+        );
     }
 
     {
@@ -828,7 +892,7 @@ void SeriesTest::seriesNumberTest()
         series->setSeriesNumber();
 
         CPPUNIT_ASSERT(!series->getSeriesNumber());
-        CPPUNIT_ASSERT_EQUAL(std::string(), series->getByteValue(0x0020, 0x0011));
+        CPPUNIT_ASSERT_EQUAL(std::string(), series->getByteValue(data::dicom::attribute::Keyword::SeriesNumber));
     }
 }
 
@@ -842,14 +906,14 @@ void SeriesTest::lateralityTest()
         auto series = data::Series::New();
         series->setLaterality(laterality);
         CPPUNIT_ASSERT_EQUAL(laterality, series->getLaterality());
-        CPPUNIT_ASSERT_EQUAL(laterality, series->getByteValue(0x0020, 0x0060));
+        CPPUNIT_ASSERT_EQUAL(laterality, series->getByteValue(data::dicom::attribute::Keyword::Laterality));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0020, 0x0060, laterality);
+        series->setByteValue(data::dicom::attribute::Keyword::Laterality, laterality);
         CPPUNIT_ASSERT_EQUAL(laterality, series->getLaterality());
-        CPPUNIT_ASSERT_EQUAL(laterality, series->getByteValue(0x0020, 0x0060));
+        CPPUNIT_ASSERT_EQUAL(laterality, series->getByteValue(data::dicom::attribute::Keyword::Laterality));
     }
 }
 
@@ -863,14 +927,23 @@ void SeriesTest::performedProcedureStepStartDateTest()
         auto series = data::Series::New();
         series->setPerformedProcedureStepStartDate(performedProcedureStepStartDate);
         CPPUNIT_ASSERT_EQUAL(performedProcedureStepStartDate, series->getPerformedProcedureStepStartDate());
-        CPPUNIT_ASSERT_EQUAL(performedProcedureStepStartDate, series->getByteValue(0x0040, 0x0244));
+        CPPUNIT_ASSERT_EQUAL(
+            performedProcedureStepStartDate,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformedProcedureStepStartDate)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0040, 0x0244, performedProcedureStepStartDate);
+        series->setByteValue(
+            data::dicom::attribute::Keyword::PerformedProcedureStepStartDate,
+            performedProcedureStepStartDate
+        );
         CPPUNIT_ASSERT_EQUAL(performedProcedureStepStartDate, series->getPerformedProcedureStepStartDate());
-        CPPUNIT_ASSERT_EQUAL(performedProcedureStepStartDate, series->getByteValue(0x0040, 0x0244));
+        CPPUNIT_ASSERT_EQUAL(
+            performedProcedureStepStartDate,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformedProcedureStepStartDate)
+        );
     }
 }
 
@@ -884,14 +957,23 @@ void SeriesTest::performedProcedureStepStartTimeTest()
         auto series = data::Series::New();
         series->setPerformedProcedureStepStartTime(performedProcedureStepStartTime);
         CPPUNIT_ASSERT_EQUAL(performedProcedureStepStartTime, series->getPerformedProcedureStepStartTime());
-        CPPUNIT_ASSERT_EQUAL(performedProcedureStepStartTime, series->getByteValue(0x0040, 0x0245));
+        CPPUNIT_ASSERT_EQUAL(
+            performedProcedureStepStartTime,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformedProcedureStepStartTime)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0040, 0x0245, performedProcedureStepStartTime);
+        series->setByteValue(
+            data::dicom::attribute::Keyword::PerformedProcedureStepStartTime,
+            performedProcedureStepStartTime
+        );
         CPPUNIT_ASSERT_EQUAL(performedProcedureStepStartTime, series->getPerformedProcedureStepStartTime());
-        CPPUNIT_ASSERT_EQUAL(performedProcedureStepStartTime, series->getByteValue(0x0040, 0x0245));
+        CPPUNIT_ASSERT_EQUAL(
+            performedProcedureStepStartTime,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformedProcedureStepStartTime)
+        );
     }
 }
 
@@ -905,14 +987,23 @@ void SeriesTest::performedProcedureStepEndDateTest()
         auto series = data::Series::New();
         series->setPerformedProcedureStepEndDate(performedProcedureStepEndDate);
         CPPUNIT_ASSERT_EQUAL(performedProcedureStepEndDate, series->getPerformedProcedureStepEndDate());
-        CPPUNIT_ASSERT_EQUAL(performedProcedureStepEndDate, series->getByteValue(0x0040, 0x0250));
+        CPPUNIT_ASSERT_EQUAL(
+            performedProcedureStepEndDate,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformedProcedureStepEndDate)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0040, 0x0250, performedProcedureStepEndDate);
+        series->setByteValue(
+            data::dicom::attribute::Keyword::PerformedProcedureStepEndDate,
+            performedProcedureStepEndDate
+        );
         CPPUNIT_ASSERT_EQUAL(performedProcedureStepEndDate, series->getPerformedProcedureStepEndDate());
-        CPPUNIT_ASSERT_EQUAL(performedProcedureStepEndDate, series->getByteValue(0x0040, 0x0250));
+        CPPUNIT_ASSERT_EQUAL(
+            performedProcedureStepEndDate,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformedProcedureStepEndDate)
+        );
     }
 }
 
@@ -926,14 +1017,23 @@ void SeriesTest::performedProcedureStepEndTimeTest()
         auto series = data::Series::New();
         series->setPerformedProcedureStepEndTime(performedProcedureStepEndTime);
         CPPUNIT_ASSERT_EQUAL(performedProcedureStepEndTime, series->getPerformedProcedureStepEndTime());
-        CPPUNIT_ASSERT_EQUAL(performedProcedureStepEndTime, series->getByteValue(0x0040, 0x0251));
+        CPPUNIT_ASSERT_EQUAL(
+            performedProcedureStepEndTime,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformedProcedureStepEndTime)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0040, 0x0251, performedProcedureStepEndTime);
+        series->setByteValue(
+            data::dicom::attribute::Keyword::PerformedProcedureStepEndTime,
+            performedProcedureStepEndTime
+        );
         CPPUNIT_ASSERT_EQUAL(performedProcedureStepEndTime, series->getPerformedProcedureStepEndTime());
-        CPPUNIT_ASSERT_EQUAL(performedProcedureStepEndTime, series->getByteValue(0x0040, 0x0251));
+        CPPUNIT_ASSERT_EQUAL(
+            performedProcedureStepEndTime,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformedProcedureStepEndTime)
+        );
     }
 }
 
@@ -947,14 +1047,20 @@ void SeriesTest::performedProcedureStepIDTest()
         auto series = data::Series::New();
         series->setPerformedProcedureStepID(performedProcedureStepID);
         CPPUNIT_ASSERT_EQUAL(performedProcedureStepID, series->getPerformedProcedureStepID());
-        CPPUNIT_ASSERT_EQUAL(performedProcedureStepID, series->getByteValue(0x0040, 0x0253));
+        CPPUNIT_ASSERT_EQUAL(
+            performedProcedureStepID,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformedProcedureStepID)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0040, 0x0253, performedProcedureStepID);
+        series->setByteValue(data::dicom::attribute::Keyword::PerformedProcedureStepID, performedProcedureStepID);
         CPPUNIT_ASSERT_EQUAL(performedProcedureStepID, series->getPerformedProcedureStepID());
-        CPPUNIT_ASSERT_EQUAL(performedProcedureStepID, series->getByteValue(0x0040, 0x0253));
+        CPPUNIT_ASSERT_EQUAL(
+            performedProcedureStepID,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformedProcedureStepID)
+        );
     }
 }
 
@@ -968,14 +1074,23 @@ void SeriesTest::performedProcedureStepDescriptionTest()
         auto series = data::Series::New();
         series->setPerformedProcedureStepDescription(performedProcedureStepDescription);
         CPPUNIT_ASSERT_EQUAL(performedProcedureStepDescription, series->getPerformedProcedureStepDescription());
-        CPPUNIT_ASSERT_EQUAL(performedProcedureStepDescription, series->getByteValue(0x0040, 0x0254));
+        CPPUNIT_ASSERT_EQUAL(
+            performedProcedureStepDescription,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformedProcedureStepDescription)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0040, 0x0254, performedProcedureStepDescription);
+        series->setByteValue(
+            data::dicom::attribute::Keyword::PerformedProcedureStepDescription,
+            performedProcedureStepDescription
+        );
         CPPUNIT_ASSERT_EQUAL(performedProcedureStepDescription, series->getPerformedProcedureStepDescription());
-        CPPUNIT_ASSERT_EQUAL(performedProcedureStepDescription, series->getByteValue(0x0040, 0x0254));
+        CPPUNIT_ASSERT_EQUAL(
+            performedProcedureStepDescription,
+            series->getByteValue(data::dicom::attribute::Keyword::PerformedProcedureStepDescription)
+        );
     }
 }
 
@@ -989,14 +1104,23 @@ void SeriesTest::commentsOnThePerformedProcedureStepTest()
         auto series = data::Series::New();
         series->setCommentsOnThePerformedProcedureStep(commentsOnThePerformedProcedureStep);
         CPPUNIT_ASSERT_EQUAL(commentsOnThePerformedProcedureStep, series->getCommentsOnThePerformedProcedureStep());
-        CPPUNIT_ASSERT_EQUAL(commentsOnThePerformedProcedureStep, series->getByteValue(0x0040, 0x0280));
+        CPPUNIT_ASSERT_EQUAL(
+            commentsOnThePerformedProcedureStep,
+            series->getByteValue(data::dicom::attribute::Keyword::CommentsOnThePerformedProcedureStep)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0040, 0x0280, commentsOnThePerformedProcedureStep);
+        series->setByteValue(
+            data::dicom::attribute::Keyword::CommentsOnThePerformedProcedureStep,
+            commentsOnThePerformedProcedureStep
+        );
         CPPUNIT_ASSERT_EQUAL(commentsOnThePerformedProcedureStep, series->getCommentsOnThePerformedProcedureStep());
-        CPPUNIT_ASSERT_EQUAL(commentsOnThePerformedProcedureStep, series->getByteValue(0x0040, 0x0280));
+        CPPUNIT_ASSERT_EQUAL(
+            commentsOnThePerformedProcedureStep,
+            series->getByteValue(data::dicom::attribute::Keyword::CommentsOnThePerformedProcedureStep)
+        );
     }
 }
 
@@ -1010,14 +1134,14 @@ void SeriesTest::institutionNameTest()
         auto series = data::Series::New();
         series->setInstitutionName(institutionName);
         CPPUNIT_ASSERT_EQUAL(institutionName, series->getInstitutionName());
-        CPPUNIT_ASSERT_EQUAL(institutionName, series->getByteValue(0x0008, 0x0080));
+        CPPUNIT_ASSERT_EQUAL(institutionName, series->getByteValue(data::dicom::attribute::Keyword::InstitutionName));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0008, 0x0080, institutionName);
+        series->setByteValue(data::dicom::attribute::Keyword::InstitutionName, institutionName);
         CPPUNIT_ASSERT_EQUAL(institutionName, series->getInstitutionName());
-        CPPUNIT_ASSERT_EQUAL(institutionName, series->getByteValue(0x0008, 0x0080));
+        CPPUNIT_ASSERT_EQUAL(institutionName, series->getByteValue(data::dicom::attribute::Keyword::InstitutionName));
     }
 }
 
@@ -1031,14 +1155,14 @@ void SeriesTest::patientNameTest()
         auto series = data::Series::New();
         series->setPatientName(patientName);
         CPPUNIT_ASSERT_EQUAL(patientName, series->getPatientName());
-        CPPUNIT_ASSERT_EQUAL(patientName, series->getByteValue(0x0010, 0x0010));
+        CPPUNIT_ASSERT_EQUAL(patientName, series->getByteValue(data::dicom::attribute::Keyword::PatientName));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0010, 0x0010, patientName);
+        series->setByteValue(data::dicom::attribute::Keyword::PatientName, patientName);
         CPPUNIT_ASSERT_EQUAL(patientName, series->getPatientName());
-        CPPUNIT_ASSERT_EQUAL(patientName, series->getByteValue(0x0010, 0x0010));
+        CPPUNIT_ASSERT_EQUAL(patientName, series->getByteValue(data::dicom::attribute::Keyword::PatientName));
     }
 }
 
@@ -1052,14 +1176,14 @@ void SeriesTest::patientIDTest()
         auto series = data::Series::New();
         series->setPatientID(patientID);
         CPPUNIT_ASSERT_EQUAL(patientID, series->getPatientID());
-        CPPUNIT_ASSERT_EQUAL(patientID, series->getByteValue(0x0010, 0x0020));
+        CPPUNIT_ASSERT_EQUAL(patientID, series->getByteValue(data::dicom::attribute::Keyword::PatientID));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0010, 0x0020, patientID);
+        series->setByteValue(data::dicom::attribute::Keyword::PatientID, patientID);
         CPPUNIT_ASSERT_EQUAL(patientID, series->getPatientID());
-        CPPUNIT_ASSERT_EQUAL(patientID, series->getByteValue(0x0010, 0x0020));
+        CPPUNIT_ASSERT_EQUAL(patientID, series->getByteValue(data::dicom::attribute::Keyword::PatientID));
     }
 }
 
@@ -1073,14 +1197,14 @@ void SeriesTest::patientBirthDateTest()
         auto series = data::Series::New();
         series->setPatientBirthDate(patientBirthDate);
         CPPUNIT_ASSERT_EQUAL(patientBirthDate, series->getPatientBirthDate());
-        CPPUNIT_ASSERT_EQUAL(patientBirthDate, series->getByteValue(0x0010, 0x0030));
+        CPPUNIT_ASSERT_EQUAL(patientBirthDate, series->getByteValue(data::dicom::attribute::Keyword::PatientBirthDate));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0010, 0x0030, patientBirthDate);
+        series->setByteValue(data::dicom::attribute::Keyword::PatientBirthDate, patientBirthDate);
         CPPUNIT_ASSERT_EQUAL(patientBirthDate, series->getPatientBirthDate());
-        CPPUNIT_ASSERT_EQUAL(patientBirthDate, series->getByteValue(0x0010, 0x0030));
+        CPPUNIT_ASSERT_EQUAL(patientBirthDate, series->getByteValue(data::dicom::attribute::Keyword::PatientBirthDate));
     }
 }
 
@@ -1094,14 +1218,14 @@ void SeriesTest::patientSexTest()
         auto series = data::Series::New();
         series->setPatientSex(patientSex);
         CPPUNIT_ASSERT_EQUAL(patientSex, series->getPatientSex());
-        CPPUNIT_ASSERT_EQUAL(patientSex, series->getByteValue(0x0010, 0x0040));
+        CPPUNIT_ASSERT_EQUAL(patientSex, series->getByteValue(data::dicom::attribute::Keyword::PatientSex));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0010, 0x0040, patientSex);
+        series->setByteValue(data::dicom::attribute::Keyword::PatientSex, patientSex);
         CPPUNIT_ASSERT_EQUAL(patientSex, series->getPatientSex());
-        CPPUNIT_ASSERT_EQUAL(patientSex, series->getByteValue(0x0010, 0x0040));
+        CPPUNIT_ASSERT_EQUAL(patientSex, series->getByteValue(data::dicom::attribute::Keyword::PatientSex));
     }
 }
 
@@ -1115,14 +1239,14 @@ void SeriesTest::studyDateTest()
         auto series = data::Series::New();
         series->setStudyDate(studyDate);
         CPPUNIT_ASSERT_EQUAL(studyDate, series->getStudyDate());
-        CPPUNIT_ASSERT_EQUAL(studyDate, series->getByteValue(0x0008, 0x0020));
+        CPPUNIT_ASSERT_EQUAL(studyDate, series->getByteValue(data::dicom::attribute::Keyword::StudyDate));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0008, 0x0020, studyDate);
+        series->setByteValue(data::dicom::attribute::Keyword::StudyDate, studyDate);
         CPPUNIT_ASSERT_EQUAL(studyDate, series->getStudyDate());
-        CPPUNIT_ASSERT_EQUAL(studyDate, series->getByteValue(0x0008, 0x0020));
+        CPPUNIT_ASSERT_EQUAL(studyDate, series->getByteValue(data::dicom::attribute::Keyword::StudyDate));
     }
 }
 
@@ -1136,14 +1260,14 @@ void SeriesTest::studyTimeTest()
         auto series = data::Series::New();
         series->setStudyTime(studyTime);
         CPPUNIT_ASSERT_EQUAL(studyTime, series->getStudyTime());
-        CPPUNIT_ASSERT_EQUAL(studyTime, series->getByteValue(0x0008, 0x0030));
+        CPPUNIT_ASSERT_EQUAL(studyTime, series->getByteValue(data::dicom::attribute::Keyword::StudyTime));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0008, 0x0030, studyTime);
+        series->setByteValue(data::dicom::attribute::Keyword::StudyTime, studyTime);
         CPPUNIT_ASSERT_EQUAL(studyTime, series->getStudyTime());
-        CPPUNIT_ASSERT_EQUAL(studyTime, series->getByteValue(0x0008, 0x0030));
+        CPPUNIT_ASSERT_EQUAL(studyTime, series->getByteValue(data::dicom::attribute::Keyword::StudyTime));
     }
 }
 
@@ -1157,14 +1281,20 @@ void SeriesTest::referringPhysicianNameTest()
         auto series = data::Series::New();
         series->setReferringPhysicianName(referringPhysicianName);
         CPPUNIT_ASSERT_EQUAL(referringPhysicianName, series->getReferringPhysicianName());
-        CPPUNIT_ASSERT_EQUAL(referringPhysicianName, series->getByteValue(0x0008, 0x0090));
+        CPPUNIT_ASSERT_EQUAL(
+            referringPhysicianName,
+            series->getByteValue(data::dicom::attribute::Keyword::ReferringPhysicianName)
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0008, 0x0090, referringPhysicianName);
+        series->setByteValue(data::dicom::attribute::Keyword::ReferringPhysicianName, referringPhysicianName);
         CPPUNIT_ASSERT_EQUAL(referringPhysicianName, series->getReferringPhysicianName());
-        CPPUNIT_ASSERT_EQUAL(referringPhysicianName, series->getByteValue(0x0008, 0x0090));
+        CPPUNIT_ASSERT_EQUAL(
+            referringPhysicianName,
+            series->getByteValue(data::dicom::attribute::Keyword::ReferringPhysicianName)
+        );
     }
 }
 
@@ -1178,14 +1308,14 @@ void SeriesTest::studyDescriptionTest()
         auto series = data::Series::New();
         series->setStudyDescription(studyDescription);
         CPPUNIT_ASSERT_EQUAL(studyDescription, series->getStudyDescription());
-        CPPUNIT_ASSERT_EQUAL(studyDescription, series->getByteValue(0x0008, 0x1030));
+        CPPUNIT_ASSERT_EQUAL(studyDescription, series->getByteValue(data::dicom::attribute::Keyword::StudyDescription));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0008, 0x1030, studyDescription);
+        series->setByteValue(data::dicom::attribute::Keyword::StudyDescription, studyDescription);
         CPPUNIT_ASSERT_EQUAL(studyDescription, series->getStudyDescription());
-        CPPUNIT_ASSERT_EQUAL(studyDescription, series->getByteValue(0x0008, 0x1030));
+        CPPUNIT_ASSERT_EQUAL(studyDescription, series->getByteValue(data::dicom::attribute::Keyword::StudyDescription));
     }
 }
 
@@ -1199,14 +1329,14 @@ void SeriesTest::studyInstanceUIDTest()
         auto series = data::Series::New();
         series->setStudyInstanceUID(studyInstanceUID);
         CPPUNIT_ASSERT_EQUAL(studyInstanceUID, series->getStudyInstanceUID());
-        CPPUNIT_ASSERT_EQUAL(studyInstanceUID, series->getByteValue(0x0020, 0x000d));
+        CPPUNIT_ASSERT_EQUAL(studyInstanceUID, series->getByteValue(data::dicom::attribute::Keyword::StudyInstanceUID));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0020, 0x000d, studyInstanceUID);
+        series->setByteValue(data::dicom::attribute::Keyword::StudyInstanceUID, studyInstanceUID);
         CPPUNIT_ASSERT_EQUAL(studyInstanceUID, series->getStudyInstanceUID());
-        CPPUNIT_ASSERT_EQUAL(studyInstanceUID, series->getByteValue(0x0020, 0x000d));
+        CPPUNIT_ASSERT_EQUAL(studyInstanceUID, series->getByteValue(data::dicom::attribute::Keyword::StudyInstanceUID));
     }
 }
 
@@ -1220,14 +1350,14 @@ void SeriesTest::studyIDTest()
         auto series = data::Series::New();
         series->setStudyID(studyID);
         CPPUNIT_ASSERT_EQUAL(studyID, series->getStudyID());
-        CPPUNIT_ASSERT_EQUAL(studyID, series->getByteValue(0x0020, 0x0010));
+        CPPUNIT_ASSERT_EQUAL(studyID, series->getByteValue(data::dicom::attribute::Keyword::StudyID));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0020, 0x0010, studyID);
+        series->setByteValue(data::dicom::attribute::Keyword::StudyID, studyID);
         CPPUNIT_ASSERT_EQUAL(studyID, series->getStudyID());
-        CPPUNIT_ASSERT_EQUAL(studyID, series->getByteValue(0x0020, 0x0010));
+        CPPUNIT_ASSERT_EQUAL(studyID, series->getByteValue(data::dicom::attribute::Keyword::StudyID));
     }
 }
 
@@ -1241,14 +1371,14 @@ void SeriesTest::patientAgeTest()
         auto series = data::Series::New();
         series->setPatientAge(patientAge);
         CPPUNIT_ASSERT_EQUAL(patientAge, series->getPatientAge());
-        CPPUNIT_ASSERT_EQUAL(patientAge, series->getByteValue(0x0010, 0x1010));
+        CPPUNIT_ASSERT_EQUAL(patientAge, series->getByteValue(data::dicom::attribute::Keyword::PatientAge));
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0010, 0x1010, patientAge);
+        series->setByteValue(data::dicom::attribute::Keyword::PatientAge, patientAge);
         CPPUNIT_ASSERT_EQUAL(patientAge, series->getPatientAge());
-        CPPUNIT_ASSERT_EQUAL(patientAge, series->getByteValue(0x0010, 0x1010));
+        CPPUNIT_ASSERT_EQUAL(patientAge, series->getByteValue(data::dicom::attribute::Keyword::PatientAge));
     }
 }
 
@@ -1262,14 +1392,22 @@ void SeriesTest::patientSizeTest()
         auto series = data::Series::New();
         series->setPatientSize(patientSize);
         CPPUNIT_ASSERT_EQUAL(patientSize, *series->getPatientSize());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(patientSize, std::stod(series->getByteValue(0x0010, 0x1020)), 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(
+            patientSize,
+            std::stod(series->getByteValue(data::dicom::attribute::Keyword::PatientSize)),
+            0.00001
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0010, 0x1020, std::to_string(patientSize));
+        series->setByteValue(data::dicom::attribute::Keyword::PatientSize, std::to_string(patientSize));
         CPPUNIT_ASSERT_EQUAL(patientSize, *series->getPatientSize());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(patientSize, std::stod(series->getByteValue(0x0010, 0x1020)), 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(
+            patientSize,
+            std::stod(series->getByteValue(data::dicom::attribute::Keyword::PatientSize)),
+            0.00001
+        );
     }
 
     {
@@ -1278,7 +1416,7 @@ void SeriesTest::patientSizeTest()
         series->setPatientSize();
 
         CPPUNIT_ASSERT(!series->getPatientSize());
-        CPPUNIT_ASSERT_EQUAL(std::string(), series->getByteValue(0x0010, 0x1020));
+        CPPUNIT_ASSERT_EQUAL(std::string(), series->getByteValue(data::dicom::attribute::Keyword::PatientSize));
     }
 }
 
@@ -1292,14 +1430,22 @@ void SeriesTest::patientWeightTest()
         auto series = data::Series::New();
         series->setPatientWeight(patientWeight);
         CPPUNIT_ASSERT_EQUAL(patientWeight, *series->getPatientWeight());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(patientWeight, std::stod(series->getByteValue(0x0010, 0x1030)), 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(
+            patientWeight,
+            std::stod(series->getByteValue(data::dicom::attribute::Keyword::PatientWeight)),
+            0.00001
+        );
     }
 
     {
         auto series = data::Series::New();
-        series->setByteValue(0x0010, 0x1030, std::to_string(patientWeight));
+        series->setByteValue(data::dicom::attribute::Keyword::PatientWeight, std::to_string(patientWeight));
         CPPUNIT_ASSERT_EQUAL(patientWeight, *series->getPatientWeight());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(patientWeight, std::stod(series->getByteValue(0x0010, 0x1030)), 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(
+            patientWeight,
+            std::stod(series->getByteValue(data::dicom::attribute::Keyword::PatientWeight)),
+            0.00001
+        );
     }
 
     {
@@ -1308,7 +1454,7 @@ void SeriesTest::patientWeightTest()
         series->setPatientWeight();
 
         CPPUNIT_ASSERT(!series->getPatientWeight());
-        CPPUNIT_ASSERT_EQUAL(std::string(), series->getByteValue(0x0010, 0x1030));
+        CPPUNIT_ASSERT_EQUAL(std::string(), series->getByteValue(data::dicom::attribute::Keyword::PatientWeight));
     }
 }
 
@@ -1322,14 +1468,14 @@ void SeriesTest::acquisitionDateTest()
         auto series = data::ImageSeries::New();
         series->setAcquisitionDate(acquisitionDate);
         CPPUNIT_ASSERT_EQUAL(acquisitionDate, series->getAcquisitionDate());
-        CPPUNIT_ASSERT_EQUAL(acquisitionDate, series->getByteValue(0x0008, 0x0022));
+        CPPUNIT_ASSERT_EQUAL(acquisitionDate, series->getByteValue(data::dicom::attribute::Keyword::AcquisitionDate));
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0008, 0x0022, acquisitionDate);
+        series->setByteValue(data::dicom::attribute::Keyword::AcquisitionDate, acquisitionDate);
         CPPUNIT_ASSERT_EQUAL(acquisitionDate, series->getAcquisitionDate());
-        CPPUNIT_ASSERT_EQUAL(acquisitionDate, series->getByteValue(0x0008, 0x0022));
+        CPPUNIT_ASSERT_EQUAL(acquisitionDate, series->getByteValue(data::dicom::attribute::Keyword::AcquisitionDate));
     }
 }
 
@@ -1343,14 +1489,14 @@ void SeriesTest::acquisitionTimeTest()
         auto series = data::ImageSeries::New();
         series->setAcquisitionTime(acquisitionTime);
         CPPUNIT_ASSERT_EQUAL(acquisitionTime, series->getAcquisitionTime());
-        CPPUNIT_ASSERT_EQUAL(acquisitionTime, series->getByteValue(0x0008, 0x0032));
+        CPPUNIT_ASSERT_EQUAL(acquisitionTime, series->getByteValue(data::dicom::attribute::Keyword::AcquisitionTime));
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0008, 0x0032, acquisitionTime);
+        series->setByteValue(data::dicom::attribute::Keyword::AcquisitionTime, acquisitionTime);
         CPPUNIT_ASSERT_EQUAL(acquisitionTime, series->getAcquisitionTime());
-        CPPUNIT_ASSERT_EQUAL(acquisitionTime, series->getByteValue(0x0008, 0x0032));
+        CPPUNIT_ASSERT_EQUAL(acquisitionTime, series->getByteValue(data::dicom::attribute::Keyword::AcquisitionTime));
     }
 }
 
@@ -1364,14 +1510,20 @@ void SeriesTest::acquisitionNumberTest()
         auto series = data::ImageSeries::New();
         series->setAcquisitionNumber(acquisitionNumber);
         CPPUNIT_ASSERT_EQUAL(acquisitionNumber, series->getAcquisitionNumber().value_or(0));
-        CPPUNIT_ASSERT_EQUAL(std::to_string(acquisitionNumber), series->getByteValue(0x0020, 0x0012));
+        CPPUNIT_ASSERT_EQUAL(
+            std::to_string(acquisitionNumber),
+            series->getByteValue(data::dicom::attribute::Keyword::AcquisitionNumber)
+        );
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0020, 0x0012, std::to_string(acquisitionNumber));
+        series->setByteValue(data::dicom::attribute::Keyword::AcquisitionNumber, std::to_string(acquisitionNumber));
         CPPUNIT_ASSERT_EQUAL(acquisitionNumber, series->getAcquisitionNumber().value_or(0));
-        CPPUNIT_ASSERT_EQUAL(std::to_string(acquisitionNumber), series->getByteValue(0x0020, 0x0012));
+        CPPUNIT_ASSERT_EQUAL(
+            std::to_string(acquisitionNumber),
+            series->getByteValue(data::dicom::attribute::Keyword::AcquisitionNumber)
+        );
     }
 }
 
@@ -1385,14 +1537,20 @@ void SeriesTest::instanceNumberTest()
         auto series = data::ImageSeries::New();
         series->setInstanceNumber(instanceNumber);
         CPPUNIT_ASSERT_EQUAL(instanceNumber, series->getInstanceNumber().value_or(0));
-        CPPUNIT_ASSERT_EQUAL(std::to_string(instanceNumber), series->getByteValue(0x0020, 0x0013));
+        CPPUNIT_ASSERT_EQUAL(
+            std::to_string(instanceNumber),
+            series->getByteValue(data::dicom::attribute::Keyword::InstanceNumber)
+        );
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0020, 0x0013, std::to_string(instanceNumber));
+        series->setByteValue(data::dicom::attribute::Keyword::InstanceNumber, std::to_string(instanceNumber));
         CPPUNIT_ASSERT_EQUAL(instanceNumber, series->getInstanceNumber().value_or(0));
-        CPPUNIT_ASSERT_EQUAL(std::to_string(instanceNumber), series->getByteValue(0x0020, 0x0013));
+        CPPUNIT_ASSERT_EQUAL(
+            std::to_string(instanceNumber),
+            series->getByteValue(data::dicom::attribute::Keyword::InstanceNumber)
+        );
     }
 }
 
@@ -1406,14 +1564,14 @@ void SeriesTest::contentTimeTest()
         auto series = data::ImageSeries::New();
         series->setContentTime(contentTime);
         CPPUNIT_ASSERT_EQUAL(contentTime, series->getContentTime());
-        CPPUNIT_ASSERT_EQUAL(contentTime, series->getByteValue(0x0008, 0x0033));
+        CPPUNIT_ASSERT_EQUAL(contentTime, series->getByteValue(data::dicom::attribute::Keyword::ContentTime));
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0008, 0x0033, contentTime);
+        series->setByteValue(data::dicom::attribute::Keyword::ContentTime, contentTime);
         CPPUNIT_ASSERT_EQUAL(contentTime, series->getContentTime());
-        CPPUNIT_ASSERT_EQUAL(contentTime, series->getByteValue(0x0008, 0x0033));
+        CPPUNIT_ASSERT_EQUAL(contentTime, series->getByteValue(data::dicom::attribute::Keyword::ContentTime));
     }
 }
 
@@ -1427,14 +1585,20 @@ void SeriesTest::contrastBolusAgentTest()
         auto series = data::ImageSeries::New();
         series->setContrastBolusAgent(contrastBolusAgent);
         CPPUNIT_ASSERT_EQUAL(contrastBolusAgent, series->getContrastBolusAgent());
-        CPPUNIT_ASSERT_EQUAL(contrastBolusAgent, series->getByteValue(0x0018, 0x0010));
+        CPPUNIT_ASSERT_EQUAL(
+            contrastBolusAgent,
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusAgent)
+        );
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0018, 0x0010, contrastBolusAgent);
+        series->setByteValue(data::dicom::attribute::Keyword::ContrastBolusAgent, contrastBolusAgent);
         CPPUNIT_ASSERT_EQUAL(contrastBolusAgent, series->getContrastBolusAgent());
-        CPPUNIT_ASSERT_EQUAL(contrastBolusAgent, series->getByteValue(0x0018, 0x0010));
+        CPPUNIT_ASSERT_EQUAL(
+            contrastBolusAgent,
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusAgent)
+        );
     }
 }
 
@@ -1448,14 +1612,20 @@ void SeriesTest::contrastBolusRouteTest()
         auto series = data::ImageSeries::New();
         series->setContrastBolusRoute(contrastBolusRoute);
         CPPUNIT_ASSERT_EQUAL(contrastBolusRoute, series->getContrastBolusRoute());
-        CPPUNIT_ASSERT_EQUAL(contrastBolusRoute, series->getByteValue(0x0018, 0x1040));
+        CPPUNIT_ASSERT_EQUAL(
+            contrastBolusRoute,
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusRoute)
+        );
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0018, 0x1040, contrastBolusRoute);
+        series->setByteValue(data::dicom::attribute::Keyword::ContrastBolusRoute, contrastBolusRoute);
         CPPUNIT_ASSERT_EQUAL(contrastBolusRoute, series->getContrastBolusRoute());
-        CPPUNIT_ASSERT_EQUAL(contrastBolusRoute, series->getByteValue(0x0018, 0x1040));
+        CPPUNIT_ASSERT_EQUAL(
+            contrastBolusRoute,
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusRoute)
+        );
     }
 }
 
@@ -1469,14 +1639,22 @@ void SeriesTest::contrastBolusVolumeTest()
         auto series = data::ImageSeries::New();
         series->setContrastBolusVolume(contrastBolusVolume);
         CPPUNIT_ASSERT_EQUAL(contrastBolusVolume, *series->getContrastBolusVolume());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(contrastBolusVolume, std::stod(series->getByteValue(0x0018, 0x1041)), 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(
+            contrastBolusVolume,
+            std::stod(series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusVolume)),
+            0.00001
+        );
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0018, 0x1041, std::to_string(contrastBolusVolume));
+        series->setByteValue(data::dicom::attribute::Keyword::ContrastBolusVolume, std::to_string(contrastBolusVolume));
         CPPUNIT_ASSERT_EQUAL(contrastBolusVolume, *series->getContrastBolusVolume());
-        CPPUNIT_ASSERT_DOUBLES_EQUAL(contrastBolusVolume, std::stod(series->getByteValue(0x0018, 0x1041)), 0.00001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(
+            contrastBolusVolume,
+            std::stod(series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusVolume)),
+            0.00001
+        );
     }
 
     {
@@ -1485,7 +1663,7 @@ void SeriesTest::contrastBolusVolumeTest()
         series->setContrastBolusVolume();
 
         CPPUNIT_ASSERT(!series->getContrastBolusVolume());
-        CPPUNIT_ASSERT_EQUAL(std::string(), series->getByteValue(0x0018, 0x1041));
+        CPPUNIT_ASSERT_EQUAL(std::string(), series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusVolume));
     }
 }
 
@@ -1499,14 +1677,20 @@ void SeriesTest::contrastBolusStartTimeTest()
         auto series = data::ImageSeries::New();
         series->setContrastBolusStartTime(contrastBolusStartTime);
         CPPUNIT_ASSERT_EQUAL(contrastBolusStartTime, series->getContrastBolusStartTime());
-        CPPUNIT_ASSERT_EQUAL(contrastBolusStartTime, series->getByteValue(0x0018, 0x1042));
+        CPPUNIT_ASSERT_EQUAL(
+            contrastBolusStartTime,
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusStartTime)
+        );
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0018, 0x1042, contrastBolusStartTime);
+        series->setByteValue(data::dicom::attribute::Keyword::ContrastBolusStartTime, contrastBolusStartTime);
         CPPUNIT_ASSERT_EQUAL(contrastBolusStartTime, series->getContrastBolusStartTime());
-        CPPUNIT_ASSERT_EQUAL(contrastBolusStartTime, series->getByteValue(0x0018, 0x1042));
+        CPPUNIT_ASSERT_EQUAL(
+            contrastBolusStartTime,
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusStartTime)
+        );
     }
 }
 
@@ -1520,14 +1704,20 @@ void SeriesTest::contrastBolusStopTimeTest()
         auto series = data::ImageSeries::New();
         series->setContrastBolusStopTime(contrastBolusStopTime);
         CPPUNIT_ASSERT_EQUAL(contrastBolusStopTime, series->getContrastBolusStopTime());
-        CPPUNIT_ASSERT_EQUAL(contrastBolusStopTime, series->getByteValue(0x0018, 0x1043));
+        CPPUNIT_ASSERT_EQUAL(
+            contrastBolusStopTime,
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusStopTime)
+        );
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0018, 0x1043, contrastBolusStopTime);
+        series->setByteValue(data::dicom::attribute::Keyword::ContrastBolusStopTime, contrastBolusStopTime);
         CPPUNIT_ASSERT_EQUAL(contrastBolusStopTime, series->getContrastBolusStopTime());
-        CPPUNIT_ASSERT_EQUAL(contrastBolusStopTime, series->getByteValue(0x0018, 0x1043));
+        CPPUNIT_ASSERT_EQUAL(
+            contrastBolusStopTime,
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusStopTime)
+        );
     }
 }
 
@@ -1543,18 +1733,21 @@ void SeriesTest::contrastBolusTotalDoseTest()
         CPPUNIT_ASSERT_EQUAL(contrastBolusTotalDose, *series->getContrastBolusTotalDose());
         CPPUNIT_ASSERT_DOUBLES_EQUAL(
             contrastBolusTotalDose,
-            std::stod(series->getByteValue(0x0018, 0x1044)),
+            std::stod(series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusTotalDose)),
             0.00001
         );
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0018, 0x1044, std::to_string(contrastBolusTotalDose));
+        series->setByteValue(
+            data::dicom::attribute::Keyword::ContrastBolusTotalDose,
+            std::to_string(contrastBolusTotalDose)
+        );
         CPPUNIT_ASSERT_EQUAL(contrastBolusTotalDose, *series->getContrastBolusTotalDose());
         CPPUNIT_ASSERT_DOUBLES_EQUAL(
             contrastBolusTotalDose,
-            std::stod(series->getByteValue(0x0018, 0x1044)),
+            std::stod(series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusTotalDose)),
             0.00001
         );
     }
@@ -1565,7 +1758,10 @@ void SeriesTest::contrastBolusTotalDoseTest()
         series->setContrastBolusTotalDose();
 
         CPPUNIT_ASSERT(!series->getContrastBolusTotalDose());
-        CPPUNIT_ASSERT_EQUAL(std::string(), series->getByteValue(0x0018, 0x1044));
+        CPPUNIT_ASSERT_EQUAL(
+            std::string(),
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusTotalDose)
+        );
     }
 }
 
@@ -1591,40 +1787,52 @@ void SeriesTest::contrastFlowRateTest()
         auto series = data::ImageSeries::New();
         series->setContrastFlowRates(contrastFlowRates);
         CPPUNIT_ASSERT(core::tools::is_equal(contrastFlowRates, series->getContrastFlowRates()));
-        CPPUNIT_ASSERT(contrastFlowRateStrings == series->getByteValues(0x0018, 0x1046));
+        CPPUNIT_ASSERT(
+            contrastFlowRateStrings
+            == series->getByteValues(data::dicom::attribute::Keyword::ContrastFlowRate)
+        );
 
         CPPUNIT_ASSERT_EQUAL(contrastFlowRate, series->getContrastFlowRate());
-        CPPUNIT_ASSERT_EQUAL(contrastFlowRate, series->getByteValue(0x0018, 0x1046));
+        CPPUNIT_ASSERT_EQUAL(contrastFlowRate, series->getByteValue(data::dicom::attribute::Keyword::ContrastFlowRate));
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValues(0x0018, 0x1046, contrastFlowRateStrings);
+        series->setByteValues(data::dicom::attribute::Keyword::ContrastFlowRate, contrastFlowRateStrings);
         CPPUNIT_ASSERT(contrastFlowRates == series->getContrastFlowRates());
-        CPPUNIT_ASSERT(contrastFlowRateStrings == series->getByteValues(0x0018, 0x1046));
+        CPPUNIT_ASSERT(
+            contrastFlowRateStrings
+            == series->getByteValues(data::dicom::attribute::Keyword::ContrastFlowRate)
+        );
 
         CPPUNIT_ASSERT_EQUAL(contrastFlowRate, series->getContrastFlowRate());
-        CPPUNIT_ASSERT_EQUAL(contrastFlowRate, series->getByteValue(0x0018, 0x1046));
+        CPPUNIT_ASSERT_EQUAL(contrastFlowRate, series->getByteValue(data::dicom::attribute::Keyword::ContrastFlowRate));
     }
 
     {
         auto series = data::ImageSeries::New();
         series->setContrastFlowRate(contrastFlowRate);
         CPPUNIT_ASSERT(contrastFlowRates == series->getContrastFlowRates());
-        CPPUNIT_ASSERT(contrastFlowRateStrings == series->getByteValues(0x0018, 0x1046));
+        CPPUNIT_ASSERT(
+            contrastFlowRateStrings
+            == series->getByteValues(data::dicom::attribute::Keyword::ContrastFlowRate)
+        );
 
         CPPUNIT_ASSERT_EQUAL(contrastFlowRate, series->getContrastFlowRate());
-        CPPUNIT_ASSERT_EQUAL(contrastFlowRate, series->getByteValue(0x0018, 0x1046));
+        CPPUNIT_ASSERT_EQUAL(contrastFlowRate, series->getByteValue(data::dicom::attribute::Keyword::ContrastFlowRate));
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0018, 0x1046, contrastFlowRate);
+        series->setByteValue(data::dicom::attribute::Keyword::ContrastFlowRate, contrastFlowRate);
         CPPUNIT_ASSERT(contrastFlowRates == series->getContrastFlowRates());
-        CPPUNIT_ASSERT(contrastFlowRateStrings == series->getByteValues(0x0018, 0x1046));
+        CPPUNIT_ASSERT(
+            contrastFlowRateStrings
+            == series->getByteValues(data::dicom::attribute::Keyword::ContrastFlowRate)
+        );
 
         CPPUNIT_ASSERT_EQUAL(contrastFlowRate, series->getContrastFlowRate());
-        CPPUNIT_ASSERT_EQUAL(contrastFlowRate, series->getByteValue(0x0018, 0x1046));
+        CPPUNIT_ASSERT_EQUAL(contrastFlowRate, series->getByteValue(data::dicom::attribute::Keyword::ContrastFlowRate));
     }
 }
 
@@ -1650,40 +1858,64 @@ void SeriesTest::contrastFlowDurationTest()
         auto series = data::ImageSeries::New();
         series->setContrastFlowDurations(contrastFlowDurations);
         CPPUNIT_ASSERT(core::tools::is_equal(contrastFlowDurations, series->getContrastFlowDurations()));
-        CPPUNIT_ASSERT(contrastFlowDurationStrings == series->getByteValues(0x0018, 0x1047));
+        CPPUNIT_ASSERT(
+            contrastFlowDurationStrings
+            == series->getByteValues(data::dicom::attribute::Keyword::ContrastFlowDuration)
+        );
 
         CPPUNIT_ASSERT_EQUAL(contrastFlowDuration, series->getContrastFlowDuration());
-        CPPUNIT_ASSERT_EQUAL(contrastFlowDuration, series->getByteValue(0x0018, 0x1047));
+        CPPUNIT_ASSERT_EQUAL(
+            contrastFlowDuration,
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastFlowDuration)
+        );
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValues(0x0018, 0x1047, contrastFlowDurationStrings);
+        series->setByteValues(data::dicom::attribute::Keyword::ContrastFlowDuration, contrastFlowDurationStrings);
         CPPUNIT_ASSERT(contrastFlowDurations == series->getContrastFlowDurations());
-        CPPUNIT_ASSERT(contrastFlowDurationStrings == series->getByteValues(0x0018, 0x1047));
+        CPPUNIT_ASSERT(
+            contrastFlowDurationStrings
+            == series->getByteValues(data::dicom::attribute::Keyword::ContrastFlowDuration)
+        );
 
         CPPUNIT_ASSERT_EQUAL(contrastFlowDuration, series->getContrastFlowDuration());
-        CPPUNIT_ASSERT_EQUAL(contrastFlowDuration, series->getByteValue(0x0018, 0x1047));
+        CPPUNIT_ASSERT_EQUAL(
+            contrastFlowDuration,
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastFlowDuration)
+        );
     }
 
     {
         auto series = data::ImageSeries::New();
         series->setContrastFlowDuration(contrastFlowDuration);
         CPPUNIT_ASSERT(contrastFlowDurations == series->getContrastFlowDurations());
-        CPPUNIT_ASSERT(contrastFlowDurationStrings == series->getByteValues(0x0018, 0x1047));
+        CPPUNIT_ASSERT(
+            contrastFlowDurationStrings
+            == series->getByteValues(data::dicom::attribute::Keyword::ContrastFlowDuration)
+        );
 
         CPPUNIT_ASSERT_EQUAL(contrastFlowDuration, series->getContrastFlowDuration());
-        CPPUNIT_ASSERT_EQUAL(contrastFlowDuration, series->getByteValue(0x0018, 0x1047));
+        CPPUNIT_ASSERT_EQUAL(
+            contrastFlowDuration,
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastFlowDuration)
+        );
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0018, 0x1047, contrastFlowDuration);
+        series->setByteValue(data::dicom::attribute::Keyword::ContrastFlowDuration, contrastFlowDuration);
         CPPUNIT_ASSERT(contrastFlowDurations == series->getContrastFlowDurations());
-        CPPUNIT_ASSERT(contrastFlowDurationStrings == series->getByteValues(0x0018, 0x1047));
+        CPPUNIT_ASSERT(
+            contrastFlowDurationStrings
+            == series->getByteValues(data::dicom::attribute::Keyword::ContrastFlowDuration)
+        );
 
         CPPUNIT_ASSERT_EQUAL(contrastFlowDuration, series->getContrastFlowDuration());
-        CPPUNIT_ASSERT_EQUAL(contrastFlowDuration, series->getByteValue(0x0018, 0x1047));
+        CPPUNIT_ASSERT_EQUAL(
+            contrastFlowDuration,
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastFlowDuration)
+        );
     }
 }
 
@@ -1697,14 +1929,20 @@ void SeriesTest::contrastBolusIngredientTest()
         auto series = data::ImageSeries::New();
         series->setContrastBolusIngredient(contrastBolusIngredient);
         CPPUNIT_ASSERT_EQUAL(contrastBolusIngredient, series->getContrastBolusIngredient());
-        CPPUNIT_ASSERT_EQUAL(contrastBolusIngredient, series->getByteValue(0x0018, 0x1048));
+        CPPUNIT_ASSERT_EQUAL(
+            contrastBolusIngredient,
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusIngredient)
+        );
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0018, 0x1048, contrastBolusIngredient);
+        series->setByteValue(data::dicom::attribute::Keyword::ContrastBolusIngredient, contrastBolusIngredient);
         CPPUNIT_ASSERT_EQUAL(contrastBolusIngredient, series->getContrastBolusIngredient());
-        CPPUNIT_ASSERT_EQUAL(contrastBolusIngredient, series->getByteValue(0x0018, 0x1048));
+        CPPUNIT_ASSERT_EQUAL(
+            contrastBolusIngredient,
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusIngredient)
+        );
     }
 }
 
@@ -1723,21 +1961,24 @@ void SeriesTest::contrastBolusIngredientConcentrationTest()
         );
         CPPUNIT_ASSERT_DOUBLES_EQUAL(
             contrastBolusIngredientConcentration,
-            std::stod(series->getByteValue(0x0018, 0x1049)),
+            std::stod(series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusIngredientConcentration)),
             0.00001
         );
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0018, 0x1049, std::to_string(contrastBolusIngredientConcentration));
+        series->setByteValue(
+            data::dicom::attribute::Keyword::ContrastBolusIngredientConcentration,
+            std::to_string(contrastBolusIngredientConcentration)
+        );
         CPPUNIT_ASSERT_EQUAL(
             contrastBolusIngredientConcentration,
             *series->getContrastBolusIngredientConcentration()
         );
         CPPUNIT_ASSERT_DOUBLES_EQUAL(
             contrastBolusIngredientConcentration,
-            std::stod(series->getByteValue(0x0018, 0x1049)),
+            std::stod(series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusIngredientConcentration)),
             0.00001
         );
     }
@@ -1748,7 +1989,10 @@ void SeriesTest::contrastBolusIngredientConcentrationTest()
         series->setContrastBolusIngredientConcentration();
 
         CPPUNIT_ASSERT(!series->getContrastBolusIngredientConcentration());
-        CPPUNIT_ASSERT_EQUAL(std::string(), series->getByteValue(0x0018, 0x1049));
+        CPPUNIT_ASSERT_EQUAL(
+            std::string(),
+            series->getByteValue(data::dicom::attribute::Keyword::ContrastBolusIngredientConcentration)
+        );
     }
 }
 
@@ -1763,14 +2007,14 @@ void SeriesTest::rowsTest()
         auto series = data::ImageSeries::New();
         series->setRows(rows);
         CPPUNIT_ASSERT_EQUAL(rows, series->getRows().value_or(0));
-        CPPUNIT_ASSERT_EQUAL(rows_bytes, series->getByteValue(0x0028, 0x0010));
+        CPPUNIT_ASSERT_EQUAL(rows_bytes, series->getByteValue(data::dicom::attribute::Keyword::Rows));
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0028, 0x0010, rows_bytes);
+        series->setByteValue(data::dicom::attribute::Keyword::Rows, rows_bytes);
         CPPUNIT_ASSERT_EQUAL(rows, series->getRows().value_or(0));
-        CPPUNIT_ASSERT_EQUAL(rows_bytes, series->getByteValue(0x0028, 0x0010));
+        CPPUNIT_ASSERT_EQUAL(rows_bytes, series->getByteValue(data::dicom::attribute::Keyword::Rows));
     }
 }
 
@@ -1785,14 +2029,14 @@ void SeriesTest::columnsTest()
         auto series = data::ImageSeries::New();
         series->setColumns(columns);
         CPPUNIT_ASSERT_EQUAL(columns, series->getColumns().value_or(0));
-        CPPUNIT_ASSERT_EQUAL(columns_bytes, series->getByteValue(0x0028, 0x0011));
+        CPPUNIT_ASSERT_EQUAL(columns_bytes, series->getByteValue(data::dicom::attribute::Keyword::Columns));
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0028, 0x0011, columns_bytes);
+        series->setByteValue(data::dicom::attribute::Keyword::Columns, columns_bytes);
         CPPUNIT_ASSERT_EQUAL(columns, series->getColumns().value_or(0));
-        CPPUNIT_ASSERT_EQUAL(columns_bytes, series->getByteValue(0x0028, 0x0011));
+        CPPUNIT_ASSERT_EQUAL(columns_bytes, series->getByteValue(data::dicom::attribute::Keyword::Columns));
     }
 }
 
@@ -1806,14 +2050,14 @@ void SeriesTest::windowCenterTest()
         auto series = data::ImageSeries::New();
         series->setWindowCenter({center});
         CPPUNIT_ASSERT_EQUAL(center, series->getWindowCenter().front());
-        CPPUNIT_ASSERT_EQUAL(center, std::stod(series->getByteValue(0x0028, 0x1050)));
+        CPPUNIT_ASSERT_EQUAL(center, std::stod(series->getByteValue(data::dicom::attribute::Keyword::WindowCenter)));
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0028, 0x1050, std::to_string(center));
+        series->setByteValue(data::dicom::attribute::Keyword::WindowCenter, std::to_string(center));
         CPPUNIT_ASSERT_EQUAL(center, series->getWindowCenter().front());
-        CPPUNIT_ASSERT_EQUAL(center, std::stod(series->getByteValue(0x0028, 0x1050)));
+        CPPUNIT_ASSERT_EQUAL(center, std::stod(series->getByteValue(data::dicom::attribute::Keyword::WindowCenter)));
     }
 }
 
@@ -1827,14 +2071,14 @@ void SeriesTest::windowWidthTest()
         auto series = data::ImageSeries::New();
         series->setWindowWidth({width});
         CPPUNIT_ASSERT_EQUAL(width, series->getWindowWidth().front());
-        CPPUNIT_ASSERT_EQUAL(width, std::stod(series->getByteValue(0x0028, 0x1051)));
+        CPPUNIT_ASSERT_EQUAL(width, std::stod(series->getByteValue(data::dicom::attribute::Keyword::WindowWidth)));
     }
 
     {
         auto series = data::ImageSeries::New();
-        series->setByteValue(0x0028, 0x1051, std::to_string(width));
+        series->setByteValue(data::dicom::attribute::Keyword::WindowWidth, std::to_string(width));
         CPPUNIT_ASSERT_EQUAL(width, series->getWindowWidth().front());
-        CPPUNIT_ASSERT_EQUAL(width, std::stod(series->getByteValue(0x0028, 0x1051)));
+        CPPUNIT_ASSERT_EQUAL(width, std::stod(series->getByteValue(data::dicom::attribute::Keyword::WindowWidth)));
     }
 }
 
@@ -1846,10 +2090,14 @@ void SeriesTest::imagePositionPatientTest()
 
     {
         auto series = data::ImageSeries::New();
+
+        // We need to set the SOP class UID to let Sight know how to store the image position patient
+        series->setSOPKeyword(data::dicom::sop::Keyword::CTImageStorage);
+
         series->setImagePositionPatient(position);
         CPPUNIT_ASSERT(position == series->getImagePositionPatient());
 
-        const auto values = series->getByteValues(0x0020, 0x0032);
+        const auto values = series->getByteValues(data::dicom::attribute::Keyword::ImagePositionPatient);
         const std::vector<double> actual {
             std::stod(values[0]),
             std::stod(values[1]),
@@ -1861,9 +2109,12 @@ void SeriesTest::imagePositionPatientTest()
 
     {
         auto series = data::ImageSeries::New();
+
+        // We need to set the SOP class UID to let Sight know how to read the image position patient
+        series->setSOPKeyword(data::dicom::sop::Keyword::CTImageStorage);
+
         series->setByteValues(
-            0x0020,
-            0x0032,
+            data::dicom::attribute::Keyword::ImagePositionPatient,
             {
                 std::to_string(position[0]),
                 std::to_string(position[1]),
@@ -1872,7 +2123,7 @@ void SeriesTest::imagePositionPatientTest()
 
         CPPUNIT_ASSERT(position == series->getImagePositionPatient());
 
-        const auto values = series->getByteValues(0x0020, 0x0032);
+        const auto values = series->getByteValues(data::dicom::attribute::Keyword::ImagePositionPatient);
         const std::vector<double> actual {
             std::stod(values[0]),
             std::stod(values[1]),
@@ -1880,6 +2131,17 @@ void SeriesTest::imagePositionPatientTest()
         };
 
         CPPUNIT_ASSERT(position == actual);
+    }
+
+    {
+        auto series = data::ImageSeries::New();
+
+        // We need to set the SOP class UID to let Sight know how to read the image position patient
+        series->setSOPKeyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+
+        // test Multi-Frame image
+        series->setImagePositionPatient(position);
+        CPPUNIT_ASSERT(position == series->getImagePositionPatient());
     }
 }
 
@@ -1891,10 +2153,14 @@ void SeriesTest::imageOrientationPatientTest()
 
     {
         auto series = data::ImageSeries::New();
+
+        // We need to set the SOP class UID to let Sight know how to store the image orientation patient
+        series->setSOPKeyword(data::dicom::sop::Keyword::CTImageStorage);
+
         series->setImageOrientationPatient(orientation);
         CPPUNIT_ASSERT(orientation == series->getImageOrientationPatient());
 
-        const auto values = series->getByteValues(0x0020, 0x0037);
+        const auto values = series->getByteValues(data::dicom::attribute::Keyword::ImageOrientationPatient);
         const std::vector<double> actual {
             std::stod(values[0]),
             std::stod(values[1]),
@@ -1909,9 +2175,12 @@ void SeriesTest::imageOrientationPatientTest()
 
     {
         auto series = data::ImageSeries::New();
+
+        // We need to set the SOP class UID to let Sight know how to read the image orientation patient
+        series->setSOPKeyword(data::dicom::sop::Keyword::CTImageStorage);
+
         series->setByteValues(
-            0x0020,
-            0x0037,
+            data::dicom::attribute::Keyword::ImageOrientationPatient,
             {
                 std::to_string(orientation[0]),
                 std::to_string(orientation[1]),
@@ -1923,7 +2192,7 @@ void SeriesTest::imageOrientationPatientTest()
 
         CPPUNIT_ASSERT(orientation == series->getImageOrientationPatient());
 
-        const auto values = series->getByteValues(0x0020, 0x0037);
+        const auto values = series->getByteValues(data::dicom::attribute::Keyword::ImageOrientationPatient);
         const std::vector<double> actual {
             std::stod(values[0]),
             std::stod(values[1]),
@@ -1934,6 +2203,17 @@ void SeriesTest::imageOrientationPatientTest()
         };
 
         CPPUNIT_ASSERT(orientation == actual);
+    }
+
+    {
+        auto series = data::ImageSeries::New();
+
+        // We need to set the SOP class UID to let Sight know how to read the image orientation patient
+        series->setSOPKeyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+
+        // test Multi-Frame image
+        series->setImageOrientationPatient(orientation);
+        CPPUNIT_ASSERT(orientation == series->getImageOrientationPatient());
     }
 }
 
@@ -1950,9 +2230,143 @@ void SeriesTest::imageTransformPatientTest()
 
     {
         auto series = data::ImageSeries::New();
+
+        // We need to set the SOP class UID to let Sight know how to read the image orientation/position patient
+        series->setSOPKeyword(data::dicom::sop::Keyword::CTImageStorage);
+
         series->setImageTransformPatient(matrix);
         CPPUNIT_ASSERT(matrix == series->getImageTransformPatient());
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::frameAcquisitionDateTimeTest()
+{
+    // DICOM DT format is  "YYYYMMDDHHMMSS.FFFFFF"
+    static const std::string expected_frameAcquisitionDateTime0("20221026150703.000000");
+    static const std::string expected_frameAcquisitionDateTime1("20221026150703.000001");
+    static const std::string expected_frameAcquisitionDateTime2("20221026150703.000002");
+
+    {
+        auto series = data::ImageSeries::New();
+
+        series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime0, 0);
+        series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime1, 1);
+        series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime2, 2);
+
+        const std::string actual_frameAcquisitionDateTime0(*(series->getFrameAcquisitionDateTime(0)));
+        const std::string actual_frameAcquisitionDateTime1(*(series->getFrameAcquisitionDateTime(1)));
+        const std::string actual_frameAcquisitionDateTime2(*(series->getFrameAcquisitionDateTime(2)));
+
+        CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime0, actual_frameAcquisitionDateTime0);
+        CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime1, actual_frameAcquisitionDateTime1);
+        CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime2, actual_frameAcquisitionDateTime2);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::frameCommentsTest()
+{
+    static const std::string expected_frameComments0("Comments0");
+    static const std::string expected_frameComments1("Comments1");
+    static const std::string expected_frameComments2("Comments2");
+
+    {
+        auto series = data::ImageSeries::New();
+
+        series->setFrameComments(expected_frameComments0, 0);
+        series->setFrameComments(expected_frameComments1, 1);
+        series->setFrameComments(expected_frameComments2, 2);
+
+        const std::string actual_frameComments0(*(series->getFrameComments(0)));
+        const std::string actual_frameComments1(*(series->getFrameComments(1)));
+        const std::string actual_frameComments2(*(series->getFrameComments(2)));
+
+        CPPUNIT_ASSERT_EQUAL(expected_frameComments0, actual_frameComments0);
+        CPPUNIT_ASSERT_EQUAL(expected_frameComments1, actual_frameComments1);
+        CPPUNIT_ASSERT_EQUAL(expected_frameComments2, actual_frameComments2);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::frameLabelTest()
+{
+    static const std::string expected_frameLabel0("Label0");
+    static const std::string expected_frameLabel1("Label1");
+    static const std::string expected_frameLabel2("Label2");
+
+    {
+        auto series = data::ImageSeries::New();
+
+        series->setFrameLabel(expected_frameLabel0, 0);
+        series->setFrameLabel(expected_frameLabel1, 1);
+        series->setFrameLabel(expected_frameLabel2, 2);
+
+        const std::string actual_frameLabel0(*(series->getFrameLabel(0)));
+        const std::string actual_frameLabel1(*(series->getFrameLabel(1)));
+        const std::string actual_frameLabel2(*(series->getFrameLabel(2)));
+
+        CPPUNIT_ASSERT_EQUAL(expected_frameLabel0, actual_frameLabel0);
+        CPPUNIT_ASSERT_EQUAL(expected_frameLabel1, actual_frameLabel1);
+        CPPUNIT_ASSERT_EQUAL(expected_frameLabel2, actual_frameLabel2);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::frameAcquisitionTimePointTest()
+{
+    // DICOM DT format is  "YYYYMMDDHHMMSS.FFFFFF"
+    static const std::string expected_frameAcquisitionDateTime0("20221026150703.000000");
+    static const std::string expected_frameAcquisitionDateTime1("20221026150703.000001");
+    static const std::string expected_frameAcquisitionDateTime2("20221026150703.000002");
+    static const std::string expected_frameAcquisitionDateTime3("2023");
+    static const std::string expected_frameAcquisitionDateTime3b("20230101000000.000000");
+    static const std::string expected_frameAcquisitionDateTime4("20221026150703.100000");
+    static const std::string expected_frameAcquisitionDateTime5("20221026150703");
+    static const std::string expected_frameAcquisitionDateTime5b("20221026150703.000000");
+
+    auto series = data::ImageSeries::New();
+
+    series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime0, 0);
+    series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime1, 1);
+    series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime2, 2);
+    series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime3, 3);
+    series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime4, 4);
+    series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime5, 5);
+
+    const auto timePoint0 = series->getFrameAcquisitionTimePoint(0);
+    const auto timePoint1 = series->getFrameAcquisitionTimePoint(1);
+    const auto timePoint2 = series->getFrameAcquisitionTimePoint(2);
+    const auto timePoint3 = series->getFrameAcquisitionTimePoint(3);
+    const auto timePoint4 = series->getFrameAcquisitionTimePoint(4);
+    const auto timePoint5 = series->getFrameAcquisitionTimePoint(5);
+
+    series->setFrameAcquisitionTimePoint(timePoint1, 0);
+    series->setFrameAcquisitionTimePoint(timePoint2, 1);
+    series->setFrameAcquisitionTimePoint(timePoint3, 2);
+    series->setFrameAcquisitionTimePoint(timePoint4, 3);
+    series->setFrameAcquisitionTimePoint(timePoint5, 4);
+    series->setFrameAcquisitionTimePoint(timePoint0, 5);
+
+    const std::string actual_frameAcquisitionDateTime1(*(series->getFrameAcquisitionDateTime(0)));
+    const std::string actual_frameAcquisitionDateTime2(*(series->getFrameAcquisitionDateTime(1)));
+    const std::string actual_frameAcquisitionDateTime3(*(series->getFrameAcquisitionDateTime(2)));
+    const std::string actual_frameAcquisitionDateTime4(*(series->getFrameAcquisitionDateTime(3)));
+    const std::string actual_frameAcquisitionDateTime5(*(series->getFrameAcquisitionDateTime(4)));
+    const std::string actual_frameAcquisitionDateTime0(*(series->getFrameAcquisitionDateTime(5)));
+
+    CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime0, actual_frameAcquisitionDateTime0);
+    CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime1, actual_frameAcquisitionDateTime1);
+    CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime2, actual_frameAcquisitionDateTime2);
+    CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime4, actual_frameAcquisitionDateTime4);
+
+    // Using time point API will force "YYYYMMDDHHMMSS.FFFFFF" format
+    CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime3b, actual_frameAcquisitionDateTime3);
+    CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime5b, actual_frameAcquisitionDateTime5);
 }
 
 //------------------------------------------------------------------------------
