@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,15 +24,21 @@
 #include <io/session/SessionReader.hpp>
 #include <io/session/SessionWriter.hpp>
 
-#define SIGHT_REGISTER_SERIALIZER_IMPL(dataName, serializer, deserializer, unique) \
-    struct BOOST_PP_CAT (SerializerRegister, unique) \
-    { \
-    BOOST_PP_CAT(SerializerRegister, unique)() \
-    { \
-        sight::io::session::SessionWriter::setSerializer(dataName::classname(), serializer); \
-        sight::io::session::SessionReader::setDeserializer(dataName::classname(), deserializer); \
-    }} \
-    static const BOOST_PP_CAT(serializerRegister, unique)
+namespace sight::io::session
+{
+
+template<typename T>
+struct SerializerRegister
+{
+    SerializerRegister(serializer_t serializer, deserializer_t deserializer)
+    {
+        sight::io::session::SessionWriter::setSerializer(T::classname(), serializer);
+        sight::io::session::SessionReader::setDeserializer(T::classname(), deserializer);
+    }
+};
 
 #define SIGHT_REGISTER_SERIALIZER(dataName, serializer, deserializer) \
-    SIGHT_REGISTER_SERIALIZER_IMPL(dataName, serializer, deserializer, __LINE__)
+    static const sight::io::session::SerializerRegister<dataName> BOOST_PP_CAT(serializerRegister, __LINE__)(serializer, \
+                                                                                                             deserializer);
+
+} // namespace sight::io::session
