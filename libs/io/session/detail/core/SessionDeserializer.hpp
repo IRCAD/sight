@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -64,7 +64,7 @@ public:
         const std::filesystem::path& archive_path,
         io::zip::Archive::ArchiveFormat archiveFormat                   = io::zip::Archive::ArchiveFormat::DEFAULT,
         const core::crypto::secure_string& password                     = "",
-        core::crypto::PasswordKeeper::EncryptionPolicy encryptionPolicy = core::crypto::PasswordKeeper::EncryptionPolicy::DEFAULT
+        core::crypto::PasswordKeeper::EncryptionPolicy encryptionPolicy = core::crypto::PasswordKeeper::EncryptionPolicy::PASSWORD
     ) const;
 
     /// Set a deserialization function for an object

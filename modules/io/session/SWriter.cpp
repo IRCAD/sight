@@ -76,13 +76,13 @@ public:
     std::string m_extension_description {"Sight session"};
 
     /// Dialog policy to use for the file location
-    DialogPolicy m_dialog_policy = {DialogPolicy::DEFAULT};
+    DialogPolicy m_dialog_policy = {DialogPolicy::NEVER};
 
     /// Password policy to use
-    PasswordKeeper::PasswordPolicy m_password_policy {PasswordKeeper::PasswordPolicy::DEFAULT};
+    PasswordKeeper::PasswordPolicy m_password_policy {PasswordKeeper::PasswordPolicy::NEVER};
 
     /// Encryption policy to use
-    PasswordKeeper::EncryptionPolicy m_encryption_policy {PasswordKeeper::EncryptionPolicy::DEFAULT};
+    PasswordKeeper::EncryptionPolicy m_encryption_policy {PasswordKeeper::EncryptionPolicy::PASSWORD};
 
     /// Archive format to use
     Archive::ArchiveFormat m_archive_format {Archive::ArchiveFormat::DEFAULT};
@@ -217,24 +217,19 @@ void SWriter::updating()
             const secure_string& globalPassword = PasswordKeeper::get_global_password();
 
             if((m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ALWAYS)
-               || (m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ONCE
+               || (m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::GLOBAL
                    && globalPassword.empty()))
             {
-                const auto& newPassword = secure_string(
+                const auto& [newPassword, ok] =
                     sight::ui::base::dialog::InputDialog::showInputDialog(
                         "Enter Password",
                         "Password:",
                         globalPassword.c_str(), // NOLINT(readability-redundant-string-cstr)
                         sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
-                    )
-                );
 
-                if(m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ONCE)
-                {
-                    PasswordKeeper::set_global_password(newPassword);
-                }
+                    );
 
-                return newPassword;
+                return secure_string(newPassword);
             }
 
             return globalPassword;
@@ -295,13 +290,13 @@ void SWriter::updating()
         jobs->run().get();
         m_writeFailed = false;
     }
-    catch(std::exception& _e)
+    catch(const std::exception& e)
     {
         // Handle the error.
-        SIGHT_ERROR(_e.what());
+        SIGHT_ERROR(e.what());
         sight::ui::base::dialog::MessageDialog::show(
             "Session writer failed",
-            _e.what(),
+            e.what(),
             sight::ui::base::dialog::IMessageDialog::CRITICAL
         );
     }

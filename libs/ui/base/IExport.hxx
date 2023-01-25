@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -92,15 +92,15 @@ void IExport<C>::updating()
 
     std::string description = data->getDescription();
 
-    description = sight::ui::base::dialog::InputDialog::showInputDialog(
+    const auto& [input, ok] = sight::ui::base::dialog::InputDialog::showInputDialog(
         "Export activity",
         "Enter description",
         description
     );
 
-    if(!description.empty())
+    if(ok)
     {
-        data->setDescription(description);
+        data->setDescription(input);
 
         {
             auto container            = m_container.lock();

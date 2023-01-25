@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -392,8 +392,8 @@ void SCamera::onChooseStream()
         sight::ui::base::dialog::InputDialog inputDialog;
         inputDialog.setTitle("Enter stream url for video source #" + std::to_string(count++));
 
-        const std::string streamSource = inputDialog.getInput();
-        if(!streamSource.empty())
+        const auto& [streamSource, ok] = inputDialog.getInput();
+        if(ok && !streamSource.empty())
         {
             {
                 data::mt::locked_ptr<data::Camera> lock(camera);

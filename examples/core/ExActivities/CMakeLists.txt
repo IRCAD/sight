@@ -31,7 +31,7 @@ module_param(module_appXml PARAM_LIST config parameters PARAM_VALUES ExActivitie
 
 module_param(
     module_ui_base PARAM_LIST preferences_enabled preferences_password_policy preferences_encryption_policy
-    PARAM_VALUES true once salted
+                              preferences_exit_on_password_error PARAM_VALUES true once forced true
 )
 
 sight_generate_profile(ExActivities)

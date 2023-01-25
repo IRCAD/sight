@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -149,7 +149,7 @@ private:
     sight::io::bitmap::Writer::Backend findBackend(const std::string& extension) const;
 
     /// How and When display a dialog
-    DialogPolicy m_dialog_policy {DialogPolicy::DEFAULT};
+    DialogPolicy m_dialog_policy {DialogPolicy::NEVER};
 
     /// Signal emitted when job created.
     JobCreatedSignal::sptr m_job_created_signal {newSignal<JobCreatedSignal>("jobCreated")};

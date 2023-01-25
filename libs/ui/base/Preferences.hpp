@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -108,27 +108,29 @@ public:
  *
  * @subsection set_enabled set_enabled
  * Enable or disable preference management as a whoole. All functions, including constructor will throw
- * `PreferencesDisabled` exception if used while "disabled"
+ * `PreferencesDisabled` exception if used while "disabled". Default is `true`.
  *
  * @subsection set_password set_password
  * Set an harcoded password to be used. It enables defacto the encryption
  *
  * @subsection set_password_policy set_password_policy
  * Defines how and when a password is asked. @see sight::core::crypto::PasswordKeeper::PasswordPolicy for possible
- * values.
+ * values. Default is `never`.
  *
  * @note `NEVER` will never display any message box, but if a password has been set, the resulting preference file will
- * still be encrypted. An `BadPassword` exception will be thrown instead of diplaying a message box, asking to renter
+ * still be encrypted. An `BadPassword` exception will be thrown instead of displaying a message box, asking re-enter
  * the password.
  *
  * @subsection set_encryption_policy set_encryption_policy
  * Define when the preferences file is encrypted: @see sight::core::crypto::PasswordKeeper::EncryptionPolicy for
- * possible values.
+ * possible values. Default is `password`.
  *
  * @note `FORCE` will encrypt the file, even if no password is given. In this case a pseudo random password is used,
- * which can be guessed if someone has access to the code. Another option is to use an harcoded password AND
+ * which can be guessed if someone has access to the code. Another option is to use an hardcoded password AND
  * EncryptionPolicy::SALTED
  *
+ * @subsection preferences_exit_on_password_error preferences_exit_on_password_error
+ * Define if canceling or making more than 3 attemps close the application or not. Default is `false`.
  *
  * @section Module  Module Configuration
  * All the above can be configured through the module ui_base parameters ( @see sight::module::ui::base::Plugin )
@@ -143,11 +145,13 @@ public:
             preferences_password_policy
             preferences_encryption_policy
             preferences_password
+            preferences_exit_on_password_error
         PARAM_VALUES
             true
             once
             salted
             a_bad_hardcoded_password
+            true
     )
  * @endcode
  *
@@ -319,6 +323,9 @@ public:
     /// Set the encryption policy
     /// @param policy @see sight::core::crypto::PasswordKeeper::EncryptionPolicy
     UI_BASE_API static void set_encryption_policy(core::crypto::PasswordKeeper::EncryptionPolicy policy);
+
+    /// If true, the application will be terminated in case of password error
+    UI_BASE_API static void exit_on_password_error(bool exit);
 
 private:
 

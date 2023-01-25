@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -68,26 +68,23 @@ namespace sight::module::io::session
  *      If the extension is not specified, default ".zip" will be used.
  *      \b description: allows to display a label in front of extension when the file dialog is shown.
  *      \b policy:
- *          - \b "never": never show the open dialog
+ *          - \b "never": never show the open dialog (DEFAULT)
  *          - \b "once": show only once, store the location as long as the service is started
  *          - \b "always": always show the location dialog
- *          - \b "default": default behavior, which is "never"
  *
  * - \b password(optional):
  *      \b policy: defines if we should protect the session file using a password and when to ask for it. It could be:
- *          - \b "never": a password will never be asked and the session file will never be encrypted.
- *          - \b "once": a password will be asked only once and stored in the memory for subsequent uses.
+ *          - \b "never": a password will never be asked and the session file will never be encrypted. (DEFAULT)
+ *          - \b "global": a password will be asked only if global password is not set.
  *                      The session file will be encrypted.
  *          - \b "always": a password will always be asked.
  *                      The session file will be encrypted.
- *          - \b "default": uses the builtin default behavior which is "never".
  *
  *      \b encryption: defines if we should use password as is or salt it a bit to make . It could be:
- *          - \b "password": uses password as is.
+ *          - \b "password": uses password as is. (DEFAULT)
  *          - \b "salted": uses password, but salt it. It means that encrypted file could not be open outside Sight.
  *          - \b "force": force encryption, even without password. Use a pseudo-random hidden password, if
  *                        no password are provided
- *          - \b "default": uses the builtin default behavior which is "password".
  *
  * - \b archive(optional):
  *      \b format: defines the archive format.

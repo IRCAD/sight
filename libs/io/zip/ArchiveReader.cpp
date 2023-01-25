@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -175,35 +175,51 @@ public:
         // Set encryption
         mz_zip_reader_set_password(m_zipHandle->m_zip_reader, m_password.empty() ? nullptr : m_password.c_str());
 
-        auto result = mz_zip_reader_locate_entry(m_zipHandle->m_zip_reader, m_filePath.c_str(), 0);
+        if(const auto result = mz_zip_reader_locate_entry(m_zipHandle->m_zip_reader, m_filePath.c_str(), 0);
+           result != MZ_OK)
+        {
+            SIGHT_THROW_EXCEPTION(
+                exception::Read(
+                    "Cannot locate file '"
+                    + m_filePath
+                    + "' in archive '"
+                    + m_zipHandle->m_archive_path
+                    + "'. Error code: "
+                    + std::to_string(result),
+                    result
+                )
+            );
+        }
 
-        SIGHT_THROW_EXCEPTION_IF(
-            exception::Read(
-                "Cannot locate file '"
-                + m_filePath
-                + "' in archive '"
-                + m_zipHandle->m_archive_path
-                + "'. Error code: "
-                + std::to_string(result),
-                result
-            ),
-            result != MZ_OK
-        );
-
-        result = mz_zip_reader_entry_open(m_zipHandle->m_zip_reader);
-
-        SIGHT_THROW_EXCEPTION_IF(
-            exception::Read(
-                "Cannot open file '"
-                + m_filePath
-                + "' from archive '"
-                + m_zipHandle->m_archive_path
-                + "'. Error code: "
-                + std::to_string(result),
-                result
-            ),
-            result != MZ_OK
-        );
+        if(const auto result = mz_zip_reader_entry_open(m_zipHandle->m_zip_reader);
+           result == MZ_PASSWORD_ERROR)
+        {
+            SIGHT_THROW_EXCEPTION(
+                exception::BadPassword(
+                    "File '"
+                    + m_filePath
+                    + "' from archive '"
+                    + m_zipHandle->m_archive_path
+                    + "' is password protected and the provided one does not match. Error code: "
+                    + std::to_string(result),
+                    result
+                )
+            );
+        }
+        else if(result != MZ_OK)
+        {
+            SIGHT_THROW_EXCEPTION(
+                exception::Read(
+                    "Cannot open file '"
+                    + m_filePath
+                    + "' from archive '"
+                    + m_zipHandle->m_archive_path
+                    + "'. Error code: "
+                    + std::to_string(result),
+                    result
+                )
+            );
+        }
     }
 
     inline ~ZipFileHandle()

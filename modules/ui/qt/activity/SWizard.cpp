@@ -424,12 +424,13 @@ void SWizard::onBuildActivity()
                     // Add the new activity in activity_set
                     ActivityInfo info = Activity::getDefault()->getInfo(m_new_activity->getActivityConfigId());
 
-                    std::string description = sight::ui::base::dialog::InputDialog::showInputDialog(
+                    const auto& [description, input_ok] = sight::ui::base::dialog::InputDialog::showInputDialog(
                         "Activity creation",
                         "Please, give a description of the activity.",
                         info.title
                     );
-                    if(description.empty())
+
+                    if(!input_ok && description.empty())
                     {
                         return;
                     }

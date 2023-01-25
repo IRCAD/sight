@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,6 +23,8 @@
 
 #include "ui/base/Preferences.hpp"
 
+#include "ui/base/Application.hpp"
+#include "ui/base/Cursor.hpp"
 #include "ui/base/dialog/InputDialog.hpp"
 #include "ui/base/dialog/MessageDialog.hpp"
 
@@ -52,10 +54,19 @@ static constexpr auto s_encrypted_file   = "preferences.sight";
 static std::unique_ptr<PasswordKeeper> s_password_keeper;
 
 // Password policy to use
-static PasswordKeeper::PasswordPolicy s_password_keeper_policy {PasswordKeeper::PasswordPolicy::DEFAULT};
+static PasswordKeeper::PasswordPolicy s_password_keeper_policy {PasswordKeeper::PasswordPolicy::NEVER};
 
 // Encryption policy to use
-static PasswordKeeper::EncryptionPolicy s_encryption_policy {PasswordKeeper::EncryptionPolicy::DEFAULT};
+static PasswordKeeper::EncryptionPolicy s_encryption_policy {PasswordKeeper::EncryptionPolicy::PASSWORD};
+
+// If true, will exit on password error (default is false)
+static bool s_exit_on_password_error {false};
+
+// max number of retry
+static std::size_t s_max_retry {3};
+
+// current number of retry
+static std::size_t s_password_retry {0};
 
 // Guard the preference tree
 std::shared_mutex Preferences::s_preferences_mutex;
@@ -169,9 +180,6 @@ Preferences::Preferences()
             // Create and load the preferences file if not already done
             if(s_is_enabled && !s_preferences)
             {
-                // Number of retry
-                int password_retry {0};
-
                 // Set the password to use
                 // NEVER policy means we never ask for a password and only rely on manually set
                 if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
@@ -181,22 +189,36 @@ Preferences::Preferences()
                         ? s_password_keeper->get_password()
                         : PasswordKeeper::get_global_password();
 
-                    if(password_retry > 0
+                    if(s_password_retry != 0
                        || (s_password_keeper_policy == PasswordKeeper::PasswordPolicy::ALWAYS)
-                       || (s_password_keeper_policy == PasswordKeeper::PasswordPolicy::ONCE
+                       || (s_password_keeper_policy == PasswordKeeper::PasswordPolicy::GLOBAL
                            && password.empty()))
                     {
-                        const auto& new_password = secure_string(
-                            sight::ui::base::dialog::InputDialog::showInputDialog(
-                                "Enter Password",
-                                "Password:",
-                                password.c_str(), // NOLINT(readability-redundant-string-cstr)
-                                sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
-                            )
+                        const auto& [new_password, ok] = sight::ui::base::dialog::InputDialog::showInputDialog(
+                            "Enter Password",
+                            "Password:",
+                            password.c_str(), // NOLINT(readability-redundant-string-cstr)
+                            sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
                         );
 
-                        setPasswordNolock(new_password);
-                        PasswordKeeper::set_global_password(new_password);
+                        if(ok)
+                        {
+                            const secure_string secure_password(new_password);
+                            setPasswordNolock(secure_password);
+                            PasswordKeeper::set_global_password(secure_password);
+                        }
+                        else if(s_exit_on_password_error)
+                        {
+                            SIGHT_WARN("User canceled. Exiting.");
+                            sight::ui::base::BusyCursor cursor;
+                            sight::ui::base::Application::New()->exit(0);
+                        }
+                        else
+                        {
+                            s_is_enabled = false;
+                            SIGHT_WARN("Preferences has been disabled because no password was entered.");
+                            return;
+                        }
                     }
                     else if(!s_password_keeper)
                     {
@@ -240,30 +262,36 @@ Preferences::Preferences()
                         // Create an empty preferences
                         s_is_preferences_modified = true;
                     }
+
+                    // Reset the retry counter if the password was correct
+                    s_password_retry = 0;
                 }
                 catch(const io::zip::exception::BadPassword& e)
                 {
                     s_preferences.reset();
+                    ++s_password_retry;
 
-                    // NEVER policy means we never ask for a password, so there is no point to retry
-                    if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
+                    if(s_password_retry > s_max_retry)
                     {
-                        sight::ui::base::dialog::MessageDialog messageDialog;
-                        messageDialog.setTitle("Wrong password");
-
-                        if(password_retry > 5)
+                        if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
                         {
+                            sight::ui::base::dialog::MessageDialog messageDialog;
+                            messageDialog.setTitle("Wrong password");
                             messageDialog.setMessage("The provided password is wrong and there were too many tries.");
                             messageDialog.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);
                             messageDialog.addButton(ui::base::dialog::IMessageDialog::OK);
                             messageDialog.show();
                         }
-                        else
+                    }
+                    else
+                    {
+                        if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
                         {
-                            // Ask if the user want to retry.
+                            sight::ui::base::dialog::MessageDialog messageDialog;
+                            messageDialog.setTitle("Wrong password");
                             messageDialog.setMessage(
-                                "The file is password protected and the provided password is wrong.\n\nRetry with a"
-                                " different password ?"
+                                "The preference file is password protected and the provided password is wrong.\n\nRetry"
+                                " with a different password ?"
                             );
                             messageDialog.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
                             messageDialog.addButton(ui::base::dialog::IMessageDialog::RETRY);
@@ -272,30 +300,44 @@ Preferences::Preferences()
                             if(messageDialog.show() == sight::ui::base::dialog::IMessageDialog::RETRY)
                             {
                                 // Retry...
-                                password_retry++;
                                 load();
-
-                                // Exit from lambda
                                 return;
                             }
 
-                            s_is_enabled = false;
+                            s_password_retry = 0;
+                        }
+                        else
+                        {
+                            // Give a chance to retry with a different password
+                            SIGHT_THROW_EXCEPTION(BadPassword(e.what()));
                         }
                     }
 
-                    SIGHT_WARN("Preferences has been disabled because the password is wrong.");
-                    SIGHT_THROW_EXCEPTION(BadPassword(e.what()));
+                    // Too much retries or canceled
+                    s_is_enabled = false;
+
+                    if(s_exit_on_password_error)
+                    {
+                        SIGHT_WARN("The provided password is wrong. Exiting.");
+                        sight::ui::base::BusyCursor cursor;
+                        sight::ui::base::Application::New()->exit(0);
+                    }
+                    else
+                    {
+                        SIGHT_WARN("Preferences has been disabled because the password is wrong.");
+                        SIGHT_THROW_EXCEPTION(BadPassword(e.what()));
+                    }
                 }
                 catch(const std::exception& e)
                 {
                     // We simply print an error and disable preferences management
-                    s_preferences.reset();
+                    s_is_enabled = false;
                     SIGHT_ERROR(e.what());
                 }
                 catch(...)
                 {
                     // We disable preferences management
-                    s_preferences.reset();
+                    s_is_enabled = false;
                 }
             }
         };
@@ -421,6 +463,14 @@ void Preferences::set_encryption_policy(const core::crypto::PasswordKeeper::Encr
 {
     std::unique_lock guard(s_preferences_mutex);
     s_encryption_policy = policy;
+}
+
+//------------------------------------------------------------------------------
+
+void Preferences::exit_on_password_error(bool exit)
+{
+    std::unique_lock guard(s_preferences_mutex);
+    s_exit_on_password_error = exit;
 }
 
 //-----------------------------------------------------------------------------
