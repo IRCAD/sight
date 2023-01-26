@@ -481,18 +481,18 @@
                 <out key="pointcloud" uid="pointcloud" />
             </service>
 
-            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer">
+            <service uid="frameUpdaterSrv"  type="sight::module::sync::SSynchronizer">
                 <in group="frameTL">
-                    <key uid="frameTLVideo" autoConnect="true" />
-                    <key uid="frameTLDepth" autoConnect="true" />
+                    <key uid="frameTLVideo" />
+                    <key uid="frameTLDepth" />
                 </in>
-                <inout group="image">
-                    <key uid="imageVideo" />
-                    <key uid="imageDepth" />
+                <inout group="frames">
+                    <key uid="videoImage" tl="0" />
+                    <key uid="imageDepth" tl="1"/>
                 </inout>
                 <tolerance>50</tolerance>
-                <framerate>0</framerate>
             </service>
+
 
             <!-- extract a sight::data::Camera from the sight::data::CameraSet -->
             <service uid="extractCameraSrv" type="sight::module::data::SGetCamera">

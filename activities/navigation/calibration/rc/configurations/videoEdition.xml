@@ -58,7 +58,7 @@
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
         <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
-            <scene>
+            <scene renderMode="sync">
                 <background topColor="#000000" bottomColor="#000000" />
 
                 <layer id="default" order="1">
@@ -81,9 +81,13 @@
             </config>
         </service>
 
-        <service uid="frameSynchronizerSrv" type="sight::module::sync::SFrameUpdater">
-            <in key="frameTL" uid="timeLine" autoConnect="true" />
-            <inout key="frame" uid="frame" />
+        <service uid="frameSynchronizerSrv" type="sight::module::sync::SSynchronizer">
+            <in group="frameTL">
+                <key uid="timeLine" />
+            </in>
+            <inout group="frames">
+                <key uid="frame"  />
+            </inout>
         </service>
 
         <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera">
@@ -122,6 +126,12 @@
         <connect>
             <signal>videoSelectorSrv/configuredCameras</signal>
             <slot>videoGrabberSrv/reconfigure</slot>
+        </connect>
+
+        <connect>
+            <signal>frameSynchronizerSrv/synchronizationDone</signal>
+            <slot>genericSceneSrv/requestRender</slot>
+            <slot>frameSynchronizerSrv/synchronize</slot>
         </connect>
 
         <connect>

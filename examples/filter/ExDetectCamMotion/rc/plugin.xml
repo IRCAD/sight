@@ -137,7 +137,7 @@
 
             <!-- Scene in which the video will be rendered -->
             <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
-                <scene>
+                <scene renderMode="sync">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="default" order="1">
@@ -175,9 +175,13 @@
                 <inout key="frameTL" uid="frameTL" />
             </service>
 
-            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameUpdater">
-                <in key="frameTL" uid="frameTL" autoConnect="true" />
-                <inout key="frame" uid="videoImage" />
+            <service uid="frameUpdaterSrv" type="sight::module::sync::SSynchronizer">
+                <in group="frameTL">
+                    <key uid="frameTL" />
+                </in>
+                <inout group="frames">
+                    <key uid="videoImage"  />
+                </inout>
             </service>
 
             <service uid="opticalFlowSrv" type="sight::module::filter::vision::SOpticalFlow" worker="ofWorker">
@@ -256,6 +260,12 @@
             <connect>
                 <signal>opticalFlowSrv/cameraRemained</signal>
                 <slot>motionStatusSrv/changeToRed</slot>
+            </connect>
+
+            <connect>
+                <signal>frameUpdaterSrv/synchronizationDone</signal>
+                <slot>genericSceneSrv/requestRender</slot>
+                <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

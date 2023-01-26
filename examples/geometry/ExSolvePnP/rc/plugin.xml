@@ -185,7 +185,7 @@
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
             <service uid="ARSceneSrv" type="sight::viz::scene3d::SRender">
-                <scene>
+                <scene renderMode="sync">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video" order="1">
@@ -292,9 +292,13 @@
                 <inout key="frameTL" uid="frameTL" />
             </service>
 
-            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameUpdater">
-                <in key="frameTL" uid="frameTL" autoConnect="true" />
-                <inout key="frame" uid="videoImage" />
+            <service uid="frameUpdaterSrv" type="sight::module::sync::SSynchronizer">
+                <in group="frameTL">
+                    <key uid="frameTL" />
+                </in>
+                <inout group="frames">
+                    <key uid="videoImage"  />
+                </inout>
             </service>
 
             <service uid="solvePnPSrv" type="sight::module::geometry::vision::SSolvePnP">
@@ -392,6 +396,12 @@
             <connect>
                 <signal>cameraSet/addedCamera</signal>
                 <slot>cameraExtractorSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>frameUpdaterSrv/synchronizationDone</signal>
+                <slot>ARSceneSrv/requestRender</slot>
+                <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

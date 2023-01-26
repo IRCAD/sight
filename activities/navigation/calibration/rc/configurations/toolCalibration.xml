@@ -108,11 +108,14 @@
             </TData>
         </service>
 
-        <service uid="trackerTLMatrixSynchronizer" type="sight::module::sync::SMatrixTLSynchronizer">
-            <in key="matrixTL" uid="matrixTL" autoConnect="true" />
-            <inout group="matrices">
-                <key uid="trackerMatrix0" />
+        <service uid="trackerTLMatrixSynchronizer" type="sight::module::sync::SSynchronizer">
+            <in group="matrixTL">
+                <key uid="matrixTL" />
+            </in>
+            <inout group="matrix">
+                <key uid="trackerMatrix0"/>
             </inout>
+            <legacyAutoSync>true</legacyAutoSync>
         </service>
 
         <service uid="status" type="sight::module::ui::qt::SStatus">

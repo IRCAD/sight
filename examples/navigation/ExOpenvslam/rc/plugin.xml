@@ -342,20 +342,20 @@
                 <inout key="frameTL" uid="Timeline" />
             </service>
 
-            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer">
+            <service uid="frameUpdaterSrv"  type="sight::module::sync::SSynchronizer" >
                 <in group="frameTL">
                     <key uid="Timeline" />
                 </in>
-                <inout group="image">
+                <inout group="frames">
                     <key uid="Frame" />
                 </inout>
-                <in group="matrixTL">
+                 <in group="matrixTL">
                     <key uid="CamMatrixTimeline" />
                 </in>
-                <inout group="matrices0">
-                    <key uid="CameraPoseMatrix" />
+                <inout group="matrix">
+                    <key uid="CameraPoseMatrix"/>
                 </inout>
-                <framerate>60</framerate>
+                <legacyAutoSync>true</legacyAutoSync>
             </service>
 
             <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera">

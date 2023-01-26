@@ -232,7 +232,7 @@
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
         <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
-            <scene>
+            <scene renderMode="sync">
                 <background topColor="#000000" bottomColor="#000000" />
 
                 <layer id="video1" order="1">
@@ -260,16 +260,15 @@
         <service uid="videoSliderSrv" type="sight::module::ui::qt::video::SSlider" />
 
         <!-- Extracts images for the detection algorithm. -->
-        <service uid="frameSynchronizerSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="extr_chess_checker">
-            <in group="frameTL" autoConnect="true" >
+        <service uid="frameSynchronizerSrv"  type="sight::module::sync::SSynchronizer">
+            <in group="frameTL">
                 <key uid="frame1TL" />
                 <key uid="frame2TL" />
             </in>
-            <inout group="image">
-                <key uid="frame1" />
-                <key uid="frame2" />
+            <inout group="frames">
+                <key uid="frame1" tl="0" />
+                <key uid="frame2" tl="1" />
             </inout>
-            <framerate>0</framerate>
         </service>
 
         <service uid="extrinsicExporterSrv" type="sight::module::ui::base::io::SSelector" >
@@ -506,6 +505,12 @@
             <signal>chessboardDetectorSrv/chessboardDetected</signal>
             <slot>frameSynchronizerSrv/synchronize</slot>
             <slot>detectionStatusSrv/toggleGreenRed</slot>
+        </connect>
+
+        <connect>
+            <signal>chessboardDetectorSrv/updated</signal>
+            <slot>genericSceneSrv/requestRender</slot>
+            <slot>frameSynchronizerSrv/synchronize</slot>
         </connect>
 
         <connect>

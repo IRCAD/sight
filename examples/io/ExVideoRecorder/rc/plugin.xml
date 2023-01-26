@@ -91,7 +91,7 @@
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
             <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
-                <scene>
+                <scene renderMode="sync">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="default" order="1">
@@ -136,16 +136,15 @@
                 <file>video.mp4</file>
             </service>
 
-            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker">
+            <service uid="frameUpdaterSrv"  type="sight::module::sync::SSynchronizer" worker="videoWorker">
                 <in group="frameTL">
                     <key uid="frameTL" />
                 </in>
-                <inout group="image">
+                <inout group="frames">
                     <key uid="videoImage" />
                 </inout>
-                <framerate>30</framerate>
             </service>
-
+            
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
@@ -184,6 +183,12 @@
 
             <connect channel="removeROICenterChannelIn">
                 <signal>2dPoints/pointRemoved</signal>
+            </connect>
+
+            <connect>
+                <signal>frameUpdaterSrv/synchronizationDone</signal>
+                <slot>genericSceneSrv/requestRender</slot>
+                <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

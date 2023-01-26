@@ -188,7 +188,7 @@
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
             <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
-                <scene>
+                <scene renderMode="sync">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video" order="1">
@@ -280,15 +280,21 @@
             </service>
 
             <!-- To synchronize matrix, frame and detection -->
-            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker">
+            <service uid="frameUpdaterSrv"  type="sight::module::sync::SSynchronizer" worker="videoWorker">
                 <in group="frameTL">
                     <key uid="frameTLVideo" />
                     <key uid="frameTLDepth" />
                 </in>
-                <inout group="image">
-                    <key uid="videoImage" />
-                    <key uid="depthImage" />
+                <inout group="frames">
+                    <key uid="videoImage" tl="0" />
+                    <key uid="depthImage" tl="1"/>
                 </inout>
+            </service>
+
+            <!-- Wait for the undistortion and the matrix inversion to be finished -->
+            <service uid="syncGenericSceneSrv" type="sight::module::sync::SSignalGate">
+                <signal>frameUpdaterSrv/synchronizationDone</signal>
+                <signal>maskerSrv/updated</signal>
             </service>
 
             <!-- Matrix (trf format) reader -->
@@ -456,11 +462,18 @@
                 <slot>settingsView/setVisible</slot>
             </connect>
 
+            <connect>
+                <signal>syncGenericSceneSrv/allReceived</signal>
+                <slot>genericSceneSrv/requestRender</slot>
+                <slot>frameUpdaterSrv/synchronize</slot>
+            </connect>
+
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
             <start uid="organManagerAct" />
             <start uid="frameUpdaterSrv" />
+            <start uid="syncGenericSceneSrv" />
             <start uid="videoGrabberSrv" />
             <start uid="extractCameraSrv" />
             <start uid="transformReaderSrv" />

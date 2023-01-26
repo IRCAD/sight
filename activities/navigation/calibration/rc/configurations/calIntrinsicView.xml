@@ -282,15 +282,14 @@
             <inout key="frameTL" uid="frameTL" />
         </service>
 
-        <service uid="frameSynchronizerSrv" type="sight::module::sync::SFrameMatrixSynchronizer">
+        <service uid="frameSynchronizerSrv"  type="sight::module::sync::SSynchronizer" >
             <in group="frameTL">
-                <key uid="frameTL" autoConnect="true" />
+                <key uid="frameTL" />
             </in>
-            <inout group="image">
+            <inout group="frames">
                 <key uid="videoFrame" />
             </inout>
             <tolerance>200</tolerance>
-            <framerate>0</framerate>
         </service>
 
         <service uid="distorterSrv" type="sight::module::geometry::vision::SDistortion">

@@ -365,15 +365,14 @@
 
             <!-- Consumes a frame in the timeline, picks the latest one to be processed -->
             <!-- It is overkill in this sample, but mandatory when we use multiple grabbers to synchronize them. -->
-            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer">
+            <service uid="frameUpdaterSrv"  type="sight::module::sync::SSynchronizer">
                 <in group="frameTL">
-                    <key uid="frameTL" autoConnect="true" />
+                    <key uid="frameTL" />
                 </in>
-                <inout group="image">
+                <inout group="frames">
                     <key uid="sourceFrame" />
                 </inout>
                 <tolerance>100</tolerance>
-                <framerate>0</framerate>
             </service>
 
             <!-- Aruco tracker service -->

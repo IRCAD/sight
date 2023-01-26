@@ -214,7 +214,7 @@
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
             <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
-                <scene>
+                <scene renderMode="sync">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
                     <layer id="video" order="1">
@@ -360,16 +360,15 @@
             </service>
 
             <!-- To synchronize matrix, frame and detection -->
-            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker">
+            <service uid="frameUpdaterSrv"  type="sight::module::sync::SSynchronizer" worker="videoWorker">
                 <in group="frameTL">
                     <key uid="frameTL" />
                     <key uid="maskTL" />
                 </in>
-                <inout group="image">
-                    <key uid="videoImage" />
-                    <key uid="foregroundMask" />
+                <inout group="frames">
+                    <key uid="videoImage" tl="0" />
+                    <key uid="foregroundMask" tl="1"/>
                 </inout>
-                <framerate>30</framerate>
                 <tolerance>200</tolerance>
             </service>
 
@@ -502,6 +501,12 @@
             <connect>
                 <signal>fgComponentsSrv/intChanged</signal>
                 <slot>extractForegroundSrv/setForegroundComponents</slot>
+            </connect>
+
+            <connect>
+                <signal>frameUpdaterSrv/synchronizationDone</signal>
+                <slot>genericSceneSrv/requestRender</slot>
+                <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

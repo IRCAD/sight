@@ -490,16 +490,15 @@
 
 
             <!-- To synchronize matrix, frame and detection -->
-            <service uid="frameMatrixSynchronizerSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker">
+            <service uid="frameMatrixSynchronizerSrv"  type="sight::module::sync::SSynchronizer" worker="videoWorker">
                 <in group="frameTL">
-                    <key uid="frameTL1" autoConnect="true" />
-                    <key uid="frameTL2" autoConnect="true" />
+                    <key uid="frameTL1" />
+                    <key uid="frameTL2" />
                 </in>
-                <inout group="image">
+                <inout group="frames">
                     <key uid="videoImage1" />
                     <key uid="videoImage2" />
                 </inout>
-                <framerate>30</framerate>
                 <tolerance>100</tolerance>
             </service>
 
@@ -654,7 +653,7 @@
 
             <connect>
                 <signal>synchroParamsSrv/intChanged</signal>
-                <slot>frameMatrixSynchronizerSrv/updateDelay</slot>
+                <slot>frameMatrixSynchronizerSrv/setDelay</slot>
             </connect>
 
             <connect>
