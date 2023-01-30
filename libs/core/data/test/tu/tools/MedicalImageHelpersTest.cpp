@@ -469,6 +469,7 @@ void MedicalImageHelpersTest::testLandmarks()
     data::Point::sptr p      = data::Point::New(1., 2., 3.);
     data::PointList::sptr pt = data::PointList::New();
     pt->pushBack(p);
+    CPPUNIT_ASSERT_THROW(medImHelper::setLandmarks(*image, nullptr), data::Exception);
     medImHelper::setLandmarks(*image, pt);
 
     // get landmarks (should NOT be nullptr)

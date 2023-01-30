@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2022 IRCAD France
- * Copyright (C) 2015-2021 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,16 +19,22 @@
  *
  ***********************************************************************/
 
-#include "data/tools/PickingInfo.hpp"
+#pragma once
 
-namespace sight::data::tools
+#include <cppunit/extensions/HelperMacros.h>
+
+namespace sight::io::dicom::container::sr::ut
 {
 
-PickingInfo::PickingInfo()
+class DicomSRTextNodeTest : public CPPUNIT_NS::TestFixture
 {
-    m_worldPos[0] = 0.;
-    m_worldPos[1] = 0.;
-    m_worldPos[2] = 0.;
-}
+CPPUNIT_TEST_SUITE(DicomSRTextNodeTest);
+CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST_SUITE_END();
 
-} // namespace sight::data::tools
+public:
+
+    static void basicTest();
+};
+
+} // namespace sight::io::dicom::container::sr::ut

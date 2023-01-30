@@ -51,6 +51,14 @@ CPPUNIT_TEST(testWriteVtpFile);
 CPPUNIT_TEST(testWriteObjFile);
 CPPUNIT_TEST(testWriteStlFile);
 CPPUNIT_TEST(testWritePlyFile);
+
+CPPUNIT_TEST(toVtkMeshWithLinesTest);
+CPPUNIT_TEST(toVtkMeshWithTetrasTest);
+CPPUNIT_TEST(toVtkMeshWithCellTexCoordsTest);
+CPPUNIT_TEST(fromVtkMeshWithLinesTest);
+CPPUNIT_TEST(fromVtkMeshWithQuadsTest);
+CPPUNIT_TEST(fromVtkMeshWithCellTexCoordsTest);
+CPPUNIT_TEST(fromVtkMeshWith3ComponentsCellColorsTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -74,6 +82,14 @@ public:
     static void testWriteObjFile();
     static void testWritePlyFile();
     static void testWriteStlFile();
+
+    static void toVtkMeshWithLinesTest();
+    static void toVtkMeshWithTetrasTest();
+    static void toVtkMeshWithCellTexCoordsTest();
+    static void fromVtkMeshWithLinesTest();
+    static void fromVtkMeshWithQuadsTest();
+    static void fromVtkMeshWithCellTexCoordsTest();
+    static void fromVtkMeshWith3ComponentsCellColorsTest();
 };
 
 } // namespace sight::io::vtk::ut

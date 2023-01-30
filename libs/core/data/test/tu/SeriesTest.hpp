@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -111,6 +111,16 @@ CPPUNIT_TEST(frameCommentsTest);
 CPPUNIT_TEST(frameLabelTest);
 CPPUNIT_TEST(stringConversionTest);
 
+CPPUNIT_TEST(copyPatientModuleTest);
+CPPUNIT_TEST(copyGeneralStudyModuleTest);
+CPPUNIT_TEST(copyPatientStudyModuleTest);
+CPPUNIT_TEST(copyGeneralSeriesModuleTest);
+CPPUNIT_TEST(copyGeneralEquipmentModuleTest);
+CPPUNIT_TEST(copySOPCommonModuleTest);
+CPPUNIT_TEST(copyGeneralImageModuleTest);
+
+CPPUNIT_TEST(getPatientPositionStringTest);
+
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -198,6 +208,16 @@ public:
     static void frameLabelTest();
 
     static void stringConversionTest();
+
+    static void copyPatientModuleTest();
+    static void copyGeneralStudyModuleTest();
+    static void copyPatientStudyModuleTest();
+    static void copyGeneralSeriesModuleTest();
+    static void copyGeneralEquipmentModuleTest();
+    static void copySOPCommonModuleTest();
+    static void copyGeneralImageModuleTest();
+
+    static void getPatientPositionStringTest();
 
 protected:
 

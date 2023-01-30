@@ -261,4 +261,93 @@ void CameraTest::equalityTest()
     #undef TEST
 }
 
+//------------------------------------------------------------------------------
+
+void CameraTest::getPixelFormatTest()
+{
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(value) CPPUNIT_ASSERT_EQUAL(data::Camera::value, Camera::getPixelFormat(#value));
+    TEST(INVALID);
+    TEST(ARGB32);
+    TEST(ARGB32_PREMULTIPLIED);
+    TEST(RGB32);
+    TEST(RGB24);
+    TEST(RGB565);
+    TEST(RGB555);
+    TEST(ARGB8565_PREMULTIPLIED);
+    TEST(BGRA32);
+    TEST(BGRA32_PREMULTIPLIED);
+    TEST(BGR32);
+    TEST(BGR24);
+    TEST(BGR565);
+    TEST(BGR555);
+    TEST(BGRA5658_PREMULTIPLIED);
+    TEST(AYUV444);
+    TEST(AYUV444_PREMULTIPLIED);
+    TEST(YUV444);
+    TEST(YUV420P);
+    TEST(YV12);
+    TEST(UYVY);
+    TEST(YUYV);
+    TEST(NV12);
+    TEST(NV21);
+    TEST(IMC1);
+    TEST(IMC2);
+    TEST(IMC3);
+    TEST(IMC4);
+    TEST(Y8);
+    TEST(Y16);
+    TEST(JPEG);
+    TEST(CAMERARAW);
+    TEST(ADOBEDNG);
+    TEST(RGBA32);
+    TEST(USER);
+    #undef TEST
+    CPPUNIT_ASSERT_EQUAL(data::Camera::INVALID, Camera::getPixelFormat("NOT_A_PIXELFORMAT"));
+}
+
+//------------------------------------------------------------------------------
+
+void CameraTest::getPixelFormatNameTest()
+{
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(value) CPPUNIT_ASSERT_EQUAL(std::string(#value), Camera::getPixelFormatName(data::Camera::value));
+    TEST(INVALID);
+    TEST(ARGB32);
+    TEST(ARGB32_PREMULTIPLIED);
+    TEST(RGB32);
+    TEST(RGB24);
+    TEST(RGB565);
+    TEST(RGB555);
+    TEST(ARGB8565_PREMULTIPLIED);
+    TEST(BGRA32);
+    TEST(BGRA32_PREMULTIPLIED);
+    TEST(BGR32);
+    TEST(BGR24);
+    TEST(BGR565);
+    TEST(BGR555);
+    TEST(BGRA5658_PREMULTIPLIED);
+    TEST(AYUV444);
+    TEST(AYUV444_PREMULTIPLIED);
+    TEST(YUV444);
+    TEST(YUV420P);
+    TEST(YV12);
+    TEST(UYVY);
+    TEST(YUYV);
+    TEST(NV12);
+    TEST(NV21);
+    TEST(IMC1);
+    TEST(IMC2);
+    TEST(IMC3);
+    TEST(IMC4);
+    TEST(Y8);
+    TEST(Y16);
+    TEST(JPEG);
+    TEST(CAMERARAW);
+    TEST(ADOBEDNG);
+    TEST(RGBA32);
+    TEST(USER);
+    #undef TEST
+}
+
 } // namespace sight::data::ut

@@ -31,6 +31,9 @@ class CalibrationInfoTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(CalibrationInfoTest);
 CPPUNIT_TEST(calibrationInfoTest);
+CPPUNIT_TEST(shallowCopyTest);
+CPPUNIT_TEST(deepCopyTest);
+CPPUNIT_TEST(getImageTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,6 +45,7 @@ public:
     static void calibrationInfoTest();
     static void shallowCopyTest();
     static void deepCopyTest();
+    static void getImageTest();
 };
 
 } // namespace sight::data::ut

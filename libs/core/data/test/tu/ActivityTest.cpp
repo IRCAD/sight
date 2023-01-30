@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2023 IRCAD France
+ * Copyright (C) 2009-2022 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "ActivityTest.hpp"
 
-#include <data/Composite.hpp>
 #include <data/Integer.hpp>
+#include <data/String.hpp>
 
 #include <ranges>
 
@@ -100,6 +100,20 @@ void ActivityTest::equalityTest()
     CPPUNIT_ASSERT(*activity1 != *activity2 && !(*activity1 == *activity2));
     std::ranges::copy(*activity1, std::inserter(*activity2, activity2->begin()));
     CPPUNIT_ASSERT(*activity1 == *activity2 && !(*activity1 != *activity2));
+}
+
+//------------------------------------------------------------------------------
+
+void ActivityTest::shallowCopyTest()
+{
+    CPPUNIT_ASSERT(m_activity);
+    m_activity->setActivityConfigId("MyActivity");
+    (*m_activity)["data"] = data::String::New("Hello world");
+
+    auto activity2 = data::Activity::New();
+    CPPUNIT_ASSERT(*m_activity != *activity2);
+    activity2->shallowCopy(m_activity);
+    CPPUNIT_ASSERT(*m_activity == *activity2);
 }
 
 } //namespace sight::data::ut

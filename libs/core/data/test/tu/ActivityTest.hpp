@@ -39,6 +39,7 @@ CPPUNIT_TEST_SUITE(ActivityTest);
 CPPUNIT_TEST(activityConfigIdTest);
 CPPUNIT_TEST(dataTest);
 CPPUNIT_TEST(equalityTest);
+CPPUNIT_TEST(shallowCopyTest);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -51,6 +52,7 @@ public:
     void activityConfigIdTest();
     void dataTest();
     static void equalityTest();
+    void shallowCopyTest();
 
 private:
 

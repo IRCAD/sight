@@ -115,24 +115,32 @@ void TransferFunctionTest::toVtkLookupTableTest()
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[2], colorTolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, opacity, colorTolerance);
 
-//    tf->setLevel(200);
-//    io::vtk::helper::TransferFunction::toVtkLookupTable( tf, lt, true, 4096 );
-//    lt->GetColor(200,color);
-//    opacity = lt->GetOpacity(200);
-//    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0] , colorTolerance );
-//    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[1] , colorTolerance );
-//    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[2] , colorTolerance );
-//    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, opacity  , colorTolerance );
-//
-//    tf->setLevel(0);
-//    tf->setWindow(800);
-//    io::vtk::helper::TransferFunction::toVtkLookupTable( tf, lt, true, 4096 );
-//    lt->GetColor(200,color);
-//    opacity = lt->GetOpacity(200);
-//    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[0] , colorTolerance );
-//    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.0, color[1] , colorTolerance );
-//    CPPUNIT_ASSERT_DOUBLES_EQUAL( 1.0, color[2] , colorTolerance );
-//    CPPUNIT_ASSERT_DOUBLES_EQUAL( 0.5, opacity  , colorTolerance );
+    tf->setLevel(200);
+    io::vtk::helper::TransferFunction::toVtkLookupTable(tf, lt, true, 4096);
+    lt->GetColor(200, color.data());
+    opacity = lt->GetOpacity(200);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[0], colorTolerance);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[1], colorTolerance);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[2], colorTolerance);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, opacity, colorTolerance);
+
+    tf->setLevel(0);
+    tf->setWindow(800);
+    io::vtk::helper::TransferFunction::toVtkLookupTable(tf, lt, true, 4096);
+    lt->GetColor(200, color.data());
+    opacity = lt->GetOpacity(200);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[0], colorTolerance);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[1], colorTolerance);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[2], colorTolerance);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.5, opacity, colorTolerance);
+
+    io::vtk::helper::TransferFunction::toVtkLookupTable(tf, lt, false, 4096);
+    lt->GetColor(200, color.data());
+    opacity = lt->GetOpacity(200);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[0], colorTolerance);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(0.0, color[1], colorTolerance);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, color[2], colorTolerance);
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, opacity, colorTolerance);
 }
 
 //------------------------------------------------------------------------------

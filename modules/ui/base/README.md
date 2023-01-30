@@ -60,7 +60,6 @@ and are, therefore, contained in sub-folders according to their specificity.
 
 ### viz
 * **CrossTypeAction**: allows change the cross type.
-* **SSnapshot**: allows to snapshot a generic scene.
 
 ## How to use it
 

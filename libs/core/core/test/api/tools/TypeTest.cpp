@@ -119,11 +119,21 @@ void TypeTest::typeToStringTest()
 {
     using namespace std::literals::string_literals;
 
-    int integer     = 1;
-    double floating = 2.;
+    std::uint64_t integer = 1;
+    float floating        = 2.;
+    double doubleFloating = 3.;
 
+    CPPUNIT_ASSERT_EQUAL("1"s, core::Type::INT8.toString(&integer));
+    CPPUNIT_ASSERT_EQUAL("1"s, core::Type::INT16.toString(&integer));
     CPPUNIT_ASSERT_EQUAL("1"s, core::Type::INT32.toString(&integer));
-    CPPUNIT_ASSERT_EQUAL("2.000000"s, core::Type::DOUBLE.toString(&floating));
+    CPPUNIT_ASSERT_EQUAL("1"s, core::Type::INT64.toString(&integer));
+    CPPUNIT_ASSERT_EQUAL("1"s, core::Type::UINT8.toString(&integer));
+    CPPUNIT_ASSERT_EQUAL("1"s, core::Type::UINT16.toString(&integer));
+    CPPUNIT_ASSERT_EQUAL("1"s, core::Type::UINT32.toString(&integer));
+    CPPUNIT_ASSERT_EQUAL("1"s, core::Type::UINT64.toString(&integer));
+    CPPUNIT_ASSERT_EQUAL("2.000000"s, core::Type::FLOAT.toString(&floating));
+    CPPUNIT_ASSERT_EQUAL("3.000000"s, core::Type::DOUBLE.toString(&doubleFloating));
+    CPPUNIT_ASSERT_EQUAL(""s, core::Type::NONE.toString(&integer));
 }
 
 //------------------------------------------------------------------------------

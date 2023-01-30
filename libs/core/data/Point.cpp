@@ -166,4 +166,24 @@ bool Point::operator!=(const Point& other) const noexcept
     return !(*this == other);
 }
 
+//------------------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream& out, const Point& p)
+{
+    out << "{";
+    bool first = true;
+    for(double e : p.getCoord())
+    {
+        if(!first)
+        {
+            out << ", ";
+        }
+
+        out << e;
+        first = false;
+    }
+
+    return out << "}";
+}
+
 } // namespace sight::data

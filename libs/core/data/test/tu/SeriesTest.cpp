@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2023 IRCAD France
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -2418,6 +2418,156 @@ void SeriesTest::privateTagTest()
         series->setPrivateValue(0x00, std::nullopt);
         const auto& actual5 = series->getPrivateValue(0x00);
         CPPUNIT_ASSERT(!actual5.has_value());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::copyPatientModuleTest()
+{
+    auto series1 = data::Series::New();
+    series1->setPatientName("1");
+    series1->setPatientID("2");
+    series1->setPatientBirthDate("5");
+    series1->setPatientSex("6");
+
+    auto series2 = data::Series::New();
+    series2->copyPatientModule(series1);
+    CPPUNIT_ASSERT(*series1 == *series2);
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::copyGeneralStudyModuleTest()
+{
+    auto series1 = data::Series::New();
+    series1->setStudyInstanceUID("1");
+    series1->setStudyDate("2");
+    series1->setStudyTime("3");
+    series1->setReferringPhysicianName("4");
+    series1->setStudyID("6");
+    series1->setStudyDescription("9");
+
+    auto series2 = data::Series::New();
+    series2->copyGeneralStudyModule(series1);
+    CPPUNIT_ASSERT(*series1 == *series2);
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::copyPatientStudyModuleTest()
+{
+    auto series1 = data::Series::New();
+    series1->setPatientAge("3");
+    series1->setPatientSize(4);
+    series1->setPatientWeight(5);
+
+    auto series2 = data::Series::New();
+    series2->copyPatientStudyModule(series1);
+    CPPUNIT_ASSERT(*series1 == *series2);
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::copyGeneralSeriesModuleTest()
+{
+    auto series1 = data::Series::New();
+    series1->setModality("1");
+    series1->setSeriesInstanceUID("2");
+    series1->setSeriesNumber(3);
+    series1->setLaterality("4");
+    series1->setSeriesDate("5");
+    series1->setSeriesTime("6");
+    series1->setPerformingPhysicianName("7");
+    series1->setProtocolName("9");
+    series1->setSeriesDescription("10");
+    series1->setBodyPartExamined("16");
+    series1->setPatientPosition("17");
+    series1->setPerformedProcedureStepID("21");
+    series1->setPerformedProcedureStepStartDate("22");
+    series1->setPerformedProcedureStepStartTime("23");
+    series1->setPerformedProcedureStepEndDate("24");
+    series1->setPerformedProcedureStepEndTime("25");
+    series1->setPerformedProcedureStepDescription("26");
+    series1->setCommentsOnThePerformedProcedureStep("28");
+    series1->setAnatomicalOrientationType("29");
+
+    auto series2 = data::Series::New();
+    series2->copyGeneralSeriesModule(series1);
+    CPPUNIT_ASSERT(*series1 == *series2);
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::copyGeneralEquipmentModuleTest()
+{
+    auto series1 = data::Series::New();
+    series1->setInstitutionName("2");
+
+    auto series2 = data::Series::New();
+    series2->copyGeneralEquipmentModule(series1);
+    CPPUNIT_ASSERT(*series1 == *series2);
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::copySOPCommonModuleTest()
+{
+    auto series1 = data::Series::New();
+    series1->setSOPKeyword(data::dicom::sop::Keyword::ComputedRadiographyImageStorage);
+    series1->setSOPInstanceUID("2");
+    series1->setSpecificCharacterSet("3");
+    series1->setInstanceNumber(13);
+
+    auto series2 = data::Series::New();
+    series2->copySOPCommonModule(series1);
+    CPPUNIT_ASSERT(*series1 == *series2);
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::copyGeneralImageModuleTest()
+{
+    auto series1 = data::Series::New();
+    series1->setInstanceNumber(1);
+    series1->setContentTime("4");
+    series1->setAcquisitionNumber(6);
+    series1->setAcquisitionDate("7");
+    series1->setAcquisitionTime("8");
+
+    auto series2 = data::Series::New();
+    series2->copyGeneralImageModule(series1);
+    CPPUNIT_ASSERT(*series1 == *series2);
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::getPatientPositionStringTest()
+{
+    static const std::map<std::string, std::string> shortToLong {
+        {"HFP", "Head First-Prone"},
+        {"HFS", "Head First-Supine"},
+        {"HFDR", "Head First-Decubitus Right"},
+        {"HFDL", "Head First-Decubitus Left"},
+        {"FFDR", "Feet First-Decubitus Right"},
+        {"FFDL", "Feet First-Decubitus Left"},
+        {"FFP", "Feet First-Prone"},
+        {"FFS", "Feet First-Supine"},
+        {"LFP", "Left First-Prone"},
+        {"LFS", "Left First-Supine"},
+        {"RFP", "Right First-Prone"},
+        {"RFS", "Right First-Supine"},
+        {"AFDR", "Anterior First-Decubitus Right"},
+        {"AFDL", "Anterior First-Decubitus Left"},
+        {"PFDR", "Posterior First-Decubitus Right"},
+        {"PFDL", "Posterior First-Decubitus Left"},
+        {"NOT_A_POSITION", "NOT_A_POSITION"}
+    };
+    auto series = data::Series::New();
+    for(auto&& [key, value] : shortToLong)
+    {
+        series->setPatientPosition(key);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE(key, value, series->getPatientPositionString());
     }
 }
 

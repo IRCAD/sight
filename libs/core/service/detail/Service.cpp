@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -85,6 +85,7 @@ void Service::configure()
             catch(std::exception& e)
             {
                 SIGHT_ERROR("Error while configuring service '" + m_service.getID() + "' : " + e.what());
+                throw; // Rethrow the error for unit tests
             }
         }
         else if(m_globalState == IService::STARTED)

@@ -34,6 +34,14 @@ class SessionTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(SessionTest);
 CPPUNIT_TEST(basicArchiveTest);
 CPPUNIT_TEST(basicRawTest);
+CPPUNIT_TEST(readerBadDialogPolicyTest);
+CPPUNIT_TEST(readerBadPasswordPolicyTest);
+CPPUNIT_TEST(readerBadPasswordEncryptionTest);
+CPPUNIT_TEST(writerBadDialogPolicyTest);
+CPPUNIT_TEST(writerBadPasswordPolicyTest);
+CPPUNIT_TEST(writerBadPasswordEncryptionTest);
+CPPUNIT_TEST(fileDialogTest);
+CPPUNIT_TEST(passwordTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,6 +52,16 @@ public:
 
     static void basicArchiveTest();
     static void basicRawTest();
+
+    static void readerBadDialogPolicyTest();
+    static void readerBadPasswordPolicyTest();
+    static void readerBadPasswordEncryptionTest();
+    static void writerBadDialogPolicyTest();
+    static void writerBadPasswordPolicyTest();
+    static void writerBadPasswordEncryptionTest();
+
+    static void fileDialogTest();
+    static void passwordTest();
 };
 
 } // namespace sight::module::io::session::ut
