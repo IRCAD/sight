@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,13 +69,9 @@ void SDBMerger::info(std::ostream& _sstream)
 void SDBMerger::configuring()
 {
     this->sight::ui::base::IAction::initialize();
-    auto vectConfig = m_configuration->find("IOSelectorSrvConfig");
-    if(!vectConfig.empty())
-    {
-        auto selectorConfig = vectConfig.at(0);
-        SIGHT_ASSERT("Missing 'name' attribute", selectorConfig->hasAttribute("name"));
-        m_ioSelectorSrvConfig = selectorConfig->getAttributeValue("name");
-    }
+
+    const auto& config = this->getConfiguration();
+    m_ioSelectorSrvConfig = config.get<std::string>("IOSelectorSrvConfig.<xmlattr>.name", m_ioSelectorSrvConfig);
 }
 
 //------------------------------------------------------------------------------
@@ -90,8 +86,7 @@ void SDBMerger::updating()
     /// Create IOSelectorService on the new SeriesSet and execute it.
 
     // Get the config
-    core::runtime::ConfigurationElement::csptr ioCfg;
-    ioCfg = service::extension::Config::getDefault()->getServiceConfig(
+    const auto ioCfg = service::extension::Config::getDefault()->getServiceConfig(
         m_ioSelectorSrvConfig,
         "sight::module::ui::base::io::SSelector"
     );
@@ -99,14 +94,14 @@ void SDBMerger::updating()
         "There is no service configuration "
         << m_ioSelectorSrvConfig
         << " for module::ui::base::editor::SSelector",
-        ioCfg
+        !ioCfg.empty()
     );
 
     // Init and execute the service
     service::IService::sptr ioSelectorSrv;
     ioSelectorSrv = service::add("sight::module::ui::base::io::SSelector");
     ioSelectorSrv->setInOut(local_series_set, io::base::service::s_DATA_KEY);
-    ioSelectorSrv->setWorker(m_associatedWorker);
+    ioSelectorSrv->setWorker(this->worker());
 
     auto jobCreatedSignal = ioSelectorSrv->signal("jobCreated");
     if(jobCreatedSignal)
@@ -114,7 +109,7 @@ void SDBMerger::updating()
         jobCreatedSignal->connect(m_slotForwardJob);
     }
 
-    ioSelectorSrv->setConfiguration(core::runtime::ConfigurationElement::constCast(ioCfg));
+    ioSelectorSrv->setConfiguration(ioCfg);
     ioSelectorSrv->configure();
     ioSelectorSrv->start();
     ioSelectorSrv->update();

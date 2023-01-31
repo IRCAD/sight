@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ public:
     UI_QML_API void setInput(const std::string& text) override;
 
     /// Get the input text in the input field
-    UI_QML_API std::string getInput() override;
+    UI_QML_API std::pair<std::string, bool> getInput() override;
 
 Q_SIGNALS:
 

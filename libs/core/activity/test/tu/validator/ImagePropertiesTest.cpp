@@ -61,6 +61,18 @@ void ImagePropertiesTest::tearDown()
 
 //------------------------------------------------------------------------------
 
+static data::ImageSeries::sptr imageToImageSeries(const data::Object::sptr& obj)
+{
+    auto img = data::Image::dynamicCast(obj);
+    auto res = data::ImageSeries::New();
+    res->resize(img->getSize(), img->getType(), img->getPixelFormat());
+    res->setSpacing(img->getSpacing());
+    res->setOrigin(img->getOrigin());
+    return res;
+}
+
+//------------------------------------------------------------------------------
+
 void ImagePropertiesTest::propertiesTest()
 {
     activity::IValidator::sptr validator =
@@ -89,7 +101,12 @@ void ImagePropertiesTest::propertiesTest()
         (*composite)["img1"] = img1;
         (*composite)["img2"] = img2;
 
-        validation = objValidator->validate(vector);
+        validation = objValidator->validate(composite);
+        CPPUNIT_ASSERT_EQUAL(false, validation.first);
+
+        auto seriesVector = data::Vector::New();
+        std::ranges::transform(*vector, std::back_inserter(*seriesVector), imageToImageSeries);
+        validation = objValidator->validate(activity::extension::ActivityInfo {}, seriesVector);
         CPPUNIT_ASSERT_EQUAL(false, validation.first);
     }
 
@@ -121,7 +138,12 @@ void ImagePropertiesTest::propertiesTest()
         (*composite)["img1"] = img1;
         (*composite)["img2"] = img2;
 
-        validation = objValidator->validate(vector);
+        validation = objValidator->validate(composite);
+        CPPUNIT_ASSERT_EQUAL(true, validation.first);
+
+        auto seriesVector = data::Vector::New();
+        std::ranges::transform(*vector, std::back_inserter(*seriesVector), imageToImageSeries);
+        validation = objValidator->validate(activity::extension::ActivityInfo {}, seriesVector);
         CPPUNIT_ASSERT_EQUAL(true, validation.first);
     }
 }

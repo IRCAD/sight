@@ -168,10 +168,10 @@ void FrameTLTest::pushTest()
 
     SPTR(data::FrameTL::BufferType) data1 = timeline->createBuffer(time1);
     std::uint8_t* bufferData1 = data1->addElement(0);
-    std::fill(bufferData1, bufferData1 + (10LL * 20 * 3), 1);
+    std::memset(bufferData1, 1, (10LL * 20 * 3));
     SPTR(data::FrameTL::BufferType) data2 = timeline->createBuffer(time2);
     std::uint8_t* bufferData2 = data2->addElement(0);
-    std::fill(bufferData2, bufferData2 + (10LL * 20 * 3), 2);
+    std::memset(bufferData2, 2, (10LL * 20 * 3));
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
@@ -221,10 +221,10 @@ void FrameTLTest::copyTest()
 
     SPTR(data::FrameTL::BufferType) data1 = timeline->createBuffer(time1);
     std::uint8_t* bufferData1 = data1->addElement(0);
-    std::fill(bufferData1, bufferData1 + (11LL * 22 * 4), 1);
+    std::memset(bufferData1, 1, (11LL * 22 * 4));
     SPTR(data::FrameTL::BufferType) data2 = timeline->createBuffer(time2);
     std::uint8_t* bufferData2 = data2->addElement(0);
-    std::fill(bufferData2, bufferData2 + (11LL * 22 * 4), 2);
+    std::memset(bufferData2, 2, (11LL * 22 * 4));
 
     timeline->pushObject(data1);
     timeline->pushObject(data2);
@@ -266,6 +266,36 @@ void FrameTLTest::copyTest()
     copiedTimeline->clearTimeline();
     CSPTR(data::timeline::Object) nullObj2 = timeline->getNewerObject();
     CPPUNIT_ASSERT(nullObj == nullptr);
+}
+
+//------------------------------------------------------------------------------
+
+void FrameTLTest::equalityTest()
+{
+    auto frame1 = data::FrameTL::New();
+    auto frame2 = data::FrameTL::New();
+
+    CPPUNIT_ASSERT(*frame1 == *frame2 && !(*frame1 != *frame2));
+
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(...) \
+    frame1->initPoolSize(__VA_ARGS__); \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Frames must be different when the first is set with " #__VA_ARGS__, \
+        *frame1 != *frame2 && !(*frame1 == *frame2) \
+    ); \
+    frame2->initPoolSize(__VA_ARGS__); \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Frames must be equal when they are both set with " #__VA_ARGS__, \
+        *frame1 == *frame2 && !(*frame1 != *frame2) \
+    );
+
+    TEST(1, 1, core::Type::UINT8, data::FrameTL::PixelFormat::RGBA);
+    TEST(1, 2, core::Type::UINT8, data::FrameTL::PixelFormat::RGBA);
+    TEST(1, 1, core::Type::INT8, data::FrameTL::PixelFormat::RGBA);
+    TEST(1, 1, core::Type::UINT8, data::FrameTL::PixelFormat::RGB);
+
+    #undef TEST
 }
 
 //------------------------------------------------------------------------------

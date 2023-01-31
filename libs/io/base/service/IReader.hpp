@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,6 +24,8 @@
 
 #include "io/base/config.hpp"
 #include "io/base/service/ioTypes.hpp"
+
+#include <core/tools/Failed.hpp>
 
 #include <service/IService.hpp>
 
@@ -56,11 +58,10 @@ public:
     /// Enum to define a password policy
     enum class DialogPolicy : uint8_t
     {
-        NEVER   = 0,     /// Never show the dialog
-        ONCE    = 1,     /// Show only once, store the location as long as the service is started
-        ALWAYS  = 2,     /// Always show the location dialog
-        DEFAULT = NEVER, /// Default behavior if nothing is set
-        INVALID = 255    /// Used for error management
+        NEVER   = 0,  /// Never show the dialog
+        ONCE    = 1,  /// Show only once, store the location as long as the service is started
+        ALWAYS  = 2,  /// Always show the location dialog
+        INVALID = 255 /// Used for error management
     };
 
     /**
@@ -173,9 +174,6 @@ public:
     {
         switch(policy)
         {
-            case DialogPolicy::NEVER:
-                return "never";
-
             case DialogPolicy::ONCE:
                 return "once";
 
@@ -183,14 +181,15 @@ public:
                 return "always";
 
             default:
-                return "default";
+                return "never";
         }
     }
 
     /// Convenience function to convert from string to DialogPolicy enum value
     constexpr static DialogPolicy stringToDialogPolicy(std::string_view policy) noexcept
     {
-        if(constexpr auto NEVER = dialogPolicyToString(DialogPolicy::NEVER); policy == NEVER)
+        if(constexpr auto NEVER = dialogPolicyToString(DialogPolicy::NEVER);
+           policy == NEVER || policy.empty() || policy == "default")
         {
             return DialogPolicy::NEVER;
         }
@@ -203,11 +202,6 @@ public:
         if(constexpr auto ALWAYS = dialogPolicyToString(DialogPolicy::ALWAYS); policy == ALWAYS)
         {
             return DialogPolicy::ALWAYS;
-        }
-
-        if(policy.empty() || policy == "default")
-        {
-            return DialogPolicy::DEFAULT;
         }
 
         // Error case

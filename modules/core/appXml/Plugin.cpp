@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,7 @@ void Plugin::run()
     SIGHT_ASSERT("The OSR is already initialized.", !m_appConfigMng);
     SIGHT_ASSERT("The configuration name parameter is not initialized.", !m_configurationName.empty());
 
-    m_appConfigMng = service::AppConfigManager::New();
+    m_appConfigMng = service::IAppConfigManager::New();
 
     if(m_parametersName.empty())
     {

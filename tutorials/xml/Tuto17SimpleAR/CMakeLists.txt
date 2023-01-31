@@ -2,11 +2,11 @@ sight_add_target(Tuto17SimpleAR TYPE APP)
 
 set(MODULE_PATH "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/Tuto17SimpleAR")
 
-file(DOWNLOAD https://cloud.ircad.fr/index.php/s/F9YmxpHn837aNzX/download "${MODULE_PATH}/calibration.xml" SHOW_PROGRESS
+file(DOWNLOAD https://cloud.ircad.fr/s/sjbojZx983MxiLc/download "${MODULE_PATH}/calibration.xml" SHOW_PROGRESS
      EXPECTED_HASH SHA256=2f983ec650e9df2329354c68d9aff3818741dda921c1857692886cf1bbd947b2
 )
 
-file(DOWNLOAD https://cloud.ircad.fr/index.php/s/4dSk4WXgP52PGaM/download "${MODULE_PATH}/aruco_tag.m4v" SHOW_PROGRESS
+file(DOWNLOAD https://cloud.ircad.fr/s/74XGSb523SSa6fD/download "${MODULE_PATH}/aruco_tag.m4v" SHOW_PROGRESS
      EXPECTED_HASH SHA256=92ffe4f0f89380985980a5c1c2fb7536543dee237cddd21922ead2c4e83ecbe2
 )
 

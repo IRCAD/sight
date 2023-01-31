@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ SPoseFrom2d::SPoseFrom2d() noexcept
 
 void SPoseFrom2d::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
     m_patternWidth = config.get<double>("patternWidth", m_patternWidth);
     SIGHT_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 
@@ -145,7 +145,7 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timesta
             // For each camera timeline
             for(const auto& markerMap : m_markerMap)
             {
-                const auto marker_ptr = markerMap.second.lock();
+                const auto marker_ptr = markerMap.second->lock();
                 const auto* marker    = marker_ptr->getMarker(markerKey);
 
                 if(marker != nullptr)
@@ -171,7 +171,6 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timesta
             }
             else
             {
-                data::Matrix4::TMCoefArray matrixValues;
                 cv::Matx44f Rt;
                 if(markers.size() == 1)
                 {
@@ -191,11 +190,9 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timesta
                 {
                     for(std::uint8_t j = 0 ; j < 4 ; ++j)
                     {
-                        matrixValues[4 * i + j] = Rt(i, j);
+                        (*matrix)[4 * i + j] = Rt(i, j);
                     }
                 }
-
-                matrix->setCoefficients(matrixValues);
             }
 
             // Always send the signal even if we did not find anything.
@@ -235,18 +232,18 @@ void SPoseFrom2d::initialize()
             {
                 for(std::uint8_t j = 0 ; j < 3 ; ++j)
                 {
-                    m_extrinsicMat.rotation.at<double>(i, j)  = extrinsicMatrix->getCoefficient(i, j);
-                    m_extrinsicMat.Matrix4x4.at<double>(i, j) = extrinsicMatrix->getCoefficient(i, j);
+                    m_extrinsicMat.rotation.at<double>(i, j)  = (*extrinsicMatrix)(i, j);
+                    m_extrinsicMat.Matrix4x4.at<double>(i, j) = (*extrinsicMatrix)(i, j);
                 }
             }
 
-            m_extrinsicMat.translation.at<double>(0, 0) = extrinsicMatrix->getCoefficient(0, 3);
-            m_extrinsicMat.translation.at<double>(1, 0) = extrinsicMatrix->getCoefficient(1, 3);
-            m_extrinsicMat.translation.at<double>(2, 0) = extrinsicMatrix->getCoefficient(2, 3);
+            m_extrinsicMat.translation.at<double>(0, 0) = (*extrinsicMatrix)(0, 3);
+            m_extrinsicMat.translation.at<double>(1, 0) = (*extrinsicMatrix)(1, 3);
+            m_extrinsicMat.translation.at<double>(2, 0) = (*extrinsicMatrix)(2, 3);
 
-            m_extrinsicMat.Matrix4x4.at<double>(0, 3) = extrinsicMatrix->getCoefficient(0, 3);
-            m_extrinsicMat.Matrix4x4.at<double>(1, 3) = extrinsicMatrix->getCoefficient(1, 3);
-            m_extrinsicMat.Matrix4x4.at<double>(2, 3) = extrinsicMatrix->getCoefficient(2, 3);
+            m_extrinsicMat.Matrix4x4.at<double>(0, 3) = (*extrinsicMatrix)(0, 3);
+            m_extrinsicMat.Matrix4x4.at<double>(1, 3) = (*extrinsicMatrix)(1, 3);
+            m_extrinsicMat.Matrix4x4.at<double>(2, 3) = (*extrinsicMatrix)(2, 3);
         }
 
         m_cameras.push_back(cam);
@@ -294,7 +291,7 @@ cv::Matx44f SPoseFrom2d::cameraPoseFromMono(const SPoseFrom2d::Marker& _markerCa
 service::IService::KeyConnectionsMap SPoseFrom2d::getAutoConnections() const
 {
     return {
-        {s_MARKERMAP_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_MARKERMAP_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_CAMERA_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_CAMERA_SLOT},
         {s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_CAMERA_SLOT}
     };

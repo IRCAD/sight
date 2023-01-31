@@ -3,6 +3,6 @@
     <requirement id="sight::module::service" />
     <requirement id="sight::module::ui::qt" />
 
-    <xi:include href="configurations/toolbar.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
+    <xi:include href="configurations/controls.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
 </plugin>

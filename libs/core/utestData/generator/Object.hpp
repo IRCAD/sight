@@ -30,14 +30,10 @@
 #include <data/Color.hpp>
 #include <data/Composite.hpp>
 #include <data/Material.hpp>
-#include <data/Node.hpp>
 #include <data/Plane.hpp>
 #include <data/Point.hpp>
-#include <data/Port.hpp>
-#include <data/ReconstructionTraits.hpp>
 #include <data/Resection.hpp>
 #include <data/ResectionDB.hpp>
-#include <data/ROITraits.hpp>
 #include <data/StructureTraits.hpp>
 #include <data/StructureTraitsDictionary.hpp>
 #include <data/TransferFunction.hpp>
@@ -70,20 +66,6 @@ public:
 
     /// Creates a StructureTraits representing the liver
     UTESTDATA_API static data::StructureTraits::sptr createStructureTraits();
-
-    /// Return a composite containing the ROITraits and a reference on its StructureTraits and mask node (because of
-    // weak ptr)
-    UTESTDATA_API static data::Composite::sptr createROITraits();
-
-    /// Return a composite containing the ReconstructionTraits and a reference on its StructureTraits and mask/mesh node
-    // (because of weak ptr)
-    UTESTDATA_API static data::Composite::sptr createReconstructionTraits();
-
-    /// Creates a Node with random ports
-    UTESTDATA_API static data::Node::sptr createNode();
-
-    /// Creates a Port with random identifier and type
-    UTESTDATA_API static data::Port::sptr createPort();
 
     /// Creates a Material with ambient and diffuse color.
     UTESTDATA_API static data::Material::sptr createMaterial();

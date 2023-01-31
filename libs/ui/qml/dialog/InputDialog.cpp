@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ui/qml/dialog/InputDialog.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <ui/base/registry/macros.hpp>
 #include <ui/qml/QmlEngine.hpp>
@@ -83,7 +83,7 @@ void InputDialog::setInput(const std::string& text)
 
 //------------------------------------------------------------------------------
 
-std::string InputDialog::getInput()
+std::pair<std::string, bool> InputDialog::getInput()
 {
     // get the qml engine QmlApplicationEngine
     SPTR(ui::qml::QmlEngine) engine = ui::qml::QmlEngine::getDefault();
@@ -117,7 +117,7 @@ std::string InputDialog::getInput()
     loop.exec();
 
     delete window;
-    return m_input.toStdString();
+    return std::make_pair(m_input.toStdString(), true);
 }
 
 //------------------------------------------------------------------------------

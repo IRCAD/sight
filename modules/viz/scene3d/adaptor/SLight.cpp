@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,11 +45,6 @@ static const core::com::Slots::SlotKeyType s_SET_Y_OFFSET_SLOT = "setYOffset";
 static const service::IService::KeyType s_DIFFUSE_COLOR_INOUT  = "diffuseColor";
 static const service::IService::KeyType s_SPECULAR_COLOR_INOUT = "specularColor";
 
-static const std::string s_NAME_CONFIG         = "name";
-static const std::string s_SWITCHED_ON_CONFIG  = "switchedOn";
-static const std::string s_THETA_OFFSET_CONFIG = "thetaOffset";
-static const std::string s_PHI_OFFSET_CONFIG   = "phiOffset";
-
 SIGHT_REGISTER_SCENE3D_LIGHT(
     sight::module::viz::scene3d::adaptor::SLight,
     sight::viz::scene3d::ILight::REGISTRY_KEY
@@ -73,19 +68,11 @@ SLight::SLight(sight::viz::scene3d::ILight::Key /*key*/)
 
 //------------------------------------------------------------------------------
 
-SLight::~SLight() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void SLight::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
-
-    m_lightName = config.get<std::string>("name");
+    const ConfigType config = this->getConfiguration();
 
     this->setTransformId(
         config.get<std::string>(
@@ -94,6 +81,12 @@ void SLight::configuring()
         )
     );
 
+    static const std::string s_NAME_CONFIG         = s_CONFIG + "name";
+    static const std::string s_SWITCHED_ON_CONFIG  = s_CONFIG + "switchedOn";
+    static const std::string s_THETA_OFFSET_CONFIG = s_CONFIG + "thetaOffset";
+    static const std::string s_PHI_OFFSET_CONFIG   = s_CONFIG + "phiOffset";
+
+    m_lightName   = config.get<std::string>(s_NAME_CONFIG);
     m_switchedOn  = config.get<bool>(s_SWITCHED_ON_CONFIG, m_switchedOn);
     m_thetaOffset = config.get<float>(s_THETA_OFFSET_CONFIG, m_thetaOffset);
     m_phiOffset   = config.get<float>(s_PHI_OFFSET_CONFIG, m_phiOffset);
@@ -136,11 +129,12 @@ void SLight::starting()
                 "sight::module::viz::scene3d::adaptor::SMaterial"
             );
         materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
-        materialAdaptor->setID(this->getID() + materialAdaptor->getID());
-        materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
-        materialAdaptor->setRenderService(this->getRenderService());
-        materialAdaptor->setLayerID(m_layerID);
-        materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+        materialAdaptor->configure(
+            this->getID() + materialAdaptor->getID(),
+            this->getID() + materialAdaptor->getID(),
+            this->getRenderService(),
+            m_layerID
+        );
         materialAdaptor->start();
 
         materialAdaptor->getMaterialFw()->setHasVertexColor(true);
@@ -208,8 +202,8 @@ void SLight::starting()
 service::IService::KeyConnectionsMap SLight::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_DIFFUSE_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_SPECULAR_COLOR_INOUT, data::Color::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_DIFFUSE_COLOR_INOUT, data::Color::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_SPECULAR_COLOR_INOUT, data::Color::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,8 +28,8 @@ namespace sight::data
 {
 
 /// This class is an activity container
-class DATA_CLASS_API Composite final : public IContainer<std::map<std::string,
-                                                                  Object::sptr> >
+class DATA_CLASS_API Composite : public IContainer<std::map<std::string,
+                                                            Object::sptr> >
 {
 public:
 

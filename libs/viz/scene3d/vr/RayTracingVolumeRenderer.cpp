@@ -676,7 +676,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
         texUnitState->setTextureFiltering(Ogre::TFO_BILINEAR);
         texUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
         m_gpuVolumeTF->bind(_rayCastingPass, texUnitState->getName(), fpParams);
-        fpParams->setNamedConstant("u_s1TFTexture", numTexUnit++);
+        fpParams->setNamedConstant("u_s2TFTexture", numTexUnit++);
     }
 
     if(m_options.fragment.find(defines::AO) != std::string::npos) //i.e. ambient occlusion is enabled
@@ -922,7 +922,7 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
                     texUnitState->setTextureFiltering(Ogre::TFO_BILINEAR);
                     texUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
                     m_gpuVolumeTF->bind(pass, texUnitState->getName(), fpParams);
-                    fpParams->setNamedConstant("u_s1TFTexture", 1);
+                    fpParams->setNamedConstant("u_s2TFTexture", 1);
                 }
 
                 //Ray compositor

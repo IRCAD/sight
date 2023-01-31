@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,6 +24,7 @@
 #include <core/macros.hpp>
 #include <core/tools/compare.hpp>
 
+#include <data/dicom/Sop.hpp>
 #include <data/helper/MedicalImage.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
@@ -919,10 +920,14 @@ inline static data::SeriesSet::sptr readImageInstance(
         {
             image_series->setDataSet(gdcm_dataset);
 
-            // Make direction vectors orthogonal. Also found in ITK
-            // This is for some strange DICOM files that have non orthogonal direction vectors.
-            const auto& tuned_directions = tuneDirections(gdcm_image.GetDirectionCosines());
-            image_series->setImageOrientationPatient(tuned_directions);
+            if(!image_series->isMultiFrame())
+            {
+                // Make direction vectors orthogonal. Also found in ITK
+                // This is for some strange DICOM files that have non orthogonal direction vectors.
+                /// @note This is not done for multi-frame images, because frame may be independently oriented.
+                const auto& tuned_directions = tuneDirections(gdcm_image.GetDirectionCosines());
+                image_series->setImageOrientationPatient(tuned_directions);
+            }
 
             // Add the series to a new dataset
             if(!splitted_series)
@@ -1009,7 +1014,6 @@ inline static data::SeriesSet::sptr readImage(const data::Series& source, const 
 
         if(data::helper::MedicalImage::checkImageValidity(image_series))
         {
-            data::helper::MedicalImage::updateDefaultTransferFunction(*image_series);
             data::helper::MedicalImage::checkImageSliceIndex(image_series);
         }
 
@@ -1058,10 +1062,9 @@ public:
     /// @return data::SeriesSet::sptr: A set of series, with their associated files
     /// @throw std::runtime_error if the root directory is not an existing folder
     /// @throw std::runtime_error if there is no dicom files are found
-    [[nodiscard]] inline data::SeriesSet::sptr scanFiles() const
+    [[nodiscard]] inline data::SeriesSet::sptr scanFiles(const std::vector<std::filesystem::path>& files) const
     {
         // Convert std::vector<std::filesystem::path> to std::vector<std::string>
-        const auto& files = m_reader->getFiles();
         gdcm::Directory::FilenamesType gdcm_files;
 
         for(const auto& file : files)
@@ -1172,19 +1175,13 @@ public:
                 return false;
             }
 
-            // Convert the time to a number
-            // *INDENT-OFF*
-            using namespace std::chrono_literals;
-            std::chrono::hours hh = 0h;
-            // *INDENT-ON*
-
             // Start to parse DICOM time
-            ///@note Maybe it would be a good idea to export this function as DICOM TS are used elsewhere...
+            std::chrono::hours hours;
             if(value.length() >= 2)
             {
                 try
                 {
-                    hh = std::chrono::hours(std::stoi(value.substr(0, 2)));
+                    hours = std::chrono::hours(std::stoi(value.substr(0, 2)));
                 }
                 catch(...)
                 {
@@ -1197,13 +1194,12 @@ public:
                 return false;
             }
 
-            std::chrono::minutes mm = 0min;
-
+            std::chrono::minutes minutes;
             if(value.length() >= 4)
             {
                 try
                 {
-                    mm = std::chrono::minutes(std::stoi(value.substr(2, 4)));
+                    minutes = std::chrono::minutes(std::stoi(value.substr(2, 2)));
                 }
                 catch(...)
                 {
@@ -1212,13 +1208,12 @@ public:
                 }
             }
 
-            std::chrono::seconds ss = 0s;
-
+            std::chrono::seconds seconds;
             if(value.length() >= 6)
             {
                 try
                 {
-                    ss = std::chrono::seconds(std::stoi(value.substr(4, 6)));
+                    seconds = std::chrono::seconds(std::stoi(value.substr(4, 2)));
                 }
                 catch(...)
                 {
@@ -1227,8 +1222,7 @@ public:
                 }
             }
 
-            std::chrono::microseconds ffffff = 0us;
-
+            std::chrono::microseconds microseconds;
             if(value.length() >= 8)
             {
                 try
@@ -1239,7 +1233,7 @@ public:
                     // Fill with trailing 0 to always have microseconds
                     us.resize(6, '0');
 
-                    ffffff = std::chrono::microseconds(std::stoi(us));
+                    microseconds = std::chrono::microseconds(std::stoi(us));
                 }
                 catch(...)
                 {
@@ -1249,8 +1243,10 @@ public:
             }
 
             // Let the map sort the frames
-            const std::int64_t index =
-                std::chrono::duration_cast<std::chrono::microseconds>(hh + mm + ss + ffffff).count();
+            const std::int64_t index = std::chrono::duration_cast<std::chrono::microseconds>(
+                hours + minutes + seconds + microseconds
+            ).count();
+
             sorter.insert_or_assign(index, instance);
         }
 
@@ -1361,10 +1357,7 @@ public:
         {
             if(cancelRequested())
             {
-                m_scanned.reset();
-                m_sorted.reset();
-                m_read.reset();
-
+                clear();
                 return;
             }
 
@@ -1384,7 +1377,7 @@ public:
             }
             else
             {
-                SIGHT_THROW("Unsupported DICOM IOD '" << source->getSOPClassName() << "'.");
+                SIGHT_THROW("Unsupported DICOM IOD '" << data::dicom::sop::get(source->getSOPKeyword()).m_name << "'.");
             }
 
             // Add the read series to the set
@@ -1399,8 +1392,7 @@ public:
         }
 
         // Not needed anymore, free some memory
-        m_scanned.reset();
-        m_sorted.reset();
+        clear();
     }
 
     //------------------------------------------------------------------------------
@@ -1418,6 +1410,14 @@ public:
         {
             m_job->doneWork(units);
         }
+    }
+
+    //------------------------------------------------------------------------------
+
+    inline void clear()
+    {
+        m_scanned.reset();
+        m_sorted.reset();
     }
 
     /// The default filter to select only some type (Image, Model, ...) of DICOM files.
@@ -1453,7 +1453,7 @@ Reader::~Reader() noexcept = default;
 
 data::SeriesSet::sptr Reader::scan()
 {
-    const auto& files = getFiles();
+    auto files = getFiles();
 
     if(files.empty())
     {
@@ -1479,18 +1479,17 @@ data::SeriesSet::sptr Reader::scan()
         );
 
         // We need to transform std::vector<std::string> to std::vector<std::filesystem::path>
-        for(const auto& file : gdcm_directory.GetFilenames())
-        {
-            addFile(file);
-        }
+        const auto& filenames = gdcm_directory.GetFilenames();
+        std::transform(filenames.cbegin(), filenames.cend(), std::back_inserter(files), [](const auto& v){return v;});
     }
 
     if(m_pimpl->cancelRequested())
     {
+        m_pimpl->clear();
         return nullptr;
     }
 
-    const auto& scanned = m_pimpl->scanFiles();
+    const auto& scanned = m_pimpl->scanFiles(files);
     setScanned(scanned);
 
     m_pimpl->progress(20);
@@ -1509,6 +1508,7 @@ data::SeriesSet::sptr Reader::sort()
 
     if(m_pimpl->cancelRequested())
     {
+        m_pimpl->clear();
         return nullptr;
     }
 
@@ -1531,6 +1531,7 @@ void Reader::read()
 
     if(m_pimpl->cancelRequested())
     {
+        m_pimpl->clear();
         return;
     }
 

@@ -54,6 +54,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section Slots Slots
  * - \b enableTool(bool): enable or disable the tool, it will be automatically disabled when interactions are finished.
  * - \b deleteLastMesh(): delete the last extruded mesh.
+ * - \b cancelLastClick(): cancel the last point clicked during the extrusion
  *
  * @section Signal Signals
  * - \b toolDisabled(): sent when interactions are finished.
@@ -62,7 +63,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SShapeExtruder">
         <inout key="extrudedMeshes" uid="..." />
-        <config layer="..." priority="2" extrude="true" />
+        <config priority="2" extrude="true" />
     </service>
    @endcode
  *
@@ -70,7 +71,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b extrudedMeshes [sight::data::ModelSeries]: model series where all extruded meshes are stored.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string) : defines the layer.
  * - \b extrude (optional, bool, true) : sets if the extrusion is done or not (3D or 2D shape).
  * - \b priority (optional, int, default=2): interaction priority, higher priority interactions are performed first.
  */
@@ -87,21 +87,21 @@ public:
     MODULE_VIZ_SCENE3D_API SShapeExtruder() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SShapeExtruder() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SShapeExtruder() noexcept final = default;
 
 protected:
 
     /// Configures the service.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Creates Ogre resources and materials.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /// Destroys all Ogre resources.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
 private:
 
@@ -192,6 +192,12 @@ private:
         Ogre::Vector2 b;
     };
 
+    enum class Action
+    {
+        ADD,
+        REMOVE
+    };
+
     /// Computes the camera direction vector.
     static Ogre::Vector3 getCamDirection(const Ogre::Camera* _cam);
 
@@ -200,6 +206,9 @@ private:
 
     /// Deletes the last extruded mesh.
     void deleteLastMesh();
+
+    /// Cancel the last clicked point during the extrusion
+    void cancelLastClick();
 
     /**
      * @brief Gets the near and far position of the intersection between the ray starting from the camera
@@ -212,10 +221,18 @@ private:
     std::tuple<Ogre::Vector3, Ogre::Vector3, Ogre::Vector3> getNearFarRayPositions(int _x, int _y) const;
 
     /**
+     * @brief Modify the existing lasso
+     * @param _action The option to do on the lasso. Either ADD or REMOVE.
+     * @param _x X screen coordinate.
+     * @param _y Y screen coordinate.
+     */
+    void modifyLasso(Action _action, int _x = -1, int _y = -1);
+
+    /**
      * @brief Cancels further interactions.
      * @pre @ref m_interactionEnableState must be true.
      */
-    void wheelEvent(Modifier /*_mods*/, int /*_angleDelta*/, int /*_x*/, int /*_y*/) override;
+    void wheelEvent(Modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/) final;
 
     /**
      * @brief Adds a new point to the lasso.
@@ -224,7 +241,7 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    void buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) override;
+    void buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) final;
 
     /**
      * @brief Closes the lasso shape.
@@ -233,7 +250,7 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    void buttonDoublePressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) override;
+    void buttonDoublePressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) final;
 
     /**
      * @brief Draws the last lasso line or add a point to the lasso in the mouse is dragged.
@@ -242,13 +259,13 @@ private:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    void mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/) override;
+    void mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/) final;
 
     /**
      * @brief Ends the drag interaction.
      * @pre @ref m_interactionEnableState and @ref m_leftButtonMoveState must be true.
      */
-    void buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/) override;
+    void buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/) final;
 
     /// Draws the lasso from @ref m_lassoNearPositions.
     void drawLasso();

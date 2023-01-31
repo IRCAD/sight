@@ -39,11 +39,6 @@ namespace sight::module::viz::scene3d::adaptor
 static const core::com::Slots::SlotKeyType s_CLEAR_SLOT       = "clear";
 static const core::com::Slots::SlotKeyType s_ADD_FRUSTUM_SLOT = "addFrustum";
 
-static const std::string s_NEAR_CONFIG   = "near";
-static const std::string s_FAR_CONFIG    = "far";
-static const std::string s_COLOR_CONFIG  = "color";
-static const std::string s_NB_MAX_CONFIG = "nbMax";
-
 //-----------------------------------------------------------------------------
 
 SFrustumList::SFrustumList() noexcept
@@ -63,8 +58,7 @@ void SFrustumList::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
     this->setTransformId(
         config.get<std::string>(
@@ -72,6 +66,11 @@ void SFrustumList::configuring()
             this->getID() + "_transform"
         )
     );
+
+    static const std::string s_NEAR_CONFIG   = s_CONFIG + "near";
+    static const std::string s_FAR_CONFIG    = s_CONFIG + "far";
+    static const std::string s_COLOR_CONFIG  = s_CONFIG + "color";
+    static const std::string s_NB_MAX_CONFIG = s_CONFIG + "nbMax";
 
     m_near     = config.get<float>(s_NEAR_CONFIG, m_near);
     m_far      = config.get<float>(s_FAR_CONFIG, m_far);
@@ -95,12 +94,13 @@ void SFrustumList::starting()
         "sight::module::viz::scene3d::adaptor::SMaterial"
     );
     m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
-    m_materialAdaptor->setID(this->getID() + "_" + m_materialAdaptor->getID());
-    m_materialAdaptor->setMaterialName(this->getID() + "_" + m_materialAdaptor->getID());
-    m_materialAdaptor->setRenderService(this->getRenderService());
-    m_materialAdaptor->setLayerID(this->m_layerID);
-    m_materialAdaptor->setShadingMode("ambient");
-    m_materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_materialAdaptor->configure(
+        this->getID() + "_" + m_materialAdaptor->getID(),
+        this->getID() + "_" + m_materialAdaptor->getID(),
+        this->getRenderService(),
+        m_layerID,
+        "ambient"
+    );
     m_materialAdaptor->start();
     m_materialAdaptor->update();
 }
@@ -230,7 +230,7 @@ void SFrustumList::setTransfromToNode(Ogre::SceneNode* _node)
     {
         for(std::size_t ct = 0 ; ct < 4 ; ct++)
         {
-            ogreMat[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
+            ogreMat[ct][lt] = static_cast<Ogre::Real>((*transform)(ct, lt));
         }
     }
 

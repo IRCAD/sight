@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,32 +34,29 @@ namespace sight::core::com
 struct SignalBase;
 
 /**
- * @brief   This class proposes a mapping between a SignalKeyType and a SignalBase.
+ * @brief   This class proposes a storage for signals.
  */
 class CORE_CLASS_API Signals
 {
 public:
 
-    typedef std::string SignalKeyType;
-    typedef std::map<SignalKeyType, SPTR(SignalBase)> SignalMapType;
-    typedef std::vector<SignalKeyType> SignalKeyContainerType;
+    using key_t                  = std::string;
+    using SignalKeyType          = key_t;
+    using SignalKeyContainerType = std::vector<key_t>;
 
-    /// Constructor, does nothing
-    CORE_API Signals();
+    CORE_API Signals()          = default;
+    CORE_API virtual ~Signals() = default;
 
     /// Copy constructor forbidden
     Signals& operator=(const Signals&) = delete;
 
-    /// Constructor, check if all signals are disconnected
-    CORE_API virtual ~Signals();
-
     /// Registers SignalBase in m_signals
-    CORE_API Signals& operator()(const SignalKeyType& key, const SPTR(SignalBase)& Signal);
+    CORE_API Signals& operator()(const key_t& key, const SPTR(SignalBase)& Signal);
 
     /// Returns the SignalBase associated to the key, if key does not exist, the ptr is null
-    CORE_API SPTR(SignalBase) operator[](const SignalKeyType& key) const;
+    CORE_API SPTR(SignalBase) operator[](const key_t& key) const;
 
-    /// Returns all SignalKeyType registered in m_signals
+    /// Returns all key_t registered in m_signals
     [[nodiscard]] CORE_API SignalKeyContainerType getSignalKeys() const;
 
 protected:
@@ -68,6 +65,7 @@ protected:
     Signals(const Signals& /*unused*/);
 
     /// Association < key , SPTR( SignalBase ) >
+    using SignalMapType = std::map<key_t, SPTR(SignalBase)>;
     SignalMapType m_signals;
 };
 

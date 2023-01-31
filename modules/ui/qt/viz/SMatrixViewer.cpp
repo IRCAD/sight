@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,7 +54,7 @@ void SMatrixViewer::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    m_title = this->getConfigTree().get<std::string>("title", "matrix");
+    m_title = this->getConfiguration().get<std::string>("title", "matrix");
 }
 
 // ------------------------------------------------------------------------------
@@ -113,7 +113,7 @@ void SMatrixViewer::updateFromMatrix()
     {
         for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            m_matrixLabels[int(i * 4 + j)]->setText(QString("%1").arg(matrix->getCoefficient(i, j), 0, 'f', 2));
+            m_matrixLabels[int(i * 4 + j)]->setText(QString("%1").arg((*matrix)(i, j), 0, 'f', 2));
         }
     }
 }
@@ -136,7 +136,7 @@ void SMatrixViewer::clearLabels()
 service::IService::KeyConnectionsMap SMatrixViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_MATRIX, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     return connections;
 }
 

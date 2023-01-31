@@ -77,8 +77,6 @@
 #include "ui/base/GuiBaseObject.hpp"
 #include "ui/base/IMenuItemCallback.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 #include <filesystem>
 
 namespace sight::ui::base::layoutManager
@@ -93,7 +91,6 @@ public:
 
     SIGHT_DECLARE_CLASS(IToolBarLayoutManager, ui::base::GuiBaseObject);
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string RegistryKeyType;
     typedef std::vector<ui::base::IMenuItemCallback::sptr> CallbacksType;
 
@@ -124,10 +121,10 @@ public:
     UI_BASE_API const static RegistryKeyType REGISTRY_KEY;
 
     /// Constructor. Do nothing.
-    UI_BASE_API IToolBarLayoutManager();
+    UI_BASE_API IToolBarLayoutManager() = default;
 
     /// Destructor. Do nothing.
-    UI_BASE_API ~IToolBarLayoutManager() override;
+    UI_BASE_API ~IToolBarLayoutManager() override = default;
 
     /**
      * @brief Returns the vector of fwMenuItem managed by this layout.
@@ -147,7 +144,7 @@ public:
     /**
      * @brief Initialize layout managers & parse configuration.
      */
-    UI_BASE_API virtual void initialize(ConfigurationType configuration);
+    UI_BASE_API virtual void initialize(const ui::base::config_t& configuration);
 
     /**
      * @brief Instantiate actions with parent toolBar.

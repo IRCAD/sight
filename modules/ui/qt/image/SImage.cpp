@@ -22,7 +22,7 @@
 
 #include "SImage.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <service/macros.hpp>
 
@@ -99,7 +99,7 @@ void SImage::configuring()
 {
     this->initialize();
 
-    const ConfigType cfg = this->getConfigTree();
+    const ConfigType cfg = this->getConfiguration();
     auto pathCfg         = cfg.get<std::string>("path");
 
     m_path = core::runtime::getModuleResourceFilePath(pathCfg);

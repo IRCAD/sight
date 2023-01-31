@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2022 IRCAD France
+ * Copyright (C) 2015-2023 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,10 +40,16 @@ class SERVICE_CLASS_API IAppConfigManager : public core::tools::Object
 {
 public:
 
+    using config_t = boost::property_tree::ptree;
+
     SIGHT_DECLARE_CLASS(IAppConfigManager, core::tools::Object);
 
     /// Destructor. Do nothing.
     SERVICE_API ~IAppConfigManager() override = default;
+
+    /// Return a new AppConfigManager implementation. Should be used for all the IAppConfigManager of the application,
+    /// except the first one which must be explicitly called.
+    SERVICE_API static SPTR(IAppConfigManager) New();
 
     /// Return state
     bool isCreated() const;
@@ -51,28 +57,20 @@ public:
     bool isStopped() const;
     bool isDestroyed() const;
 
-    /// Set config param
-    void setConfig(core::runtime::ConfigurationElement::csptr cfgElem);
+    /// Set configuration
+    void setConfig(const config_t& cfg);
 
     /**
      * @brief Set configuration
      * @param configId the identifier of the requested config.
      * @param replaceFields the associations between the value and the pattern to replace in the config.
+     * @param autoPrefixId prefix every id with the name of the configuration .
      */
     SERVICE_API virtual void setConfig(
         const std::string& configId,
-        const FieldAdaptorType& replaceFields = FieldAdaptorType()
+        const FieldAdaptorType& replaceFields = FieldAdaptorType(),
+        bool autoPrefixId                     = true
     )                                         = 0;
-
-    /**
-     * @brief Set configuration
-     * @param configId the identifier of the requested config.
-     * @param replaceFields composite of association between the value and the pattern to replace in the config.
-     */
-    SERVICE_API virtual void setConfig(
-        const std::string& configId,
-        const data::Composite::csptr& replaceFields
-    ) = 0;
 
     /// Get config root
     SERVICE_API virtual data::Object::sptr getConfigRoot() const = 0;
@@ -112,7 +110,7 @@ protected:
     };
 
     /// XML Configuration tree
-    core::runtime::ConfigurationElement::csptr m_cfgElem;
+    core::runtime::config_t m_cfgElem;
 
     /// Running state of the app config manager
     ConfigState m_state {STATE_DESTROYED};
@@ -148,9 +146,9 @@ inline bool IAppConfigManager::isDestroyed() const
 
 //------------------------------------------------------------------------------
 
-inline void IAppConfigManager::setConfig(core::runtime::ConfigurationElement::csptr cfgElem)
+inline void IAppConfigManager::setConfig(const config_t& cfg)
 {
-    m_cfgElem = cfgElem;
+    m_cfgElem = cfg;
 }
 
 //------------------------------------------------------------------------------

@@ -27,11 +27,7 @@ and are, therefore, contained in sub-folders according to their specificity.
 * **SView**: defines the generic layout for application.
 
 ### com
-* **SBooleanSlotCaller**: runs a slot given by HasSlot id and slot key with a boolean in parameter representing the action state (active or not).
-
 * **SSignal**: sends a signal when it is triggered.
-
-* **SSlotCaller**: runs a slot given by HasSlot id and slot key.
 
 * **SStarter**: applies an action (start, stop, ...) on a service specify by uid.
 
@@ -64,7 +60,6 @@ and are, therefore, contained in sub-folders according to their specificity.
 
 ### viz
 * **CrossTypeAction**: allows change the cross type.
-* **SSnapshot**: allows to snapshot a generic scene.
 
 ## How to use it
 

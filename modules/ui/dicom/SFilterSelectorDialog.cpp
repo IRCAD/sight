@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,15 +59,13 @@ void SFilterSelectorDialog::configuring()
     //  <addSelection filter="sight::filter::dicom::composite::CTImageStorageDefaultComposite" />
     //  <addSelection filter="sight::filter::dicom::composite::CTImageStorageDefaultComposite" />
 
-    auto iter = this->m_configuration->begin();
-    for( ; iter != this->m_configuration->end() ; ++iter)
+    for(const auto& config : this->getConfiguration())
     {
-        SIGHT_INFO("SFilterSelectorDialog " + (*iter)->getName());
+        SIGHT_INFO("SFilterSelectorDialog " + config.first);
 
-        if((*iter)->getName() == "selection")
+        if(config.first == "selection")
         {
-            SIGHT_ASSERT("The xml element <selection> must have the attribute 'mode'.", (*iter)->hasAttribute("mode"));
-            const std::string mode = (*iter)->getExistingAttributeValue("mode");
+            const auto mode = config.second.get<std::string>("<xmlattr>.mode");
             m_filtersAreExcluded = (mode == "exclude");
             SIGHT_ASSERT(
                 "The xml attribute <mode> must be either 'exclude' or 'include'.",
@@ -77,14 +75,9 @@ void SFilterSelectorDialog::configuring()
             SIGHT_DEBUG("mode => " + mode);
         }
 
-        if((*iter)->getName() == "addSelection")
+        if(config.first == "addSelection")
         {
-            SIGHT_ASSERT(
-                "The xml element <addSelection> must have the attribute 'filter'.",
-                (*iter)->hasAttribute("filter")
-            );
-            m_selectedFilters.push_back((*iter)->getExistingAttributeValue("filter"));
-            SIGHT_DEBUG("add selection => " + (*iter)->getExistingAttributeValue("filter"));
+            m_selectedFilters.push_back(config.second.get<std::string>("<xmlattr>.filter"));
         }
     }
 }
@@ -177,7 +170,7 @@ void SFilterSelectorDialog::updating()
             auto sig =
                 obj->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
             {
-                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
                 sig->asyncEmit();
             }
         }

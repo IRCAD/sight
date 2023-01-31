@@ -28,7 +28,7 @@ namespace sight::module::data
 
 void SGetCamera::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
     const auto configOut                 = config.equal_range("out");
     for(auto it = configOut.first ; it != configOut.second ; ++it)
     {

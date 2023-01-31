@@ -57,9 +57,8 @@ void Matrix4Writer::write()
         return;
     }
 
-    data::Matrix4::TMCoefArray mat = this->getConcreteObject()->getCoefficients();
-    int i                          = 0;
-    for(auto val : mat)
+    int i = 0;
+    for(auto val : *(this->getConcreteObject()))
     {
         file << val;
         i++;

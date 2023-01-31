@@ -91,7 +91,7 @@ GEOMETRY_EIGEN_API RvecTvecType float16ToRvecTvec(const std::array<float, 16>& _
  * @param _tvec : input translation vector
  * @param _mat : output matrix
  */
-template<class T>
+template<class T = double>
 Eigen::Matrix<T, 4, 4, Eigen::RowMajor> toEigen(const data::Matrix4::csptr _trf)
 {
     Eigen::Matrix<T, 4, 4> mat;
@@ -99,7 +99,7 @@ Eigen::Matrix<T, 4, 4, Eigen::RowMajor> toEigen(const data::Matrix4::csptr _trf)
     {
         for(unsigned int c = 0 ; c < 4 ; ++c)
         {
-            mat(r, c) = static_cast<T>(_trf->getCoefficient(r, c));
+            mat(r, c) = static_cast<T>((*_trf)(r, c));
         }
     }
 

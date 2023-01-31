@@ -31,7 +31,9 @@
 
         <service uid="activityLauncherSrv" type="sight::service::SConfigController" >
             <appConfig id="ActivityLauncher" />
-            <inout key="activitySet" uid="activitySet" />
+            <inout group="data">
+                <key name="activitySet" uid="activitySet" />
+            </inout>
             <parameter replace="SEQUENCER_CONFIG" by="${SEQUENCER_CONFIG}" />
             <parameter replace="WIZARD_CONFIG" by="${WIZARD_CONFIG}" />
             <parameter replace="ICON_PATH" by="${ICON_PATH}" />

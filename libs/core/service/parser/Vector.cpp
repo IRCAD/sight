@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,29 +33,6 @@ namespace sight::service::parser
 
 //------------------------------------------------------------------------------
 
-bool Vector::refObjectValidator(core::runtime::ConfigurationElement::sptr _cfgElement)
-{
-    bool isOk = true;
-
-    for(auto& configEltIter : *_cfgElement)
-    {
-        std::string subElementName = configEltIter->getName();
-        if(subElementName != "service"
-           && subElementName != "serviceVector")
-        {
-            SIGHT_ERROR(
-                "xml subelement \"" << subElementName
-                << "\" for element object is not supported for the moment when you use a reference on item Vector."
-            );
-            isOk = false;
-        }
-    }
-
-    return isOk;
-}
-
-//------------------------------------------------------------------------------
-
 void Vector::updating()
 {
     SIGHT_FATAL("This method is deprecated, and thus shouldn't be used.");
@@ -73,28 +50,22 @@ void Vector::createConfig(core::tools::Object::sptr _obj)
     auto vector = data::Vector::dynamicCast(_obj);
     SIGHT_ASSERT("The passed object must be a data::Vector", vector);
 
-    for(core::runtime::ConfigurationElement::csptr elem : m_cfg->getElements())
+    for(const auto& elem : m_cfg)
     {
-        if(elem->getName() == "item")
+        if(elem.first == "item")
         {
-            // Test build mode
-            std::string buildMode = BUILD_OBJECT;
-
-            if(elem->hasAttribute(OBJECT_BUILD_MODE))
-            {
-                buildMode = elem->getExistingAttributeValue(OBJECT_BUILD_MODE);
-                SIGHT_ASSERT(
-                    "The buildMode \"" << buildMode << "\" is not supported, it should be either BUILD_OBJECT"
-                                                       "or GET_OBJECT.",
-                    buildMode == BUILD_OBJECT || buildMode == GET_OBJECT
-                );
-            }
+            const auto buildMode = elem.second.get<std::string>(OBJECT_BUILD_MODE, BUILD_OBJECT);
+            SIGHT_ASSERT(
+                "The buildMode \"" << buildMode << "\" is not supported, it should be either BUILD_OBJECT"
+                                                   "or GET_OBJECT.",
+                buildMode == BUILD_OBJECT || buildMode == GET_OBJECT
+            );
 
             if(buildMode == BUILD_OBJECT)
             {
                 // Create and manage object config
-                auto ctm = service::AppConfigManager::New();
-                ctm->service::IAppConfigManager::setConfig(elem);
+                auto ctm = service::IAppConfigManager::New();
+                ctm->service::IAppConfigManager::setConfig(elem.second);
 
                 m_ctmContainer.push_back(ctm);
                 ctm->create();

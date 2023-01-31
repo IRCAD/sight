@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,15 +46,7 @@ static const core::com::Slots::SlotKeyType s_DESELECT_POINT_SLOT   = "deselectPo
 static const core::com::Slots::SlotKeyType s_INITIALIZE_IMAGE_SLOT = "initializeImage";
 static const core::com::Slots::SlotKeyType s_SLICE_TYPE_SLOT       = "sliceType";
 static const core::com::Slots::SlotKeyType s_SLICE_INDEX_SLOT      = "sliceIndex";
-
-static const std::string s_FONT_SIZE_CONFIG       = "fontSize";
-static const std::string s_FONT_SOURCE_CONFIG     = "fontSource";
-static const std::string s_LABEL_CONFIG           = "label";
-static const std::string s_ORIENTATION_CONFIG     = "orientation";
-static const std::string s_LANDMARKS_FLAGS_CONFIG = "landmarksQueryFlags";
-static const std::string s_INTERACTIVE_CONFIG     = "interactive";
-static const std::string s_PRIORITY_CONFIG        = "priority";
-static const std::string s_QUERY_MASK_CONFIG      = "queryMask";
+static const core::com::Slots::SlotKeyType s_RENAME_GROUP_SLOT     = "renameGroup";
 
 const core::com::Signals::SignalKeyType SLandmarks::s_SEND_WORLD_COORD = "sendWorldCoord";
 
@@ -83,14 +75,10 @@ SLandmarks::SLandmarks() noexcept
     newSlot(s_INITIALIZE_IMAGE_SLOT, &SLandmarks::initializeImage, this);
     newSlot(s_SLICE_TYPE_SLOT, &SLandmarks::changeSliceType, this);
     newSlot(s_SLICE_INDEX_SLOT, &SLandmarks::changeSliceIndex, this);
+    newSlot(s_RENAME_GROUP_SLOT, &SLandmarks::renameGroup, this);
 
     newSignal<world_coordinates_signal_t>(s_SEND_WORLD_COORD);
 }
-
-//-----------------------------------------------------------------------------
-
-SLandmarks::~SLandmarks() noexcept =
-    default;
 
 //-----------------------------------------------------------------------------
 
@@ -98,8 +86,7 @@ void SLandmarks::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
     this->setTransformId(
         config.get<std::string>(
@@ -107,6 +94,15 @@ void SLandmarks::configuring()
             this->getID() + "_transform"
         )
     );
+
+    static const std::string s_FONT_SIZE_CONFIG       = s_CONFIG + "fontSize";
+    static const std::string s_FONT_SOURCE_CONFIG     = s_CONFIG + "fontSource";
+    static const std::string s_LABEL_CONFIG           = s_CONFIG + "label";
+    static const std::string s_ORIENTATION_CONFIG     = s_CONFIG + "orientation";
+    static const std::string s_LANDMARKS_FLAGS_CONFIG = s_CONFIG + "landmarksQueryFlags";
+    static const std::string s_INTERACTIVE_CONFIG     = s_CONFIG + "interactive";
+    static const std::string s_PRIORITY_CONFIG        = s_CONFIG + "priority";
+    static const std::string s_QUERY_MASK_CONFIG      = s_CONFIG + "queryMask";
 
     m_fontSource   = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_fontSize     = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
@@ -171,11 +167,12 @@ void SLandmarks::starting()
         "sight::module::viz::scene3d::adaptor::SMaterial"
     );
     m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
-    m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setRenderService(this->getRenderService());
-    m_materialAdaptor->setLayerID(m_layerID);
-    m_materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_materialAdaptor->configure(
+        this->getID() + m_materialAdaptor->getID(),
+        this->getID() + m_materialAdaptor->getID(),
+        this->getRenderService(),
+        m_layerID
+    );
     m_materialAdaptor->start();
 
     m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
@@ -197,11 +194,12 @@ service::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
 
-    connections.push(s_TRANSFORM_CONFIG, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TRANSFORM_CONFIG, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
-    connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_GROUP_REMOVED_SIG, s_REMOVE_GROUP_SLOT);
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_GROUP_MODIFIED_SIG, s_MODIFY_GROUP_SLOT);
+    connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_GROUP_RENAMED_SIG, s_RENAME_GROUP_SLOT);
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_POINT_MODIFIED_SIG, s_MODIFY_POINT_SLOT);
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_POINT_ADDED_SIG, s_ADD_POINT_SLOT);
     connections.push(s_LANDMARKS_INPUT, data::Landmarks::s_POINT_REMOVED_SIG, s_REMOVE_POINT_SLOT);
@@ -344,6 +342,44 @@ void SLandmarks::modifyGroup(std::string _groupName)
     for(std::size_t index : indexes)
     {
         this->selectPoint(_groupName, index);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::renameGroup(std::string _oldGroupName, std::string _newGroupName)
+{
+    // Make the context as current.
+    this->getRenderService()->makeCurrent();
+
+    // Get all selected point.
+    std::vector<std::size_t> indexes;
+    for(const std::shared_ptr<SelectedLandmark>& landmark : m_selectedLandmarks)
+    {
+        indexes.push_back(landmark->m_landmark->m_index);
+    }
+
+    // Remove the group.
+    this->removeGroup(_oldGroupName);
+
+    // Get landmarks.
+    const auto landmarks = m_landmarks.lock();
+
+    // Retrieve group.
+    const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(_newGroupName);
+
+    std::size_t groupSize = group.m_points.size();
+
+    // Re-create the group.
+    for(std::size_t index = 0 ; index < groupSize ; ++index)
+    {
+        this->insertMyPoint(_newGroupName, index, landmarks.get_shared());
+    }
+
+    // Re-run selected landmark threads
+    for(std::size_t index : indexes)
+    {
+        this->selectPoint(_newGroupName, index);
     }
 }
 
@@ -560,7 +596,7 @@ void SLandmarks::selectPoint(std::string _groupName, std::size_t _index)
 
                 // Create thread data.
                 std::shared_ptr<SelectedLandmark> selectedLandmark =
-                    std::make_shared<SelectedLandmark>(m_associatedWorker->createTimer(), m_manualObject);
+                    std::make_shared<SelectedLandmark>(this->worker()->createTimer(), m_manualObject);
                 m_selectedLandmarks.push_back(selectedLandmark);
 
                 // Run a thread that change the selected point.

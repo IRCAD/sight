@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,7 +76,7 @@ void SAxis::configuring()
 {
     this->configureParams(); // Looks for 'xAxis', 'yAxis' and 'zValue'
 
-    const ConfigType srvConfig = this->getConfigTree();
+    const ConfigType srvConfig = this->getConfiguration();
     const ConfigType config    = srvConfig.get_child("config.<xmlattr>");
 
     // 'color'
@@ -509,7 +509,7 @@ void SAxis::processInteraction(sight::viz::scene2d::data::Event& _event)
 service::IService::KeyConnectionsMap SAxis::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_VIEWPORT_INPUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     return connections;
 }
 

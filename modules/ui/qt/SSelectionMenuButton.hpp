@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,15 +86,10 @@ public:
 
     SIGHT_DECLARE_SERVICE(SSelectionMenuButton, sight::ui::base::IEditor);
 
-    /// Constructor. Do nothing.
     MODULE_UI_QT_API SSelectionMenuButton() noexcept;
-
-    /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~SSelectionMenuButton() noexcept override;
+    MODULE_UI_QT_API ~SSelectionMenuButton() noexcept override = default;
 
 protected:
-
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
 
     /**
      * @brief Install the layout.
@@ -138,19 +133,19 @@ private:
      * @{
      */
     /// Slot: enable/disable the button
-    void setEnabled(bool enabled);
+    void setEnabled(bool enabled) override;
 
     /// Slot: enable the button
-    void enable();
+    void enable() override;
 
     /// Slot: disable the button
-    void disable();
+    void disable() override;
     /**
      * @}
      */
 
-    std::string m_text;    ///< Text displayed on the button
-    std::string m_toolTip; ///< Tool tip displayed on the button
+    std::string m_text {">"}; ///< Text displayed on the button
+    std::string m_toolTip;    ///< Tool tip displayed on the button
     typedef std::pair<int, std::string> ItemType;
     typedef std::vector<ItemType> ItemContainerType;
     ItemContainerType m_items;

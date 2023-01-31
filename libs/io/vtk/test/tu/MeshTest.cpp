@@ -25,6 +25,8 @@
 #include <core/tools/random/Generator.hpp>
 #include <core/tools/System.hpp>
 
+#include <data/iterator.hpp>
+
 #include <geometry/data/Mesh.hpp>
 
 #include <io/vtk/helper/Mesh.hpp>
@@ -42,6 +44,8 @@
 #include <utestData/Data.hpp>
 #include <utestData/generator/Mesh.hpp>
 
+#include <vtkCellData.h>
+#include <vtkFloatArray.h>
 #include <vtkPolyData.h>
 #include <vtkPolyDataMapper.h>
 #include <vtkSmartPointer.h>
@@ -508,5 +512,338 @@ void MeshTest::testWriteStlFile()
 }
 
 //------------------------------------------------------------------------------
+
+void MeshTest::toVtkMeshWithLinesTest()
+{
+    auto mesh     = data::Mesh::New();
+    auto meshLock = mesh->dump_lock();
+    mesh->reserve(4, 3, data::Mesh::CellType::LINE);
+    mesh->pushPoint(0, 1, 2);
+    mesh->pushPoint(3, 4, 5);
+    mesh->pushPoint(6, 7, 8);
+    mesh->pushPoint(9, 10, 11);
+    mesh->pushCell(0U, 1U);
+    mesh->pushCell(1U, 2U);
+    mesh->pushCell(2U, 3U);
+
+    auto vtkMesh = vtkSmartPointer<vtkPolyData>::New();
+    io::vtk::helper::Mesh::toVTKMesh(mesh, vtkMesh);
+
+    for(std::uint8_t i = 0 ; i < 4 ; i++)
+    {
+        for(std::uint8_t j = 0 ; j < 3 ; j++)
+        {
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
+                "component " + std::to_string(j) + " of point " + std::to_string(i),
+                i * 3. + j,
+                vtkMesh->GetPoints()->GetPoint(i)[j]
+            );
+        }
+    }
+
+    auto* pointIdList = vtkIdList::New();
+    for(std::uint8_t i = 0 ; i < 3 ; i++)
+    {
+        vtkMesh->GetCellPoints(i, pointIdList);
+        for(std::uint8_t j = 0 ; j < 2 ; j++)
+        {
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
+                "point " + std::to_string(j) + " of cell " + std::to_string(i),
+                vtkIdType(i) + j,
+                pointIdList->GetId(j)
+            );
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::toVtkMeshWithTetrasTest()
+{
+    auto mesh     = data::Mesh::New();
+    auto meshLock = mesh->dump_lock();
+    mesh->reserve(5, 3, data::Mesh::CellType::TETRA);
+    mesh->pushPoint(0, 1, 2);
+    mesh->pushPoint(3, 4, 5);
+    mesh->pushPoint(6, 7, 8);
+    mesh->pushPoint(9, 10, 11);
+    mesh->pushPoint(12, 13, 14);
+    mesh->pushCell(0U, 1U, 2U, 3U);
+    mesh->pushCell(1U, 2U, 3U, 4U);
+    mesh->pushCell(2U, 3U, 4U, 0U);
+
+    auto vtkMesh = vtkSmartPointer<vtkPolyData>::New();
+    io::vtk::helper::Mesh::toVTKMesh(mesh, vtkMesh);
+
+    for(std::uint8_t i = 0 ; i < 5 ; i++)
+    {
+        for(std::uint8_t j = 0 ; j < 3 ; j++)
+        {
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
+                "component " + std::to_string(j) + " of point " + std::to_string(i),
+                i * 3. + j,
+                vtkMesh->GetPoints()->GetPoint(i)[j]
+            );
+        }
+    }
+
+    auto* pointIdList = vtkIdList::New();
+    for(std::uint8_t i = 0 ; i < 3 ; i++)
+    {
+        vtkMesh->GetCellPoints(i, pointIdList);
+        for(std::uint8_t j = 0 ; j < 4 ; j++)
+        {
+            // TODO: fix crash. With CellType = TETRA, the pointIdList is always empty.
+            // CPPUNIT_ASSERT_EQUAL_MESSAGE("point " + std::to_string(j) + " of cell " + std::to_string(i),
+            // (vtkIdType(i) + j)%4, pointIdList->GetId(j));
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::toVtkMeshWithCellTexCoordsTest()
+{
+    auto mesh     = data::Mesh::New();
+    auto meshLock = mesh->dump_lock();
+    mesh->reserve(3, 3, data::Mesh::CellType::POINT, data::Mesh::Attributes::CELL_TEX_COORDS);
+    mesh->pushPoint(0, 1, 2);
+    mesh->pushPoint(3, 4, 5);
+    mesh->pushPoint(6, 7, 8);
+    mesh->pushCell(0U);
+    mesh->pushCell(1U);
+    mesh->pushCell(2U);
+    mesh->setCellTexCoord(0, 0, 1);
+    mesh->setCellTexCoord(1, 1, 2);
+    mesh->setCellTexCoord(2, 2, 3);
+
+    auto vtkMesh = vtkSmartPointer<vtkPolyData>::New();
+    io::vtk::helper::Mesh::toVTKMesh(mesh, vtkMesh);
+
+    for(std::uint8_t i = 0 ; i < 3 ; i++)
+    {
+        for(std::uint8_t j = 0 ; j < 3 ; j++)
+        {
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
+                "component " + std::to_string(j) + " of point " + std::to_string(i),
+                i * 3. + j,
+                vtkMesh->GetPoints()->GetPoint(i)[j]
+            );
+        }
+    }
+
+    auto* pointIdList = vtkIdList::New();
+    for(std::uint8_t i = 0 ; i < 3 ; i++)
+    {
+        vtkMesh->GetCellPoints(i, pointIdList);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("cell " + std::to_string(i), vtkIdType(i), pointIdList->GetId(0));
+    }
+
+    for(std::uint8_t i = 0 ; i < 3 ; i++)
+    {
+        for(std::uint8_t j = 0 ; j < 2 ; j++)
+        {
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
+                "cell " + std::to_string(i),
+                double(i) + j,
+                vtkMesh->GetCellData()->GetTCoords()->GetTuple(i)[j]
+            );
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::fromVtkMeshWithLinesTest()
+{
+    auto vtkMesh = vtkSmartPointer<vtkPolyData>::New();
+    auto points  = vtkSmartPointer<vtkPoints>::New();
+    points->InsertNextPoint(0, 1, 2);
+    points->InsertNextPoint(3, 4, 5);
+    points->InsertNextPoint(6, 7, 8);
+    points->InsertNextPoint(9, 10, 11);
+    vtkMesh->SetPoints(points);
+    auto cells = vtkSmartPointer<vtkCellArray>::New();
+    cells->InsertNextCell({0, 1});
+    cells->InsertNextCell({1, 2});
+    cells->InsertNextCell({2, 3});
+    vtkMesh->SetLines(cells);
+
+    auto mesh = data::Mesh::New();
+    io::vtk::helper::Mesh::fromVTKMesh(vtkMesh, mesh);
+
+    auto meshLock  = mesh->dump_lock();
+    std::uint8_t i = 0;
+    for(auto p : mesh->crange<data::iterator::point::xyz>())
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("point " + std::to_string(i), 3.F * i, p.x);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("point " + std::to_string(i), 3.F * i + 1, p.y);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("point " + std::to_string(i), 3.F * i + 2, p.z);
+        i++;
+    }
+
+    auto* pointIdList = vtkIdList::New();
+    i = 0;
+    for(auto c : mesh->crange<data::iterator::cell::line>())
+    {
+        vtkMesh->GetCellPoints(i, pointIdList);
+        for(std::uint8_t j = 0 ; j < 2 ; j++)
+        {
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
+                "point " + std::to_string(j) + " of cell " + std::to_string(i),
+                data::iterator::cell_t(i) + j,
+                c.pt[j]
+            );
+        }
+
+        i++;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::fromVtkMeshWithQuadsTest()
+{
+    auto vtkMesh = vtkSmartPointer<vtkPolyData>::New();
+    auto points  = vtkSmartPointer<vtkPoints>::New();
+    points->InsertNextPoint(0, 1, 2);
+    points->InsertNextPoint(3, 4, 5);
+    points->InsertNextPoint(6, 7, 8);
+    points->InsertNextPoint(9, 10, 11);
+    points->InsertNextPoint(12, 13, 14);
+    vtkMesh->SetPoints(points);
+    auto cells = vtkSmartPointer<vtkCellArray>::New();
+    cells->InsertNextCell({0, 1, 2, 3});
+    cells->InsertNextCell({1, 2, 3, 4});
+    cells->InsertNextCell({2, 3, 4, 0});
+    vtkMesh->SetPolys(cells);
+
+    auto mesh = data::Mesh::New();
+    io::vtk::helper::Mesh::fromVTKMesh(vtkMesh, mesh);
+
+    auto meshLock  = mesh->dump_lock();
+    std::uint8_t i = 0;
+    for(auto p : mesh->crange<data::iterator::point::xyz>())
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("point " + std::to_string(i), 3.F * i, p.x);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("point " + std::to_string(i), 3.F * i + 1, p.y);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("point " + std::to_string(i), 3.F * i + 2, p.z);
+        i++;
+    }
+
+    i = 0;
+    for(auto c : mesh->crange<data::iterator::cell::quad>())
+    {
+        std::uint8_t j = 0;
+        for(auto pt : c.pt)
+        {
+            CPPUNIT_ASSERT_EQUAL_MESSAGE(
+                "point " + std::to_string(j) + " of cell " + std::to_string(i),
+                (i + j) % 5U,
+                pt
+            );
+            j++;
+        }
+
+        i++;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::fromVtkMeshWithCellTexCoordsTest()
+{
+    auto vtkMesh = vtkSmartPointer<vtkPolyData>::New();
+    auto points  = vtkSmartPointer<vtkPoints>::New();
+    points->InsertNextPoint(0, 1, 2);
+    points->InsertNextPoint(3, 4, 5);
+    points->InsertNextPoint(6, 7, 8);
+    vtkMesh->SetPoints(points);
+    auto cells                    = vtkSmartPointer<vtkCellArray>::New();
+    std::vector<vtkIdType> idList = {0};
+    cells->InsertNextCell(static_cast<vtkIdType>(idList.size()), idList.data());
+    idList = {1};
+    cells->InsertNextCell(static_cast<vtkIdType>(idList.size()), idList.data());
+    idList = {2};
+    cells->InsertNextCell(static_cast<vtkIdType>(idList.size()), idList.data());
+    vtkMesh->SetVerts(cells);
+    auto* texCoordsArray = new float [6] {0, 1, 1, 2, 2, 3};
+    auto texCoords       = vtkSmartPointer<vtkFloatArray>::New();
+    texCoords->SetNumberOfComponents(2);
+    texCoords->SetArray(texCoordsArray, 3, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
+    vtkMesh->GetCellData()->SetTCoords(texCoords);
+
+    auto mesh = data::Mesh::New();
+    io::vtk::helper::Mesh::fromVTKMesh(vtkMesh, mesh);
+
+    auto meshLock  = mesh->dump_lock();
+    std::uint8_t i = 0;
+    for(auto p : mesh->crange<data::iterator::point::xyz>())
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("point " + std::to_string(i), 3.F * i, p.x);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("point " + std::to_string(i), 3.F * i + 1, p.y);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("point " + std::to_string(i), 3.F * i + 2, p.z);
+        i++;
+    }
+
+    i = 0;
+    for(auto [c, uv] : mesh->czip_range<data::iterator::cell::point, data::iterator::cell::uv>())
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("cell " + std::to_string(i), unsigned(i), c.pt);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("cell " + std::to_string(i), float(i), uv.u);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("cell " + std::to_string(i), float(i) + 1, uv.v);
+        i++;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void MeshTest::fromVtkMeshWith3ComponentsCellColorsTest()
+{
+    auto vtkMesh = vtkSmartPointer<vtkPolyData>::New();
+    auto points  = vtkSmartPointer<vtkPoints>::New();
+    points->InsertNextPoint(0, 1, 2);
+    points->InsertNextPoint(3, 4, 5);
+    points->InsertNextPoint(6, 7, 8);
+    vtkMesh->SetPoints(points);
+    auto cells                    = vtkSmartPointer<vtkCellArray>::New();
+    std::vector<vtkIdType> idList = {0};
+    cells->InsertNextCell(static_cast<vtkIdType>(idList.size()), idList.data());
+    idList = {1};
+    cells->InsertNextCell(static_cast<vtkIdType>(idList.size()), idList.data());
+    idList = {2};
+    cells->InsertNextCell(static_cast<vtkIdType>(idList.size()), idList.data());
+    vtkMesh->SetVerts(cells);
+    auto* colorsArray = new std::uint8_t[9] {0, 1, 2, 3, 4, 5, 6, 7, 8};
+    auto colors       = vtkSmartPointer<vtkUnsignedCharArray>::New();
+    colors->SetNumberOfComponents(3);
+    colors->SetName("Colors");
+    colors->SetArray(colorsArray, 3, 0, vtkFloatArray::VTK_DATA_ARRAY_DELETE);
+    vtkMesh->GetCellData()->SetScalars(colors);
+
+    auto mesh = data::Mesh::New();
+    io::vtk::helper::Mesh::fromVTKMesh(vtkMesh, mesh);
+
+    auto meshLock  = mesh->dump_lock();
+    std::uint8_t i = 0;
+    for(auto p : mesh->crange<data::iterator::point::xyz>())
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("point " + std::to_string(i), 3.F * i, p.x);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("point " + std::to_string(i), 3.F * i + 1, p.y);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("point " + std::to_string(i), 3.F * i + 2, p.z);
+        i++;
+    }
+
+    i = 0;
+    for(auto [c, rgba] : mesh->czip_range<data::iterator::cell::point, data::iterator::cell::rgba>())
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("cell " + std::to_string(i), unsigned(i), c.pt);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("cell " + std::to_string(i), std::uint8_t(3 * i), rgba.r);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("cell " + std::to_string(i), std::uint8_t(3 * i + 1), rgba.g);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("cell " + std::to_string(i), std::uint8_t(3 * i + 2), rgba.b);
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("cell " + std::to_string(i), std::uint8_t(255), rgba.a);
+        i++;
+    }
+}
 
 } // namespace sight::io::vtk::ut

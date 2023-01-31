@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,7 +29,7 @@ namespace sight::ui::base::dialog
 
 //-----------------------------------------------------------------------------
 
-std::string InputDialog::showInputDialog(
+std::pair<std::string, bool> InputDialog::showInputDialog(
     const std::string& title,
     const std::string& message,
     const std::string& text,
@@ -136,11 +136,11 @@ void InputDialog::setEchoMode(EchoMode echoMode)
 
 //-----------------------------------------------------------------------------
 
-std::string InputDialog::getInput()
+std::pair<std::string, bool> InputDialog::getInput()
 {
-    std::function<std::string()> func = [this](auto&& ...){return m_implementation->getInput();};
-    std::shared_future<std::string> f =
-        core::thread::getDefaultWorker()->postTask<std::string>(func);
+    std::function<std::pair<std::string, bool>()> func  = [this](auto&& ...){return m_implementation->getInput();};
+    std::shared_future<std::pair<std::string, bool> > f =
+        core::thread::getDefaultWorker()->postTask<std::pair<std::string, bool> >(func);
     f.wait();
     return f.get();
 }

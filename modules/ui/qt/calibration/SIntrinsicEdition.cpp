@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace sight::module::ui::qt::calibration
 SIntrinsicEdition::SIntrinsicEdition() :
     m_dialog(new SUpdateIntrinsicDialog())
 {
-    core::com::HasSlots::m_slots.setWorker(m_associatedWorker);
+    core::com::HasSlots::m_slots.setWorker(this->worker());
 
     QObject::connect(
         m_dialog,

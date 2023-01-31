@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,34 +75,14 @@ void SSliceIndexDicomEditor::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SIGHT_ASSERT(
-        "The service module::ui::dicom::SSliceIndexDicomEditor must have "
-        "a \"config\" element.",
-        config
-    );
+    const auto& config = this->getConfiguration();
 
-    bool success = false;
+    m_dicomReaderType = config.get<std::string>("config.<xmlattr>.dicomReader", m_dicomReaderType);
+    m_delay           = config.get<std::size_t>("config.<xmlattr>.delay", m_delay);
 
-    // Reader
-    std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SIGHT_ASSERT(
-        "It should be a \"dicomReader\" tag in the module::ui::dicom::SSliceIndexDicomEditor "
-        "config element.",
-        success
-    );
-
-    // Reader configuration
-    core::runtime::ConfigurationElement::sptr readerConfig = config->findConfigurationElement("readerConfig");
-    m_readerConfig =
-        (readerConfig && readerConfig->size() == 1) ? readerConfig->getElements()[0] : nullptr;
-
-    // Delay
-    std::string delayStr;
-    std::tie(success, delayStr) = config->getSafeAttributeValue("delay");
-    if(success)
+    if(const auto readerConfig = config.get_child_optional("readerConfig"); readerConfig.has_value())
     {
-        m_delay = boost::lexical_cast<std::size_t>(delayStr);
+        m_readerConfig = readerConfig.value();
     }
 }
 
@@ -110,7 +90,7 @@ void SSliceIndexDicomEditor::configuring()
 
 void SSliceIndexDicomEditor::starting()
 {
-    m_delayTimer2 = m_associatedWorker->createTimer();
+    m_delayTimer2 = this->worker()->createTimer();
 
     sight::ui::base::IGuiContainer::create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(getContainer());
@@ -153,12 +133,7 @@ void SSliceIndexDicomEditor::starting()
         dicomReader
     );
     dicomReader->setInOut(m_tmp_series_set, sight::io::base::service::s_DATA_KEY);
-
-    if(m_readerConfig)
-    {
-        dicomReader->setConfiguration(m_readerConfig);
-    }
-
+    dicomReader->setConfiguration(m_readerConfig);
     dicomReader->configure();
     dicomReader->start();
 

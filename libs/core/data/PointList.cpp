@@ -107,4 +107,24 @@ bool PointList::operator!=(const PointList& other) const noexcept
     return !(*this == other);
 }
 
+//------------------------------------------------------------------------------
+
+std::ostream& operator<<(std::ostream& out, const sight::data::PointList& pl)
+{
+    out << "{";
+    bool first = true;
+    for(const auto& e : pl.getPoints())
+    {
+        if(!first)
+        {
+            out << ", ";
+        }
+
+        out << *e;
+        first = false;
+    }
+
+    return out << "}";
+}
+
 } // namespace sight::data

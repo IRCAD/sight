@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2022 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -70,24 +70,24 @@ public:
     SIGHT_DECLARE_SERVICE(SShaderParameter, sight::viz::scene3d::IParameter);
 
     /// Creates the adaptor.
-    MODULE_VIZ_SCENE3D_API SShaderParameter() noexcept;
+    MODULE_VIZ_SCENE3D_API SShaderParameter() noexcept = default;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SShaderParameter() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SShaderParameter() noexcept final = default;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Finds the material on which this service works.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /// Updates the shader parameter with the input.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /// Clears resources.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
 private:
 

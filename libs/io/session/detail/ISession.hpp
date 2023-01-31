@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -65,7 +65,7 @@ public:
     static inline core::crypto::secure_string pickle(
         const core::crypto::secure_string& password,
         const core::crypto::secure_string& salt,
-        core::crypto::PasswordKeeper::EncryptionPolicy policy = core::crypto::PasswordKeeper::EncryptionPolicy::DEFAULT
+        core::crypto::PasswordKeeper::EncryptionPolicy policy = core::crypto::PasswordKeeper::EncryptionPolicy::PASSWORD
     );
 
 protected:

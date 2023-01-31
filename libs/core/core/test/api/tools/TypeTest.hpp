@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,6 +32,7 @@ class TypeTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(TypeTest);
 CPPUNIT_TEST(typeTest);
 CPPUNIT_TEST(typeToStringTest);
+CPPUNIT_TEST(typeSwitchTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -42,6 +43,7 @@ public:
 
     static void typeTest();
     static void typeToStringTest();
+    static void typeSwitchTest();
 };
 
 } // namespace sight::core::tools::ut

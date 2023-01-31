@@ -23,8 +23,6 @@
 #include "viz/scene2d/data/parser/Viewport.hpp"
 #include "viz/scene2d/data/Viewport.hpp"
 
-#include <core/runtime/Convert.hpp>
-
 #include <service/macros.hpp>
 
 SIGHT_REGISTER_SERVICE(
@@ -43,8 +41,7 @@ void Viewport::createConfig(core::tools::Object::sptr _obj)
     const data::Viewport::sptr viewport = data::Viewport::dynamicCast(_obj);
     SIGHT_ASSERT("Viewport does not exist.", viewport);
 
-    const auto configTree = core::runtime::Convert::toPropertyTree(m_cfg);
-    const auto config     = configTree.get_child_optional("object.config.<xmlattr>");
+    const auto config = m_cfg.get_child_optional("config.<xmlattr>");
     if(config.has_value())
     {
         const std::string id = config->get("id", "");

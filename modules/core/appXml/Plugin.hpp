@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2022 IRCAD France
+ * Copyright (C) 2015-2023 IRCAD France
  * Copyright (C) 2015-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <core/runtime/Plugin.hpp>
 
-#include <service/AppConfigManager.hpp>
+#include <service/IAppConfigManager.hpp>
 
 namespace sight::module::appXml
 {
@@ -57,7 +57,7 @@ private:
 
     std::string m_configurationName;
     std::string m_parametersName;
-    service::AppConfigManager::sptr m_appConfigMng;
+    service::IAppConfigManager::sptr m_appConfigMng;
 };
 
 } // namespace sight::module::appXml

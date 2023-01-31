@@ -22,7 +22,7 @@
 
 #include "SQueryEditor.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/SeriesSet.hpp>
@@ -73,7 +73,7 @@ void SQueryEditor::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    const auto configTree = this->getConfigTree();
+    const auto configTree = this->getConfiguration();
     const auto config     = configTree.get_child_optional("config.<xmlattr>");
     if(config)
     {

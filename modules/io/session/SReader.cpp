@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -77,13 +77,13 @@ public:
     std::string m_extension_description {"Sight session"};
 
     /// Dialog policy to use for the file location
-    DialogPolicy m_dialog_policy = {DialogPolicy::DEFAULT};
+    DialogPolicy m_dialog_policy = {DialogPolicy::NEVER};
 
     /// Password policy to use
-    PasswordKeeper::PasswordPolicy m_password_policy {PasswordKeeper::PasswordPolicy::DEFAULT};
+    PasswordKeeper::PasswordPolicy m_password_policy {PasswordKeeper::PasswordPolicy::NEVER};
 
     /// Encryption policy to use
-    PasswordKeeper::EncryptionPolicy m_encryption_policy {PasswordKeeper::EncryptionPolicy::DEFAULT};
+    PasswordKeeper::EncryptionPolicy m_encryption_policy {PasswordKeeper::EncryptionPolicy::PASSWORD};
 
     /// Archive format to use
     Archive::ArchiveFormat m_archive_format {Archive::ArchiveFormat::DEFAULT};
@@ -123,7 +123,7 @@ void SReader::configuring()
 {
     sight::io::base::service::IReader::configuring();
 
-    const auto& tree = this->getConfigTree();
+    const auto& tree = this->getConfiguration();
 
     // Extension configuration
     const auto& dialog = tree.get_child_optional("dialog.<xmlattr>");
@@ -223,24 +223,18 @@ void SReader::updating()
 
             if(m_pimpl->m_password_retry > 0
                || (m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ALWAYS)
-               || (m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ONCE
+               || (m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::GLOBAL
                    && globalPassword.empty()))
             {
-                const auto& newPassword = secure_string(
+                const auto& [newPassword, ok] =
                     sight::ui::base::dialog::InputDialog::showInputDialog(
                         "Enter Password",
                         "Password:",
                         globalPassword.c_str(), // NOLINT(readability-redundant-string-cstr)
                         sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
-                    )
-                );
+                    );
 
-                if(m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ONCE)
-                {
-                    PasswordKeeper::set_global_password(newPassword);
-                }
-
-                return newPassword;
+                return secure_string(newPassword);
             }
 
             return globalPassword;
@@ -274,13 +268,13 @@ void SReader::updating()
 
             auto sig = data->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
             {
-                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
                 sig->asyncEmit();
             }
 
             runningJob.done();
         },
-        m_associatedWorker
+        this->worker()
     );
 
     core::jobs::Aggregator::sptr jobs = core::jobs::Aggregator::New(filepath.string() + " reader");
@@ -315,21 +309,15 @@ void SReader::updating()
         else
         {
             m_pimpl->m_password_retry = 0;
-
-            // Reset old wrong password
-            if(m_pimpl->m_password_policy == PasswordKeeper::PasswordPolicy::ONCE)
-            {
-                PasswordKeeper::reset_global_password();
-            }
         }
     }
-    catch(std::exception& _e)
+    catch(const std::exception& e)
     {
         // Handle the error.
-        SIGHT_ERROR(_e.what());
+        SIGHT_ERROR(e.what());
         sight::ui::base::dialog::MessageDialog::show(
             "Session reader failed",
-            _e.what(),
+            e.what(),
             sight::ui::base::dialog::IMessageDialog::CRITICAL
         );
     }
@@ -375,7 +363,7 @@ void SReader::openLocationDialog()
     {
         const auto& filepath = result->getFile();
         setFile(filepath);
-        m_pimpl->m_extension_name = locationDialog.getCurrentSelection();
+        m_pimpl->m_extension_name = locationDialog.getSelectedExtensions().front();
 
         // Save default location for later use
         defaultLocation->setFolder(filepath.parent_path());

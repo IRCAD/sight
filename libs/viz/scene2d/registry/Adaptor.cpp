@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,11 +30,11 @@ class IAdaptor;
 namespace registry
 {
 
-static AdaptorRegistryType s_REGISTRY;
+static adaptor_registry_t s_REGISTRY;
 
 //------------------------------------------------------------------------------
 
-AdaptorRegistryType& getAdaptorRegistry()
+adaptor_registry_t& getAdaptorRegistry()
 {
     return s_REGISTRY;
 }

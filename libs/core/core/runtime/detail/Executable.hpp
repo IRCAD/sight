@@ -41,20 +41,10 @@ class Executable : public IExecutable
 public:
 
     /**
-     * @brief   Retrieves the executable's initialization data.
-     *
-     * @return  a shared pointer to the configuration element being the initialization data of the executable
-     *          or null when none
-     */
-    [[nodiscard]] std::shared_ptr<ConfigurationElement> getInitializationData() const;
-
-    /**
      * @name    Overrides.
      */
     /// @{
     [[nodiscard]] std::shared_ptr<Module> getModule() const override;
-
-    void setInitializationData(std::shared_ptr<ConfigurationElement> element) override;
 
     /// @}
 
@@ -69,11 +59,6 @@ private:
      * @brief   a pointer to the module that owns the executable instance
      */
     std::shared_ptr<Module> m_module;
-
-    /**
-     * @brief   the initialization data of the executable instance
-     */
-    std::shared_ptr<ConfigurationElement> m_initializationData;
 };
 
 } // namespace sight::core::runtime::detail

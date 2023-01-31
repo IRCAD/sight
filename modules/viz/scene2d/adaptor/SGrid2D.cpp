@@ -58,7 +58,7 @@ void SGrid2D::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
 
     SIGHT_ASSERT("Attribute 'xMin' is missing", config.count("xMin"));
     SIGHT_ASSERT("Attribute 'xMax' is missing", config.count("xMax"));

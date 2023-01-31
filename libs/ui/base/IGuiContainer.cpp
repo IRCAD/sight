@@ -29,92 +29,81 @@
 #include "ui/base/layoutManager/IViewLayoutManager.hpp"
 #include "ui/base/registry/View.hpp"
 
-#include <core/base.hpp>
-#include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/tools/fwID.hpp>
 
-#include <service/macros.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
 namespace sight::ui::base
 {
 
-const core::com::Slots::SlotKeyType IGuiContainer::s_SET_ENABLED_SLOT = "setEnabled";
-const core::com::Slots::SlotKeyType IGuiContainer::s_ENABLE_SLOT      = "enable";
-const core::com::Slots::SlotKeyType IGuiContainer::s_DISABLE_SLOT     = "disable";
-const core::com::Slots::SlotKeyType IGuiContainer::s_SET_VISIBLE_SLOT = "setVisible";
-const core::com::Slots::SlotKeyType IGuiContainer::s_SHOW_SLOT        = "show";
-const core::com::Slots::SlotKeyType IGuiContainer::s_HIDE_SLOT        = "hide";
+const core::com::Slots::SlotKeyType IGuiContainer::s_SET_ENABLED_SLOT          = "setEnabled";
+const core::com::Slots::SlotKeyType IGuiContainer::s_SET_ENABLED_BY_PARAM_SLOT = "setEnabledByParam";
+const core::com::Slots::SlotKeyType IGuiContainer::s_ENABLE_SLOT               = "enable";
+const core::com::Slots::SlotKeyType IGuiContainer::s_DISABLE_SLOT              = "disable";
+const core::com::Slots::SlotKeyType IGuiContainer::s_SET_VISIBLE_SLOT          = "setVisible";
+const core::com::Slots::SlotKeyType IGuiContainer::s_SET_VISIBLE_BY_PARAM_SLOT = "setVisibleByParam";
+const core::com::Slots::SlotKeyType IGuiContainer::s_SHOW_SLOT                 = "show";
+const core::com::Slots::SlotKeyType IGuiContainer::s_HIDE_SLOT                 = "hide";
 
 //-----------------------------------------------------------------------------
 
 IGuiContainer::IGuiContainer()
 {
     newSlot(s_SET_ENABLED_SLOT, &IGuiContainer::setEnabled, this);
+    newSlot(s_SET_ENABLED_BY_PARAM_SLOT, &IGuiContainer::setEnabledByParameter, this);
     newSlot(s_ENABLE_SLOT, &IGuiContainer::enable, this);
     newSlot(s_DISABLE_SLOT, &IGuiContainer::disable, this);
     newSlot(s_SET_VISIBLE_SLOT, &IGuiContainer::setVisible, this);
+    newSlot(s_SET_VISIBLE_BY_PARAM_SLOT, &IGuiContainer::setVisibleByParameter, this);
     newSlot(s_SHOW_SLOT, &IGuiContainer::show, this);
     newSlot(s_HIDE_SLOT, &IGuiContainer::hide, this);
 }
 
 //-----------------------------------------------------------------------------
 
-IGuiContainer::~IGuiContainer()
-= default;
-
-//-----------------------------------------------------------------------------
-
 void IGuiContainer::initialize()
 {
-    SIGHT_ASSERT("The service '" + this->getID() + "' does not contain a configuration", m_configuration);
-
     // Create view registry
     m_viewRegistry = ui::base::registry::View::New(this->getID());
-    // find View configuration
-    std::vector<ConfigurationType> vectViewMng = m_configuration->find("registry");
-    if(!vectViewMng.empty())
+
+    const auto& config = this->getConfiguration();
+
+    if(const auto registryConfig = config.get_child_optional("registry"); registryConfig.has_value())
     {
-        m_viewRegistryConfig = vectViewMng.at(0);
-        m_viewRegistry->initialize(m_viewRegistryConfig);
+        m_viewRegistry->initialize(registryConfig.value());
     }
 
     // Create initializeLayoutManager
-    // find gui configuration
-    std::vector<ConfigurationType> vectGui = m_configuration->find("gui");
-    if(!vectGui.empty())
+    const auto gui = config.get_child_optional("gui");
+
+    if(gui.has_value())
     {
         SIGHT_ASSERT(
             "[" + this->getID() + "' ] No <registry> tag is allowed in the <gui> section",
-            vectGui.at(0)->find("registry").empty()
+            !gui->get_child_optional("registry").has_value()
         );
 
         // find view LayoutManager configuration
-        std::vector<ConfigurationType> vectLayoutMng = vectGui.at(0)->find("layout");
-        if(!vectLayoutMng.empty())
+        if(const auto layout = gui->get_child_optional("layout"); layout.has_value())
         {
-            m_viewLayoutConfig = vectLayoutMng.at(0);
-            this->initializeLayoutManager(m_viewLayoutConfig);
+            this->initializeLayoutManager(layout.value());
             m_viewLayoutManagerIsCreated = true;
         }
 
         // find toolBarBuilder configuration
-        std::vector<ConfigurationType> vectTBBuilder = vectGui.at(0)->find("toolBar");
-        if(!vectTBBuilder.empty())
+        if(const auto toolBar = gui->get_child_optional("toolBar"); toolBar.has_value())
         {
-            m_toolBarConfig = vectTBBuilder.at(0);
-            this->initializeToolBarBuilder(m_toolBarConfig);
+            this->initializeToolBarBuilder(toolBar.value());
 
             m_hasToolBar = true;
         }
 
-        // find slideView configuration
-        std::vector<ConfigurationType> vectSlideCfg = vectGui.at(0)->find("slideView");
-        for(const auto& slideCfg : vectSlideCfg)
+        // find slideView configurations
+        const auto slideViewCfg = gui->equal_range("slideView");
+        for(const auto& slideCfg : boost::make_iterator_range(slideViewCfg))
         {
-            this->initializeSlideViewBuilder(slideCfg);
+            this->initializeSlideViewBuilder(slideCfg.second);
         }
     }
 }
@@ -194,29 +183,7 @@ void IGuiContainer::destroy()
 {
     SIGHT_ASSERT("View must be initialized.", m_viewRegistry);
 
-    if(m_viewLayoutManagerIsCreated)
-    {
-        if(m_hasToolBar)
-        {
-            m_viewRegistry->unmanageToolBar();
-            SIGHT_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
-
-            core::thread::getDefaultWorker()->postTask<void>(
-                [&]
-                {
-                    m_toolBarBuilder->destroyToolBar();
-                }).wait();
-        }
-
-        m_viewRegistry->unmanage();
-        SIGHT_ASSERT("ViewLayoutManager must be initialized.", m_viewLayoutManager);
-
-        core::thread::getDefaultWorker()->postTask<void>(
-            [&]
-            {
-                m_viewLayoutManager->destroyLayout();
-            }).wait();
-    }
+    m_viewRegistry->unmanage();
 
     for(const auto& slideBuilder : m_slideViewBuilders)
     {
@@ -228,20 +195,37 @@ void IGuiContainer::destroy()
             }).wait();
     }
 
+    if(m_viewLayoutManagerIsCreated)
+    {
+        SIGHT_ASSERT("ViewLayoutManager must be initialized.", m_viewLayoutManager);
+
+        core::thread::getDefaultWorker()->postTask<void>(
+            [&]
+            {
+                m_viewLayoutManager->destroyLayout();
+            }).wait();
+
+        if(m_hasToolBar)
+        {
+            m_viewRegistry->unmanageToolBar();
+            SIGHT_ASSERT("ToolBarBuilder must be initialized.", m_toolBarBuilder);
+
+            core::thread::getDefaultWorker()->postTask<void>(
+                [&]
+                {
+                    m_toolBarBuilder->destroyToolBar();
+                }).wait();
+        }
+    }
+
     m_containerBuilder->destroyContainer();
 }
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainer::initializeLayoutManager(ConfigurationType layoutConfig)
+void IGuiContainer::initializeLayoutManager(const ui::base::config_t& layoutConfig)
 {
-    SIGHT_ASSERT(
-        "[" + this->getID() + "' ] Wrong configuration name, expected: 'layout', actual: '"
-        + layoutConfig->getName() + "'",
-        layoutConfig->getName() == "layout"
-    );
-    SIGHT_ASSERT("<layout> tag must have type attribute", layoutConfig->hasAttribute("type"));
-    const std::string layoutManagerClassName = layoutConfig->getAttributeValue("type");
+    const auto layoutManagerClassName = layoutConfig.get<std::string>("<xmlattr>.type");
 
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(layoutManagerClassName);
     m_viewLayoutManager = ui::base::layoutManager::IViewLayoutManager::dynamicCast(guiObj);
@@ -252,14 +236,8 @@ void IGuiContainer::initializeLayoutManager(ConfigurationType layoutConfig)
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainer::initializeToolBarBuilder(ConfigurationType toolBarConfig)
+void IGuiContainer::initializeToolBarBuilder(const ui::base::config_t& toolBarConfig)
 {
-    SIGHT_ASSERT(
-        "[" + this->getID() + "' ] Wrong configuration name, expected: 'toolBar', actual: '"
-        + toolBarConfig->getName() + "'",
-        toolBarConfig->getName() == "toolBar"
-    );
-
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ui::base::builder::IToolBarBuilder::REGISTRY_KEY);
     m_toolBarBuilder = ui::base::builder::IToolBarBuilder::dynamicCast(guiObj);
     SIGHT_ASSERT(
@@ -272,14 +250,8 @@ void IGuiContainer::initializeToolBarBuilder(ConfigurationType toolBarConfig)
 
 //-----------------------------------------------------------------------------
 
-void IGuiContainer::initializeSlideViewBuilder(ConfigurationType slideViewConfig)
+void IGuiContainer::initializeSlideViewBuilder(const ui::base::config_t& slideViewConfig)
 {
-    SIGHT_ASSERT(
-        "[" + this->getID() + "' ] Wrong configuration name, expected: 'slideView', actual: '"
-        + slideViewConfig->getName() + "'",
-        slideViewConfig->getName() == "slideView"
-    );
-
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(
         ui::base::builder::ISlideViewBuilder::REGISTRY_KEY
     );
@@ -329,6 +301,17 @@ void IGuiContainer::setEnabled(bool isEnabled)
 
 //-----------------------------------------------------------------------------
 
+void IGuiContainer::setEnabledByParameter(ui::base::parameter_t isEnabled)
+{
+    // Only consider boolean alternative, skip all other type of the variant.
+    if(std::holds_alternative<bool>(isEnabled))
+    {
+        this->setEnabled(std::get<bool>(isEnabled));
+    }
+}
+
+//-----------------------------------------------------------------------------
+
 void IGuiContainer::enable()
 {
     this->setEnabled(true);
@@ -347,6 +330,17 @@ void IGuiContainer::setVisible(bool isVisible)
 {
     ui::base::container::fwContainer::sptr container = m_viewRegistry->getParent();
     container->setVisible(isVisible);
+}
+
+//-----------------------------------------------------------------------------
+
+void IGuiContainer::setVisibleByParameter(ui::base::parameter_t isVisible)
+{
+    // Only consider boolean alternative, skip all other type of the variant.
+    if(std::holds_alternative<bool>(isVisible))
+    {
+        this->setVisible(std::get<bool>(isVisible));
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -21,8 +21,6 @@
 
 #include "LoadVtk.hpp"
 
-#include <core/runtime/operations.hpp>
-
 #include <utestData/Data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::LoadVtk);
@@ -36,7 +34,7 @@ void LoadVtk::test()
 {
     const std::string testName  = "sightViewerLoadVtkTest";
     const std::string imageName = testName + ".png";
-    const std::filesystem::path snapshotPath(sight::ui::test::Tester::getImageOutputPath() / imageName);
+    const std::filesystem::path snapshotPath(sight::ui::testCore::Tester::getImageOutputPath() / imageName);
     if(std::filesystem::exists(snapshotPath))
     {
         std::filesystem::remove(snapshotPath);
@@ -46,7 +44,7 @@ void LoadVtk::test()
 
     start(
         testName,
-        [&snapshotPath, &referencePath](sight::ui::test::Tester& tester)
+        [&snapshotPath, &referencePath](sight::ui::testCore::Tester& tester)
         {
             openFile(
                 tester,

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ SClientSender::~SClientSender()
 
 void SClientSender::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     const ConfigType configIn = config.get_child("in");
 
@@ -100,7 +100,7 @@ void SClientSender::starting()
         {
             sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
             SIGHT_ERROR(ex.what());
-            this->slot(s_STOP_SLOT)->asyncRun();
+            this->slot(IService::slots::s_STOP)->asyncRun();
         }
     }
 }

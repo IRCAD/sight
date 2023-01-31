@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::STransform">
         <inout key="transform" uid="..." />
-        <config layer="default" transform="meshTFAdaptor" />
+        <config transform="meshTFAdaptor" />
    </service>
    @endcode
  *
@@ -48,7 +48,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b transform [sight::data::Matrix4]: Sight transform matrix.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): Defines the transform's layer.
  * - \b transform (mandatory, string): Name of the Ogre Transform.
  * - \b parent (optional, string, default=""): Name of the parent Ogre Transform you want to attach to.
  */
@@ -64,32 +63,32 @@ public:
     SIGHT_DECLARE_SERVICE(STransform, sight::viz::scene3d::IAdaptor);
 
     /// Creates the service.
-    MODULE_VIZ_SCENE3D_API STransform() noexcept;
+    MODULE_VIZ_SCENE3D_API STransform() noexcept = default;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~STransform() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~STransform() noexcept final = default;
 
 protected:
 
     /// Retrieves id sets in the configurations.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Creates the Ogre::SceneNode corresponding to the associated transform matrix.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Object::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
+     * Connect data::Object::s_MODIFIED_SIG of s_TRANSFORM_INOUT to IService::slots::s_UPDATE
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 
     /// Updates m_transformNode from the data::Matrix4.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
 private:
 

@@ -58,23 +58,13 @@ void SDicomSeriesSetReader::configuring()
 {
     sight::io::base::service::IReader::configuring();
 
-    // Show log dialog
-    core::runtime::ConfigurationElement::sptr logDialog = m_configuration->findConfigurationElement("showLogDialog");
-    if(logDialog)
-    {
-        std::string logDialogStr = logDialog->getValue();
-        SIGHT_ASSERT(
-            "<showLogDialog> value must be 'true' or 'false'",
-            logDialogStr == "true" || logDialogStr == "false"
-        );
-        m_showLogDialog = (logDialogStr == "true");
-    }
+    const auto& config = this->getConfiguration();
 
-    // Enable dicomdir
-    core::runtime::ConfigurationElement::sptr dicomDir = m_configuration->findConfigurationElement("dicomdirSupport");
-    if(dicomDir)
+    m_showLogDialog = config.get<bool>("showLogDialog", m_showLogDialog);
+
+    if(const auto dicomDir = config.get_optional<std::string>("dicomdirSupport"); dicomDir.has_value())
     {
-        std::string dicomDirStr = dicomDir->getValue();
+        const std::string& dicomDirStr = dicomDir.value();
         SIGHT_ASSERT(
             "<dicomdirSupport> value must be 'always' or 'never' or 'user_selection'",
             dicomDirStr == "always" || dicomDirStr == "never" || dicomDirStr == "user_selection"

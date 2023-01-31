@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,13 @@
 
 #include "modules/ui/qt/calibration/SDisplayCalibrationInfo.hpp"
 
+#include <core/com/Proxy.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
 
 #include <data/String.hpp>
 
 #include <service/extension/AppConfig.hpp>
-#include <service/macros.hpp>
-#include <service/registry/Proxy.hpp>
 
 #include <sstream>
 
@@ -73,7 +71,7 @@ void SDisplayCalibrationInfo::stopping()
 {
     if(m_configMgr)
     {
-        service::registry::Proxy::sptr proxies = service::registry::Proxy::getDefault();
+        core::com::Proxy::sptr proxies = core::com::Proxy::get();
         proxies->disconnect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
         m_configMgr->stopAndDestroy();
         m_configMgr.reset();
@@ -125,7 +123,6 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
         data::PointList::csptr pointList1 = calInfo1->getPointList(img1);
         replaceMap["pointListId1"] = pointList1->getID();
 
-        core::runtime::ConfigurationElement::csptr config;
         if(calInfo2)
         {
             strConfig = std::string(s_TWO_IMAGES_CONFIG);
@@ -138,16 +135,19 @@ void SDisplayCalibrationInfo::displayImage(std::size_t idx)
 
         replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
 
-        config =
-            service::extension::AppConfig::getDefault()->getAdaptedTemplateConfig(strConfig, replaceMap, true);
+        const auto config = service::extension::AppConfig::getDefault()->getAdaptedTemplateConfig(
+            strConfig,
+            replaceMap,
+            true
+        );
 
         // Launch configuration
-        m_configMgr = service::AppConfigManager::New();
-        m_configMgr->service::IAppConfigManager::setConfig(config);
+        m_configMgr = service::IAppConfigManager::New();
+        m_configMgr->setConfig(config);
         m_configMgr->launch();
 
         // Proxy to be notified of the window closure
-        service::registry::Proxy::sptr proxies = service::registry::Proxy::getDefault();
+        core::com::Proxy::sptr proxies = core::com::Proxy::get();
         proxies->connect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
     }
 }

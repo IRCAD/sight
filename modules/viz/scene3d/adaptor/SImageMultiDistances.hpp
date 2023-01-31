@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
         <in key="image" uid="..." />
-        <config layer="default" fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="2" />
+        <config fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="2" />
     </service>
    @endcode
  *
@@ -63,7 +63,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b image [sight::data::Image]: image containing the distance field.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string) : defines distance's layer.
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
  * - \b fontSize (optional, int, default=16): font size in points.
  * - \b radius (optional, float, default=4.5): size of the distances spheres.
@@ -86,7 +85,7 @@ public:
     MODULE_VIZ_SCENE3D_API SImageMultiDistances() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SImageMultiDistances() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SImageMultiDistances() noexcept override = default;
 
     /**
      * @brief Retrieves the picked distance and stores the result in m_pickedData.
@@ -132,7 +131,7 @@ protected:
      * Connect data::Image::s_DISTANCE_ADDED_SIG to s_ADD_DISTANCE_SLOT
      * Connect data::Image::s_DISTANCE_REMOVED_SIG to s_REMOVE_DISTANCE_SLOT
      * Connect data::Image::s_DISTANCE_DISPLAYED_SIG to s_UPDATE_VISIBILITY_SLOT
-     * Connect data::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
+     * Connect data::Image::s_MODIFIED_SIG to IService::slots::s_UPDATE
      */
     MODULE_VIZ_SCENE3D_API KeyConnectionsMap getAutoConnections() const override;
 

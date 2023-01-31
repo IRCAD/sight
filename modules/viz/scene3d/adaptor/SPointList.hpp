@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,7 +68,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SPointList" >
         <in key="pointList" uid="..." />
-        <config layer="..." transform="..." textureName="..." radius="1.0" fontSource="DejaVuSans.ttf" fontSize="16"
+        <config transform="..." textureName="..." radius="1.0" fontSource="DejaVuSans.ttf" fontSize="16"
                labelColor="#0xFFFFFF" visible="true" fixedSize="false" queryFlags="0x40000000" displayLabel="false"/>
     </service>
    @endcode
@@ -79,7 +79,6 @@ namespace sight::module::viz::scene3d::adaptor
  *      ignored and only raw vertices will be displayed. or add some fields.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b autoresetcamera (optional, true/false, default=true): reset the camera when this mesh is modified, "true" or
  *"false".
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
@@ -112,39 +111,39 @@ public:
     MODULE_VIZ_SCENE3D_API SPointList() noexcept;
 
     /// Destroys Ogre resource.
-    MODULE_VIZ_SCENE3D_API ~SPointList() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SPointList() noexcept final;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Creates a mesh in the default Ogre resource group.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::PointList::s_POINT_ADDED_SIG of s_POINTLIST_INPUT to s_UPDATE_SLOT
-     * Connect data::PointList::s_POINT_REMOVED_SIG of s_POINTLIST_INPUT to s_UPDATE_SLOT
-     * Connect data::PointList::s_MODIFIED_SIG of s_POINTLIST_INPUT to s_UPDATE_SLOT
-     * Connect data::Mesh::s_VERTEX_MODIFIED_SIG of s_MESH_INPUT to s_UPDATE_SLOT
-     * Connect data::Mesh::s_MODIFIED_SIG of s_MESH_INPUT to s_UPDATE_SLOT
+     * Connect data::PointList::s_POINT_ADDED_SIG of s_POINTLIST_INPUT to IService::slots::s_UPDATE
+     * Connect data::PointList::s_POINT_REMOVED_SIG of s_POINTLIST_INPUT to IService::slots::s_UPDATE
+     * Connect data::PointList::s_MODIFIED_SIG of s_POINTLIST_INPUT to IService::slots::s_UPDATE
+     * Connect data::Mesh::s_VERTEX_MODIFIED_SIG of s_MESH_INPUT to IService::slots::s_UPDATE
+     * Connect data::Mesh::s_MODIFIED_SIG of s_MESH_INPUT to IService::slots::s_UPDATE
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 
     /// Updates the generated mesh.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /// Deletes the mesh after unregistering the service, and shutting connections.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
     /**
      * @brief Sets the point list visibility.
      * @param _visible the visibility status of the point list.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
 
 private:
 

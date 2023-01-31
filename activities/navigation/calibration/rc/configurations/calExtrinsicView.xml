@@ -232,48 +232,43 @@
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
         <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
-            <scene>
+            <scene renderMode="sync">
                 <background topColor="#000000" bottomColor="#000000" />
 
                 <layer id="video1" order="1">
                     <viewport width="1.0" height="0.5" hAlign="left" vAlign="top"/>
+                    <adaptor uid="video1Adp" />
                 </layer>
-                <adaptor uid="video1Adp" />
 
                 <layer id="video2" order="2">
                     <viewport width="1.0" height="0.5" hAlign="left" vAlign="bottom"/>
+                    <adaptor uid="video2Adp" />
                 </layer>
-                <adaptor uid="video2Adp" />
             </scene>
         </service>
 
         <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
             <in key="image" uid="frame1" />
-            <config layer="video1" />
         </service>
-
 
         <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
             <in key="image" uid="frame2" />
-            <config layer="video2" />
         </service>
-
 
         <!-- ************************************* Services ************************************ -->
 
         <service uid="videoSliderSrv" type="sight::module::ui::qt::video::SSlider" />
 
         <!-- Extracts images for the detection algorithm. -->
-        <service uid="frameSynchronizerSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="extr_chess_checker">
-            <in group="frameTL" autoConnect="true" >
+        <service uid="frameSynchronizerSrv"  type="sight::module::sync::SSynchronizer">
+            <in group="frameTL">
                 <key uid="frame1TL" />
                 <key uid="frame2TL" />
             </in>
-            <inout group="image">
-                <key uid="frame1" />
-                <key uid="frame2" />
+            <inout group="frames">
+                <key uid="frame1" tl="0" />
+                <key uid="frame2" tl="1" />
             </inout>
-            <framerate>0</framerate>
         </service>
 
         <service uid="extrinsicExporterSrv" type="sight::module::ui::base::io::SSelector" >
@@ -510,6 +505,12 @@
             <signal>chessboardDetectorSrv/chessboardDetected</signal>
             <slot>frameSynchronizerSrv/synchronize</slot>
             <slot>detectionStatusSrv/toggleGreenRed</slot>
+        </connect>
+
+        <connect>
+            <signal>chessboardDetectorSrv/updated</signal>
+            <slot>genericSceneSrv/requestRender</slot>
+            <slot>frameSynchronizerSrv/synchronize</slot>
         </connect>
 
         <connect>

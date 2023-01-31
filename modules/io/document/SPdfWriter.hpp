@@ -79,12 +79,12 @@ public:
     /**
      * @brief Constructor : does nothing
      */
-    MODULE_IO_DOCUMENT_API SPdfWriter();
+    MODULE_IO_DOCUMENT_API SPdfWriter() = default;
 
     /**
      * @brief Destructor
      */
-    MODULE_IO_DOCUMENT_API ~SPdfWriter() noexcept override;
+    MODULE_IO_DOCUMENT_API ~SPdfWriter() noexcept override = default;
 
 protected:
 

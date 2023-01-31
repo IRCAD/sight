@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,22 +24,14 @@
 
 #include <activity/IValidator.hpp>
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/operations.hpp>
-#include <core/tools/dateAndTime.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/runtime/path.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <data/ActivitySet.hpp>
 #include <data/Composite.hpp>
 #include <data/Series.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/InputDialog.hpp>
 #include <ui/qt/container/QtContainer.hpp>
@@ -90,7 +82,7 @@ void SWizard::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    const auto config = this->getConfigTree();
+    const auto config = this->getConfiguration();
 
     m_ioSelectorConfig = config.get("ioSelectorConfig", "");
     SIGHT_ASSERT("ioSelector Configuration must not be empty", !m_ioSelectorConfig.empty());
@@ -277,8 +269,7 @@ void SWizard::createActivity(std::string activityID)
         for(const auto& req : info.requirements)
         {
             SIGHT_ASSERT("minOccurs and maxOccurs should be 0", req.minOccurs == 0 && req.maxOccurs == 0);
-            data::Composite::sptr data = m_new_activity->getData();
-            (*data)[req.name] = data::factory::New(req.type);
+            (*m_new_activity)[req.name] = data::factory::New(req.type);
         }
 
         const auto activity_set = m_activity_set.lock();
@@ -428,22 +419,18 @@ void SWizard::onBuildActivity()
             bool ok = m_DataView->checkAndComputeData(m_new_activity, errorMsg);
             if(ok)
             {
-                data::Composite::sptr data = m_new_activity->getData();
-
                 if(m_mode == Mode::CREATE)
                 {
                     // Add the new activity in activity_set
-                    ActivityInfo info;
-                    info = Activity::getDefault()->getInfo(
-                        m_new_activity->getActivityConfigId()
-                    );
+                    ActivityInfo info = Activity::getDefault()->getInfo(m_new_activity->getActivityConfigId());
 
-                    std::string description = sight::ui::base::dialog::InputDialog::showInputDialog(
+                    const auto& [description, input_ok] = sight::ui::base::dialog::InputDialog::showInputDialog(
                         "Activity creation",
                         "Please, give a description of the activity.",
                         info.title
                     );
-                    if(description.empty())
+
+                    if(!input_ok && description.empty())
                     {
                         return;
                     }

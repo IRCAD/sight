@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,8 +29,6 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/Convert.hpp>
-#include <core/runtime/operations.hpp>
 
 #include <data/Activity.hpp>
 
@@ -76,7 +74,7 @@ void SSeriesSignal::stopping()
 
 void SSeriesSignal::configuring()
 {
-    const service::IService::ConfigType srvconfig = this->getConfigTree();
+    const service::IService::ConfigType srvconfig = this->getConfiguration();
 
     if(srvconfig.count("filter") == 1)
     {
@@ -141,7 +139,7 @@ service::IService::KeyConnectionsMap SSeriesSignal::getAutoConnections() const
 {
     return {
         {s_SERIES_SET_INPUT, sight::data::SeriesSet::s_ADDED_OBJECTS_SIG, s_REPORT_SERIES_SLOT},
-        {s_SERIES_SET_INPUT, sight::data::SeriesSet::s_MODIFIED_SIG, s_UPDATE_SLOT}
+        {s_SERIES_SET_INPUT, sight::data::SeriesSet::s_MODIFIED_SIG, IService::slots::s_UPDATE}
     };
 }
 

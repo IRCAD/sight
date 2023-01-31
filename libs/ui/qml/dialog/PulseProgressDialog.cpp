@@ -23,7 +23,7 @@
 #include "ui/qml/dialog/PulseProgressDialog.hpp"
 
 #include <core/base.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <ui/base/registry/macros.hpp>
 #include <ui/qml/QmlEngine.hpp>

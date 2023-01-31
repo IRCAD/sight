@@ -116,6 +116,8 @@ inline void Point::setCoord(const PointCoordArrayType& _vCoord)
     this->m_vCoord = _vCoord;
 }
 
+DATA_API std::ostream& operator<<(std::ostream& out, const Point& p);
+
 //-----------------------------------------------------------------------------
 
 } // end namespace sight::data

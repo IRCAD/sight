@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <data/Composite.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
 
@@ -177,8 +177,7 @@ void SCompositorSelector::refreshRenderers()
     m_layersBox->clear();
 
     // Fill layer box with all enabled layers
-    service::registry::ObjectService::ServiceVectorType renderers =
-        service::OSR::getServices("sight::viz::scene3d::SRender");
+    const auto renderers = service::getServices("sight::viz::scene3d::SRender");
 
     for(const auto& srv : renderers)
     {

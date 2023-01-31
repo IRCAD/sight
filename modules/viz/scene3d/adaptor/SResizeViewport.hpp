@@ -40,12 +40,11 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SResizeViewport" >
-        <config layer="default" hOffset="0" vOffset="0" width="1" height="1" hAlign="left" vAlign="top"/>
+        <config hOffset="0" vOffset="0" width="1" height="1" hAlign="left" vAlign="top"/>
     </service>
    @endcode
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): layer whose viewport is resized
  * - \b hAlign (optional, left|center|right, default=left): defines the horizontal origin of the new viewport.
  * - \b vAlign (optional, top|center|bottom, default=top): defines the vertical origin of the new viewport.
  * - \b hOffset (optional, float, default=0.f): horizontal offset from the origin relatively to the window.
@@ -64,21 +63,21 @@ public:
     MODULE_VIZ_SCENE3D_API SResizeViewport() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SResizeViewport() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SResizeViewport() noexcept final = default;
 
 protected:
 
     /// Configures the new viewport's dimensions.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Starts the adaptor, records the initial viewport dimensions.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /// Updates the adaptor. Unused here.
-    MODULE_VIZ_SCENE3D_API void updating() noexcept override;
+    MODULE_VIZ_SCENE3D_API void updating() noexcept final;
 
     /// Stops the adaptor. Unused here.
-    MODULE_VIZ_SCENE3D_API void stopping() noexcept override;
+    MODULE_VIZ_SCENE3D_API void stopping() noexcept final;
 
 private:
 

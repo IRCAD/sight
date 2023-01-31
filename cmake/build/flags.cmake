@@ -39,6 +39,9 @@ if(MSVC)
 
     # Basically needed for DCMTK
     add_compile_options("/Zc:__cplusplus")
+
+    # Add support for __VA_OPT__
+    add_compile_options("/Zc:preprocessor")
 endif()
 
 # Add a global compile definition to help strip __FILE__ to show a relative file path
@@ -49,7 +52,7 @@ add_compile_definitions(SIGHT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 add_compile_options(
     "$<$<CXX_COMPILER_ID:GNU,Clang>:-march=${SIGHT_ARCH};-mtune=generic;-mfpmath=sse>"
     "$<$<AND:$<CXX_COMPILER_ID:Clang>,$<CONFIG:Debug>>:-fno-limit-debug-info>" # Needed to debug STL classes
-    "$<$<CXX_COMPILER_ID:MSVC>:/favor:blend;/fp:precise;/Qfast_transcendentals;/arch:${SIGHT_ARCH};/MP;/bigobj;/FC>"
+    "$<$<CXX_COMPILER_ID:MSVC>:/favor:blend;/fp:precise;/Qfast_transcendentals;/arch:${SIGHT_ARCH};/bigobj;/FC>"
     "$<$<CONFIG:Debug>:-DDEBUG;-D_DEBUG>"
 )
 
@@ -59,7 +62,7 @@ if(OPENMP_CXX_FOUND)
     add_compile_options(${OpenMP_CXX_FLAGS})
 endif()
 
-add_compile_definitions("$<$<CXX_COMPILER_ID:MSVC>:/D_ENABLE_EXTENDED_ALIGNED_STORAGE>")
+add_compile_definitions("$<$<CXX_COMPILER_ID:MSVC>:_ENABLE_EXTENDED_ALIGNED_STORAGE>")
 
 # C/C++ standard
 set(CMAKE_CXX_STANDARD 20)
@@ -75,6 +78,13 @@ add_compile_options("$<$<CXX_COMPILER_ID:GNU,Clang>:-fvisibility=hidden;-fvisibi
 # Warning level
 add_compile_options("$<$<CXX_COMPILER_ID:GNU,Clang>:-Wall;-Wextra;-Wconversion>" "$<$<CXX_COMPILER_ID:MSVC>:/W4>")
 
+# Disable "undefined-var-template" for Clang, because it only helps to diagnose early linking errors when some
+# specialized template are defined in another translation unit, and the "fix" would imply a lot of boilerplate code to
+# declare the missing definitions as "extern". Because, in case of wrong code or bad linking, linking errors will anyway
+# occur, the internet consensus about this, is to disable it, to avoid boilerplate code and to have the same behavior as
+# GCC or MSVC.
+add_compile_options("$<$<CXX_COMPILER_ID:Clang>:-Wno-undefined-var-template>")
+
 # AES support is enabled with pragmas on GCC, Clang needs the explicit CLI flag
 add_compile_options("$<$<CXX_COMPILER_ID:Clang>:-maes>")
 
@@ -88,11 +98,6 @@ add_compile_options(
     "$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<CONFIG:RelWithDebInfo>>:-ggdb;-gz>"
 )
 
-if(SIGHT_ENABLE_PCH)
-    # This speedups Clang build significantly (approx 10%)
-    add_compile_options("$<$<CXX_COMPILER_ID:Clang>:-fpch-instantiate-templates>")
-endif()
-
 # -gmodules is problematic for clang-tidy
 if(NOT CMAKE_EXPORT_COMPILE_COMMANDS AND NOT SIGHT_ENABLE_CLANG_TIDY)
     add_compile_options("$<$<AND:$<CXX_COMPILER_ID:Clang>,$<CONFIG:RelWithDebInfo,Debug>>:-gmodules>")
@@ -104,7 +109,10 @@ endif()
 
 # -fuse-ld=gold will make use of gold linker, which is faster and allows --gdb-index
 # -Wl,--gdb-index pass the --gdb-index option to the linker to generate indexes that will speedup gdb start
-add_link_options("$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<CONFIG:Debug>>:-fuse-ld=gold;-Wl,--gdb-index>")
+add_link_options(
+    "$<$<AND:$<CXX_COMPILER_ID:GNU>,$<CONFIG:Debug>>:-fuse-ld=gold;-Wl,--gdb-index>"
+    "$<$<AND:$<CXX_COMPILER_ID:Clang>,$<CONFIG:Debug>>:-fuse-ld=lld;-Wl,--gdb-index>"
+)
 
 # General linker optimization
 add_link_options(
@@ -140,10 +148,8 @@ if(MSVC)
         set(CMAKE_INCLUDE_SYSTEM_FLAG_CXX "/external:I ")
     endif()
 
-    if(SIGHT_ENABLE_PCH)
-        # Store debug information in the .obj file instead of a PDB.
-        replace_flags("/Z[iI]" "/Z7")
-    endif()
+    # Store debug information in the .obj file instead of a PDB.
+    replace_flags("/Z[iI]" "/Z7")
 
     # Remove leading and trailing spaces in compile flags.
     # Required to remove unnecessary spaces added after each cmake-configure.
@@ -165,16 +171,12 @@ if(MSVC)
     set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG}" CACHE STRING "" FORCE)
     set(CMAKE_C_FLAGS_RELWITHDEBINFO "${CMAKE_C_FLAGS_RELWITHDEBINFO}" CACHE STRING "" FORCE)
 
-    if(MSVC)
-        # On MSVC, we want different optimizations depending on the target
-        # CMake does allow us to override CXX_FLAGS, so we reset them here and
-        # restore them later, modified or not, in restore_cxx_flags()
-        set(SIGHT_CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG_INIT} CACHE STRING "" FORCE)
-        set(CMAKE_CXX_FLAGS_DEBUG "" CACHE STRING "" FORCE)
-
-    else()
-        set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG}" CACHE STRING "" FORCE)
-    endif()
+    # On MSVC, we want different optimizations depending on the target
+    # CMake does allow us to override CXX_FLAGS, so we reset them here and
+    # restore them later, modified or not, in restore_cxx_flags()
+    string(REGEX REPLACE "/Zi" "/Z7" CMAKE_CXX_FLAGS_DEBUG_INIT ${CMAKE_CXX_FLAGS_DEBUG_INIT})
+    set(SIGHT_CMAKE_CXX_FLAGS_DEBUG ${CMAKE_CXX_FLAGS_DEBUG_INIT} CACHE STRING "" FORCE)
+    set(CMAKE_CXX_FLAGS_DEBUG "" CACHE STRING "" FORCE)
 endif()
 
 # Color for ninja and Clang on Linux and OSX

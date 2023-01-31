@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -127,7 +127,7 @@ void SSequencer::goTo(int index)
         storeActivityData(*activity_set, std::size_t(m_currentActivity));
     }
 
-    auto activity = getActivity(*activity_set, std::size_t(index), m_slotUpdate);
+    auto activity = getActivity(*activity_set, std::size_t(index), slot(IService::slots::s_UPDATE));
 
     bool ok = true;
     std::string errorMsg;
@@ -164,7 +164,7 @@ void SSequencer::checkNext()
     const auto nextIdx = static_cast<std::size_t>(m_currentActivity) + 1;
     if(nextIdx < m_activityIds.size())
     {
-        data::Activity::sptr nextActivity = this->getActivity(*activity_set, nextIdx, m_slotUpdate);
+        data::Activity::sptr nextActivity = this->getActivity(*activity_set, nextIdx, slot(IService::slots::s_UPDATE));
 
         bool ok = true;
         std::string errorMsg;
@@ -197,8 +197,8 @@ void SSequencer::previous()
 service::IService::KeyConnectionsMap SSequencer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_ADDED_OBJECTS_SIG, IService::slots::s_UPDATE);
+    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

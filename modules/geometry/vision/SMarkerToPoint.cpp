@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -91,28 +91,28 @@ void SMarkerToPoint::addPoint()
     {
         for(unsigned int j = 0 ; j < 4 ; ++j)
         {
-            matrix3D->setCoefficient(i, j, values[i * std::size_t(4) + j]);
+            (*matrix3D)(i, j) = values[i * std::size_t(4) + j];
         }
     }
 
     SIGHT_DEBUG(
-        "Marker Center Position : " << matrix3D->getCoefficient(0, 3) << " , "
-        << matrix3D->getCoefficient(1, 3) << " , "
-        << matrix3D->getCoefficient(2, 3)
+        "Marker Center Position : " << (*matrix3D)(0, 3) << " , "
+        << (*matrix3D)(1, 3) << " , "
+        << (*matrix3D)(2, 3)
     );
 
     //Save the position and drop the orientation
     data::Point::sptr p = data::Point::New(
-        matrix3D->getCoefficient(0, 3),
-        matrix3D->getCoefficient(1, 3),
-        matrix3D->getCoefficient(2, 3)
+        (*matrix3D)(0, 3),
+        (*matrix3D)(1, 3),
+        (*matrix3D)(2, 3)
     );
 
     const auto pl = m_pointList.lock();
     pl->pushBack(p);
     auto sig = pl->signal<data::PointList::PointAddedSignalType>(data::PointList::s_POINT_ADDED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit(p);
     }
 }
@@ -129,7 +129,7 @@ void SMarkerToPoint::clear()
 
         auto sig = pl->signal<data::PointList::ModifiedSignalType>(data::PointList::s_MODIFIED_SIG);
         {
-            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
             sig->asyncEmit();
         }
     }

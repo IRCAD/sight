@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,17 +50,13 @@ namespace sight::module::filter::mesh
 
 //-----------------------------------------------------------------------------
 static const sight::core::com::Slots::SlotKeyType s_UPDATE_THRESHOLD_SLOT = "updateThreshold";
+
 //-----------------------------------------------------------------------------
 
 SVTKMesher::SVTKMesher() noexcept
 {
     newSlot(s_UPDATE_THRESHOLD_SLOT, &SVTKMesher::updateThreshold, this);
 }
-
-//-----------------------------------------------------------------------------
-
-SVTKMesher::~SVTKMesher() noexcept =
-    default;
 
 //-----------------------------------------------------------------------------
 
@@ -79,7 +75,7 @@ void SVTKMesher::stopping()
 
 void SVTKMesher::configuring()
 {
-    const service::IService::ConfigType& srvConfig = this->getConfigTree();
+    const service::IService::ConfigType& srvConfig = this->getConfiguration();
     SIGHT_ASSERT("You must have one <config/> element.", srvConfig.count("config") == 1);
     const service::IService::ConfigType& config = srvConfig.get_child("config");
     m_threshold = config.get<unsigned int>("<xmlattr>.threshold");

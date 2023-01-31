@@ -22,9 +22,8 @@
 
 #include "AppConfigParametersTest.hpp"
 
-#include <core/runtime/Module.hpp>
-#include <core/runtime/operations.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/path.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <service/extension/AppConfig.hpp>
 #include <service/extension/AppConfigParameters.hpp>
@@ -47,9 +46,7 @@ void AppConfigParametersTest::setUp()
     std::filesystem::path location = core::runtime::getResourceFilePath("tu_exec_service");
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
-    auto& runtime = core::runtime::Runtime::get();
-    runtime.addModules(location);
-
+    core::runtime::addModules(location);
     core::runtime::loadModule("sight::module::service");
     core::runtime::loadModule("AppConfigParametersTest");
 

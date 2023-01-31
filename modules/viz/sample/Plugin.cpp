@@ -22,7 +22,7 @@
 
 #include "modules/viz/sample/Plugin.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/runtime.hpp>
 
 namespace sight::module::viz::sample
 {

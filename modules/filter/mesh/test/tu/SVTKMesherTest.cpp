@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,6 +23,7 @@
 
 #include "data/Exception.hpp"
 
+#include <core/runtime/runtime.hpp>
 #include <core/service/base.hpp>
 #include <core/tools/random/Generator.hpp>
 #include <core/tools/System.hpp>
@@ -145,15 +146,16 @@ void SVTKMesherTest::generateMesh()
     boost::property_tree::read_xml(config_string, config);
     mesherService->setConfiguration(config);
     mesherService->setInput(imageSeries, "imageSeries");
-    mesherService->setObjectId("modelSeries", "modelSeries");
     mesherService->configure();
     mesherService->start().wait();
     mesherService->update().wait();
-    auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").lock();
-    unsigned int numberPoints = 77;
-    unsigned int numberCells  = 125;
-    CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
-    CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
+    {
+        auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").const_lock();
+        unsigned int numberPoints = 77;
+        unsigned int numberCells  = 125;
+        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
+        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
+    }
     mesherService->stop().wait();
     sight::service::remove(mesherService);
 }
@@ -175,15 +177,16 @@ void SVTKMesherTest::generateMeshWithMinReduction()
     boost::property_tree::read_xml(config_string, config);
     mesherService->setConfiguration(config);
     mesherService->setInput(imageSeries, "imageSeries");
-    mesherService->setObjectId("modelSeries", "modelSeries");
     mesherService->configure();
     mesherService->start().wait();
     mesherService->update().wait();
-    auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").lock();
-    unsigned int numberPoints = 147;
-    unsigned int numberCells  = 253;
-    CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
-    CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
+    {
+        auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").const_lock();
+        unsigned int numberPoints = 147;
+        unsigned int numberCells  = 253;
+        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
+        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
+    }
     mesherService->stop().wait();
     sight::service::remove(mesherService);
 }
@@ -205,15 +208,16 @@ void SVTKMesherTest::noMeshGenerated()
     boost::property_tree::read_xml(config_string, config);
     mesherService->setConfiguration(config);
     mesherService->setInput(imageSeries, "imageSeries");
-    mesherService->setObjectId("modelSeries", "modelSeries");
     mesherService->configure();
     mesherService->start().wait();
     mesherService->update().wait();
-    auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").lock();
-    unsigned int numberPoints = 0;
-    unsigned int numberCells  = 0;
-    CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
-    CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
+    {
+        auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").const_lock();
+        unsigned int numberPoints = 0;
+        unsigned int numberCells  = 0;
+        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
+        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
+    }
     mesherService->stop().wait();
     sight::service::remove(mesherService);
 }
@@ -236,7 +240,6 @@ void SVTKMesherTest::updateThresholdTest()
     boost::property_tree::read_xml(config_string, config);
     mesherService->setConfiguration(config);
     mesherService->setInput(imageSeries, "imageSeries");
-    mesherService->setObjectId("modelSeries", "modelSeries");
     mesherService->configure();
 
     //threshold is modified by the slot updateThreshold
@@ -245,11 +248,13 @@ void SVTKMesherTest::updateThresholdTest()
 
     mesherService->start().wait();
     mesherService->update().wait();
-    auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").lock();
-    unsigned int numberPoints = 0;
-    unsigned int numberCells  = 0;
-    CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
-    CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
+    {
+        auto modelSeries          = mesherService->getOutput<sight::data::ModelSeries>("modelSeries").const_lock();
+        unsigned int numberPoints = 0;
+        unsigned int numberCells  = 0;
+        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numPoints(), numberPoints);
+        CPPUNIT_ASSERT_EQUAL(modelSeries->getReconstructionDB()[0]->getMesh()->numCells(), numberCells);
+    }
     mesherService->stop().wait();
     sight::service::remove(mesherService);
 }

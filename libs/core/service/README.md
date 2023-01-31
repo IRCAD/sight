@@ -13,7 +13,6 @@ This is one of the most important libraries in _Sight_. It defines extension poi
 The library proposes different base classes to implement services. They bring a semantic on top of `IService`, which allows to query services that match an interface.
 
 - **AppConfigManager**: provides an API to define configuration template
-- **AppManager**: base class for application using qml
 - **IAppConfigManager**: generic interface meant to define configurations template
 Deprecated, this class is no longer supported, please  use `sight::service::AppConfigManager` instead.
 - **IController**: generic interface meant to define control services

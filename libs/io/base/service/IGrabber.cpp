@@ -36,11 +36,9 @@ const core::com::Signals::SignalKeyType IGrabber::s_CAMERA_STOPPED_SIG = "camera
 
 const core::com::Signals::SignalKeyType IGrabber::s_FRAME_PRESENTED_SIG = "framePresented";
 
-const core::com::Signals::SignalKeyType IGrabber::s_BOOL_CHANGED_SIG        = "boolChanged";
-const core::com::Signals::SignalKeyType IGrabber::s_DOUBLE_CHANGED_SIG      = "doubleChanged";
-const core::com::Signals::SignalKeyType IGrabber::s_INT_CHANGED_SIG         = "intChanged";
-const core::com::Signals::SignalKeyType IGrabber::s_ENUM_CHANGED_SIG        = "enumChanged";
-const core::com::Signals::SignalKeyType IGrabber::s_ENUM_VALUES_CHANGED_SIG = "enumValuesChanged";
+const core::com::Signals::SignalKeyType IGrabber::s_PARAMETER_CHANGED_SIG = "parameterChanged";
+
+const core::com::Signals::SignalKeyType IGrabber::s_JOB_CREATED_SIG = "jobCreated";
 
 const core::com::Slots::SlotKeyType IGrabber::s_START_CAMERA_SLOT       = "startCamera";
 const core::com::Slots::SlotKeyType IGrabber::s_STOP_CAMERA_SLOT        = "stopCamera";
@@ -52,13 +50,13 @@ const core::com::Slots::SlotKeyType IGrabber::s_PREVIOUS_IMAGE_SLOT     = "previ
 const core::com::Slots::SlotKeyType IGrabber::s_NEXT_IMAGE_SLOT         = "nextImage";
 const core::com::Slots::SlotKeyType IGrabber::s_SET_STEP_SLOT           = "setStep";
 
-const core::com::Slots::SlotKeyType IGrabber::s_SET_BOOL_PARAMETER_SLOT        = "setBoolParameter";
-const core::com::Slots::SlotKeyType IGrabber::s_SET_DOUBLE_PARAMETER_SLOT      = "setDoubleParameter";
-const core::com::Slots::SlotKeyType IGrabber::s_SET_INT_PARAMETER_SLOT         = "setIntParameter";
-const core::com::Slots::SlotKeyType IGrabber::s_SET_ENUM_PARAMETER_SLOT        = "setEnumParameter";
-const core::com::Slots::SlotKeyType IGrabber::s_SET_ENUM_VALUES_PARAMETER_SLOT = "setEnumValuesParameter";
+const core::com::Slots::SlotKeyType IGrabber::s_SET_PARAMETER_SLOT = "setParameter";
 
 const core::com::Slots::SlotKeyType IGrabber::s_REQUEST_SETTINGS_SLOT = "requestSettings";
+const core::com::Slots::SlotKeyType IGrabber::s_OPTIMIZE_SLOT         = "optimize";
+
+const std::string IGrabber::s_ADD_ROI_CENTER_SLOT    = "addROICenter";
+const std::string IGrabber::s_REMOVE_ROI_CENTER_SLOT = "removeROICenter";
 
 // ----------------------------------------------------------------------------
 
@@ -71,11 +69,8 @@ IGrabber::IGrabber() noexcept
     newSignal<CameraStoppedSignalType>(s_CAMERA_STOPPED_SIG);
     newSignal<FramePresentedSignalType>(s_FRAME_PRESENTED_SIG);
 
-    newSignal<BoolChangedSignalType>(s_BOOL_CHANGED_SIG);
-    newSignal<DoubleChangedSignalType>(s_DOUBLE_CHANGED_SIG);
-    newSignal<IntChangedSignalType>(s_INT_CHANGED_SIG);
-    newSignal<EnumChangedSignalType>(s_ENUM_CHANGED_SIG);
-    newSignal<EnumValuesChangedSignalType>(s_ENUM_VALUES_CHANGED_SIG);
+    newSignal<ParameterChangedSignalType>(s_PARAMETER_CHANGED_SIG);
+    newSignal<JobCreatedSignalType>(s_JOB_CREATED_SIG);
 
     newSlot(s_START_CAMERA_SLOT, &IGrabber::startCamera, this);
     newSlot(s_STOP_CAMERA_SLOT, &IGrabber::stopCamera, this);
@@ -87,13 +82,13 @@ IGrabber::IGrabber() noexcept
     newSlot(s_NEXT_IMAGE_SLOT, &IGrabber::nextImage, this);
     newSlot(s_SET_STEP_SLOT, &IGrabber::setStep, this);
 
-    newSlot(s_SET_BOOL_PARAMETER_SLOT, &IGrabber::setBoolParameter, this);
-    newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &IGrabber::setDoubleParameter, this);
-    newSlot(s_SET_INT_PARAMETER_SLOT, &IGrabber::setIntParameter, this);
-    newSlot(s_SET_ENUM_PARAMETER_SLOT, &IGrabber::setEnumParameter, this);
-    newSlot(s_SET_ENUM_VALUES_PARAMETER_SLOT, &IGrabber::setEnumValuesParameter, this);
+    newSlot(s_SET_PARAMETER_SLOT, &IGrabber::setParameter, this);
 
     newSlot(s_REQUEST_SETTINGS_SLOT, &IGrabber::requestSettings, this);
+    newSlot(s_OPTIMIZE_SLOT, &IGrabber::optimize, this);
+
+    newSlot(s_ADD_ROI_CENTER_SLOT, &IGrabber::addROICenter, this);
+    newSlot(s_REMOVE_ROI_CENTER_SLOT, &IGrabber::removeROICenter, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -135,33 +130,9 @@ void IGrabber::setStep(int /*step*/, std::string /*key*/)
     SIGHT_WARN("Frame by frame mode not implemented for this grabber type.");
 }
 
-//------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
 
-void IGrabber::setBoolParameter(bool /*unused*/, std::string /*unused*/)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void IGrabber::setDoubleParameter(double /*unused*/, std::string /*unused*/)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void IGrabber::setIntParameter(int /*unused*/, std::string /*unused*/)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void IGrabber::setEnumParameter(std::string /*unused*/, std::string /*unused*/)
-{
-}
-
-//------------------------------------------------------------------------------
-
-void IGrabber::setEnumValuesParameter(std::string /*unused*/, std::string /*unused*/)
+void IGrabber::setParameter(ui::base::parameter_t /*unused*/, std::string /*unused*/)
 {
 }
 
@@ -173,6 +144,24 @@ void IGrabber::requestSettings()
 
 // ----------------------------------------------------------------------------
 
+void IGrabber::optimize()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IGrabber::addROICenter(sight::data::Point::sptr /*unused*/)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IGrabber::removeROICenter(sight::data::Point::sptr /*unused*/)
+{
+}
+
+//------------------------------------------------------------------------------
+
 void IGrabber::clearTimeline(data::FrameTL& _tl)
 {
     if(_tl.isAllocated())
@@ -183,7 +172,7 @@ void IGrabber::clearTimeline(data::FrameTL& _tl)
         SPTR(data::FrameTL::BufferType) buffer = _tl.createBuffer(timestamp);
         auto* destBuffer = reinterpret_cast<std::uint8_t*>(buffer->addElement(0));
 
-        std::fill(destBuffer, destBuffer + _tl.getWidth() * _tl.getHeight() * _tl.numComponents(), 0);
+        std::memset(destBuffer, 0, _tl.getWidth() * _tl.getHeight() * _tl.numComponents());
 
         // push buffer and notify
         _tl.clearTimeline();

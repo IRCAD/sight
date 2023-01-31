@@ -22,9 +22,6 @@
 
 #include "service/parser/Image.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/Convert.hpp>
-
 #include <data/Image.hpp>
 #include <data/tools/Color.hpp>
 
@@ -38,10 +35,9 @@ void Image::createConfig(core::tools::Object::sptr _obj)
     const auto image = data::Image::dynamicCast(_obj);
     SIGHT_ASSERT("Image does not exist.", image);
 
-    const auto config = core::runtime::Convert::toPropertyTree(m_cfg).get_child("object");
-    if(config.count("color") != 0U)
+    if(m_cfg.count("color") != 0U)
     {
-        const auto colorStr = config.get<std::string>("color");
+        const auto colorStr = m_cfg.get<std::string>("color");
 
         std::array<std::uint8_t, 4> color {};
         data::tools::Color::hexaStringToRGBA(colorStr, color);

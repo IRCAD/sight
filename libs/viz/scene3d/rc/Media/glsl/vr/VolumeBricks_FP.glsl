@@ -13,7 +13,7 @@ uniform ivec3 u_brickSize;
 uniform int u_slice;
 
 layout(binding=0) uniform sampler3D u_image;
-layout(binding=1) uniform sampler1D u_s1TFTexture;
+layout(binding=1) uniform sampler2D u_s2TFTexture;
 
 out float o_brickMax;
 
@@ -41,7 +41,7 @@ void main()
                 // We only want to check if the voxel is not empty meaning its extinction coefficient is zero.
                 // Therefore there is NO NEED TO CALCULATE THE EXTINCTION COEFFICIENT here since it is equal to zero
                 // if and only if the opacity is equal to zero.
-                float voxelOpacity = sampleTransferFunction(intensity, u_s1TFTexture, u_f3TFWindow).a; // const
+                float voxelOpacity = sampleTransferFunction(intensity, u_s2TFTexture, u_f3TFWindow).a; // const
 
                 brickMax = brickMax || voxelOpacity != 0;
             }

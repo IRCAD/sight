@@ -26,26 +26,20 @@
 #include <data/Boolean.hpp>
 #include <data/Color.hpp>
 #include <data/Composite.hpp>
-#include <data/Edge.hpp>
 #include <data/Float.hpp>
-#include <data/Graph.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
 #include <data/Line.hpp>
 #include <data/Material.hpp>
 #include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
-#include <data/Node.hpp>
 #include <data/Plane.hpp>
 #include <data/PlaneList.hpp>
 #include <data/Point.hpp>
 #include <data/PointList.hpp>
-#include <data/Port.hpp>
 #include <data/Reconstruction.hpp>
-#include <data/ReconstructionTraits.hpp>
 #include <data/Resection.hpp>
 #include <data/ResectionDB.hpp>
-#include <data/ROITraits.hpp>
 #include <data/String.hpp>
 #include <data/StructureTraits.hpp>
 #include <data/StructureTraitsDictionary.hpp>
@@ -147,7 +141,6 @@ void CopyTest::fieldCopyTest()
     fieldCopy<data::Color>();
     fieldCopy<data::Composite>();
     fieldCopy<data::Float>();
-    fieldCopy<data::Graph>();
     fieldCopy<data::Image>();
     fieldCopy<data::Integer>();
     fieldCopy<data::Line>();
@@ -164,12 +157,6 @@ void CopyTest::fieldCopyTest()
     fieldCopy<data::TransferFunction>();
     fieldCopy<data::Matrix4>();
     fieldCopy<data::Vector>();
-
-    fieldCopy<data::Edge>();
-    fieldCopy<data::Node>();
-    fieldCopy<data::Port>();
-    fieldCopy<data::ReconstructionTraits>();
-    fieldCopy<data::ROITraits>();
     fieldCopy<data::StructureTraits>();
     fieldCopy<data::StructureTraitsDictionary>();
 }

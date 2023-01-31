@@ -44,6 +44,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section Slots Slots
  * - \b removeGroup(std::string): removes an entire group.
  * - \b modifyGroup(std::string): removes an entire group and re-create it.
+ * - \b renameGroup(std::string, std::string): replaces and old group's name by a new one.
  * - \b addPoint(std::string): adds the last point of a landmarks group.
  * - \b removePoint(std::string, std::size_t): removes a point.
  * - \b insertPoint(std::string, std::size_t): inserts a point.
@@ -65,7 +66,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SLandmarks">
         <inout key="landmarks" uid="..." />
         <in key="image" uid="..." />
-        <config layer="default" transform="transformUID" visible="true" priority="2" />
+        <config transform="transformUID" visible="true" priority="2" />
     </service>
    @endcode
  *
@@ -77,7 +78,6 @@ namespace sight::module::viz::scene3d::adaptor
  *      image slice is on it.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines landmarks layer.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *      was specified
  * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
@@ -105,7 +105,7 @@ public:
     MODULE_VIZ_SCENE3D_API SLandmarks() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SLandmarks() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SLandmarks() noexcept final = default;
 
     /**
      * @brief Retrieves the picked landmark and stores the result in m_pickedData.
@@ -114,7 +114,7 @@ public:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
+    MODULE_VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y) final;
 
     /**
      * @brief Moves a landmark stored in m_pickedData.
@@ -132,7 +132,7 @@ public:
         int _y,
         int _dx,
         int _dy
-    ) override;
+    ) final;
 
     /**
      * @brief Resets m_pickedData.
@@ -141,7 +141,7 @@ public:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
+    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier _mod, int _x, int _y) final;
 
     /**
      * @brief Listens to mouse buttons being double pressed.
@@ -150,7 +150,7 @@ public:
      * @param _x width coordinate of the mouse.
      * @param _y height coordinate of the mouse.
      */
-    MODULE_VIZ_SCENE3D_API void buttonDoublePressEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
+    MODULE_VIZ_SCENE3D_API void buttonDoublePressEvent(MouseButton _button, Modifier _mods, int _x, int _y) final;
 
     /// Signal send when double clicked on a landmark, send its world coordinates;
     MODULE_VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_SEND_WORLD_COORD;
@@ -159,10 +159,10 @@ public:
 protected:
 
     /// Configure the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Creates the material adaptor end create existing landmarls.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -179,19 +179,19 @@ protected:
      * Connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_SLICE_TYPE_SLOT
      * Connect data::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to s_SLICE_INDEX_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 
     /// Deletes landmarks and re-create them.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /// Destroys Ogre's resources.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
     /**
      * @brief Sets the landmarks visibility.
      * @param _visible the visibility status of the landmarks.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
 
 private:
 
@@ -254,6 +254,13 @@ private:
      * @param _groupName name of the group to update.
      */
     void modifyGroup(std::string _groupName);
+
+    /**
+     * @brief SLOT: replaces an entire group and re-create it.
+     * @param _oldGroupName old group name to update.
+     * @param _newGroupName new group name to replace the old one.
+     */
+    void renameGroup(std::string _oldGroupName, std::string _newGroupName);
 
     /**
      * @brief SLOT: removes a point group and update it.

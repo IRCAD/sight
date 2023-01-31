@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ void SSignalGate::configuring()
 
 void SSignalGate::starting()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     const std::regex re("(.*)/(.*)");
     std::smatch match;
@@ -91,7 +91,7 @@ void SSignalGate::starting()
                 // Create a slot to our callback with a bound index to identify it
                 std::function<void()> task([this, index](auto&& ...){received(index);});
                 auto slot = core::com::newSlot(task);
-                slot->setWorker(m_associatedWorker);
+                slot->setWorker(this->worker());
 
                 // Connect the configured signal to this slot
                 auto sig = signalsHolder->signal(signalKey);

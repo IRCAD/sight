@@ -1,4 +1,4 @@
-<plugin id="ExRGBDManualAR" >
+<plugin id="ExRGBDManualAR">
 
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -6,7 +6,7 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig">
         <id>ExRGBDManualAR_AppCfg</id>
         <config>
 
@@ -29,14 +29,14 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
                 <gui>
                     <frame>
                         <name>ExRGBDManualAR</name>
                         <icon>ExRGBDManualAR/app.ico</icon>
                     </frame>
-                    <menuBar/>
-                    <toolBar/>
+                    <menuBar />
+                    <toolBar />
                 </gui>
                 <registry>
                     <menuBar sid="menuBarView" start="true" />
@@ -45,7 +45,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -58,7 +58,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+            <service uid="menuFileView" type="sight::module::ui::base::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
@@ -69,7 +69,7 @@
                 </registry>
             </service>
 
-            <service uid="menuPreferencesView" type="sight::module::ui::base::SMenu" >
+            <service uid="menuPreferencesView" type="sight::module::ui::base::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Video directory" />
@@ -80,23 +80,23 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::base::SToolBar" >
+            <service uid="toolbarView" type="sight::module::ui::base::SToolBar">
                 <gui>
                     <layout>
                         <menuItem name="Load calibration" icon="sight::module::ui::flaticons/YellowCamera.svg" />
-                        <separator/>
+                        <separator />
                         <menuItem name="Load transformation" icon="sight::module::ui::flaticons/BlueLoad.svg" />
-                        <separator/>
+                        <separator />
                         <menuItem name="Load mesh" icon="sight::module::ui::flaticons/BlueLoad.svg" />
-                        <separator/>
-                        <editor/>
+                        <separator />
+                        <editor />
                         <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
                         <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
                         <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
                         <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
                         <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
                         <menuItem name="Manage organs" icon="sight::module::ui::flaticons/Stomach.svg" style="check" />
-                        <separator/>
+                        <separator />
                         <menuItem name="Learn background model" icon="sight::module::ui::flaticons/Background.svg" />
                         <menuItem name="Learn foreground model" icon="sight::module::ui::flaticons/Foreground.svg" />
                         <menuItem name="Segmentation parameters" icon="sight::module::ui::flaticons/BlueParameters.svg" style="check" />
@@ -125,9 +125,9 @@
                 </registry>
             </service>
 
-            <service uid="mainView" type="sight::module::ui::base::SView" >
+            <service uid="mainView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" />
@@ -147,49 +147,51 @@
             <service uid="loadMeshAct" type="sight::module::ui::base::SAction" />
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="sight::module::ui::base::SAction" >
+            <service uid="startVideoAct" type="sight::module::ui::base::SAction">
                 <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" >
+            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction">
                 <state visible="false" />
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="sight::module::ui::base::SAction" >
+            <service uid="resumeVideoAct" type="sight::module::ui::base::SAction">
                 <state visible="false" />
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="sight::module::ui::base::SAction" >
+            <service uid="stopVideoAct" type="sight::module::ui::base::SAction">
                 <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="sight::module::ui::base::SAction" >
+            <service uid="loopVideoAct" type="sight::module::ui::base::SAction">
                 <state enabled="false" />
             </service>
 
-            <service uid="organManagerAct" type="sight::module::ui::base::SConfigLauncher" >
+            <service uid="organManagerAct" type="sight::module::ui::base::SConfigLauncher">
                 <appConfig id="ModelSeriesManagerWindow" />
-                <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
+                <inout group="data">
+                    <key name="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
+                </inout>
                 <parameter replace="ICON_PATH" by="ExRGBDManualAR/app.ico" />
             </service>
 
-            <service uid="learnBackgroundAct" type="sight::module::ui::base::SAction" >
+            <service uid="learnBackgroundAct" type="sight::module::ui::base::SAction">
                 <slots>
                     <slot>extractForegroundSrv/setBackground</slot>
                 </slots>
             </service>
 
-            <service uid="learnForegroundAct" type="sight::module::ui::base::SAction" >
+            <service uid="learnForegroundAct" type="sight::module::ui::base::SAction">
                 <slots>
                     <slot>extractForegroundSrv/setForeground</slot>
                 </slots>
             </service>
 
-            <service uid="segmentationParametersAct" type="sight::module::ui::base::SModifyLayout" >
+            <service uid="segmentationParametersAct" type="sight::module::ui::base::SModifyLayout">
                 <state checked="false" />
                 <config>
                     <show_or_hide sid="noiseLevelSrv" />
@@ -200,7 +202,7 @@
             </service>
 
             <!-- preference save the video directory and re-open the same directory at next launch of the app -->
-            <service uid="videoDirAct" type="sight::module::ui::qt::SPreferencesConfiguration" >
+            <service uid="videoDirAct" type="sight::module::ui::qt::SPreferencesConfiguration">
                 <preference>
                     <type>path</type>
                     <name>Video directory</name>
@@ -211,88 +213,88 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
-                <scene>
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
+                <scene renderMode="sync">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1" />
-                    <adaptor uid="videoAdp" />
+                    <layer id="video" order="1">
+                        <adaptor uid="videoAdp" />
+                    </layer>
 
-                    <layer id="default" order="2" />
-                    <adaptor uid="modelSeriesAdp" />
-                    <adaptor uid="cameraAdp" />
+                    <layer id="default" order="2">
+                        <adaptor uid="modelSeriesAdp" />
+                        <adaptor uid="cameraAdp" />
+                    </layer>
 
-                    <layer id="foreground" order="3" />
-                    <adaptor uid="foregroundAdp" />
+                    <layer id="foreground" order="3">
+                        <adaptor uid="foregroundAdp" />
+                    </layer>
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true">
                 <in key="image" uid="videoImage" />
-                <config layer="video" />
             </service>
 
-            <service uid="foregroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
+            <service uid="foregroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true">
                 <in key="image" uid="foregroundMask" />
-                <config layer="foreground" />
             </service>
 
-            <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true" >
+            <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true">
                 <in key="model" uid="modelSeries" />
-                <config layer="default" autoresetcamera="false" />
+                <config autoresetcamera="false" />
             </service>
 
-            <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="true" >
+            <service uid="cameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="true">
                 <inout key="transform" uid="inverseMat" />
                 <in key="calibration" uid="cameraRGB" />
-                <config layer="default" />
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="offscreenRenderSrv" type="sight::viz::scene3d::SRender" >
+            <service uid="offscreenRenderSrv" type="sight::viz::scene3d::SRender">
                 <inout key="offScreen" uid="backgroundMask" />
-                <scene width="1280" height="720" >
+                <scene width="1280" height="720">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1" />
+                    <layer id="default" order="1" >
                     <adaptor uid="meshOffscreenAdp" />
                     <adaptor uid="cameraOffscreenAdp" />
+                    </layer>
                 </scene>
             </service>
 
-            <service uid="meshOffscreenAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
+            <service uid="meshOffscreenAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true">
                 <in key="mesh" uid="skinMesh" />
-                <config layer="default" autoresetcamera="false" shadingMode="ambient" />
+                <config autoresetcamera="false" shadingMode="ambient" />
             </service>
 
-            <service uid="cameraOffscreenAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="true" >
+            <service uid="cameraOffscreenAdp" type="sight::module::viz::scene3d::adaptor::SCamera" autoConnect="true">
                 <inout key="transform" uid="inverseMat" />
                 <in key="calibration" uid="cameraRGB" />
-                <config layer="default" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector" >
+            <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector">
                 <inout key="data" uid="seriesSet" />
                 <type mode="reader" />
             </service>
-            <service uid="extractModelSeriesSrv" type="sight::module::data::SGetSeries" >
-               <in key="seriesSet" uid="seriesSet"/>
-               <out group="series" >
-                   <key index="0" uid="modelSeries" />
-               </out>
-           </service>
+            <service uid="extractModelSeriesSrv" type="sight::module::data::SGetSeries">
+                <in key="seriesSet" uid="seriesSet" />
+                <out group="series">
+                    <key index="0" uid="modelSeries" />
+                </out>
+            </service>
 
             <!-- Calibration reader (here OpenCV's XML/YAML) -->
-            <service uid="calibrationReaderSrv" type="sight::module::io::vision::SOpenCVReader" >
+            <service uid="calibrationReaderSrv" type="sight::module::io::vision::SOpenCVReader">
                 <inout key="data" uid="cameraSet" />
             </service>
 
             <!-- Matrix (trf format) reader -->
             <!-- This matrix is used to staticaly register the model onto the video -->
-            <service uid="transformReaderSrv" type="sight::module::ui::base::io::SSelector" >
+            <service uid="transformReaderSrv" type="sight::module::ui::base::io::SSelector">
                 <inout key="data" uid="matrix" />
                 <type mode="reader" /> <!-- mode is optional (by default it is "reader") -->
                 <selection mode="include" />
@@ -300,57 +302,57 @@
             </service>
 
             <!-- extract RGB instrinsic Depth intrinsic and Extrinsic matrices from a sight::data::CameraSet -->
-            <service uid="cameraExtractorSrv" type="sight::module::data::SGetCamera" >
+            <service uid="cameraExtractorSrv" type="sight::module::data::SGetCamera">
                 <inout key="cameraSet" uid="cameraSet" />
                 <!-- destination -->
-                <out group="camera" >
+                <out group="camera">
                     <key index="0" uid="cameraDepth" />
                     <key index="1" uid="cameraRGB" />
                 </out>
-                <out group="extrinsic" >
+                <out group="extrinsic">
                     <key index="1" uid="extrinsic" />
                 </out>
             </service>
 
-            <service uid="thresholdSliderSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="thresholdSliderSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
                     <param type="int" name="Threshold" key="threshold" defaultValue="1" min="-5" max="5" />
                 </parameters>
             </service>
 
-            <service uid="noiseLevelSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="noiseLevelSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
                     <param type="double" name="Noise level" key="noiseLevel" defaultValue="30" min="0" max="200" />
                 </parameters>
             </service>
 
-            <service uid="bgComponentsSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="bgComponentsSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
                     <param type="int" name="Background components" key="bgComponents" defaultValue="5" min="1" max="10" widget="spin" />
                 </parameters>
             </service>
 
-            <service uid="fgComponentsSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="fgComponentsSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
                     <param type="int" name="Foreground components" key="fgComponents" defaultValue="5" min="1" max="10" widget="spin" />
                 </parameters>
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->
-            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
+            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera">
                 <inout key="camera" uid="cameraRGB" />
                 <videoSupport>true</videoSupport>
             </service>
 
             <!-- Grab image from camera device and fill a frame timeline -->
-            <service uid="videoGrabberSrv" type="sight::module::io::video::SFrameGrabber" >
+            <service uid="videoGrabberSrv" type="sight::module::io::video::SFrameGrabber">
                 <in key="camera" uid="cameraRGB" />
                 <inout key="frameTL" uid="frameTL" />
             </service>
 
             <!-- Use the extrinsic matrix to get back in the RGB space -->
-            <service uid="concatenateSrv" type="sight::module::geometry::base::SConcatenateMatrices" >
-                <in group="matrix" >
+            <service uid="concatenateSrv" type="sight::module::geometry::base::SConcatenateMatrices">
+                <in group="matrix">
                     <key uid="matrix" autoConnect="true" inverse="true" />
                     <key uid="extrinsic" autoConnect="true" inverse="true" />
                 </in>
@@ -358,29 +360,28 @@
             </service>
 
             <!-- To synchronize matrix, frame and detection -->
-            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
-                <in group="frameTL" >
+            <service uid="frameUpdaterSrv"  type="sight::module::sync::SSynchronizer" worker="videoWorker">
+                <in group="frameTL">
                     <key uid="frameTL" />
                     <key uid="maskTL" />
                 </in>
-                <inout group="image" >
-                    <key uid="videoImage" />
-                    <key uid="foregroundMask" />
+                <inout group="frames">
+                    <key uid="videoImage" tl="0" />
+                    <key uid="foregroundMask" tl="1"/>
                 </inout>
-                <framerate>30</framerate>
                 <tolerance>200</tolerance>
             </service>
 
             <!-- Extract model called "Skin" in the model series -->
-            <service uid="extractSkinSrv" type="sight::module::data::SGetMesh" >
-               <in key="modelSeries" uid="modelSeries" />
-               <out group="mesh" >
-                   <key type="Skin" uid="skinMesh"/>
-               </out>
+            <service uid="extractSkinSrv" type="sight::module::data::SGetMesh">
+                <in key="modelSeries" uid="modelSeries" />
+                <out group="mesh">
+                    <key type="Skin" uid="skinMesh" />
+                </out>
             </service>
 
             <!-- Split background and foreground image -->
-            <service uid="extractForegroundSrv" type="sight::module::filter::vision::SColourImageMasking" worker="videoExtraction" >
+            <service uid="extractForegroundSrv" type="sight::module::filter::vision::SColourImageMasking" worker="videoExtraction">
                 <in key="videoTL" uid="frameTL" autoConnect="true" />
                 <in key="mask" uid="backgroundMask" />
                 <inout key="videoMaskTL" uid="maskTL" />
@@ -500,6 +501,12 @@
             <connect>
                 <signal>fgComponentsSrv/intChanged</signal>
                 <slot>extractForegroundSrv/setForegroundComponents</slot>
+            </connect>
+
+            <connect>
+                <signal>frameUpdaterSrv/synchronizationDone</signal>
+                <slot>genericSceneSrv/requestRender</slot>
+                <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

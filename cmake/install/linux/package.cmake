@@ -42,6 +42,11 @@ macro(linux_package PRJ_NAME)
 
     if("${TARGET_TYPE}" STREQUAL "APP")
         string(TOLOWER ${PRJ_NAME} APP_NAME)
+        set(SIGHT_EXTRA_MODULES_OPT "")
+        foreach(MODULE ${SIGHT_EXTRA_MODULES})
+            cmake_path(GET MODULE FILENAME MODULE_NAME)
+            list(APPEND SIGHT_EXTRA_MODULES_OPT "-B \"../share/${MODULE_NAME}\"")
+        endforeach()
         configure_file(
             ${FWCMAKE_RESOURCE_PATH}/install/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY
         )

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <core/com/helper/SigSlotConnection.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <utest/Exception.hpp>
 
@@ -58,7 +58,7 @@ void SigSlotConnectionTest::basicTest()
     Buffer::sptr buffer = Buffer::New();
 
     SShowTest::sptr showTestSrv = service::factory::New<SShowTest>();
-    service::OSR::registerService(showTestSrv);
+    service::registerService(showTestSrv);
     showTestSrv->setInOut(buffer, IBasicTest::s_BUFFER_INOUT, true);
     showTestSrv->setWorker(core::thread::getDefaultWorker());
 
@@ -75,7 +75,7 @@ void SigSlotConnectionTest::basicTest()
     sig->asyncEmit();
     CPPUNIT_ASSERT_EQUAL(1, showTestSrv->m_receiveCount);
 
-    service::OSR::unregisterService(showTestSrv);
+    service::unregisterService(showTestSrv);
 }
 
 //------------------------------------------------------------------------------

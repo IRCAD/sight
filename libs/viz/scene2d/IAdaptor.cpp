@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "viz/scene2d/Scene2DGraphicsView.hpp"
 
 #include <service/macros.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <QGraphicsItemGroup>
 
@@ -180,7 +180,7 @@ vec2d_t IAdaptor::mapSceneToAdaptor(const vec2d_t& _xy) const
 
 void IAdaptor::configureParams()
 {
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
 
     // If the corresponding attributes are present in the config, set the xAxis, yAxis and the adaptor zValue
     if(config.count("xAxis") != 0U)

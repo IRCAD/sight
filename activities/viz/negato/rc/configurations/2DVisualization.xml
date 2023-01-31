@@ -71,8 +71,10 @@
 
         <service uid="cfgNegato1" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
-            <inout key="image" uid="${imageSeries}" />
-            <inout key="landmarks" uid="${landmarks}" />
+            <inout group="data">
+                <key name="image" uid="${imageSeries}" />
+                <key name="landmarks" uid="${landmarks}" />
+            </inout>
             <parameter replace="WID_PARENT" by="view_negato1" />
             <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
             <parameter replace="PickingChannel" by="pickerChannel" />
@@ -81,8 +83,10 @@
 
         <service uid="cfgNegato2" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
-            <inout key="image" uid="${imageSeries}" />
-            <inout key="landmarks" uid="${landmarks}" />
+            <inout group="data">
+                <key name="image" uid="${imageSeries}" />
+                <key name="landmarks" uid="${landmarks}" />
+            </inout>
             <parameter replace="WID_PARENT" by="view_negato2" />
             <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
             <parameter replace="PickingChannel" by="pickerChannel" />
@@ -91,8 +95,10 @@
 
         <service uid="cfgNegato3" type="sight::service::SConfigController">
             <appConfig id="2DNegato" />
-            <inout key="image" uid="${imageSeries}" />
-            <inout key="landmarks" uid="${landmarks}" />
+            <inout group="data">
+                <key name="image" uid="${imageSeries}" />
+                <key name="landmarks" uid="${landmarks}" />
+            </inout>
             <parameter replace="WID_PARENT" by="view_negato3" />
             <parameter replace="CrossTypeChannel" by="crossTypeChannel" />
             <parameter replace="PickingChannel" by="pickerChannel" />
@@ -145,16 +151,13 @@
         </service>
 
         <service uid="ActionHideCross" type="sight::module::ui::base::viz::CrossTypeAction">
-            <in key="image" uid="${imageSeries}" />
             <crossType>hide</crossType>
         </service>
         <service uid="ActionShowNormalCross" type="sight::module::ui::base::viz::CrossTypeAction">
-            <in key="image" uid="${imageSeries}" />
             <crossType>half</crossType>
             <state checked="true" />
         </service>
         <service uid="ActionShowFullCross" type="sight::module::ui::base::viz::CrossTypeAction">
-            <in key="image" uid="${imageSeries}" />
             <crossType>full</crossType>
         </service>
 
@@ -175,7 +178,7 @@
         </connect>
 
         <connect channel="pickerChannel">
-            <slot>landmarksEditor/addPickedPoint</slot>
+            <slot>landmarksEditor/pick</slot>
         </connect>
 
         <!-- Connection to enable "previous" action. It should be connected to a SSequencer in the application

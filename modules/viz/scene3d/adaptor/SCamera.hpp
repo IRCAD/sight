@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,6 @@ namespace sight::module::viz::scene3d::adaptor
         <inout key="transform" uid="..." />
         <in key="calibration" uid="..." />
         <in key="cameraSet" uid="..." />
-        <config layer="..." />
     </service>
  * @endcode
  *
@@ -68,9 +67,6 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection InOut InOut
  * - \b transform [sight::data::Matrix4]: transform matrix for the camera.
- *
- * @subsection Configuration Configuration
- * - \b layer (mandatory, string): defines the camera's layer
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SCamera final : public sight::viz::scene3d::IAdaptor
 {
@@ -97,7 +93,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Matrix4::s_MODIFIED_SIG of s_TRANSFORM_INOUT to s_UPDATE_SLOT
+     * Connect data::Matrix4::s_MODIFIED_SIG of s_TRANSFORM_INOUT to IService::slots::s_UPDATE
      * Connect data::Camera::s_INTRINSIC_CALIBRATED_SIG of s_CALIBRATION_INPUT to s_CALIBRATE_SLOT
      * Connect data::CameraSet::s_MODIFIED_SIG of s_CAMERA_SET_INPUT to s_CALIBRATE_SLOT
      * Connect data::CameraSet::s_EXTRINSIC_CALIBRATED_SIG of s_CAMERA_SET_INPUT to s_CALIBRATE_SLOT

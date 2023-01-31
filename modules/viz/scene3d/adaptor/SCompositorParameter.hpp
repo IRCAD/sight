@@ -53,7 +53,7 @@ class CompositorListener;
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SCompositorParameter">
         <inout key="parameter" uid="collimation" />
-        <config layer="..." compositorName="compositor" parameter="u_value" shaderType="fragment" />
+        <config compositorName="compositor" parameter="u_value" shaderType="fragment" />
     </service>
    @endcode
  *
@@ -61,7 +61,6 @@ class CompositorListener;
  * - \b parameter [sight::data::Object]: parameter containing the data to upload.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the compositor's layer.
  * - \b visible (optional, bool, default=true): defines if the compositor is enabled or not.
  * - \b compositorName (mandatory, string): the name of the associated Ogre compositor.
  * - \b parameter (mandatory, string): name of the shader parameter to set.
@@ -77,10 +76,10 @@ public:
     SIGHT_DECLARE_SERVICE(SCompositorParameter, sight::viz::scene3d::IParameter);
 
     /// Creates the adaptor.
-    MODULE_VIZ_SCENE3D_API SCompositorParameter() noexcept;
+    MODULE_VIZ_SCENE3D_API SCompositorParameter() noexcept = default;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SCompositorParameter() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SCompositorParameter() noexcept override = default;
 
 protected:
 

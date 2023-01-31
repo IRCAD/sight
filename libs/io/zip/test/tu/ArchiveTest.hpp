@@ -34,6 +34,8 @@ CPPUNIT_TEST(newTest);
 CPPUNIT_TEST(singletonTest);
 CPPUNIT_TEST(openTest);
 CPPUNIT_TEST(rawTest);
+CPPUNIT_TEST(archiveFormatToStringTest);
+CPPUNIT_TEST(stringToArchiveFormat);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,6 +48,8 @@ public:
     static void singletonTest();
     static void openTest();
     static void rawTest();
+    static void archiveFormatToStringTest();
+    static void stringToArchiveFormat();
 };
 
 } // namespace sight::io::zip::ut

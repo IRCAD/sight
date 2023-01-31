@@ -24,7 +24,6 @@
 
 #include "SConsumer.hpp"
 
-#include <core/runtime/Runtime.hpp>
 #include <core/spyLog.hpp>
 
 #include <service/extension/Factory.hpp>

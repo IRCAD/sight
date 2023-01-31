@@ -1,8 +1,9 @@
 set(RC_DIRS "@IMPORTED_RC_DIRS@" )
 if(RC_DIRS)
-    # For now we install everything in the same folder... 
-    # We are going to package this anyway, so there is no real need to separate something
-    file(INSTALL DESTINATION "@CMAKE_INSTALL_PREFIX@/share/sight" TYPE DIRECTORY FILES ${RC_DIRS})
+    foreach(RC_DIR ${RC_DIRS})
+        string(REGEX MATCH "(.*),(.*)" FOLDER ${RC_DIR})
+        file(INSTALL DESTINATION "@CMAKE_INSTALL_PREFIX@/share/${CMAKE_MATCH_1}" TYPE DIRECTORY FILES ${CMAKE_MATCH_2})
+    endforeach()
 endif()
 
 set(LIBS "@IMPORTED_LIBS@" )

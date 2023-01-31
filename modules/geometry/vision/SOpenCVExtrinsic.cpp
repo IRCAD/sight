@@ -25,9 +25,6 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/tools/fwID.hpp>
-#include <core/tools/Object.hpp>
 
 #include <data/CalibrationInfo.hpp>
 #include <data/Camera.hpp>
@@ -36,9 +33,6 @@
 #include <data/PointList.hpp>
 
 #include <io/opencv/Matrix.hpp>
-
-#include <service/IService.hpp>
-#include <service/macros.hpp>
 
 #include <ui/base/Preferences.hpp>
 
@@ -68,28 +62,20 @@ SOpenCVExtrinsic::~SOpenCVExtrinsic() noexcept =
 
 void SOpenCVExtrinsic::configuring()
 {
-    core::runtime::ConfigurationElement::sptr cfgIdx = m_configuration->findConfigurationElement("camIndex");
-    if(cfgIdx)
-    {
-        std::string idxStr = cfgIdx->getValue();
-        SIGHT_ASSERT("'camIndex' is empty.", !idxStr.empty());
-        m_camIndex = boost::lexical_cast<std::size_t>(idxStr);
-    }
+    const auto config = this->getConfiguration();
+    m_camIndex = config.get<std::size_t>("camIndex");
 
-    core::runtime::ConfigurationElement::sptr cfgBoard = m_configuration->findConfigurationElement("board");
-    SIGHT_ASSERT("Tag 'board' not found.", cfgBoard);
+    const auto cfgBoard = config.get_child("board.<xmlattr>");
 
-    SIGHT_ASSERT("Attribute 'width' is missing.", cfgBoard->hasAttribute("width"));
-    m_widthKey = cfgBoard->getAttributeValue("width");
+    m_widthKey = cfgBoard.get<std::string>("width");
     SIGHT_ASSERT("Attribute 'width' is empty", !m_widthKey.empty());
 
-    SIGHT_ASSERT("Attribute 'height' is missing.", cfgBoard->hasAttribute("height"));
-    m_heightKey = cfgBoard->getAttributeValue("height");
+    m_heightKey = cfgBoard.get<std::string>("height");
     SIGHT_ASSERT("Attribute 'height' is empty", !m_heightKey.empty());
 
-    if(cfgBoard->hasAttribute("squareSize"))
+    if(const auto squareSizeKey = cfgBoard.get_optional<std::string>("squareSize"); squareSizeKey.has_value())
     {
-        m_squareSizeKey = cfgBoard->getAttributeValue("squareSize");
+        m_squareSizeKey = squareSizeKey.value();
         SIGHT_ASSERT("Attribute 'squareSize' is empty", !m_squareSizeKey.empty());
     }
 }

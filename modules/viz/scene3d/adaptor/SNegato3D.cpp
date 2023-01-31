@@ -53,15 +53,6 @@ static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT           = "updateT
 
 static const core::com::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
 
-static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
-static const std::string s_TRANSFORM_CONFIG        = "transform";
-static const std::string s_FILTERING_CONFIG        = "filtering";
-static const std::string s_TF_ALPHA_CONFIG         = "tfAlpha";
-static const std::string s_INTERACTIVE_CONFIG      = "interactive";
-static const std::string s_PRIORITY_CONFIG         = "priority";
-static const std::string s_QUERY_CONFIG            = "queryFlags";
-static const std::string s_BORDER_CONFIG           = "border";
-
 static const std::string s_VISIBILITY_FIELD = "VISIBILITY";
 
 //------------------------------------------------------------------------------
@@ -89,8 +80,15 @@ void SNegato3D::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_AUTORESET_CAMERA_CONFIG = s_CONFIG + "autoresetcamera";
+    static const std::string s_FILTERING_CONFIG        = s_CONFIG + "filtering";
+    static const std::string s_TF_ALPHA_CONFIG         = s_CONFIG + "tfAlpha";
+    static const std::string s_INTERACTIVE_CONFIG      = s_CONFIG + "interactive";
+    static const std::string s_PRIORITY_CONFIG         = s_CONFIG + "priority";
+    static const std::string s_QUERY_CONFIG            = s_CONFIG + "queryFlags";
+    static const std::string s_BORDER_CONFIG           = s_CONFIG + "border";
 
     m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
 

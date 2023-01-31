@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
@@ -76,7 +76,7 @@ void WindowLevel::configuring()
 {
     this->initialize();
 
-    const ConfigType srvConfig = this->getConfigTree();
+    const ConfigType srvConfig = this->getConfiguration();
 
     if(srvConfig.count("config.<xmlattr>") != 0U)
     {
@@ -520,8 +520,8 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
 service::IService::KeyConnectionsMap WindowLevel::getAutoConnections() const
 {
     return {
-        {s_IMAGE, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
-        {s_IMAGE, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_IMAGE, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_TF, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},
         {s_TF, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT},
         {s_TF, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, s_UPDATE_TF_SLOT}

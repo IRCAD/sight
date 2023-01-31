@@ -28,6 +28,8 @@
 #include <io/zip/ArchiveWriter.hpp>
 #include <io/zip/exception/Read.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 #include <iostream>
 #include <string>
 
@@ -227,6 +229,38 @@ void ArchiveTest::rawTest()
     }
 
     std::filesystem::remove_all(folderPath);
+}
+
+//------------------------------------------------------------------------------
+
+void ArchiveTest::archiveFormatToStringTest()
+{
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(name) \
+    CPPUNIT_ASSERT_EQUAL( \
+        boost::to_lower_copy(std::string(#name)), \
+        std::string(Archive::archiveFormatToString(Archive::ArchiveFormat::name)) \
+    )
+    TEST(FILESYSTEM);
+    TEST(COMPATIBLE);
+    TEST(OPTIMIZED);
+    #undef TEST
+}
+
+//------------------------------------------------------------------------------
+
+void ArchiveTest::stringToArchiveFormat()
+{
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(name) \
+    CPPUNIT_ASSERT_EQUAL( \
+        Archive::ArchiveFormat::name, \
+        Archive::stringToArchiveFormat(boost::to_lower_copy(std::string(#name))) \
+    )
+    TEST(FILESYSTEM);
+    TEST(COMPATIBLE);
+    TEST(OPTIMIZED);
+    #undef TEST
 }
 
 } // namespace sight::io::zip::ut

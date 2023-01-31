@@ -215,9 +215,9 @@ void PointListTest::transform()
         }
 
         const auto tf1 = sight::data::Matrix4::New();
-        tf1->setCoefficient(0, 3, translation[0]);
-        tf1->setCoefficient(1, 3, translation[1]);
-        tf1->setCoefficient(2, 3, translation[2]);
+        (*tf1)(0, 3) = translation[0];
+        (*tf1)(1, 3) = translation[1];
+        (*tf1)(2, 3) = translation[2];
         geometry::data::PointList::transform(pl1, tf1);
 
         const sight::data::PointList::PointListContainer points2 = pl2->getPoints();
@@ -258,10 +258,10 @@ void PointListTest::transform()
 
         // Perform a 180 degrees rotation around Z
         const auto tf1 = sight::data::Matrix4::New();
-        tf1->setCoefficient(0, 0, -1.0F);
-        tf1->setCoefficient(0, 1, 0.0F);
-        tf1->setCoefficient(1, 0, 0.0F);
-        tf1->setCoefficient(1, 1, -1.0F);
+        (*tf1)(0, 0) = -1.0F;
+        (*tf1)(0, 1) = 0.0F;
+        (*tf1)(1, 0) = 0.0F;
+        (*tf1)(1, 1) = -1.0F;
 
         geometry::data::PointList::transform(pl1, tf1);
 
@@ -322,9 +322,9 @@ void PointListTest::associate()
 
         // Transform the point lists, shift the points in y
         auto tf1 = sight::data::Matrix4::New();
-        tf1->setCoefficient(1, 3, 42.0);
+        (*tf1)(1, 3) = 42.0;
         auto tf2 = sight::data::Matrix4::New();
-        tf2->setCoefficient(1, 3, -42.0);
+        (*tf2)(1, 3) = -42.0;
 
         geometry::data::PointList::transform(pl1, tf1);
         geometry::data::PointList::transform(pl2, tf2);
@@ -384,13 +384,13 @@ void PointListTest::associate()
         // Transform the point list
         auto tf1 = sight::data::Matrix4::New();
         // Shift the points in Z
-        tf1->setCoefficient(2, 3, 4.2);
+        (*tf1)(2, 3) = 4.2;
 
         // Add a 90 degrees rotation around Y
-        tf1->setCoefficient(0, 0, 0.0F);
-        tf1->setCoefficient(0, 2, 1.0F);
-        tf1->setCoefficient(2, 0, 1.0F);
-        tf1->setCoefficient(2, 2, 0.0F);
+        (*tf1)(0, 0) = 0.0F;
+        (*tf1)(0, 2) = 1.0F;
+        (*tf1)(2, 0) = 1.0F;
+        (*tf1)(2, 2) = 0.0F;
 
         geometry::data::PointList::transform(pl1, tf1);
 

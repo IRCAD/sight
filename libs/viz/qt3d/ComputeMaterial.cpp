@@ -23,7 +23,7 @@
 
 #include "core/FrameGraph.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <QByteArray>
 

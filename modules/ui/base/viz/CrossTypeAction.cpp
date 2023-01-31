@@ -22,32 +22,19 @@
 
 #include "CrossTypeAction.hpp"
 
-#include <core/base.hpp>
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/operations.hpp>
-
-#include <data/Float.hpp>
-#include <data/Image.hpp>
-
-#include <service/IService.hpp>
-#include <service/macros.hpp>
-#include <service/op/Get.hpp>
 
 #include <boost/algorithm/string.hpp>
-#include <boost/algorithm/string/trim.hpp>
 
 namespace sight::module::ui::base::viz
 {
 
 static const core::com::Signals::SignalKeyType s_CROSS_TYPE_MODIFIED_SIG = "crossTypeModified";
 
-std::map<std::string, float> CrossTypeAction::m_scaleConversion = {{std::string("full"), 1.0F},
+std::map<std::string, float> CrossTypeAction::m_scaleConversion = {
+    {std::string("full"), 1.0F},
     {std::string("half"), 0.5F},
-    {std::string("hide"), 0.0F
-    }
+    {std::string("hide"), 0.0F}
 };
 
 //------------------------------------------------------------------------------
@@ -56,11 +43,6 @@ CrossTypeAction::CrossTypeAction() noexcept :
     m_sigCrossTypeModified(newSignal<CrossTypeModifiedSignalType>(s_CROSS_TYPE_MODIFIED_SIG))
 {
 }
-
-//------------------------------------------------------------------------------
-
-CrossTypeAction::~CrossTypeAction() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -82,11 +64,10 @@ void CrossTypeAction::configuring()
 {
     sight::ui::base::IAction::initialize();
 
-    if(this->m_configuration->size() > 0)
+    const auto& config = this->getConfiguration();
+    if(const auto crossType = config.get_optional<std::string>("crossType"); crossType.has_value())
     {
-        auto vectConfig = this->m_configuration->find("crossType");
-        SIGHT_ASSERT("Missing <crossType> tag!", !vectConfig.empty());
-        m_crossType = vectConfig.at(0)->getValue();
+        m_crossType = crossType.value();
         boost::algorithm::trim(m_crossType);
         boost::algorithm::to_lower(m_crossType);
         SIGHT_ASSERT("Unknown crossType", m_scaleConversion.find(m_crossType) != m_scaleConversion.end());

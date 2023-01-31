@@ -35,6 +35,7 @@ private:
     CPPUNIT_TEST(checkMultVecMatrix);
     CPPUNIT_TEST(checkRotationMatrix);
     CPPUNIT_TEST(checkInverse);
+    CPPUNIT_TEST(multiplicationTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -45,6 +46,7 @@ public:
     static void checkMultVecMatrix();
     static void checkRotationMatrix();
     static void checkInverse();
+    static void multiplicationTest();
 };
 
 } // namespace sight::geometry::data::ut

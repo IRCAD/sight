@@ -58,7 +58,7 @@ void SCameraSetEditor::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
     m_camIndex = config.get<std::size_t>("index", 1);
 }
 
@@ -125,7 +125,7 @@ void SCameraSetEditor::updateInformations()
     {
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
-            m_matrixLabels[i * 4 + j]->setText(QString("%1").arg(matrix->getCoefficient(i, j)));
+            m_matrixLabels[i * 4 + j]->setText(QString("%1").arg((*matrix)(i, j)));
         }
     }
 }

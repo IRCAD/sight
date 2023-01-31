@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ service::IService::sptr add(const std::string& _implType, const std::string& _ui
 {
     service::IService::sptr srv;
     srv = service::extension::Factory::getDefault()->create(_implType);
-    service::OSR::registerService(srv);
+    service::registerService(srv);
     SIGHT_THROW_IF("Failed to add " + _implType, !srv);
     if(!_uid.empty())
     {

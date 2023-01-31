@@ -140,7 +140,6 @@ public:
 
 protected:
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::vector<std::string> SupportedSOPClassContainerType;
 
     enum DicomDirSupport

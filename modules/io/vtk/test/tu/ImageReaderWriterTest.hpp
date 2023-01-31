@@ -37,7 +37,6 @@ CPPUNIT_TEST(testVtkImageReader);
 CPPUNIT_TEST(testVtiImageReader);
 CPPUNIT_TEST(testMhdImageReader);
 CPPUNIT_TEST(testImageReaderExtension);
-CPPUNIT_TEST(testBitmapImageWriter);
 CPPUNIT_TEST(testVtkImageWriter);
 CPPUNIT_TEST(testVtkImageSeriesWriter);
 CPPUNIT_TEST(testVtiImageWriter);
@@ -55,7 +54,6 @@ public:
     static void testVtiImageReader();
     static void testMhdImageReader();
     static void testImageReaderExtension();
-    static void testBitmapImageWriter();
     static void testVtkImageWriter();
     static void testVtkImageSeriesWriter();
     static void testVtiImageWriter();

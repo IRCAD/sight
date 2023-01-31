@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ namespace sight::module::viz::scene3d::adaptor
         <inout key="mesh" uid="..." />
         <in key="transform" uid="..." />
         <in key="texture" uid="..." />
-        <config layer="default" capacity="50" drop="1" textureAlpha="false" />
+        <config capacity="50" drop="1" textureAlpha="false" />
     </service>
    @endcode
  *
@@ -65,7 +65,6 @@ namespace sight::module::viz::scene3d::adaptor
  *      fields.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the list's layer.
  * - \b capacity (optional, int, default=50): maximum capacity of the list.
  * - \b drop (optional, int, default=1): defines the ratio of matrices to display: (1/drop).
  * - \b textureAlpha (optional, bool, default=false): generates alpha value for the texture if the image contains only

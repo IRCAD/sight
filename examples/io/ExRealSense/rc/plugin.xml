@@ -1,4 +1,4 @@
-<plugin id="ExRealSense" >
+<plugin id="ExRealSense">
 
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -6,7 +6,7 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig">
         <id>ExRealSense_AppCgf</id>
         <config>
 
@@ -25,7 +25,7 @@
             <object uid="depth_to_color" type="sight::data::Matrix4" src="deferred" />
 
             <!-- Transfer function to visualize depth images -->
-            <object uid="tfDepth" type="sight::data::TransferFunction" >
+            <object uid="tfDepth" type="sight::data::TransferFunction">
                 <colors>
                     <step color="#000000ff" value="0" />
                     <step color="#0000ffff" value="1" />
@@ -41,15 +41,15 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
                 <gui>
                     <frame>
                         <name>ExRealSense</name>
                         <icon>ExRealSense/app.ico</icon>
                         <minSize width="1280" height="820" />
                     </frame>
-                    <menuBar/>
-                    <toolBar/>
+                    <menuBar />
+                    <toolBar />
                 </gui>
                 <registry>
                     <menuBar sid="menuBarView" start="true" />
@@ -58,7 +58,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -71,7 +71,7 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+            <service uid="menuFileView" type="sight::module::ui::base::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Recording Path..." shortcut="Ctrl+S" />
@@ -84,7 +84,7 @@
                 </registry>
             </service>
 
-            <service uid="menuOptionsView" type="sight::module::ui::base::SMenu" >
+            <service uid="menuOptionsView" type="sight::module::ui::base::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Filters settings..." style="check" />
@@ -99,7 +99,7 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::base::SToolBar" >
+            <service uid="toolbarView" type="sight::module::ui::base::SToolBar">
                 <gui>
                     <layout>
                         <editor />
@@ -109,12 +109,12 @@
                         <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
                         <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
                         <menuItem name="Record" icon="sight::module::ui::flaticons/RedCircle.svg" style="check" />
-                        <separator/>
+                        <separator />
                         <editor />
                         <editor />
                         <editor />
                         <editor />
-                        <separator/>
+                        <separator />
                         <editor />
                         <spacer />
                         <menuItem name="Configure recording path" icon="sight::module::ui::flaticons/BlueSave.svg" />
@@ -139,9 +139,9 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::base::SView" >
+            <service uid="containerView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" visible="false" backgroundColor="#36393E" />
@@ -153,9 +153,9 @@
                 </registry>
             </service>
 
-            <service uid="scanningView" type="sight::module::ui::base::SView" >
+            <service uid="scanningView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -167,9 +167,9 @@
                 </registry>
             </service>
 
-            <service uid="bottomView" type="sight::module::ui::base::SView" >
+            <service uid="bottomView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="1" />
@@ -181,9 +181,9 @@
                 </registry>
             </service>
 
-            <service uid="RGBDView" type="sight::module::ui::base::SView" >
+            <service uid="RGBDView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="horizontal" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -195,9 +195,9 @@
                 </registry>
             </service>
 
-            <service uid="pointcloudView" type="sight::module::ui::base::SView" >
+            <service uid="pointcloudView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" backgroundColor="#36393E" />
@@ -209,9 +209,9 @@
                 </registry>
             </service>
 
-            <service uid="TFView" type="sight::module::ui::base::SView" >
+            <service uid="TFView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="vertical" />
                         <view proportion="80" />
                         <view proportion="20" />
@@ -224,9 +224,9 @@
             </service>
 
 
-            <service uid="filterSettingsView" type="sight::module::ui::base::SView" >
+            <service uid="filterSettingsView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="vertical" />
                         <view proportion="0" />
                         <view proportion="0" />
@@ -252,43 +252,43 @@
             <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
             <!-- Start the frame grabber -->
-            <service uid="startVideoAct" type="sight::module::ui::base::SAction" >
+            <service uid="startVideoAct" type="sight::module::ui::base::SAction">
                 <state enabled="false" />
             </service>
 
             <!-- Pause the frame grabber -->
-            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction" >
+            <service uid="pauseVideoAct" type="sight::module::ui::base::SAction">
                 <state visible="false" />
             </service>
 
             <!-- Resume the frame grabber -->
-            <service uid="resumeVideoAct" type="sight::module::ui::base::SAction" >
+            <service uid="resumeVideoAct" type="sight::module::ui::base::SAction">
                 <state visible="false" />
             </service>
 
             <!-- Stop the frame grabber -->
-            <service uid="stopVideoAct" type="sight::module::ui::base::SAction" >
+            <service uid="stopVideoAct" type="sight::module::ui::base::SAction">
                 <state enabled="false" />
             </service>
 
             <!-- Loop the frame grabber -->
-            <service uid="loopVideoAct" type="sight::module::ui::base::SAction" >
+            <service uid="loopVideoAct" type="sight::module::ui::base::SAction">
                 <state enabled="false" />
             </service>
 
             <service uid="recordAct" type="sight::module::ui::base::SAction" />
 
-            <service uid="configureRecordingPathAct" type="sight::module::ui::base::SAction" >
+            <service uid="configureRecordingPathAct" type="sight::module::ui::base::SAction">
                 <slots>
                     <slot>videoGrabberSrv/configureRecordingPath</slot>
                 </slots>
             </service>
 
-            <service uid="showPCDepthAct" type="sight::module::ui::base::SAction" >
+            <service uid="showPCDepthAct" type="sight::module::ui::base::SAction">
                 <state checked="false" />
             </service>
 
-            <service uid="showPCColorAct" type="sight::module::ui::base::SAction" >
+            <service uid="showPCColorAct" type="sight::module::ui::base::SAction">
                 <state checked="false" />
             </service>
 
@@ -298,218 +298,218 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="distanceMapRenderSrv" type="sight::viz::scene3d::SRender" >
-                <scene renderMode="sync" >
+            <service uid="distanceMapRenderSrv" type="sight::viz::scene3d::SRender">
+                <scene renderMode="sync">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1" />
-                    <adaptor uid="DMDepthAdp" />
+                    <layer id="video" order="1">
+                        <adaptor uid="DMDepthAdp" />
+                    </layer>
 
-                    <layer id="AR" order="2" />
-                    <adaptor uid="DMPointAdp" />
-                    <adaptor uid="DMCameraAdp" />
+                    <layer id="AR" order="2">
+                        <adaptor uid="DMPointAdp" />
+                        <adaptor uid="DMCameraAdp" />
+                    </layer>
                 </scene>
             </service>
 
-            <service uid="DMDepthAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
+            <service uid="DMDepthAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true">
                 <in key="image" uid="imageDepth" />
                 <in key="tf" uid="tfDepth" />
-                <config layer="video" />
             </service>
 
-            <service uid="DMPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="true" >
+            <service uid="DMPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true">
                 <in key="mesh" uid="pointcloud" />
-                <config layer="AR" autoresetcamera="false" radius="1" visible="false" />
+                <config autoresetcamera="false" radius="1" visible="false" />
             </service>
 
-            <service uid="DMCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" >
+            <service uid="DMCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera">
                 <inout key="transform" uid="identity" />
                 <in key="calibration" uid="DCamera" /> <!-- Projection matrix of Depth/Infrared Sensor -->
-                <config layer="AR" />
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="videoRenderSrv" type="sight::viz::scene3d::SRender" >
-                <scene renderMode="sync" >
+            <service uid="videoRenderSrv" type="sight::viz::scene3d::SRender">
+                <scene renderMode="sync">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1" />
-                    <adaptor uid="VVideoAdp" />
+                    <layer id="video" order="1">
+                        <adaptor uid="VVideoAdp" />
+                    </layer>
 
-                    <layer id="AR"    order="2" />
-                    <adaptor uid="VPointAdp" />
-                    <adaptor uid="VCameraAdp" />
+                    <layer id="AR" order="2">
+                        <adaptor uid="VPointAdp" />
+                        <adaptor uid="VCameraAdp" />
+                    </layer>
                 </scene>
             </service>
 
-            <service uid="VVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
+            <service uid="VVideoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true">
                 <in key="image" uid="imageVideo" />
-                <config layer="video" />
             </service>
 
-            <service uid="VPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="true" >
+            <service uid="VPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true">
                 <in key="mesh" uid="pointcloud" />
-                <config layer="AR" autoresetcamera="false" radius="1" visible="false" />
+                <config autoresetcamera="false" radius="1" visible="false" />
             </service>
 
-            <service uid="VCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" >
+            <service uid="VCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera">
                 <inout key="transform" uid="identity" />
                 <in key="calibration" uid="RGBCamera" /> <!-- Projection matrix of Color Sensor -->
-                <config layer="AR" />
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="reconstructionRenderSrv" type="sight::viz::scene3d::SRender" >
-                <scene renderMode="sync" >
+            <service uid="reconstructionRenderSrv" type="sight::viz::scene3d::SRender">
+                <scene renderMode="sync">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1" />
-                    <adaptor uid="RPointAdp" />
-                    <adaptor uid="RCameraAdp" />
+                    <layer id="default" order="1">
+                        <adaptor uid="RPointAdp" />
+                        <adaptor uid="RCameraAdp" />
+                    </layer>
                 </scene>
             </service>
 
-            <service uid="RPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList"  autoConnect="true" >
+            <service uid="RPointAdp" type="sight::module::viz::scene3d::adaptor::SPointList" autoConnect="true">
                 <in key="mesh" uid="pointcloud" />
-                <config layer="default" autoresetcamera="false" radius="1" />
+                <config autoresetcamera="false" radius="1" />
             </service>
 
-            <service uid="RCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera" >
+            <service uid="RCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera">
                 <inout key="transform" uid="3dCameraTrf" />
-                <config layer="default" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="presetsSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="presetsSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
                     <param type="enum" name="Realsense presets" key="preset" defaultValue="Default"
-                    values="Default,HighResHighAccuracy,HighResHighDensity,HighResMidDensity,MidResHighAccuracy,
+                        values="Default,HighResHighAccuracy,HighResHighDensity,HighResMidDensity,MidResHighAccuracy,
                     MidResHighDensity,MidResMidDensity,LowResHighAccuracy,LowResHighDensity,LowResMidDensity,
                     Hand,ShortRange,BodyScan,RemoveIR" />
                 </parameters>
             </service>
 
-            <service uid="alignmentSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="alignmentSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
                     <param type="enum" name="Align frames to" key="alignTo" defaultValue="None"
-                    values="None,Color,Depth,Infrared" />
+                        values="None,Color,Depth,Infrared" />
                 </parameters>
             </service>
 
-            <service uid="infraredEmitterSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="infraredEmitterSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
                     <param type="bool" name="IR Emitter" key="IREmitter" defaultValue="true" />
                 </parameters>
             </service>
 
-            <service uid="switchInfraToColorSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="switchInfraToColorSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
                     <param type="bool" name="Infra to Color" key="switchToIR" defaultValue="false" />
                 </parameters>
             </service>
 
-            <service uid="rangeEditorSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="rangeEditorSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
                     <param type="int" name="max range" key="maxRange" defaultValue="65535" min="0" max="65535" />
                     <param type="int" name="min range" key="minRange" defaultValue="0" min="0" max="65534" />
                 </parameters>
             </service>
 
-            <service uid="enableSpacialFilterParamsSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="enableSpacialFilterParamsSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
-                    <param type="bool" name="Enable spatial Edge-Preserving filter" key="enableSpacial"      defaultValue="false" />
+                    <param type="bool" name="Enable spatial Edge-Preserving filter" key="enableSpacial" defaultValue="false" />
                 </parameters>
             </service>
 
-            <service uid="enableTemporalFilterParamsSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="enableTemporalFilterParamsSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
-                    <param type="bool" name="Enable temporal filter"                key="enableTemporal"     defaultValue="false" />
+                    <param type="bool" name="Enable temporal filter" key="enableTemporal" defaultValue="false" />
                 </parameters>
             </service>
 
-            <service uid="enableHoleFillingFilterParamsSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="enableHoleFillingFilterParamsSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
-                    <param type="bool" name="Enable holes Filling filter"           key="enableHolesFilling" defaultValue="false" />
+                    <param type="bool" name="Enable holes Filling filter" key="enableHolesFilling" defaultValue="false" />
                 </parameters>
             </service>
 
-            <service uid="spacialFilterParamsSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="spacialFilterParamsSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
-                    <param type="int"    name="Number of iterations"  key="spacialMagnitude"    defaultValue="2"   min="1" max="5" />
-                    <param type="double" name="Smooth Alpha"          key="spacialSmoothAlpha"  defaultValue="0.5" min="0.25" max="1"  widget="slider" />
-                    <param type="int"    name="Smooth Delta"          key="spacialSmoothDelta"  defaultValue="20"  min="1" max="50" />
-                    <param type="enum"   name="Hole filling (pixels)" key="spacialHoleFilling"  defaultValue="0"   values="0,2,4,8,16,unlimited" />
+                    <param type="int" name="Number of iterations" key="spacialMagnitude" defaultValue="2" min="1" max="5" />
+                    <param type="double" name="Smooth Alpha" key="spacialSmoothAlpha" defaultValue="0.5" min="0.25" max="1" widget="slider" />
+                    <param type="int" name="Smooth Delta" key="spacialSmoothDelta" defaultValue="20" min="1" max="50" />
+                    <param type="enum" name="Hole filling (pixels)" key="spacialHoleFilling" defaultValue="0" values="0,2,4,8,16,unlimited" />
                 </parameters>
             </service>
 
-            <service uid="temporalFilterParamsSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="temporalFilterParamsSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
-                    <param type="double" name="Smooth Alpha"        key="temporalSmoothAlpha"  defaultValue="0.4" min="0" max="1" widget="slider" />
-                    <param type="int"    name="Smooth Delta"        key="temporalSmoothDelta"  defaultValue="20"  min="1" max="100" />
-                    <param type="enum"   name="Persistency index"   key="temporalPersistency"  defaultValue="Valid_in_2/last_3"
-                           values="Disabled,Valid_in_8/8 ,Valid_in_2/last_3,Valid_in_2/last_4,Valid_in_2/8,Valid_in_1/last_2,Valid_in_1/last_5,
+                    <param type="double" name="Smooth Alpha" key="temporalSmoothAlpha" defaultValue="0.4" min="0" max="1" widget="slider" />
+                    <param type="int" name="Smooth Delta" key="temporalSmoothDelta" defaultValue="20" min="1" max="100" />
+                    <param type="enum" name="Persistency index" key="temporalPersistency" defaultValue="Valid_in_2/last_3"
+                        values="Disabled,Valid_in_8/8 ,Valid_in_2/last_3,Valid_in_2/last_4,Valid_in_2/8,Valid_in_1/last_2,Valid_in_1/last_5,
                                    Valid_in_1/last_8,Persist_Indefinitely" />
                 </parameters>
             </service>
 
-            <service uid="holeFillingFilterParamsSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="holeFillingFilterParamsSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
-                    <param type="enum" name="Hole filling" key="holeFilling"  defaultValue="farest_from_around"   values="fill_from_left,farest_from_around,nearest_from_around" />
+                    <param type="enum" name="Hole filling" key="holeFilling" defaultValue="farest_from_around" values="fill_from_left,farest_from_around,nearest_from_around" />
                 </parameters>
             </service>
 
-            <service uid="distanceSrv" type="sight::module::ui::qt::STextStatus" >
+            <service uid="distanceSrv" type="sight::module::ui::qt::STextStatus">
                 <label>Distance To Center (mm)</label>
                 <color>#D25252</color>
             </service>
 
             <!-- GUI to select camera (device, file, or stream) -->
-            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
+            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera">
                 <inout key="cameraSet" uid="RGBDCameraSet" />
                 <createCameraNumber>1</createCameraNumber>
                 <videoSupport>true</videoSupport>
             </service>
 
             <!-- Manages Sense camera configuration -->
-            <service uid="videoGrabberSrv" type="sight::module::io::realsense::SScan" >
+            <service uid="videoGrabberSrv" type="sight::module::io::realsense::SScan">
                 <inout key="cameraSet" uid="RGBDCameraSet" />
                 <inout key="depthTL" uid="frameTLDepth" />
                 <inout key="frameTL" uid="frameTLVideo" />
                 <out key="pointcloud" uid="pointcloud" />
             </service>
 
-            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer" >
-                <in group="frameTL" >
-                    <key uid="frameTLVideo" autoConnect="true"/>
-                    <key uid="frameTLDepth" autoConnect="true"/>
+            <service uid="frameUpdaterSrv"  type="sight::module::sync::SSynchronizer">
+                <in group="frameTL">
+                    <key uid="frameTLVideo" />
+                    <key uid="frameTLDepth" />
                 </in>
-                <inout group="image" >
-                    <key uid="imageVideo" />
-                    <key uid="imageDepth" />
+                <inout group="frames">
+                    <key uid="videoImage" tl="0" />
+                    <key uid="imageDepth" tl="1"/>
                 </inout>
                 <tolerance>50</tolerance>
-                <framerate>0</framerate>
             </service>
 
+
             <!-- extract a sight::data::Camera from the sight::data::CameraSet -->
-             <service uid="extractCameraSrv" type="sight::module::data::SGetCamera" >
-                 <inout key="cameraSet" uid="RGBDCameraSet" autoConnect="true" />
-                 <out group="camera" >
-                     <key index="0" uid="DCamera" /> <!-- Depth/Infrared1 Camera -->
-                     <key index="1" uid="RGBCamera" /> <!-- Color Camera -->
-                 </out>
-                <out group="extrinsic" >
+            <service uid="extractCameraSrv" type="sight::module::data::SGetCamera">
+                <inout key="cameraSet" uid="RGBDCameraSet" autoConnect="true" />
+                <out group="camera">
+                    <key index="0" uid="DCamera" /> <!-- Depth/Infrared1 Camera -->
+                    <key index="1" uid="RGBCamera" /> <!-- Color Camera -->
+                </out>
+                <out group="extrinsic">
                     <key index="0" uid="depth_to_color" /> <!-- Infrared1 to Color coordinate frame -->
                 </out>
 
-             </service>
+            </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneTFSrv" type="sight::viz::scene2d::SRender" >
+            <service uid="genericSceneTFSrv" type="sight::viz::scene2d::SRender">
                 <scene>
                     <scene x="-20" y="-1.1" width="5020" height="1.2" antialiasing="true" background="#36393E" />
 
@@ -527,51 +527,51 @@
                 </scene>
             </service>
 
-            <service uid="TFGridAdp" type="sight::module::viz::scene2d::adaptor::SGrid2D" >
+            <service uid="TFGridAdp" type="sight::module::viz::scene2d::adaptor::SGrid2D">
                 <config xMin="-20" xMax="5020" yMin="0.0" yMax="1.0" xSpacing="100" ySpacing="0.1" opacity="0.6" color="darkGray" xAxis="xAxis" yAxis="yAxis" zValue="1" />
             </service>
 
-            <service uid="TFAbscissaAdp" type="sight::module::viz::scene2d::adaptor::SLine" >
+            <service uid="TFAbscissaAdp" type="sight::module::viz::scene2d::adaptor::SLine">
                 <config x1="-20" x2="5020" y1="0" y2="0" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="2" />
             </service>
 
-            <service uid="TFOrdinateAdp" type="sight::module::viz::scene2d::adaptor::SLine" >
+            <service uid="TFOrdinateAdp" type="sight::module::viz::scene2d::adaptor::SLine">
                 <config x1="0" x2="0" y1="-0.1" y2="1.2" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="3" />
             </service>
 
-            <service uid="TFMaxOpacityAdp" type="sight::module::viz::scene2d::adaptor::SLine" >
+            <service uid="TFMaxOpacityAdp" type="sight::module::viz::scene2d::adaptor::SLine">
                 <config x1="-20" x2="5020" y1="1" y2="1" color="#D35151" xAxis="xAxis" yAxis="yAxis" zValue="4" />
             </service>
 
-            <service uid="TFTransferFunctionAdp" type="sight::module::viz::scene2d::adaptor::STransferFunction" autoConnect="true" >
+            <service uid="TFTransferFunctionAdp" type="sight::module::viz::scene2d::adaptor::STransferFunction" autoConnect="true">
                 <inout key="image" uid="imageDepth" />
                 <inout key="tf" uid="tfDepth" />
                 <in key="viewport" uid="viewport" />
                 <config pointColor="#FFFFFF" opacity="0.9" secondOpacity="0.15" lineColor="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="7" />
             </service>
 
-            <service uid="TFViewportRangeUpdaterAdp" type="sight::module::viz::scene2d::adaptor::SViewportUpdater" autoConnect="true" >
+            <service uid="TFViewportRangeUpdaterAdp" type="sight::module::viz::scene2d::adaptor::SViewportUpdater" autoConnect="true">
                 <inout key="viewport" uid="viewport" />
                 <config xAxis="xAxis" yAxis="yAxis" zValue="9" />
             </service>
 
-            <service uid="TFAxisLeftAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true" >
+            <service uid="TFAxisLeftAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true">
                 <in key="viewport" uid="viewport" />
                 <config min="0.0" max="1.0" interval="0.1" align="left" tickSize="5" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11">
                     <labels color="#FFFFFF" fontSize="12" />
                 </config>
             </service>
 
-            <service uid="TFAxisBottomAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true" >
+            <service uid="TFAxisBottomAdp" type="sight::module::viz::scene2d::adaptor::SAxis" autoConnect="true">
                 <in key="viewport" uid="viewport" />
-                <config min="0" max="5000" interval="100" align="bottom" tickSize="5" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11" >
+                <config min="0" max="5000" interval="100" align="bottom" tickSize="5" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="11">
                     <labels color="#FFFFFF" fontSize="12" />
                 </config>
             </service>
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneViewportSelectorSrv" type="sight::viz::scene2d::SRender" >
+            <service uid="genericSceneViewportSelectorSrv" type="sight::viz::scene2d::SRender">
                 <scene>
                     <scene x="-20" y="-1.1" width="5020" height="1.2" background="#36393E" />
 
@@ -584,22 +584,22 @@
                 </scene>
             </service>
 
-            <service uid="shutterAbscissa" type="sight::module::viz::scene2d::adaptor::SLine" >
+            <service uid="shutterAbscissa" type="sight::module::viz::scene2d::adaptor::SLine">
                 <config x1="-20" x2="5020" y1="0" y2="0" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="2" />
             </service>
 
-            <service uid="shutterOrdinate" type="sight::module::viz::scene2d::adaptor::SLine" >
+            <service uid="shutterOrdinate" type="sight::module::viz::scene2d::adaptor::SLine">
                 <config x1="0" x2="0" y1="-0.1" y2="1.2" color="#FFFFFF" xAxis="xAxis" yAxis="yAxis" zValue="3" />
             </service>
 
-            <service uid="VSRangeSelectorAdp" type="sight::module::viz::scene2d::adaptor::SViewportRangeSelector" autoConnect="true" >
+            <service uid="VSRangeSelectorAdp" type="sight::module::viz::scene2d::adaptor::SViewportRangeSelector" autoConnect="true">
                 <inout key="viewport" uid="viewportShutter" />
-                <inout key="selectedViewport" uid="viewport"/>
+                <inout key="selectedViewport" uid="viewport" />
                 <config color="#565A5E" opacity="0.5" xAxis="xAxis" yAxis="yAxis" zValue="5" initialWidth="3000" initialPos="200" />
             </service>
 
             <!-- Wait for the undistortion and the matrix inversion to be finished -->
-            <service uid="syncGenericSceneSrv" type="sight::module::sync::SSignalGate" >
+            <service uid="syncGenericSceneSrv" type="sight::module::sync::SSignalGate">
                 <signal>VVideoAdp/updated</signal>
                 <signal>DMDepthAdp/updated</signal>
                 <!-- <signal>RPointAdp/updated</signal> -->
@@ -674,49 +674,33 @@
             </connect>
 
             <connect>
-                <signal>presetsSrv/enumChanged</signal>
-                <signal>alignmentSrv/enumChanged</signal>
-                <slot>videoGrabberSrv/setEnumParameter</slot>
+                <signal>rangeEditorSrv/parameterChanged</signal>
+                <signal>spacialFilterParamsSrv/parameterChanged</signal>
+                <signal>temporalFilterParamsSrv/parameterChanged</signal>
+                <signal>holeFillingFilterParamsSrv/parameterChanged</signal>
+                <signal>presetsSrv/parameterChanged</signal>
+                <signal>alignmentSrv/parameterChanged</signal>
+                <signal>infraredEmitterSrv/parameterChanged</signal>
+                <signal>switchInfraToColorSrv/parameterChanged</signal>
+                <signal>enableSpacialFilterParamsSrv/parameterChanged</signal>
+                <signal>enableTemporalFilterParamsSrv/parameterChanged</signal>
+                <signal>enableHoleFillingFilterParamsSrv/parameterChanged</signal>
+                 <slot>videoGrabberSrv/setParameter</slot>
             </connect>
 
             <connect>
-                 <signal>infraredEmitterSrv/boolChanged</signal>
-                 <signal>switchInfraToColorSrv/boolChanged</signal>
-                 <signal>enableSpacialFilterParamsSrv/boolChanged</signal>
-                 <signal>enableTemporalFilterParamsSrv/boolChanged</signal>
-                 <signal>enableHoleFillingFilterParamsSrv/boolChanged</signal>
-                 <slot>videoGrabberSrv/setBoolParameter</slot>
+                <signal>enableSpacialFilterParamsSrv/parameterChanged</signal>
+                <slot>spacialFilterParamsSrv/setEnabledByParam</slot>
             </connect>
 
             <connect>
-                <signal>rangeEditorSrv/intChanged</signal>
-                <signal>spacialFilterParamsSrv/intChanged</signal>
-                <signal>spacialFilterParamsSrv/enumIndexChanged</signal>
-                <signal>temporalFilterParamsSrv/intChanged</signal>
-                <signal>temporalFilterParamsSrv/enumIndexChanged</signal>
-                <signal>holeFillingFilterParamsSrv/enumIndexChanged</signal>
-                <slot>videoGrabberSrv/setIntParameter</slot>
+                <signal>enableTemporalFilterParamsSrv/parameterChanged</signal>
+                <slot>temporalFilterParamsSrv/setEnabledByParam</slot>
             </connect>
 
             <connect>
-                <signal>spacialFilterParamsSrv/doubleChanged</signal>
-                <signal>temporalFilterParamsSrv/doubleChanged</signal>
-                <slot>videoGrabberSrv/setDoubleParameter</slot>
-            </connect>
-
-            <connect>
-                <signal>enableSpacialFilterParamsSrv/boolChanged</signal>
-                <slot>spacialFilterParamsSrv/setEnabled</slot>
-            </connect>
-
-            <connect>
-                <signal>enableTemporalFilterParamsSrv/boolChanged</signal>
-                <slot>temporalFilterParamsSrv/setEnabled</slot>
-            </connect>
-
-            <connect>
-                <signal>enableHoleFillingFilterParamsSrv/boolChanged</signal>
-                <slot>holeFillingFilterParamsSrv/setEnabled</slot>
+                <signal>enableHoleFillingFilterParamsSrv/parameterChanged</signal>
+                <slot>holeFillingFilterParamsSrv/setEnabledByParam</slot>
             </connect>
 
             <connect>

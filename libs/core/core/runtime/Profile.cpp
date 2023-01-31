@@ -26,7 +26,6 @@
 #include "core/runtime/detail/profile/Activater.hpp"
 #include "core/runtime/Extension.hpp"
 #include "core/runtime/Module.hpp"
-#include "core/runtime/Runtime.hpp"
 
 #include <algorithm>
 #include <cstring>

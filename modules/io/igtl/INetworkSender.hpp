@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Object::s_MODIFIED_SIG to s_UPDATE_SLOT.
+     * Connect data::Object::s_MODIFIED_SIG to IService::slots::s_UPDATE.
      */
     MODULE_IO_IGTL_API KeyConnectionsMap getAutoConnections() const override;
 

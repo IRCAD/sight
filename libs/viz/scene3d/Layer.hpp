@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,6 +32,7 @@
 
 #include <core/com/HasSignals.hpp>
 #include <core/com/HasSlots.hpp>
+#include <core/com/helper/SigSlotConnection.hpp>
 #include <core/com/Slot.hpp>
 #include <core/thread/Worker.hpp>
 
@@ -130,7 +131,7 @@ public:
     VIZ_SCENE3D_API Layer();
 
     /// Destoyres Ogre resources.
-    VIZ_SCENE3D_API ~Layer() override;
+    VIZ_SCENE3D_API ~Layer() override = default;
 
     /// Sets the render window containing this layer.
     VIZ_SCENE3D_API void setRenderTarget(Ogre::RenderTarget* _renderTarget);

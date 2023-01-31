@@ -47,8 +47,10 @@
         <service uid="TFManagerCfg"  type="sight::service::SConfigController" >
             <appConfig id="TransferFunctionWidgetCfg" />
             <parameter replace="WID_PARENT" by="tfView" />
-            <inout key="image" uid="${image}" />
-            <inout key="currentTF" uid="${currentTF}" />
+            <inout group="data">
+                <key name="image" uid="${image}" />
+                <key name="currentTF" uid="${currentTF}" />
+            </inout>
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

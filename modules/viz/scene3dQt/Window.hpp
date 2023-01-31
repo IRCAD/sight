@@ -32,6 +32,7 @@
 #include <Overlay/OgreOverlay.h>
 #include <Overlay/OgreOverlaySystem.h>
 
+#include <QGestureEvent>
 #include <QPoint>
 #include <QScreen>
 
@@ -93,6 +94,9 @@ public:
 
     /// Renders the frame as soon as possible.
     void requestRender();
+
+    /// Manages gestures.
+    void gestureEvent(QGestureEvent* _e);
 
 Q_SIGNALS:
 

@@ -62,11 +62,9 @@ void MatrixTest::copyFromCvFloat()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]"
-                ,
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
                 static_cast<double>(cvMat(i, j)),
-                fwMat->getCoefficient(i, j)
+                (*fwMat)(i, j)
             );
         }
     }
@@ -99,10 +97,9 @@ void MatrixTest::copyFromCvFloat()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]",
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
                 static_cast<double>(cvMat(i, j)),
-                fwMat->getCoefficient(i, j)
+                (*fwMat)(i, j)
             );
         }
     }
@@ -123,23 +120,21 @@ void MatrixTest::copyToCvFloat()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]"
-                ,
-                fwMat->getCoefficient(i, j),
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
+                (*fwMat)(i, j),
                 static_cast<double>(cvMat(i, j)),
                 1e-8
             );
         }
     }
 
-    data::Matrix4::TMCoefArray array = {{0.16, 0.15, 0.14, 0.1378942,
+    data::Matrix4::container_type array = {{0.16, 0.15, 0.14, 0.1378942,
         12.0, 11.0, 10.0, 9.0,
         0.08, 0.07, 0.0645687, 0.05,
         40.0, 30.0, 20.0, 10.0
     }
     };
-    fwMat->setCoefficients(array);
+    (*fwMat) = array;
 
     io::opencv::Matrix::copyToCv(fwMat, cvMat);
 
@@ -148,10 +143,9 @@ void MatrixTest::copyToCvFloat()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]",
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
                 static_cast<double>(cvMat(i, j)),
-                fwMat->getCoefficient(i, j),
+                (*fwMat)(i, j),
                 1e-8
             );
         }
@@ -173,11 +167,9 @@ void MatrixTest::copyFromCvDouble()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]"
-                ,
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
                 static_cast<double>(cvMat(i, j)),
-                fwMat->getCoefficient(i, j)
+                (*fwMat)(i, j)
             );
         }
     }
@@ -210,10 +202,9 @@ void MatrixTest::copyFromCvDouble()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]",
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
                 static_cast<double>(cvMat(i, j)),
-                fwMat->getCoefficient(i, j)
+                (*fwMat)(i, j)
             );
         }
     }
@@ -234,22 +225,20 @@ void MatrixTest::copyToCvDouble()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]"
-                ,
-                fwMat->getCoefficient(i, j),
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
+                (*fwMat)(i, j),
                 static_cast<double>(cvMat(i, j))
             );
         }
     }
 
-    data::Matrix4::TMCoefArray array = {{0.16, 0.15, 0.14, 0.1378942,
+    data::Matrix4::container_type array = {{0.16, 0.15, 0.14, 0.1378942,
         12.0, 11.0, 10.0, 9.0,
         0.08, 0.07, 0.0645687, 0.05,
         40.0, 30.0, 20.0, 10.0
     }
     };
-    fwMat->setCoefficients(array);
+    (*fwMat) = array;
 
     //values test
     io::opencv::Matrix::copyToCv(fwMat, cvMat);
@@ -259,10 +248,9 @@ void MatrixTest::copyToCvDouble()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]",
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
                 static_cast<double>(cvMat(i, j)),
-                fwMat->getCoefficient(i, j)
+                (*fwMat)(i, j)
             );
         }
     }
@@ -283,10 +271,8 @@ void MatrixTest::copyFromCvMat()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]"
-                ,
-                fwMat->getCoefficient(i, j),
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
+                (*fwMat)(i, j),
                 cvMat.at<double>(i, j)
             );
         }
@@ -307,10 +293,8 @@ void MatrixTest::copyFromCvMat()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]"
-                ,
-                fwMat->getCoefficient(i, j),
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
+                (*fwMat)(i, j),
                 cvMat.at<double>(i, j)
             );
         }
@@ -332,22 +316,20 @@ void MatrixTest::copyToCvMat()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]"
-                ,
-                fwMat->getCoefficient(i, j),
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
+                (*fwMat)(i, j),
                 cvMat.at<double>(i, j)
             );
         }
     }
 
-    data::Matrix4::TMCoefArray array = {{0.16, 0.15, 0.14, 0.1378942,
+    data::Matrix4::container_type array = {
+        0.16, 0.15, 0.14, 0.1378942,
         12.0, 11.0, 10.0, 9.0,
         0.08, 0.07, 0.0645687, 0.05,
         40.0, 30.0, 20.0, 10.0
-    }
     };
-    fwMat->setCoefficients(array);
+    (*fwMat) = array;
 
     //values test
     io::opencv::Matrix::copyToCv(fwMat, cvMat);
@@ -357,10 +339,9 @@ void MatrixTest::copyToCvMat()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]",
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
                 cvMat.at<double>(i, j),
-                fwMat->getCoefficient(i, j)
+                (*fwMat)(i, j)
             );
         }
     }
@@ -385,10 +366,8 @@ void MatrixTest::copyFromRvecTvec()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]"
-                ,
-                fwMat->getCoefficient(i, j),
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
+                (*fwMat)(i, j),
                 cvMat.at<double>(i, j),
                 1e-8
             );
@@ -412,10 +391,8 @@ void MatrixTest::copyFromRvecTvec()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]"
-                ,
-                fwMat->getCoefficient(i, j),
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
+                (*fwMat)(i, j),
                 cvMat.at<double>(i, j),
                 1e-8
             );
@@ -434,10 +411,8 @@ void MatrixTest::copyFromRvecTvec()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]"
-                ,
-                fwMat->getCoefficient(i, j),
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
+                (*fwMat)(i, j),
                 cvMat.at<double>(i, j),
                 1e-8
             );
@@ -475,13 +450,13 @@ void MatrixTest::copyToRvecTvec()
         );
     }
 
-    data::Matrix4::TMCoefArray array = {{1., 0., 0., 4.,
+    data::Matrix4::container_type array = {
+        1., 0., 0., 4.,
         0., 0.86601905, -0.50001100, 8.,
         0., 0.50001100, 0.86601905, 12.,
         0., 0., 0., 1.
-    }
     };
-    fwMat->setCoefficients(array);
+    (*fwMat) = array;
 
     //values test
     io::opencv::Matrix::copyToCv(fwMat, rvec, tvec);
@@ -515,10 +490,8 @@ void MatrixTest::copyToRvecTvec()
         for(std::uint8_t j = 0 ; j < 4 ; ++j)
         {
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
-                "values are not equals at [" + std::to_string(i)
-                + " ; " + std::to_string(j) + "]"
-                ,
-                fwMat->getCoefficient(i, j),
+                "values are not equals at [" + std::to_string(i) + " ; " + std::to_string(j) + "]",
+                (*fwMat)(i, j),
                 mat4x4.at<double>(i, j),
                 1e-8
             );

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,7 +109,7 @@ public:
 
     /// Destructor. Do nothing.
 
-    MODULE_UI_QML_API ~SView() override;
+    MODULE_UI_QML_API ~SView() override = default;
 
     /// Signal emited when the activity is launched
     typedef core::com::Signal<void ()> ActivityLaunchedSignalType;
@@ -143,6 +143,9 @@ private:
     void launchActivity(data::Activity::sptr activity);
 
     ActivityLaunchedSignalType::sptr m_sigActivityLaunched;
+
+    /// Input data to pass to the configuration
+    data::ptr_vector<data::Object, data::Access::inout> m_data {this, "data"};
 };
 
 } // namespace sight::module::ui::qml::activity

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,7 @@
 
 #include "SImageCenter.hpp"
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-
 #include <data/helper/MedicalImage.hpp>
-
-#include <filter/image/AutomaticRegistration.hpp>
 
 #include <geometry/data/Matrix4.hpp>
 
@@ -35,16 +30,6 @@
 
 namespace sight::module::filter::image
 {
-
-//------------------------------------------------------------------------------
-
-SImageCenter::SImageCenter()
-= default;
-
-//------------------------------------------------------------------------------
-
-SImageCenter::~SImageCenter()
-= default;
 
 //------------------------------------------------------------------------------
 
@@ -99,9 +84,9 @@ void SImageCenter::updating()
     center[1] += origin[1];
     center[2] += origin[2];
 
-    matrix->setCoefficient(0, 3, center[0]);
-    matrix->setCoefficient(1, 3, center[1]);
-    matrix->setCoefficient(2, 3, center[2]);
+    (*matrix)(0, 3) = center[0];
+    (*matrix)(1, 3) = center[1];
+    (*matrix)(2, 3) = center[2];
 
     // output the translation matrix
 
@@ -123,7 +108,7 @@ void SImageCenter::stopping()
 
 service::IService::KeyConnectionsMap SImageCenter::getAutoConnections() const
 {
-    return {{s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT}};
+    return {{s_IMAGE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE}};
 }
 
 //------------------------------------------------------------------------------

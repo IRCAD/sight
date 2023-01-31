@@ -26,8 +26,9 @@
 #include <windows.h>
 #endif
 
+#include <core/runtime/runtime.hpp>
+
 #include <core/crypto/PasswordKeeper.hpp>
-#include <core/runtime/operations.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
 
@@ -381,8 +382,6 @@ int main(int argc, char* argv[])
         }
     }
 
-    std::transform(modulePaths.begin(), modulePaths.end(), modulePaths.begin(), ::absolute);
-
     // Automatically adds the module folders where the profile.xml is located if it was not already there
     const auto profileModulePath = profileFile.parent_path().parent_path();
     bool findProfileModulePath   = false;
@@ -408,28 +407,12 @@ int main(int argc, char* argv[])
         );
     }
 #endif
-    for(const std::filesystem::path& modulePath : modulePaths)
-    {
-        SIGHT_FATAL_IF(
-            "Module path doesn't exist: " << modulePath.string() << " => " << ::absolute(
-                modulePath
-            ),
-            !std::filesystem::exists(modulePath.string())
-        );
-    }
 
     sight::core::runtime::init();
 
     for(const std::filesystem::path& modulePath : modulePaths)
     {
-        if(std::filesystem::is_directory(modulePath))
-        {
-            sight::core::runtime::addModules(modulePath);
-        }
-        else
-        {
-            SIGHT_ERROR("Module path " << modulePath << " do not exists or is not a directory.");
-        }
+        sight::core::runtime::addModules(modulePath);
     }
 
     sight::core::runtime::Profile::sptr profile;

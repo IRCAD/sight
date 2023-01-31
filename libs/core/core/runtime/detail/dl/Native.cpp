@@ -23,7 +23,6 @@
 #include "core/runtime/detail/dl/Native.hpp"
 
 #include "core/runtime/detail/Module.hpp"
-#include "core/runtime/Runtime.hpp"
 
 #include <climits>
 #include <filesystem>

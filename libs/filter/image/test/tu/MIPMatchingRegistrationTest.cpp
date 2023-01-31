@@ -83,7 +83,7 @@ void MIPMatchingRegistrationTest::identityTest()
         CPPUNIT_ASSERT_EQUAL_MESSAGE(
             "Translation value is not equal to '0' ",
             0.,
-            params.transform->getCoefficient(i, 3)
+            (*params.transform)(i, 3)
         );
     }
 }
@@ -96,9 +96,9 @@ void MIPMatchingRegistrationTest::translateTransformTest()
     data::Image::sptr fixed   = data::Image::New();
 
     data::Matrix4::sptr transform = data::Matrix4::New();
-    transform->setCoefficient(0, 3, 4.);
-    transform->setCoefficient(1, 3, 12.);
-    transform->setCoefficient(2, 3, 7.);
+    (*transform)(0, 3) = 4.;
+    (*transform)(1, 3) = 12.;
+    (*transform)(2, 3) = 7.;
     sight::filter::image::Resampler::resample(moving, fixed, transform);
 
     std::array<double, 3> expected {{4., 12., 7.}};
@@ -113,7 +113,7 @@ void MIPMatchingRegistrationTest::translateTransformTest()
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "Actual transform does not match expected results",
             expected[i],
-            params.transform->getCoefficient(i, 3),
+            (*params.transform)(i, 3),
             1e-2
         );
     }
@@ -135,9 +135,9 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
     // Translate the image a bit
     std::array<double, 3> vTrans {{4., 19., 7.}};
     data::Matrix4::sptr transform = data::Matrix4::New();
-    transform->setCoefficient(0, 3, vTrans[0]);
-    transform->setCoefficient(1, 3, vTrans[1]);
-    transform->setCoefficient(2, 3, vTrans[2]);
+    (*transform)(0, 3) = vTrans[0];
+    (*transform)(1, 3) = vTrans[1];
+    (*transform)(2, 3) = vTrans[2];
     sight::filter::image::Resampler::resample(moving, fixed, transform);
     auto fixedOrigin  = std::array<double, 3> {{20., 10., 35.}};
     auto movingOrigin = moving->getOrigin();
@@ -180,7 +180,7 @@ void MIPMatchingRegistrationTest::translateTransformWithScalesTest()
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "Actual transform does not match expected results",
             double(expected[i]),
-            params.transform->getCoefficient(i, 3),
+            (*params.transform)(i, 3),
             double(movingSpacing[i])
         );
     }

@@ -27,8 +27,10 @@ The `TransferFunctionWidget` configuration can be included with the following co
 <service uid="..."  type="sight::service::SConfigController" >
     <appConfig id="TransferFunctionWidgetCfg" />
     <parameter replace="WID_PARENT" by="..." />
-    <inout key="image" uid="..." />
-    <inout key="currentTF" uid="..." />
+    <inout group="data">
+        <key name="image" uid="..." />
+        <key name="currentTF" uid="..." />
+    </inout>
 </service>
 ```
 
@@ -45,8 +47,10 @@ The `TransferFunctionWindow` configuration can be included with the following co
     <appConfig id="TransferFunctionWindowCfg" />
     <parameter replace="WINDOW_TITLE" by="Volume TF editor" />
     <parameter replace="WINDOW_ICON" by="path/to/icon.svg" />
-    <inout key="image" uid="..." />
-    <inout key="currentTF" uid="..." />
+    <inout group="data">
+        <key name="image" uid="..." />
+        <key name="currentTF" uid="..." />
+    </inout>
 </service>
 ```
 

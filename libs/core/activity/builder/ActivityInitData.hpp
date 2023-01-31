@@ -25,9 +25,6 @@
 #include "activity/builder/Activity.hpp"
 #include "activity/config.hpp"
 
-#include <core/base.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
-
 namespace sight::activity
 {
 

@@ -26,7 +26,6 @@
 
 #include <data/Mesh.hpp>
 
-#include <service/macros.hpp>
 #include <service/op/Add.hpp>
 
 #include <viz/scene3d/Material.hpp>
@@ -36,9 +35,6 @@ namespace sight::module::viz::scene3d::adaptor
 
 static const core::com::Slots::SlotKeyType s_CHANGE_MESH_SLOT = "changeMesh";
 static const core::com::Slots::SlotKeyType s_VISIBILITY_SLOT  = "modifyVisibility";
-
-static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
-static const std::string s_QUERY_CONFIG            = "queryFlags";
 
 //------------------------------------------------------------------------------
 
@@ -50,17 +46,11 @@ SReconstruction::SReconstruction() noexcept
 
 //------------------------------------------------------------------------------
 
-SReconstruction::~SReconstruction() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void SReconstruction::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
     this->setTransformId(
         config.get<std::string>(
@@ -68,9 +58,9 @@ void SReconstruction::configuring()
             this->getID() + "_transform"
         )
     );
-    m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
+    m_autoResetCamera = config.get<bool>(s_CONFIG + "autoresetcamera", true);
 
-    const std::string hexaMask = config.get<std::string>(s_QUERY_CONFIG, "");
+    const std::string hexaMask = config.get<std::string>(s_CONFIG + "queryFlags", "");
     if(!hexaMask.empty())
     {
         SIGHT_ASSERT(

@@ -21,12 +21,12 @@
 
 #pragma once
 
-#include <ui/test/ITest.hpp>
+#include <ui/testCore/ITest.hpp>
 
 namespace sight::sightcalibrator::test::ui
 {
 
-class IntrinsicCalibration : public sight::ui::test::ITest
+class IntrinsicCalibration : public sight::ui::testCore::ITest
 {
 CPPUNIT_TEST_SUITE(IntrinsicCalibration);
 CPPUNIT_TEST(test);
@@ -34,7 +34,7 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    const char* getProfilePath() override;
+    std::filesystem::path getProfilePath() override;
 
     void test();
 };

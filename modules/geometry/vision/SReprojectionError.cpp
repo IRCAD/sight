@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,18 +30,14 @@
 #include <io/opencv/Camera.hpp>
 #include <io/opencv/Image.hpp>
 
-#include <service/macros.hpp>
-
 #include <opencv2/calib3d.hpp>
 #include <opencv2/opencv.hpp>
 
 namespace sight::module::geometry::vision
 {
 
-const core::com::Slots::SlotKeyType SReprojectionError::s_COMPUTE_SLOT = "compute";
-
-const core::com::Slots::SlotKeyType SReprojectionError::s_SET_BOOL_PARAMETER_SLOT  = "setBoolParameter";
-const core::com::Slots::SlotKeyType SReprojectionError::s_SET_COLOR_PARAMETER_SLOT = "setColorParameter";
+const core::com::Slots::SlotKeyType SReprojectionError::s_COMPUTE_SLOT       = "compute";
+const core::com::Slots::SlotKeyType SReprojectionError::s_SET_PARAMETER_SLOT = "setParameter";
 
 static const core::com::Signals::SignalKeyType s_ERROR_COMPUTED_SIG = "errorComputed";
 
@@ -52,22 +48,16 @@ SReprojectionError::SReprojectionError() :
     m_cvColor(cv::Scalar(255, 255, 255, 255))
 {
     newSignal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG);
+
     newSlot(s_COMPUTE_SLOT, &SReprojectionError::compute, this);
-
-    newSlot(s_SET_BOOL_PARAMETER_SLOT, &SReprojectionError::setBoolParameter, this);
-    newSlot(s_SET_COLOR_PARAMETER_SLOT, &SReprojectionError::setColorParameter, this);
+    newSlot(s_SET_PARAMETER_SLOT, &SReprojectionError::setParameter, this);
 }
-
-//-----------------------------------------------------------------------------
-
-SReprojectionError::~SReprojectionError()
-= default;
 
 //-----------------------------------------------------------------------------
 
 void SReprojectionError::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
     m_patternWidth = config.get<double>("patternWidth", m_patternWidth);
     SIGHT_ASSERT("patternWidth setting is set to " << m_patternWidth << " but should be > 0.", m_patternWidth > 0);
 
@@ -119,7 +109,7 @@ void SReprojectionError::starting()
         {
             for(std::uint8_t j = 0 ; j < 4 ; ++j)
             {
-                m_cvExtrinsic.at<double>(i, j) = extrinsic->getCoefficient(i, j);
+                m_cvExtrinsic.at<double>(i, j) = (*extrinsic)(i, j);
             }
         }
     }
@@ -143,105 +133,106 @@ void SReprojectionError::compute(core::HiResClock::HiResClockType timestamp)
 
     if(timestamp > m_lastTimestamp)
     {
-        auto markerMap = m_markerMap.lock();
+        std::vector<sight::geometry::vision::helper::ErrorAndPointsType> errors;
 
-        // For each matrix
-        unsigned int i = 0;
-        for(const auto& markerKey : m_matricesTag)
         {
-            auto matrix = m_matrix[i].lock();
+            auto markerMap = m_markerMap.lock();
 
-            const auto* marker = markerMap->getMarker(markerKey);
-
-            if(marker != nullptr)
+            // For each matrix
+            unsigned int i = 0;
+            for(const auto& markerKey : m_matricesTag)
             {
-                std::vector<cv::Point2f> points2D;
+                const auto* marker = markerMap->getMarker(markerKey);
 
-                cv::Mat mat = cv::Mat::eye(4, 4, CV_64F);
-
-                for(std::uint8_t r = 0 ; r < 4 ; ++r)
+                if(marker != nullptr)
                 {
-                    for(std::uint8_t c = 0 ; c < 4 ; ++c)
+                    std::vector<cv::Point2f> points2D;
+
+                    cv::Mat mat = cv::Mat::eye(4, 4, CV_64F);
                     {
-                        mat.at<double>(r, c) = static_cast<double>(matrix->getCoefficient(r, c));
-                    }
-                }
-
-                const cv::Mat pose = m_cvExtrinsic * mat;
-
-                cv::Mat rot = pose(cv::Rect(0, 0, 3, 3));
-
-                cv::Mat tvec = cv::Mat(3, 1, CV_64F);
-                tvec.at<double>(0) = pose.at<double>(0, 3);
-                tvec.at<double>(1) = pose.at<double>(1, 3);
-                tvec.at<double>(2) = pose.at<double>(2, 3);
-
-                cv::Mat rvec;
-
-                cv::Rodrigues(rot, rvec);
-
-                for(const auto& p : *marker)
-                {
-                    points2D.emplace_back(p[0], p[1]);
-                }
-
-                sight::geometry::vision::helper::ErrorAndPointsType errP =
-                    sight::geometry::vision::helper::computeReprojectionError(
-                        m_objectPoints,
-                        points2D,
-                        rvec,
-                        tvec,
-                        m_cameraMatrix,
-                        m_distorsionCoef
-                    );
-
-                this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errP.first);
-
-                if(m_display) //draw reprojected points
-                {
-                    auto frame = m_frame.lock();
-                    SIGHT_ASSERT("The input " << s_FRAME_INOUT << " is not valid.", frame);
-
-                    if(frame->getSizeInBytes() > 0)
-                    {
-                        cv::Mat cvImage = io::opencv::Image::moveToCv(frame.get_shared());
-
-                        std::vector<cv::Point2f> reprojectedP = errP.second;
-
-                        for(auto& j : reprojectedP)
+                        auto matrix = m_matrix[i].lock();
+                        for(std::uint8_t r = 0 ; r < 4 ; ++r)
                         {
-                            cv::circle(cvImage, j, 7, m_cvColor, 1, cv::LINE_8);
+                            for(std::uint8_t c = 0 ; c < 4 ; ++c)
+                            {
+                                mat.at<double>(r, c) = static_cast<double>((*matrix)(r, c));
+                            }
                         }
+                    }
+
+                    const cv::Mat pose = m_cvExtrinsic * mat;
+
+                    cv::Mat rot = pose(cv::Rect(0, 0, 3, 3));
+
+                    cv::Mat tvec = cv::Mat(3, 1, CV_64F);
+                    tvec.at<double>(0) = pose.at<double>(0, 3);
+                    tvec.at<double>(1) = pose.at<double>(1, 3);
+                    tvec.at<double>(2) = pose.at<double>(2, 3);
+
+                    cv::Mat rvec;
+
+                    cv::Rodrigues(rot, rvec);
+
+                    for(const auto& p : *marker)
+                    {
+                        points2D.emplace_back(p[0], p[1]);
+                    }
+
+                    sight::geometry::vision::helper::ErrorAndPointsType errP =
+                        sight::geometry::vision::helper::computeReprojectionError(
+                            m_objectPoints,
+                            points2D,
+                            rvec,
+                            tvec,
+                            m_cameraMatrix,
+                            m_distorsionCoef
+                        );
+
+                    this->signal<ErrorComputedSignalType>(s_ERROR_COMPUTED_SIG)->asyncEmit(errP.first);
+
+                    errors.push_back(errP);
+                }
+
+                ++i;
+            }
+        }
+
+        // draw reprojected points
+        if(m_display)
+        {
+            for(const auto& err : errors)
+            {
+                auto frame = m_frame.lock();
+                SIGHT_ASSERT("The input " << s_FRAME_INOUT << " is not valid.", frame);
+
+                if(frame->getSizeInBytes() > 0)
+                {
+                    cv::Mat cvImage = io::opencv::Image::moveToCv(frame.get_shared());
+
+                    std::vector<cv::Point2f> reprojectedP = err.second;
+
+                    for(auto& j : reprojectedP)
+                    {
+                        cv::circle(cvImage, j, 7, m_cvColor, 1, cv::LINE_8);
                     }
                 }
             }
-
-            ++i;
         }
     }
 }
 
 //-----------------------------------------------------------------------------
 
-void SReprojectionError::setBoolParameter(bool _val, std::string _key)
+void SReprojectionError::setParameter(sight::ui::base::parameter_t _val, std::string _key)
 {
     if(_key == "display")
     {
-        m_display = _val;
+        m_display = std::get<bool>(_val);
     }
-    else
+    else if(_key == "color")
     {
-        SIGHT_ERROR("the key '" + _key + "' is not handled");
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SReprojectionError::setColorParameter(std::array<uint8_t, 4> _val, std::string _key)
-{
-    if(_key == "color")
-    {
-        m_cvColor = cv::Scalar(_val[0], _val[1], _val[2], 255);
+        const auto color = std::get<sight::ui::base::color_t>(_val);
+        m_cvColor = cv::Scalar(color[0], color[1], color[2], 255);
     }
     else
     {
@@ -265,7 +256,7 @@ void SReprojectionError::updating()
 service::IService::KeyConnectionsMap SReprojectionError::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     return connections;
 }
 

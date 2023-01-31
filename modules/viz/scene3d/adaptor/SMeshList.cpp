@@ -30,10 +30,6 @@ namespace sight::module::viz::scene3d::adaptor
 static const core::com::Slots::SlotKeyType s_ADD_SLOT   = "add";
 static const core::com::Slots::SlotKeyType s_CLEAR_SLOT = "clear";
 
-static const std::string s_CAPACITY_CONFIG      = "capacity";
-static const std::string s_DROPPING_CONFIG      = "drop";
-static const std::string s_TEXTURE_ALPHA_CONFIG = "textureAlpha";
-
 //-----------------------------------------------------------------------------
 
 SMeshList::SMeshList() noexcept
@@ -53,8 +49,11 @@ void SMeshList::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_CAPACITY_CONFIG      = s_CONFIG + "capacity";
+    static const std::string s_DROPPING_CONFIG      = s_CONFIG + "drop";
+    static const std::string s_TEXTURE_ALPHA_CONFIG = s_CONFIG + "textureAlpha";
 
     m_capacity = config.get(s_CAPACITY_CONFIG, m_capacity);
     m_dropData = config.get(s_DROPPING_CONFIG, m_dropData);

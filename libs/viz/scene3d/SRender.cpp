@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,6 @@
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
 
-#include <core/runtime/ConfigurationElementContainer.hpp>
 #include <core/runtime/utils/GenericExecutableFactoryRegistry.hpp>
 
 #include <service/helper/Config.hpp>
@@ -102,7 +101,7 @@ SRender::~SRender() noexcept
 
 void SRender::configuring()
 {
-    const ConfigType config = this->getConfigTree();
+    const ConfigType config = this->getConfiguration();
 
     SIGHT_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
     const ConfigType sceneCfg = config.get_child("scene");
@@ -112,7 +111,7 @@ void SRender::configuring()
 
     if(nbInouts == 1)
     {
-        const std::string key = config.get<std::string>("inout.<xmlattr>.key", "");
+        const auto key = config.get<std::string>("inout.<xmlattr>.key", "");
         m_offScreen = (key == s_OFFSCREEN_INOUT);
 
         SIGHT_ASSERT("'" + key + "' is not a valid key. Only '" << s_OFFSCREEN_INOUT << "' is accepted.", m_offScreen);
@@ -128,7 +127,7 @@ void SRender::configuring()
 
     m_fullscreen = sceneCfg.get<bool>("<xmlattr>.fullscreen", false);
 
-    const std::string renderMode = sceneCfg.get<std::string>("<xmlattr>.renderMode", "auto");
+    const auto renderMode = sceneCfg.get<std::string>("<xmlattr>.renderMode", "auto");
     if(renderMode == "auto")
     {
         m_renderMode = RenderMode::AUTO;
@@ -142,12 +141,27 @@ void SRender::configuring()
         SIGHT_ERROR("Unknown rendering mode '" + renderMode + "', use the default 'auto'.");
     }
 
-    auto adaptorConfigs = sceneCfg.equal_range("adaptor");
-    for(auto it = adaptorConfigs.first ; it != adaptorConfigs.second ; ++it)
+    auto& adaptorRegistry = viz::scene3d::registry::getAdaptorRegistry();
+
+    /// New config
+    auto layerConfigs = sceneCfg.equal_range("layer");
+    for(const auto& itLayer : boost::make_iterator_range(layerConfigs))
     {
-        const auto uid = it->second.get<std::string>("<xmlattr>.uid");
-        auto& registry = viz::scene3d::registry::getAdaptorRegistry();
-        registry[uid] = this->getID();
+        const auto layerId  = itLayer.second.get<std::string>("<xmlattr>.id");
+        auto adaptorConfigs = itLayer.second.equal_range("adaptor");
+        for(const auto& it : boost::make_iterator_range(adaptorConfigs))
+        {
+            const auto uid = it.second.get<std::string>("<xmlattr>.uid");
+            adaptorRegistry[uid] = {this->getID(), layerId};
+        }
+    }
+
+    /// Old config
+    auto adaptorConfigs = sceneCfg.equal_range("adaptor");
+    for(const auto& it : boost::make_iterator_range(adaptorConfigs))
+    {
+        const auto uid = it.second.get<std::string>("<xmlattr>.uid");
+        adaptorRegistry[uid] = {this->getID(), ""};
     }
 }
 
@@ -162,7 +176,7 @@ void SRender::starting()
         this->create();
     }
 
-    const ConfigType config = this->getConfigTree();
+    const ConfigType config = this->getConfiguration();
 
     SIGHT_ERROR_IF("Only one scene must be configured.", config.count("scene") != 1);
 
@@ -199,7 +213,7 @@ void SRender::starting()
         ogreLayer->setRenderService(viz::scene3d::SRender::dynamicCast(this->shared_from_this()));
         ogreLayer->setID("backgroundLayer");
         ogreLayer->setOrder(0);
-        ogreLayer->setWorker(m_associatedWorker);
+        ogreLayer->setWorker(this->worker());
         ogreLayer->setBackgroundColor("#000000", "#000000");
         ogreLayer->setBackgroundScale(0, 0.5);
         ogreLayer->setHasDefaultLight(false);
@@ -335,7 +349,7 @@ void SRender::configureLayer(const ConfigType& _cfg)
     ogreLayer->setRenderService(viz::scene3d::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(id);
     ogreLayer->setOrder(layerOrder);
-    ogreLayer->setWorker(m_associatedWorker);
+    ogreLayer->setWorker(this->worker());
     ogreLayer->setCoreCompositorEnabled(true, transparencyTechnique, numPeels, layerStereoMode);
     ogreLayer->setCompositorChainEnabled(compositors);
     ogreLayer->setViewportConfig(viewportConfig);
@@ -361,7 +375,7 @@ void SRender::configureBackgroundLayer(const ConfigType& _cfg)
     ogreLayer->setRenderService(viz::scene3d::SRender::dynamicCast(this->shared_from_this()));
     ogreLayer->setID(s_OGREBACKGROUNDID);
     ogreLayer->setOrder(0);
-    ogreLayer->setWorker(m_associatedWorker);
+    ogreLayer->setWorker(this->worker());
     ogreLayer->setHasDefaultLight(false);
 
     if(attributes.count("color") != 0U)

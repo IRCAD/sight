@@ -90,4 +90,45 @@ void ReconstructionTest::image()
     CPPUNIT_ASSERT_EQUAL(p1->getImage(), i1);
 }
 
+//------------------------------------------------------------------------------
+
+void ReconstructionTest::equalityTest()
+{
+    auto reconstruction1 = data::Reconstruction::New();
+    auto reconstruction2 = data::Reconstruction::New();
+
+    CPPUNIT_ASSERT(*reconstruction1 == *reconstruction2 && !(*reconstruction1 != *reconstruction2));
+
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(op) \
+    reconstruction1->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Reconstructions should be different when using " #op " on the first one", \
+        *reconstruction1 != *reconstruction2 && !(*reconstruction1 == *reconstruction2) \
+    ); \
+    reconstruction2->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "Reconstructions should be equal when using " #op " on both", \
+        *reconstruction1 == *reconstruction2 && !(*reconstruction1 != *reconstruction2) \
+    );
+
+    TEST(setIsVisible(true));
+    TEST(setOrganName("1"));
+    TEST(setStructureType("2"));
+    TEST(setImage(data::Image::New()));
+    TEST(setMesh(data::Mesh::New()));
+    auto material = data::Material::New();
+    material->setAmbient(data::Color::New(3, 4, 5));
+    material->setDiffuse(data::Color::New(6, 7, 8));
+    material->setShadingMode(data::Material::AMBIENT);
+    material->setRepresentationMode(data::Material::POINT);
+    material->setOptionsMode(data::Material::NORMALS);
+    material->setDiffuseTextureFiltering(data::Material::LINEAR);
+    material->setDiffuseTextureWrapping(data::Material::CLAMP);
+    TEST(setMaterial(material));
+    TEST(setComputedMaskVolume(9));
+
+    #undef TEST
+}
+
 } // namespace sight::data::ut

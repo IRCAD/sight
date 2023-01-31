@@ -1,7 +1,6 @@
 <extension implements="sight::service::extension::AppConfig">
     <id>SightCalibrator_ActivitySelector_AppCfg</id>
     <parameters>
-        <param name="dataSet" />
         <param name="activitySet" />
         <param name="WID_PARENT" />
         <param name="CREATE_ACTIVITY_RECEIVER_CHANNEL" />
@@ -13,7 +12,6 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${dataSet}" type="sight::data::Set" src="ref" />
         <object uid="${activitySet}" type="sight::data::ActivitySet" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
@@ -47,7 +45,6 @@
 
         <!-- Editor to select an activity. -->
         <service uid="activityCreatorSrv" type="sight::module::ui::qt::activity::SSelector">
-            <inout key="dataSet" uid="${dataSet}" />
             <filter>
                 <mode>include</mode>
                 <id>Calibration</id>

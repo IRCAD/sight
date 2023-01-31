@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,6 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/operations.hpp>
 #include <core/tools/dateAndTime.hpp>
 #include <core/tools/UUID.hpp>
 
@@ -51,20 +50,27 @@ IActivityView::IActivityView()
     newSlot(s_LAUNCH_ACTIVITY_SLOT, &IActivityView::launchActivity, this);
 }
 
-//-----------------------------------------------------------------------------
-
-IActivityView::~IActivityView()
-= default;
-
 //------------------------------------------------------------------------------
 
 void IActivityView::configuring()
 {
     this->ui::base::IGuiContainer::initialize();
 
-    const ConfigType config = this->getConfigTree();
+    const ConfigType config = this->getConfiguration();
 
-    this->parseConfiguration(config, this->getInOuts());
+    sight::activity::IActivityLauncher::InOutMapType inoutMap;
+    std::for_each(
+        m_data.begin(),
+        m_data.end(),
+        [&inoutMap](const auto& p)
+        {
+            const auto obj = p.second->lock();
+            if(obj != nullptr)
+            {
+                inoutMap.push_back(obj->getID());
+            }
+        });
+    this->parseConfiguration(config, inoutMap);
 }
 
 //------------------------------------------------------------------------------

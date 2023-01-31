@@ -38,6 +38,7 @@ private:
     CPPUNIT_TEST(getterTest);
     CPPUNIT_TEST(setterTest);
     CPPUNIT_TEST(labelTest);
+    CPPUNIT_TEST(equalityTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -54,6 +55,8 @@ public:
     static void setterTest();
     /// Tests labels of data::Point
     static void labelTest();
+
+    static void equalityTest();
 };
 
 } // namespace sight::data::ut

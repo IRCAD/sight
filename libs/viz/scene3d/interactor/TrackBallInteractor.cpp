@@ -102,7 +102,7 @@ void TrackballInteractor::buttonReleaseEvent(
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::wheelEvent(Modifier /*_mods*/, int delta, int x, int y)
+void TrackballInteractor::wheelEvent(Modifier /*_mods*/, double delta, int x, int y)
 {
     if(auto layer = m_layer.lock())
     {
@@ -131,6 +131,13 @@ void TrackballInteractor::wheelEvent(Modifier /*_mods*/, int delta, int x, int y
             layer->resetCameraClippingRange();
         }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void TrackballInteractor::pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY)
+{
+    wheelEvent({}, _scaleFactor * 8, _centerX, _centerY);
 }
 
 // ----------------------------------------------------------------------------

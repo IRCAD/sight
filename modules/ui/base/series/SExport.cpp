@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,13 +33,13 @@ void SExport::updating()
 {
     auto data = m_data.lock();
 
-    const std::string description = sight::ui::base::dialog::InputDialog::showInputDialog(
+    const auto& [description, ok] = sight::ui::base::dialog::InputDialog::showInputDialog(
         "Export series",
         "Enter the series description",
         data->getSeriesDescription()
     );
 
-    if(!description.empty())
+    if(ok && !description.empty())
     {
         data->setSeriesDescription(description);
 

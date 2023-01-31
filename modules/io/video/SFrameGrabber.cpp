@@ -26,13 +26,9 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/Type.hpp>
 
 #include <data/Camera.hpp>
 #include <data/FrameTL.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/Preferences.hpp>
@@ -83,7 +79,7 @@ void SFrameGrabber::stopping()
 
 void SFrameGrabber::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     m_fps = config.get<unsigned int>("fps", 30);
 
@@ -112,9 +108,17 @@ void SFrameGrabber::updating()
 
 void SFrameGrabber::startCamera()
 {
-    if(m_timer)
+    // Make sure the video is not paused
+    if(m_timer && m_isPaused)
     {
-        this->stopCamera();
+        m_isPaused = false;
+        m_timer->start();
+    }
+
+    if(this->started())
+    {
+        // Do not reset if we are already started
+        return;
     }
 
     const auto camera = m_camera.lock();
@@ -582,6 +586,8 @@ void SFrameGrabber::grabVideo()
             cv::Mat image;
             m_videoCapture.retrieve(image);
 
+            this->updateZoom(image);
+
             if(!m_isInitialized)
             {
                 const auto width  = static_cast<std::size_t>(m_videoCapture.get(cv::CAP_PROP_FRAME_WIDTH));
@@ -725,6 +731,8 @@ void SFrameGrabber::grabImage()
             timestamp = m_imageTimestamps[m_imageCount];
         }
 
+        this->updateZoom(image);
+
         SIGHT_DEBUG("Reading image index " << m_imageCount << " with timestamp " << timestamp);
 
         const std::size_t width  = static_cast<std::size_t>(image.size().width);
@@ -786,6 +794,7 @@ void SFrameGrabber::grabImage()
                     m_timer->stop();
                     if(m_loopVideo)
                     {
+                        frameTL->clearTimeline();
                         m_imageCount = 0;
                         core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / m_fps);
                         m_timer->setDuration(duration);
@@ -813,7 +822,42 @@ void SFrameGrabber::grabImage()
     }
     else if(!m_isPaused && m_loopVideo)
     {
+        const auto frameTL = m_frame.lock();
+        frameTL->clearTimeline();
         m_imageCount = 0;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SFrameGrabber::updateZoom(cv::Mat image)
+{
+    if(m_zoomCenter.has_value())
+    {
+        // Compute zoom parameters
+        const int width             = image.size().width;
+        const int height            = image.size().height;
+        const int croppedAreaWidth  = width / m_zoomFactor;
+        const int croppedAreaHeight = height / m_zoomFactor;
+
+        // Compute correct position for zoom center
+        const int centerXPix = (m_zoomCenter.value()[0] + width / 2);
+        const int centerYPix = -(m_zoomCenter.value()[1]) + height / 2;
+
+        // Compute starting area of zoom rectangle in pixels
+        const int x1 = centerXPix - croppedAreaWidth / 2;
+        const int y1 = centerYPix - croppedAreaHeight / 2;
+
+        // Compute a padded zoomed area image
+        const auto imageRect    = cv::Rect({}, image.size());
+        const auto roi          = cv::Rect(x1, y1, croppedAreaWidth, croppedAreaHeight);
+        const auto intersection = imageRect & roi;
+        const auto interRoi     = intersection - roi.tl();
+        cv::Mat crop            = cv::Mat::zeros(roi.size(), image.type());
+        image(intersection).copyTo(crop(interRoi));
+
+        // Rescale the zoomed image
+        cv::resize(crop, image, image.size());
     }
 }
 
@@ -907,10 +951,11 @@ void SFrameGrabber::previousImage()
 
 //-----------------------------------------------------------------------------
 
-void SFrameGrabber::setStep(int step, std::string key)
+void SFrameGrabber::setParameter(ui::base::parameter_t value, std::string key)
 {
     if(key == "step")
     {
+        const int step = std::get<int>(value);
         SIGHT_ASSERT("Needed step value (" << step << ") should be > 0.", step > 0);
         // Save the changed step value
         m_stepChanged = static_cast<std::uint64_t>(step);
@@ -919,6 +964,29 @@ void SFrameGrabber::setStep(int step, std::string key)
     {
         SIGHT_WARN("Only 'step' key is supported (current key value is : '" << key << "').");
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SFrameGrabber::setStep(int step, std::string key)
+{
+    this->setParameter(step, key);
+}
+
+//------------------------------------------------------------------------------
+
+void SFrameGrabber::addROICenter(sight::data::Point::sptr p)
+{
+    const auto& coord = p->getCoord();
+
+    m_zoomCenter = {{static_cast<int>(std::nearbyint(coord[0])), static_cast<int>(std::nearbyint(coord[1]))}};
+}
+
+//------------------------------------------------------------------------------
+
+void SFrameGrabber::removeROICenter(sight::data::Point::sptr /*p*/)
+{
+    m_zoomCenter.reset();
 }
 
 //------------------------------------------------------------------------------

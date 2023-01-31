@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,7 +99,7 @@ const std::string& IParameter::getParamName() const
 
 service::IService::KeyConnectionsMap IParameter::getAutoConnections() const
 {
-    return {{s_PARAMETER_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT}};
+    return {{s_PARAMETER_INOUT, data::Object::s_MODIFIED_SIG, slots::s_UPDATE}};
 }
 
 //------------------------------------------------------------------------------
@@ -108,16 +108,16 @@ void IParameter::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
-    m_paramName = config.get<std::string>("parameter", "");
+    m_paramName = config.get<std::string>(s_CONFIG + "parameter", "");
     SIGHT_ERROR_IF("parameter attribute not set", m_paramName.empty());
 
-    m_techniqueName = config.get<std::string>("technique", "");
+    m_techniqueName = config.get<std::string>(s_CONFIG + "technique", "");
 
     if(config.count("shaderType") != 0U)
     {
-        const auto shaderType = config.get<std::string>("shaderType");
+        const auto shaderType = config.get<std::string>(s_CONFIG + "shaderType");
         if(shaderType == "vertex")
         {
             m_shaderType = Ogre::GPT_VERTEX_PROGRAM;
@@ -310,7 +310,7 @@ bool IParameter::setParameter(Ogre::Technique& technique)
 
             for(std::size_t i = 0 ; i < 16 ; i++)
             {
-                paramValues[i] = static_cast<float>(transValue->getCoefficients()[i]);
+                paramValues[i] = static_cast<float>((*transValue)[i]);
             }
 
             params->setNamedConstant(

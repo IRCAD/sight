@@ -108,6 +108,10 @@ public:
     /// Gets the current extension file selection
     UI_BASE_API virtual std::string getCurrentSelection() const = 0;
 
+    /// Helpers that splits the extension getCurrentSelection()
+    /// @return a vector of selected extensions
+    UI_BASE_API std::vector<std::string> getSelectedExtensions() const;
+
 protected:
 
     UI_BASE_API void readConfig();

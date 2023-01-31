@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,15 +22,7 @@
 
 #include "SRecurrentSignal.hpp"
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-
-#include <data/Object.hpp>
-
-#include <service/macros.hpp>
-
-#include <boost/lexical_cast.hpp>
 
 #include <functional>
 
@@ -52,19 +44,16 @@ SRecurrentSignal::SRecurrentSignal() noexcept :
 
 void SRecurrentSignal::configuring()
 {
-    core::runtime::ConfigurationElement::sptr timeStepConfig = m_configuration->findConfigurationElement("timeStep");
-    SIGHT_WARN_IF("Missing \"timeStep\" tag.", !timeStepConfig);
-    if(timeStepConfig)
-    {
-        m_timeStep = boost::lexical_cast<unsigned int>(timeStepConfig->getValue());
-    }
+    const auto& config = this->getConfiguration();
+
+    m_timeStep = config.get<unsigned int>("timeStep", m_timeStep);
 }
 
 // ----------------------------------------------------------------------------
 
 void SRecurrentSignal::starting()
 {
-    m_timer = m_associatedWorker->createTimer();
+    m_timer = this->worker()->createTimer();
     core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(m_timeStep);
     m_timer->setFunction([this](auto&& ...){updating();});
     m_timer->setDuration(duration);

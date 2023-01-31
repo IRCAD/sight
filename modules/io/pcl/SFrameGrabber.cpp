@@ -70,7 +70,7 @@ void SFrameGrabber::stopping()
 
 void SFrameGrabber::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     m_fps = config.get<unsigned int>("fps", 30);
 
@@ -87,9 +87,10 @@ void SFrameGrabber::updating()
 
 void SFrameGrabber::startCamera()
 {
-    if(m_timer)
+    if(this->started())
     {
-        this->stopCamera();
+        // Do not reset if we are already started
+        return;
     }
 
     const auto camera = m_camera.lock();

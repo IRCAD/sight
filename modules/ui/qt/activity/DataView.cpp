@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include <activity/IObjectValidator.hpp>
 #include <activity/IValidator.hpp>
 
-#include <core/runtime/Convert.hpp>
+#include <core/runtime/helper.hpp>
 
 #include <data/Boolean.hpp>
 #include <data/Composite.hpp>
@@ -44,7 +44,7 @@
 #include <service/extension/Config.hpp>
 #include <service/IService.hpp>
 #include <service/op/Add.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <QApplication>
 #include <QDropEvent>
@@ -366,15 +366,13 @@ void DataView::fillInformation(const data::Activity::sptr& _activity)
     );
     m_activityInfo = info;
 
-    data::Composite::sptr activityData = _activity->getData();
-
     this->fillInformation(info);
 
     for(std::size_t i = 0 ; i < m_activityInfo.requirements.size() ; ++i)
     {
         ActivityRequirement req = m_activityInfo.requirements[i];
 
-        auto obj = activityData->get(req.name);
+        auto obj = _activity->get(req.name);
         if(obj)
         {
             if((req.minOccurs == 0 && req.maxOccurs == 0)
@@ -561,8 +559,6 @@ data::Object::sptr DataView::checkData(std::size_t _index, std::string& _errorMs
 
 bool DataView::checkAndComputeData(const data::Activity::sptr& activity, std::string& errorMsg)
 {
-    data::Composite::sptr composite = activity->getData();
-
     bool ok = true;
     errorMsg += "The required data are not correct:";
 
@@ -574,7 +570,7 @@ bool DataView::checkAndComputeData(const data::Activity::sptr& activity, std::st
         data::Object::sptr obj = this->checkData(i, msg);
         if(obj)
         {
-            (*composite)[req.name] = obj;
+            (*activity)[req.name] = obj;
         }
         else
         {
@@ -765,26 +761,23 @@ data::Object::sptr DataView::readObject(
     service::IService::sptr ioSelectorSrv;
     ioSelectorSrv = service::add("sight::module::ui::base::io::SSelector");
 
-    core::runtime::ConfigurationElement::csptr ioCfg;
-    ioCfg = service::extension::Config::getDefault()->getServiceConfig(
+    auto ioConfig = service::extension::Config::getDefault()->getServiceConfig(
         _ioSelectorSrvConfig,
         "sight::module::ui::base::io::SSelector"
     );
 
-    auto ioConfig  = core::runtime::Convert::toPropertyTree(ioCfg);
-    auto srvConfig = ioConfig.get_child("config");
-    srvConfig.add("type.<xmlattr>.class", _classname); // add the class of the output object
+    ioConfig.add("type.<xmlattr>.class", _classname); // add the class of the output object
 
     try
     {
         obj = data::factory::New(_classname);
-        ioSelectorSrv->setConfiguration(srvConfig);
+        ioSelectorSrv->setConfiguration(ioConfig);
         ioSelectorSrv->configure();
         ioSelectorSrv->setInOut(obj, io::base::service::s_DATA_KEY);
         ioSelectorSrv->start();
         ioSelectorSrv->update();
         ioSelectorSrv->stop();
-        service::OSR::unregisterService(ioSelectorSrv);
+        service::unregisterService(ioSelectorSrv);
     }
     catch(std::exception& e)
     {
@@ -798,7 +791,7 @@ data::Object::sptr DataView::readObject(
             ioSelectorSrv->stop();
         }
 
-        service::OSR::unregisterService(ioSelectorSrv);
+        service::unregisterService(ioSelectorSrv);
     }
     return obj;
 }
@@ -1136,7 +1129,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
                     QStringList coeffList = value.trimmed().split(QRegularExpression("\\s+"));
                     if(isOkClicked && coeffList.size() == 16)
                     {
-                        data::Matrix4::TMCoefArray coeffs;
+                        data::Matrix4::container_type coeffs;
 
                         bool conversionOK = false;
                         for(int i = 0 ; i < 16 ; ++i)
@@ -1153,7 +1146,7 @@ void DataView::onTreeItemDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
                             }
                         }
 
-                        trf->setCoefficients(coeffs);
+                        (*trf) = coeffs;
                         _item->setText(int(ColumnObjectType::DESC), value.trimmed());
                     }
                     else if(isOkClicked)

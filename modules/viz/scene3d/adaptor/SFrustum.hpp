@@ -50,7 +50,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SFrustum">
         <in key="camera" uid="..." />
-        <config layer="..." transform="..." near="..." far="..."/>
+        <config transform="..." near="..." far="..."/>
     </service>
    @endcode
  *
@@ -58,7 +58,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b camera [sight::data::Camera]:  camera containing calibration information.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the frustum's layer
  * - \b transform (optional, string, default=""): transform applied to the frustum's scene node
  * - \b near (optional, float, default=1.0): near clipping distance of the Ogre::Camera
  * - \b far (optional, float, default=20.0): far clipping distance of the Ogre::Camera

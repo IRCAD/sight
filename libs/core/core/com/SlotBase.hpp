@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -101,7 +101,6 @@ struct CORE_CLASS_API SlotBase : virtual core::BaseObject
     void setWorker(const SPTR(core::thread::Worker)& worker)
     {
         core::mt::WriteLock lock(m_workerMutex);
-
         m_worker = worker;
     }
 

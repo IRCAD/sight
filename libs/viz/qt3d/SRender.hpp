@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,12 +25,9 @@
 #include "viz/qt3d/config.hpp"
 #include "viz/qt3d/IWindowInteractor.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 #include <service/helper/Config.hpp>
-#include <service/macros.hpp>
 #include <service/op/Add.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <viz/base/IRender.hpp>
 

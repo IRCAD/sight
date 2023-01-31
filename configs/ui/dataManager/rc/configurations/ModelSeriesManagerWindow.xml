@@ -5,7 +5,9 @@ color, ...
 Example:
 <service uid="..." type="sight::service::SConfigController">
     <appConfig id="ModelSeriesManagerWindow" />
-    <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
+    <inout group="data">
+        <key name="ORGAN_MANAGER_MODELSERIES" uid="..." />
+    </inout>
     <parameter replace="ICON_PATH" by="my/icon/path.ico" />
     <parameter name="WindowTitle"  by="" />
 </service>
@@ -44,7 +46,9 @@ With:
 
         <service uid="modelManager" type="sight::service::SConfigController">
             <appConfig id="ModelSeriesManagerView" />
-            <inout key="ORGAN_MANAGER_MODELSERIES" uid="${ORGAN_MANAGER_MODELSERIES}" />
+            <inout group="data">
+                <key name="ORGAN_MANAGER_MODELSERIES" uid="${ORGAN_MANAGER_MODELSERIES}" />
+            </inout>
             <parameter replace="WID_PARENT" by="OrganManagerView" />
         </service>
 

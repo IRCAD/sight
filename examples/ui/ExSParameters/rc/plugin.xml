@@ -23,9 +23,33 @@ This example shows the possibilities of SParameters:
                         <icon>ExSParameters/app.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
+                    <menuBar/>
                 </gui>
                 <registry>
+                    <menuBar sid="menuBarView" start="true" />
                     <view sid="mainview" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+                <gui>
+                    <layout>
+                        <menu name="Preferences" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menu sid="menuPreferencesView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="menuPreferencesView" type="sight::module::ui::base::SMenu" >
+                <gui>
+                    <layout>
+                        <menuItem name="Preference sync test" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="preferencesAct" start="true" />
                 </registry>
             </service>
 
@@ -86,7 +110,7 @@ This example shows the possibilities of SParameters:
                     <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="50" min="0" max="100" depends="enable" />
                     <param type="int2"    name="2 Integer" key="int2_1"    widget="spin"   defaultValue="5" min="0" max="100" depends="enable" />
                     <param type="int3"    name="3 Integer" key="int3_1"    widget="spin"   defaultValue="5" min="0" max="100" depends="enable" />
-                    <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V1" values="V0,V1,V2,V3" />
+                    <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V1" values="V0,V1=v1,V2=v2,V3=v3" />
                 </parameters>
             </service>
 
@@ -103,7 +127,7 @@ This example shows the possibilities of SParameters:
                     <param type="int"     name="Integer 2" key="int_2"     widget="slider" defaultValue="37" min="0" max="100" depends="enable"  />
                     <param type="int2"    name="2 Integer" key="int2_1"    widget="spin"   defaultValue="8" min="0" max="100" depends="enable"  />
                     <param type="int3"    name="3 Integer" key="int3_1"    widget="spin"   defaultValue="12" min="0" max="100" depends="enable"  />
-                    <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V2" values="V0,V1,V2,V3" depends="enable"  />
+                    <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V2" values="V0,V1=v1,V2=v2,V3=v3" depends="enable"  />
                 </parameters>
             </service>
 
@@ -133,9 +157,48 @@ This example shows the possibilities of SParameters:
                 </parameters>
             </service>
 
+
+            <service uid="preferencesAct" type="sight::module::ui::qt::SPreferencesConfiguration" >
+                <preference>
+                    <type>int</type>
+                    <name>Integer 1</name>
+                    <key>int_1</key>
+                    <default_value>20</default_value>
+                    <min>0</min>
+                    <max>20</max>
+                </preference>
+                <preference>
+                    <type>combobox</type>
+                    <name>Enum</name>
+                    <key>enum_1</key>
+                    <values>V0,V1,V2,V3</values>
+                    <default_value>V1</default_value>
+                </preference>
+                <preference>
+                    <type>double</type>
+                    <name>Double 1</name>
+                    <key>double_1</key>
+                    <default_value>0.3</default_value>
+                    <min>0.2</min>
+                    <max>0.7</max>
+                </preference>
+                <preference>
+                    <type>checkbox</type>
+                    <name>Boolean</name>
+                    <key>bool_1</key>
+                    <default_value>false</default_value>
+                </preference>
+            </service>
+
             <!-- ******************************* Connections ***************************************** -->
 
             <!-- Connect all the parameters to each other -->
+
+            <connect>
+                <signal>preferencesAct/preferenceChanged</signal>
+                <slot>parameters1Srv/setParameter</slot>
+            </connect>
+
             <connect>
                 <signal>parameters1Srv/boolChanged</signal>
                 <slot>parameters2Srv/setBoolParameter</slot>
@@ -229,30 +292,30 @@ This example shows the possibilities of SParameters:
             <!-- Connection to update the parameters minimum/maximum -->
             <connect>
                 <signal>minParametersSrv/intChanged</signal>
-                <slot>parameters1Srv/setIntMinParameter</slot>
-                <slot>parameters2Srv/setIntMinParameter</slot>
-                <slot>maxParametersSrv/setIntMinParameter</slot>
+                <slot>parameters1Srv/updateIntMinParameter</slot>
+                <slot>parameters2Srv/updateIntMinParameter</slot>
+                <slot>maxParametersSrv/updateIntMinParameter</slot>
             </connect>
 
             <connect>
                 <signal>maxParametersSrv/intChanged</signal>
-                <slot>parameters1Srv/setIntMaxParameter</slot>
-                <slot>parameters2Srv/setIntMaxParameter</slot>
-                <slot>minParametersSrv/setIntMaxParameter</slot>
+                <slot>parameters1Srv/updateIntMaxParameter</slot>
+                <slot>parameters2Srv/updateIntMaxParameter</slot>
+                <slot>minParametersSrv/updateIntMaxParameter</slot>
             </connect>
 
             <connect>
                 <signal>minParametersSrv/doubleChanged</signal>
-                <slot>parameters1Srv/setDoubleMinParameter</slot>
-                <slot>parameters2Srv/setDoubleMinParameter</slot>
-                <slot>maxParametersSrv/setDoubleMinParameter</slot>
+                <slot>parameters1Srv/updateDoubleMinParameter</slot>
+                <slot>parameters2Srv/updateDoubleMinParameter</slot>
+                <slot>maxParametersSrv/updateDoubleMinParameter</slot>
             </connect>
 
             <connect>
                 <signal>maxParametersSrv/doubleChanged</signal>
-                <slot>parameters1Srv/setDoubleMaxParameter</slot>
-                <slot>parameters2Srv/setDoubleMaxParameter</slot>
-                <slot>minParametersSrv/setDoubleMaxParameter</slot>
+                <slot>parameters1Srv/updateDoubleMaxParameter</slot>
+                <slot>parameters2Srv/updateDoubleMaxParameter</slot>
+                <slot>minParametersSrv/updateDoubleMaxParameter</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

@@ -366,4 +366,42 @@ void LandmarksTest::pointsTest()
 
 //------------------------------------------------------------------------------
 
+void LandmarksTest::equalityTest()
+{
+    auto landmarks1 = data::Landmarks::New();
+    auto landmarks2 = data::Landmarks::New();
+
+    CPPUNIT_ASSERT(*landmarks1 == *landmarks2 && !(*landmarks1 != *landmarks2));
+
+    // NOLINTNEXTLINE(cppcoreguidelines-macro-usage)
+    #define TEST(op) \
+    landmarks1->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "The landmarks must be different when using " #op " on the first landmarks", \
+        *landmarks1 != *landmarks2 && !(*landmarks1 == *landmarks2) \
+    ); \
+    landmarks2->op; \
+    CPPUNIT_ASSERT_MESSAGE( \
+        "The landmarks must be equal when using " #op " on the both landmarks", \
+        *landmarks1 == *landmarks2 && !(*landmarks1 != *landmarks2) \
+    );
+
+    TEST(addGroup("1"));
+    TEST(renameGroup("1", "2"));
+    TEST(setGroupColor("2", {0, 1, 1, 1}));
+    TEST(setGroupColor("2", {0, 0, 1, 1}));
+    TEST(setGroupColor("2", {0, 0, 0, 1}));
+    TEST(setGroupColor("2", {0, 0, 0, 0}));
+    TEST(setGroupSize("2", 2));
+    TEST(setGroupShape("2", data::Landmarks::Shape::CUBE));
+    TEST(setGroupVisibility("2", false));
+    TEST(addPoint("2", {1, 2, 3}));
+    TEST(clearPoints("2"));
+    TEST(removeGroup("2"));
+
+    #undef TEST
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace sight::data::ut

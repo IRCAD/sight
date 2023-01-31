@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,7 +53,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
         <in key="image" uid="..." />
         <in key="tf" uid="..." />
-        <config layer="default" />
+        <config textureName="videoFrame" />
     </service>
    @endcode
  *
@@ -63,7 +63,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b pointList [sight::data::PointList] (optional): point list to display (coordinates must be in the image space).
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the video's layer
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  * - \b materialTemplate (optional, string, default='Billboard_Default'): the name of the base Ogre material for the
  *      internally created SMaterial.
@@ -92,41 +91,59 @@ public:
     MODULE_VIZ_SCENE3D_API SVideo() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SVideo() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SVideo() noexcept final = default;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Creates the Ogre texture and mapper used to show the video frame.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT
-     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to s_UPDATE_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to IService::slots::s_UPDATE
+     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to IService::slots::s_UPDATE
      * Connect data::TransferFunction::s_MODIFIED_SIG of s_TF_INPUT to :s_UPDATE_TF_SLOT
      * Connect data::TransferFunction::s_POINTS_MODIFIED_SIG of s_TF_INPUT to s_UPDATE_TF_SLOT
      * Connect data::TransferFunction::s_WINDOWING_MODIFIED_SIG of s_TF_INPUT to s_UPDATE_TF_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 
     /// Updates the frame from the current Image.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /// Removes the actor from the renderer
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
     /**
      * @brief Sets the video visibility.
      * @param _visible the visibility status of the video.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
 
 private:
+
+    ///@brief Internal wrapper holding config defines.
+    struct config
+    {
+        static inline const std::string s_VISIBLE           = s_CONFIG + "visible";
+        static inline const std::string s_MATERIAL_TEMPLATE = s_CONFIG + "materialTemplate";
+        static inline const std::string s_TEXTURE_NAME      = s_CONFIG + "textureName";
+        static inline const std::string s_FILTERING         = s_CONFIG + "filtering";
+        static inline const std::string s_SCALING           = s_CONFIG + "scaling";
+        static inline const std::string s_RADIUS            = s_CONFIG + "radius";
+        static inline const std::string s_DISPLAY_LABEL     = s_CONFIG + "displayLabel";
+        static inline const std::string s_LABEL_COLOR       = s_CONFIG + "labelColor";
+        static inline const std::string s_COLOR             = s_CONFIG + "color";
+        static inline const std::string s_FIXED_SIZE        = s_CONFIG + "fixedSize";
+        static inline const std::string s_QUERY             = s_CONFIG + "queryFlags";
+        static inline const std::string s_FONT_SOURCE       = s_CONFIG + "fontSource";
+        static inline const std::string s_FONT_SIZE         = s_CONFIG + "fontSize";
+    };
 
     /// SLOTS: updates the displayed transfer function.
     void updateTF();

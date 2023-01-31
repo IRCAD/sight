@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -137,7 +137,7 @@ void STextureSelector::onLoadButton()
     srv->start();
     srv->update();
     srv->stop();
-    service::OSR::unregisterService(srv);
+    service::unregisterService(srv);
 
     // If we didn't have to create a new texture, we can notify the associated image
     if(existingTexture)

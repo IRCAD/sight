@@ -23,7 +23,7 @@
 #include "io/base/service/IReader.hpp"
 
 #include <core/com/Slots.hxx>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <service/macros.hpp>
 
@@ -158,7 +158,7 @@ void IReader::clearLocations()
 
 void IReader::configuring()
 {
-    const ConfigType config = this->getConfigTree();
+    const ConfigType config = this->getConfiguration();
 
     SIGHT_ASSERT(
         "Generic configuring method is only available for io service that use paths.",

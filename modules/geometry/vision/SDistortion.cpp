@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,8 +66,8 @@ service::IService::KeyConnectionsMap SDistortion::getAutoConnections() const
     service::IService::KeyConnectionsMap connections;
     connections.push(s_CAMERA_INPUT, data::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
     connections.push(s_CAMERA_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
-    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }
@@ -76,7 +76,7 @@ service::IService::KeyConnectionsMap SDistortion::getAutoConnections() const
 
 void SDistortion::configuring()
 {
-    const auto config = this->getConfigTree();
+    const auto config = this->getConfiguration();
 
     const auto mode = config.get<std::string>("mode");
     if(mode == "undistort")
@@ -161,14 +161,14 @@ void SDistortion::updating()
             {
                 auto sig = outputImage->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
                 {
-                    core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
                     sig->asyncEmit();
                 }
             }
 
             auto sig = outputImage->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
             {
-                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
                 sig->asyncEmit();
             }
         }
@@ -194,7 +194,7 @@ void SDistortion::remap()
     auto sig = inputImage->signal<data::Object::ModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
 
     // Blocking signals early allows to discard any event while we are updating
-    core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+    core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
 
     const auto inputSize = inputImage->getSize();
 
@@ -303,7 +303,7 @@ void SDistortion::remap()
     {
         auto sigModified = outputImage->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
         {
-            core::com::Connection::Blocker anotherBlock(sigModified->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker anotherBlock(sigModified->getConnection(slot(IService::slots::s_UPDATE)));
             sigModified->asyncEmit();
         }
     }

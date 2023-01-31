@@ -69,7 +69,7 @@ SNeedle::~SNeedle() noexcept =
 
 void SNeedle::configuring()
 {
-    const auto configTree = this->getConfigTree();
+    const auto configTree = this->getConfiguration();
 
     const auto config = configTree.get_child("config.<xmlattr>");
 

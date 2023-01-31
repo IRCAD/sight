@@ -40,150 +40,63 @@ const LineLayoutManagerBase::RegistryKeyType LineLayoutManagerBase::REGISTRY_KEY
 
 //-----------------------------------------------------------------------------
 
-LineLayoutManagerBase::LineLayoutManagerBase()
-= default;
-
-//-----------------------------------------------------------------------------
-
-LineLayoutManagerBase::~LineLayoutManagerBase()
-= default;
-
-//-----------------------------------------------------------------------------
-
-void LineLayoutManagerBase::initialize(ConfigurationType configuration)
+void LineLayoutManagerBase::initialize(const ui::base::config_t& configuration)
 {
-    SIGHT_ASSERT(
-        "Bad configuration name " << configuration->getName() << ", must be layout",
-        configuration->getName() == "layout"
-    );
+    const auto orientationCfg = configuration.get<std::string>("orientation.<xmlattr>.value", "");
 
-    std::vector<ConfigurationType> vectOrientation = configuration->find("orientation");
-
-    SIGHT_FATAL_IF("missing orientation configuration", vectOrientation.empty());
-    SIGHT_ASSERT("<orientation> tag must have value attribute", vectOrientation.at(0)->hasAttribute("value"));
-    std::string orientation = vectOrientation.at(0)->getExistingAttributeValue("value");
+    SIGHT_FATAL_IF("missing orientation configuration", orientationCfg.empty());
     SIGHT_ASSERT(
-        "Wrong value '" << orientation << "' for 'orientation' attribute (require vertical or horizontal)",
-        orientation == "vertical" || orientation == "horizontal"
+        "Wrong value '" + orientationCfg + "' for 'orientation' attribute (require vertical or horizontal)",
+        orientationCfg == "vertical" || orientationCfg == "horizontal"
     );
-    m_orientation = (orientation == "vertical") ? VERTICAL : HORIZONTAL;
+    m_orientation = (orientationCfg == "vertical") ? VERTICAL : HORIZONTAL;
 
     m_views.clear();
-    for(const ConfigurationType& view : configuration->getElements())
+    for(auto view : configuration)
     {
-        if(view->getName() == "spacer")
+        if(view.first == "spacer")
         {
             ViewInfo vi;
             vi.m_isSpacer = true;
             m_views.push_back(vi);
         }
-        else if(view->getName() == "view")
+        else if(view.first == "view")
         {
             ViewInfo vi;
-            if(view->hasAttribute("proportion"))
+            if(const auto viewCfg = view.second.get_child_optional("<xmlattr>"); viewCfg.has_value())
             {
-                const std::string proportion = view->getExistingAttributeValue("proportion");
-                vi.m_proportion = std::stoi(proportion);
-            }
+                vi.m_proportion = viewCfg->get<int>("proportion", vi.m_proportion);
 
-            if(view->hasAttribute("border"))
-            {
-                const std::string border = view->getExistingAttributeValue("border");
-                vi.m_border = std::stoi(border);
-            }
-            else
-            {
-                if(view->hasAttribute("leftBorder"))
+                if(const auto border = viewCfg->get_optional<int>("border"); border.has_value())
                 {
-                    const std::string border = view->getExistingAttributeValue("leftBorder");
-                    vi.m_leftBorder = std::stoi(border);
+                    vi.m_border = border.value();
+                }
+                else
+                {
+                    vi.m_leftBorder   = viewCfg->get<int>("leftBorder", vi.m_leftBorder);
+                    vi.m_topBorder    = viewCfg->get<int>("topBorder", vi.m_topBorder);
+                    vi.m_rightBorder  = viewCfg->get<int>("rightBorder", vi.m_rightBorder);
+                    vi.m_bottomBorder = viewCfg->get<int>("bottomBorder", vi.m_bottomBorder);
                 }
 
-                if(view->hasAttribute("topBorder"))
+                vi.m_spacing = viewCfg->get<int>("spacing", vi.m_spacing);
+
+                vi.m_minSize.first  = viewCfg->get<int>("minWidth", vi.m_minSize.first);
+                vi.m_minSize.second = viewCfg->get<int>("minHeight", vi.m_minSize.second);
+                vi.m_maxSize.first  = viewCfg->get<int>("maxWidth", vi.m_maxSize.first);
+                vi.m_maxSize.second = viewCfg->get<int>("maxHeight", vi.m_maxSize.second);
+
+                vi.m_visible      = viewCfg->get<bool>("visible", vi.m_visible);
+                vi.m_useScrollBar = viewCfg->get<bool>("useScrollBar", vi.m_useScrollBar);
+                vi.m_toolTip      = viewCfg->get<std::string>("toolTip", vi.m_toolTip);
+
+                if(auto caption = viewCfg->get_optional<std::string>("caption"); caption.has_value())
                 {
-                    const std::string border = view->getExistingAttributeValue("topBorder");
-                    vi.m_topBorder = std::stoi(border);
+                    vi.m_caption.first  = true;
+                    vi.m_caption.second = caption.value();
                 }
 
-                if(view->hasAttribute("rightBorder"))
-                {
-                    const std::string border = view->getExistingAttributeValue("rightBorder");
-                    vi.m_rightBorder = std::stoi(border);
-                }
-
-                if(view->hasAttribute("bottomBorder"))
-                {
-                    const std::string border = view->getExistingAttributeValue("bottomBorder");
-                    vi.m_bottomBorder = std::stoi(border);
-                }
-            }
-
-            if(view->hasAttribute("spacing"))
-            {
-                const std::string proportion = view->getExistingAttributeValue("spacing");
-                vi.m_spacing = std::stoi(proportion);
-            }
-
-            if(view->hasAttribute("caption"))
-            {
-                vi.m_caption.first  = true;
-                vi.m_caption.second = view->getExistingAttributeValue("caption");
-            }
-
-            if(view->hasAttribute("minWidth"))
-            {
-                const std::string width = view->getExistingAttributeValue("minWidth");
-                vi.m_minSize.first = std::stoi(width);
-            }
-
-            if(view->hasAttribute("minHeight"))
-            {
-                const std::string height = view->getExistingAttributeValue("minHeight");
-                vi.m_minSize.second = std::stoi(height);
-            }
-
-            if(view->hasAttribute("maxWidth"))
-            {
-                const std::string width = view->getExistingAttributeValue("maxWidth");
-                vi.m_maxSize.first = std::stoi(width);
-            }
-
-            if(view->hasAttribute("maxHeight"))
-            {
-                const std::string height = view->getExistingAttributeValue("maxHeight");
-                vi.m_maxSize.second = std::stoi(height);
-            }
-
-            if(view->hasAttribute("visible"))
-            {
-                const std::string visible = view->getExistingAttributeValue("visible");
-                SIGHT_ASSERT(
-                    "Incorrect value for \"visible\" attribute " << visible,
-                    (visible == "true") || (visible == "false")
-                );
-                vi.m_visible = ((visible == "true"));
-            }
-
-            if(view->hasAttribute("useScrollBar"))
-            {
-                const std::string useScrollBar = view->getExistingAttributeValue("useScrollBar");
-                SIGHT_ASSERT(
-                    "Incorrect value for \"useScrollBar\" attribute " << useScrollBar,
-                    (useScrollBar == "true") || (useScrollBar == "false")
-                );
-                vi.m_useScrollBar = (useScrollBar == "true");
-            }
-
-            if(view->hasAttribute("toolTip"))
-            {
-                const std::string toolTip = view->getExistingAttributeValue("toolTip");
-                vi.m_toolTip = toolTip;
-            }
-
-            if(view->hasAttribute("backgroundColor"))
-            {
-                const std::string hexaColor = view->getExistingAttributeValue("backgroundColor");
-                if(!hexaColor.empty())
+                if(const auto hexaColor = viewCfg->get<std::string>("backgroundColor", ""); !hexaColor.empty())
                 {
                     SIGHT_ASSERT(
                         "Color string should start with '#' and followed by 6 or 8 "

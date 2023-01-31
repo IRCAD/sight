@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,7 +89,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Object::s_MODIFIED_SIG to s_UPDATE_SLOT
+     * Connect Object::s_MODIFIED_SIG to IService::slots::s_UPDATE
      */
     MODULE_GEOMETRY_BASE_API KeyConnectionsMap getAutoConnections() const override;
 

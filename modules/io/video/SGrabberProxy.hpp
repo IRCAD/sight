@@ -53,6 +53,7 @@ namespace sight::module::io::video
  *
  * @section Slots Slots
  * - \b startCamera(): Start playing the camera or the video.
+ * - \b startTargetCamera(std::string): Start playing the specified camera or the video.
  * - \b stopCamera(): Stop playing the camera or the video.
  * - \b pauseCamera(): Pause the video, it has no effect when playing a camera.
  * - \b loopVideo(): Toggle the loop of the playing.
@@ -64,6 +65,9 @@ namespace sight::module::io::video
  * selected grabber.
  * - \b setStep(): set the step value between two images when calling nextImage/previousImage. Does nothing if not
  * supported by the selected grabber.
+ * - \b requestSettings(): Requests the grabber internal settings.
+ * - \b addROICenter(sight::data::Point::sptr): Adds a new region fo interest center.
+ * - \b removeROICenter(sight::data::Point::sptr): Removes a region of interest via its center.
  *
  * @section XML XML Configuration
  *
@@ -112,14 +116,24 @@ public:
     /// Destructor. Do nothing.
     MODULE_IO_VIDEO_API ~SGrabberProxy() noexcept override;
 
-    /**
-     * @name Slots API
-     *
-     * @{
-     */
-    /// Slot: called to start the tracking.
-    MODULE_IO_VIDEO_API static const core::com::Slots::SlotKeyType s_RECONFIGURE_SLOT;
-/** @} */
+    /// Internal wrapper holding slots keys.
+    struct slots
+    {
+        using key_t = sight::core::com::Slots::SlotKeyType;
+
+        static inline const key_t RECONFIGURE         = "reconfigure";
+        static inline const key_t START_TARGET_CAMERA = "startTargetCamera";
+
+        static inline const key_t MODIFY_POSITION = "modifyPosition";
+        static inline const key_t MODIFY_DURATION = "modifyDuration";
+
+        static inline const key_t FWD_START_CAMERA  = "forwardStartCamera";
+        static inline const key_t FWD_STOP_CAMERA   = "forwardStopCamera";
+        static inline const key_t FWD_NOTIFY        = "forwardNotify";
+        static inline const key_t FWD_SET_PARAMETER = "forwardSetParameter";
+        static inline const key_t FWD_PRESENT_FRAME = "forwardPresentFrame";
+        static inline const key_t FWD_CREATE_JOB    = "forwardCreateJob";
+    };
 
 protected:
 
@@ -143,6 +157,9 @@ protected:
     /// Initialize and start camera (restart camera if is already started).
     MODULE_IO_VIDEO_API void startCamera() final;
 
+    /// Initialize and start camera (restart camera if is already started).
+    MODULE_IO_VIDEO_API void startTargetCamera(std::string impl);
+
     /// Stop camera.
     MODULE_IO_VIDEO_API void stopCamera() final;
 
@@ -164,33 +181,30 @@ protected:
     /// Set step used on readPrevious/readNext slots.
     MODULE_IO_VIDEO_API void setStep(int step, std::string key) override;
 
-    /// Sets an internal bool value.
-    MODULE_IO_VIDEO_API void setBoolParameter(bool, std::string) final;
-
-    /// Sets an internal double value.
-    MODULE_IO_VIDEO_API void setDoubleParameter(double, std::string) final;
-
-    /// Sets an internal int value.
-    MODULE_IO_VIDEO_API void setIntParameter(int, std::string) final;
-
-    /// Sets an internal enum value.
-    MODULE_IO_VIDEO_API void setEnumParameter(std::string, std::string) final;
-
-    /// Sets internal enum values.
-    MODULE_IO_VIDEO_API void setEnumValuesParameter(std::string, std::string) final;
+    /// Sets internal parameters values.
+    MODULE_IO_VIDEO_API void setParameter(ui::base::parameter_t value, std::string key) final;
 
     /// SLOT: Requests the grabber internal settings.
     MODULE_IO_VIDEO_API void requestSettings() final;
+
+    /// SLOT: Calls optimization functions defined in the grabber (e.g. hardware related).
+    MODULE_IO_VIDEO_API void optimize() final;
+
+    /// SLOT: Adds a region of interest center.
+    MODULE_IO_VIDEO_API void addROICenter(sight::data::Point::sptr p) final;
+
+    /// SLOT: Removes a region of interest center.
+    MODULE_IO_VIDEO_API void removeROICenter(sight::data::Point::sptr p) final;
 /** @} */
 
 private:
 
-    typedef std::pair<std::string, core::runtime::ConfigurationElement::csptr> ServiceConfigPair;
+    typedef std::pair<std::string, IService::ConfigType> ServiceConfigPair;
 
     enum class CameraType : std::uint8_t
     {
         RGB,
-        RGBD,
+        RGBD
     };
 
     /**
@@ -216,20 +230,11 @@ private:
     /// A frame is presented in the sub-service.
     void fwdPresentFrame();
 
-    /// A named bool parameter has been emitted in the sub-service.
-    void fwdSetBoolParameter(bool value, std::string key);
+    /// A named parameter has been emitted in the sub-service.
+    void fwdSetParameter(ui::base::parameter_t value, std::string key);
 
-    /// A named double parameter has been emitted in the sub-service.
-    void fwdSetDoubleParameter(double value, std::string key);
-
-    /// A named int parameter has been emitted in the sub-service.
-    void fwdSetIntParameter(int value, std::string key);
-
-    /// A named enum parameter has been emitted in the sub-service.
-    void fwdSetEnumParameter(std::string value, std::string key);
-
-    /// A named enum values parameter has been emitted in the sub-service.
-    void fwdSetEnumValuesParameter(std::string value, std::string key);
+    /// A job has been created in the proxied service.
+    void fwdCreateJob(sight::core::jobs::IJob::sptr job);
 
     // Forwards notifications
     void fwdNotify(IService::NotificationType, const std::string message);

@@ -73,11 +73,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(STDataListener, module::io::igtl::INetworkListener);
 
-    /// Constructor
-    MODULE_IO_IGTL_API STDataListener();
-
-    /// Destructor
-    MODULE_IO_IGTL_API ~STDataListener() override;
+    MODULE_IO_IGTL_API STDataListener()           = default;
+    MODULE_IO_IGTL_API ~STDataListener() override = default;
 
 protected:
 
@@ -116,7 +113,7 @@ private:
     std::string m_portConfig;
 
     /// device names key
-    std::vector<core::runtime::ConfigurationElement::sptr> m_deviceNamesConfig;
+    std::vector<std::string> m_deviceNamesConfig;
 
     MatrixNameIndexType m_matrixNameIndex;
 

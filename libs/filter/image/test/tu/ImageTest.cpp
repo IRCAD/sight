@@ -84,8 +84,8 @@ void testRoiApply(const core::Type imageType, const core::Type roiType)
     const auto part     = std::int64_t((end - begin) / 3);
 
     // keep random values in 1/3 of the image (else fill with 0)
-    std::fill(begin, begin + part, 0);
-    std::fill(end - part, end, 0);
+    std::fill(begin, begin + part, std::int8_t(0));
+    std::fill(end - part, end, std::int8_t(0));
 
     // apply roi and check
     filter::image::applyRoi(imgRoiApplied, roi);

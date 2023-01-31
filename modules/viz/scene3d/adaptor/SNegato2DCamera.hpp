@@ -55,7 +55,7 @@ namespace sight::module::viz::scene3d::adaptor
     <service type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" >
         <inout key="image" uid="..." autoConnect="true" />
         <inout key="tf" uid="..." />
-        <config layer="..." priority="0" layerOrderDependant="true" orientation="sagittal" />
+        <config priority="0" layerOrderDependant="true" orientation="sagittal" margin="0.1"/>
    </service>
    @endcode
  *
@@ -67,10 +67,11 @@ namespace sight::module::viz::scene3d::adaptor
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): layer on which the negato camera interactions are added.
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
  * - \b layerOrderDependant (optional, bool, default=true): define if interaction must take into account above layers.
  * - \b orientation (optional, sagittal/frontal/axial, default=sagittal): the camera's orientation at start.
+ * - \b margin (optional, default=0.1): margin to the border of the viewport, in percentage of the highest of width
+ *  or height.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SNegato2DCamera final : public sight::viz::scene3d::IAdaptor,
                                                            public sight::viz::scene3d::interactor::IInteractor
@@ -84,7 +85,7 @@ public:
     MODULE_VIZ_SCENE3D_API SNegato2DCamera() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SNegato2DCamera() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SNegato2DCamera() noexcept override = default;
 
     /**
      * @brief Zooms in the scene at the current cursor position.
@@ -92,7 +93,15 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void wheelEvent(Modifier /*_modifier*/, int _delta, int _x, int _y) override;
+    MODULE_VIZ_SCENE3D_API void wheelEvent(Modifier /*_modifier*/, double _delta, int _x, int _y) override;
+
+    /**
+     * @brief Zooms in the scene at the center of the pinch.
+     * @param _scalingFactor distance of the fingers
+     * @param _centerX the width coordinate of the center of the pinch
+     * @param _centerY the height coordinate of the center of the pinch
+     */
+    MODULE_VIZ_SCENE3D_API virtual void pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY) override;
 
     /**
      * @brief Interacts with the negato if it was picked by pressing any mouse button.
@@ -181,6 +190,9 @@ private:
     /// SLOT: resets the camera's zoom.
     void resetCamera();
 
+    /// SLOT: resets the display when resizing.
+    void resizeViewport();
+
     /**
      * @brief SLOT: sets the camera's orientation to one of the image's axes.
      * @param _from origin of the orientation.
@@ -211,6 +223,15 @@ private:
 
     /// Defines the mouse position at the time the windowing interaction started.
     Ogre::Vector2i m_initialPos {-1, -1};
+
+    /// Defines the margin to the border of the viewport.
+    float m_margin {0.1F};
+
+    /// This allows us to reset the camera when Qt refreshes the size of the viewport after the start of the adaptor
+    bool m_hasMoved {false};
+
+    /// Handles connection with the layer.
+    core::com::helper::SigSlotConnection m_layerConnection;
 
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     static constexpr std::string_view s_TF_INOUT    = "tf";

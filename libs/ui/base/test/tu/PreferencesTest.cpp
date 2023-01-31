@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "PreferencesTest.hpp"
 
-#include <core/runtime/operations.hpp>
 #include <core/runtime/Profile.hpp>
+#include <core/runtime/runtime.hpp>
 #include <core/tools/Os.hpp>
 #include <core/tools/UUID.hpp>
 
@@ -46,6 +46,7 @@ namespace sight::ui::base::ut
 void PreferencesTest::setUp()
 {
     ui::base::Preferences::set_enabled(true);
+    ui::base::Preferences::set_password_policy(core::crypto::PasswordKeeper::PasswordPolicy::NEVER);
 
     core::runtime::init();
     core::runtime::loadModule("sight::module::ui::base");
@@ -223,36 +224,40 @@ void PreferencesTest::encryptedTest()
         CPPUNIT_ASSERT_EQUAL(string_value, set_value);
     }
 
-    // The preferences file should have been saved but as a .sight file
-    CPPUNIT_ASSERT(std::filesystem::exists(m_encryptedPath) && std::filesystem::is_regular_file(m_encryptedPath));
+    {
+        // The preferences file should have been saved but as a .sight file
+        CPPUNIT_ASSERT(std::filesystem::exists(m_encryptedPath) && std::filesystem::is_regular_file(m_encryptedPath));
 
-    // Open the archive that holds the property tree
-    const auto& archive = io::zip::ArchiveReader::get(m_encryptedPath);
+        // Open the archive that holds the property tree
+        const auto& archive = io::zip::ArchiveReader::get(m_encryptedPath);
 
-    // Create the input stream, with a password, allowing decoding an encrypted file
-    const auto& istream = archive->openFile(
-        "preferences.json",
-        "password"
-    );
+        // Create the input stream, with a password, allowing decoding an encrypted file
+        const auto& istream = archive->openFile(
+            "preferences.json",
+            "password"
+        );
 
-    // Read the property tree from the archive
-    boost::property_tree::ptree from_disk;
-    boost::property_tree::read_json(*istream, from_disk);
+        // Read the property tree from the archive
+        boost::property_tree::ptree from_disk;
+        boost::property_tree::read_json(*istream, from_disk);
 
-    // Test the saved string
-    const auto& saved_value = from_disk.get<std::string>(string_key);
-    CPPUNIT_ASSERT_EQUAL(string_value, saved_value);
+        // Test the saved string
+        const auto& saved_value = from_disk.get<std::string>(string_key);
+        CPPUNIT_ASSERT_EQUAL(string_value, saved_value);
+    }
 
-    // This will reset preferences
-    ui::base::Preferences::set_enabled(false);
-    ui::base::Preferences::set_enabled(true);
+    {
+        // This will reset preferences
+        ui::base::Preferences::set_enabled(false);
+        ui::base::Preferences::set_enabled(true);
 
-    // Set a bad password and see what happens
-    ui::base::Preferences::set_password("Test_password!");
-    CPPUNIT_ASSERT_THROW(ui::base::Preferences(), ui::base::PreferencesDisabled);
+        // Set a bad password and see what happens
+        ui::base::Preferences::set_password("bad_password!");
+        CPPUNIT_ASSERT_THROW(ui::base::Preferences(), ui::base::BadPassword);
 
-    // Setting an empty password will reset to clear json save
-    ui::base::Preferences::set_password("");
+        // Setting an empty password will reset to clear json save
+        ui::base::Preferences::set_password("");
+    }
 }
 
 //------------------------------------------------------------------------------

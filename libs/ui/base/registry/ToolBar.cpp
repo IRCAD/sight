@@ -25,10 +25,9 @@
 #include "ui/base/GuiRegistry.hpp"
 #include "ui/base/IAction.hpp"
 
-#include <core/tools/fwID.hpp>
-
-#include <service/macros.hpp>
 #include <service/op/Get.hpp>
+
+#include <boost/range/iterator_range_core.hpp>
 
 #include <utility>
 
@@ -41,11 +40,6 @@ ToolBar::ToolBar(std::string sid) :
     m_sid(std::move(sid))
 {
 }
-
-//-----------------------------------------------------------------------------
-
-ToolBar::~ToolBar()
-= default;
 
 //-----------------------------------------------------------------------------
 
@@ -71,43 +65,25 @@ ui::base::container::fwMenuItem::sptr ToolBar::getFwMenuItem(
 
 //-----------------------------------------------------------------------------
 
-void ToolBar::initialize(core::runtime::ConfigurationElement::sptr configuration)
+void ToolBar::initialize(const ui::base::config_t& configuration)
 {
-    SIGHT_ASSERT(
-        "Wrong configuration name for '" + m_sid + "', expected 'registry', actual: '" + configuration->getName() + "'",
-        configuration->getName() == "registry"
-    );
-
     // index represents associated toolBar with position in toolBars vector
     unsigned int index = 0;
     m_callbacks.clear();
-    // initialize m_actionSids map with configuration
-    std::vector<ConfigurationType> vectMenuItems = configuration->find("menuItem");
-    for(const ConfigurationType& menuItem : vectMenuItems)
-    {
-        SIGHT_ASSERT("[" + m_sid + "] <menuItem> tag must have 'sid' attribute", menuItem->hasAttribute("sid"));
-        if(menuItem->hasAttribute("sid"))
-        {
-            bool start = false;
-            if(menuItem->hasAttribute("start"))
-            {
-                std::string startValue = menuItem->getAttributeValue("start");
-                SIGHT_ASSERT(
-                    "[" + m_sid + "] Wrong value for 'start' attribute (require true or false), actual: '"
-                    << startValue << "'.",
-                    startValue == "true" || startValue == "false"
-                );
-                start = (startValue == "true");
-            }
 
-            std::string sid = menuItem->getAttributeValue("sid");
+    // initialize m_actionSids map with configuration
+
+    for(const auto& menuItem : boost::make_iterator_range(configuration.equal_range("menuItem")))
+    {
+        if(const auto sid = menuItem.second.get_optional<std::string>("<xmlattr>.sid"); sid.has_value())
+        {
+            const bool start = menuItem.second.get("<xmlattr>.start", false);
+
             SIGHT_ASSERT(
-                "Action '" + sid + "' already exists for '" + m_sid + "' toolBar",
-                m_actionSids.find(
-                    sid
-                ) == m_actionSids.end()
+                "The action '" + sid.value() + "' already exists for '" + m_sid + "' menu.",
+                m_actionSids.find(sid.value()) == m_actionSids.end()
             );
-            m_actionSids[sid] = SIDToolBarMapType::mapped_type(index, start);
+            m_actionSids[sid.value()] = SIDToolBarMapType::mapped_type(index, start);
 
             ui::base::ActionCallbackBase::sptr callback;
             ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(ActionCallbackBase::REGISTRY_KEY);
@@ -117,7 +93,7 @@ void ToolBar::initialize(core::runtime::ConfigurationElement::sptr configuration
                 + ui::base::ActionCallbackBase::REGISTRY_KEY + "'",
                 callback
             );
-            callback->setSID(sid);
+            callback->setSID(sid.value());
             m_callbacks.push_back(callback);
         }
 
@@ -126,30 +102,18 @@ void ToolBar::initialize(core::runtime::ConfigurationElement::sptr configuration
 
     index = 0;
     // initialize m_menuSids map with configuration
-    std::vector<ConfigurationType> vectMenus = configuration->find("menu");
-    for(const ConfigurationType& menu : vectMenus)
+    for(const auto& menu : boost::make_iterator_range(configuration.equal_range("menu")))
     {
-        SIGHT_ASSERT("[" + m_sid + "] <menu> tag must have sid attribute", menu->hasAttribute("sid"));
-        if(menu->hasAttribute("sid"))
+        if(const auto sid = menu.second.get_optional<std::string>("<xmlattr>.sid"); sid.has_value())
         {
-            bool start = false;
-            if(menu->hasAttribute("start"))
-            {
-                std::string startValue = menu->getAttributeValue("start");
-                SIGHT_ASSERT(
-                    "[" + m_sid + "] Wrong value for 'start' attribute (require true or false), actual: '"
-                    << startValue << "'.",
-                    startValue == "true" || startValue == "false"
-                );
-                start = (startValue == "true");
-            }
+            const bool start = menu.second.get("<xmlattr>.start", false);
 
-            std::string sid = menu->getAttributeValue("sid");
             SIGHT_ASSERT(
-                "Menu '" + sid + "' already exists for '" + m_sid + "' toolBar",
-                m_menuSids.find(sid) == m_menuSids.end()
+                "Menu '" + sid.value() + "' already exists for '" + m_sid + "' toolBar",
+                m_menuSids.find(sid.value()) == m_menuSids.end()
             );
-            m_menuSids[sid] = SIDToolBarMapType::mapped_type(index, start);
+
+            m_menuSids[sid.value()] = SIDToolBarMapType::mapped_type(index, start);
         }
 
         index++;
@@ -157,40 +121,31 @@ void ToolBar::initialize(core::runtime::ConfigurationElement::sptr configuration
 
     index = 0;
     // initialize m_menuSids map with configuration
-    std::vector<ConfigurationType> vectEditors = configuration->find("editor");
-    for(const ConfigurationType& editor : vectEditors)
+    for(const auto& editor : boost::make_iterator_range(configuration.equal_range("editor")))
     {
+        const auto sid = editor.second.get_optional<std::string>("<xmlattr>.sid");
+        const auto wid = editor.second.get_optional<std::string>("<xmlattr>.wid");
         SIGHT_ASSERT(
-            "[" + m_sid + "] <editor> tag must have sid attribute",
-            editor->hasAttribute("sid") || editor->hasAttribute("wid")
+            "[" + m_sid + "] <editor> tag must have sid or wid attribute",
+            sid.has_value() || wid.has_value()
         );
-        if(editor->hasAttribute("sid"))
+        if(sid.has_value())
         {
-            bool start = false;
-            if(editor->hasAttribute("start"))
-            {
-                std::string startValue = editor->getAttributeValue("start");
-                SIGHT_ASSERT(
-                    "[" + m_sid + "] Wrong value for 'start' attribute (require true or false), actual: '"
-                    << startValue << "'.",
-                    startValue == "true" || startValue == "false"
-                );
-                start = (startValue == "true");
-            }
+            const bool start = editor.second.get("<xmlattr>.start", false);
 
-            std::string sid = editor->getAttributeValue("sid");
             SIGHT_ASSERT(
-                "Editor '" + sid + "' already exists for '" + m_sid + "'  toolBar",
-                m_editorSids.find(
-                    sid
-                ) == m_editorSids.end()
+                "Editor '" + sid.value() + "' already exists for '" + m_sid + "'  toolBar",
+                m_editorSids.find(sid.value()) == m_editorSids.end()
             );
-            m_editorSids[sid] = SIDToolBarMapType::mapped_type(index, start);
+            m_editorSids[sid.value()] = SIDToolBarMapType::mapped_type(index, start);
         }
-        else if(editor->hasAttribute("wid"))
+        else if(wid.has_value())
         {
-            std::string wid = editor->getAttributeValue("wid");
-            m_editorWids[wid] = index;
+            SIGHT_ASSERT(
+                "Editor '" + wid.value() + "' already exists for '" + m_sid + "'  toolBar",
+                m_editorWids.find(wid.value()) == m_editorWids.end()
+            );
+            m_editorWids[wid.value()] = index;
         }
 
         index++;

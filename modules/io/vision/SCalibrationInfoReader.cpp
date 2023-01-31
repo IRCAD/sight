@@ -97,7 +97,7 @@ void SCalibrationInfoReader::configuring()
 {
     sight::io::base::service::IReader::configuring();
 
-    const ConfigType config      = this->getConfigTree();
+    const ConfigType config      = this->getConfiguration();
     const ConfigType boardConfig = config.get_child("board");
 
     m_widthKey = boardConfig.get<std::string>("<xmlattr>.width");

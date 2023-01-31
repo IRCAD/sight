@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,7 +114,7 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_IN to s_UPDATE_SLOT
+     * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_IN to IService::slots::s_UPDATE
      * Connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_IN to s_SET_ORIENTATION_SLOT
      * Connect data::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_IN to s_RESET_DRAWING
      */

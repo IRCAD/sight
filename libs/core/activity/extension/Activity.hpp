@@ -26,7 +26,6 @@
 
 #include <core/BaseObject.hpp>
 #include <core/mt/types.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 
@@ -54,7 +53,7 @@ class Extension;
 namespace activity::extension
 {
 
-typedef boost::property_tree::ptree ConfigType;
+using ConfigType = boost::property_tree::ptree;
 
 struct ACTIVITY_CLASS_API ActivityAppConfigParam
 {

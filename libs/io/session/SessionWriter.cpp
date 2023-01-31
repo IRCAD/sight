@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #include "SessionWriter.hpp"
 
-#include "detail/SessionSerializer.hpp"
+#include "io/session/detail/core/SessionSerializer.hpp"
 
 #include <core/crypto/PasswordKeeper.hpp>
 
@@ -50,7 +50,7 @@ public:
     inline explicit SessionWriterImpl(SessionWriter* const sessionWriter) :
         m_sessionWriter(sessionWriter),
         m_password(std::make_unique<PasswordKeeper>()),
-        m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT),
+        m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::PASSWORD),
         m_archiveFormat(Archive::ArchiveFormat::DEFAULT)
     {
     }
@@ -136,16 +136,16 @@ void SessionWriter::setArchiveFormat(const Archive::ArchiveFormat archiveFormat)
 
 //------------------------------------------------------------------------------
 
-void SessionWriter::setSerializer(const std::string& className, serializer_t serializer)
+void SessionWriter::setCustomSerializer(const std::string& className, serializer_t serializer)
 {
-    m_pimpl->m_sessionSerializer.setSerializer(className, serializer);
+    m_pimpl->m_sessionSerializer.setCustomSerializer(className, serializer);
 }
 
 //------------------------------------------------------------------------------
 
-void SessionWriter::setDefaultSerializer(const std::string& className, serializer_t serializer)
+void SessionWriter::setSerializer(const std::string& className, serializer_t serializer)
 {
-    detail::SessionSerializer::setDefaultSerializer(className, serializer);
+    detail::SessionSerializer::setSerializer(className, serializer);
 }
 
 } //namespace sight::io::session

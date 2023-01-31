@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
- * Copyright (C) 2020 IHU Strasbourg
+ * Copyright (C) 2021-2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -19,8 +18,6 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
-
-#include "pch.hpp"
 
 // Empty source file
 // This is only to get a source file compiled, otherwise CMake would consider this target as an utility target

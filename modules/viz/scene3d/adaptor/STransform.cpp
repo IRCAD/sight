@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,24 +32,12 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const std::string s_PARENT_CONFIG = "parent";
-
-//------------------------------------------------------------------------------
-
-STransform::STransform() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
-STransform::~STransform() noexcept =
-    default;
-
 //-----------------------------------------------------------------------------
 
 service::IService::KeyConnectionsMap STransform::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INOUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TRANSFORM_INOUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     return connections;
 }
 
@@ -59,12 +47,11 @@ void STransform::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
     this->setTransformId(config.get<std::string>(s_TRANSFORM_CONFIG));
 
-    m_parentTransformId = config.get<std::string>(s_PARENT_CONFIG, m_parentTransformId);
+    m_parentTransformId = config.get<std::string>(s_CONFIG + "parent", m_parentTransformId);
 }
 
 //------------------------------------------------------------------------------

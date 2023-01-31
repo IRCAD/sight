@@ -25,7 +25,6 @@
 #include "core/runtime/detail/ExtensionPoint.hpp"
 #include "core/runtime/detail/Module.hpp"
 #include "core/runtime/Extension.hpp"
-#include "core/runtime/Runtime.hpp"
 
 #include <boost/algorithm/string/replace.hpp>
 

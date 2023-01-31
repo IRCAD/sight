@@ -24,10 +24,9 @@
 
 #include "ui/base/GuiRegistry.hpp"
 
-#include <core/tools/fwID.hpp>
-
-#include <service/macros.hpp>
 #include <service/op/Get.hpp>
+
+#include <boost/range/iterator_range_core.hpp>
 
 #include <utility>
 
@@ -40,11 +39,6 @@ MenuBar::MenuBar(std::string sid) :
     m_sid(std::move(sid))
 {
 }
-
-//-----------------------------------------------------------------------------
-
-MenuBar::~MenuBar()
-= default;
 
 //-----------------------------------------------------------------------------
 
@@ -70,37 +64,18 @@ ui::base::container::fwMenu::sptr MenuBar::getFwMenu(
 
 //-----------------------------------------------------------------------------
 
-void MenuBar::initialize(core::runtime::ConfigurationElement::sptr configuration)
+void MenuBar::initialize(const ui::base::config_t& configuration)
 {
-    SIGHT_ASSERT(
-        "Wrong configuration name for '" + m_sid + "', expected 'registry', actual: '" + configuration->getName() + "'",
-        configuration->getName() == "registry"
-    );
-
     // index represents associated menu with position in menus vector
     unsigned int index = 0;
+
     // initialize m_menuSids map with configuration
-    std::vector<ConfigurationType> vectMenus = configuration->find("menu");
-    for(const ConfigurationType& menu : vectMenus)
+    for(const auto& menu : boost::make_iterator_range(configuration.equal_range("menu")))
     {
-        SIGHT_ASSERT("[" + m_sid + "] <menu> tag must have 'sid' attribute", menu->hasAttribute("sid"));
-
-        if(menu->hasAttribute("sid"))
+        if(const auto sid = menu.second.get_optional<std::string>("<xmlattr>.sid"); sid.has_value())
         {
-            bool start = false;
-            if(menu->hasAttribute("start"))
-            {
-                std::string startValue = menu->getAttributeValue("start");
-                SIGHT_ASSERT(
-                    "[" + m_sid + "] Wrong value for 'start' attribute (requires 'true' or 'false'), actual: "
-                    + startValue + "'",
-                    startValue == "true" || startValue == "false"
-                );
-                start = (startValue == "true");
-            }
-
-            std::string sid = menu->getAttributeValue("sid");
-            m_menuSids[sid] = SIDMenuMapType::mapped_type(index, start);
+            const bool start = menu.second.get("<xmlattr>.start", false);
+            m_menuSids[sid.value()] = SIDMenuMapType::mapped_type(index, start);
         }
 
         index++;

@@ -47,7 +47,7 @@ void SLine::configuring()
 {
     this->configureParams();
 
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
 
     SIGHT_ASSERT("Attribute 'x1' is missing", config.count("x1"));
     SIGHT_ASSERT("Attribute 'x2' is missing", config.count("x2"));

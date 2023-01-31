@@ -58,23 +58,15 @@ SSeriesPuller::~SSeriesPuller() noexcept =
 
 void SSeriesPuller::configuring()
 {
-    core::runtime::ConfigurationElement::sptr config = m_configuration->findConfigurationElement("config");
-    SIGHT_ASSERT("The service module::io::dicomweb::SSeriesPuller must have a \"config\" element.", config);
+    const auto& config = this->getConfiguration();
 
-    bool success = false;
+    m_dicomReaderType      = config.get<std::string>("config.<xmlattr>.dicomReader", m_dicomReaderType);
+    m_dicomReaderSrvConfig = config.get<std::string>("config.<xmlattr>.readerConfig", m_dicomReaderSrvConfig);
 
-    // Dicom Reader
-    std::tie(success, m_dicomReaderType) = config->getSafeAttributeValue("dicomReader");
-    SIGHT_ASSERT("It should be a \"dicomReader\" in the module::io::dicomweb::SSeriesPuller config element.", success);
-
-    // Dicom Reader Config
-    std::tie(success, m_dicomReaderSrvConfig) = config->getSafeAttributeValue("readerConfig");
-
-    service::IService::ConfigType configuration = this->getConfigTree();
     //Parse server port and hostname
-    if(configuration.count("server") != 0U)
+    if(config.count("server") != 0U)
     {
-        const std::string serverInfo               = configuration.get("server", "");
+        const std::string serverInfo               = config.get("server", "");
         const std::string::size_type splitPosition = serverInfo.find(':');
         SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
@@ -105,20 +97,19 @@ void SSeriesPuller::starting()
     if(!m_dicomReaderSrvConfig.empty())
     {
         // Get the config
-        core::runtime::ConfigurationElement::csptr readerConfig =
-            service::extension::Config::getDefault()->getServiceConfig(
-                m_dicomReaderSrvConfig,
-                "sight::io::base::service::IReader"
-            );
+        const auto readerConfig = service::extension::Config::getDefault()->getServiceConfig(
+            m_dicomReaderSrvConfig,
+            "sight::io::base::service::IReader"
+        );
 
         SIGHT_ASSERT(
             "Sorry, there is no service configuration "
             << m_dicomReaderSrvConfig
             << " for sight::io::base::service::IReader",
-            readerConfig
+            !readerConfig.empty()
         );
 
-        m_dicomReader->setConfiguration(core::runtime::ConfigurationElement::constCast(readerConfig));
+        m_dicomReader->setConfiguration(readerConfig);
     }
 
     m_dicomReader->configure();

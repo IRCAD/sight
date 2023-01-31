@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,16 +25,15 @@
 #include "core/com/Slot.hxx"
 
 #include "service/extension/AppConfig.hpp"
-#include "service/registry/ObjectService.hpp"
+#include "service/registry.hpp"
 
 #include "TestService.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/runtime/Convert.hpp>
-#include <core/runtime/Module.hpp>
-#include <core/runtime/operations.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/helper.hpp>
+#include <core/runtime/path.hpp>
+#include <core/runtime/runtime.hpp>
 #include <core/TimeStamp.hpp>
 
 #include <data/Boolean.hpp>
@@ -68,12 +67,11 @@ void AppConfigTest::setUp()
 {
     // Set up context before running a test.
     core::runtime::init();
-    core::runtime::Runtime* runtime = core::runtime::Runtime::getDefault();
 
     std::filesystem::path location = core::runtime::getResourceFilePath("tu_exec_service");
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
-    runtime->addModules(location);
+    core::runtime::addModules(location);
     core::runtime::loadModule("sight::module::service");
     core::runtime::loadModule("AppConfigTest");
 
@@ -111,9 +109,7 @@ void AppConfigTest::addConfigTest()
 
     const service::IService::ConfigType config = buildConfig();
 
-    const auto configElement = core::runtime::Convert::fromPropertyTree(config);
-
-    currentAppConfig->addAppInfo(configId, group, desc, parameters, configElement, moduleId);
+    currentAppConfig->addAppInfo(configId, group, desc, parameters, config, moduleId);
 
     std::vector<std::string> allConfigs = currentAppConfig->getAllConfigs();
     CPPUNIT_ASSERT_EQUAL(false, allConfigs.empty());
@@ -128,20 +124,11 @@ void AppConfigTest::addConfigTest()
 
     service::FieldAdaptorType replaceFields;
 
-    core::runtime::ConfigurationElement::csptr configEltAdaptedConst;
-    configEltAdaptedConst = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
-
-    core::runtime::ConfigurationElement::sptr configEltAdapted;
-    configEltAdapted = core::runtime::ConfigurationElement::constCast(configEltAdaptedConst);
-
-    std::vector<core::runtime::ConfigurationElement::sptr> objCfg = configEltAdapted->find("object");
-
-    const std::string uid = objCfg.at(0)->getAttributeValue("uid");
+    core::runtime::config_t configAdapted = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
+    const auto uid                        = configAdapted.get<std::string>("object.<xmlattr>.uid");
     CPPUNIT_ASSERT_EQUAL(std::string("image"), uid);
 
-    std::vector<core::runtime::ConfigurationElement::sptr> servicesCfg = configEltAdapted->find("service");
-
-    const std::string serviceUid1 = servicesCfg.at(0)->getAttributeValue("uid");
+    const auto serviceUid1 = configAdapted.get<std::string>("service.<xmlattr>.uid");
     CPPUNIT_ASSERT_EQUAL(std::string("myTestService1"), serviceUid1);
 }
 
@@ -161,38 +148,32 @@ void AppConfigTest::parametersConfigTest()
     auto it                             = std::find(allConfigs.begin(), allConfigs.end(), configId);
     CPPUNIT_ASSERT(it != allConfigs.end());
 
-    core::runtime::ConfigurationElement::csptr configEltAdaptedConst;
-    configEltAdaptedConst = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
+    core::runtime::config_t configAdapted = currentAppConfig->getAdaptedTemplateConfig(configId, replaceFields, false);
 
-    core::runtime::ConfigurationElement::sptr configEltAdapted;
-    configEltAdapted = core::runtime::ConfigurationElement::constCast(configEltAdaptedConst);
-
-    std::vector<core::runtime::ConfigurationElement::sptr> objCfg = configEltAdapted->find("object");
-
-    const std::string uid = objCfg.at(0)->getAttributeValue("uid");
+    const auto uid = configAdapted.get<std::string>("object.<xmlattr>.uid");
     CPPUNIT_ASSERT_EQUAL(std::string("objectUUID"), uid);
 
-    std::vector<core::runtime::ConfigurationElement::sptr> servicesCfg = configEltAdapted->find("service");
+    auto servicesCfg = configAdapted.equal_range("service");
 
-    const std::string serviceUid1 = servicesCfg.at(0)->getAttributeValue("uid");
+    const auto serviceUid1 = servicesCfg.first->second.get<std::string>("<xmlattr>.uid");
     CPPUNIT_ASSERT_EQUAL(std::string("myTestService1"), serviceUid1);
 
-    const std::string serviceUid2 = servicesCfg.at(1)->getAttributeValue("uid");
+    servicesCfg.first++;
+    const auto serviceUid2 = servicesCfg.first->second.get<std::string>("<xmlattr>.uid");
     CPPUNIT_ASSERT_EQUAL(std::string("myTestService2"), serviceUid2);
 }
 
 //------------------------------------------------------------------------------
 
-service::AppConfigManager::sptr AppConfigTest::launchAppConfigMgr(
+service::IAppConfigManager::sptr AppConfigTest::launchAppConfigMgr(
     const std::string& name,
     bool autoPrefix
 )
 {
-    auto appConfigMgr = service::AppConfigManager::New();
-    appConfigMgr->setIsUnitTest(!autoPrefix);
+    auto appConfigMgr = service::IAppConfigManager::New();
 
     const service::FieldAdaptorType fields;
-    appConfigMgr->setConfig(name, fields);
+    appConfigMgr->setConfig(name, fields, autoPrefix);
     appConfigMgr->launch();
 
     return appConfigMgr;
@@ -258,7 +239,7 @@ void AppConfigTest::startStopTest()
     // Create the data
     data::Boolean::sptr data2 = data::Boolean::New();
     {
-        service::OSR::registerServiceOutput(data2, "out2", genDataSrv);
+        genDataSrv->setOutput("out2", data2);
         waitServiceStarted("TestService4Uid");
 
         // Now the service should have been started automatically
@@ -270,7 +251,7 @@ void AppConfigTest::startStopTest()
         }
 
         // Remove the data
-        service::OSR::unregisterServiceOutput("out2", genDataSrv);
+        genDataSrv->setOutput("out2", nullptr);
         fwTestWaitMacro(core::tools::fwID::exist("TestService4Uid") == false);
 
         // Now the service should have been stopped and destroyed automatically
@@ -280,7 +261,7 @@ void AppConfigTest::startStopTest()
         }
 
         // Register the data once again
-        service::OSR::registerServiceOutput(data2, "out2", genDataSrv);
+        genDataSrv->setOutput("out2", data2);
         waitServiceStarted("TestService4Uid");
 
         // Check again that the service was started automatically
@@ -306,7 +287,7 @@ void AppConfigTest::startStopTest()
         // Create the remaining data
         data::Boolean::sptr data4 = data::Boolean::New();
 
-        service::OSR::registerServiceOutput(data4, "out4", genDataSrv);
+        genDataSrv->setOutput("out4", data4);
         waitServiceStarted("TestService5Uid");
 
         // Now the service should have been started automatically
@@ -318,7 +299,7 @@ void AppConfigTest::startStopTest()
         }
 
         // Remove one data
-        service::OSR::unregisterServiceOutput("out2", genDataSrv);
+        genDataSrv->setOutput("out2", nullptr);
 
         // Now the service should have been stopped and destroyed automatically
         {
@@ -335,7 +316,7 @@ void AppConfigTest::startStopTest()
         // Put everything back
         service::ut::TestService::s_START_COUNTER  = 0;
         service::ut::TestService::s_UPDATE_COUNTER = 0;
-        service::OSR::registerServiceOutput(data2, "out2", genDataSrv);
+        genDataSrv->setOutput("out2", data2);
         waitServiceStarted("TestService5Uid");
 
         // Now the service should have been started automatically, check start order as well
@@ -375,9 +356,9 @@ void AppConfigTest::startStopTest()
         // Swap the data
         data::Boolean::sptr data5 = data::Boolean::New();
 
-        service::OSR::unregisterServiceOutput("out2", genDataSrv);
+        genDataSrv->setOutput("out2", nullptr);
         fwTestWaitMacro(core::tools::fwID::exist("TestService5Uid") == false);
-        service::OSR::registerServiceOutput(data5, "out2", genDataSrv);
+        genDataSrv->setOutput("out2", data5);
         waitServiceStarted("TestService5Uid");
 
         {
@@ -469,8 +450,7 @@ void AppConfigTest::autoConnectTest()
 
         // Create the data
         data::Boolean::sptr data3 = data::Boolean::New();
-
-        service::OSR::registerServiceOutput(data3, "out3", genDataSrv);
+        genDataSrv->setOutput("out3", data3);
 
         waitServiceStarted("TestService4Uid");
         waitServiceStarted("TestService5Uid");
@@ -500,7 +480,7 @@ void AppConfigTest::autoConnectTest()
         }
 
         // Remove one data
-        service::OSR::unregisterServiceOutput("out3", genDataSrv);
+        genDataSrv->setOutput("out3", nullptr);
         fwTestWaitMacro(
             core::tools::fwID::exist("TestService4Uid") == false
             && core::tools::fwID::exist("TestService5Uid") == false
@@ -513,7 +493,7 @@ void AppConfigTest::autoConnectTest()
         }
 
         // Emit, that should be ok
-        service::OSR::registerServiceOutput(data3, "out3", genDataSrv);
+        genDataSrv->setOutput("out3", data3);
 
         waitServiceStarted("TestService4Uid");
         waitServiceStarted("TestService5Uid");
@@ -632,9 +612,8 @@ void AppConfigTest::connectionTest()
     // Create the missing data
     data::Boolean::sptr data2 = data::Boolean::New();
     data::Boolean::sptr data3 = data::Boolean::New();
-
-    service::OSR::registerServiceOutput(data2, "out2", genDataSrv);
-    service::OSR::registerServiceOutput(data3, "out3", genDataSrv);
+    genDataSrv->setOutput("out2", data2);
+    genDataSrv->setOutput("out3", data3);
     waitServiceStarted("TestService3Uid");
     {
         core::tools::Object::sptr gn_srv3 = core::tools::fwID::getObject("TestService3Uid");
@@ -696,7 +675,7 @@ void AppConfigTest::connectionTest()
     }
 
     // Remove one data
-    service::OSR::unregisterServiceOutput("out3", genDataSrv);
+    genDataSrv->setOutput("out3", nullptr);
     fwTestWaitMacro(core::tools::fwID::exist("TestService3Uid") == false);
 
     // Service 3 should be removed
@@ -736,7 +715,7 @@ void AppConfigTest::connectionTest()
     CPPUNIT_ASSERT(!srv4->getIsUpdated2());
 
     // Add back data 3 and check connection again
-    service::OSR::registerServiceOutput(data3, "out3", genDataSrv);
+    genDataSrv->setOutput("out3", data3);
     waitServiceStarted("TestService3Uid");
 
     {
@@ -828,21 +807,21 @@ void AppConfigTest::optionalKeyTest()
     CPPUNIT_ASSERT(srv1->getIsUpdated());
     srv1->resetIsUpdated();
 
-    CPPUNIT_ASSERT(srv1->getInput<data::Object>("data1").lock() == data1);
-    CPPUNIT_ASSERT(srv1->getInput<data::Object>("data2").expired());
-    CPPUNIT_ASSERT(srv1->getInput<data::Object>("data3").expired());
+    CPPUNIT_ASSERT(srv1->getInput("data1").lock() == data1);
+    CPPUNIT_ASSERT(srv1->getInput("data2").expired());
+    CPPUNIT_ASSERT(srv1->getInput("data3").expired());
 
     // Create data 2
     data::Boolean::sptr data2 = data::Boolean::New();
 
-    service::OSR::registerServiceOutput(data2, "out2", genDataSrv);
+    genDataSrv->setOutput("out2", data2);
     fwTestWaitMacro(
-        !srv1->getInput<data::Object>("data2").expired()
-        && srv1->getInput<data::Object>("data2").lock() == data2
+        !srv1->getInput("data2").expired()
+        && srv1->getInput("data2").lock() == data2
     );
 
-    CPPUNIT_ASSERT(srv1->getInput<data::Object>("data2").lock() == data2);
-    CPPUNIT_ASSERT(srv1->getInput<data::Object>("data3").expired());
+    CPPUNIT_ASSERT(srv1->getInput("data2").lock() == data2);
+    CPPUNIT_ASSERT(srv1->getInput("data3").expired());
 
     fwTestWaitMacro("data2" == srv1->getSwappedObjectKey());
     CPPUNIT_ASSERT_EQUAL(std::string("data2"), srv1->getSwappedObjectKey());
@@ -859,18 +838,18 @@ void AppConfigTest::optionalKeyTest()
     data::Boolean::sptr data3 = data::Boolean::New();
     data::Boolean::sptr data4 = data::Boolean::New();
 
-    service::OSR::registerServiceOutput(data3, "out3", genDataSrv);
-    service::OSR::registerServiceOutput(data4, "out4", genDataSrv);
+    genDataSrv->setOutput("out3", data3);
+    genDataSrv->setOutput("out4", data4);
 
     fwTestWaitMacro(
-        !srv1->getInput<data::Object>("data3").expired()
-        && !srv1->getInput<data::Object>("data4").expired()
-        && srv1->getInput<data::Object>("data3").lock() == data3
-        && srv1->getInput<data::Object>("data4").lock() == data4
+        !srv1->getInput("data3").expired()
+        && !srv1->getInput("data4").expired()
+        && srv1->getInput("data3").lock() == data3
+        && srv1->getInput("data4").lock() == data4
     );
 
-    CPPUNIT_ASSERT(srv1->getInput<data::Object>("data3").lock() == data3);
-    CPPUNIT_ASSERT(srv1->getInput<data::Object>("data4").lock() == data4);
+    CPPUNIT_ASSERT(srv1->getInput("data3").lock() == data3);
+    CPPUNIT_ASSERT(srv1->getInput("data4").lock() == data4);
     CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv1->getStatus());
 
     // Check connection with data 3
@@ -888,38 +867,38 @@ void AppConfigTest::optionalKeyTest()
     CPPUNIT_ASSERT(srv1->getIsUpdated());
 
     // Remove data 2 and 3
-    service::OSR::unregisterServiceOutput("out2", genDataSrv);
-    fwTestWaitMacro(srv1->getInput<data::Object>("data2").expired());
+    genDataSrv->setOutput("out2", nullptr);
+    fwTestWaitMacro(srv1->getInput("data2").expired());
 
     fwTestWaitMacro("data2" == srv1->getSwappedObjectKey());
     CPPUNIT_ASSERT_EQUAL(std::string("data2"), srv1->getSwappedObjectKey());
     CPPUNIT_ASSERT(nullptr == srv1->getSwappedObject());
-    CPPUNIT_ASSERT(srv1->getInput<data::Object>("data2").expired());
+    CPPUNIT_ASSERT(srv1->getInput("data2").expired());
 
-    service::OSR::unregisterServiceOutput("out3", genDataSrv);
+    genDataSrv->setOutput("out3", nullptr);
     fwTestWaitMacro(
-        !srv1->getInput<data::Object>(
+        !srv1->getInput(
             "data3"
-        ).expired() && srv1->getInput<data::Object>("data3").lock() == nullptr
+        ).expired() && srv1->getInput("data3").lock() == nullptr
     );
 
     fwTestWaitMacro("data3" == srv1->getSwappedObjectKey());
     CPPUNIT_ASSERT_EQUAL(std::string("data3"), srv1->getSwappedObjectKey());
     CPPUNIT_ASSERT(nullptr == srv1->getSwappedObject());
-    CPPUNIT_ASSERT(srv1->getInput<data::Object>("data3").expired());
+    CPPUNIT_ASSERT(srv1->getInput("data3").expired());
 
     CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv1->getStatus());
 
     // Create data 3
-    service::OSR::registerServiceOutput(data3, "out3", genDataSrv);
+    genDataSrv->setOutput("out3", data3);
     fwTestWaitMacro(
-        !srv1->getInput<data::Object>(
+        !srv1->getInput(
             "data3"
-        ).expired() && srv1->getInput<data::Object>("data3").lock() == data3
+        ).expired() && srv1->getInput("data3").lock() == data3
     );
 
-    CPPUNIT_ASSERT(srv1->getInput<data::Object>("data2").expired());
-    CPPUNIT_ASSERT(srv1->getInput<data::Object>("data3").lock() == data3);
+    CPPUNIT_ASSERT(srv1->getInput("data2").expired());
+    CPPUNIT_ASSERT(srv1->getInput("data3").lock() == data3);
     CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv1->getStatus());
 
     // =================================================================================================================
@@ -932,7 +911,7 @@ void AppConfigTest::optionalKeyTest()
         core::tools::Object::sptr gn_srv2 = core::tools::fwID::getObject("TestService2Uid");
         CPPUNIT_ASSERT(gn_srv2 == nullptr);
 
-        service::OSR::registerServiceOutput(data5, "out5", genDataSrv);
+        genDataSrv->setOutput("out5", data5);
         waitServiceStarted("TestService2Uid");
 
         gn_srv2 = core::tools::fwID::getObject("TestService2Uid");
@@ -942,10 +921,10 @@ void AppConfigTest::optionalKeyTest()
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv2->getStatus());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data1").lock() == data5);
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data2").expired());
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data3").lock() == data3);
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data4").lock() == data4);
+        CPPUNIT_ASSERT(srv2->getInput("data1").lock() == data5);
+        CPPUNIT_ASSERT(srv2->getInput("data2").expired());
+        CPPUNIT_ASSERT(srv2->getInput("data3").lock() == data3);
+        CPPUNIT_ASSERT(srv2->getInput("data4").lock() == data4);
 
         // Check connection with data 4
         srv2->resetIsUpdated();
@@ -954,33 +933,32 @@ void AppConfigTest::optionalKeyTest()
         fwTestWaitMacro(srv2->getIsUpdated());
 
         // Remove data 3 and 4
-        service::OSR::unregisterServiceOutput("out3", genDataSrv);
-        service::OSR::unregisterServiceOutput("out4", genDataSrv);
+        genDataSrv->setOutput("out3", nullptr);
+        genDataSrv->setOutput("out4", nullptr);
 
         fwTestWaitMacro(
-            !srv2->getInput<data::Object>("data3").expired()
-            && srv2->getInput<data::Object>("data4").expired()
+            !srv2->getInput("data3").expired()
+            && srv2->getInput("data4").expired()
         );
 
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data1").lock() == data5);
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data2").expired());
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data3").expired());
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data4").expired());
+        CPPUNIT_ASSERT(srv2->getInput("data1").lock() == data5);
+        CPPUNIT_ASSERT(srv2->getInput("data2").expired());
+        CPPUNIT_ASSERT(srv2->getInput("data3").expired());
+        CPPUNIT_ASSERT(srv2->getInput("data4").expired());
 
         // Create data 3
-        service::OSR::registerServiceOutput(data3, "out3", genDataSrv);
-        fwTestWaitMacro(!srv2->getInput<data::Object>("data3").expired());
+        genDataSrv->setOutput("out3", data3);
+        fwTestWaitMacro(!srv2->getInput("data3").expired());
 
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data1").lock() == data5);
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data2").expired());
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data3").lock() == data3);
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data4").expired());
+        CPPUNIT_ASSERT(srv2->getInput("data1").lock() == data5);
+        CPPUNIT_ASSERT(srv2->getInput("data2").expired());
+        CPPUNIT_ASSERT(srv2->getInput("data3").lock() == data3);
+        CPPUNIT_ASSERT(srv2->getInput("data4").expired());
     }
 
     // Remove data 5
     {
-        service::OSR::unregisterServiceOutput("out5", genDataSrv);
-
+        genDataSrv->setOutput("out5", nullptr);
         fwTestWaitMacro(false == core::tools::fwID::exist("TestService2Uid"));
 
         core::tools::Object::sptr gn_srv5 = core::tools::fwID::getObject("TestService2Uid");
@@ -989,7 +967,7 @@ void AppConfigTest::optionalKeyTest()
 
     {
         // Create data 5
-        service::OSR::registerServiceOutput(data5, "out5", genDataSrv);
+        genDataSrv->setOutput("out5", data5);
         waitServiceStarted("TestService2Uid");
 
         auto gn_srv2 = core::tools::fwID::getObject("TestService2Uid");
@@ -998,10 +976,10 @@ void AppConfigTest::optionalKeyTest()
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv2->getStatus());
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data1").lock() == data5);
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data2").expired());
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data3").lock() == data3);
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data4").expired());
+        CPPUNIT_ASSERT(srv2->getInput("data1").lock() == data5);
+        CPPUNIT_ASSERT(srv2->getInput("data2").expired());
+        CPPUNIT_ASSERT(srv2->getInput("data3").lock() == data3);
+        CPPUNIT_ASSERT(srv2->getInput("data4").expired());
 
         // Check connection with data 3
         srv2->resetIsUpdated();
@@ -1013,18 +991,18 @@ void AppConfigTest::optionalKeyTest()
         // Create data 2
         data::Boolean::sptr data2b = data::Boolean::New();
 
-        service::OSR::registerServiceOutput(data2b, "out2", genDataSrv);
+        genDataSrv->setOutput("out2", data2b);
         fwTestWaitMacro(
-            !srv2->getInput<data::Object>(
+            !srv2->getInput(
                 "data2"
             ).expired()
-            && srv2->getInput<data::Object>("data2").lock() == data2b
+            && srv2->getInput("data2").lock() == data2b
         );
 
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data1").lock() == data5);
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data2").lock() == data2b);
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data3").lock() == data3);
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data4").expired());
+        CPPUNIT_ASSERT(srv2->getInput("data1").lock() == data5);
+        CPPUNIT_ASSERT(srv2->getInput("data2").lock() == data2b);
+        CPPUNIT_ASSERT(srv2->getInput("data3").lock() == data3);
+        CPPUNIT_ASSERT(srv2->getInput("data4").expired());
 
         // Check no connection with data 2
         srv2->resetIsUpdated();
@@ -1040,39 +1018,41 @@ void AppConfigTest::optionalKeyTest()
         auto genDataSrv2 = service::ut::TestService::dynamicCast(core::tools::fwID::getObject("SGenerateData2"));
         CPPUNIT_ASSERT(genDataSrv2 != nullptr);
 
-        service::OSR::registerServiceOutput(data2bis, "out", genDataSrv2);
+        genDataSrv2->setOutput("out", data2bis);
         fwTestWaitMacro(
-            !srv2->getInput<data::Object>(
+            !srv2->getInput(
                 "data2"
-            ).expired() && srv2->getInput<data::Object>(
+            ).expired() && srv2->getInput(
                 "data2"
             ).lock() == data2bis
         );
 
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data2").lock() == data2bis);
+        CPPUNIT_ASSERT(srv2->getInput("data2").lock() == data2bis);
 
         fwTestWaitMacro("data2" == srv2->getSwappedObjectKey() && data2bis == srv2->getSwappedObject());
         CPPUNIT_ASSERT("data2" == srv2->getSwappedObjectKey());
         CPPUNIT_ASSERT(data2bis == srv2->getSwappedObject());
 
         // Check that the output of SGenerateData changed as well
-        CPPUNIT_ASSERT(data2bis == genDataSrv->getObject("out2", data::Access::out));
+        fwTestWaitMacro(data2bis == genDataSrv->data::IHasData::getOutput("out2").lock());
+        CPPUNIT_ASSERT(data2bis == genDataSrv->data::IHasData::getOutput("out2").lock());
 
         // Revert that
-        service::OSR::registerServiceOutput(data2b, "out", genDataSrv2);
+        genDataSrv2->setOutput("out", data2b);
         fwTestWaitMacro(
-            !srv2->getInput<data::Object>("data2").expired()
-            && srv2->getInput<data::Object>("data2").lock() == data2b
+            !srv2->getInput("data2").expired()
+            && srv2->getInput("data2").lock() == data2b
         );
 
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("data2").lock() == data2b);
+        CPPUNIT_ASSERT(srv2->getInput("data2").lock() == data2b);
 
         fwTestWaitMacro("data2" == srv2->getSwappedObjectKey() && data2b == srv2->getSwappedObject());
         CPPUNIT_ASSERT("data2" == srv2->getSwappedObjectKey());
         CPPUNIT_ASSERT(data2b == srv2->getSwappedObject());
 
         // Check that the output of SGenerateData changed as well
-        CPPUNIT_ASSERT(data2b == genDataSrv->getObject("out2", data::Access::out));
+        fwTestWaitMacro(data2b == genDataSrv->data::IHasData::getObject("out2", data::Access::out));
+        CPPUNIT_ASSERT(data2b == genDataSrv->data::IHasData::getObject("out2", data::Access::out));
     }
 }
 
@@ -1106,7 +1086,7 @@ void AppConfigTest::keyGroupTest()
 
         // Create data 2b
         data::Boolean::sptr data2b = data::Boolean::New();
-        service::OSR::registerServiceOutput(data2b, "out2", genDataSrv);
+        genDataSrv->setOutput("out2", data2b);
         waitServiceStarted("TestService1Uid");
 
         gn_srv1 = core::tools::fwID::getObject("TestService1Uid");
@@ -1115,10 +1095,10 @@ void AppConfigTest::keyGroupTest()
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv1->getStatus());
         CPPUNIT_ASSERT(!srv1->getIsUpdated());
 
-        CPPUNIT_ASSERT(srv1->getInput<data::Object>("data1").lock() == data1);
-        CPPUNIT_ASSERT(srv1->getInput<data::Object>("dataGroup", 0).lock() == data2b);
-        CPPUNIT_ASSERT(srv1->getInput<data::Object>("dataGroup", 1).expired());
-        CPPUNIT_ASSERT(1 == srv1->m_inputGroup.size());
+        CPPUNIT_ASSERT(srv1->getInput("data1").lock() == data1);
+        CPPUNIT_ASSERT(srv1->getInput("dataGroup", 0).lock() == data2b);
+        CPPUNIT_ASSERT(srv1->getInput("dataGroup", 1).expired());
+        CPPUNIT_ASSERT_EQUAL(std::size_t(2), srv1->m_inputGroup.size());
 
         // Check connection with data 2
         CPPUNIT_ASSERT(!srv1->getIsUpdated());
@@ -1140,22 +1120,22 @@ void AppConfigTest::keyGroupTest()
                            };
         auto swappedSlot = core::com::newSlot(fn);
         swappedSlot->setWorker(core::thread::getDefaultWorker());
-        core::com::Connection connection = srv1->signal(IService::s_SWAPPED_SIG)->connect(swappedSlot);
+        core::com::Connection connection = srv1->signal(IService::signals::s_SWAPPED)->connect(swappedSlot);
 
-        service::OSR::registerServiceOutput(data3, "out3", genDataSrv);
+        genDataSrv->setOutput("out3", data3);
 
         fwTestWaitMacro(
-            !srv1->getInput<data::Object>(
+            !srv1->getInput(
                 "dataGroup",
                 1
-            ).expired() && srv1->getInput<data::Object>(
+            ).expired() && srv1->getInput(
                 "dataGroup",
                 1
             ).lock() == data3
         );
 
-        CPPUNIT_ASSERT(srv1->getInput<data::Object>("dataGroup", 0).lock() == data2b);
-        CPPUNIT_ASSERT(srv1->getInput<data::Object>("dataGroup", 1).lock() == data3);
+        CPPUNIT_ASSERT(srv1->getInput("dataGroup", 0).lock() == data2b);
+        CPPUNIT_ASSERT(srv1->getInput("dataGroup", 1).lock() == data3);
         CPPUNIT_ASSERT(2 == srv1->m_inputGroup.size());
 
         fwTestWaitMacro(srv1Swapped);
@@ -1172,7 +1152,7 @@ void AppConfigTest::keyGroupTest()
 
     // Remove data 2
     {
-        service::OSR::unregisterServiceOutput("out2", genDataSrv);
+        genDataSrv->setOutput("out2", nullptr);
 
         fwTestWaitMacro(false == core::tools::fwID::exist("TestService1Uid"));
 
@@ -1189,23 +1169,23 @@ void AppConfigTest::keyGroupTest()
         CPPUNIT_ASSERT(!srv2->getIsUpdated());
 
         fwTestWaitMacro(
-            !srv2->getInput<data::Object>(
+            !srv2->getInput(
                 "dataGroup0",
                 1
-            ).expired() && srv2->getInput<data::Object>(
+            ).expired() && srv2->getInput(
                 "dataGroup0",
                 1
             ).lock() == data3
         );
 
         CPPUNIT_ASSERT_EQUAL(std::size_t(1), srv2->m_input1.size());
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("dataGroup0", 0).lock() == data1);
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("dataGroup0", 1).expired());
+        CPPUNIT_ASSERT(srv2->getInput("dataGroup0", 0).lock() == data1);
+        CPPUNIT_ASSERT(srv2->getInput("dataGroup0", 1).expired());
 
         CPPUNIT_ASSERT_EQUAL(std::size_t(3), srv2->m_input2.size());
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("dataGroup1", 0).lock() == data3);
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("dataGroup1", 1).lock() == data4);
-        CPPUNIT_ASSERT(srv2->getInput<data::Object>("dataGroup1", 2).lock() == data5);
+        CPPUNIT_ASSERT(srv2->getInput("dataGroup1", 0).lock() == data3);
+        CPPUNIT_ASSERT(srv2->getInput("dataGroup1", 1).lock() == data4);
+        CPPUNIT_ASSERT(srv2->getInput("dataGroup1", 2).lock() == data5);
 
         // Check connection with data 1
         srv2->resetIsUpdated();
@@ -1265,8 +1245,8 @@ void AppConfigTest::keyGroupTest()
         CPPUNIT_ASSERT(srv3 != nullptr);
         CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv3->getStatus());
 
-        CPPUNIT_ASSERT(srv3->getInput<data::Object>("dataGroup", 0).lock() == data6);
-        CPPUNIT_ASSERT(srv3->getInput<data::Object>("dataGroup", 1).lock() == data7);
+        CPPUNIT_ASSERT(srv3->getInput("dataGroup", 0).lock() == data6);
+        CPPUNIT_ASSERT(srv3->getInput("dataGroup", 1).lock() == data7);
 
         genDataSrv->m_outGroup[0] = nullptr;
     }
@@ -1324,22 +1304,24 @@ void AppConfigTest::parameterReplaceTest()
     auto srv2          = service::IService::dynamicCast(gn_srv2);
     auto adaptedConfig = srv2->getConfiguration();
 
-    using ConfigType = core::runtime::ConfigurationElement::sptr;
-    const std::vector<ConfigType> paramsCfg = adaptedConfig->find("parameter");
+    const auto params = adaptedConfig.equal_range("parameter");
+
+    std::vector<service::IService::config_t> paramsCfg;
+    std::for_each(params.first, params.second, [&paramsCfg](const auto& p){paramsCfg.push_back(p.second);});
+
     CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(4), paramsCfg.size());
 
     std::string replaceBy;
+    CPPUNIT_ASSERT_EQUAL(std::string("patient"), paramsCfg[0].get<std::string>("<xmlattr>.replace"));
+    CPPUNIT_ASSERT_EQUAL(std::string("name"), paramsCfg[0].get<std::string>("<xmlattr>.by"));
 
-    CPPUNIT_ASSERT_EQUAL(std::string("patient"), paramsCfg[0]->getAttributeValue("replace"));
-    CPPUNIT_ASSERT_EQUAL(std::string("name"), paramsCfg[0]->getAttributeValue("by"));
-
-    replaceBy = paramsCfg[1]->getAttributeValue("by");
+    replaceBy = paramsCfg[1].get<std::string>("<xmlattr>.by");
     CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_Channel No5"), replaceBy);
 
-    replaceBy = paramsCfg[2]->getAttributeValue("by");
+    replaceBy = paramsCfg[2].get<std::string>("<xmlattr>.by");
     CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_disneyChannel"), replaceBy);
 
-    replaceBy = paramsCfg[3]->getAttributeValue("by");
+    replaceBy = paramsCfg[3].get<std::string>("<xmlattr>.by");
     CPPUNIT_ASSERT_EQUAL(std::string("parameterReplaceTest_" + std::to_string(i) + "_view1"), replaceBy);
 
     core::tools::Object::sptr gn_sub_srv;
@@ -1358,17 +1340,17 @@ void AppConfigTest::parameterReplaceTest()
 
     CPPUNIT_ASSERT(srvInSubConfig->isStarted());
 
-    auto data1 = srv1->getInput<data::Object>("data1").lock();
+    auto data1 = srv1->getInput("data1").lock();
     CPPUNIT_ASSERT(data1 != nullptr);
     CPPUNIT_ASSERT_EQUAL(std::string("data1Id"), data1->getID());
 
-    auto data2 = srv1->getInput<data::Object>("data2").lock();
+    auto data2 = srv1->getInput("data2").lock();
     CPPUNIT_ASSERT(data2 != nullptr);
 
-    auto data1SubSrv = srvInSubConfig->getInput<data::Object>("data1").lock();
+    auto data1SubSrv = srvInSubConfig->getInput("data1").lock();
     CPPUNIT_ASSERT(data1 == data1SubSrv);
 
-    auto data2SubSrv = srvInSubConfig->getInput<data::Object>("data2").lock();
+    auto data2SubSrv = srvInSubConfig->getInput("data2").lock();
     CPPUNIT_ASSERT(data2 == data2SubSrv);
 
     // check connections through the subconfig channel
@@ -1417,7 +1399,7 @@ void AppConfigTest::objectConfigTest()
     CPPUNIT_ASSERT(!srvData1.expired());
     CPPUNIT_ASSERT(srvData1.lock() == compo1);
 
-    auto config = srv1->getConfigTree();
+    auto config = srv1->getConfiguration();
     CPPUNIT_ASSERT_EQUAL(std::string("value1"), config.get<std::string>("param1"));
     CPPUNIT_ASSERT_EQUAL(std::string("value2"), config.get<std::string>("param2"));
 }
@@ -1458,10 +1440,7 @@ service::IService::ConfigType AppConfigTest::buildConfig()
     updateCfg.add("<xmlattr>.uid", "myTestService1");
     cfg.add_child("update", updateCfg);
 
-    service::IService::ConfigType appCfg;
-    appCfg.add_child("config", cfg);
-
-    return appCfg;
+    return cfg;
 }
 
 //------------------------------------------------------------------------------

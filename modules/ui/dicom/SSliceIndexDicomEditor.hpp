@@ -63,13 +63,6 @@ class SeriesSet;
 
 } // namespace sight::data
 
-namespace sight::core::runtime
-{
-
-struct ConfigurationElement;
-
-} // namespace sight::core::runtime
-
 namespace sight::module::ui::dicom
 {
 
@@ -203,7 +196,7 @@ private:
     std::size_t m_delay {500};
 
     /// Optional configuration to set to reader implementation
-    SPTR(core::runtime::ConfigurationElement) m_readerConfig;
+    IService::ConfigType m_readerConfig;
 
     static constexpr std::string_view s_IMAGE = "image";
 

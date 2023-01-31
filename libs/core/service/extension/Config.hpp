@@ -24,8 +24,9 @@
 
 #include "service/config.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Object.hpp>
+
+#include <boost/property_tree/ptree.hpp>
 
 #include <map>
 
@@ -50,7 +51,7 @@ public:
 
     std::string service;
     std::string desc;
-    core::runtime::ConfigurationElement::csptr config;
+    boost::property_tree::ptree config;
 };
 
 /**
@@ -82,7 +83,7 @@ public:
     SERVICE_API static Config::sptr getDefault();
 
     /// Destructor
-    SERVICE_API ~Config() override;
+    SERVICE_API ~Config() override = default;
 
     /**
      * @brief Parses module information to retrieve service declaration.
@@ -103,14 +104,14 @@ public:
         const std::string& configId,
         const std::string& service,
         const std::string& desc,
-        core::runtime::ConfigurationElement::csptr config
+        const boost::property_tree::ptree& config
     );
 
     /**
      * @brief Returns the configuration with the given id for the service with the given implementation
      * @note This method is thread safe
      */
-    SERVICE_API core::runtime::ConfigurationElement::csptr getServiceConfig(
+    SERVICE_API boost::property_tree::ptree getServiceConfig(
         const std::string& configId,
         const std::string& serviceImpl =
         ""
@@ -146,7 +147,7 @@ protected:
     Registry m_reg;
 
     /// Constructor
-    SERVICE_API Config();
+    SERVICE_API Config() = default;
 
     const static std::string CONFIG_EXT_POINT;
 

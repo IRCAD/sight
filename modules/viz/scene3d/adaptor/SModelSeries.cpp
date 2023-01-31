@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,12 +43,6 @@ namespace sight::module::viz::scene3d::adaptor
 
 static const core::com::Slots::SlotKeyType s_CHANGE_FIELD_SLOT = "changeField";
 
-static const std::string s_AUTORESET_CAMERA_CONFIG = "autoresetcamera";
-static const std::string s_MATERIAL_CONFIG         = "material";
-static const std::string s_DYNAMIC_CONFIG          = "dynamic";
-static const std::string s_DYNAMIC_VERTICES_CONFIG = "dynamicVertices";
-static const std::string s_QUERY_CONFIG            = "queryFlags";
-
 //------------------------------------------------------------------------------
 
 SModelSeries::SModelSeries() noexcept
@@ -58,17 +52,11 @@ SModelSeries::SModelSeries() noexcept
 
 //------------------------------------------------------------------------------
 
-SModelSeries::~SModelSeries() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void SModelSeries::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
     this->setTransformId(
         config.get<std::string>(
@@ -76,6 +64,12 @@ void SModelSeries::configuring()
             this->getID() + "_transform"
         )
     );
+
+    static const std::string s_AUTORESET_CAMERA_CONFIG = s_CONFIG + "autoresetcamera";
+    static const std::string s_MATERIAL_CONFIG         = s_CONFIG + "material";
+    static const std::string s_DYNAMIC_CONFIG          = s_CONFIG + "dynamic";
+    static const std::string s_DYNAMIC_VERTICES_CONFIG = s_CONFIG + "dynamicVertices";
+    static const std::string s_QUERY_CONFIG            = s_CONFIG + "queryFlags";
 
     m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
 
@@ -115,9 +109,9 @@ void SModelSeries::starting()
 service::IService::KeyConnectionsMap SModelSeries::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_MODEL_INPUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_MODEL_INPUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, IService::slots::s_UPDATE);
     connections.push(s_MODEL_INPUT, data::ModelSeries::s_ADDED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
     connections.push(s_MODEL_INPUT, data::ModelSeries::s_REMOVED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);
     connections.push(s_MODEL_INPUT, data::ModelSeries::s_CHANGED_FIELDS_SIG, s_CHANGE_FIELD_SLOT);

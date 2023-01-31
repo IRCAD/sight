@@ -279,7 +279,7 @@ data::Image::sptr createImageFromPixelBuffer()
 
     // Zero the buffer
     const auto dumpLock = image->dump_lock();
-    std::fill(image->begin(), image->end(), 0);
+    std::fill(image->begin(), image->end(), std::int8_t(0));
 
     return image;
 }
@@ -469,6 +469,7 @@ void MedicalImageHelpersTest::testLandmarks()
     data::Point::sptr p      = data::Point::New(1., 2., 3.);
     data::PointList::sptr pt = data::PointList::New();
     pt->pushBack(p);
+    CPPUNIT_ASSERT_THROW(medImHelper::setLandmarks(*image, nullptr), data::Exception);
     medImHelper::setLandmarks(*image, pt);
 
     // get landmarks (should NOT be nullptr)
@@ -637,28 +638,6 @@ void MedicalImageHelpersTest::testLandmarksVisibility()
     lm_visibility = medImHelper::getLandmarksVisibility(*image);
 
     CPPUNIT_ASSERT_EQUAL(false, lm_visibility);
-}
-
-//------------------------------------------------------------------------------
-
-void MedicalImageHelpersTest::testTransferFunction()
-{
-    data::Image::sptr image = generateImage();
-
-    // get transfer function composite (should NOT be nullptr)
-    const auto tfpool_not_null = medImHelper::getTransferFunction(*image);
-    CPPUNIT_ASSERT(tfpool_not_null);
-
-    // set transfer function composite
-
-    data::TransferFunction::sptr tfPool = data::TransferFunction::New();
-
-    medImHelper::setTransferFunction(*image, tfPool);
-
-    const auto new_tf_pool = medImHelper::getTransferFunction(*image);
-    CPPUNIT_ASSERT(new_tf_pool);
-
-    CPPUNIT_ASSERT_EQUAL(tfPool, new_tf_pool);
 }
 
 //------------------------------------------------------------------------------

@@ -22,7 +22,6 @@
 
 #include "core/runtime/detail/Runtime.hpp"
 
-#include "core/runtime/ConfigurationElement.hpp"
 #include "core/runtime/detail/ExtensionPoint.hpp"
 #include "core/runtime/detail/io/ModuleDescriptorReader.hpp"
 #include "core/runtime/detail/Module.hpp"
@@ -31,6 +30,7 @@
 #include "core/runtime/IExecutable.hpp"
 #include "core/runtime/IPlugin.hpp"
 #include "core/runtime/Profile.hpp"
+#include "core/runtime/runtime.hpp"
 
 #include <core/tools/Os.hpp>
 
@@ -241,21 +241,21 @@ void Runtime::unregisterExtension(std::shared_ptr<detail::Extension> extension)
 
 //------------------------------------------------------------------------------
 
-Runtime::ExtensionContainer Runtime::getExtensions()
+Runtime::ExtensionContainer Runtime::getExtensions() const
 {
     return m_extensions;
 }
 
 //------------------------------------------------------------------------------
 
-Runtime::ExtensionIterator Runtime::extensionsBegin()
+Runtime::ExtensionIterator Runtime::extensionsBegin() const
 {
     return m_extensions.begin();
 }
 
 //------------------------------------------------------------------------------
 
-Runtime::ExtensionIterator Runtime::extensionsEnd()
+Runtime::ExtensionIterator Runtime::extensionsEnd() const
 {
     return m_extensions.end();
 }
@@ -294,8 +294,8 @@ std::shared_ptr<core::runtime::Module> Runtime::findModule(const std::string& id
 
     const std::string id = filterID(identifier);
 
-    std::shared_ptr<Module> resModule;
-    for(const std::shared_ptr<Module>& module : m_modules)
+    std::shared_ptr<core::runtime::Module> resModule;
+    for(const auto& module : m_modules)
     {
         if(module->getIdentifier() == id)
         {
@@ -309,14 +309,14 @@ std::shared_ptr<core::runtime::Module> Runtime::findModule(const std::string& id
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Module> Runtime::findEnabledModule(const std::string& identifier) const
+std::shared_ptr<core::runtime::Module> Runtime::findEnabledModule(const std::string& identifier) const
 {
     SIGHT_ASSERT("Module identifier should not be empty", !identifier.empty());
 
     const std::string id = filterID(identifier);
 
-    std::shared_ptr<Module> resModule;
-    for(const std::shared_ptr<Module>& module : m_modules)
+    std::shared_ptr<core::runtime::Module> resModule;
+    for(const auto& module : m_modules)
     {
         if(module->getIdentifier() == id && module->isEnabled())
         {
@@ -330,21 +330,15 @@ std::shared_ptr<Module> Runtime::findEnabledModule(const std::string& identifier
 
 //------------------------------------------------------------------------------
 
-Runtime* Runtime::getDefault()
+Runtime& Runtime::get()
 {
     if(m_instance == nullptr)
     {
         m_instance = std::make_shared<Runtime>();
     }
 
-    return m_instance.get();
-}
-
-//------------------------------------------------------------------------------
-
-Runtime& Runtime::get()
-{
-    return *Runtime::getDefault();
+    auto* runtime = m_instance.get();
+    return *runtime;
 }
 
 //------------------------------------------------------------------------------
@@ -367,9 +361,9 @@ std::shared_ptr<core::runtime::Extension> Runtime::findExtension(const std::stri
 
 //------------------------------------------------------------------------------
 
-core::runtime::Runtime::ModuleContainer Runtime::getModules()
+core::runtime::detail::Runtime::ModuleContainer Runtime::getModules() const
 {
-    core::runtime::Runtime::ModuleContainer modules;
+    ModuleContainer modules;
     std::copy(m_modules.begin(), m_modules.end(), std::inserter(modules, modules.begin()));
     return modules;
 }
@@ -421,52 +415,6 @@ IExecutable* Runtime::createExecutableInstance(const std::string& type) const
 
     // Creates the executable instance
     IExecutable* result(factory->createExecutable());
-
-    // Job's done.
-    return result;
-}
-
-//------------------------------------------------------------------------------
-
-IExecutable* Runtime::createExecutableInstance(
-    const std::string& type,
-    ConfigurationElement::sptr configurationElement
-) const
-{
-    std::shared_ptr<ExecutableFactory> factory;
-
-    // Retrieves the executable factory.
-    factory = this->findExecutableFactory(type);
-
-    // If there is no factory has been found, it is possible that
-    // it has not been registered since the module of the given configuration element
-    // is not started.
-    // So we start that module and look for the executable factory one more type.
-    if(factory == nullptr)
-    {
-        configurationElement->getModule()->start();
-        factory = this->findExecutableFactory(type);
-    }
-
-    // If we still have not found any executable factory, then notify the problem.
-    if(factory == nullptr)
-    {
-        throw RuntimeException(type + ": no executable factory found for that type.");
-    }
-
-    // Creates the executable instance
-    IExecutable* result(nullptr);
-    try
-    {
-        factory->getModule()->start();
-        result = factory->createExecutable();
-        result->setInitializationData(configurationElement);
-    }
-    catch(const std::exception& e)
-    {
-        std::string message("Unable to create an executable instance. ");
-        throw RuntimeException(message + e.what());
-    }
 
     // Job's done.
     return result;

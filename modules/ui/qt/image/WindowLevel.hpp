@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,8 +113,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG to module::ui::qt::image::WindowLevel::s_UPDATE_SLOT
-     * Connect Image::s_BUFFER_MODIFIED_SIG to module::ui::qt::image::WindowLevel::s_UPDATE_SLOT
+     * Connect data::Image::s_MODIFIED_SIG to module::ui::qt::image::WindowLevel::IService::slots::s_UPDATE
+     * Connect Image::s_BUFFER_MODIFIED_SIG to module::ui::qt::image::WindowLevel::IService::slots::s_UPDATE
      */
     MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const final;
 

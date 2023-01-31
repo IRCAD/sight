@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ void SShaderParameterEditor::starting()
     {
         const auto rec                = m_reconstruction.lock();
         data::Material::sptr material = rec->getMaterial();
-        m_connections.connect(material, data::Material::s_MODIFIED_SIG, this->getSptr(), s_UPDATE_SLOT);
+        m_connections.connect(material, data::Material::s_MODIFIED_SIG, this->getSptr(), IService::slots::s_UPDATE);
     }
 
     this->create();
@@ -111,7 +111,7 @@ void SShaderParameterEditor::clear()
 
         sight::ui::base::GuiRegistry::unregisterSIDContainer(m_editorInfo.uuid);
 
-        service::OSR::unregisterService(objService);
+        service::unregisterService(objService);
 
         m_sizer->removeWidget(m_editorInfo.editorPanel->getQtContainer());
         m_editorInfo.editorPanel->destroyContainer();
@@ -126,9 +126,7 @@ void SShaderParameterEditor::updateGuiInfo()
     /// Getting all Material adaptors
     const auto reconstruction = m_reconstruction.lock();
 
-    service::registry::ObjectService::ServiceVectorType srvVec = service::OSR::getServices(
-        "sight::module::viz::scene3d::adaptor::SMaterial"
-    );
+    const auto srvVec = service::getServices("sight::module::viz::scene3d::adaptor::SMaterial");
 
     /// Stop if no Material adaptors have been find
     if(srvVec.empty())
@@ -142,7 +140,7 @@ void SShaderParameterEditor::updateGuiInfo()
     sight::viz::scene3d::IAdaptor::sptr matService;
     for(const auto& srv : srvVec)
     {
-        if(srv->getInOut<data::Object>("material").lock()->getID() == reconstruction->getMaterial()->getID())
+        if(srv->getInOut("material").lock()->getID() == reconstruction->getMaterial()->getID())
         {
             matService = sight::viz::scene3d::IAdaptor::dynamicCast(srv);
             break;
@@ -161,7 +159,7 @@ void SShaderParameterEditor::updateGuiInfo()
         {
             /// Filter object types
             const auto shaderObj =
-                paramSrv->getInOut<data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
+                paramSrv->getInOut(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
             const ObjectClassnameType objType = shaderObj->getClassname();
 
             if(objType == "sight::data::Boolean" || objType == "sight::data::Float"

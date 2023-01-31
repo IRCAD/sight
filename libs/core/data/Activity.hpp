@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,11 +32,11 @@ namespace sight::data
 /**
  * @brief Holds activity information.
  */
-class DATA_CLASS_API Activity final : public Object
+class DATA_CLASS_API Activity final : public data::Composite
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Activity, Object, factory::New<Activity>);
+    SIGHT_DECLARE_CLASS(Activity, data::Composite, factory::New<Activity>);
 
     typedef std::string ConfigIdType;
 
@@ -45,15 +45,6 @@ public:
     DATA_API Activity(Object::Key);
     DATA_API ~Activity() noexcept override = default;
     /// @}
-
-    /// Gets the activity container.
-    Composite::sptr getData();
-
-    /// Gets the activity container.
-    Composite::csptr getData() const;
-
-    /// Sets the activity container.
-    void setData(const Composite::sptr& _val);
 
     /// Gets the activity configuration ID.
     const ConfigIdType& getActivityConfigId() const;
@@ -85,31 +76,7 @@ protected:
 
     /// Defines the activity configuration ID.
     ConfigIdType m_activityConfigId;
-
-    /// Stores the composite used to stores activities.
-    Composite::sptr m_data;
 };
-
-//-----------------------------------------------------------------------------
-
-inline Composite::sptr Activity::getData()
-{
-    return m_data;
-}
-
-//-----------------------------------------------------------------------------
-
-inline Composite::csptr Activity::getData() const
-{
-    return m_data;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void Activity::setData(const Composite::sptr& _val)
-{
-    m_data = _val;
-}
 
 //-----------------------------------------------------------------------------
 

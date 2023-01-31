@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 
 #include <service/helper/Config.hpp>
 #include <service/macros.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <viz/scene3d/registry/Adaptor.hpp>
 #include <viz/scene3d/Utils.hpp>
@@ -39,8 +39,7 @@ const core::com::Slots::SlotKeyType IAdaptor::s_TOGGLE_VISIBILITY_SLOT = "toggle
 const core::com::Slots::SlotKeyType IAdaptor::s_SHOW_SLOT              = "show";
 const core::com::Slots::SlotKeyType IAdaptor::s_HIDE_SLOT              = "hide";
 
-static const std::string s_LAYER_CONFIG   = "layer";
-static const std::string s_VISIBLE_CONFIG = "visible";
+const std::string IAdaptor::s_CONFIG = "config.<xmlattr>.";
 
 //------------------------------------------------------------------------------
 
@@ -54,14 +53,9 @@ IAdaptor::IAdaptor() noexcept
 
 //------------------------------------------------------------------------------
 
-IAdaptor::~IAdaptor() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void IAdaptor::info(std::ostream& _sstream)
 {
-    _sstream << "IAdaptor : ";
+    _sstream << "IAdaptor : " << this->getID();
     this->service::IService::info(_sstream);
 }
 
@@ -69,9 +63,15 @@ void IAdaptor::info(std::ostream& _sstream)
 
 void IAdaptor::configureParams()
 {
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
-    m_layerID   = config.get<std::string>(s_LAYER_CONFIG);
-    m_isVisible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
+    const ConfigType config = this->getConfiguration();
+    m_cfgLayerID = config.get<std::string>("config.<xmlattr>.layer", "");
+    m_isVisible  = config.get<bool>("config.<xmlattr>.visible", m_isVisible);
+
+    SIGHT_WARN_IF(
+        "In [" + this->getID() + "] adaptor, specifying a layer is now deprecated. "
+                                 "Please place the adaptor in the layer tag in the render scene configuration.",
+        !m_cfgLayerID.empty()
+    );
 }
 
 //------------------------------------------------------------------------------
@@ -80,22 +80,24 @@ void IAdaptor::initialize()
 {
     if(m_renderService.expired())
     {
-        auto servicesVector = service::OSR::getServices("sight::viz::scene3d::SRender");
+        auto servicesVector = service::getServices("sight::viz::scene3d::SRender");
 
-        auto& registry       = viz::scene3d::registry::getAdaptorRegistry();
-        auto renderServiceId = registry[this->getID()];
+        auto& registry = viz::scene3d::registry::getAdaptorRegistry();
+        auto layerCfg  = registry[this->getID()];
 
         auto result =
             std::find_if(
                 servicesVector.begin(),
                 servicesVector.end(),
-                [renderServiceId](const service::IService::sptr& srv)
+                [layerCfg](const service::IService::sptr& srv)
             {
-                return srv->getID() == renderServiceId;
+                return srv->getID() == layerCfg.render;
             });
-        SIGHT_ASSERT("Can't find '" + renderServiceId + "' SRender service.", result != servicesVector.end());
+        SIGHT_ASSERT("Can't find '" + layerCfg.render + "' SRender service.", result != servicesVector.end());
 
         m_renderService = viz::scene3d::SRender::dynamicCast(*result);
+
+        m_layerID = layerCfg.layer.empty() ? m_cfgLayerID : layerCfg.layer;
     }
 }
 

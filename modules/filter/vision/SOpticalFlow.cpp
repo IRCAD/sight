@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ SOpticalFlow::~SOpticalFlow() noexcept =
 
 void SOpticalFlow::configuring()
 {
-    const auto configTree = this->getConfigTree();
+    const auto configTree = this->getConfiguration();
     const auto config     = configTree.get_child_optional("config.<xmlattr>");
 
     if(config)
@@ -233,7 +233,7 @@ service::IService::KeyConnectionsMap SOpticalFlow::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_FRAME_TIMELINE_INPUT, data::FrameTL::s_OBJECT_PUSHED_SIG, s_UPDATE_SLOT);
+    connections.push(s_FRAME_TIMELINE_INPUT, data::FrameTL::s_OBJECT_PUSHED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

@@ -70,8 +70,6 @@ struct  PickingInfo
     char m_keyPressed = 0;
 
     core::HiResClock::HiResClockType m_timestamp {};
-
-    DATA_API PickingInfo();
 };
 
 } // namespace sight::data::tools

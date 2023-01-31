@@ -29,10 +29,6 @@ namespace sight::module::viz::scene3d::adaptor
 
 static const core::com::Signals::SignalKeyType s_PICKED_SIG = "picked";
 
-static const std::string s_PRIORITY_CONFIG              = "priority";
-static const std::string s_QUERY_MASK_CONFIG            = "queryMask";
-static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
-
 //-----------------------------------------------------------------------------
 
 SPicker::SPicker() noexcept
@@ -42,17 +38,15 @@ SPicker::SPicker() noexcept
 
 //-----------------------------------------------------------------------------
 
-SPicker::~SPicker() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
 void SPicker::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_PRIORITY_CONFIG              = s_CONFIG + "priority";
+    static const std::string s_QUERY_MASK_CONFIG            = s_CONFIG + "queryMask";
+    static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = s_CONFIG + "layerOrderDependant";
 
     m_priority            = config.get<int>(s_PRIORITY_CONFIG, m_priority);
     m_layerOrderDependant = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layerOrderDependant);

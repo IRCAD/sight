@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,43 +48,40 @@ template<typename F>
 class Slot;
 
 /**
- * @brief   This class proposes a mapping between a SlotKeyType and a SlotBase.
+ * @brief   This class proposes a storage for slots.
  */
 class CORE_CLASS_API Slots
 {
 public:
 
-    typedef std::string SlotKeyType;
-    typedef std::map<SlotKeyType, SPTR(SlotBase)> SlotMapType;
-    typedef std::vector<SlotKeyType> SlotKeyContainerType;
+    using key_t                = std::string;
+    using SlotKeyType          = key_t;
+    using SlotKeyContainerType = std::vector<key_t>;
 
-    /// Constructor, does nothing
-    CORE_API Slots();
+    CORE_API Slots()          = default;
+    CORE_API virtual ~Slots() = default;
 
     /// Copy constructor forbidden
     Slots& operator=(const Slots&) = delete;
 
-    /// Constructor, check if all slots are disconnected
-    CORE_API virtual ~Slots();
-
     /// Registers SlotBase in m_slots
-    CORE_API Slots& operator()(const SlotKeyType& key, const SPTR(SlotBase)& slot);
+    CORE_API Slots& operator()(const key_t& key, const SPTR(SlotBase)& slot);
 
     /// Registers Slot  in m_slots (defined here to avoid compiler error C2244)
     template<typename R, typename ... A>
-    Slots& operator()(const SlotKeyType& key, SPTR(Slot<R(A ...)>)slot)
+    Slots& operator()(const key_t& key, SPTR(Slot<R(A ...)>)slot)
     {
         SPTR(SlotBase) slotBase = std::dynamic_pointer_cast<SlotBase>(slot);
         return this->operator()(key, slotBase);
     }
 
     /// Returns the SlotBase associated to the key, if key does not exist, the ptr is null
-    CORE_API SPTR(SlotBase) operator[](const SlotKeyType& key) const;
+    CORE_API SPTR(SlotBase) operator[](const key_t& key) const;
 
     /// Assigns the worker to all slots stored in m_slots
     CORE_API void setWorker(const SPTR(core::thread::Worker)& worker);
 
-    /// Returns all SlotKeyType registered in m_slots
+    /// Returns all key_t registered in m_slots
     [[nodiscard]] CORE_API SlotKeyContainerType getSlotKeys() const;
 
 protected:
@@ -93,6 +90,7 @@ protected:
     Slots(const Slots& /*unused*/);
 
     /// Association < key , SPTR( SlotBase ) >
+    using SlotMapType = std::map<key_t, SPTR(SlotBase)>;
     SlotMapType m_slots;
 };
 

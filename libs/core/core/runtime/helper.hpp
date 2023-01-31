@@ -23,71 +23,14 @@
 #pragma once
 
 #include "core/config.hpp"
-#include "core/runtime/ConfigurationElement.hpp"
-#include "core/runtime/operations.hpp"
-#include "core/runtime/Runtime.hpp"
+#include "core/runtime/Extension.hpp"
+
+#include <core/base.hpp>
 
 #include <boost/property_tree/ptree.hpp>
 
 namespace sight::core::runtime
 {
-
-/**
- * @brief       Returns the configuration element embedding the configuration to be considered for initializing an
- * object or a service
- * @param[in]   _config : configuration element containing an attribute "config" specifying the name of the contribution
- * to consider
- * @param[in]   _extension_pt : extension point to which the configuration should contribute with the name indicated by
- * the previous "config" attribute value
- *
- */
-CORE_API ConfigurationElement::sptr getCfgAsAnExtension(
-    ConfigurationElement::sptr _config,
-    std::string _extension_pt
-);
-
-/**
- * @brief   Returns configuration elements extending the _extension_pt extension point
- *
-
- */
-CORE_API std::vector<ConfigurationElement::sptr> getAllCfgForPoint(std::string _extension_pt);
-
-/**
- * @brief   Returns extensions extending the _extension_pt extension point
- *
-
- */
-CORE_API std::vector<std::shared_ptr<core::runtime::Extension> > getAllExtensionsForPoint(
-    std::string extension_pt
-);
-
-/**
- * @brief       Returns contribution ids and configuration elements related to a given extension point
- * @param[in]   _extension_pt : identifier of the extension point to which configuration elements contribute
- * @return      Map associating contribution ids and associated configuration elements contributing to the extension
- * point _extension_pt
- * @note        Configuration element identifiers are value of attributes "id".
- *
- */
-CORE_API std::map<std::string, ConfigurationElement::sptr> getAllIdAndConfigurationElementsForPoint(
-    std::string _extension_pt
-);
-/**
- * @brief       Returns contribution ids to a given extension point
- * @param[in]   _extension_pt : identifier of the extension point to which configuration elements contribute
- * @return      Map associating contribution ids and associated configuration elements contributing to the extension
- * point _extension_pt
- * @note        Configuration element identifiers are value of attributes "id".
- *
- */
-CORE_API std::vector<std::string> getAllIdsForPoint(std::string _extension_pt);
-
-/**
- * @brief   Get information for the point
- * @return  a string with the information of the extension point
- */
-CORE_API std::string getInfoForPoint(std::string _extension_pt);
 
 /**
  * @brief   Returns the value of a path in a boost::property::tree.
@@ -121,6 +64,13 @@ T get_ptree_value(const boost::property_tree::ptree& tree, const std::string& pa
     // 2.
     SIGHT_THROW_EXCEPTION(core::Exception("Wrong value set in path: " + path));
     return defaultValue;
+}
+
+namespace property_tree
+{
+
+CORE_API std::string toString(const boost::property_tree::ptree& pt);
+
 }
 
 } // namespace sight::core::runtime

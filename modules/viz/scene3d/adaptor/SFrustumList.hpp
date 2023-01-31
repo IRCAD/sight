@@ -54,7 +54,7 @@ namespace sight::module::viz::scene3d::adaptor
         <service type="sight::module::viz::scene3d::adaptor::SFrustumList">
             <in key="camera" uid="..." />
             <in key="transform" uid="..." />
-            <config layer="default" near="0.1" far="300" color="#f8e119" transform="..." />
+            <config near="0.1" far="300" color="#f8e119" transform="..." />
        </service>
    @endcode
  *
@@ -63,7 +63,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b transform [sight::data::Matrix4]: each time this transform is modified, a frustum is created.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the frustum's layer
  * - \b near (optional, float, default=1.0): near clipping distance of the Ogre::Camera
  * - \b far (optional, float, default=20.0): far clipping distance of the Ogre::Camera
  * - \b color (optional, hexadecimal, default=0x0000FF): frustum's color

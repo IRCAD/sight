@@ -43,6 +43,7 @@ private:
     CPPUNIT_TEST(nearestColorTest);
     CPPUNIT_TEST(mapValuesTest);
     CPPUNIT_TEST(piecewiseFunctionTest);
+    CPPUNIT_TEST(equalityTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -61,6 +62,7 @@ public:
     void nearestColorTest();
     static void mapValuesTest();
     static void piecewiseFunctionTest();
+    static void equalityTest();
 
     static data::TransferFunction::sptr createTFColor();
     static void checkTFColor(data::TransferFunction::sptr tf);

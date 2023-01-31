@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2021 IRCAD France
+ * Copyright (C) 2018-2022 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,11 @@
 
 #include "modules/ui/viz/config.hpp"
 
-#include <viz/scene3d/Layer.hpp>
-
 #include <core/com/Signals.hpp>
 
 #include <ui/base/IAction.hpp>
+
+#include <viz/scene3d/Layer.hpp>
 
 namespace sight::module::ui::viz
 {
@@ -43,11 +43,10 @@ namespace sight::module::ui::viz
  *
  * @code{.xml}
     <service uid="..." type="sight::module::ui::viz::SStereoToggler" >
-        <config layer="default" stereoMode="interlaced" />
+        <config stereoMode="interlaced" />
     </service>
  *
  * @subsection Configuration Configuration
- * - \b layer : layer in which to activate stereo rendering.
  * - \b stereoMode (values=interlaced|AutoStereo5|AutoStereo8): mode to activate. 'AutoStereo<N>' modes are
  * for glasses-free stereo screens with N viewpoints. The 'interlaced' mode is for typical polarized screens with
  * interlaced image pairs.

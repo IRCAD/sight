@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,7 +52,7 @@ SConsumer::~SConsumer() noexcept =
 
 void SConsumer::configuring()
 {
-    sight::service::IService::ConfigType config = this->getConfigTree();
+    sight::service::IService::ConfigType config = this->getConfiguration();
 
     m_receiverId = config.get<unsigned int>("id");
     m_period     = config.get<unsigned int>("period", 0);
@@ -64,7 +64,7 @@ void SConsumer::starting()
 {
     if(m_period != 0U)
     {
-        m_timer = m_associatedWorker->createTimer();
+        m_timer = this->worker()->createTimer();
         m_timer->setFunction([this](auto&& ...){updating();});
         m_timer->setDuration(std::chrono::milliseconds(m_period));
         m_timer->start();

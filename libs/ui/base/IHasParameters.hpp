@@ -26,6 +26,8 @@
 
 #include <core/com/Slots.hpp>
 
+#include <ui/base/parameter.hpp>
+
 #include <array>
 #include <cstdint>
 
@@ -56,6 +58,7 @@ class UI_BASE_CLASS_API IHasParameters
 {
 public:
 
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_PARAMETER_SLOT;
     UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
     UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
     UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT;
@@ -74,6 +77,9 @@ protected:
 
     /// Destructor. Do nothing.
     UI_BASE_API virtual ~IHasParameters();
+
+    /// Slot: This method is used to set an boolean parameter.
+    UI_BASE_API virtual void setParameter(sight::ui::base::parameter_t val, std::string key);
 
     /// Slot: This method is used to set an boolean parameter.
     UI_BASE_API virtual void setBoolParameter(bool val, std::string key);

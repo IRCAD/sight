@@ -137,4 +137,11 @@ void MeshPickerInteractor::buttonReleaseEvent(MouseButton _button, Modifier _mod
 
 //------------------------------------------------------------------------------
 
+void MeshPickerInteractor::longTapGestureEvent(int _x, int _y)
+{
+    this->pick(LEFT, Modifier::CONTROL, _x, _y, false);
+}
+
+//------------------------------------------------------------------------------
+
 } //namespace sight::viz::scene3d::interactor.

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "viz/scene3d/ILight.hpp"
 
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <string>
 
@@ -47,7 +47,7 @@ viz::scene3d::ILight::sptr ILight::createLightAdaptor(
 )
 {
     viz::scene3d::ILight::sptr lightAdaptor = viz::scene3d::lightFactory::New(viz::scene3d::ILight::REGISTRY_KEY);
-    service::OSR::registerService(lightAdaptor);
+    service::registerService(lightAdaptor);
     SIGHT_ASSERT("The factory process to create an ILight failed.", lightAdaptor);
     SIGHT_ASSERT("The light adaptor must be registered with existing data objects.", _diffuse && _specular);
 
@@ -64,7 +64,7 @@ void ILight::destroyLightAdaptor(ILight::sptr _lightAdaptor)
     if(_lightAdaptor)
     {
         _lightAdaptor->stop();
-        service::OSR::unregisterService(_lightAdaptor);
+        service::unregisterService(_lightAdaptor);
     }
 }
 

@@ -45,7 +45,7 @@ SPointListFromMatrices::~SPointListFromMatrices()
 
 void SPointListFromMatrices::configuring()
 {
-    const ConfigType configTree = this->getConfigTree();
+    const ConfigType configTree = this->getConfiguration();
     const ConfigType config     = configTree.get_child("config.<xmlattr>");
     if(!config.empty())
     {
@@ -82,10 +82,8 @@ void SPointListFromMatrices::updating()
     {
         const auto mat = m_matrices[j].lock();
 
-        data::Matrix4::TMCoefArray coefs = mat->getCoefficients();
-
-        //extract translation
-        data::Point::sptr p = data::Point::New(coefs[3], coefs[7], coefs[11]);
+        // extract translation
+        data::Point::sptr p = data::Point::New((*mat)[3], (*mat)[7], (*mat)[11]);
 
         std::string label;
         if(m_append)

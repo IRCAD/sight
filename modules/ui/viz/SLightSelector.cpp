@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@
 #include <data/Matrix4.hpp>
 
 #include <service/macros.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
 
@@ -315,8 +315,7 @@ void SLightSelector::refreshLayers()
 {
     m_layersBox->clear();
 
-    service::registry::ObjectService::ServiceVectorType renderers =
-        service::OSR::getServices("sight::viz::scene3d::SRender");
+    const auto renderers = service::getServices("sight::viz::scene3d::SRender");
 
     // Fills layer combo box with all enabled layers of each render services
     for(const auto& srv : renderers)
@@ -395,8 +394,7 @@ void SLightSelector::createLightAdaptor(const std::string& _name)
         m_lightAdaptors = currentLayer->getLightAdaptors();
         this->updateLightsList();
 
-        service::registry::ObjectService::ServiceVectorType materialServices =
-            service::OSR::getServices("sight::module::viz::scene3d::adaptor::SMaterial");
+        const auto materialServices = service::getServices("sight::module::viz::scene3d::adaptor::SMaterial");
 
         for(const auto& srv : materialServices)
         {

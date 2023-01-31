@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 #include "viz/scene3d/SRender.hpp"
 
 #include <service/op/Add.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 
@@ -270,11 +270,11 @@ void ChainManager::updateCompositorAdaptors(
                             shaderParamService->setRenderService(_renderService);
 
                             service::IService::ConfigType config;
-                            config.add("config.<xmlattr>.layer", _layerId);
                             config.add("config.<xmlattr>.compositorName", _compositorName);
                             config.add("config.<xmlattr>.parameter", constantName);
                             config.add("config.<xmlattr>.shaderType", shaderTypeStr);
 
+                            shaderParamService->setLayerID(_layerId);
                             shaderParamService->setConfiguration(config);
                             shaderParamService->configure();
                             shaderParamService->start();

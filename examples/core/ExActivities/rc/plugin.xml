@@ -93,7 +93,7 @@
         <desc>Session reader</desc>
         <config>
             <dialog extension=".sample" description="Sample Sight session file" policy="always" />
-            <password policy="once" encryption="salted" />
+            <password policy="global" encryption="salted" />
         </config>
     </extension>
 
@@ -103,7 +103,7 @@
         <desc>Session writer</desc>
         <config>
             <dialog extension=".sample" description="Sample Sight session file" policy="once" />
-            <password policy="once" encryption="salted" />
+            <password policy="global" encryption="salted" />
         </config>
     </extension>
 

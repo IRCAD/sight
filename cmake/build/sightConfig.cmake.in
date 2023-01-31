@@ -23,9 +23,21 @@ if(NOT SIGHT_CONFIGURED)
             ${CMAKE_BINARY_DIR}/bin/safe-xvfb-run
             COPYONLY
         )
+        configure_file(
+            ${FWCMAKE_RESOURCE_PATH}/install/linux/exec_gui_tests.sh
+            ${CMAKE_BINARY_DIR}/bin/exec_gui_tests.sh
+            COPYONLY
+        )
         list(APPEND CMAKE_PREFIX_PATH /usr/share/OGRE/cmake/modules)
         list(APPEND CMAKE_PREFIX_PATH ${FWCMAKE_RESOURCE_PATH}/modules)
+    else()
+        configure_file(
+            ${FWCMAKE_RESOURCE_PATH}/install/windows/exec_gui_tests.bat
+            ${CMAKE_BINARY_DIR}/bin/exec_gui_tests.bat
+            COPYONLY
+        )
     endif()
+    
 
     set(FW_INSTALL_PATH_SUFFIX "${PROJECT_NAME}")
     set(FWCONFIG_PACKAGE_LOCATION lib/cmake/${PROJECT_NAME})
@@ -61,7 +73,6 @@ endif()
 
 foreach(sight_comp ${sight_FIND_COMPONENTS})
     if(NOT ${sight_comp}_FOUND)
-        message(STATUS "Looking for sight component: ${sight_comp}")
         if (NOT sight_comp IN_LIST SIGHT_SUPPORTED_COMPONENTS)
             set(sight_FOUND False)
             set(sight_NOT_FOUND_MESSAGE "Unsupported component: ${sight_comp}")

@@ -23,14 +23,11 @@
 #include "modules/ui/qt/viz/SnapshotEditor.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Signals.hpp>
 #include <core/location/SingleFile.hpp>
 #include <core/location/SingleFolder.hpp>
-#include <core/runtime/operations.hpp>
-
-#include <service/macros.hpp>
+#include <core/runtime/path.hpp>
 
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -41,8 +38,6 @@
 #include <QPushButton>
 #include <QString>
 #include <QWidget>
-
-#include <filesystem>
 
 namespace sight::module::ui::qt::viz
 {

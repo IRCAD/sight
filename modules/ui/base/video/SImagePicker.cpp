@@ -63,7 +63,7 @@ void SImagePicker::stopping()
 
 void SImagePicker::configuring()
 {
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
 
     const std::string videoRef = config.get<std::string>("videoReference", "center");
 
@@ -77,6 +77,9 @@ void SImagePicker::configuring()
     {
         m_videoRef = it->second;
     }
+
+    m_useCtrlModifier = config.get<bool>("useCtrlModifier", true);
+    m_singlePointMode = config.get<bool>("singlePointMode", false);
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +92,7 @@ void SImagePicker::updating()
 
 void SImagePicker::getInteraction(data::tools::PickingInfo info)
 {
-    if(info.m_modifierMask == data::tools::PickingInfo::CTRL)
+    if(info.m_modifierMask == data::tools::PickingInfo::CTRL || !m_useCtrlModifier)
     {
         if(info.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_DOWN)
         {
@@ -99,7 +102,27 @@ void SImagePicker::getInteraction(data::tools::PickingInfo info)
 
             const std::array<double, 3> position = {{x, y, z}};
 
-            this->addPoint(position);
+            if(m_singlePointMode)
+            {
+                std::size_t nPoints = 0;
+                {
+                    auto pointList = m_pointList.lock();
+                    nPoints = pointList->getPoints().size();
+                }
+
+                if(nPoints > 0)
+                {
+                    this->removeLastPoint();
+                }
+                else
+                {
+                    this->addPoint(position);
+                }
+            }
+            else
+            {
+                this->addPoint(position);
+            }
         }
         else if(info.m_eventId == data::tools::PickingInfo::Event::MOUSE_RIGHT_DOWN)
         {

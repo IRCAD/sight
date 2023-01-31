@@ -27,8 +27,6 @@
 #include "ui/base/container/fwMenuBar.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 namespace sight::ui::base::registry
 {
 
@@ -52,7 +50,7 @@ public:
     UI_BASE_API MenuBar(std::string sid);
 
     /// Destructor. Do nothing
-    UI_BASE_API ~MenuBar() override;
+    UI_BASE_API ~MenuBar() override = default;
 
     /// Return the parent container
     UI_BASE_API virtual ui::base::container::fwMenuBar::sptr getParent();
@@ -94,7 +92,7 @@ public:
      * service.
      */
 
-    UI_BASE_API virtual void initialize(core::runtime::ConfigurationElement::sptr configuration);
+    UI_BASE_API virtual void initialize(const ui::base::config_t& configuration);
 
     /**
      * @brief Starting menu bar registry.
@@ -113,7 +111,6 @@ public:
 
 protected:
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::map<std::string, std::pair<unsigned int, bool> > SIDMenuMapType;
 
     /**

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -96,8 +96,8 @@ public:
     MODULE_GEOMETRY_VISION_API ~SDistortion() noexcept override;
 
     /**
-     * @brief Connect data::Image::s_MODIFIED_SIG to s_UPDATE_SLOT
-     * and data::Image::s_BUFFER_MODIFIED_SIG to s_UPDATE_SLOT
+     * @brief Connect data::Image::s_MODIFIED_SIG to IService::slots::s_UPDATE
+     * and data::Image::s_BUFFER_MODIFIED_SIG to IService::slots::s_UPDATE
      */
     MODULE_GEOMETRY_VISION_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 

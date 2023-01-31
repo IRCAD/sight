@@ -3,10 +3,12 @@ Example:
 
 <service uid="..." type="sight::service::SConfigController">
     <appConfig id="TransferFunctionWithNegatoEditor" />
-    <inout key="image" uid="..." />
-    <inout key="histogram" uid="..." />
-    <inout key="landmarks" uid="..." />
-    <inout replace="transferFunctionOutput" by="..." />
+    <inout group="data">
+        <key name="image" uid="..." />
+        <key name="histogram" uid="..." />
+        <key name="landmarks" uid="..." />
+        <key name="transferFunctionOutput" uid="..." />
+    </inout>
     <parameter replace="WID_PARENT" by="..." />
 </service>
 -->
@@ -78,17 +80,21 @@ Example:
 
         <service uid="cfgNegato" type="sight::service::SConfigController">
             <appConfig id="2DNegatoWithTF" />
-            <inout key="image" uid="${image}" />
-            <inout key="landmarks" uid="${landmarks}" />
-            <inout key="transferFunctionDeferred" uid="${transferFunctionOutput}" optional="true" />
+            <inout group="data">
+                <key name="image" uid="${image}" />
+                <key name="landmarks" uid="${landmarks}" />
+                <key name="transferFunctionDeferred" uid="${transferFunctionOutput}" optional="true" />
+            </inout>
             <parameter replace="WID_PARENT" by="negatoView" />
         </service>
 
         <service uid="tfWidget" type="sight::service::SConfigController">
             <appConfig id="TransferFunctionWidget" />
-            <inout key="image" uid="${image}"/>
-            <inout key="histogram" uid="${histogram}"/>
-            <inout key="transferFunction" uid="${transferFunctionOutput}" />
+            <inout group="data">
+                <key name="image" uid="${image}"/>
+                <key name="histogram" uid="${histogram}"/>
+                <key name="transferFunction" uid="${transferFunctionOutput}" />
+            </inout>
             <parameter replace="WID_PARENT" by="tfScene"/>
         </service>
 

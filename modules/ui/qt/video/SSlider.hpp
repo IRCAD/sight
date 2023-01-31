@@ -80,8 +80,6 @@ public:
 
 protected:
 
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
-
     /// Installs the layout
     void starting() override;
 

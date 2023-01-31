@@ -22,7 +22,6 @@
 
 #include "Plugin.hpp"
 
-#include <core/runtime/Runtime.hpp>
 #include <core/spyLog.hpp>
 
 namespace ExNotifications

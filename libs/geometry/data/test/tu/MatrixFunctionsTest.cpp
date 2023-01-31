@@ -172,4 +172,45 @@ void MatrixFunctionsTest::checkInverse()
 
 //------------------------------------------------------------------------------
 
+void MatrixFunctionsTest::multiplicationTest()
+{
+    const fwMatrix4x4 mat1 {{
+        {0, 1, 2, 3},
+        {4, 5, 6, 7},
+        {8, 9, 10, 11},
+        {12, 13, 14, 15}
+    }
+    };
+    const fwMatrix4x4 mat2 {{
+        {16, 17, 18, 19},
+        {20, 21, 22, 23},
+        {24, 25, 26, 27},
+        {28, 29, 30, 31}
+    }
+    };
+    const fwMatrix4x4 expectedResult {{
+        {152, 158, 164, 170},
+        {504, 526, 548, 570},
+        {856, 894, 932, 970},
+        {1208, 1262, 1316, 1370}
+    }
+    };
+    const fwMatrix4x4 actualResult = mat1 * mat2;
+
+    for(std::uint8_t i = 0 ; i < 4 ; i++)
+    {
+        for(std::uint8_t j = 0 ; j < 4 ; j++)
+        {
+            CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
+                "i=" + std::to_string(i) + ", j=" + std::to_string(j),
+                expectedResult[i][j],
+                actualResult[i][j],
+                0.0001
+            );
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace sight::geometry::data::ut

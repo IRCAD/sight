@@ -22,53 +22,30 @@
 
 #include "ui/base/IMenuBar.hpp"
 
-#include <core/base.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
-#include <core/tools/fwID.hpp>
-
-#include <service/macros.hpp>
 
 namespace sight::ui::base
 {
-
-IMenuBar::IMenuBar()
-= default;
-
-//-----------------------------------------------------------------------------
-
-IMenuBar::~IMenuBar()
-= default;
 
 //-----------------------------------------------------------------------------
 
 void IMenuBar::initialize()
 {
     m_registry = ui::base::registry::MenuBar::New(this->getID());
-    // find ViewRegistryManager configuration
-    std::vector<ConfigurationType> vectRegistry = m_configuration->find("registry");
-    SIGHT_ASSERT("[" + this->getID() + "'] <registry> section is mandatory.", !vectRegistry.empty());
 
-    if(!vectRegistry.empty())
+    const auto config = this->getConfiguration();
+
+    // find ViewRegistryManager configuration
+    if(const auto registry = config.get_child_optional("registry"); registry.has_value())
     {
-        m_registryConfig = vectRegistry.at(0);
-        m_registry->initialize(m_registryConfig);
+        m_registry->initialize(registry.value());
     }
 
-    // find gui configuration
-    std::vector<ConfigurationType> vectGui = m_configuration->find("gui");
-    SIGHT_ASSERT("[" + this->getID() + "'] <gui> section is mandatory.", !vectGui.empty());
-
-    if(!vectGui.empty())
+    // find LayoutManager configuration
+    if(const auto layoutConfig = config.get_child_optional("gui.layout"); layoutConfig.has_value())
     {
-        // find LayoutManager configuration
-        std::vector<ConfigurationType> vectLayoutMng = vectGui.at(0)->find("layout");
-        SIGHT_ASSERT("[" + this->getID() + "'] <layout> section is mandatory.", !vectLayoutMng.empty());
-        if(!vectLayoutMng.empty())
-        {
-            m_layoutConfig = vectLayoutMng.at(0);
-            this->initializeLayoutManager(m_layoutConfig);
-        }
+        this->initializeLayoutManager(layoutConfig.value());
     }
 }
 
@@ -165,13 +142,8 @@ void IMenuBar::menuServiceStarting(std::string menuSrvSID)
 
 //-----------------------------------------------------------------------------
 
-void IMenuBar::initializeLayoutManager(ConfigurationType layoutConfig)
+void IMenuBar::initializeLayoutManager(const ui::base::config_t& layoutConfig)
 {
-    SIGHT_ASSERT(
-        "Bad configuration name " << layoutConfig->getName() << ", must be layout",
-        layoutConfig->getName() == "layout"
-    );
-
     ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(
         ui::base::layoutManager::IMenuBarLayoutManager::REGISTRY_KEY
     );

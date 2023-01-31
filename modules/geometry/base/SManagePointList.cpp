@@ -58,7 +58,7 @@ SManagePointList::~SManagePointList() noexcept =
 
 void SManagePointList::configuring()
 {
-    const auto tree   = this->getConfigTree();
+    const auto tree   = this->getConfiguration();
     const auto config = tree.get_child_optional("config.<xmlattr>");
 
     if(config)

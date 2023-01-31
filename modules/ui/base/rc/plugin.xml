@@ -69,20 +69,8 @@
 
      <extension implements="sight::service::extension::Factory">
           <type>sight::ui::base::IAction</type>
-          <service>sight::module::ui::base::com::SBooleanSlotCaller</service>
-          <desc>This action runs a slot given by HasSlot id and slot key with a boolean in paramter representing the action</desc>
-     </extension>
-
-     <extension implements="sight::service::extension::Factory">
-          <type>sight::ui::base::IAction</type>
           <service>sight::module::ui::base::com::SSignal</service>
           <desc>Action that sends a signal when it is triggered</desc>
-     </extension>
-
-     <extension implements="sight::service::extension::Factory">
-          <type>sight::ui::base::IAction</type>
-          <service>sight::module::ui::base::com::SSlotCaller</service>
-          <desc>Run a slot given by HasSlot id and slot key.</desc>
      </extension>
 
      <extension implements="sight::service::extension::Factory">
@@ -179,13 +167,6 @@
           <service>sight::module::ui::base::viz::CrossTypeAction</service>
           <object>sight::data::Image</object>
           <desc>This action allows change the cross type</desc>
-     </extension>
-
-     <extension implements="sight::service::extension::Factory">
-          <type>sight::ui::base::IAction</type>
-          <service>sight::module::ui::base::viz::SSnapshot</service>
-          <object>sight::data::Object</object>
-          <desc>This action allows to snapshot a generic scene</desc>
      </extension>
 
     <extension implements="sight::service::extension::Factory">

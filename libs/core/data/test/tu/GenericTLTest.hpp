@@ -37,6 +37,7 @@ public:
     CPPUNIT_TEST(copyTest);
     CPPUNIT_TEST(iteratorTest);
     CPPUNIT_TEST(objectValid);
+    CPPUNIT_TEST(equalityTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -50,6 +51,7 @@ public:
     static void copyTest();
     static void iteratorTest();
     static void objectValid();
+    static void equalityTest();
 };
 
 } // namespace sight::data::ut

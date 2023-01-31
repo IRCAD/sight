@@ -11,7 +11,8 @@ bindir=$(cd "$(dirname "$0")"; pwd)
 rootdir=$(cd "$bindir/.." ; pwd)
 libdir="$rootdir/lib/sight"
 sdkdir="@Sight_LIBRARY_DIR@"
-extdir="@FW_SIGHT_EXTERNAL_LIBRARIES_DIR@"
+extdir="@Sight_EXTRA_LIBRARY_DIR@:@FW_SIGHT_EXTERNAL_LIBRARIES_DIR@"
+moduleopt="@SIGHT_EXTRA_MODULES_OPT@"
 
 # compute LD_LIBRARY_PATH
 if [ ! -z "${libdir}" -a "${libdir}" != " " ]; then
@@ -48,14 +49,14 @@ gdb="@GDB@"
 
 if [ -n "$xvfb_run" ]; then
     if [ -n "$gdb" ]; then
-        exec $xvfb_run $gdb --return-child-result -ex="set confirm off" -ex="set use-coredump-filter off" -ex="dump-excluded-mappings on" -ex="set print thread-events off" -ex run -ex bt -ex="generate-core-file $bindir/@PROJECT_EXECUTABLE@.core" -ex quit --batch --args "$bindir/@PROJECT_EXECUTABLE@" $@
+        exec $xvfb_run $gdb --return-child-result -ex="set confirm off" -ex="set use-coredump-filter off" -ex="dump-excluded-mappings on" -ex="set print thread-events off" -ex run -ex bt -ex="generate-core-file $bindir/@PROJECT_EXECUTABLE@.core" -ex quit --batch --args "$bindir/@PROJECT_EXECUTABLE@" $moduleopt $@
     else
-        exec $xvfb_run "$bindir/@PROJECT_EXECUTABLE@" $@
+        exec $xvfb_run "$bindir/@PROJECT_EXECUTABLE@" $moduleopt $@
     fi
 else
     if [ -n "$gdb" ]; then
-        exec $gdb --return-child-result -ex="set confirm off" -ex="set use-coredump-filter off" -ex="dump-excluded-mappings on" -ex="set print thread-events off" -ex run -ex bt -ex="generate-core-file $bindir/@PROJECT_EXECUTABLE@.core" -ex quit --batch --args "$bindir/@PROJECT_EXECUTABLE@" $@
+        exec $gdb --return-child-result -ex="set confirm off" -ex="set use-coredump-filter off" -ex="dump-excluded-mappings on" -ex="set print thread-events off" -ex run -ex bt -ex="generate-core-file $bindir/@PROJECT_EXECUTABLE@.core" -ex quit --batch --args "$bindir/@PROJECT_EXECUTABLE@" $moduleopt $@
     else
-        exec "$bindir/@PROJECT_EXECUTABLE@" $@
+        exec "$bindir/@PROJECT_EXECUTABLE@" $moduleopt $@
     fi
 fi

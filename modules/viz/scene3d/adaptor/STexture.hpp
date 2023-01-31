@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,7 +49,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::STexture">
         <in key="image" uid="..." />
-        <config layer="..." textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
+        <config textureName="texName" filtering="linear" wrapping="repeat" useAlpha="false" />
     </service>
    @endcode
  *
@@ -57,7 +57,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b image [sight::data::Image]: the image to map as a texture.
  *
  * @subsection Configuration Configuration:
- *  - \b layer (mandatory, string): defines the texture's layer
  *  - \b textureName (optional, string, default="") : the name of the ogre texture managed by the adaptor
  *  - \b filtering (optional nearest/linear, default=linear) : filtering of the texture
  *  - \b wrapping (optional, clamp/repeat, default=repeat) : wrapping of the texture
@@ -78,7 +77,7 @@ public:
     MODULE_VIZ_SCENE3D_API STexture() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~STexture() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~STexture() noexcept final = default;
 
     /// Gets the Ogre texture.
     MODULE_VIZ_SCENE3D_API Ogre::TexturePtr getTexture() const;
@@ -98,25 +97,25 @@ public:
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Creates the managed Ogre texture.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
-     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to s_UPDATE_SLOT
+     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to IService::slots::s_UPDATE
+     * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_TEXTURE_INOUT to IService::slots::s_UPDATE
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 
     /// Updates the attached texture.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /// Destroys Ogre resources.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
 private:
 

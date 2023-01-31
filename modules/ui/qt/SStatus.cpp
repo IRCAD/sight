@@ -27,8 +27,7 @@
 #include <core/base.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <service/IService.hpp>
 #include <service/macros.hpp>
@@ -124,7 +123,7 @@ void SStatus::configuring()
 {
     this->initialize();
 
-    const auto config = this->getConfigTree();
+    const auto config = this->getConfiguration();
 
     m_greenTooltip  = config.get<std::string>("green", "");
     m_redTooltip    = config.get<std::string>("red", "");

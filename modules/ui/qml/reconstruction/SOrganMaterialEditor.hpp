@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,8 +90,6 @@ Q_SIGNALS:
 
 protected:
 
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
-
     /// Call IQmlEditor::starting
     void starting() override;
 
@@ -108,7 +106,7 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect Reconstruction::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect Reconstruction::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
      */
     KeyConnectionsMap getAutoConnections() const override;
 

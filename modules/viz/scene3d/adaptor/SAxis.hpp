@@ -55,12 +55,11 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SAxis">
-        <config layer="default" transform="transformUID" length="30" label="true" name="A1" />
+        <config transform="transformUID" length="30" label="true" name="A1" />
     </service>
    @endcode
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *      was specified in the STransform adaptor.
  * - \b visible (optional, bool, default=true): the visibility of the axis.
@@ -81,10 +80,10 @@ public:
     SIGHT_DECLARE_SERVICE(SAxis, sight::viz::scene3d::IAdaptor);
 
     /// Sets default parameters and initializes necessary members.
-    MODULE_VIZ_SCENE3D_API SAxis() noexcept;
+    MODULE_VIZ_SCENE3D_API SAxis() noexcept = default;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SAxis() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SAxis() noexcept override = default;
 
 protected:
 

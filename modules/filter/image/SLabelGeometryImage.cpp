@@ -26,7 +26,6 @@
 #include <core/com/Slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
-#include <data/String.hpp>
 
 #include <filter/image/Labeling.hpp>
 
@@ -53,29 +52,23 @@ SLabelGeometryImage::~SLabelGeometryImage()
 
 void SLabelGeometryImage::configuring()
 {
-    const core::runtime::ConfigurationElement::sptr clusters = m_configuration->findConfigurationElement("clusters");
-    if(clusters)
+    const auto& config = this->getConfiguration();
+
+    const auto& clusters = config.get_child("clusters");
+    for(const auto& elt : boost::make_iterator_range(clusters.equal_range("cluster")))
     {
-        SIGHT_ASSERT("pointList is needed in output key", m_configuration->findConfigurationElement("out"));
-        std::vector<core::runtime::ConfigurationElement::sptr> clusterVect = clusters->find("cluster");
+        const auto clusterStr = elt.second.get_value<std::string>();
+        std::vector<std::size_t> clusterLabels;
+        const boost::char_separator<char> separator(",");
+        const boost::tokenizer<boost::char_separator<char> > tok {clusterStr, separator};
 
-        SIGHT_ASSERT("Clusters must have cluster tag.", !clusterVect.empty());
-
-        for(auto& i : clusterVect)
+        for(const auto& t : tok)
         {
-            std::string clusterStr = i->getValue();
-            std::vector<std::size_t> clusterLabels;
-            const boost::char_separator<char> separator(",");
-            const boost::tokenizer<boost::char_separator<char> > tok {clusterStr, separator};
-
-            for(const auto& t : tok)
-            {
-                clusterLabels.push_back(std::stoul(t));
-            }
-
-            m_lPointListLabels.push_back(clusterLabels);
-            m_lPointListCentroids.push_back(data::PointList::New());
+            clusterLabels.push_back(std::stoul(t));
         }
+
+        m_lPointListLabels.push_back(clusterLabels);
+        m_lPointListCentroids.push_back(data::PointList::New());
     }
 }
 

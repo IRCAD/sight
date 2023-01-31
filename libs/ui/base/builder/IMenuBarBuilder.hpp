@@ -27,8 +27,6 @@
 #include "ui/base/container/fwMenuBar.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 namespace sight::ui::base::builder
 {
 
@@ -46,10 +44,10 @@ public:
     UI_BASE_API const static RegistryKeyType REGISTRY_KEY;
 
     /// Constructor. Do nothing.
-    UI_BASE_API IMenuBarBuilder();
+    UI_BASE_API IMenuBarBuilder() = default;
 
     /// Destructor. Do nothing.
-    UI_BASE_API ~IMenuBarBuilder() override;
+    UI_BASE_API ~IMenuBarBuilder() override = default;
 
     /**
      * @brief Returns the builded menu bar.
@@ -59,7 +57,7 @@ public:
     /**
      * @brief Configure the layout before creation.
      */
-    UI_BASE_API virtual void initialize(core::runtime::ConfigurationElement::sptr configuration);
+    UI_BASE_API virtual void initialize(const ui::base::config_t& configuration);
 
     /**
      * @brief Instantiate layout with parent menuBar.

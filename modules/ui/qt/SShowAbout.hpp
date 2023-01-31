@@ -61,7 +61,7 @@ protected:
      *
      * XML configuration sample:
        @code{.xml}
-       <service impl="sight::module::ui::qt::SShowAbout" type="ui::base::IAction">
+       <service type="sight::module::ui::qt::SShowAbout">
          <filename id=".../aboutFile.html"/>
          <title>title</title>
          <size width="200" height="200" />

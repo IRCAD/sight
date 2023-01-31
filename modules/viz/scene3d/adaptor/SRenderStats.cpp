@@ -22,8 +22,6 @@
 
 #include "modules/viz/scene3d/adaptor/SRenderStats.hpp"
 
-#include <service/macros.hpp>
-
 #include <viz/scene3d/helper/Font.hpp>
 #include <viz/scene3d/IWindowInteractor.hpp>
 #include <viz/scene3d/SRender.hpp>
@@ -72,19 +70,10 @@ private:
     std::uint8_t m_frameCount {100}; // Start at 100 to trigger text creation after the first frame.
 };
 
-static const std::string s_COLOR_CONFIG       = "color";
-static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
-static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
-
 //------------------------------------------------------------------------------
 
-SRenderStats::SRenderStats() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
-SRenderStats::~SRenderStats() noexcept =
-    default;
+SRenderStats::SRenderStats() noexcept  = default;
+SRenderStats::~SRenderStats() noexcept = default;
 
 //------------------------------------------------------------------------------
 
@@ -92,8 +81,11 @@ void SRenderStats::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_COLOR_CONFIG       = s_CONFIG + "color";
+    static const std::string s_FONT_SIZE_CONFIG   = s_CONFIG + "fontSize";
+    static const std::string s_FONT_SOURCE_CONFIG = s_CONFIG + "fontSource";
 
     const std::string color      = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
     data::Color::sptr sightColor = data::Color::New();

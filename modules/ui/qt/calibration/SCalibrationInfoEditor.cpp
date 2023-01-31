@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -197,7 +197,7 @@ void SCalibrationInfoEditor::remove()
                 auto sig = calInfo1->signal<data::CalibrationInfo::RemovedRecordSignalType>(
                     data::CalibrationInfo::s_REMOVED_RECORD_SIG
                 );
-                core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
                 sig->asyncEmit();
             }
 
@@ -210,7 +210,7 @@ void SCalibrationInfoEditor::remove()
                     auto sig = calInfo2->signal<data::CalibrationInfo::RemovedRecordSignalType>(
                         data::CalibrationInfo::s_REMOVED_RECORD_SIG
                     );
-                    core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+                    core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
                     sig->asyncEmit();
                 }
             }
@@ -235,7 +235,7 @@ void SCalibrationInfoEditor::reset()
         auto sig = calInfo1->signal<data::CalibrationInfo::ResetRecordSignalType>(
             data::CalibrationInfo::s_RESET_RECORD_SIG
         );
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 
@@ -248,7 +248,7 @@ void SCalibrationInfoEditor::reset()
             auto sig = calInfo2->signal<data::CalibrationInfo::ResetRecordSignalType>(
                 data::CalibrationInfo::s_RESET_RECORD_SIG
             );
-            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
             sig->asyncEmit();
         }
     }
@@ -285,8 +285,8 @@ void SCalibrationInfoEditor::getSelection()
 service::IService::KeyConnectionsMap SCalibrationInfoEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_CALIBRATION_INFO_1, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_CALIBRATION_INFO_2, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_CALIBRATION_INFO_1, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_CALIBRATION_INFO_2, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     return connections;
 }
 

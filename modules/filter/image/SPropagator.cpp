@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,7 +67,7 @@ SPropagator::~SPropagator()
 
 void SPropagator::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     m_value     = config.get<int>("value", 1);
     m_overwrite = config.get<bool>("overwrite", true);
@@ -323,7 +323,7 @@ void SPropagator::draw(data::tools::PickingInfo pickingInfo)
     if(imgBufferModified)
     {
         auto sig = imgOutLock->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 }
@@ -373,7 +373,7 @@ sight::filter::image::MinMaxPropagation::SeedsType SPropagator::convertDiffToSee
 service::IService::KeyConnectionsMap SPropagator::getAutoConnections() const
 {
     return {
-        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SET_ORIENTATION_SLOT},
         {s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_RESET_DRAWING}
     };

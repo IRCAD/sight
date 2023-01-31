@@ -1,4 +1,15 @@
-sight_add_target(pchCoreOg TYPE LIBRARY FAST_DEBUG ON)
+add_library(pchCoreOg STATIC pch.cpp)
+
+target_precompile_headers(pchCoreOg PUBLIC ${SIGHT_PCH_HEADERS})
+
+# Set the debug optimized flags the same way it is done in sight_add_target
+if("${CMAKE_BUILD_TYPE}" STREQUAL "Debug")
+    if(UNIX)
+        target_compile_options(pchCoreOg PRIVATE "-Og")
+    elseif(MSVC)
+        set_fast_debug_cxx_flags(pchCoreOg OFF)
+    endif()
+endif()
 
 find_package(Filesystem REQUIRED)
 find_package(Boost QUIET COMPONENTS system date_time iostreams log log_setup REQUIRED)

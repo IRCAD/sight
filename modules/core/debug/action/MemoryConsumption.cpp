@@ -103,19 +103,16 @@ void MemoryConsumption::configuring()
 {
     this->sight::ui::base::IAction::initialize();
 
-    core::runtime::ConfigurationElement::sptr consumptionCfg;
-    consumptionCfg = m_configuration->findConfigurationElement("config");
-    SIGHT_ASSERT("Missing mode tag", consumptionCfg);
+    const auto& config = this->getConfiguration();
 
-    SIGHT_ASSERT("Missing attribute 'value'", consumptionCfg->hasAttribute("mode"));
-    std::string mode = consumptionCfg->getAttributeValue("mode");
+    const auto mode = config.get<std::string>("config.<xmlattr>.mode");
     SIGHT_ASSERT("Wrong value (" << mode << ") for mode tag", mode == "increase" || mode == "decrease");
     m_isIncreaseMode = (mode == "increase");
 
-    if(m_isIncreaseMode && consumptionCfg->hasAttribute("value"))
+    if(const auto value = config.get_optional<std::string>("config.<xmlattr>.value");
+       m_isIncreaseMode&& value.has_value())
     {
-        std::string value = consumptionCfg->getAttributeValue("value");
-        auto sizeInMo     = boost::lexical_cast<std::size_t>(value);
+        auto sizeInMo = boost::lexical_cast<std::size_t>(value.value());
         m_memorySizeInBytes = sizeInMo * 1024 * 1024;
     }
 }

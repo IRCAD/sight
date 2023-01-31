@@ -38,15 +38,11 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_ENABLE_TOOL_SLOT      = "enableTool";
-static const core::com::Slots::SlotKeyType s_DELETE_LAST_MESH_SLOT = "deleteLastMesh";
+static const core::com::Slots::SlotKeyType s_ENABLE_TOOL_SLOT       = "enableTool";
+static const core::com::Slots::SlotKeyType s_DELETE_LAST_MESH_SLOT  = "deleteLastMesh";
+static const core::com::Slots::SlotKeyType s_CANCEL_LAST_CLICK_SLOT = "cancelLastClick";
 
 static const core::com::Slots::SlotKeyType s_TOOL_DISABLED_SIG = "toolDisabled";
-
-static const std::string s_PRIORITY_CONFIG   = "priority";
-static const std::string s_EXTRUDE_CONFIG    = "extrude";
-static const std::string s_LINE_COLOR_CONFIG = "lineColor";
-static const std::string s_EDGE_COLOR_CONFIG = "edgeColor";
 
 SShapeExtruder::Triangle2D::Triangle2D(
     const Ogre::Vector2& _a,
@@ -148,13 +144,9 @@ SShapeExtruder::SShapeExtruder() noexcept
 {
     newSlot(s_ENABLE_TOOL_SLOT, &SShapeExtruder::enableTool, this);
     newSlot(s_DELETE_LAST_MESH_SLOT, &SShapeExtruder::deleteLastMesh, this);
+    newSlot(s_CANCEL_LAST_CLICK_SLOT, &SShapeExtruder::cancelLastClick, this);
     m_toolDisabledSig = this->newSignal<core::com::Signal<void()> >(s_TOOL_DISABLED_SIG);
 }
-
-//-----------------------------------------------------------------------------
-
-SShapeExtruder::~SShapeExtruder() noexcept =
-    default;
 
 //-----------------------------------------------------------------------------
 
@@ -162,8 +154,12 @@ void SShapeExtruder::configuring()
 {
     this->configureParams();
 
-    const ConfigType srvConfig = this->getConfigTree();
-    const ConfigType config    = srvConfig.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_PRIORITY_CONFIG   = s_CONFIG + "priority";
+    static const std::string s_EXTRUDE_CONFIG    = s_CONFIG + "extrude";
+    static const std::string s_LINE_COLOR_CONFIG = s_CONFIG + "lineColor";
+    static const std::string s_EDGE_COLOR_CONFIG = s_CONFIG + "edgeColor";
 
     m_priority = config.get<int>(s_PRIORITY_CONFIG, m_priority);
     m_extrude  = config.get<bool>(s_EXTRUDE_CONFIG, m_extrude);
@@ -217,12 +213,13 @@ void SShapeExtruder::starting()
         "sight::module::viz::scene3d::adaptor::SMaterial"
     );
     m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
-    m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setRenderService(this->getRenderService());
-    m_materialAdaptor->setLayerID(m_layerID);
-    m_materialAdaptor->setShadingMode("ambient");
-    m_materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_materialAdaptor->configure(
+        this->getID() + m_materialAdaptor->getID(),
+        this->getID() + m_materialAdaptor->getID(),
+        this->getRenderService(),
+        m_layerID,
+        "ambient"
+    );
     m_materialAdaptor->start();
     m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);
     m_materialAdaptor->update();
@@ -312,6 +309,13 @@ void SShapeExtruder::deleteLastMesh()
     }
 }
 
+//------------------------------------------------------------------------------
+
+void SShapeExtruder::cancelLastClick()
+{
+    modifyLasso(Action::REMOVE);
+}
+
 //-----------------------------------------------------------------------------
 
 std::tuple<Ogre::Vector3, Ogre::Vector3, Ogre::Vector3> SShapeExtruder::getNearFarRayPositions(
@@ -360,23 +364,11 @@ std::tuple<Ogre::Vector3, Ogre::Vector3, Ogre::Vector3> SShapeExtruder::getNearF
     return {toolPosition, nearPosition, farPosition};
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void SShapeExtruder::wheelEvent(Modifier /*_mods*/, int /*_angleDelta*/, int /*_x*/, int /*_y*/)
+void SShapeExtruder::modifyLasso(Action _action, int _x, int _y)
 {
-    if(m_interactionEnableState)
-    {
-        // Don't change the zoom when the tool interaction is enabled.
-        const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
-        layer->cancelFurtherInteraction();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
-{
-    if(m_toolEnableState && (_button == MouseButton::LEFT || _button == MouseButton::RIGHT))
+    if(m_toolEnableState)
     {
         this->getRenderService()->makeCurrent();
 
@@ -408,7 +400,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, i
         const auto toolNearFarPos = this->getNearFarRayPositions(_x, _y);
 
         // Check the interactions.
-        if(_button == MouseButton::LEFT)
+        if(_action == Action::ADD)
         {
             // Check if the point can be added.
             bool near = false;
@@ -434,7 +426,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, i
                 return;
             }
         }
-        else if(_button == MouseButton::RIGHT)
+        else if(_action == Action::REMOVE)
         {
             // Remove the last clicked point.
             if(!m_lassoToolPositions.empty())
@@ -455,6 +447,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, i
                 m_interactionEnableState = false;
                 m_lastLassoLine->clear();
                 m_lasso->clear();
+                this->requestRender();
                 return;
             }
         }
@@ -475,12 +468,41 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, i
 
         m_lastLassoLine->colour(m_lineColor);
         m_lastLassoLine->position(m_lassoToolPositions.back());
-        m_lastLassoLine->position(std::get<0>(toolNearFarPos));
+        if(_x != -1 && _y != -1)
+        {
+            m_lastLassoLine->position(std::get<0>(toolNearFarPos));
+        }
 
         m_lastLassoLine->end();
 
         // Send a render request.
         this->requestRender();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SShapeExtruder::wheelEvent(Modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/)
+{
+    if(m_interactionEnableState)
+    {
+        // Don't change the zoom when the tool interaction is enabled.
+        const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
+        layer->cancelFurtherInteraction();
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
+{
+    if(_button == MouseButton::LEFT)
+    {
+        modifyLasso(Action::ADD, _x, _y);
+    }
+    else if(_button == MouseButton::RIGHT)
+    {
+        modifyLasso(Action::REMOVE, _x, _y);
     }
 }
 

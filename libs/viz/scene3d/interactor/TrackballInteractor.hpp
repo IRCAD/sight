@@ -79,7 +79,15 @@ public:
      * @brief Moves the camera towards or away from the focus point.
      * @param _delta distance that the wheel is rotated, in eighths of a degree.
      */
-    VIZ_SCENE3D_API void wheelEvent(Modifier /*_mods*/, int _delta, int /*x*/, int /*y*/) override;
+    VIZ_SCENE3D_API void wheelEvent(Modifier /*_mods*/, double _delta, int /*x*/, int /*y*/) override;
+
+    /**
+     * @brief Moves the camera towards or away the central point.
+     * @param _scalingFactor distance of the fingers
+     * @param _centerX the width coordinate of the center of the pinch
+     * @param _centerY the height coordinate of the center of the pinch
+     */
+    VIZ_SCENE3D_API void pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY) override;
 
     /**
      * @brief Defines camera actions when the keyboard is pressed.

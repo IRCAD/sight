@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021 IRCAD France
+ * Copyright (C) 2021-2022 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,9 +33,15 @@ class IAdaptor;
 namespace registry
 {
 
-typedef std::map<std::string, std::string> AdaptorRegistryType;
+struct adaptor_config_t
+{
+    std::string render;
+    std::string layer;
+};
 
-AdaptorRegistryType& getAdaptorRegistry();
+using adaptor_registry_t = std::map<std::string, adaptor_config_t>;
+
+adaptor_registry_t& getAdaptorRegistry();
 
 } // namespace registry
 

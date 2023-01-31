@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,11 +22,11 @@
 
 #include "SConfigLauncher.hpp"
 
+#include <core/com/Proxy.hpp>
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
 #include <service/macros.hpp>
-#include <service/registry/Proxy.hpp>
 
 namespace sight::module::ui::base
 {
@@ -76,7 +76,7 @@ void SConfigLauncher::configuring()
 {
     this->initialize();
 
-    m_configLauncher->parseConfig(this->getConfigTree(), this->getSptr());
+    m_configLauncher->parseConfig(this->getConfiguration(), this->getSptr());
 }
 
 //-----------------------------------------------------------------------------
@@ -89,7 +89,7 @@ void SConfigLauncher::setChecked(bool isChecked)
         // Check if the config is already running, this avoids to start a running config.
         if(!m_configLauncher->configIsRunning())
         {
-            service::registry::Proxy::sptr proxies = service::registry::Proxy::getDefault();
+            core::com::Proxy::sptr proxies = core::com::Proxy::get();
             proxies->connect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
             service::FieldAdaptorType replaceMap;
             replaceMap[s_CLOSE_CONFIG_CHANNEL_ID] = m_proxychannel;
@@ -116,7 +116,7 @@ void SConfigLauncher::stopConfig()
     if(m_configLauncher->configIsRunning())
     {
         m_configLauncher->stopConfig();
-        service::registry::Proxy::sptr proxies = service::registry::Proxy::getDefault();
+        core::com::Proxy::sptr proxies = core::com::Proxy::get();
         proxies->disconnect(m_proxychannel, this->slot(s_STOP_CONFIG_SLOT));
         this->setChecked(false);
     }

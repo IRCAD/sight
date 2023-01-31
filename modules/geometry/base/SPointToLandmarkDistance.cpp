@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ SPointToLandmarkDistance::~SPointToLandmarkDistance() noexcept =
 
 void SPointToLandmarkDistance::configuring()
 {
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>.");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>.");
     m_unit      = config.get<std::string>("unit", "");
     m_precision = config.get<int>("precision", 6);
     if(!m_unit.empty())
@@ -124,7 +124,7 @@ void SPointToLandmarkDistance::updating()
         auto sig =
             pointToLandmarkMat->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         {
-            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
             sig->asyncEmit();
         }
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,14 +24,15 @@
 
 #include "TestServices.hpp"
 
-#include <core/runtime/Convert.hpp>
+#include <core/runtime/path.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <data/Image.hpp>
 #include <data/Mesh.hpp>
 #include <data/TransferFunction.hpp>
 
-#include <service/AppConfigManager.hpp>
 #include <service/base.hpp>
+#include <service/IAppConfigManager.hpp>
 #include <service/parser/Image.hpp>
 #include <service/parser/TransferFunction.hpp>
 
@@ -64,9 +65,7 @@ void ConfigParserTest::setUp()
     std::filesystem::path location = core::runtime::getResourceFilePath("tu_exec_service");
     CPPUNIT_ASSERT(std::filesystem::exists(location));
 
-    auto& runtime = core::runtime::Runtime::get();
-    runtime.addModules(location);
-
+    core::runtime::addModules(location);
     core::runtime::loadModule("sight::module::service");
 }
 
@@ -86,10 +85,10 @@ void ConfigParserTest::testObjectCreationWithConfig()
     const std::string serviceUUID2 = "myTestService2";
 
     // Create object configuration
-    core::runtime::ConfigurationElement::sptr config = buildObjectConfig();
+    const auto config = buildObjectConfig();
 
     // Create the object and its services from the configuration
-    service::AppConfigManager::sptr configManager = service::AppConfigManager::New();
+    auto configManager = service::IAppConfigManager::New();
     configManager->service::IAppConfigManager::setConfig(config);
     configManager->create();
     auto image = data::Image::dynamicCast(configManager->getConfigRoot());
@@ -105,7 +104,7 @@ void ConfigParserTest::testObjectCreationWithConfig()
     CPPUNIT_ASSERT(srv2->isStarted());
 
     // Test if object's service is created
-    CPPUNIT_ASSERT(image == srv1->getObject("data", data::Access::in));
+    CPPUNIT_ASSERT(image == srv1->data::IHasData::getObject("data", data::Access::in));
 
     // Test update services
     configManager->update();
@@ -134,15 +133,9 @@ void ConfigParserTest::testImageParser()
     objCfg.add("color", "#FF459812");
     config.add_child("object", objCfg);
 
-    service::IService::ConfigType serviceCfg;
-    serviceCfg.add_child("config", config);
-
-    // Create object configuration
-    const auto cfg = core::runtime::Convert::fromPropertyTree(serviceCfg);
-
     // Create the object and its services from the configuration
-    service::AppConfigManager::sptr configManager = service::AppConfigManager::New();
-    configManager->service::IAppConfigManager::setConfig(cfg);
+    auto configManager = service::IAppConfigManager::New();
+    configManager->service::IAppConfigManager::setConfig(config);
     configManager->create();
     auto image = std::dynamic_pointer_cast<data::Image>(core::tools::fwID::getObject(objectUUID));
 
@@ -174,8 +167,7 @@ void ConfigParserTest::testTransferFunctionParser()
     service::IService::ConfigType config;
 
     std::stringstream config_string;
-    config_string << "<object uid=\"test\" type=\"sight::data::TransferFunction\">"
-                     "<colors>"
+    config_string << "<colors>"
                      "<step color=\"#ffff00ff\" value=\"-200\" />"
                      "<step color=\"#000000ff\" value=\"0\" />"
                      "<step color=\"#0000ffff\" value=\"1\" />"
@@ -183,17 +175,13 @@ void ConfigParserTest::testTransferFunctionParser()
                      "<step color=\"#00ff00ff\" value=\"1000\" />"
                      "<step color=\"#ff0000ff\" value=\"1500\" />"
                      "<step color=\"#000000ff\" value=\"5000\" />"
-                     "</colors>"
-                     "</object>";
+                     "</colors>";
     boost::property_tree::read_xml(config_string, config);
-
-    // Create object configuration
-    const auto cfg = core::runtime::Convert::fromPropertyTree(config);
 
     auto parser = sight::service::add<sight::service::parser::TransferFunction>(
         "sight::service::parser::TransferFunction"
     );
-    parser->setObjectConfig(cfg);
+    parser->setObjectConfig(config);
 
     auto tf = sight::data::TransferFunction::New();
     parser->createConfig(tf);
@@ -215,8 +203,8 @@ void ConfigParserTest::testTransferFunctionParser()
 
     CPPUNIT_ASSERT_EQUAL(-200., tf->minMax().first);
     CPPUNIT_ASSERT_EQUAL(5000., tf->minMax().second);
-    CPPUNIT_ASSERT_EQUAL(2., tf->window());
-    CPPUNIT_ASSERT_EQUAL(0., tf->level());
+    CPPUNIT_ASSERT_EQUAL(5200., tf->window());
+    CPPUNIT_ASSERT_EQUAL(2400., tf->level());
     ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(1., 1., 0., 1.), tf->sampleLinear(-200));
     ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0., 0., 0., 1.), tf->sampleLinear(0));
     ASSERT_COLOR_EQUALS(data::TransferFunction::color_t(0., 0., 1., 1.), tf->sampleLinear(250));
@@ -228,7 +216,7 @@ void ConfigParserTest::testTransferFunctionParser()
 
 //------------------------------------------------------------------------------
 
-core::runtime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
+service::IService::config_t ConfigParserTest::buildObjectConfig()
 {
     service::IService::ConfigType config;
 
@@ -268,10 +256,7 @@ core::runtime::ConfigurationElement::sptr ConfigParserTest::buildObjectConfig()
     update1.add("<xmlattr>.uid", "myTestService1");
     config.add_child("update", update1);
 
-    service::IService::ConfigType serviceCfg;
-    serviceCfg.add_child("config", config);
-
-    return core::runtime::Convert::fromPropertyTree(serviceCfg);
+    return config;
 }
 
 //------------------------------------------------------------------------------

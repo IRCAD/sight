@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #include "SessionReader.hpp"
 
-#include "detail/SessionDeserializer.hpp"
+#include "io/session/detail/core/SessionDeserializer.hpp"
 
 #include <core/crypto/PasswordKeeper.hpp>
 
@@ -51,7 +51,7 @@ public:
     inline explicit SessionReaderImpl(SessionReader* const sessionReader) :
         m_sessionReader(sessionReader),
         m_password(std::make_unique<PasswordKeeper>()),
-        m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::DEFAULT),
+        m_encryptionPolicy(PasswordKeeper::EncryptionPolicy::PASSWORD),
         m_archiveFormat(Archive::ArchiveFormat::DEFAULT)
     {
     }
@@ -138,16 +138,16 @@ void SessionReader::setArchiveFormat(const Archive::ArchiveFormat archiveFormat)
 
 //------------------------------------------------------------------------------
 
-void SessionReader::setDeserializer(const std::string& className, deserializer_t deserializer)
+void SessionReader::setCustomDeserializer(const std::string& className, deserializer_t deserializer)
 {
-    m_pimpl->m_sessionDeserializer.setDeserializer(className, deserializer);
+    m_pimpl->m_sessionDeserializer.setCustomDeserializer(className, deserializer);
 }
 
 //------------------------------------------------------------------------------
 
-void SessionReader::setDefaultDeserializer(const std::string& className, deserializer_t deserializer)
+void SessionReader::setDeserializer(const std::string& className, deserializer_t deserializer)
 {
-    detail::SessionDeserializer::setDefaultDeserializer(className, deserializer);
+    detail::SessionDeserializer::setDeserializer(className, deserializer);
 }
 
 } // namespace sight::io::session

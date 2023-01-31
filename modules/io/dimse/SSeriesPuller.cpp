@@ -72,7 +72,7 @@ SSeriesPuller::~SSeriesPuller() noexcept =
 
 void SSeriesPuller::configuring()
 {
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
 
     m_dicomReaderImplementation = config.get(s_DICOM_READER_CONFIG, m_dicomReaderImplementation);
     SIGHT_ERROR_IF("'" + s_DICOM_READER_CONFIG + "' attribute not set", m_dicomReaderImplementation.empty())
@@ -96,7 +96,7 @@ void SSeriesPuller::starting()
     m_dicomReader->setInOut(m_series_set, sight::io::base::service::s_DATA_KEY);
     if(!m_readerConfig.empty())
     {
-        core::runtime::ConfigurationElement::csptr readerConfig =
+        const auto readerConfig =
             service::extension::Config::getDefault()->getServiceConfig(
                 m_readerConfig,
                 "sight::io::base::service::IReader"
@@ -104,10 +104,10 @@ void SSeriesPuller::starting()
 
         SIGHT_ASSERT(
             "No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
-            readerConfig
+            !readerConfig.empty()
         );
 
-        m_dicomReader->setConfiguration(core::runtime::ConfigurationElement::constCast(readerConfig));
+        m_dicomReader->setConfiguration(readerConfig);
     }
 
     m_dicomReader->configure();

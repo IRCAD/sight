@@ -26,7 +26,6 @@
 #include "service/extension/AppConfig.hpp"
 
 #include <core/mt/types.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Object.hpp>
 
 #include <map>
@@ -48,7 +47,7 @@ public:
     SERVICE_API static AppConfigParameters::sptr getDefault();
 
     /// Destructor
-    SERVICE_API ~AppConfigParameters() override;
+    SERVICE_API ~AppConfigParameters() override = default;
 
     /**
      * @brief Parse module information to retrieve config parameters declaration

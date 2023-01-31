@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -55,7 +55,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SModelSeries">
         <in key="model" uid="..." />
-        <config layer="..." transform="..." material="..." autoresetcamera="true" dynamic="false"
+        <config transform="..." material="..." autoresetcamera="true" dynamic="false"
  * dynamicVertices="false"
         queryFlags="0x40000000" />
    </service>
@@ -65,7 +65,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b model [sight::data::ModelSeries]: adapted model series.
  *
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the modelSeries' layer
  * - \b transform (optional, string, default=""): the transformation matrix to associate to the adaptor.
  * - \b material (optional, string, default=""): the name of the base Ogre material to pass to the mesh adaptors.
  * - \b autoresetcamera (optional, true/false, default=true): reset the camera when this mesh is modified, "true" or
@@ -95,40 +94,40 @@ public:
     MODULE_VIZ_SCENE3D_API SModelSeries() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SModelSeries() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SModelSeries() noexcept final = default;
 
 protected:
 
     /// Configures the adaptor.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Starts the service and updates it.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::ModelSeries::s_VERTEX_MODIFIED_SIG to s_UPDATE_SLOT
-     * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to s_UPDATE_SLOT
-     * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to s_UPDATE_SLOT
+     * Connect data::ModelSeries::s_VERTEX_MODIFIED_SIG to IService::slots::s_UPDATE
+     * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to IService::slots::s_UPDATE
+     * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to IService::slots::s_UPDATE
      * Connect data::ModelSeries::s_ADDED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
      * Connect data::ModelSeries::s_REMOVED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
      * Connect data::ModelSeries::s_CHANGED_FIELDS_SIG to s_CHANGE_FIELD_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 
     /// Redraws all (stops then restarts sub services).
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /// Closes connections and unregisters service.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
     /**
      * @brief Sets the model series visibility.
      * @param _visible the visibility status of the model series.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
 
 private:
 

@@ -119,7 +119,9 @@
         </service>
 
         <service uid="dynamicView" type="sight::module::ui::qt::activity::SDynamicView">
-            <inout key="SERIES_SET" uid="seriesSet" />
+            <inout group="data">
+                <key name="SERIES_SET" uid="seriesSet" />
+            </inout>
             <mainActivity id="SDBdicomXplorer" closable="false" />
             <parameters>
                 <parameter replace="ICON_PATH" by="${appIconPath}" />

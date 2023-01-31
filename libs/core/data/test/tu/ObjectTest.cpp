@@ -133,4 +133,19 @@ void ObjectTest::lastModifyTest()
 
 //------------------------------------------------------------------------------
 
+void ObjectTest::equalityTest()
+{
+    auto object1 = data::Float::New();
+    auto object2 = data::Float::New();
+
+    CPPUNIT_ASSERT(*object1 == *object2 && !(*object1 != *object2));
+
+    object1->setDescription("1");
+    CPPUNIT_ASSERT(*object1 != *object2 && !(*object1 == *object2));
+    object2->setDescription(object1->getDescription());
+    CPPUNIT_ASSERT(*object1 == *object2 && !(*object1 != *object2));
+}
+
+//------------------------------------------------------------------------------
+
 } // namespace sight::data::ut

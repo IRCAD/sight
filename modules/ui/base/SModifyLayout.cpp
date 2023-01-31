@@ -162,66 +162,59 @@ void SModifyLayout::updating()
 void SModifyLayout::configuring()
 {
     this->initialize();
-    std::vector<ConfigurationType> vectConfig = m_configuration->find("config");
-    if(!vectConfig.empty())
+
+    const auto& config = this->getConfiguration();
+
+    for(const auto& actionCfg : config.get_child("config"))
     {
-        ConfigurationType config = vectConfig.at(0);
-        for(const ConfigurationType& actionCfg : config->getElements())
+        if(actionCfg.first == "move")
         {
-            if(actionCfg->getName() == "move")
-            {
-                SIGHT_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));
-                std::string uuid = actionCfg->getExistingAttributeValue("uid");
-                SIGHT_ASSERT("Attribute wid missing", actionCfg->hasAttribute("wid"));
-                std::string wid = actionCfg->getExistingAttributeValue("wid");
+            const auto uid = actionCfg.second.get<std::string>("<xmlattr>.uid");
+            const auto wid = actionCfg.second.get<std::string>("<xmlattr>.wid");
 
-                m_moveSrv.push_back(std::make_pair(uuid, wid));
+            m_moveSrv.push_back(std::make_pair(uid, wid));
+        }
+        else if(actionCfg.first == "show"
+                || actionCfg.first == "hide"
+                || actionCfg.first == "show_or_hide")
+        {
+            boost::logic::tribool isVisible;
+            if(actionCfg.first == "show")
+            {
+                isVisible = true;
             }
-            else if(actionCfg->getName() == "show"
-                    || actionCfg->getName() == "hide"
-                    || actionCfg->getName() == "show_or_hide")
+            else if(actionCfg.first == "hide")
             {
-                boost::logic::tribool isVisible;
-                if(actionCfg->getName() == "show")
-                {
-                    isVisible = true;
-                }
-                else if(actionCfg->getName() == "hide")
-                {
-                    isVisible = false;
-                }
-                else
-                {
-                    isVisible = boost::logic::indeterminate;
-                }
-
-                if(actionCfg->hasAttribute("wid"))
-                {
-                    std::string wid = actionCfg->getExistingAttributeValue("wid");
-                    m_showSrvWid.push_back(std::make_pair(wid, isVisible));
-                }
-                else if(actionCfg->hasAttribute("sid"))
-                {
-                    std::string sid = actionCfg->getExistingAttributeValue("sid");
-                    m_showSrvSid.push_back(std::make_pair(sid, isVisible));
-                }
-                else
-                {
-                    SIGHT_ERROR("Attribute wid or sid missing");
-                }
-            }
-            else if(actionCfg->getName() == "enable" || actionCfg->getName() == "disable")
-            {
-                SIGHT_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));
-                std::string uuid = actionCfg->getExistingAttributeValue("uid");
-                bool isEnable    = (actionCfg->getName() == "enable");
-
-                m_enableSrv.push_back(std::make_pair(uuid, isEnable));
+                isVisible = false;
             }
             else
             {
-                SIGHT_FATAL("Invalid tag name " << actionCfg->getName());
+                isVisible = boost::logic::indeterminate;
             }
+
+            if(const auto wid = actionCfg.second.get_optional<std::string>("<xmlattr>.wid"); wid.has_value())
+            {
+                m_showSrvWid.push_back(std::make_pair(wid.value(), isVisible));
+            }
+            else if(const auto sid = actionCfg.second.get_optional<std::string>("<xmlattr>.sid"); sid.has_value())
+            {
+                m_showSrvSid.push_back(std::make_pair(sid.value(), isVisible));
+            }
+            else
+            {
+                SIGHT_ERROR("Attribute wid or sid missing");
+            }
+        }
+        else if(actionCfg.first == "enable" || actionCfg.first == "disable")
+        {
+            const auto uid = actionCfg.second.get<std::string>("<xmlattr>.uid");
+            bool isEnable  = (actionCfg.first == "enable");
+
+            m_enableSrv.push_back(std::make_pair(uid, isEnable));
+        }
+        else
+        {
+            SIGHT_FATAL("Invalid tag name " << actionCfg.first);
         }
     }
 }

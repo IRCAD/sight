@@ -52,12 +52,10 @@ public:
     SIGHT_DECLARE_SERVICE(Color, service::IXMLParser);
 
     /// Does nothing.
-    SERVICE_API Color()
-    = default;
+    SERVICE_API Color() = default;
 
     /// Does nothing.
-    SERVICE_API ~Color() override
-    = default;
+    SERVICE_API ~Color() override = default;
 
 private:
 

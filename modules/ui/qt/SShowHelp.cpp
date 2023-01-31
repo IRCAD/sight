@@ -24,8 +24,6 @@
 
 #include <core/base.hpp>
 
-#include <service/macros.hpp>
-
 #include <ui/base/Cursor.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -73,21 +71,6 @@ private:
 };
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-
-SShowHelp::SShowHelp() noexcept :
-
-    m_fsHelpPath("")
-{
-}
-
-//------------------------------------------------------------------------------
-
-SShowHelp::~SShowHelp() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void SShowHelp::info(std::ostream& _sstream)
 {
     _sstream << "Action for show help contents" << std::endl;
@@ -104,13 +87,12 @@ void SShowHelp::configuring()
      *                             the appearance and available features of Qt Assistant.
      */
     this->sight::ui::base::IAction::initialize();
-    if(m_configuration->findConfigurationElement("filename"))
-    {
-        std::string filename = m_configuration->findConfigurationElement("filename")->getExistingAttributeValue("id");
-        m_fsHelpPath           = std::filesystem::path(filename);
-        m_bServiceIsConfigured = std::filesystem::exists(m_fsHelpPath);
-        SIGHT_WARN_IF("Help file " << filename << " doesn't exist", !m_bServiceIsConfigured);
-    }
+
+    const auto configuration = this->getConfiguration();
+    const auto filename      = configuration.get<std::string>("filename.<xmlattr>.id");
+    m_fsHelpPath           = std::filesystem::path(filename);
+    m_bServiceIsConfigured = std::filesystem::exists(m_fsHelpPath);
+    SIGHT_WARN_IF("Help file " << filename << " doesn't exist", !m_bServiceIsConfigured);
 }
 
 //------------------------------------------------------------------------------

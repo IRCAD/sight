@@ -369,13 +369,13 @@ void helperTest::toolCalibrationBasic()
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "transform[" + std::to_string(i) + "][" + std::to_string(j) + "]",
                 val,
-                resTransformMatrix->getCoefficient(i, j),
+                (*resTransformMatrix)(i, j),
                 0.00001
             );
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "center[" + std::to_string(i) + "][" + std::to_string(j) + "]",
                 val,
-                resCenterMatrix->getCoefficient(i, j),
+                (*resCenterMatrix)(i, j),
                 0.00001
             );
         }
@@ -383,13 +383,13 @@ void helperTest::toolCalibrationBasic()
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "transform[" + std::to_string(i) + "][3]",
             -translation[i],
-            resTransformMatrix->getCoefficient(i, 3),
+            (*resTransformMatrix)(i, 3),
             0.00001
         );
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "center[" + std::to_string(i) + "][3]",
             center[i],
-            resCenterMatrix->getCoefficient(i, 3),
+            (*resCenterMatrix)(i, 3),
             0.00001
         );
     }
@@ -441,13 +441,13 @@ void helperTest::toolCalibration()
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "transform[" + std::to_string(i) + "][" + std::to_string(j) + "]",
                 val,
-                resTransformMatrix->getCoefficient(i, j),
+                (*resTransformMatrix)(i, j),
                 0.00001
             );
             CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
                 "center[" + std::to_string(i) + "][" + std::to_string(j) + "]",
                 val,
-                resCenterMatrix->getCoefficient(i, j),
+                (*resCenterMatrix)(i, j),
                 0.00001
             );
         }
@@ -455,13 +455,13 @@ void helperTest::toolCalibration()
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "transform[" + std::to_string(i) + "][3]",
             -translation[i],
-            resTransformMatrix->getCoefficient(i, 3),
+            (*resTransformMatrix)(i, 3),
             0.00001
         );
         CPPUNIT_ASSERT_DOUBLES_EQUAL_MESSAGE(
             "center[" + std::to_string(i) + "][3]",
             center[i],
-            resCenterMatrix->getCoefficient(i, 3),
+            (*resCenterMatrix)(i, 3),
             0.00001
         );
     }

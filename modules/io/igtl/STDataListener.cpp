@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,6 +34,7 @@
 #include <ui/base/Preferences.hpp>
 
 #include <boost/lexical_cast.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
 #include <functional>
 #include <string>
@@ -43,51 +44,34 @@ namespace sight::module::io::igtl
 
 //-----------------------------------------------------------------------------
 
-STDataListener::STDataListener()
-= default;
-
-//-----------------------------------------------------------------------------
-
-STDataListener::~STDataListener()
-= default;
-
-//-----------------------------------------------------------------------------
-
 void STDataListener::configuring()
 {
-    SIGHT_ASSERT("Configuration not found", m_configuration != nullptr);
-    if(m_configuration->findConfigurationElement("server"))
-    {
-        const std::string serverInfo = m_configuration->findConfigurationElement("server")->getValue();
-        SIGHT_INFO("OpenIGTLinkListener::configure server: " + serverInfo);
-        const std::string::size_type splitPosition = serverInfo.find(':');
-        SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
+    const auto configuration = this->getConfiguration();
 
-        m_hostnameConfig = serverInfo.substr(0, splitPosition);
-        m_portConfig     = serverInfo.substr(splitPosition + 1, serverInfo.size());
-    }
-    else
-    {
-        throw core::tools::Failed("Server element not found");
-    }
+    const auto serverInfo = configuration.get<std::string>("server");
+    SIGHT_INFO("OpenIGTLinkListener::configure server: " + serverInfo);
+    const std::string::size_type splitPosition = serverInfo.find(':');
+    SIGHT_ASSERT("Server info not formatted correctly", splitPosition != std::string::npos);
 
-    m_deviceNamesConfig = m_configuration->find("deviceName");
+    m_hostnameConfig = serverInfo.substr(0, splitPosition);
+    m_portConfig     = serverInfo.substr(splitPosition + 1, serverInfo.size());
 
-    core::runtime::ConfigurationElement::sptr tdata = m_configuration->findConfigurationElement("TData");
-
-    if(tdata)
-    {
-        std::vector<core::runtime::ConfigurationElement::sptr> matrices = tdata->find("matrix");
-
-        for(const auto& m : matrices)
+    const auto devices = configuration.equal_range("deviceName");
+    std::transform(
+        devices.first,
+        devices.second,
+        std::back_inserter(m_deviceNamesConfig),
+        [](const auto& device)
         {
-            const auto index = boost::lexical_cast<std::uint64_t>(m->getAttributeValue("index"));
-            m_matrixNameIndex[m->getAttributeValue("name")] = index;
-        }
-    }
-    else
+            return device.second.template get_value<std::string>();
+        });
+
+    const auto tdata = configuration.get_child("TData");
+
+    for(const auto& m : boost::make_iterator_range(tdata.equal_range("matrix")))
     {
-        SIGHT_WARN("Element 'TData' is missing, the listener will do nothing !");
+        const auto index = m.second.get<std::uint64_t>("<xmlattr>.index");
+        m_matrixNameIndex[m.second.get<std::string>("<xmlattr>.name")] = index;
     }
 }
 
@@ -108,7 +92,7 @@ void STDataListener::runClient()
         {
             for(const auto& dn : m_deviceNamesConfig)
             {
-                m_client.addAuthorizedDevice(preferences.delimited_get<std::string>(dn->getValue()));
+                m_client.addAuthorizedDevice(preferences.delimited_get<std::string>(dn));
             }
 
             m_client.setFilteringByDeviceName(true);
@@ -125,7 +109,7 @@ void STDataListener::runClient()
         if(this->getStatus() == STARTED)
         {
             sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
-            this->slot(s_STOP_SLOT)->asyncRun();
+            this->slot(IService::slots::s_STOP)->asyncRun();
         }
         else
         {
@@ -159,7 +143,7 @@ void STDataListener::runClient()
         if(this->getStatus() == STARTED)
         {
             sight::ui::base::dialog::MessageDialog::show("Error", ex.what());
-            this->slot(s_STOP_SLOT)->asyncRun();
+            this->slot(IService::slots::s_STOP)->asyncRun();
         }
         else
         {
@@ -199,8 +183,7 @@ void STDataListener::manageTimeline(const data::Composite::sptr& obj, double tim
 
     for(const auto& elt : *obj)
     {
-        data::Matrix4::csptr transfoMatrix =
-            data::Matrix4::dynamicConstCast(elt.second);
+        data::Matrix4::csptr transfoMatrix = data::Matrix4::dynamicConstCast(elt.second);
 
         auto it = m_matrixNameIndex.find(elt.first);
 
@@ -208,13 +191,11 @@ void STDataListener::manageTimeline(const data::Composite::sptr& obj, double tim
         {
             std::uint64_t index = it->second;
 
-            data::Matrix4::TMCoefArray values;
-            values = transfoMatrix->getCoefficients();
             std::array<float, 16> matrixValues {};
             bool isZero = true;
             for(unsigned int i = 0 ; i < 16 ; ++i)
             {
-                matrixValues[i] = static_cast<float>(values[i]);
+                matrixValues[i] = static_cast<float>((*transfoMatrix)[i]);
                 //Test if matrix contains only '0' except last value (always '1)
                 isZero &= i < 15 ? (matrixValues[i] == 0.F) : true;
             }

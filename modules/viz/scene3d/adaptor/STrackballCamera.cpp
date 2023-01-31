@@ -25,30 +25,16 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const std::string s_PRIORITY_CONFIG              = "priority";
-static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
-
-//-----------------------------------------------------------------------------
-
-STrackballCamera::STrackballCamera() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
-STrackballCamera::~STrackballCamera() noexcept =
-    default;
-
 //-----------------------------------------------------------------------------
 
 void STrackballCamera::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
-    m_priority            = config.get<int>(s_PRIORITY_CONFIG, m_priority);
-    m_layerOrderDependant = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layerOrderDependant);
+    m_priority            = config.get<int>(s_CONFIG + "priority", m_priority);
+    m_layerOrderDependant = config.get<bool>(s_CONFIG + "layerOrderDependant", m_layerOrderDependant);
 }
 
 //-----------------------------------------------------------------------------

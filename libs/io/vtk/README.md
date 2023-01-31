@@ -15,7 +15,6 @@ Most of the classes inherit from io::base::reader::GenericObjectReader or io::ba
 ### Reader / Writer
 
 - **BitmapImageReader**: reads bitmap image from any supported format from `vtkImageReader2Collection`.
-- **BitmapImageWriter**: writes bitmap image to `.bmp`, `.jpg`, `.png`, `.pnm` or `tiff`.
 - **Image[Read|Writ]er**: reads/writes `Image` to/from legacy `.vtk`.
 - **Mesh[Read|Writ]er**: reads/writes `Image` to/from legacy `.vtk`.
 - **MetaImage[Read|Writ]er**: reads/writes `Image` to/from `.mhd`

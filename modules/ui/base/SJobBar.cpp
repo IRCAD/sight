@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -109,7 +109,7 @@ void SJobBar::showJob(core::jobs::IJob::sptr iJob)
             if(state == core::jobs::IJob::CANCELED || state == core::jobs::IJob::FINISHED)
             {
                 m_sigEnded->emit();
-                m_associatedWorker->postTask<void>(
+                this->worker()->postTask<void>(
                     [ =, this]
                 {
                     m_progressDialogs.erase(progressDialog);

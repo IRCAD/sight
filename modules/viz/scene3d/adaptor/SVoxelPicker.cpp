@@ -38,12 +38,6 @@ const core::com::Slots::SlotKeyType s_SLICETYPE_SLOT = "sliceType";
 
 static const core::com::Signals::SignalKeyType s_PICKED_SIG = "picked";
 
-static const std::string s_PRIORITY_CONFIG              = "priority";
-static const std::string s_ORIENTATION_CONFIG           = "orientation";
-static const std::string s_MODE_CONFIG                  = "mode";
-static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = "layerOrderDependant";
-static const std::string s_MOVE_ON_PICK_CONFIG          = "moveOnPick";
-
 //-----------------------------------------------------------------------------
 
 SVoxelPicker::SVoxelPicker() noexcept
@@ -55,17 +49,17 @@ SVoxelPicker::SVoxelPicker() noexcept
 
 //-----------------------------------------------------------------------------
 
-SVoxelPicker::~SVoxelPicker() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
 void SVoxelPicker::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_PRIORITY_CONFIG              = s_CONFIG + "priority";
+    static const std::string s_ORIENTATION_CONFIG           = s_CONFIG + "orientation";
+    static const std::string s_MODE_CONFIG                  = s_CONFIG + "mode";
+    static const std::string s_LAYER_ORDER_DEPENDANT_CONFIG = s_CONFIG + "layerOrderDependant";
+    static const std::string s_MOVE_ON_PICK_CONFIG          = s_CONFIG + "moveOnPick";
 
     m_priority            = config.get<int>(s_PRIORITY_CONFIG, m_priority);
     m_layerOrderDependant = config.get<bool>(s_LAYER_ORDER_DEPENDANT_CONFIG, m_layerOrderDependant);

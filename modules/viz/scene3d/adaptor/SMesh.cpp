@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,15 +48,6 @@ static const core::com::Slots::SlotKeyType s_MODIFY_COLORS_SLOT           = "mod
 static const core::com::Slots::SlotKeyType s_MODIFY_POINT_TEX_COORDS_SLOT = "modifyTexCoords";
 static const core::com::Slots::SlotKeyType s_MODIFY_VERTICES_SLOT         = "modifyVertices";
 
-static const std::string s_AUTORESET_CAMERA_CONFIG  = "autoresetcamera";
-static const std::string s_MATERIAL_NAME_CONFIG     = "materialName";
-static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
-static const std::string s_TEXTURE_NAME_CONFIG      = "textureName";
-static const std::string s_SHADING_MODE_CONFIG      = "shadingMode";
-static const std::string s_DYNAMIC_CONFIG           = "dynamic";
-static const std::string s_DYNAMIC_VERTICES_CONFIG  = "dynamicVertices";
-static const std::string s_QUERY_CONFIG             = "queryFlags";
-
 //-----------------------------------------------------------------------------
 
 SMesh::SMesh() noexcept
@@ -85,35 +76,31 @@ void SMesh::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
-    const std::string color = config.get<std::string>("color", "");
+    const std::string color = config.get<std::string>(s_CONFIG + "color", "");
 
     SIGHT_ASSERT("Material not found", m_material);
     m_material->diffuse()->setRGBA(color.empty() ? "#FFFFFFFF" : color);
 
-    if(config.count(s_AUTORESET_CAMERA_CONFIG) != 0U)
-    {
-        m_autoResetCamera = config.get<bool>(s_AUTORESET_CAMERA_CONFIG, true);
-    }
+    m_autoResetCamera = config.get<bool>(s_CONFIG + "autoresetcamera", true);
 
     // If a material is configured in the XML scene, we keep its name to retrieve the adaptor later
     // Else we keep the name of the configured Ogre material (if it exists),
     //      it will be passed to the created SMaterial
-    if(config.count(s_MATERIAL_NAME_CONFIG) != 0U)
+    if(const auto materialName = config.get_optional<std::string>(s_CONFIG + "materialName"); materialName.has_value())
     {
-        m_materialName = config.get<std::string>(s_MATERIAL_NAME_CONFIG);
+        m_materialName = materialName.value();
     }
     else
     {
         // An existing Ogre material will be used for this mesh
-        m_materialTemplateName = config.get<std::string>(s_MATERIAL_TEMPLATE_CONFIG, m_materialTemplateName);
+        m_materialTemplateName = config.get<std::string>(s_CONFIG + "materialTemplate", m_materialTemplateName);
 
         // The mesh adaptor will pass the texture name to the created material adaptor
-        m_textureName = config.get<std::string>(s_TEXTURE_NAME_CONFIG, m_textureName);
+        m_textureName = config.get<std::string>(s_CONFIG + "textureName", m_textureName);
 
-        m_shadingMode = config.get<std::string>(s_SHADING_MODE_CONFIG, m_shadingMode);
+        m_shadingMode = config.get<std::string>(s_CONFIG + "shadingMode", m_shadingMode);
     }
 
     this->setTransformId(
@@ -123,19 +110,18 @@ void SMesh::configuring()
         )
     );
 
-    m_isDynamic         = config.get<bool>(s_DYNAMIC_CONFIG, m_isDynamic);
-    m_isDynamicVertices = config.get<bool>(s_DYNAMIC_VERTICES_CONFIG, m_isDynamicVertices);
+    m_isDynamic         = config.get<bool>(s_CONFIG + "dynamic", m_isDynamic);
+    m_isDynamicVertices = config.get<bool>(s_CONFIG + "dynamicVertices", m_isDynamicVertices);
 
-    if(config.count(s_QUERY_CONFIG) != 0U)
+    if(const auto hexaMask = config.get_optional<std::string>(s_CONFIG + "queryFlags"); hexaMask.has_value())
     {
-        const auto hexaMask = config.get<std::string>(s_QUERY_CONFIG);
         SIGHT_ASSERT(
             "Hexadecimal values should start with '0x'"
-            "Given value : " + hexaMask,
-            hexaMask.length() > 2
-            && hexaMask.substr(0, 2) == "0x"
+            "Given value : " + hexaMask.value(),
+            hexaMask->length() > 2
+            && hexaMask->substr(0, 2) == "0x"
         );
-        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
+        m_queryFlags = static_cast<std::uint32_t>(std::stoul(hexaMask.value(), nullptr, 16));
     }
 }
 
@@ -196,7 +182,7 @@ service::IService::KeyConnectionsMap SMesh::getAutoConnections() const
     connections.push(s_MESH_IN, data::Mesh::s_POINT_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
     connections.push(s_MESH_IN, data::Mesh::s_CELL_COLORS_MODIFIED_SIG, s_MODIFY_COLORS_SLOT);
     connections.push(s_MESH_IN, data::Mesh::s_POINT_TEX_COORDS_MODIFIED_SIG, s_MODIFY_POINT_TEX_COORDS_SLOT);
-    connections.push(s_MESH_IN, data::Mesh::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MESH_IN, data::Mesh::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     return connections;
 }
 
@@ -341,7 +327,7 @@ void SMesh::updateMesh(data::Mesh::csptr _mesh)
                 auto r2vbMtlAdaptor = module::viz::scene3d::adaptor::SMaterial::dynamicCast(adaptor);
                 m_meshGeometry->updateMaterial(r2vbMtlAdaptor->getMaterialFw(), true);
                 // Update the material *synchronously* otherwise the r2vb will be rendered before the shader switch
-                r2vbMtlAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->run();
+                r2vbMtlAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::IService::slots::s_UPDATE)->run();
             }
             else
             {
@@ -393,26 +379,26 @@ adaptor::SMaterial::sptr SMesh::createMaterialService(
     );
     materialAdaptor->setInOut(m_material, "material", true);
 
-    materialAdaptor->setID(this->getID() + "_" + materialAdaptor->getID());
-    materialAdaptor->setRenderService(this->getRenderService());
-    materialAdaptor->setLayerID(m_layerID);
+    const std::string meshName = _mesh->getID();
+    const std::string mtlName  = meshName + "_" + (materialAdaptor->getID()) + _materialSuffix;
+    const auto tplName         =
+        !m_materialTemplateName.empty() ? m_materialTemplateName : sight::viz::scene3d::Material::
+        DEFAULT_MATERIAL_TEMPLATE_NAME;
 
-    if(!m_materialTemplateName.empty())
-    {
-        materialAdaptor->setMaterialTemplateName(m_materialTemplateName);
-    }
+    materialAdaptor->configure(
+        this->getID() + "_" + materialAdaptor->getID(),
+        mtlName,
+        this->getRenderService(),
+        m_layerID,
+        m_shadingMode,
+        tplName
+    );
 
-    std::string meshName      = _mesh->getID();
-    const std::string mtlName = meshName + "_" + (materialAdaptor->getID()) + _materialSuffix;
-
-    materialAdaptor->setMaterialName(mtlName);
     if(_materialSuffix.empty())
     {
         // We know that we are in the case of a R2VB material, so no need to set the diffuse texture (no FP...)
         materialAdaptor->setTextureName(m_textureName);
     }
-
-    materialAdaptor->setShadingMode(m_shadingMode);
 
     return materialAdaptor;
 }
@@ -442,7 +428,7 @@ void SMesh::updateNewMaterialAdaptor(data::Mesh::csptr _mesh)
     {
         m_entity->setMaterialName(m_materialAdaptor->getMaterialName(), sight::viz::scene3d::RESOURCE_GROUP);
         m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
-        m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->run();
+        m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::IService::slots::s_UPDATE)->run();
     }
 }
 
@@ -464,7 +450,7 @@ void SMesh::updateXMLMaterialAdaptor()
             m_entity->setMaterialName(m_materialAdaptor->getMaterialName());
             m_meshGeometry->updateMaterial(m_materialAdaptor->getMaterialFw(), false);
 
-            m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->run();
+            m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::IService::slots::s_UPDATE)->run();
         }
     }
     else if(m_materialAdaptor->getInOut<data::Material>(SMaterial::s_MATERIAL_INOUT).lock() != m_material)
@@ -497,7 +483,7 @@ void SMesh::modifyVertices()
     );
 
     // Necessary to update the bounding box in the adaptor
-    //m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::s_UPDATE_SLOT)->asyncRun();
+    //m_materialAdaptor->slot(module::viz::scene3d::adaptor::SMaterial::IService::slots::s_UPDATE)->asyncRun();
 
     if(m_autoResetCamera)
     {

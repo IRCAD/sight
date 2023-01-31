@@ -176,4 +176,6 @@ inline void PointList::clear()
     this->m_vPoints.clear();
 }
 
+DATA_API std::ostream& operator<<(std::ostream& out, const PointList& pl);
+
 } // end namespace sight::data

@@ -62,6 +62,10 @@ void DoubleTest::methode1()
         d0->value() = VALUE;
         auto d1 = data::Double::New(VALUE);
         auto d2 = data::Double::New(VALUE + 0.1);
+        auto d3 = data::Double::New();
+        d3->shallowCopy(d1);
+        auto d4 = data::Double::New();
+        d4->deepCopy(d1);
 
         CPPUNIT_ASSERT(*d0 == *d1);
 
@@ -77,6 +81,8 @@ void DoubleTest::methode1()
         CPPUNIT_ASSERT_EQUAL(VALUE, d0->value());
         CPPUNIT_ASSERT_EQUAL(VALUE, d1->value());
         CPPUNIT_ASSERT_EQUAL(VALUE, data::Double::New(VALUE)->value());
+        CPPUNIT_ASSERT_EQUAL(VALUE, d3->value());
+        CPPUNIT_ASSERT_EQUAL(VALUE, d4->value());
     }
 
     for(double VALUE : NAN_VALUES)
@@ -84,9 +90,15 @@ void DoubleTest::methode1()
         auto d0 = data::Double::New();
         d0->value() = VALUE;
         auto d1 = data::Double::New(VALUE);
+        auto d2 = data::Double::New();
+        d2->shallowCopy(d1);
+        auto d3 = data::Double::New();
+        d3->deepCopy(d1);
 
         // Our implementation of "==" operator for NaN is not the same as the one of the C++ standard
         CPPUNIT_ASSERT(*d0 == *d1);
+        CPPUNIT_ASSERT(*d0 == *d2);
+        CPPUNIT_ASSERT(*d0 == *d3);
 
         CPPUNIT_ASSERT(!(VALUE == d0->value()));
         CPPUNIT_ASSERT(!(VALUE < d0->value()));

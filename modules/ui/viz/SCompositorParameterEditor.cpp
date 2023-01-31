@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ void SCompositorParameterEditor::configuring()
 {
     this->initialize();
 
-    auto config = this->getConfigTree();
+    auto config = this->getConfiguration();
 
     m_layerID = config.get<std::string>("layer.<xmlattr>.id", "");
 }
@@ -122,7 +122,7 @@ void SCompositorParameterEditor::updateCompositor(
             {
                 /// Filter object types
                 const auto shaderObj =
-                    adaptor->getInOut<data::Object>(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
+                    adaptor->getInOut(sight::viz::scene3d::IParameter::s_PARAMETER_INOUT).lock();
                 const auto& objType = shaderObj->getClassname();
 
                 if(objType == "sight::data::Boolean" || objType == "sight::data::Float"
@@ -198,7 +198,7 @@ void SCompositorParameterEditor::clear()
 
         sight::ui::base::GuiRegistry::unregisterSIDContainer(m_editorInfo.uuid);
 
-        service::OSR::unregisterService(objService);
+        service::unregisterService(objService);
 
         m_sizer->removeWidget(m_editorInfo.editorPanel->getQtContainer());
         m_editorInfo.editorPanel->destroyContainer();

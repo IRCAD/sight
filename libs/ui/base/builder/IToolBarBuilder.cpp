@@ -43,34 +43,24 @@ IToolBarBuilder::IToolBarBuilder() :
 
 //-----------------------------------------------------------------------------
 
-IToolBarBuilder::~IToolBarBuilder()
-= default;
-
-//-----------------------------------------------------------------------------
-
-void IToolBarBuilder::initialize(core::runtime::ConfigurationElement::sptr configuration)
+void IToolBarBuilder::initialize(const ui::base::config_t& configuration)
 {
-    SIGHT_ASSERT(
-        "Bad configuration name " << configuration->getName() << ", must be toolBar",
-        configuration->getName() == "toolBar"
-    );
-
-    if(configuration->hasAttribute("align"))
+    const auto alignment = configuration.get_optional<std::string>("<xmlattr>.align");
+    if(alignment.has_value())
     {
-        std::string alignment = configuration->getExistingAttributeValue("align");
-        if(alignment == "top")
+        if(alignment.value() == "top")
         {
             m_alignment = TOP;
         }
-        else if(alignment == "bottom")
+        else if(alignment.value() == "bottom")
         {
             m_alignment = BOTTOM;
         }
-        else if(alignment == "right")
+        else if(alignment.value() == "right")
         {
             m_alignment = RIGHT;
         }
-        else if(alignment == "left")
+        else if(alignment.value() == "left")
         {
             m_alignment = LEFT;
         }
@@ -80,37 +70,19 @@ void IToolBarBuilder::initialize(core::runtime::ConfigurationElement::sptr confi
         }
     }
 
-    if(configuration->hasAttribute("backgroundColor"))
+    if(const auto hexaColor = configuration.get<std::string>("<xmlattr>.backgroundColor", ""); !hexaColor.empty())
     {
-        const std::string hexaColor = configuration->getExistingAttributeValue("backgroundColor");
-        if(!hexaColor.empty())
-        {
-            SIGHT_ASSERT(
-                "Color string should start with '#' and followed by 6 or 8 "
-                "hexadecimal digits. Given color: " << hexaColor,
-                hexaColor[0] == '#'
-                && (hexaColor.length() == 7 || hexaColor.length() == 9)
-            );
-            m_backgroundColor = hexaColor;
-        }
+        SIGHT_ASSERT(
+            "Color string should start with '#' and followed by 6 or 8 "
+            "hexadecimal digits. Given color: " << hexaColor,
+            hexaColor[0] == '#'
+            && (hexaColor.length() == 7 || hexaColor.length() == 9)
+        );
+        m_backgroundColor = hexaColor;
     }
 
-    core::runtime::ConfigurationElementContainer::Iterator iter;
-    for(iter = configuration->begin() ; iter != configuration->end() ; ++iter)
-    {
-        if((*iter)->getName() == "toolBitmapSize")
-        {
-            if((*iter)->hasAttribute("height"))
-            {
-                m_toolBitmapSize.second = boost::lexical_cast<int>((*iter)->getExistingAttributeValue("height"));
-            }
-
-            if((*iter)->hasAttribute("width"))
-            {
-                m_toolBitmapSize.first = boost::lexical_cast<int>((*iter)->getExistingAttributeValue("width"));
-            }
-        }
-    }
+    m_toolBitmapSize.first  = configuration.get<int>("toolBitmapSize.<xmlattr>.width", m_toolBitmapSize.first);
+    m_toolBitmapSize.second = configuration.get<int>("toolBitmapSize.<xmlattr>.height", m_toolBitmapSize.second);
 }
 
 //-----------------------------------------------------------------------------

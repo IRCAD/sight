@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,13 +24,12 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/com/helper/SigSlotConnection.hpp>
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 
 #include <data/CalibrationInfo.hpp>
 
-#include <service/AppConfigManager.hpp>
+#include <service/IAppConfigManager.hpp>
 #include <service/IController.hpp>
 
 namespace sight::module::ui::qt::calibration

@@ -1,11 +1,11 @@
-<plugin id="Tuto11Picker" >
+<plugin id="Tuto11Picker">
 
     <requirement id="sight::module::ui::base" />
     <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig">
         <id>Tuto11Picker_AppCfg</id>
         <config>
 
@@ -18,14 +18,14 @@
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
                 <gui>
                     <frame>
                         <name>Tuto11Picker</name>
                         <icon>Tuto11Picker/tuto.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
-                    <menuBar/>
+                    <menuBar />
                 </gui>
                 <registry>
                     <menuBar sid="menuBarView" start="true" />
@@ -33,7 +33,7 @@
                 </registry>
             </service>
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar" >
+            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar">
                 <gui>
                     <layout>
                         <menu name="File" />
@@ -44,12 +44,12 @@
                 </registry>
             </service>
 
-            <service uid="menuFileView" type="sight::module::ui::base::SMenu" >
+            <service uid="menuFileView" type="sight::module::ui::base::SMenu">
                 <gui>
                     <layout>
                         <menuItem name="Open image" shortcut="Ctrl+I" />
                         <menuItem name="Open mesh" shortcut="Ctrl+M" />
-                        <separator/>
+                        <separator />
                         <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
                     </layout>
                 </gui>
@@ -60,9 +60,9 @@
                 </registry>
             </service>
 
-            <service uid="containerView" type="sight::module::ui::base::SView" >
+            <service uid="containerView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="vertical" />
                         <view proportion="0" backgroundColor="#3E4453" />
                         <view proportion="1" />
@@ -74,9 +74,9 @@
                 </registry>
             </service>
 
-            <service uid="sceneView" type="sight::module::ui::base::SView" >
+            <service uid="sceneView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="vertical" />
                         <view proportion="1" />
                         <view proportion="0" minHeight="30" backgroundColor="#3E4453" />
@@ -88,9 +88,9 @@
                 </registry>
             </service>
 
-            <service uid="editorsView" type="sight::module::ui::base::SView" >
+            <service uid="editorsView" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="horizontal" />
                         <view proportion="0" minWidth="50" />
                         <view proportion="1" />
@@ -106,11 +106,11 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openImageAct" type="sight::module::ui::base::com::SStarter" >
+            <service uid="openImageAct" type="sight::module::ui::base::com::SStarter">
                 <start uid="imageReaderSrv" />
             </service>
 
-            <service uid="openMeshAct" type="sight::module::ui::base::com::SStarter" >
+            <service uid="openMeshAct" type="sight::module::ui::base::com::SStarter">
                 <start uid="meshReaderSrv" />
             </service>
 
@@ -118,54 +118,53 @@
 
             <!-- *************************** Begin generic scene *************************** -->
 
-            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1" />
-                    <adaptor uid="trackballInteractorAdp" />
-                    <adaptor uid="pickerInteractorAdp" />
-                    <adaptor uid="meshAdp" />
-                    <adaptor uid="negatoAdp" />
-                    <adaptor uid="snapshotAdp" />
+                    <layer id="default" order="1">
+                        <adaptor uid="trackballInteractorAdp" />
+                        <adaptor uid="pickerInteractorAdp" />
+                        <adaptor uid="meshAdp" />
+                        <adaptor uid="negatoAdp" />
+                        <adaptor uid="snapshotAdp" />
+                    </layer>
                 </scene>
             </service>
 
-            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera" >
-                <config layer="default" priority="0" />
+            <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
+                <config priority="0" />
             </service>
 
-            <service uid="pickerInteractorAdp" type="sight::module::viz::scene3d::adaptor::SVoxelPicker" >
+            <service uid="pickerInteractorAdp" type="sight::module::viz::scene3d::adaptor::SVoxelPicker">
                 <in key="image" uid="image" />
-                <config layer="default" mode="3D" priority="1" />
+                <config mode="3D" priority="1" />
             </service>
 
-            <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true" >
+            <service uid="meshAdp" type="sight::module::viz::scene3d::adaptor::SMesh" autoConnect="true">
                 <in key="mesh" uid="mesh" />
-                <config layer="default" />
             </service>
 
-            <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true" >
+            <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true">
                 <in key="image" uid="image" />
                 <inout key="tf" uid="tf" />
-                <config layer="default" sliceIndex="axial" interactive="true" />
+                <config sliceIndex="axial" interactive="true" />
             </service>
 
-            <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo" >
+            <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo">
                 <inout key="image" uid="snapshot" />
-                <config layer="default" flip="true" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="snapshotSrv" type="sight::module::ui::qt::com::SSignalButton" >
+            <service uid="snapshotSrv" type="sight::module::ui::qt::com::SSignalButton">
                 <config>
-                   <checkable>false</checkable>
-                   <icon>sight::module::ui::flaticons/YellowPhoto.svg</icon>
+                    <checkable>false</checkable>
+                    <icon>sight::module::ui::flaticons/YellowPhoto.svg</icon>
                 </config>
             </service>
 
-            <service uid="showNegatoSrv" type="sight::module::ui::qt::com::SSignalButton" >
+            <service uid="showNegatoSrv" type="sight::module::ui::qt::com::SSignalButton">
                 <config>
                     <checkable>true</checkable>
                     <icon>sight::module::ui::flaticons/RedCross.svg</icon>
@@ -178,27 +177,26 @@
 
             <service uid="pointEditorSrv" type="sight::module::ui::qt::viz::PointEditor" />
 
-            <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector" >
+            <service uid="meshReaderSrv" type="sight::module::ui::base::io::SSelector">
                 <inout key="data" uid="mesh" />
                 <type mode="reader" />
             </service>
 
-            <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector" >
+            <service uid="imageReaderSrv" type="sight::module::ui::base::io::SSelector">
                 <inout key="data" uid="image" />
                 <type mode="reader" />
             </service>
 
-            <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
+            <service uid="sliderIndexEditorSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
                 <inout key="image" uid="image" />
                 <sliceIndex>axial</sliceIndex>
             </service>
 
             <!-- Write the snapshot image -->
-            <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector" >
-                <inout key="data" uid="snapshot" />
-                <type mode="writer" />
-                <selection mode="exclude" />
-                <addSelection service="sight::module::io::session::SWriter" />
+            <service uid="imageWriterSrv" type="sight::module::io::bitmap::SWriter">
+                <in key="data" uid="snapshot" />
+                <dialog policy="always" />
+                <backends enable="all" mode="best"/>
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

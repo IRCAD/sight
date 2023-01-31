@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ SPointListRegistration::~SPointListRegistration()
 
 void SPointListRegistration::configuring()
 {
-    const auto configTree = this->getConfigTree();
+    const auto configTree = this->getConfiguration();
     const auto config     = configTree.get_child_optional("config.<xmlattr>");
 
     if(config)
@@ -194,7 +194,7 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         {
             for(std::uint8_t c = 0 ; c < 4 ; ++c)
             {
-                matrix->setCoefficient(l, c, m->GetElement(l, c));
+                (*matrix)(l, c) = m->GetElement(l, c);
             }
         }
 
@@ -230,7 +230,7 @@ void SPointListRegistration::computeRegistration(core::HiResClock::HiResClockTyp
         // Notify Matrix modified
         auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
         {
-            core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+            core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
             sig->asyncEmit();
         }
     }

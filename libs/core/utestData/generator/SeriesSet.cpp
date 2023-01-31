@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -176,9 +176,7 @@ data::Activity::sptr SeriesSet::createActivity()
     const std::string CONFIG_ID = "IdOfTheConfig";
     activity->setActivityConfigId(CONFIG_ID);
 
-    auto data = data::Composite::New();
-    (*data)["key1"] = data::String::New("ValueOfKey1");
-    activity->setData(data);
+    (*activity)["key1"] = data::String::New("ValueOfKey1");
 
     return activity;
 }

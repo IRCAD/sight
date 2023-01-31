@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #pragma once
 
-#include <service/AppConfigManager.hpp>
 #include <service/base.hpp>
+#include <service/IAppConfigManager.hpp>
 
 #include <cppunit/extensions/HelperMacros.h>
 
@@ -69,12 +69,12 @@ private:
 
     static service::IService::ConfigType buildConfig();
 
-    static service::AppConfigManager::sptr launchAppConfigMgr(
+    static service::IAppConfigManager::sptr launchAppConfigMgr(
         const std::string& name,
         bool autoPrefix = false
     );
 
-    service::AppConfigManager::sptr m_appConfigMgr;
+    service::IAppConfigManager::sptr m_appConfigMgr;
 };
 
 } // namespace sight::service::ut

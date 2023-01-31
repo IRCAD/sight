@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -163,18 +163,11 @@ void SModelSeriesList::onCheckAllBoxes(bool checked)
 
 service::IService::KeyConnectionsMap SModelSeriesList::getAutoConnections() const
 {
-    KeyConnectionsMap connections;
-
-    // FIXME hack to support deprecated getObject() with any key
-    auto modelSeries = m_modelSeries.lock();
-    if(modelSeries)
-    {
-        connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
-        connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, s_UPDATE_SLOT);
-        connections.push(s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, s_UPDATE_SLOT);
-    }
-
-    return connections;
+    return {
+        {s_MODEL_SERIES_INOUT, data::ModelSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG, IService::slots::s_UPDATE},
+        {s_MODEL_SERIES_INOUT, data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG, IService::slots::s_UPDATE}
+    };
 }
 
 //------------------------------------------------------------------------------

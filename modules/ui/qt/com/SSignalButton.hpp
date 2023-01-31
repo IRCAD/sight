@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2022 IRCAD France
+ * Copyright (C) 2015-2023 IRCAD France
  * Copyright (C) 2015-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,8 +50,8 @@ namespace sight::module::ui::qt::com
  * - \b check(): allows to check the button.
  * - \b uncheck(): allows to uncheck the button.
  * - \b setEnabled(bool): sets the button executability.
- * - \b setExecutable(): sets the button executable.
- * - \b setInexecutable(): sets the button inexecutable.
+ * - \b enable(): sets the button executable.
+ * - \b disable(): sets the button inexecutable.
  * - \b setVisible(bool):s ets the button visibility.
  * - \b show(): shows the button.
  * - \b hide(): hides the button.
@@ -76,7 +76,7 @@ namespace sight::module::ui::qt::com
  * - \b text (optional, string, default=""): text displayed on the button.
  * - \b icon (optional, string, default=""): icon displayed on the button.
  * - \b checkable (optional, bool, default=false): if true, the button is checkable.
- * - \b executable (optional, bool, default=true): if true, the button is executable.
+ * - \b enable (optional, bool, default=true): if true, the button is executable.
  * - \b text2 (optional, string, default=""): text displayed if the button is checked.
  * - \b icon2 (optional, string, default=""): icon displayed if the button is checked.
  * - \b checked (optional, bool, default=false): if true, the button is checked at start.
@@ -131,22 +131,22 @@ private:
     void uncheck();
 
     /// SLOT: sets the button executability.
-    void setEnabled(bool _isEnabled);
+    void setEnabled(bool _isEnabled) override;
 
     /// SLOT: sets the button executable.
-    void setExecutable();
+    void enable() override;
 
     /// SLOT: sets the button inexecutable.
-    void setInexecutable();
+    void disable() override;
 
     /// SLOT: sets the button visibility.
-    void setVisible(bool _isVisible);
+    void setVisible(bool _isVisible) override;
 
     /// SLOT: shows the button.
-    void show();
+    void show() override;
 
     /// SLOT: hides he button.
-    void hide();
+    void hide() override;
 
     typedef core::com::Signal<void ()> ClickedSignalType;
     /// Contains the signal emitted when button is clicked.
@@ -175,7 +175,7 @@ private:
     bool m_checkable {false};
 
     /// Defines if the button is executable.
-    bool m_executable {true};
+    bool m_enable {true};
 
     /// Defines if the button is checked at start.
     bool m_checkAtStart {false};

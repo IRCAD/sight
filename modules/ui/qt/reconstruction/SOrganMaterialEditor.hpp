@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -71,13 +71,11 @@ public:
 
 private:
 
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
-
     /**
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Object::s_MODIFIED_SIG of s_RECONSTRUCTION_INOUT to s_UPDATE_SLOT
+     * Connect data::Object::s_MODIFIED_SIG of s_RECONSTRUCTION_INOUT to IService::slots::s_UPDATE
      */
     KeyConnectionsMap getAutoConnections() const override;
 

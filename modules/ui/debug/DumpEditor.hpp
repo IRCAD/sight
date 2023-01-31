@@ -71,8 +71,6 @@ public:
 
 protected:
 
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
-
     /// Install the layout and call updating() method
     void starting() override;
 

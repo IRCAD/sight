@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,7 +23,7 @@
 #include "modules/ui/qt/calibration/SCameraConfigLauncher.hpp"
 
 #include <core/com/Signal.hxx>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/CalibrationInfo.hpp>
 #include <data/Camera.hpp>
@@ -62,7 +62,7 @@ SCameraConfigLauncher::~SCameraConfigLauncher() noexcept =
 void SCameraConfigLauncher::configuring()
 {
     this->initialize();
-    service::IService::ConfigType configuration = this->getConfigTree();
+    service::IService::ConfigType configuration = this->getConfiguration();
 
     SIGHT_ASSERT(
         "There must be one (and only one) <config/> element.",
@@ -350,7 +350,7 @@ void SCameraConfigLauncher::onRemoveClicked()
             // Remove calibrationInfo
             std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(index);
             const auto activity            = m_activity.lock();
-            activity->getData()->erase(calibrationInfoKey);
+            activity->erase(calibrationInfoKey);
 
             const std::size_t nbCam = camera_set->size();
             if(nbCam == 1)
@@ -409,9 +409,8 @@ void SCameraConfigLauncher::startIntrinsicConfig(std::size_t index)
 
         std::string calibrationInfoKey = "calibrationInfo_" + std::to_string(index);
 
-        const auto activity        = m_activity.lock();
-        data::Composite::sptr data = activity->getData();
-        auto calibInfo             = data::CalibrationInfo::dynamicCast((*data)[calibrationInfoKey]);
+        const auto activity = m_activity.lock();
+        auto calibInfo      = data::CalibrationInfo::dynamicCast((*activity)[calibrationInfoKey]);
 
         replaceMap["camera"]          = camera->getID();
         replaceMap["calibrationInfo"] = calibInfo->getID();
@@ -448,22 +447,22 @@ void SCameraConfigLauncher::startExtrinsicConfig(std::size_t index)
         std::string calibrationInfo1Key = "calibrationInfoExtr0_" + std::to_string(cameraIdx);
         std::string calibrationInfo2Key = "calibrationInfoExtr1_" + std::to_string(cameraIdx);
         const auto activity             = m_activity.lock();
-        data::Composite::sptr data      = activity->getData();
         data::CalibrationInfo::sptr calibInfo1;
         data::CalibrationInfo::sptr calibInfo2;
         // Get the calibrationInfo from the activity if it exists or create it.
-        if(data->find(calibrationInfo1Key) == data->end() || data->find(calibrationInfo2Key) == data->end())
+        if(activity->find(calibrationInfo1Key) == activity->end()
+           || activity->find(calibrationInfo2Key) == activity->end())
         {
             calibInfo1 = data::CalibrationInfo::New();
             calibInfo2 = data::CalibrationInfo::New();
 
-            (*data)[calibrationInfo1Key] = calibInfo1;
-            (*data)[calibrationInfo2Key] = calibInfo2;
+            (*activity)[calibrationInfo1Key] = calibInfo1;
+            (*activity)[calibrationInfo2Key] = calibInfo2;
         }
         else
         {
-            calibInfo1 = data::CalibrationInfo::dynamicCast((*data)[calibrationInfo1Key]);
-            calibInfo2 = data::CalibrationInfo::dynamicCast((*data)[calibrationInfo2Key]);
+            calibInfo1 = data::CalibrationInfo::dynamicCast((*activity)[calibrationInfo1Key]);
+            calibInfo2 = data::CalibrationInfo::dynamicCast((*activity)[calibrationInfo2Key]);
         }
 
         replaceMap["camera1"]          = camera1->getID();
@@ -494,7 +493,7 @@ void SCameraConfigLauncher::addCamera()
         data::CalibrationInfo::sptr calibInfo = data::CalibrationInfo::New();
 
         const auto activity = m_activity.lock();
-        (*activity->getData())[calibrationInfoKey] = calibInfo;
+        (*activity)[calibrationInfoKey] = calibInfo;
 
         // Add the camera
         camera_set->add_camera(camera);

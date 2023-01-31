@@ -32,7 +32,7 @@
 #include <core/com/Slot.hpp>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/Activity.hpp>
 #include <data/Composite.hpp>
@@ -84,7 +84,7 @@ void SSelector::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    const auto cfg = this->getConfigTree();
+    const auto cfg = this->getConfiguration();
 
     if(cfg.count("filter") == 1)
     {

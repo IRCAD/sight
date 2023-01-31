@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <core/location/SingleFile.hpp>
 #include <core/location/SingleFolder.hpp>
 #include <core/Profiling.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 #include <core/tools/Os.hpp>
 
 #include <io/http/Download.hpp>
@@ -136,7 +136,7 @@ SOpenvslam::SOpenvslam() noexcept :
 
                 if(env_download_url.empty())
                 {
-                    url = "https://cloud.ircad.fr/index.php/s/tojArWTZcK223Fq/download";
+                    url = "https://cloud.ircad.fr/s/2QxjHtxNpjXDAqK/download";
                 }
                 else
                 {
@@ -170,7 +170,7 @@ SOpenvslam::~SOpenvslam() noexcept
 void SOpenvslam::configuring()
 {
     this->service::ITracker::configuring();
-    const ConfigType cfg = this->getConfigTree();
+    const ConfigType cfg = this->getConfiguration();
 
     m_downSampleWidth = cfg.get<std::size_t>(s_DOWNSAMPLE_CONFIG, m_downSampleWidth);
     const std::string mode = cfg.get<std::string>(s_MODE_CONFIG, "MONO");
@@ -628,7 +628,7 @@ void SOpenvslam::saveTrajectories()
     const std::string trajectories_filename = result->getFile().filename().replace_extension("").string(); // keep only
                                                                                                            // the
     // base filename.
-    m_trajectoriesFormat = dialogFolder.getCurrentSelection();
+    m_trajectoriesFormat = dialogFolder.getSelectedExtensions().front();
 
     const std::unique_lock<std::mutex> lock(m_slamLock);
 

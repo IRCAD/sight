@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include <core/com/Slots.hxx>
 #include <core/location/SingleFile.hpp>
 #include <core/location/SingleFolder.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/Object.hpp>
 
@@ -86,7 +86,7 @@ SCamera::SCamera() :
 
 void SCamera::configuring()
 {
-    const service::IService::ConfigType config = this->getConfigTree();
+    const service::IService::ConfigType config = this->getConfiguration();
 
     m_bVideoSupport    = config.get<bool>(s_VIDEO_SUPPORT_CONFIG, false);
     m_useAbsolutePath  = config.get<bool>(s_USE_ABSOLUTE_PATH, false);
@@ -392,8 +392,8 @@ void SCamera::onChooseStream()
         sight::ui::base::dialog::InputDialog inputDialog;
         inputDialog.setTitle("Enter stream url for video source #" + std::to_string(count++));
 
-        const std::string streamSource = inputDialog.getInput();
-        if(!streamSource.empty())
+        const auto& [streamSource, ok] = inputDialog.getInput();
+        if(ok && !streamSource.empty())
         {
             {
                 data::mt::locked_ptr<data::Camera> lock(camera);

@@ -26,8 +26,6 @@
 #include "ui/base/container/fwContainer.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 #include <filesystem>
 #include <functional>
 #include <list>
@@ -43,8 +41,6 @@ class UI_BASE_CLASS_API IFrameLayoutManager : public ui::base::GuiBaseObject
 public:
 
     SIGHT_DECLARE_CLASS(IFrameLayoutManager, ui::base::GuiBaseObject);
-
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
 
     /// Defines all possible style for a frame
     typedef enum
@@ -105,12 +101,12 @@ public:
     UI_BASE_API IFrameLayoutManager();
 
     /// Destructor. Do nothing.
-    UI_BASE_API ~IFrameLayoutManager() override;
+    UI_BASE_API ~IFrameLayoutManager() override = default;
 
     /**
      * @brief Configure the layout before creation.
      */
-    UI_BASE_API virtual void initialize(ConfigurationType configuration);
+    UI_BASE_API virtual void initialize(const ui::base::config_t& configuration);
 
     UI_BASE_API static const RegistryKeyType REGISTRY_KEY;
 

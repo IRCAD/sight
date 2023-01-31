@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,24 +28,14 @@
 #include <activity/IBuilder.hpp>
 #include <activity/IValidator.hpp>
 
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/Convert.hpp>
-#include <core/runtime/Module.hpp>
-#include <core/runtime/operations.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <data/Activity.hpp>
-#include <data/Composite.hpp>
-#include <data/String.hpp>
-#include <data/Vector.hpp>
 
-#include <service/AppConfigManager.hpp>
 #include <service/extension/AppConfig.hpp>
-#include <service/macros.hpp>
+#include <service/IAppConfigManager.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
@@ -117,14 +107,14 @@ void SLauncher::configuring()
     using ConfigType = service::IService::ConfigType;
 
     m_parameters.clear();
-    if(this->getConfigTree().count("config") > 0)
+    if(this->getConfiguration().count("config") > 0)
     {
         SIGHT_ASSERT(
             "There must be one (and only one) <config/> element.",
-            this->getConfigTree().count("config") == 1
+            this->getConfiguration().count("config") == 1
         );
 
-        const service::IService::ConfigType srvconfig = this->getConfigTree();
+        const service::IService::ConfigType srvconfig = this->getConfiguration();
         const service::IService::ConfigType& config   = srvconfig.get_child("config");
 
         m_mode = config.get_optional<std::string>("mode").get_value_or("message");
@@ -448,7 +438,7 @@ void SLauncher::buildActivity(
         auto replacementMap             = msg.getReplacementMap();
         replacementMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier();
 
-        auto helper = service::AppConfigManager::New();
+        auto helper = service::IAppConfigManager::New();
         helper->setConfig(viewConfigID, replacementMap);
         helper->launch();
         helper->stopAndDestroy();

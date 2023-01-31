@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -120,9 +120,9 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::ModelSeries::s_MODIFIED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
-     * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
-     * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG of s_MODEL_SERIES_INOUT to s_UPDATE_SLOT.
+     * Connect data::ModelSeries::s_MODIFIED_SIG of s_MODEL_SERIES_INOUT to IService::slots::s_UPDATE.
+     * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG of s_MODEL_SERIES_INOUT to IService::slots::s_UPDATE.
+     * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG of s_MODEL_SERIES_INOUT to IService::slots::s_UPDATE.
      */
     KeyConnectionsMap getAutoConnections() const final;
 

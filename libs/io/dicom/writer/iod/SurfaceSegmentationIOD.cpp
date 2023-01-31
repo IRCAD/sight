@@ -31,7 +31,7 @@
 #include "io/dicom/writer/ie/Study.hpp"
 #include "io/dicom/writer/ie/Surface.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 #include <core/spyLog.hpp>
 
 #include <data/ModelSeries.hpp>

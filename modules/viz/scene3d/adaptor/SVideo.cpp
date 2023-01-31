@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -50,20 +50,6 @@ static const core::com::Slots::SlotKeyType s_UPDATE_PL_SLOT     = "updatePL";
 static const core::com::Slots::SlotKeyType s_SET_FILTERING_SLOT = "setFiltering";
 static const core::com::Slots::SlotKeyType s_SCALE_SLOT         = "scale";
 
-static const std::string s_VISIBLE_CONFIG           = "visible";
-static const std::string s_MATERIAL_TEMPLATE_CONFIG = "materialTemplate";
-static const std::string s_TEXTURE_NAME_CONFIG      = "textureName";
-static const std::string s_FILTERING_CONFIG         = "filtering";
-static const std::string s_SCALING_CONFIG           = "scaling";
-static const std::string s_RADIUS_CONFIG            = "radius";
-static const std::string s_DISPLAY_LABEL_CONFIG     = "displayLabel";
-static const std::string s_LABEL_COLOR_CONFIG       = "labelColor";
-static const std::string s_COLOR_CONFIG             = "color";
-static const std::string s_FIXED_SIZE_CONFIG        = "fixedSize";
-static const std::string s_QUERY_CONFIG             = "queryFlags";
-static const std::string s_FONT_SOURCE_CONFIG       = "fontSource";
-static const std::string s_FONT_SIZE_CONFIG         = "fontSize";
-
 static const std::string s_VIDEO_MATERIAL_NAME             = "Video";
 static const std::string s_VIDEO_WITH_TF_MATERIAL_NAME     = "VideoWithTF";
 static const std::string s_VIDEO_WITH_TF_INT_MATERIAL_NAME = "VideoWithTF_Int";
@@ -80,33 +66,27 @@ SVideo::SVideo() noexcept
 
 //------------------------------------------------------------------------------
 
-SVideo::~SVideo() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void SVideo::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
-    const bool visible = config.get<bool>(s_VISIBLE_CONFIG, m_isVisible);
+    const bool visible = config.get<bool>(config::s_VISIBLE, m_isVisible);
     this->updateVisibility(visible);
 
-    m_materialTemplateName = config.get<std::string>(s_MATERIAL_TEMPLATE_CONFIG, m_materialTemplateName);
-    m_textureName          = config.get<std::string>(s_TEXTURE_NAME_CONFIG, m_textureName);
-    m_filtering            = config.get<bool>(s_FILTERING_CONFIG, m_filtering);
-    m_scaling              = config.get<bool>(s_SCALING_CONFIG, m_scaling);
-    m_radius               = config.get<std::string>(s_RADIUS_CONFIG, m_radius);
-    m_displayLabel         = config.get<std::string>(s_DISPLAY_LABEL_CONFIG, m_displayLabel);
-    m_labelColor           = config.get<std::string>(s_LABEL_COLOR_CONFIG, m_labelColor);
-    m_color                = config.get<std::string>(s_COLOR_CONFIG, m_color);
-    m_fixedSize            = config.get<std::string>(s_FIXED_SIZE_CONFIG, m_fixedSize);
-    m_queryFlags           = config.get<std::string>(s_QUERY_CONFIG, m_queryFlags);
-    m_fontSource           = config.get<std::string>(s_FONT_SOURCE_CONFIG, m_fontSource);
-    m_fontSize             = config.get<std::string>(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_materialTemplateName = config.get<std::string>(config::s_MATERIAL_TEMPLATE, m_materialTemplateName);
+    m_textureName          = config.get<std::string>(config::s_TEXTURE_NAME, m_textureName);
+    m_filtering            = config.get<bool>(config::s_FILTERING, m_filtering);
+    m_scaling              = config.get<bool>(config::s_SCALING, m_scaling);
+    m_radius               = config.get<std::string>(config::s_RADIUS, m_radius);
+    m_displayLabel         = config.get<std::string>(config::s_DISPLAY_LABEL, m_displayLabel);
+    m_labelColor           = config.get<std::string>(config::s_LABEL_COLOR, m_labelColor);
+    m_color                = config.get<std::string>(config::s_COLOR, m_color);
+    m_fixedSize            = config.get<std::string>(config::s_FIXED_SIZE, m_fixedSize);
+    m_queryFlags           = config.get<std::string>(config::s_QUERY, m_queryFlags);
+    m_fontSource           = config.get<std::string>(config::s_FONT_SOURCE, m_fontSource);
+    m_fontSize             = config.get<std::string>(config::s_FONT_SIZE, m_fontSize);
 }
 
 //------------------------------------------------------------------------------
@@ -130,56 +110,56 @@ void SVideo::starting()
         m_pointListAdaptor->setInput(m_pointList, s_PL_INPUT, true);
 
         service::IService::ConfigType config;
-        config.add("config.<xmlattr>.layer", this->getLayerID());
-        config.add("config.<xmlattr>.autoresetcamera", "false");
+        config.add(s_CONFIG + "layer", this->getLayerID());
+        config.add(s_CONFIG + "autoresetcamera", "false");
         if(!m_materialTemplateName.empty())
         {
-            config.add("config.<xmlattr>." + s_MATERIAL_TEMPLATE_CONFIG, m_materialTemplateName);
+            config.add(config::s_MATERIAL_TEMPLATE, m_materialTemplateName);
         }
 
         if(!m_textureName.empty())
         {
-            config.add("config.<xmlattr>." + s_TEXTURE_NAME_CONFIG, m_textureName);
+            config.add(config::s_TEXTURE_NAME, m_textureName);
         }
 
         if(!m_radius.empty())
         {
-            config.add("config.<xmlattr>." + s_RADIUS_CONFIG, m_radius);
+            config.add(config::s_RADIUS, m_radius);
         }
 
         if(!m_displayLabel.empty())
         {
-            config.add("config.<xmlattr>." + s_DISPLAY_LABEL_CONFIG, m_displayLabel);
+            config.add(config::s_DISPLAY_LABEL, m_displayLabel);
         }
 
         if(!m_labelColor.empty())
         {
-            config.add("config.<xmlattr>." + s_LABEL_COLOR_CONFIG, m_labelColor);
+            config.add(config::s_LABEL_COLOR, m_labelColor);
         }
 
         if(!m_color.empty())
         {
-            config.add("config.<xmlattr>." + s_COLOR_CONFIG, m_color);
+            config.add(config::s_COLOR, m_color);
         }
 
         if(!m_fixedSize.empty())
         {
-            config.add("config.<xmlattr>." + s_FIXED_SIZE_CONFIG, m_fixedSize);
+            config.add(config::s_FIXED_SIZE, m_fixedSize);
         }
 
         if(!m_queryFlags.empty())
         {
-            config.add("config.<xmlattr>." + s_QUERY_CONFIG, m_queryFlags);
+            config.add(config::s_QUERY, m_queryFlags);
         }
 
         if(!m_fontSource.empty())
         {
-            config.add("config.<xmlattr>." + s_FONT_SOURCE_CONFIG, m_fontSource);
+            config.add(config::s_FONT_SOURCE, m_fontSource);
         }
 
         if(!m_fontSize.empty())
         {
-            config.add("config.<xmlattr>." + s_FONT_SIZE_CONFIG, m_fontSize);
+            config.add(config::s_FONT_SIZE, m_fontSize);
         }
 
         m_pointListAdaptor->setConfiguration(config);
@@ -203,8 +183,8 @@ void SVideo::starting()
 service::IService::KeyConnectionsMap SVideo::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     connections.push(s_TF_INPUT, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT);
     connections.push(s_TF_INPUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT);

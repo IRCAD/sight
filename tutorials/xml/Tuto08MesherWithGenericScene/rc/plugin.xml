@@ -149,32 +149,31 @@
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1" />
+                    <layer id="default" order="1" >
                     <adaptor uid="trackballInteractorAdp" />
                     <adaptor uid="modelSeriesAdp" />
                     <adaptor uid="negatoAdp" />
                     <adaptor uid="snapshotAdp" />
+                    </layer>
                 </scene>
             </service>
 
             <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
-                <config layer="default" priority="0" />
+                <config priority="0" />
             </service>
 
             <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true">
                 <in key="model" uid="modelSeries" />
-                <config layer="default" />
             </service>
 
             <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" autoConnect="true">
                 <in key="image" uid="imageSeries" />
                 <inout key="tf" uid="tf" />
-                <config layer="default" sliceIndex="axial" interactive="true" />
+                <config sliceIndex="axial" interactive="true" />
             </service>
 
             <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo">
                 <inout key="image" uid="snapshot" />
-                <config layer="default" flip="true" />
             </service>
 
             <!-- ******************************* Actions ****************************************** -->
@@ -270,11 +269,10 @@
             </service>
 
             <!-- Write the snapshot image -->
-            <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector">
-                <inout key="data" uid="snapshot" />
-                <type mode="writer" />
-                <selection mode="exclude" />
-                <addSelection service="sight::module::io::session::SWriter" />
+            <service uid="imageWriterSrv" type="sight::module::io::bitmap::SWriter">
+                <in key="data" uid="snapshot" />
+                <dialog policy="always" />
+                <backends enable="all" mode="best"/>
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

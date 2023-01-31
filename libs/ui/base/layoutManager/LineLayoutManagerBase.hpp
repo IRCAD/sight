@@ -74,10 +74,10 @@ public:
     };
 
     /// Constructor. Do nothing.
-    UI_BASE_API LineLayoutManagerBase();
+    UI_BASE_API LineLayoutManagerBase() = default;
 
     /// Destructor. Do nothing.
-    UI_BASE_API ~LineLayoutManagerBase() override;
+    UI_BASE_API ~LineLayoutManagerBase() override = default;
 
     /**
      * @brief Initialize Line layout manager before the creation of layout.
@@ -120,7 +120,7 @@ public:
      *   - \b backgroundColor (optional) : (hexa) background color.
      */
 
-    UI_BASE_API void initialize(ConfigurationType configuration) override;
+    UI_BASE_API void initialize(const ui::base::config_t& configuration) override;
 
     UI_BASE_API static const RegistryKeyType REGISTRY_KEY;
 

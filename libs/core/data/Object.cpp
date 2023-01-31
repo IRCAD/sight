@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,12 +20,11 @@
  *
  ***********************************************************************/
 
-//FIXME :This needs to be include first for GCC
-#include <core/com/Signal.hpp>
-#include <core/com/Signal.hxx>
-//
-#include "data/factory/new.hpp"
 #include "data/Object.hpp"
+
+#include "data/factory/new.hpp"
+
+#include <core/com/Signal.hxx>
 
 #include <functional>
 

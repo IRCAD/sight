@@ -62,10 +62,10 @@ public:
     SIGHT_DECLARE_SERVICE(SImageCenter, service::IFilter);
 
     /// Constructor, does nothing.
-    MODULE_FILTER_IMAGE_API SImageCenter();
+    MODULE_FILTER_IMAGE_API SImageCenter() = default;
 
     /// Destructor, does nothing.
-    MODULE_FILTER_IMAGE_API ~SImageCenter() override;
+    MODULE_FILTER_IMAGE_API ~SImageCenter() override = default;
 
 protected:
 

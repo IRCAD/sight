@@ -49,10 +49,6 @@ public:
     CPPUNIT_TEST(calibrationInfoTest);
     CPPUNIT_TEST(cameraTest);
     CPPUNIT_TEST(colorTest);
-    CPPUNIT_TEST(edgeTest);
-    CPPUNIT_TEST(portTest);
-    CPPUNIT_TEST(nodeTest);
-    CPPUNIT_TEST(graphTest);
     CPPUNIT_TEST(landmarksTest);
     CPPUNIT_TEST(lineTest);
     CPPUNIT_TEST(materialTest);
@@ -62,10 +58,8 @@ public:
     CPPUNIT_TEST(reconstructionTest);
     CPPUNIT_TEST(structureTraitsTest);
     CPPUNIT_TEST(structureTraitsDictionaryTest);
-    CPPUNIT_TEST(reconstructionTraitsTest);
     CPPUNIT_TEST(resectionTest);
     CPPUNIT_TEST(resectionDBTest);
-    CPPUNIT_TEST(roiTraitsTest);
     CPPUNIT_TEST(transferFunctionTest);
     CPPUNIT_TEST(dicomSeriesTest);
     CPPUNIT_TEST(imageSeriesTest);
@@ -102,10 +96,6 @@ public:
     static void calibrationInfoTest();
     static void cameraTest();
     static void colorTest();
-    static void edgeTest();
-    static void portTest();
-    static void nodeTest();
-    static void graphTest();
     static void landmarksTest();
     static void lineTest();
     static void materialTest();
@@ -115,10 +105,8 @@ public:
     static void reconstructionTest();
     static void structureTraitsTest();
     static void structureTraitsDictionaryTest();
-    static void reconstructionTraitsTest();
     static void resectionTest();
     static void resectionDBTest();
-    static void roiTraitsTest();
     static void transferFunctionTest();
     static void dicomSeriesTest();
     static void imageSeriesTest();

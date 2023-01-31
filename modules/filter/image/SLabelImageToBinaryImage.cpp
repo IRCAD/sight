@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,7 +89,7 @@ SLabelImageToBinaryImage::~SLabelImageToBinaryImage()
 
 void SLabelImageToBinaryImage::configuring()
 {
-    const ConfigType config = this->getConfigTree();
+    const ConfigType config = this->getConfiguration();
 
     m_labelSetFieldName = config.get_optional<std::string>("config.<xmlattr>.labelsField");
 }
@@ -194,8 +194,8 @@ void SLabelImageToBinaryImage::stopping()
 service::IService::KeyConnectionsMap SLabelImageToBinaryImage::getAutoConnections() const
 {
     return {
-        {s_LABEL_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
-        {s_LABEL_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT}
+        {s_LABEL_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_LABEL_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE}
     };
 }
 

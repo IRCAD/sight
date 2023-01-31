@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -41,21 +41,19 @@ public:
     /// Enum to define a password policy
     enum class PasswordPolicy : uint8_t
     {
-        NEVER   = 0,     /// Never ask a password
-        ONCE    = 1,     /// Ask for password once and reuse it later
-        ALWAYS  = 2,     /// Always ask for a password
-        DEFAULT = NEVER, /// Default behavior if nothing is set
-        INVALID = 255    /// Used for error management
+        NEVER   = 0,  /// Never ask a password
+        GLOBAL  = 1,  /// Use global password if set, Otherwise ask for password
+        ALWAYS  = 2,  /// Always ask for a password
+        INVALID = 255 /// Used for error management
     };
 
     /// Enum to define an encryption policy
     enum class EncryptionPolicy : uint8_t
     {
-        PASSWORD = 0,        /// Use the given password for encryption
-        SALTED   = 1,        /// Use the given password with salt for encryption
-        FORCED   = 2,        /// Force encryption with a pseudo random hidden password
-        DEFAULT  = PASSWORD, /// Default behavior if nothing is set
-        INVALID  = 255       /// Used for error management
+        PASSWORD = 0,  /// Use the given password for encryption
+        SALTED   = 1,  /// Use the given password with salt for encryption
+        FORCED   = 2,  /// Force encryption with a pseudo random hidden password
+        INVALID  = 255 /// Used for error management
     };
 
     /// Delete default copy constructors and assignment operators
@@ -109,41 +107,35 @@ public:
     {
         switch(policy)
         {
-            case PasswordPolicy::NEVER:
-                return "never";
-
-            case PasswordPolicy::ONCE:
-                return "once";
+            case PasswordPolicy::GLOBAL:
+                return "global";
 
             case PasswordPolicy::ALWAYS:
                 return "always";
 
             default:
-                return "default";
+                return "never";
         }
     }
 
     /// Convenience function to convert from string to PasswordPolicy enum value
     constexpr static PasswordPolicy string_to_password_policy(std::string_view policy) noexcept
     {
-        if(constexpr auto NEVER = password_policy_to_string(PasswordPolicy::NEVER); policy == NEVER)
+        if(constexpr auto NEVER = password_policy_to_string(PasswordPolicy::NEVER);
+           policy == NEVER || policy.empty() || policy == "default")
         {
             return PasswordPolicy::NEVER;
         }
 
-        if(constexpr auto ONCE = password_policy_to_string(PasswordPolicy::ONCE); policy == ONCE)
+        if(constexpr auto GLOBAL = password_policy_to_string(PasswordPolicy::GLOBAL);
+           policy == GLOBAL || policy == "once")
         {
-            return PasswordPolicy::ONCE;
+            return PasswordPolicy::GLOBAL;
         }
 
         if(constexpr auto ALWAYS = password_policy_to_string(PasswordPolicy::ALWAYS); policy == ALWAYS)
         {
             return PasswordPolicy::ALWAYS;
-        }
-
-        if(policy.empty() || policy == "default")
-        {
-            return PasswordPolicy::DEFAULT;
         }
 
         // Error case
@@ -155,9 +147,6 @@ public:
     {
         switch(policy)
         {
-            case EncryptionPolicy::PASSWORD:
-                return "password";
-
             case EncryptionPolicy::SALTED:
                 return "salted";
 
@@ -165,14 +154,15 @@ public:
                 return "forced";
 
             default:
-                return "default";
+                return "password";
         }
     }
 
     /// Convenience function to convert from string to EncryptionPolicy enum value
     constexpr static EncryptionPolicy string_to_encryption_policy(std::string_view policy) noexcept
     {
-        if(constexpr auto PASSWORD = encryption_policy_to_string(EncryptionPolicy::PASSWORD); policy == PASSWORD)
+        if(constexpr auto PASSWORD = encryption_policy_to_string(EncryptionPolicy::PASSWORD);
+           policy == PASSWORD || policy.empty() || policy == "default")
         {
             return EncryptionPolicy::PASSWORD;
         }
@@ -185,11 +175,6 @@ public:
         if(constexpr auto FORCED = encryption_policy_to_string(EncryptionPolicy::FORCED); policy == FORCED)
         {
             return EncryptionPolicy::FORCED;
-        }
-
-        if(policy.empty() || policy == "default")
-        {
-            return EncryptionPolicy::DEFAULT;
         }
 
         // Error case

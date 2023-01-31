@@ -22,11 +22,14 @@
 
 #pragma once
 
+#include "core/base.hpp"
 #include "core/config.hpp"
 #include "core/runtime/detail/Extension.hpp"
-#include "core/runtime/Runtime.hpp"
+#include "core/runtime/ExecutableFactory.hpp"
+#include "core/runtime/IPlugin.hpp"
 
 #include <regex>
+#include <set>
 
 namespace sight::core::runtime::detail
 {
@@ -38,20 +41,26 @@ class Module;
  * @brief   Defines the runtime class.
  *
  */
-class Runtime : public core::runtime::Runtime
+class Runtime
 {
 public:
 
+    /**
+     * @name    Type Definitions
+     */
+    //@{
     /// Defines the module container type.
-    typedef std::set<std::shared_ptr<Module> > ModuleContainer;
+    using ModuleContainer = std::set<std::shared_ptr<core::runtime::Module> >;
+    /// Defines the extension container type.
+    using ExtensionContainer = std::set<std::shared_ptr<Extension> >;
+    /// Defines the extension container type.
+    using ExtensionIterator = ExtensionContainer::iterator;
+    //@}
 
     /// Regex used in different places to find the module part in a path
     static const std::regex s_MATCH_MODULE_PATH;
 
-    /**
-     * @brief   Retrieves the default runtime instance.
-     */
-    static Runtime* getDefault();
+    /// Retrieves the singleton
     static Runtime& get();
 
     /**
@@ -61,7 +70,7 @@ public:
     /**
      * @brief   Destructor : does nothing.
      */
-    ~Runtime() override;
+    ~Runtime();
 
     /**
      * @name    Public API implementation
@@ -73,7 +82,7 @@ public:
      *
      * @param[in]   repository  a path that may containing modules
      */
-    void addModules(const std::filesystem::path& repository) override;
+    void addModules(const std::filesystem::path& repository);
 
     /**
      * @brief       Retrieves the module for the specified identifier.
@@ -83,7 +92,7 @@ public:
      *
      * @return      a shared pointer to the found module or null if none
      */
-    [[nodiscard]] SPTR(core::runtime::Module) findModule(const std::string& identifier) const final;
+    [[nodiscard]] SPTR(core::runtime::Module) findModule(const std::string& identifier) const;
 
     /**
      * @brief   Create an instance of the given executable object type.
@@ -100,49 +109,23 @@ public:
     [[nodiscard]] IExecutable* createExecutableInstance(const std::string& type) const;
 
     /**
-     * @brief   Create an instance of the given executable object type and configuration element.
-     *
-     * An attempt is made to find a registered executable factory. If none
-     * is found, the module of the given configuration element is started in the
-     * hope it will register a executable factory for the given type. Then an
-     * executable factory for the given type is searched once again and the
-     * instantiation procedure goes further.
-     *
-     * @param[in]   type                    a string containing an executable type
-     * @param[in]   configurationElement    a shared pointer to the configuration element to use for the executable
-     * initialization
-     *
-     * @return  a pointer to the created executable instance
-     */
-    [[nodiscard]] IExecutable* createExecutableInstance(
-        const std::string& type,
-        SPTR(ConfigurationElement) configurationElement
-    ) const;
-
-    /**
-     * @brief   Retrieves the iterator on the end of the extension collection.
-     * @return  an iterator
-     */
-    ExtensionIterator extensionsEnd();
-
-    /**
      * @brief       Retrieves the extension instance matching the specified identifier.
      *
      * @param[in]   identifier  a string containing an extension identifier
      *
      * @return      a shared pointer to the found extension instance or null if none
      */
-    [[nodiscard]] std::shared_ptr<core::runtime::Extension> findExtension(const std::string& identifier) const final;
+    [[nodiscard]] std::shared_ptr<core::runtime::Extension> findExtension(const std::string& identifier) const;
 
-    /// @copydoc core::runtime::Runtime::getModules
-    core::runtime::Runtime::ModuleContainer getModules() final;
+    /// Return all modules known by the runtime
+    ModuleContainer getModules() const;
 
-    /// @copydoc core::runtime::Runtime::getWorkingPath
-    [[nodiscard]] std::filesystem::path getWorkingPath() const final;
+    /// Get the path where libraries, modules and share folder are located.
+    [[nodiscard]] std::filesystem::path getWorkingPath() const;
 
-    /// @copydoc core::runtime::Runtime::getRepositoriesPath
+    /// Get the path where libraries, modules and share folder are located, for each known location
     [[nodiscard]] std::vector<std::pair<std::filesystem::path,
-                                        std::filesystem::path> > getRepositoriesPath() const final;
+                                        std::filesystem::path> > getRepositoriesPath() const;
     //@}
 
     /**
@@ -174,7 +157,7 @@ public:
      *
      * @return      a shared pointer to the found module or null if none
      */
-    [[nodiscard]] std::shared_ptr<Module> findEnabledModule(const std::string& identifier) const;
+    [[nodiscard]] std::shared_ptr<core::runtime::Module> findEnabledModule(const std::string& identifier) const;
 
     //@}
 
@@ -237,6 +220,11 @@ public:
      * @param[in]   extension   a shared pointer to the extension to register
      */
     void unregisterExtension(std::shared_ptr<detail::Extension> extension);
+
+    /// Retrieves the extension collection.
+    ExtensionContainer getExtensions() const;
+    ExtensionIterator extensionsBegin() const;
+    ExtensionIterator extensionsEnd() const;
     //@}
 
     /**
@@ -265,30 +253,18 @@ public:
      * @return      a shared pointer to the found extension point instance or null if none
      */
     [[nodiscard]] std::shared_ptr<ExtensionPoint> findExtensionPoint(const std::string& identifier) const;
-
-    /**
-     * @brief   Retrieves the extension collection.
-     * @return  the extension collection.
-     */
-    ExtensionContainer getExtensions() override;
-
-    /**
-     * @brief   Retrieves the iterator on the beginning of the extension collection.
-     * @return  an iterator
-     */
-    ExtensionIterator extensionsBegin();
     //@}
 
 private:
 
     ///< Defines the executable factory container type.
-    typedef std::set<std::shared_ptr<ExecutableFactory> > ExecutableFactoryContainer;
+    using ExecutableFactoryContainer = std::set<std::shared_ptr<ExecutableFactory> >;
 
     ///< Defines the extension point container type.
-    typedef std::set<std::shared_ptr<ExtensionPoint> > ExtensionPointContainer;
+    using ExtensionPointContainer = std::set<std::shared_ptr<ExtensionPoint> >;
 
     ///< Defines the plugin container type.
-    typedef std::vector<std::shared_ptr<IPlugin> > PluginContainer;
+    using PluginContainer = std::vector<std::shared_ptr<IPlugin> >;
 
     static std::shared_ptr<Runtime> m_instance; ///< The runtime instance.
 

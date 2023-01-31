@@ -56,7 +56,7 @@ void STimestampSignal::configuring()
 {
     this->initialize();
 
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
     m_useSystemClock     = config.get<bool>("useSystemClock", false);
     m_formatStringAsDate = config.get<bool>("formatStringAsDate", true);
 }

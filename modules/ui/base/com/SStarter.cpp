@@ -22,9 +22,6 @@
 
 #include "SStarter.hpp"
 
-#include <core/base.hpp>
-
-#include <service/macros.hpp>
 #include <service/op/Get.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -220,11 +217,9 @@ void SStarter::configuring()
 {
     this->initialize();
 
-    for(const ConfigurationType& actionCfg : m_configuration->getElements())
+    for(const auto& actionCfg : this->getConfiguration())
     {
-        SIGHT_INFO("SStarter " << actionCfg->getName());
-
-        std::string actionType = actionCfg->getName();
+        std::string actionType = actionCfg.first;
         ActionType action {ActionType::DO_NOTHING};
         if(actionType == "start")
         {
@@ -254,14 +249,19 @@ void SStarter::configuring()
         {
             action = START_ONLY;
         }
+        else if(actionType == "state" || actionType == "<xmlattr>")
+        {
+            // Ignore
+            continue;
+        }
         else
         {
             SIGHT_WARN("The \"actionType\":" << actionType << " is not managed by SStarter");
             continue;
         }
 
-        SIGHT_ASSERT("Attribute uid missing", actionCfg->hasAttribute("uid"));
-        IDSrvType uuid = actionCfg->getExistingAttributeValue("uid");
+        SIGHT_INFO("SStarter " << actionCfg.first);
+        const auto uuid = actionCfg.second.get<std::string>("<xmlattr>.uid");
 
         m_uuidServices.push_back(std::make_pair(uuid, action));
     }

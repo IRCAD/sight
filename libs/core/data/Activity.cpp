@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,7 @@ SIGHT_REGISTER_DATA(sight::data::Activity)
 namespace sight::data
 {
 
-Activity::Activity(data::Object::Key /*unused*/) :
-    m_data(data::Composite::New())
+Activity::Activity(data::Object::Key /*unused*/)
 {
 }
 
@@ -50,9 +49,8 @@ void Activity::shallowCopy(const Object::csptr& source)
     );
 
     m_activityConfigId = other->m_activityConfigId;
-    m_data             = other->m_data;
 
-    BaseClass::shallowCopy(other);
+    data::Composite::shallowCopy(other);
 }
 
 //------------------------------------------------------------------------------
@@ -70,23 +68,21 @@ void Activity::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepC
     );
 
     m_activityConfigId = other->m_activityConfigId;
-    m_data             = data::Object::copy(other->m_data, cache);
 
-    BaseClass::deepCopy(other, cache);
+    data::Composite::deepCopy(other, cache);
 }
 
 //------------------------------------------------------------------------------
 
 bool Activity::operator==(const Activity& other) const noexcept
 {
-    if(m_activityConfigId != other.m_activityConfigId
-       || !core::tools::is_equal(m_data, other.m_data))
+    if(m_activityConfigId != other.m_activityConfigId)
     {
         return false;
     }
 
     // Super class last
-    return BaseClass::operator==(other);
+    return data::Composite::operator==(other);
 }
 
 //------------------------------------------------------------------------------

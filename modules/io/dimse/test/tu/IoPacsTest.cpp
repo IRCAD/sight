@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,7 @@
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 
-#include <service/AppConfigManager.hpp>
-#include <service/extension/AppConfig.hpp>
-#include <service/macros.hpp>
 #include <service/op/Add.hpp>
-#include <service/registry/ObjectService.hpp>
 
 #include <boost/property_tree/xml_parser.hpp>
 
@@ -83,7 +79,7 @@ void IoPacsTest::pacsConfigurationInitializer()
     srv->start();
     srv->update();
     srv->stop();
-    service::OSR::unregisterService(srv);
+    service::unregisterService(srv);
 
     std::uint16_t pacsApplicationPort = 11112U;
     std::uint16_t moveApplicationPort = 11110U;

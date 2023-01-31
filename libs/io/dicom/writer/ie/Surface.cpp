@@ -29,7 +29,7 @@
 #include "io/dicom/helper/DicomDataTools.hpp"
 #include "io/dicom/helper/DicomDataWriter.hxx"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 #include <core/tools/dateAndTime.hpp>
 
 #include <data/Reconstruction.hpp>

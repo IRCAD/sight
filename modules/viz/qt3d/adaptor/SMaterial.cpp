@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,7 +57,7 @@ SMaterial::~SMaterial() noexcept =
 
 void SMaterial::configuring()
 {
-    const auto configTree = this->getConfigTree();
+    const auto configTree = this->getConfiguration();
     const auto config     = configTree.get_child_optional("config.<xmlattr>");
 
     if(config)
@@ -83,7 +83,7 @@ void SMaterial::starting()
 service::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     return connections;
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,21 +28,12 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/operations.hpp>
 #include <core/tools/dateAndTime.hpp>
-#include <core/tools/UUID.hpp>
-
-#include <data/Boolean.hpp>
-#include <data/Composite.hpp>
-#include <data/String.hpp>
 
 #include <service/extension/AppConfig.hpp>
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/GuiRegistry.hpp>
-
-#include <boost/foreach.hpp>
 
 #include <QBoxLayout>
 #include <QTabWidget>
@@ -79,34 +70,10 @@ void SDynamicView::configuring()
 {
     this->sight::ui::base::view::IActivityView::configuring();
 
-    using ConfigElementType = core::runtime::ConfigurationElement::sptr;
+    const auto& config = this->getConfiguration();
 
-    ConfigElementType config_ui_activity = m_configuration->findConfigurationElement("mainActivity");
-    if(config_ui_activity)
-    {
-        const std::string closableStr = config_ui_activity->getAttributeValue("closable");
-        SIGHT_ASSERT(
-            "main activity 'closable' attribute value must be 'true' or 'false'",
-            closableStr == "true" || closableStr == "false"
-        );
-        const bool closable = closableStr == "true";
-        m_mainActivityClosable = closable;
-    }
-
-    ConfigElementType config = m_configuration->findConfigurationElement("config");
-    if(config)
-    {
-        const std::string documentStr = config->getAttributeValue("document");
-        if(!documentStr.empty())
-        {
-            SIGHT_ASSERT(
-                "'document' attribute value must be 'true' or 'false'",
-                documentStr == "true" || documentStr == "false"
-            );
-            const bool document = documentStr == "true";
-            m_documentMode = document;
-        }
-    }
+    m_mainActivityClosable = config.get<bool>("mainActivity.<xmlattr>.closable", m_mainActivityClosable);
+    m_documentMode         = config.get<bool>("config.<xmlattr>.document", m_documentMode);
 }
 
 //------------------------------------------------------------------------------
@@ -227,7 +194,7 @@ void SDynamicView::launchTab(SDynamicViewInfo& info)
     info.replacementMap["WID_PARENT"]  = info.wid;
     info.replacementMap["GENERIC_UID"] = service::extension::AppConfig::getUniqueIdentifier(info.viewConfigID);
 
-    auto helper = service::AppConfigManager::New();
+    auto helper = service::IAppConfigManager::New();
 
     try
     {

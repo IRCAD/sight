@@ -22,10 +22,7 @@
 
 #pragma once
 
-#include "core/tools/compare.hpp"
-
-#include "data/factory/new.hpp"
-#include "data/Object.hpp"
+#include "data/IContainer.hpp"
 
 #include <array>
 #include <iostream>
@@ -35,21 +32,21 @@ namespace sight::data
 
 /**
  * @brief This class represents a 3D transformation matrix (4x4).
+ *
+ * Our convention is a row-major representation.
  */
-class DATA_CLASS_API Matrix4 final : public Object
+class DATA_CLASS_API Matrix4 final : public IContainer<std::array<double,
+                                                                  16> >
 {
 public:
 
-    SIGHT_DECLARE_CLASS(Matrix4, Object, factory::New<Matrix4>);
-
-    typedef double TM3DType;
-    typedef std::array<TM3DType, 16> TMCoefArray;
-    typedef std::array<std::array<TM3DType, 4>, 4> MatrixType;
+    SIGHT_DECLARE_CLASS(Matrix4, IContainer<Matrix4::container_type>, factory::New<Matrix4>);
 
     /**
      * @brief Default constructor
      */
     DATA_API Matrix4();
+    DATA_API Matrix4(std::initializer_list<value_type> init_list);
 
     /**
      * @brief Constructor
@@ -60,17 +57,18 @@ public:
     //! @brief destructor
     DATA_API ~Matrix4() noexcept override = default;
 
-    /// Getters/setters
-    TMCoefArray& getCoefficients();
-    const TMCoefArray& getCoefficients() const;
-    void setCoefficients(const TMCoefArray& _vCoefficients);
+    /// This will enable common collection constructors / assignment operators
+    using IContainer<Matrix4::container_type>::IContainer;
+    using IContainer<Matrix4::container_type>::operator=;
+
+    DATA_API Matrix4& operator=(std::initializer_list<value_type> init_list);
 
     /**
      * @{
      * @brief Get/Set value of the coefficient in the given position (matrix[l][c])
      */
-    DATA_API TM3DType getCoefficient(std::size_t l, std::size_t c) const;
-    DATA_API void setCoefficient(std::size_t l, std::size_t c, TM3DType val);
+    [[nodiscard]] Matrix4::value_type& operator()(std::size_t l, std::size_t c) noexcept;
+    [[nodiscard]] const Matrix4::value_type& operator()(std::size_t l, std::size_t c) const noexcept;
     /// @}
 
     /// maximum size of the matrix (MATRIX_SIZE x MATRIX_SIZE)
@@ -83,7 +81,7 @@ public:
         {
             for(std::size_t c = 0 ; c < MATRIX_SIZE ; c++)
             {
-                s << mat.getCoefficient(l, c) << "\t";
+                s << mat(l, c) << "\t";
             }
 
             s << std::endl;
@@ -91,24 +89,6 @@ public:
 
         return s;
     }
-
-    /**
-     * @brief Returns matrix coefficients as a 4x4 matrix (Row major).
-     * @return 4x4 matrix (std::array< std::array< double, 4> 4>).
-     */
-    DATA_API MatrixType getMatrix4x4() const;
-
-    /**
-     * @brief Sets coefficients as a 4x4 matrix (Row major).
-     * @param _matrix : matrix coefficients as std::array< std::array< double, 4 > 4 >.
-     */
-    DATA_API void setMatrix4x4(const MatrixType& _matrix);
-
-    /// Equality comparison operators
-    /// @{
-    DATA_API bool operator==(const Matrix4& other) const noexcept;
-    DATA_API bool operator!=(const Matrix4& other) const noexcept;
-    /// @}
 
     /// Defines shallow copy
     /// @throws data::Exception if an errors occurs during copy
@@ -126,79 +106,27 @@ public:
 
 protected:
 
-    //! Matrix coefficient number (4x4). m_vCoefficients[0] to m_vCoefficients[3] is the first row of the matrix
-    TMCoefArray m_vCoefficients {};
-
-    static constexpr TMCoefArray s_IDENTITY = {1., 0., 0., 0.,
-                                               0., 1., 0., 0.,
-                                               0., 0., 1., 0.,
-                                               0., 0., 0., 1.
+    static constexpr container_type s_IDENTITY = {1., 0., 0., 0.,
+                                                  0., 1., 0., 0.,
+                                                  0., 0., 1., 0.,
+                                                  0., 0., 0., 1.
     };
 };
 
-//-----------------------------------------------------------------------------
-
-inline Matrix4::TMCoefArray& Matrix4::getCoefficients()
-{
-    return this->m_vCoefficients;
-}
-
-//-----------------------------------------------------------------------------
-
-inline const Matrix4::TMCoefArray& Matrix4::getCoefficients() const
-{
-    return this->m_vCoefficients;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void Matrix4::setCoefficients(const Matrix4::TMCoefArray& _vCoefficients)
-{
-    this->m_vCoefficients = _vCoefficients;
-}
-
 //------------------------------------------------------------------------------
 
-inline Matrix4::TM3DType Matrix4::getCoefficient(std::size_t l, std::size_t c) const
+inline Matrix4::value_type& Matrix4::operator()(std::size_t l, std::size_t c) noexcept
 {
     std::size_t pos = l * MATRIX_SIZE + c;
-    return m_vCoefficients.at(pos);
+    return this->at(pos);
 }
 
 //------------------------------------------------------------------------------
 
-inline void Matrix4::setCoefficient(std::size_t l, std::size_t c, Matrix4::TM3DType val)
+inline const Matrix4::value_type& Matrix4::operator()(std::size_t l, std::size_t c) const noexcept
 {
     std::size_t pos = l * MATRIX_SIZE + c;
-    m_vCoefficients.at(pos) = val;
-}
-
-//------------------------------------------------------------------------------
-
-inline Matrix4::MatrixType Matrix4::getMatrix4x4() const
-{
-    // linear index to 2d.
-    const Matrix4::MatrixType matrix4x4 {{
-        {m_vCoefficients[0], m_vCoefficients[1], m_vCoefficients[2], m_vCoefficients[3]},
-        {m_vCoefficients[4], m_vCoefficients[5], m_vCoefficients[6], m_vCoefficients[7]},
-        {m_vCoefficients[8], m_vCoefficients[9], m_vCoefficients[10], m_vCoefficients[11]},
-        {m_vCoefficients[12], m_vCoefficients[13], m_vCoefficients[14], m_vCoefficients[15]}
-    }
-    };
-    return matrix4x4;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void Matrix4::setMatrix4x4(const Matrix4::MatrixType& _matrix)
-{
-    // 2d to linear index.
-    m_vCoefficients = {
-        _matrix[0][0], _matrix[0][1], _matrix[0][2], _matrix[0][3],
-        _matrix[1][0], _matrix[1][1], _matrix[1][2], _matrix[1][3],
-        _matrix[2][0], _matrix[2][1], _matrix[2][2], _matrix[2][3],
-        _matrix[3][0], _matrix[3][1], _matrix[3][2], _matrix[3][3]
-    };
+    return this->at(pos);
 }
 
 //-----------------------------------------------------------------------------

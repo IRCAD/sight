@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -74,7 +74,7 @@ void InputDialog::setInput(const std::string& text)
 //------------------------------------------------------------------------------
 
 /// Get the input text in the input field
-std::string InputDialog::getInput()
+std::pair<std::string, bool> InputDialog::getInput()
 {
     QString title = QObject::tr(m_title.c_str());
     QString text  = QObject::tr(m_message.c_str());
@@ -118,7 +118,7 @@ std::string InputDialog::getInput()
         m_input.clear();
     }
 
-    return m_input;
+    return std::make_pair(m_input, IsOkClicked);
 }
 
 //------------------------------------------------------------------------------

@@ -21,8 +21,6 @@
 
 #include "ZoomOut.hpp"
 
-#include <core/runtime/operations.hpp>
-
 #include <utestData/Data.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::ZoomOut);
@@ -36,7 +34,7 @@ void ZoomOut::test()
 {
     const std::string testName  = "sightViewerZoomOutTest";
     const std::string imageName = testName + ".png";
-    const std::filesystem::path snapshotPath(sight::ui::test::Tester::getImageOutputPath() / imageName);
+    const std::filesystem::path snapshotPath(sight::ui::testCore::Tester::getImageOutputPath() / imageName);
     if(std::filesystem::exists(snapshotPath))
     {
         std::filesystem::remove(snapshotPath);
@@ -46,7 +44,7 @@ void ZoomOut::test()
 
     start(
         testName,
-        [&snapshotPath, &referencePath](sight::ui::test::Tester& tester)
+        [&snapshotPath, &referencePath](sight::ui::testCore::Tester& tester)
         {
             openFile(
                 tester,
@@ -63,7 +61,7 @@ void ZoomOut::test()
             auto* ogreScene = tester.get<QWidget*>();
             tester.interact(
                 // Drag the mouse...
-                std::make_unique<sight::ui::test::MouseDrag>(
+                std::make_unique<sight::ui::testCore::MouseDrag>(
                     // ...from the center...
                     ogreScene->rect().center(),
                     // ...to 10 pixels lower...

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,6 +20,8 @@
  ***********************************************************************/
 
 #include "SGetMeshTest.hpp"
+
+#include <core/runtime/runtime.hpp>
 
 #include <data/Mesh.hpp>
 #include <data/ModelSeries.hpp>
@@ -107,9 +109,9 @@ void SGetMeshTest::extractsMeshByIndex()
     getMeshServ->start().wait();
     getMeshServ->update().wait();
 
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput<sight::data::Object>("mesh", 0).lock()->getID(), mesh3->getID());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput<sight::data::Object>("mesh", 1).lock()->getID(), mesh1->getID());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput<sight::data::Object>("mesh", 2).lock()->getID(), mesh3->getID());
+    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput("mesh", 0).lock()->getID(), mesh3->getID());
+    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput("mesh", 1).lock()->getID(), mesh1->getID());
+    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput("mesh", 2).lock()->getID(), mesh3->getID());
     getMeshServ->stop().wait();
 
     sight::service::remove(getMeshServ);
@@ -256,12 +258,12 @@ void SGetMeshTest::extractsMeshByType()
     getMeshServ->configure();
     getMeshServ->start().wait();
     getMeshServ->update().wait();
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput<sight::data::Object>("mesh", 0).lock()->getID(), mesh2->getID());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput<sight::data::Object>("mesh", 1).lock()->getID(), mesh1->getID());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput<sight::data::Object>("mesh", 2).lock()->getID(), mesh3->getID());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput<sight::data::Object>("mesh", 3).lock()->getID(), mesh4->getID());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput<sight::data::Object>("mesh", 4).lock()->getID(), mesh3->getID());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput<sight::data::Object>("mesh", 5).lock()->getID(), mesh5->getID());
+    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput("mesh", 0).lock()->getID(), mesh2->getID());
+    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput("mesh", 1).lock()->getID(), mesh1->getID());
+    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput("mesh", 2).lock()->getID(), mesh3->getID());
+    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput("mesh", 3).lock()->getID(), mesh4->getID());
+    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput("mesh", 4).lock()->getID(), mesh3->getID());
+    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput("mesh", 5).lock()->getID(), mesh5->getID());
     getMeshServ->stop().wait();
     sight::service::remove(getMeshServ);
 }
@@ -508,10 +510,10 @@ void SGetMeshTest::extractsWithMeshTypeAndIndex()
     getMeshServ->configure();
     getMeshServ->start().wait();
     getMeshServ->update().wait();
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput<sight::data::Object>("mesh", 0).lock()->getID(), mesh5->getID());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput<sight::data::Object>("mesh", 1).lock()->getID(), mesh2->getID());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput<sight::data::Object>("mesh", 2).lock()->getID(), mesh1->getID());
-    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput<sight::data::Object>("mesh", 3).lock()->getID(), mesh3->getID());
+    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput("mesh", 0).lock()->getID(), mesh5->getID());
+    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput("mesh", 1).lock()->getID(), mesh2->getID());
+    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput("mesh", 2).lock()->getID(), mesh1->getID());
+    CPPUNIT_ASSERT_EQUAL(getMeshServ->getOutput("mesh", 3).lock()->getID(), mesh3->getID());
     getMeshServ->stop().wait();
     sight::service::remove(getMeshServ);
 }

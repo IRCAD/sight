@@ -47,7 +47,7 @@ SToolCalibration::~SToolCalibration() noexcept =
 
 void SToolCalibration::configuring()
 {
-    const auto configTree = this->getConfigTree();
+    const auto configTree = this->getConfiguration();
     const auto outputs    = configTree.equal_range("out");
     for(auto it = outputs.first ; it != outputs.second ; ++it)
     {

@@ -28,8 +28,7 @@
 #endif
 
 #include <core/log/SpyLogger.hpp>
-#include <core/runtime/operations.hpp>
-#include <core/runtime/profile/Profile.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <cppunit/BriefTestProgressListener.h>
 #include <cppunit/CompilerOutputter.h>
@@ -107,6 +106,25 @@ struct Options
             else if(arg == "--list" || arg == "-l")
             {
                 this->listTests = true;
+            }
+            else if(arg == "-B")
+            {
+                ++args;
+                if(args >= argsEnd)
+                {
+                    std::cerr << "value for -B is missing" << std::endl;
+                    return false;
+                }
+
+                const std::filesystem::path externalBundel {std::string(*args)};
+                if(!std::filesystem::exists(externalBundel) || !std::filesystem::is_directory(externalBundel))
+                {
+                    std::cerr << "The external bundle provided in argument is not a consistent directory : "
+                    << externalBundel.string() << std::endl;
+                    return false;
+                }
+
+                sight::core::runtime::addModules(externalBundel);
             }
             else
             {

@@ -333,7 +333,6 @@ void fromVTKImage(vtkImageData* source, data::Image::sptr destination)
         const std::size_t sizeInBytes = destination->getSizeInBytes();
         std::memcpy(destBuffer, input, sizeInBytes);
 
-        sight::data::helper::MedicalImage::updateDefaultTransferFunction(*destination);
         sight::data::helper::MedicalImage::checkImageSliceIndex(destination);
     }
 }
@@ -414,7 +413,7 @@ vtkSmartPointer<vtkMatrix4x4> toVTKMatrix(data::Matrix4::csptr _transfoMatrix)
     {
         for(std::uint8_t c = 0 ; c < 4 ; c++)
         {
-            matrix->SetElement(l, c, _transfoMatrix->getCoefficient(l, c));
+            matrix->SetElement(l, c, (*_transfoMatrix)(l, c));
         }
     }
 
@@ -430,7 +429,7 @@ bool fromVTKMatrix(vtkMatrix4x4* _matrix, data::Matrix4::sptr _transfoMatrix)
     {
         for(std::uint8_t c = 0 ; c < 4 ; c++)
         {
-            _transfoMatrix->setCoefficient(l, c, _matrix->GetElement(l, c));
+            (*_transfoMatrix)(l, c) = _matrix->GetElement(l, c);
         }
     }
 

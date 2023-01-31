@@ -25,6 +25,7 @@
 #include <core/memory/BufferManager.hpp>
 
 #include <data/ImageSeries.hpp>
+#include <data/ModelSeries.hpp>
 
 #include <io/dicom/Reader.hpp>
 #include <io/dicom/reader/SeriesSet.hpp>

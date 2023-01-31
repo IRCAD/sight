@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,14 +22,11 @@
 
 #include "service/helper/ConfigLauncher.hpp"
 
+#include "service/detail/AppConfigManager.hpp"
+
 #include <core/runtime/helper.hpp>
-#include <core/tools/fwID.hpp>
 
-#include <data/Composite.hpp>
-#include <data/String.hpp>
-
-#include <service/macros.hpp>
-
+#include <boost/range/iterator_range_core.hpp>
 namespace sight::service::helper
 {
 
@@ -37,16 +34,6 @@ namespace sight::service::helper
 
 const std::string ConfigLauncher::s_SELF_KEY        = "self";
 const std::string ConfigLauncher::s_GENERIC_UID_KEY = "GENERIC_UID";
-
-//------------------------------------------------------------------------------
-
-ConfigLauncher::ConfigLauncher()
-= default;
-
-//------------------------------------------------------------------------------
-
-ConfigLauncher::~ConfigLauncher()
-= default;
 
 //------------------------------------------------------------------------------
 
@@ -67,50 +54,50 @@ void ConfigLauncher::parseConfig(
     service::IService::ConfigType& newCfg          = srvCfg.get_child("config.appConfig");
     const service::IService::ConfigType* curConfig = &srvCfg;
 
-    auto inouts = _service->getInOuts();
+    size_t i = 0;
 
-    auto inoutsCfg = oldConfig.equal_range("inout");
-    for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
+    if(const auto inoutsCfg = oldConfig.get_child_optional("inout"); inoutsCfg.has_value())
     {
-        service::IService::ConfigType parameterCfg;
-
-        const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
-        SIGHT_ASSERT("[" + appCfgId + "] Missing 'key' tag.", !key.empty());
-
-        const auto uid = itCfg->second.get<std::string>("<xmlattr>.uid");
-        SIGHT_ASSERT("[" + appCfgId + "] Missing 'uid' tag.", !uid.empty());
-
-        parameterCfg.add("<xmlattr>.replace", key);
-
-        const bool optional = core::runtime::get_ptree_value(itCfg->second, "<xmlattr>.optional", false);
-
-        if(optional)
+        for(const auto& itCfg : boost::make_iterator_range(inoutsCfg->equal_range("key")))
         {
-            m_optionalInputs[key] = uid;
-            parameterCfg.add("<xmlattr>.uid", uid);
-        }
-        else
-        {
-            const auto it = inouts.find({key, std::nullopt});
-            SIGHT_ASSERT("Inout '" + key + "' is not found.", it != inouts.end());
-            auto obj = it->second.lock();
-            SIGHT_ASSERT(std::string("Object key '") + key + "' with uid '" + uid + "' does not exist.", obj);
-            parameterCfg.add("<xmlattr>.uid", obj->getID());
-        }
+            service::IService::ConfigType parameterCfg;
 
-        newCfg.add_child("parameters.parameter", parameterCfg);
+            const auto key = itCfg.second.get<std::string>("<xmlattr>.name");
+            SIGHT_ASSERT("[" + appCfgId + "] Missing 'key' tag.", !key.empty());
+
+            const auto uid = itCfg.second.get<std::string>("<xmlattr>.uid");
+            SIGHT_ASSERT("[" + appCfgId + "] Missing 'uid' tag.", !uid.empty());
+
+            parameterCfg.add("<xmlattr>.replace", key);
+
+            const bool optional = core::runtime::get_ptree_value(itCfg.second, "<xmlattr>.optional", false);
+
+            if(optional)
+            {
+                m_optionalInputs[key] = {uid, i};
+                parameterCfg.add("<xmlattr>.uid", uid);
+            }
+            else
+            {
+                const auto obj = _service->getInOut(s_DATA_GROUP, i).lock();
+                SIGHT_ASSERT(std::string("Object key '") + key + "' with uid '" + uid + "' does not exist.", obj);
+                parameterCfg.add("<xmlattr>.uid", obj->getID());
+            }
+
+            newCfg.add_child("parameters.parameter", parameterCfg);
+            ++i;
+        }
     }
 
-    auto paramsCfg = oldConfig.equal_range("parameter");
-    for(auto itCfg = paramsCfg.first ; itCfg != paramsCfg.second ; ++itCfg)
+    for(const auto& itCfg : boost::make_iterator_range(oldConfig.equal_range("parameter")))
     {
         service::IService::ConfigType parameterCfg;
 
-        const auto replace = itCfg->second.get<std::string>("<xmlattr>.replace");
+        const auto replace = itCfg.second.get<std::string>("<xmlattr>.replace");
         SIGHT_ASSERT("[" + appCfgId + "] Missing 'replace' tag.", !replace.empty());
         parameterCfg.add("<xmlattr>.replace", replace);
 
-        const auto by = itCfg->second.get<std::string>("<xmlattr>.by");
+        const auto by = itCfg.second.get<std::string>("<xmlattr>.by");
         SIGHT_ASSERT("[" + appCfgId + "] Missing 'by' tag.", !by.empty());
         parameterCfg.add("<xmlattr>.by", by);
 
@@ -130,14 +117,14 @@ void ConfigLauncher::parseConfig(
 //------------------------------------------------------------------------------
 
 void ConfigLauncher::startConfig(
-    service::IService::sptr _srv,
+    service::IService::sptr _service,
     const FieldAdaptorType& _optReplaceMap
 )
 {
     FieldAdaptorType replaceMap(_optReplaceMap);
 
     // Generate generic UID
-    const std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(_srv->getID());
+    const std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(_service->getID());
     replaceMap[ConfigLauncher::s_GENERIC_UID_KEY] = genericUidAdaptor;
 
     for(const auto& param : m_appConfig.parameters)
@@ -146,28 +133,26 @@ void ConfigLauncher::startConfig(
     }
 
     // Init manager
-    m_appConfigManager = service::AppConfigManager::New();
-    m_appConfigManager->setConfig(m_appConfig.id, replaceMap);
-
-    auto inouts = _srv->getInOuts();
+    auto appConfigManager = service::detail::AppConfigManager::New();
+    appConfigManager->setConfig(m_appConfig.id, replaceMap);
 
     // When a configuration is launched, deferred objects may already exist.
     // This loop allow to notify the app config manager that this data exist and can be used by services.
-    // Whitout that, the data is considered as null.
-    for(const auto& [key, uid] : m_optionalInputs)
+    // Without that, the data is considered as null.
+    for(const auto& [key, value] : m_optionalInputs)
     {
-        const auto it = inouts.find({key, 0});
-        if(it != inouts.end())
+        const auto obj = _service->getInOut(s_DATA_GROUP, value.second).lock();
+        if(obj)
         {
-            auto obj = it->second.lock();
-            m_appConfigManager->addExistingDeferredObject(obj.get_shared(), uid);
+            appConfigManager->addExistingDeferredObject(obj.get_shared(), value.first);
         }
     }
 
     // Launch config
-    m_appConfigManager->launch();
+    appConfigManager->launch();
 
-    m_configIsRunning = true;
+    m_appConfigManager = appConfigManager;
+    m_configIsRunning  = true;
 }
 
 //------------------------------------------------------------------------------

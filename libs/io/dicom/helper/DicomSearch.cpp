@@ -25,6 +25,8 @@
 #include <core/base.hpp>
 #include <core/jobs/Observer.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 #include <array>
 #include <fstream>
 
@@ -123,13 +125,11 @@ void DicomSearch::checkFilenameExtension(
         if(!std::filesystem::is_directory(*it))
         {
             auto path       = it->path();
-            std::string ext = path.extension().string();
-            std::transform(ext.begin(), ext.end(), ext.begin(), tolower);
+            std::string ext = boost::to_lower_copy(path.extension().string());
 
             if(extensions.find(ext) == extensions.end())
             {
-                std::string stem = path.stem().string();
-                std::transform(stem.begin(), stem.end(), stem.begin(), tolower);
+                std::string stem = boost::to_lower_copy(path.stem().string());
 
                 if(stem != "dicomdir")
                 {

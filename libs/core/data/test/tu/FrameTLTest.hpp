@@ -35,6 +35,7 @@ public:
     CPPUNIT_TEST(initTest);
     CPPUNIT_TEST(pushTest);
     CPPUNIT_TEST(copyTest);
+    CPPUNIT_TEST(equalityTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -46,6 +47,7 @@ public:
     static void initTest();
     static void pushTest();
     static void copyTest();
+    static void equalityTest();
 };
 
 } // namespace sight::data::ut

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,14 +23,13 @@
 #include "SClientListener.hpp"
 
 #include <core/com/Signal.hxx>
+#include <core/tools/Failed.hpp>
 
 #include <data/FrameTL.hpp>
 #include <data/Image.hpp>
 #include <data/Matrix4.hpp>
 #include <data/MatrixTL.hpp>
 #include <data/Object.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/Preferences.hpp>
@@ -57,7 +56,7 @@ SClientListener::~SClientListener()
 
 void SClientListener::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     const ConfigType configInOut = config.get_child("inout");
 
@@ -114,7 +113,7 @@ void SClientListener::runClient()
         if(this->getStatus() == STARTED)
         {
             sight::ui::base::dialog::MessageDialog::show("Connection error", ex.what());
-            this->slot(s_STOP_SLOT)->asyncRun();
+            this->slot(IService::slots::s_STOP)->asyncRun();
         }
         else
         {
@@ -166,7 +165,7 @@ void SClientListener::runClient()
         if(this->getStatus() == STARTED)
         {
             sight::ui::base::dialog::MessageDialog::show("Error", ex.what());
-            this->slot(s_STOP_SLOT)->asyncRun();
+            this->slot(IService::slots::s_STOP)->asyncRun();
         }
         else
         {
@@ -227,17 +226,14 @@ void SClientListener::manageTimeline(data::Object::sptr obj, std::size_t index)
 
         SPTR(data::MatrixTL::BufferType) matrixBuf;
         matrixBuf = matTL->createBuffer(timestamp);
-        data::Matrix4::TMCoefArray values;
+
         data::Matrix4::sptr t = data::Matrix4::dynamicCast(obj);
-        values = t->getCoefficients();
         std::array<float, 16> floatValues {};
-        std::transform(values.begin(), values.end(), floatValues.begin(), [&](double d){return float(d);});
+        std::transform(t->begin(), t->end(), floatValues.begin(), boost::numeric_cast<float, double>);
+
         matrixBuf->setElement(floatValues, 0);
         matTL->pushObject(matrixBuf);
-        data::TimeLine::ObjectPushedSignalType::sptr sig;
-        sig = matTL->signal<data::TimeLine::ObjectPushedSignalType>(
-            data::TimeLine::s_OBJECT_PUSHED_SIG
-        );
+        auto sig = matTL->signal<data::TimeLine::ObjectPushedSignalType>(data::TimeLine::s_OBJECT_PUSHED_SIG);
         sig->asyncEmit(timestamp);
     }
     //FrameTL

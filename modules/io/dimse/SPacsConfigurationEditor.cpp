@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,7 +64,7 @@ void SPacsConfigurationEditor::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    const ConfigType configType = this->getConfigTree();
+    const ConfigType configType = this->getConfiguration();
     const auto config           = configType.get_child_optional("config.<xmlattr>");
 
     if(config)
@@ -324,7 +324,7 @@ void SPacsConfigurationEditor::modifiedNotify(sight::io::dimse::data::PacsConfig
 {
     auto sig = _pacsConfiguration->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 }

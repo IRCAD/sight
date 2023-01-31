@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ public:
     UI_BASE_API virtual void setInput(const std::string& text) = 0;
 
     /// Get the input text in the input field
-    UI_BASE_API virtual std::string getInput() = 0;
+    UI_BASE_API virtual std::pair<std::string, bool> getInput() = 0;
 
     /// Set the message
     UI_BASE_API virtual void setMessage(const std::string& msg) = 0;

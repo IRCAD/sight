@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,12 +27,6 @@
 namespace sight::service
 {
 
-namespace registry
-{
-
-class ObjectService;
-
-} // namespace registry
 class IService;
 
 } // namespace sight::service
@@ -55,7 +49,7 @@ class locked_ptr;
  * It must be converted to a locked_ptr in order to access the referenced object.
  */
 template<class DATATYPE>
-class shared_ptr final
+class shared_ptr
 {
 public:
 
@@ -73,7 +67,7 @@ public:
 
     /// Constructor
     inline explicit shared_ptr(const locked_ptr<DATATYPE>& data) noexcept :
-        m_data(data.getShared())
+        m_data(data.get_shared())
     {
     }
 
@@ -87,7 +81,7 @@ public:
     /// Assignment operator
     inline shared_ptr& operator=(const locked_ptr<DATATYPE>& data) noexcept
     {
-        m_data = data.getShared();
+        m_data = data.get_shared();
         return *this;
     }
 
@@ -102,6 +96,12 @@ public:
     /// Returns the locked_ptr from the shared pointer
     [[nodiscard]] locked_ptr<DATATYPE> lock() const noexcept;
 
+    /// Resets the pointer to null
+    inline void reset() noexcept
+    {
+        m_data.reset();
+    }
+
     /// Convenience function that mimics std::dynamic_pointer_cast()
     template<class CASTED_DATATYPE>
     inline shared_ptr<CASTED_DATATYPE> dynamicPointerCast() const noexcept
@@ -111,12 +111,11 @@ public:
 
 protected:
 
-    /// @todo remove me when IService and ObjectService will be ready to use lock()
+    /// @todo remove me when IService will be ready to use lock()
     friend class service::IService;
-    friend class service::registry::ObjectService;
 
     /// Convenience getter shared_ptr
-    /// @todo remove me when IService and ObjectService will be ready to use lock()
+    /// @todo remove me when IService will be ready to use lock()
     [[nodiscard]] inline std::shared_ptr<DATATYPE> get_shared() const noexcept
     {
         return m_data;

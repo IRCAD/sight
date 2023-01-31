@@ -31,6 +31,8 @@
 
 #include <service/IController.hpp>
 
+#include <ui/base/parameter.hpp>
+
 #include <opencv2/core.hpp>
 
 namespace sight::module::geometry::vision
@@ -40,6 +42,8 @@ namespace sight::module::geometry::vision
  * @brief   SReprojectionError Class used to compute the mean error of reprojection between 3d object points
  * and 2d image points.
  *
+ * @section Slots Slots
+ * - \b setParameter(ui::base::parameter_t, std::string): set a parameter from the UI.
  *
  * @section XML XML Configuration
  *
@@ -81,15 +85,10 @@ public:
     typedef core::com::Signal<void (double)> ErrorComputedSignalType;
 
     MODULE_GEOMETRY_VISION_API static const core::com::Slots::SlotKeyType s_COMPUTE_SLOT;
+    MODULE_GEOMETRY_VISION_API static const core::com::Slots::SlotKeyType s_SET_PARAMETER_SLOT;
 
-    MODULE_GEOMETRY_VISION_API static const core::com::Slots::SlotKeyType s_SET_BOOL_PARAMETER_SLOT;
-    MODULE_GEOMETRY_VISION_API static const core::com::Slots::SlotKeyType s_SET_COLOR_PARAMETER_SLOT;
-
-    ///Constructor
     MODULE_GEOMETRY_VISION_API SReprojectionError();
-
-    ///Destructor
-    MODULE_GEOMETRY_VISION_API ~SReprojectionError() override;
+    MODULE_GEOMETRY_VISION_API ~SReprojectionError() override = default;
 
     /// Connect MatrixTL::s_OBJECT_PUSHED_SIG to s_COMPUTE_SLOT
     service::IService::KeyConnectionsMap getAutoConnections() const override;
@@ -120,10 +119,8 @@ private:
 
     void compute(core::HiResClock::HiResClockType timestamp);
 
-    ///Slot called when a color value is changed
-    void setColorParameter(std::array<std::uint8_t, 4> _val, std::string _key);
-    ///Slot called when a boolean value is changed
-    void setBoolParameter(bool _val, std::string _key);
+    ///Slot called when a parameter is changed
+    void setParameter(sight::ui::base::parameter_t _val, std::string _key);
 
     /// Last timestamp
     core::HiResClock::HiResClockType m_lastTimestamp {0};

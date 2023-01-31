@@ -33,6 +33,9 @@ CPPUNIT_TEST_SUITE(CameraTest);
 CPPUNIT_TEST(paramTest);
 CPPUNIT_TEST(shallowCopyTest);
 CPPUNIT_TEST(deepCopyTest);
+CPPUNIT_TEST(equalityTest);
+CPPUNIT_TEST(getPixelFormatTest);
+CPPUNIT_TEST(getPixelFormatNameTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,6 +47,9 @@ public:
     static void paramTest();
     static void shallowCopyTest();
     static void deepCopyTest();
+    static void equalityTest();
+    static void getPixelFormatTest();
+    static void getPixelFormatNameTest();
 };
 
 } // namespace sight::data::ut

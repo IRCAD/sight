@@ -22,7 +22,7 @@
 
 #include "core/runtime/ExecutableFactory.hpp"
 
-#include "core/runtime/Runtime.hpp"
+#include "core/runtime/runtime.hpp"
 
 #include <boost/algorithm/string/trim.hpp>
 

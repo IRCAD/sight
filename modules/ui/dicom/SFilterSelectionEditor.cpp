@@ -22,7 +22,7 @@
 
 #include "SFilterSelectionEditor.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/SeriesSet.hpp>
 #include <data/Vector.hpp>

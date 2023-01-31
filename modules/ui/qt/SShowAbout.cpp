@@ -37,7 +37,7 @@
 #include <filesystem>
 #include <core/base.hpp>
 #include <service/macros.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include "SShowAbout.hpp"
 
@@ -72,35 +72,19 @@ void SShowAbout::configuring()
 {
     this->sight::ui::base::IAction::initialize();
 
-    using ConfigurationElement = std::shared_ptr<core::runtime::ConfigurationElement>;
+    const auto& config = this->getConfiguration();
 
-    ConfigurationElement cfgFilename = m_configuration->findConfigurationElement("filename");
-    ConfigurationElement cfgTitle    = m_configuration->findConfigurationElement("title");
-    ConfigurationElement cfgSize     = m_configuration->findConfigurationElement("size");
+    const auto filename = config.get<std::string>("filename.<xmlattr>.id");
+    // Convert the path from a module location
+    m_fsAboutPath = core::runtime::getModuleResourceFilePath(filename);
 
-    if(cfgFilename)
-    {
-        const std::string& filename = cfgFilename->getExistingAttributeValue("id");
-        // Convert the path from a module location
-        m_fsAboutPath = core::runtime::getModuleResourceFilePath(filename);
+    m_bServiceIsConfigured = std::filesystem::exists(m_fsAboutPath);
+    SIGHT_WARN_IF("About file " + filename + " doesn't exist", !m_bServiceIsConfigured);
 
-        m_bServiceIsConfigured = std::filesystem::exists(m_fsAboutPath);
-        SIGHT_WARN_IF("About file " + filename + " doesn't exist", !m_bServiceIsConfigured);
-    }
+    m_title = config.get<std::string>("title", m_title);
 
-    if(cfgTitle)
-    {
-        m_title = cfgTitle->getValue();
-    }
-
-    if(cfgSize)
-    {
-        const std::string& w = cfgSize->getExistingAttributeValue("width");
-        const std::string& h = cfgSize->getExistingAttributeValue("height");
-
-        m_size.setWidth(std::stoi(w));
-        m_size.setHeight(std::stoi(h));
-    }
+    m_size.setWidth(config.get<int>("size.<xmlattr>.width", m_size.width()));
+    m_size.setHeight(config.get<int>("size.<xmlattr>.height", m_size.height()));
 }
 
 //------------------------------------------------------------------------------

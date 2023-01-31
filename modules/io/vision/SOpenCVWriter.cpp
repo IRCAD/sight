@@ -183,7 +183,7 @@ void SOpenCVWriter::updating()
             {
                 for(std::uint8_t j = 0 ; j < 4 ; ++j)
                 {
-                    extrinsic.at<double>(i, j) = extrinsicMatrix->getCoefficient(i, j);
+                    extrinsic.at<double>(i, j) = (*extrinsicMatrix)(i, j);
                 }
             }
 

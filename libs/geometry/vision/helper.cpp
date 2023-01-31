@@ -243,9 +243,9 @@ void calibratePointingTool(
         SIGHT_ASSERT("This element of the vector is not a data::Matrix4", m1);
         geometry::eigen::helper::EigenMatrix xyz1;
         xyz1.fill(0.);
-        xyz1(0, 0) = m1->getCoefficient(0, 3);
-        xyz1(0, 1) = m1->getCoefficient(1, 3);
-        xyz1(0, 2) = m1->getCoefficient(2, 3);
+        xyz1(0, 0) = (*m1)(0, 3);
+        xyz1(0, 1) = (*m1)(1, 3);
+        xyz1(0, 2) = (*m1)(2, 3);
         xyz1(0, 3) = 1.0;
 
         matrixSum = matrixSum + xyz1.transpose() * xyz1;
@@ -270,8 +270,7 @@ void calibratePointingTool(
     {
         data::Matrix4::csptr m1 = data::Matrix4::dynamicCast(_matricesVector->at(i));
         SIGHT_ASSERT("This element of the vector is not a data::Matrix4", m1);
-        const geometry::eigen::helper::EigenMatrix pointMatrix =
-            geometry::eigen::helper::toEigen(m1->getCoefficients());
+        const geometry::eigen::helper::EigenMatrix pointMatrix = geometry::eigen::helper::toEigen(m1);
         geometry::eigen::helper::EigenMatrix centerMatrix(pointMatrix);
         const geometry::eigen::helper::EigenMatrix pointMatrixInverse = pointMatrix.inverse();
 
@@ -287,13 +286,13 @@ void calibratePointingTool(
 
     translation /= static_cast<double>(_matricesVector->size());
 
-    _calibrationMatrix->setCoefficient(0, 3, translation(0));
-    _calibrationMatrix->setCoefficient(1, 3, translation(1));
-    _calibrationMatrix->setCoefficient(2, 3, translation(2));
+    (*_calibrationMatrix)(0, 3) = translation(0);
+    (*_calibrationMatrix)(1, 3) = translation(1);
+    (*_calibrationMatrix)(2, 3) = translation(2);
 
-    _centerMatrix->setCoefficient(0, 3, a);
-    _centerMatrix->setCoefficient(1, 3, b);
-    _centerMatrix->setCoefficient(2, 3, c);
+    (*_centerMatrix)(0, 3) = a;
+    (*_centerMatrix)(1, 3) = b;
+    (*_centerMatrix)(2, 3) = c;
 }
 
 //-----------------------------------------------------------------------------

@@ -632,6 +632,98 @@ void ArrayTest::equalityTest()
     CPPUNIT_ASSERT(*array1 == *array3);
 }
 
+//------------------------------------------------------------------------------
+
+void ArrayTest::swapTest()
+{
+    auto array1 = data::Array::New();
+    array1->resize({3}, core::Type::UINT32, true);
+    auto lock1         = array1->dump_lock();
+    std::uint8_t count = 1;
+    // NOLINTNEXTLINE(modernize-loop-convert)
+    for(auto it = array1->begin<std::uint32_t>(), end = array1->end<std::uint32_t>() ; it != end ; ++it)
+    {
+        *it = count++;
+    }
+
+    auto array2 = data::Array::New();
+    array2->resize({6}, core::Type::INT16, true);
+    auto lock2 = array2->dump_lock();
+    // NOLINTNEXTLINE(modernize-loop-convert)
+    for(auto it = array2->begin<std::int16_t>(), end = array2->end<std::int16_t>() ; it != end ; ++it)
+    {
+        *it = count++;
+    }
+
+    count = 1;
+    std::size_t i = 0;
+    for(auto it = array1->begin<std::uint32_t>(), end = array1->end<std::uint32_t>() ; it != end ; ++it, ++i)
+    {
+        CPPUNIT_ASSERT_MESSAGE("i=" + std::to_string(i), *it == count++);
+    }
+
+    i = 0;
+    for(auto it = array2->begin<std::int16_t>(), end = array2->end<std::int16_t>() ; it != end ; ++it, ++i)
+    {
+        CPPUNIT_ASSERT_MESSAGE("i=" + std::to_string(i), *it == count++);
+    }
+
+    array1->swap(array2);
+
+    count = 1;
+    i     = 0;
+    for(auto it = array2->begin<std::uint32_t>(), end = array2->end<std::uint32_t>() ; it != end ; ++it, ++i)
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("i=" + std::to_string(i), static_cast<std::uint32_t>(count++), *it);
+    }
+
+    i = 0;
+    for(auto it = array1->begin<std::int16_t>(), end = array1->end<std::int16_t>() ; it != end ; ++it, ++i)
+    {
+        CPPUNIT_ASSERT_EQUAL_MESSAGE("i=" + std::to_string(i), static_cast<std::int16_t>(count++), *it);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ArrayTest::resizeNonOwnerTest()
+{
+    auto array   = data::Array::New();
+    auto* buffer = new std::uint32_t[3];
+    array->setBuffer(buffer, false, {3}, core::Type::UINT32);
+    CPPUNIT_ASSERT_THROW(array->resize({6}, core::Type::UINT32, true), data::Exception);
+    delete[] buffer;
+}
+
+//------------------------------------------------------------------------------
+
+void ArrayTest::setBufferObjectNullThenResizeTest()
+{
+    auto array = data::Array::New();
+    /* TODO: fix crash
+       array->setBufferObject(nullptr);
+       array->resize({2}, core::Type::UINT8);
+     */
+}
+
+//------------------------------------------------------------------------------
+
+void ArrayTest::atTest()
+{
+    auto array = data::Array::New();
+    array->resize({3}, core::Type::UINT32, true);
+
+    for(std::uint32_t i = 0 ; i < 3 ; i++)
+    {
+        array->at<std::uint32_t>(i) = i + 1;
+    }
+
+    for(std::uint32_t i = 0 ; i < 3 ; i++)
+    {
+        CPPUNIT_ASSERT_EQUAL(i + 1, array->at<std::uint32_t>(i));
+    }
+}
+
 //-----------------------------------------------------------------------------
 
 } // namespace sight::data::ut

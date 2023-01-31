@@ -36,8 +36,8 @@
             <gui>
                 <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="horizontal" />
-                    <view/>
-                    <view/>
+                    <view />
+                    <view />
                 </layout>
             </gui>
             <registry>
@@ -48,36 +48,38 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericScene1Srv" type="sight::viz::scene3d::SRender" >
+        <service uid="genericScene1Srv" type="sight::viz::scene3d::SRender">
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
-                <layer id="video" order="1" />
-                <adaptor uid="video1Adp" />
+                <layer id="video" order="1">
+                    <adaptor uid="video1Adp" />
+                </layer>
             </scene>
         </service>
 
-        <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
+        <service uid="video1Adp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true">
             <in key="image" uid="${imageId1}" />
             <in key="pointList" uid="${pointListId1}" />
-            <config layer="video" radius="1.0" color="#6997BB" fixedSize="true" textureName="circle.dds" />
+            <config radius="1.0" color="#6997BB" fixedSize="true" textureName="circle.dds" />
         </service>
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericScene2Srv" type="sight::viz::scene3d::SRender" >
+        <service uid="genericScene2Srv" type="sight::viz::scene3d::SRender">
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
-                <layer id="video" order="1" />
-                <adaptor uid="video2Adp" />
+                <layer id="video" order="1">
+                    <adaptor uid="video2Adp" />
+                </layer>
             </scene>
         </service>
 
-        <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
+        <service uid="video2Adp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true">
             <in key="image" uid="${imageId2}" />
             <in key="pointList" uid="${pointListId2}" />
-            <config layer="video" radius="1.0" color="#6997BB" fixedSize="true" textureName="circle.dds" />
+            <config radius="1.0" color="#6997BB" fixedSize="true" textureName="circle.dds" />
         </service>
 
         <!-- ******************************* Connections ***************************************** -->

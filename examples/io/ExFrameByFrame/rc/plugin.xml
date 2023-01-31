@@ -1,4 +1,4 @@
-<plugin id="ExFrameByFrame" >
+<plugin id="ExFrameByFrame">
 
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -6,27 +6,27 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig">
         <id>ExFrameByFrame_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="camera" type="sight::data::Camera" />
-            <object uid="frameTL" type="sight::data::FrameTL" >
+            <object uid="frameTL" type="sight::data::FrameTL">
                 <value>100</value>
             </object>
             <object uid="videoImage" type="sight::data::Image" />
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
                 <gui>
                     <frame>
                         <name>ExFrameByFrame</name>
                         <icon>ExFrameByFrame/app.ico</icon>
                     </frame>
-                    <toolBar/>
+                    <toolBar />
                 </gui>
                 <registry>
                     <toolBar sid="toolbarView" start="true" />
@@ -34,14 +34,14 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::base::SToolBar" >
+            <service uid="toolbarView" type="sight::module::ui::base::SToolBar">
                 <gui>
                     <layout>
-                        <editor/>
+                        <editor />
                         <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
                         <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
                         <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
-                        <spacer/>
+                        <spacer />
                         <menuItem name="Previous" />
                         <menuItem name="Next" />
                     </layout>
@@ -66,28 +66,28 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
-                <scene>
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
+                <scene renderMode="sync">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1" />
-                    <adaptor uid="videoAdp" />
+                    <layer id="default" order="1">
+                        <adaptor uid="videoAdp" />
+                    </layer>
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true">
                 <in key="image" uid="videoImage" />
-                <config layer="default" />
             </service>
 
             <!-- ************************************* Services ************************************ -->
 
-            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera" >
+            <service uid="videoSelectorSrv" type="sight::module::ui::qt::video::SCamera">
                 <inout key="camera" uid="camera" />
                 <videoSupport>true</videoSupport>
             </service>
 
-            <service uid="videoGrabberSrv" type="sight::module::io::video::SFrameGrabber" >
+            <service uid="videoGrabberSrv" type="sight::module::io::video::SFrameGrabber">
                 <in key="camera" uid="camera" />
                 <inout key="frameTL" uid="frameTL" />
                 <oneShot>true</oneShot>
@@ -95,14 +95,13 @@
                 <createTimestamp>true</createTimestamp>
             </service>
 
-            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
-                <in group="frameTL" >
+            <service uid="frameUpdaterSrv"  type="sight::module::sync::SSynchronizer" worker="videoWorker">
+                <in group="frameTL">
                     <key uid="frameTL" />
                 </in>
-                <inout group="image" >
+                <inout group="frames">
                     <key uid="videoImage" />
                 </inout>
-                <framerate>30</framerate>
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
@@ -135,6 +134,12 @@
             <connect>
                 <signal>camera/idModified</signal>
                 <slot>videoGrabberSrv/stopCamera</slot>
+            </connect>
+
+            <connect>
+                <signal>frameUpdaterSrv/synchronizationDone</signal>
+                <slot>genericSceneSrv/requestRender</slot>
+                <slot>frameUpdaterSrv/synchronize</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

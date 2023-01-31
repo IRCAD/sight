@@ -59,8 +59,8 @@ TFLoader::return_t TFLoader::load(const sight::data::TransferFunction& _tf, Ogre
             TEXTURE_SIZE,
             1,
             1,
-            Ogre::PF_A8R8G8B8,
-            Ogre::TEX_TYPE_1D,
+            Ogre::PF_R8G8B8A8,
+            Ogre::TEX_TYPE_2D,
             true
         );
     }
@@ -99,10 +99,10 @@ TFLoader::return_t TFLoader::load(const sight::data::TransferFunction& _tf, Ogre
     {
         const auto color = glm::u8vec4(_tf.sample(i) * 255.0);
 
+        *pDest++ = color.a;
         *pDest++ = color.b;
         *pDest++ = color.g;
         *pDest++ = color.r;
-        *pDest++ = color.a;
 
         i += intensityStep;
     }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ void SSliceIndexDicomEditor::configuring()
 {
     sight::ui::base::IGuiContainer::initialize();
 
-    const ConfigType configType = this->getConfigTree();
+    const ConfigType configType = this->getConfiguration();
     const ConfigType config     = configType.get_child("config.<xmlattr>");
 
     m_delay                     = config.get<unsigned>(s_DELAY_CONFIG, m_delay);
@@ -88,7 +88,7 @@ void SSliceIndexDicomEditor::starting()
 
     if(!m_readerConfig.empty())
     {
-        core::runtime::ConfigurationElement::csptr readerConfig =
+        const auto readerConfig =
             service::extension::Config::getDefault()->getServiceConfig(
                 m_readerConfig,
                 "sight::io::base::service::IReader"
@@ -96,10 +96,10 @@ void SSliceIndexDicomEditor::starting()
 
         SIGHT_ASSERT(
             "No service configuration " << m_readerConfig << " for sight::io::base::service::IReader",
-            readerConfig
+            !readerConfig.empty()
         );
 
-        m_dicomReader->setConfiguration(core::runtime::ConfigurationElement::constCast(readerConfig));
+        m_dicomReader->setConfiguration(readerConfig);
     }
 
     m_dicomReader->configure();
@@ -107,7 +107,7 @@ void SSliceIndexDicomEditor::starting()
     SIGHT_ASSERT("'" + m_dicomReaderImplementation + "' is not started", m_dicomReader->isStarted());
 
     // Create the timer used to retrieve a slice.
-    m_sliceTrigger = m_associatedWorker->createTimer();
+    m_sliceTrigger = this->worker()->createTimer();
     m_sliceTrigger->setFunction(
         [&]()
         {
@@ -149,7 +149,7 @@ void SSliceIndexDicomEditor::starting()
 service::IService::KeyConnectionsMap SSliceIndexDicomEditor::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_DICOMSERIES_INOUT, data::DicomSeries::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_DICOMSERIES_INOUT, data::DicomSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

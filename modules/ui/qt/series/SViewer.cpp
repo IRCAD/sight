@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,18 +27,10 @@
 
 #include <service/extension/AppConfig.hpp>
 
+#include <boost/range/iterator_range_core.hpp>
+
 namespace sight::module::ui::qt::series
 {
-
-//------------------------------------------------------------------------------
-
-SViewer::SViewer()
-= default;
-
-//------------------------------------------------------------------------------
-
-SViewer::~SViewer() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -106,7 +98,7 @@ void SViewer::updating()
             }
 
             // Init manager
-            m_configTemplateManager = service::AppConfigManager::New();
+            m_configTemplateManager = service::IAppConfigManager::New();
             m_configTemplateManager->setConfig(configId, replaceMap);
 
             // Launch config
@@ -119,38 +111,31 @@ void SViewer::updating()
 
 void SViewer::configuring()
 {
-    std::vector<core::runtime::ConfigurationElement::sptr> viewCfg = m_configuration->find("parentView");
-    SIGHT_ASSERT("Missing tag 'parentView'", viewCfg.size() == 1);
+    const auto& config = this->getConfiguration();
+    m_parentView = config.get<std::string>("parentView.<xmlattr>.wid");
 
-    m_parentView = viewCfg[0]->getAttributeValue("wid");
-    SIGHT_ASSERT("'wid' attribute missing for tag 'parentView'.", !m_parentView.empty());
-
-    std::vector<core::runtime::ConfigurationElement::sptr> configsCfg = m_configuration->find("configs");
-    SIGHT_ASSERT("Missing tag 'configs'", configsCfg.size() == 1);
-
-    std::vector<core::runtime::ConfigurationElement::sptr> config = configsCfg[0]->find("config");
-    SIGHT_ASSERT("Missing tag 'config'", !config.empty());
-
-    for(const core::runtime::ConfigurationElement::sptr& elt : config)
+    const auto& configs = config.get_child("configs");
+    for(const auto& elt : boost::make_iterator_range(configs.equal_range("config")))
     {
         SeriesConfigInfo info;
-        info.configId = elt->getAttributeValue("id");
+        info.configId = elt.second.get<std::string>("<xmlattr>.id", "");
         SIGHT_ASSERT("'id' attribute must not be empty", !info.configId.empty());
-        std::string seriesType = elt->getAttributeValue("type");
+
+        const std::string seriesType = elt.second.get<std::string>("<xmlattr>.type", "");
         SIGHT_ASSERT("'type' attribute must not be empty", !seriesType.empty());
         SIGHT_ASSERT(
             "Type " << seriesType << " is already defined.",
             m_seriesConfigs.find(seriesType) == m_seriesConfigs.end()
         );
 
-        for(const core::runtime::ConfigurationElement::sptr& param : elt->find("parameter"))
+        for(const auto& param : boost::make_iterator_range(elt.second.equal_range("parameter")))
         {
-            std::string replace = param->getAttributeValue("replace");
+            const std::string replace = param.second.get<std::string>("<xmlattr>.replace", "");
             SIGHT_ASSERT("'replace' attribute must not be empty", !replace.empty());
-            std::string by = param->getAttributeValue("by");
+            std::string by = param.second.get<std::string>("<xmlattr>.by", "");
             if(by.empty())
             {
-                by = param->getAttributeValue("uid");
+                by = param.second.get<std::string>("<xmlattr>.uid", "");
             }
 
             SIGHT_ASSERT("'by' attribute must not be empty", !by.empty());
@@ -167,8 +152,8 @@ service::IService::KeyConnectionsMap SViewer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_SERIES, data::Vector::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_SERIES, data::Vector::s_REMOVED_OBJECTS_SIG, s_UPDATE_SLOT);
+    connections.push(s_SERIES, data::Vector::s_ADDED_OBJECTS_SIG, IService::slots::s_UPDATE);
+    connections.push(s_SERIES, data::Vector::s_REMOVED_OBJECTS_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

@@ -144,7 +144,9 @@
         <!-- FILTERED SELECTION -->
         <service uid="action_previewFilteredDicomSeries" type="sight::module::ui::base::SConfigLauncher">
             <appConfig id="DicomPreview" />
-            <inout key="SERIES_SET" uid="filteredSeriesSet" />
+            <inout group="data">
+                <key name="SERIES_SET" uid="filteredSeriesSet" />
+            </inout>
             <parameter replace="ICON_PATH" by="sight::module::ui::icons/Preview.svg" />
         </service>
 

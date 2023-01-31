@@ -57,7 +57,7 @@ void SConfigController::stopping()
 
 void SConfigController::configuring()
 {
-    m_configLauncher->parseConfig(this->getConfigTree(), this->getSptr());
+    m_configLauncher->parseConfig(this->getConfiguration(), this->getSptr());
 }
 
 //------------------------------------------------------------------------------

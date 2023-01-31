@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -265,7 +265,7 @@ void SReader::configuring()
 {
     sight::io::base::service::IReader::configuring();
 
-    const auto& tree = this->getConfigTree();
+    const auto& tree = this->getConfiguration();
 
     // Extension configuration
     const auto& dialog = tree.get_child_optional("dialog.<xmlattr>");
@@ -312,7 +312,7 @@ void SReader::updating()
 
             job.done();
         },
-        m_associatedWorker
+        this->worker()
     );
 
     jobs->add(sort_job);
@@ -330,7 +330,7 @@ void SReader::updating()
 
             job.done();
         },
-        m_associatedWorker
+        this->worker()
     );
 
     // Give the reader access to the job
@@ -364,7 +364,7 @@ void SReader::updating()
 
             job.done();
         },
-        m_associatedWorker
+        this->worker()
     );
 
     jobs->add(build_job);

@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2022 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,6 +33,7 @@ class SeriesTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(SeriesTest);
 
+CPPUNIT_TEST(privateTagTest);
 CPPUNIT_TEST(attrPatientTest);
 CPPUNIT_TEST(attrStudyTest);
 CPPUNIT_TEST(attrEquipmentTest);
@@ -43,10 +43,10 @@ CPPUNIT_TEST(attrDateTest);
 CPPUNIT_TEST(attrTimeTest);
 CPPUNIT_TEST(attrPerformingPhysicianNameTest);
 CPPUNIT_TEST(attrDescriptionTest);
+
 CPPUNIT_TEST(equalityTest);
 
 CPPUNIT_TEST(sopClassUIDTest);
-CPPUNIT_TEST(sopClassNameTest);
 CPPUNIT_TEST(sopInstanceUIDTest);
 CPPUNIT_TEST(specificCharacterSetTest);
 CPPUNIT_TEST(encodingTest);
@@ -104,8 +104,22 @@ CPPUNIT_TEST(windowCenterTest);
 CPPUNIT_TEST(windowWidthTest);
 CPPUNIT_TEST(imagePositionPatientTest);
 CPPUNIT_TEST(imageOrientationPatientTest);
-
+CPPUNIT_TEST(imageTransformPatientTest);
+CPPUNIT_TEST(frameAcquisitionDateTimeTest);
+CPPUNIT_TEST(frameAcquisitionTimePointTest);
+CPPUNIT_TEST(frameCommentsTest);
+CPPUNIT_TEST(frameLabelTest);
 CPPUNIT_TEST(stringConversionTest);
+
+CPPUNIT_TEST(copyPatientModuleTest);
+CPPUNIT_TEST(copyGeneralStudyModuleTest);
+CPPUNIT_TEST(copyPatientStudyModuleTest);
+CPPUNIT_TEST(copyGeneralSeriesModuleTest);
+CPPUNIT_TEST(copyGeneralEquipmentModuleTest);
+CPPUNIT_TEST(copySOPCommonModuleTest);
+CPPUNIT_TEST(copyGeneralImageModuleTest);
+
+CPPUNIT_TEST(getPatientPositionStringTest);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -114,6 +128,8 @@ public:
     // interface
     void setUp() override;
     void tearDown() override;
+
+    static void privateTagTest();
 
     void attrPatientTest();
     void attrStudyTest();
@@ -124,10 +140,10 @@ public:
     void attrTimeTest();
     void attrPerformingPhysicianNameTest();
     void attrDescriptionTest();
+
     static void equalityTest();
 
     static void sopClassUIDTest();
-    static void sopClassNameTest();
     static void sopInstanceUIDTest();
     static void specificCharacterSetTest();
     static void encodingTest();
@@ -185,8 +201,23 @@ public:
     static void windowWidthTest();
     static void imagePositionPatientTest();
     static void imageOrientationPatientTest();
+    static void imageTransformPatientTest();
+    static void frameAcquisitionDateTimeTest();
+    static void frameAcquisitionTimePointTest();
+    static void frameCommentsTest();
+    static void frameLabelTest();
 
     static void stringConversionTest();
+
+    static void copyPatientModuleTest();
+    static void copyGeneralStudyModuleTest();
+    static void copyPatientStudyModuleTest();
+    static void copyGeneralSeriesModuleTest();
+    static void copyGeneralEquipmentModuleTest();
+    static void copySOPCommonModuleTest();
+    static void copyGeneralImageModuleTest();
+
+    static void getPatientPositionStringTest();
 
 protected:
 

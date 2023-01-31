@@ -59,7 +59,7 @@ SSignalShortcut::~SSignalShortcut() noexcept =
 
 void SSignalShortcut::configuring()
 {
-    const auto configTree     = this->getConfigTree();
+    const auto configTree     = this->getConfiguration();
     const auto configShortcut = configTree.get_child("config.<xmlattr>");
     m_shortcut = configShortcut.get<std::string>("shortcut", m_shortcut);
     SIGHT_ASSERT("Shortcut must not be empty", !m_shortcut.empty());

@@ -33,8 +33,6 @@
 #include "ui/base/GuiBaseObject.hpp"
 #include "ui/base/IMenuItemCallback.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
 #include <filesystem>
 
 namespace sight::ui::base::layoutManager
@@ -49,7 +47,6 @@ public:
 
     SIGHT_DECLARE_CLASS(IMenuLayoutManager, ui::base::GuiBaseObject);
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
     typedef std::string RegistryKeyType;
     typedef std::vector<ui::base::IMenuItemCallback::sptr> CallbacksType;
 
@@ -85,11 +82,8 @@ public:
 
     UI_BASE_API const static RegistryKeyType REGISTRY_KEY;
 
-    /// Constructor. Do nothing.
-    UI_BASE_API IMenuLayoutManager();
-
     /// Destructor. Do nothing.
-    UI_BASE_API ~IMenuLayoutManager() override;
+    UI_BASE_API ~IMenuLayoutManager() override = default;
 
     /**
      * @brief Returns the vector of fwMenuItem managed by this layout.
@@ -142,7 +136,7 @@ public:
      *  - \b name (mandatory) : give the name of the menu that will appear in the interface.
      * - \<separator/\> : allow to divide the menu by part (draw a line).
      */
-    UI_BASE_API virtual void initialize(ConfigurationType configuration);
+    UI_BASE_API virtual void initialize(const ui::base::config_t& configuration);
 
     /**
      * @brief Instantiate actions with parent menu.

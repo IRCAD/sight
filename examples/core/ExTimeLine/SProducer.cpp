@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@ namespace ExTimeLine
 
 void SProducer::configuring()
 {
-    sight::service::IService::ConfigType config = this->getConfigTree();
+    sight::service::IService::ConfigType config = this->getConfiguration();
 
     m_message      = config.get<std::string>("message");
     m_senderId     = config.get<unsigned int>("id");
@@ -44,7 +44,7 @@ void SProducer::configuring()
 
 void SProducer::starting()
 {
-    m_timer = m_associatedWorker->createTimer();
+    m_timer = this->worker()->createTimer();
     m_timer->setFunction([this](auto&& ...){updating();});
     m_timer->setDuration(std::chrono::milliseconds(m_period));
 

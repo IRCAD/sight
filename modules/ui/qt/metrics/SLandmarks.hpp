@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -111,7 +111,7 @@ public:
      * @return A map of each proposed connection.
      *
      * Connect data::Landmarks::s_MODIFIED_SIG of s_LANDMARKS_INOUT to
-     * module::ui::qt::metrics::SLandmarks::s_UPDATE_SLOT
+     * module::ui::qt::metrics::SLandmarks::IService::slots::s_UPDATE
      * Connect data::Landmarks::s_POINT_ADDED_SIG of s_LANDMARKS_INOUT to
      * module::ui::qt::metrics::SLandmarks::s_ADD_POINT_SLOT
      * Connect data::Landmarks::s_POINT_MODIFIED_SIG of s_LANDMARKS_INOUT to

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,7 @@
 
 // Wait at worst 1s for a given condition
 #define fwTestWaitMacro(cond, ...) \
-    core::TimeStamp BOOST_PP_CAT(timeStamp, __LINE__); \
+    sight::core::TimeStamp BOOST_PP_CAT(timeStamp, __LINE__); \
     BOOST_PP_CAT( \
         timeStamp, \
         __LINE__ \
@@ -50,3 +50,22 @@
     { \
         std::this_thread::sleep_for(std::chrono::milliseconds(10)); \
     }
+
+#define fwTestWithFailWaitMacro(cond, ...) \
+    sight::core::TimeStamp BOOST_PP_CAT(timeStamp, __LINE__); \
+    BOOST_PP_CAT( \
+        timeStamp, \
+        __LINE__ \
+    ).setLifePeriod( \
+        BOOST_PP_IF( \
+            BOOST_PP_IS_EMPTY(__VA_ARGS__), \
+            2000, \
+            BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__) \
+        ) \
+    ); \
+    BOOST_PP_CAT(timeStamp, __LINE__).modified(); \
+    while(!(cond) && !BOOST_PP_CAT(timeStamp, __LINE__).periodExpired()) \
+    { \
+        std::this_thread::sleep_for(std::chrono::milliseconds(10)); \
+    } \
+    CPPUNIT_ASSERT(cond);

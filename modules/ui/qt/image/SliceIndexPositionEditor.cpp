@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,22 +23,13 @@
 #include "modules/ui/qt/image/SliceIndexPositionEditor.hpp"
 
 #include <core/base.hpp>
-#include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
 #include <core/com/Slot.hxx>
-#include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/operations.hpp>
 
-#include <data/Composite.hpp>
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
 #include <data/Integer.hpp>
-
-#include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
 
@@ -122,31 +113,28 @@ void SliceIndexPositionEditor::configuring()
 {
     this->initialize();
 
-    if(this->m_configuration->size() > 0)
-    {
-        std::vector<core::runtime::ConfigurationElement::sptr> slideIndexCfg = m_configuration->find("sliceIndex");
-        SIGHT_ASSERT("Only one xml element \"sliceIndex\" is accepted.", slideIndexCfg.size() == 1);
-        SIGHT_ASSERT("The xml element \"sliceIndex\" is empty.", !(*slideIndexCfg.begin())->getValue().empty());
-        std::string orientation = (*slideIndexCfg.begin())->getValue();
-        boost::algorithm::trim(orientation);
-        boost::algorithm::to_lower(orientation);
+    const auto config = this->getConfiguration();
 
-        if(orientation == "axial")
-        {
-            m_orientation = orientation_t::AXIAL; // Z
-        }
-        else if(orientation == "frontal")
-        {
-            m_orientation = orientation_t::FRONTAL; // Y
-        }
-        else if(orientation == "sagittal")
-        {
-            m_orientation = orientation_t::SAGITTAL; // X
-        }
-        else
-        {
-            SIGHT_FATAL("The value for the xml element \"sliceIndex\" can only be axial, frontal or sagittal.");
-        }
+    auto orientation = config.get<std::string>("sliceIndex");
+
+    boost::algorithm::trim(orientation);
+    boost::algorithm::to_lower(orientation);
+
+    if(orientation == "axial")
+    {
+        m_orientation = orientation_t::AXIAL; // Z
+    }
+    else if(orientation == "frontal")
+    {
+        m_orientation = orientation_t::FRONTAL; // Y
+    }
+    else if(orientation == "sagittal")
+    {
+        m_orientation = orientation_t::SAGITTAL; // X
+    }
+    else
+    {
+        SIGHT_FATAL("The value for the xml element \"sliceIndex\" can only be axial, frontal or sagittal.");
     }
 }
 
@@ -323,10 +311,10 @@ service::IService::KeyConnectionsMap SliceIndexPositionEditor::getAutoConnection
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_UPDATE_SLICE_INDEX_SLOT);
     connections.push(s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_UPDATE_SLICE_TYPE_SLOT);
-    connections.push(s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

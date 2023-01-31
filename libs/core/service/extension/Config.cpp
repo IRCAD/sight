@@ -22,9 +22,7 @@
 
 #include "service/extension/Config.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/helper.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/runtime.hpp>
 
 namespace sight::service::extension
 {
@@ -42,11 +40,6 @@ Config::sptr Config::getDefault()
 
 //-----------------------------------------------------------------------------
 
-Config::~Config()
-= default;
-
-//-----------------------------------------------------------------------------
-
 void Config::parseBundleInformation()
 {
     using ExtensionType = std::shared_ptr<core::runtime::Extension>;
@@ -55,29 +48,17 @@ void Config::parseBundleInformation()
     extElements = core::runtime::getAllExtensionsForPoint(CONFIG_EXT_POINT);
     for(const ExtensionType& ext : extElements)
     {
-        // Get id
-        SIGHT_ASSERT("Missing id element", ext->hasConfigurationElement("id"));
-        std::string id = ext->findConfigurationElement("id")->getValue();
+        const auto& cfg = ext->getConfig();
 
-        // Get service
-        std::string service;
-        if(ext->hasConfigurationElement("service"))
-        {
-            service = ext->findConfigurationElement("service")->getValue();
-        }
-
-        // Get desc
-        std::string desc = "No description available";
-        if(ext->hasConfigurationElement("desc"))
-        {
-            desc = ext->findConfigurationElement("desc")->getValue();
-        }
+        const auto configId = cfg.get<std::string>("id");
+        const auto desc     = cfg.get<std::string>("desc", "No description available");
+        const auto service  = cfg.get<std::string>("service", "");
 
         // Get config
-        core::runtime::ConfigurationElement::csptr config = ext->findConfigurationElement("config");
+        const auto config = cfg.get_child("config");
 
         // Add service config info
-        this->addServiceConfigInfo(id, service, desc, config);
+        this->addServiceConfigInfo(configId, service, desc, config);
     }
 }
 
@@ -88,7 +69,7 @@ void Config::addServiceConfigInfo
     const std::string& configId,
     const std::string& service,
     const std::string& desc,
-    core::runtime::ConfigurationElement::csptr config
+    const boost::property_tree::ptree& config
 )
 {
     core::mt::WriteLock lock(m_registryMutex);
@@ -114,11 +95,6 @@ void Config::addServiceConfigInfo
 
 //-----------------------------------------------------------------------------
 
-Config::Config()
-= default;
-
-//-----------------------------------------------------------------------------
-
 void Config::clearRegistry()
 {
     core::mt::WriteLock lock(m_registryMutex);
@@ -127,7 +103,7 @@ void Config::clearRegistry()
 
 //-----------------------------------------------------------------------------
 
-core::runtime::ConfigurationElement::csptr Config::getServiceConfig(
+boost::property_tree::ptree Config::getServiceConfig(
     const std::string& configId,
     const std::string& _serviceImpl
 ) const

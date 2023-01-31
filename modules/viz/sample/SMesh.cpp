@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,9 +89,9 @@ void SMesh::starting()
     service::IService::ConfigType cameraCfg;
     cameraCfg.put("<xmlattr>.uid", this->getID() + "cameraAdaptor");
 
-    renderConfig.add_child("scene.adaptor", interactorCfg);
-    renderConfig.add_child("scene.adaptor", negatoCfg);
-    renderConfig.add_child("scene.adaptor", cameraCfg);
+    renderConfig.add_child("scene.layer.adaptor", interactorCfg);
+    renderConfig.add_child("scene.layer.adaptor", negatoCfg);
+    renderConfig.add_child("scene.layer.adaptor", cameraCfg);
 
     m_renderSrv = service::add("sight::viz::scene3d::SRender");
     m_renderSrv->setConfiguration(renderConfig);
@@ -99,16 +99,11 @@ void SMesh::starting()
     m_renderSrv->configure();
 
     service::IService::ConfigType interactorConfig;
-    interactorConfig.put("config.<xmlattr>.layer", "default");
     m_interactorSrv = service::add("sight::module::viz::scene3d::adaptor::STrackballCamera");
-    m_interactorSrv->setConfiguration(interactorConfig);
     m_interactorSrv->setID(this->getID() + "interactorAdaptor");
     m_interactorSrv->configure();
 
-    service::IService::ConfigType meshConfig;
-    meshConfig.put("config.<xmlattr>.layer", "default");
     m_meshSrv = service::add("sight::module::viz::scene3d::adaptor::SMesh");
-    m_meshSrv->setConfiguration(meshConfig);
     m_meshSrv->setInput(std::const_pointer_cast<data::Object>(mesh->getConstSptr()), "mesh", true);
     m_meshSrv->setID(this->getID() + "meshAdaptor");
     m_meshSrv->configure();
@@ -121,10 +116,7 @@ void SMesh::starting()
         s_UPDATE_CAM_TRANSFORM_SLOT
     );
 
-    service::IService::ConfigType cameraConfig;
-    cameraConfig.put("config.<xmlattr>.layer", "default");
     m_cameraSrv = service::add("sight::module::viz::scene3d::adaptor::SCamera");
-    m_cameraSrv->setConfiguration(cameraConfig);
     m_cameraSrv->setInOut(m_cameraTransform->getSptr(), "transform", true);
     m_cameraSrv->setID(this->getID() + "cameraAdaptor");
     m_cameraSrv->configure();
@@ -142,7 +134,7 @@ service::IService::KeyConnectionsMap SMesh::getAutoConnections() const
     // This is actually useless since the sub-service already listens to the data,
     // but this prevents a warning in fwServices from being raised.
     KeyConnectionsMap connections;
-    connections.push(s_MESH_INPUT, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MESH_INPUT, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }
@@ -164,10 +156,10 @@ void SMesh::stopping()
 
     sight::ui::base::GuiRegistry::unregisterSIDContainer(this->getID() + "-genericScene");
 
-    service::OSR::unregisterService(m_cameraSrv);
-    service::OSR::unregisterService(m_meshSrv);
-    service::OSR::unregisterService(m_interactorSrv);
-    service::OSR::unregisterService(m_renderSrv);
+    service::unregisterService(m_cameraSrv);
+    service::unregisterService(m_meshSrv);
+    service::unregisterService(m_interactorSrv);
+    service::unregisterService(m_renderSrv);
 
     m_cameraSrv.reset();
     m_meshSrv.reset();

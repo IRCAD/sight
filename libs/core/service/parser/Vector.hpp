@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,7 @@
 
 #include "service/config.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-
-#include <service/AppConfigManager.hpp>
+#include <service/IAppConfigManager.hpp>
 #include <service/IXMLParser.hpp>
 
 namespace sight::service::parser
@@ -42,17 +40,8 @@ public:
 
     SIGHT_DECLARE_SERVICE(Vector, service::IXMLParser);
 
-    /**
-     * @brief   Constructor : does nothing.
-     */
-    Vector()
-    = default;
-
-    /**
-     * @brief   Destructor : does nothing.
-     */
-    ~Vector() override
-    = default;
+    Vector()           = default;
+    ~Vector() override = default;
 
     SERVICE_API void createConfig(core::tools::Object::sptr _obj) override;
 
@@ -74,9 +63,6 @@ protected:
     SERVICE_API void updating() override;
 
 private:
-
-    /// To verify some conditions in xml file
-    static bool refObjectValidator(core::runtime::ConfigurationElement::sptr _cfgElement);
 
     std::vector<service::IAppConfigManager::sptr> m_ctmContainer;
 };

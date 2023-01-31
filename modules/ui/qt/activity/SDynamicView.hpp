@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,15 +27,9 @@
 #include <activity/ActivityMsg.hpp>
 #include <activity/extension/Activity.hpp>
 
-#include <core/com/Signal.hpp>
-#include <core/com/Signals.hpp>
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-#include <core/tools/Failed.hpp>
-
 #include <data/Activity.hpp>
 
-#include <service/AppConfigManager.hpp>
+#include <service/IAppConfigManager.hpp>
 
 #include <ui/base/view/IActivityView.hpp>
 #include <ui/qt/container/QtContainer.hpp>

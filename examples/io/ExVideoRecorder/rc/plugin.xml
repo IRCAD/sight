@@ -1,4 +1,4 @@
-<plugin id="ExVideoRecorder" >
+<plugin id="ExVideoRecorder">
 
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
@@ -6,36 +6,41 @@
     <requirement id="sight::module::viz::scene3dQt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig">
         <id>ExVideoRecorder_AppCfg</id>
         <config>
 
             <!-- ******************************* Objects declaration ****************************** -->
 
             <object uid="camera" type="sight::data::Camera" />
-            <object uid="frameTL" type="sight::data::FrameTL" >
+            <object uid="frameTL" type="sight::data::FrameTL">
                 <value>100</value>
             </object>
             <object uid="videoImage" type="sight::data::Image" />
 
+            <object uid="2dPoints" type="sight::data::PointList" />
+            <object uid="2dPixels" type="sight::data::PointList" />
+
             <!-- ******************************* UI declaration *********************************** -->
 
             <service uid="videoToolbarConfig" type="sight::service::SConfigController">
-                <appConfig id="sight::config::io::video::Toolbar" />
-
-                <inout key="camera" uid="camera" />
-                <inout key="frameTL" uid="frameTL" />
-
+                <appConfig id="sight::config::io::video::controls" />
+                <inout group="data">
+                    <key name="camera" uid="camera" />
+                    <key name="frameTL" uid="frameTL" />
+                </inout>
                 <parameter replace="TOOLBAR" by="subToolbarView" />
+                <parameter replace="addROICenterChannelIn" by="addROICenterChannelIn" />
+                <parameter replace="removeROICenterChannelIn" by="removeROICenterChannelIn" />
             </service>
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
                 <gui>
                     <frame>
                         <name>ExVideoRecorder</name>
                         <icon>ExVideoRecorder/app.ico</icon>
                     </frame>
-                    <toolBar/>
+                    <toolBar />
                 </gui>
                 <registry>
                     <toolBar sid="toolbarView" start="true" />
@@ -43,14 +48,14 @@
                 </registry>
             </service>
 
-            <service uid="toolbarView" type="sight::module::ui::base::SToolBar" >
+            <service uid="toolbarView" type="sight::module::ui::base::SToolBar">
                 <gui>
                     <layout>
-                        <editor/>
+                        <editor />
                         <separator />
                         <menuItem name="Frame recording" icon="sight::module::ui::flaticons/RedCircle.svg" style="check" />
-                        <menuItem name="Video recording" icon="sight::module::ui::flaticons/RedCircle.svg"  style="check"  />
-                        <editor/>
+                        <menuItem name="Video recording" icon="sight::module::ui::flaticons/RedCircle.svg" style="check" />
+                        <editor />
                         <spacer />
                         <menuItem name="Preferences" icon="sight::module::ui::flaticons/BlueParametersConnected.svg" />
                     </layout>
@@ -85,50 +90,61 @@
 
             <!-- ******************************* Begin Generic Scene ******************************* -->
 
-            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
-                <scene>
+            <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
+                <scene renderMode="sync">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1" />
-                    <adaptor uid="videoAdp" />
+                    <layer id="default" order="1">
+                        <adaptor uid="pickerAdp" />
+                        <adaptor uid="videoAdp" />
+                    </layer>
                 </scene>
             </service>
 
-            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true" >
+            <service uid="pickerAdp" type="sight::module::viz::scene3d::adaptor::SPicker">
+                <config layerOrderDependant="false" />
+            </service>
+
+            <service uid="videoAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true">
                 <in key="image" uid="videoImage" />
-                <config layer="default" />
+            </service>
+
+            <service uid="imagePickerSrv" type="sight::module::ui::base::video::SImagePicker">
+                <in key="camera" uid="camera" />
+                <inout key="pointList" uid="2dPoints" />
+                <inout key="pixelPointList" uid="2dPixels" />
+                <config videoReference="top_left" useCtrlModifier="false" singlePointMode="true" />
             </service>
 
             <!-- ******************************* Services ***************************************** -->
 
-            <service uid="parametersSrv" type="sight::module::ui::qt::SParameters" >
+            <service uid="parametersSrv" type="sight::module::ui::qt::SParameters">
                 <parameters>
                     <param type="enum" name="Frame format" key="format" defaultValue=".tiff" values=".tiff,.jpeg,.png,.bmp,.jp2" />
                 </parameters>
             </service>
 
-            <service uid="frameWriterSrv" type="sight::module::io::video::SFrameWriter" worker="frameRecordingActWorker" >
+            <service uid="frameWriterSrv" type="sight::module::io::video::SFrameWriter" worker="frameRecordingActWorker">
                 <in key="data" uid="frameTL" autoConnect="true" />
                 <format>.tiff</format>
                 <baseFolder>%BASE_FOLDER%</baseFolder>
             </service>
 
-            <service uid="videoWriterSrv" type="sight::module::io::video::SVideoWriter" worker="videoRecordingActWorker" >
+            <service uid="videoWriterSrv" type="sight::module::io::video::SVideoWriter" worker="videoRecordingActWorker">
                 <in key="data" uid="frameTL" autoConnect="true" />
                 <baseFolder>%BASE_FOLDER%</baseFolder>
                 <file>video.mp4</file>
             </service>
 
-            <service uid="frameUpdaterSrv" type="sight::module::sync::SFrameMatrixSynchronizer" worker="videoWorker" >
-                <in group="frameTL" >
+            <service uid="frameUpdaterSrv"  type="sight::module::sync::SSynchronizer" worker="videoWorker">
+                <in group="frameTL">
                     <key uid="frameTL" />
                 </in>
-                <inout group="image" >
+                <inout group="frames">
                     <key uid="videoImage" />
                 </inout>
-                <framerate>30</framerate>
             </service>
-
+            
             <!-- ******************************* Connections ***************************************** -->
 
             <connect>
@@ -156,6 +172,25 @@
                 <slot>videoWriterSrv/toggleRecording</slot>
             </connect>
 
+            <connect>
+                <signal>pickerAdp/picked</signal>
+                <slot>imagePickerSrv/getInteraction</slot>
+            </connect>
+
+            <connect channel="addROICenterChannelIn">
+                <signal>2dPoints/pointAdded</signal>
+            </connect>
+
+            <connect channel="removeROICenterChannelIn">
+                <signal>2dPoints/pointRemoved</signal>
+            </connect>
+
+            <connect>
+                <signal>frameUpdaterSrv/synchronizationDone</signal>
+                <slot>genericSceneSrv/requestRender</slot>
+                <slot>frameUpdaterSrv/synchronize</slot>
+            </connect>
+
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
@@ -163,7 +198,11 @@
             <start uid="frameUpdaterSrv" />
             <start uid="frameWriterSrv" />
             <start uid="videoWriterSrv" />
+
+            <start uid="pickerAdp" />
             <start uid="videoAdp" />
+
+            <start uid="imagePickerSrv" />
 
         </config>
     </extension>

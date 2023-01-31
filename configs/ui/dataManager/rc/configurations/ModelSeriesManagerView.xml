@@ -4,7 +4,9 @@ This config displays the editors to manage the ModelSeries: show/hide reconstruc
 Example
 <service uid="..." type="sight::service::SConfigController">
     <appConfig id="ModelSeriesManagerView" />
-    <inout key="ORGAN_MANAGER_MODELSERIES" uid="modelSeries" />
+    <inout group="data">
+        <key name="ORGAN_MANAGER_MODELSERIES" uid="..." />
+    </inout>
     <parameter replace="WID_PARENT" by="modelManagerView" />
 </service>
 -->

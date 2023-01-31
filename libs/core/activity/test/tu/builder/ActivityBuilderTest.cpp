@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,9 +25,8 @@
 #include <activity/extension/Activity.hpp>
 #include <activity/IBuilder.hpp>
 
-#include <core/runtime/Extension.hpp>
-#include <core/runtime/Module.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <data/Activity.hpp>
 #include <data/Composite.hpp>
@@ -87,21 +86,19 @@ void ActivityBuilderTest::buildDataTest()
     CPPUNIT_ASSERT_MESSAGE("Activity instantiation failed", activity);
 
     CPPUNIT_ASSERT_EQUAL(activityInfo.id, activity->getActivityConfigId());
-
-    data::Composite::sptr dataActivity = activity->getData();
-    CPPUNIT_ASSERT_EQUAL(std::size_t(2), dataActivity->size());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(2), activity->size());
 
     const std::string imageKey = "imageSeries";
     const std::string modelKey = "modelSeries";
-    CPPUNIT_ASSERT_MESSAGE(imageKey + " key is missing", dataActivity->find(imageKey) != dataActivity->end());
-    CPPUNIT_ASSERT_MESSAGE(modelKey + " key is missing", dataActivity->find(modelKey) != dataActivity->end());
+    CPPUNIT_ASSERT_MESSAGE(imageKey + " key is missing", activity->find(imageKey) != activity->end());
+    CPPUNIT_ASSERT_MESSAGE(modelKey + " key is missing", activity->find(modelKey) != activity->end());
 
     //single param [1;1]
-    data::Object::sptr obj = (*dataActivity)[imageKey];
+    data::Object::sptr obj = (*activity)[imageKey];
     CPPUNIT_ASSERT(obj == imgSeriesSelected);
 
     //set of param [0;2]
-    obj = (*dataActivity)[modelKey];
+    obj = (*activity)[modelKey];
     data::Composite::sptr composite = data::Composite::dynamicCast(obj);
     CPPUNIT_ASSERT_MESSAGE(modelKey + " param dynamicCast to data::Composite failed", composite);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), composite->size());

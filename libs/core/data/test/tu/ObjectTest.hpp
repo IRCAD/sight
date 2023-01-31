@@ -34,6 +34,7 @@ private:
     CPPUNIT_TEST_SUITE(ObjectTest);
     CPPUNIT_TEST(fieldTest);
     CPPUNIT_TEST(lastModifyTest);
+    CPPUNIT_TEST(equalityTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,6 +45,7 @@ public:
 
     static void fieldTest();
     static void lastModifyTest();
+    static void equalityTest();
 };
 
 } // namespace sight::data::ut

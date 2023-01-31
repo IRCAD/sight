@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -118,15 +118,14 @@ void SOpticalCenterEditor::updating()
     SIGHT_ASSERT("object '" << s_MATRIX << "' is not defined.", matrix);
 
     // Reset matrix if it isn't correctly formatted.
-    if(matrix->getCoefficient(3, 3) == 1.)
+    if((*matrix)(3, 3) == 1.)
     {
-        auto& coeffs = matrix->getCoefficients();
-        coeffs.fill(0.);
+        matrix->fill(0.);
     }
 
-    const double dCx = matrix->getCoefficient(0, 2);
-    const double dCy = matrix->getCoefficient(1, 2);
-    const double dFy = matrix->getCoefficient(1, 1);
+    const double dCx = (*matrix)(0, 2);
+    const double dCy = (*matrix)(1, 2);
+    const double dFy = (*matrix)(1, 1);
 
     const int cx = static_cast<int>(camera->getCx() + dCx);
     const int cy = static_cast<int>(camera->getCy() + dCy);
@@ -155,9 +154,9 @@ service::IService::KeyConnectionsMap SOpticalCenterEditor::getAutoConnections() 
 {
     KeyConnectionsMap connections;
 
-    connections.push(s_CAMERA, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_UPDATE_SLOT);
-    connections.push(s_CAMERA, data::Camera::s_MODIFIED_SIG, s_UPDATE_SLOT);
-    connections.push(s_MATRIX, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_CAMERA, data::Camera::s_INTRINSIC_CALIBRATED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_CAMERA, data::Camera::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_MATRIX, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }
@@ -171,13 +170,13 @@ void SOpticalCenterEditor::onCxSliderChanged(int value)
     const auto matrix = m_matrix.lock();
     SIGHT_ASSERT("object '" << s_MATRIX << "' is not defined.", matrix);
 
-    matrix->setCoefficient(0, 2, value - camera->getCx());
+    (*matrix)(0, 2) = value - camera->getCx();
 
     m_cxLabel->setText(QString("%1").arg(value));
 
     auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 }
@@ -191,13 +190,13 @@ void SOpticalCenterEditor::onCySliderChanged(int value)
     const auto matrix = m_matrix.lock();
     SIGHT_ASSERT("object '" << s_MATRIX << "' is not defined.", matrix);
 
-    matrix->setCoefficient(1, 2, value - camera->getCy());
+    (*matrix)(1, 2) = value - camera->getCy();
 
     m_cyLabel->setText(QString("%1").arg(value));
 
     auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 }
@@ -211,13 +210,13 @@ void SOpticalCenterEditor::onFySliderChanged(int value)
     const auto matrix = m_matrix.lock();
     SIGHT_ASSERT("object '" << s_MATRIX << "' is not defined.", matrix);
 
-    matrix->setCoefficient(1, 1, value - camera->getFy());
+    (*matrix)(1, 1) = value - camera->getFy();
 
     m_fyLabel->setText(QString("%1").arg(value));
 
     auto sig = matrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
-        core::com::Connection::Blocker block(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 }

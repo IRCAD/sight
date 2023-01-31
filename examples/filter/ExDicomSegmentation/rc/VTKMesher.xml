@@ -100,9 +100,7 @@
         <service uid="mesherAct" type="sight::module::filter::mesh::SVTKMesher">
             <in key="imageSeries" uid="${imageSeries}" />
             <out key="modelSeries" uid="modelSeries" />
-            <config>
-                <percentReduction>50</percentReduction>
-            </config>
+            <config percentReduction="0" threshold="255" />
         </service>
 
         <service uid="exportAct" type="sight::module::ui::base::series::SExport" autoConnect="true">
@@ -116,27 +114,27 @@
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
-                <layer id="default" order="1" />
-                <adaptor uid="modelSeriesAdp" />
-                <adaptor uid="negatoAdp" />
-                <adaptor uid="snapshotAdp" />
+                <layer id="default" order="1">
+                    <adaptor uid="modelSeriesAdp" />
+                    <adaptor uid="negatoAdp" />
+                    <adaptor uid="snapshotAdp" />
+                </layer>
             </scene>
         </service>
 
         <service uid="modelSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true">
             <in key="model" uid="modelSeries" />
-            <config layer="default" picker="" />
+            <config picker="" />
         </service>
 
-        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D" >
+        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D">
             <in key="image" uid="${imageSeries}" />
             <inout key="tf" uid="tf" />
-            <config layer="default" sliceIndex="axial" />
+            <config sliceIndex="axial" />
         </service>
 
         <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo">
             <inout key="image" uid="snapshot" />
-            <config layer="default" />
         </service>
 
         <!-- ******************************* Services ***************************************** -->
@@ -183,11 +181,10 @@
         </service>
 
         <!-- Write the snapshot image -->
-        <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector">
-            <inout key="data" uid="snapshot" />
-            <type mode="writer" />
-            <selection mode="exclude" />
-            <addSelection service="sight::module::io::session::SWriter" />
+        <service uid="imageWriterSrv" type="sight::module::io::bitmap::SWriter">
+            <in key="data" uid="snapshot" />
+            <dialog policy="always" />
+            <backends enable="all" mode="best"/>
         </service>
 
         <!-- ******************************* Connections ***************************************** -->
@@ -213,19 +210,19 @@
         <start uid="toolBarView" />
         <start uid="containerView" />
         <start uid="materialView" />
+        <start uid="parametersView" />
         <start uid="selectReconstructionSrv" />
         <start uid="imageWriterSrv" />
         <start uid="materialEditorSrv" />
         <start uid="representationSrv" />
         <start uid="modelSeriesListSrv" />
+        <start uid="genericSceneSrv" />
         <start uid="modelSeriesAdp" />
         <start uid="negatoAdp" />
         <start uid="snapshotAdp" />
         <start uid="exportAct" />
         <start uid="sliceIndexEditorSrv" />
         <start uid="mesherAct" />
-        <start uid="genericSceneSrv" />
-        <start uid="parametersView" />
         <start uid="showHideNegatoSrv" />
         <start uid="snapshotSrv" />
     </config>

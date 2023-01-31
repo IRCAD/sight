@@ -29,6 +29,7 @@ namespace sight::ui::base
 
 //-----------------------------------------------------------------------------
 
+const core::com::Slots::SlotKeyType IHasParameters::s_SET_PARAMETER_SLOT         = "setParameter";
 const core::com::Slots::SlotKeyType IHasParameters::s_SET_BOOL_PARAMETER_SLOT    = "setBoolParameter";
 const core::com::Slots::SlotKeyType IHasParameters::s_SET_COLOR_PARAMETER_SLOT   = "setColorParameter";
 const core::com::Slots::SlotKeyType IHasParameters::s_SET_DOUBLE_PARAMETER_SLOT  = "setDoubleParameter";
@@ -43,7 +44,7 @@ const core::com::Slots::SlotKeyType IHasParameters::s_SET_ENUM_PARAMETER_SLOT   
 
 IHasParameters::IHasParameters(sight::core::com::Slots& _slots)
 {
-    _slots(s_SET_BOOL_PARAMETER_SLOT, core::com::newSlot(&IHasParameters::setBoolParameter, this));
+    _slots(s_SET_PARAMETER_SLOT, core::com::newSlot(&IHasParameters::setParameter, this));
     _slots(s_SET_BOOL_PARAMETER_SLOT, core::com::newSlot(&IHasParameters::setBoolParameter, this));
     _slots(s_SET_COLOR_PARAMETER_SLOT, core::com::newSlot(&IHasParameters::setColorParameter, this));
     _slots(s_SET_DOUBLE_PARAMETER_SLOT, core::com::newSlot(&IHasParameters::setDoubleParameter, this));
@@ -59,6 +60,12 @@ IHasParameters::IHasParameters(sight::core::com::Slots& _slots)
 
 IHasParameters::~IHasParameters()
 = default;
+
+//------------------------------------------------------------------------------
+
+void IHasParameters::setParameter(sight::ui::base::parameter_t /*unused*/, std::string /*unused*/)
+{
+}
 
 //-----------------------------------------------------------------------------
 

@@ -40,32 +40,13 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const std::string s_LENGTH_CONFIG       = "length";
-static const std::string s_LABEL_CONFIG        = "label";
-static const std::string s_FONT_SIZE_CONFIG    = "fontSize";
-static const std::string s_FONT_SOURCE_CONFIG  = "fontSource";
-static const std::string s_ORIGIN_CONFIG       = "origin";
-static const std::string s_ORIGIN_COLOR_CONFIG = "originColor";
-static const std::string s_AXIS_NAME           = "name";
-
-//-----------------------------------------------------------------------------
-
-SAxis::SAxis() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
-SAxis::~SAxis() noexcept =
-    default;
-
 //-----------------------------------------------------------------------------
 
 void SAxis::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
     const std::string transformId = config.get<std::string>(
         module::viz::scene3d::adaptor::STransform::s_TRANSFORM_CONFIG,
@@ -73,6 +54,14 @@ void SAxis::configuring()
     );
 
     this->setTransformId(transformId);
+
+    static const std::string s_LENGTH_CONFIG       = s_CONFIG + "length";
+    static const std::string s_LABEL_CONFIG        = s_CONFIG + "label";
+    static const std::string s_FONT_SIZE_CONFIG    = s_CONFIG + "fontSize";
+    static const std::string s_FONT_SOURCE_CONFIG  = s_CONFIG + "fontSource";
+    static const std::string s_ORIGIN_CONFIG       = s_CONFIG + "origin";
+    static const std::string s_ORIGIN_COLOR_CONFIG = s_CONFIG + "originColor";
+    static const std::string s_AXIS_NAME           = s_CONFIG + "name";
 
     m_length           = config.get<float>(s_LENGTH_CONFIG, m_length);
     m_enableLabel      = config.get<bool>(s_LABEL_CONFIG, m_enableLabel);
@@ -125,11 +114,12 @@ void SAxis::starting()
             "sight::module::viz::scene3d::adaptor::SMaterial"
         );
     materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
-    materialAdaptor->setID(this->getID() + materialAdaptor->getID());
-    materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
-    materialAdaptor->setRenderService(this->getRenderService());
-    materialAdaptor->setLayerID(m_layerID);
-    materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    materialAdaptor->configure(
+        this->getID() + materialAdaptor->getID(),
+        this->getID() + materialAdaptor->getID(),
+        this->getRenderService(),
+        m_layerID
+    );
     materialAdaptor->start();
 
     materialAdaptor->getMaterialFw()->setHasVertexColor(true);

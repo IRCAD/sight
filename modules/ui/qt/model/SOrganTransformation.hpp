@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,13 +85,13 @@ protected:
      * @brief Returns proposals to connect service slots to associated object signals,
      * this method is used for obj/srv auto connection
      *
-     * Connect ModelSeries::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::s_UPDATE_SLOT
-     * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::s_UPDATE_SLOT
-     * Connect Composite::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect Composite::s_ADDED_OBJECTS_SIG to this::s_UPDATE_SLOT
-     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::s_UPDATE_SLOT
-     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::s_UPDATE_SLOT
+     * Connect ModelSeries::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
+     * Connect ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG to this::IService::slots::s_UPDATE
+     * Connect ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG to this::IService::slots::s_UPDATE
+     * Connect Composite::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
+     * Connect Composite::s_ADDED_OBJECTS_SIG to this::IService::slots::s_UPDATE
+     * Connect Composite::s_REMOVED_OBJECTS_SIG to this::IService::slots::s_UPDATE
+     * Connect Composite::s_CHANGED_OBJECTS_SIG to this::IService::slots::s_UPDATE
      */
     MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 

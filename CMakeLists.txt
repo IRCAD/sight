@@ -63,6 +63,7 @@ mark_as_advanced(SIGHT_VERBOSE_PCH)
 
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/flags.cmake)
 include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/macros.cmake)
+include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/pch.cmake)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/linux/modules)
 
 # We find VTK to know its version so we can enable PCL or not
@@ -108,15 +109,6 @@ endif()
 # QML_IMPORT_PATH allows qtCreator to find the qml modules created in our modules
 set(QML_IMPORT_PATH "" CACHE STRING "Path of the Qml modules." FORCE)
 mark_as_advanced(QML_IMPORT_PATH)
-
-include(${CMAKE_CURRENT_SOURCE_DIR}/cmake/build/PrecompiledHeader.cmake)
-
-if(MSVC)
-    if(NOT DEFINED CMAKE_PCH_COMPILER_TARGETS)
-        # this will be executed in just before makefile generation
-        variable_watch(CMAKE_BACKWARDS_COMPATIBILITY pch_msvc_hook)
-    endif()
-endif()
 
 if(CMAKE_CONFIGURATION_TYPES)
     set(CMAKE_CONFIGURATION_TYPES ${CMAKE_BUILD_TYPE} CACHE STRING "List of supported configurations." FORCE)
@@ -313,17 +305,21 @@ install(
 )
 
 if(WIN32)
-    install(FILES "${CMAKE_SOURCE_DIR}/cmake/build/windows/template_exe.bat.in"
-            DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/build/windows COMPONENT dev
-    )
-    install(FILES "${CMAKE_SOURCE_DIR}/cmake/install/windows/package.cmake"
-            DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/windows COMPONENT dev
+    install(
+        FILES "${CMAKE_SOURCE_DIR}/cmake/build/windows/template.bat.in"
+              "${CMAKE_SOURCE_DIR}/cmake/build/windows/template_exe.bat.in"
+              "${CMAKE_SOURCE_DIR}/cmake/build/windows/template_test.bat.in"
+        DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/build/windows
+        COMPONENT dev
     )
     install(
-        FILES "${CMAKE_SOURCE_DIR}/cmake/install/windows/install_plugins.cmake"
+        FILES "${CMAKE_SOURCE_DIR}/cmake/install/windows/package.cmake"
+              "${CMAKE_SOURCE_DIR}/cmake/install/windows/install_plugins.cmake"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/template.bat.in"
+              "${CMAKE_SOURCE_DIR}/cmake/install/windows/template_exe.bat.in"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/setpath.bat.in"
               "${CMAKE_SOURCE_DIR}/cmake/install/windows/windows_fixup.cmake.in"
+              "${CMAKE_SOURCE_DIR}/cmake/install/windows/generate_headers.cmake"
         DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/windows
         COMPONENT dev
     )
@@ -368,10 +364,6 @@ elseif(UNIX)
         DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/install/linux
         COMPONENT dev
     )
-endif()
-
-if(MSVC)
-    add_subdirectory(${CMAKE_SOURCE_DIR}/cmake/install/windows)
 endif()
 
 ########################################################################################################################

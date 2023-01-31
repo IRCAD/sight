@@ -42,9 +42,6 @@ namespace sight::module::viz::scene3d::adaptor
 
 static const core::com::Slots::SlotKeyType s_UPDATE_LENGTH_SLOT = "updateLength";
 
-static const std::string s_COLOR_CONFIG  = "color";
-static const std::string s_LENGTH_CONFIG = "length";
-
 //-----------------------------------------------------------------------------
 
 SVector::SVector() noexcept
@@ -54,17 +51,11 @@ SVector::SVector() noexcept
 
 //-----------------------------------------------------------------------------
 
-SVector::~SVector() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
 void SVector::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
     const std::string transformId = config.get<std::string>(
         module::viz::scene3d::adaptor::STransform::s_TRANSFORM_CONFIG,
@@ -72,8 +63,8 @@ void SVector::configuring()
     );
 
     this->setTransformId(transformId);
-    m_length = config.get<float>(s_LENGTH_CONFIG, m_length);
-    m_color  = config.get<std::string>(s_COLOR_CONFIG, m_color);
+    m_length = config.get<float>(s_CONFIG + "length", m_length);
+    m_color  = config.get<std::string>(s_CONFIG + "color", m_color);
     SIGHT_ASSERT(
         "Color string should start with '#' and followed by 6 or 8 "
         "hexadecimal digits. Given color: " << m_color,
@@ -101,11 +92,12 @@ void SVector::starting()
         "sight::module::viz::scene3d::adaptor::SMaterial"
     );
     m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
-    m_materialAdaptor->setID(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setMaterialName(this->getID() + m_materialAdaptor->getID());
-    m_materialAdaptor->setRenderService(this->getRenderService());
-    m_materialAdaptor->setLayerID(m_layerID);
-    m_materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    m_materialAdaptor->configure(
+        this->getID() + m_materialAdaptor->getID(),
+        this->getID() + m_materialAdaptor->getID(),
+        this->getRenderService(),
+        m_layerID
+    );
     m_materialAdaptor->start();
 
     m_materialAdaptor->getMaterialFw()->setHasVertexColor(true);

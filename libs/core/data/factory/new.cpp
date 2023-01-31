@@ -24,8 +24,7 @@
 
 #include "data/Object.hpp"
 
-#include <core/runtime/operations.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <regex>
 

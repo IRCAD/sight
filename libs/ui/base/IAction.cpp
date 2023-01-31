@@ -28,6 +28,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slot.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/helper.hpp>
 
 namespace sight::ui::base
 {
@@ -99,7 +100,7 @@ void IAction::initialize()
 {
     m_registry = ui::base::registry::Action::New(this->getID());
 
-    auto config = this->getConfigTree();
+    auto config = this->getConfiguration();
 
     if(config.get_child_optional("state.<xmlattr>.active").has_value())
     {

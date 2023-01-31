@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,27 +39,16 @@ namespace sight::module::viz::scene3d::adaptor
 
 //-----------------------------------------------------------------------------
 
-SOrientationMarker::SOrientationMarker() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
-SOrientationMarker::~SOrientationMarker() noexcept =
-    default;
-
-//-----------------------------------------------------------------------------
-
 void SOrientationMarker::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
     // Set the resource this use, if it has been set via xml
-    m_patientMeshRc = config.get<std::string>("resource", m_patientMeshRc);
+    m_patientMeshRc = config.get<std::string>(s_CONFIG + "resource", m_patientMeshRc);
 
-    m_markerDepth = config.get<float>("depth", m_markerDepth);
+    m_markerDepth = config.get<float>(s_CONFIG + "depth", m_markerDepth);
 }
 
 //-----------------------------------------------------------------------------
@@ -84,11 +73,12 @@ void SOrientationMarker::starting()
             "sight::module::viz::scene3d::adaptor::SMaterial"
         );
     materialAdaptor->setInOut(m_material, sight::module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
-    materialAdaptor->setID(this->getID() + materialAdaptor->getID());
-    materialAdaptor->setMaterialName(this->getID() + materialAdaptor->getID());
-    materialAdaptor->setRenderService(this->getRenderService());
-    materialAdaptor->setLayerID(m_layerID);
-    materialAdaptor->setMaterialTemplateName(sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME);
+    materialAdaptor->configure(
+        this->getID() + materialAdaptor->getID(),
+        this->getID() + materialAdaptor->getID(),
+        this->getRenderService(),
+        m_layerID
+    );
     materialAdaptor->start();
     materialAdaptor->update();
 
@@ -124,7 +114,7 @@ void SOrientationMarker::updateCameraMatrix()
         {
             for(std::size_t ct = 0 ; ct < 3 ; ct++)
             {
-                ogreMatrix[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
+                ogreMatrix[ct][lt] = static_cast<Ogre::Real>((*transform)(ct, lt));
             }
         }
     }
@@ -170,7 +160,7 @@ void SOrientationMarker::setVisible(bool _visible)
 service::IService::KeyConnectionsMap SOrientationMarker::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_MATRIX_IN, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATRIX_IN, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     return connections;
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,10 +38,11 @@ using sight::core::crypto::secure_string;
 using sight::core::crypto::PasswordKeeper;
 using sight::ui::base::Preferences;
 
-constexpr static auto s_PREFERENCES_ENABLED           = "preferences_enabled";
-constexpr static auto s_PREFERENCES_PASSWORD_POLICY   = "preferences_password_policy";
-constexpr static auto s_PREFERENCES_ENCRYPTION_POLICY = "preferences_encryption_policy";
-constexpr static auto s_PREFERENCES_PASSWORD          = "preferences_password";
+constexpr static auto s_PREFERENCES_ENABLED                = "preferences_enabled";
+constexpr static auto s_PREFERENCES_PASSWORD_POLICY        = "preferences_password_policy";
+constexpr static auto s_PREFERENCES_ENCRYPTION_POLICY      = "preferences_encryption_policy";
+constexpr static auto s_PREFERENCES_PASSWORD               = "preferences_password";
+constexpr static auto s_PREFERENCES_EXIT_ON_PASSWORD_ERROR = "preferences_exit_on_password_error";
 
 SIGHT_REGISTER_PLUGIN("sight::module::ui::base::Plugin");
 
@@ -65,7 +66,7 @@ void Plugin::start()
     // Set the password policy
     const PasswordKeeper::PasswordPolicy password_policy =
         !module->hasParameter(s_PREFERENCES_PASSWORD_POLICY)
-        ? PasswordKeeper::PasswordPolicy::DEFAULT
+        ? PasswordKeeper::PasswordPolicy::NEVER
         : PasswordKeeper::string_to_password_policy(module->getParameterValue(s_PREFERENCES_PASSWORD_POLICY));
 
     SIGHT_THROW_IF("Invalid password policy.", password_policy == PasswordKeeper::PasswordPolicy::INVALID);
@@ -74,7 +75,7 @@ void Plugin::start()
     // Set the encryption policy
     const PasswordKeeper::EncryptionPolicy encryption_policy =
         !module->hasParameter(s_PREFERENCES_ENCRYPTION_POLICY)
-        ? PasswordKeeper::EncryptionPolicy::DEFAULT
+        ? PasswordKeeper::EncryptionPolicy::PASSWORD
         : PasswordKeeper::string_to_encryption_policy(module->getParameterValue(s_PREFERENCES_ENCRYPTION_POLICY));
 
     SIGHT_THROW_IF("Invalid encryption policy.", encryption_policy == PasswordKeeper::EncryptionPolicy::INVALID);
@@ -86,6 +87,11 @@ void Plugin::start()
         // NOLINTNEXTLINE(readability-redundant-string-cstr)
         const secure_string& password = module->getParameterValue(s_PREFERENCES_PASSWORD).c_str();
         Preferences::set_password(password);
+    }
+
+    if(module->hasParameter(s_PREFERENCES_EXIT_ON_PASSWORD_ERROR))
+    {
+        Preferences::exit_on_password_error(module->getParameterValue(s_PREFERENCES_EXIT_ON_PASSWORD_ERROR) != "false");
     }
 }
 

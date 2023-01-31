@@ -22,16 +22,10 @@
 
 #include "service/parser/Color.hpp"
 
-#include "service/macros.hpp"
-
-#include <core/runtime/ConfigurationElement.hpp>
-
 #include <data/Color.hpp>
 
 namespace sight::service::parser
 {
-
-static const std::string s_VALUE_CONFIG = "value";
 
 //------------------------------------------------------------------------------
 
@@ -40,21 +34,14 @@ void Color::createConfig(core::tools::Object::sptr _obj)
     const data::Color::sptr color = data::Color::dynamicCast(_obj);
     SIGHT_ASSERT("Color does not exist.", color);
 
-    core::runtime::ConfigurationElementContainer configs = m_cfg->findAllConfigurationElement(s_VALUE_CONFIG);
-    SIGHT_ASSERT("Color config must contain at most one tag <value>...</value>", configs.size() <= 1);
-
-    if(configs.size() == 1)
-    {
-        const core::runtime::ConfigurationElement::csptr config = *configs.begin();
-        const std::string hexaColor                             = config->getValue();
-        SIGHT_ASSERT(
-            "Color string should start with '#' and followed by 6 or 8 "
-            "hexadecimal digits. Given color: " << hexaColor,
-            hexaColor[0] == '#'
-            && (hexaColor.length() == 7 || hexaColor.length() == 9)
-        );
-        color->setRGBA(hexaColor);
-    }
+    const auto hexaColor = m_cfg.get<std::string>("value");
+    SIGHT_ASSERT(
+        "Color string should start with '#' and followed by 6 or 8 "
+        "hexadecimal digits. Given color: " << hexaColor,
+        hexaColor[0] == '#'
+        && (hexaColor.length() == 7 || hexaColor.length() == 9)
+    );
+    color->setRGBA(hexaColor);
 }
 
 //------------------------------------------------------------------------------

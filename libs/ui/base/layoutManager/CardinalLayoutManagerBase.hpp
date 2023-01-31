@@ -75,11 +75,8 @@ public:
         std::string m_backgroundColor;
     };
 
-    /// Constructor. Does nothing.
-    UI_BASE_API CardinalLayoutManagerBase();
-
-    /// Destructor. Does nothing.
-    UI_BASE_API ~CardinalLayoutManagerBase() override;
+    UI_BASE_API CardinalLayoutManagerBase()           = default;
+    UI_BASE_API ~CardinalLayoutManagerBase() override = default;
 
     /**
      * @brief Initializes cardinal layout manager. Must be called before the layout creation.
@@ -118,7 +115,7 @@ public:
      *   - \b backgroundColor (optional) : (hexadecimal format starting with "#") background color.
      */
 
-    UI_BASE_API void initialize(ConfigurationType configuration) override;
+    UI_BASE_API void initialize(const ui::base::config_t& configuration) override;
 
     UI_BASE_API static const RegistryKeyType REGISTRY_KEY;
 

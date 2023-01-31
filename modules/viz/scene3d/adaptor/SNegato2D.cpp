@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,13 +49,6 @@ static const core::com::Slots::SlotKeyType s_UPDATE_SLICES_FROM_WORLD = "updateS
 static const core::com::Signals::SignalKeyType s_SLICE_INDEX_CHANGED_SIG = "sliceIndexChanged";
 static const core::com::Signals::SignalKeyType s_PICKED_VOXEL_SIG        = "pickedVoxel";
 
-static const std::string s_SLICE_INDEX_CONFIG = "sliceIndex";
-static const std::string s_FILTERING_CONFIG   = "filtering";
-static const std::string s_TF_ALPHA_CONFIG    = "tfAlpha";
-static const std::string s_BORDER_CONFIG      = "border";
-static const std::string s_TRANSFORM_CONFIG   = "transform";
-static const std::string s_INTERACTIVE_CONFIG = "interactive";
-
 //------------------------------------------------------------------------------
 
 SNegato2D::SNegato2D() noexcept
@@ -71,19 +64,19 @@ SNegato2D::SNegato2D() noexcept
 
 //------------------------------------------------------------------------------
 
-SNegato2D::~SNegato2D() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void SNegato2D::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
 
-    const std::string orientation = config.get<std::string>(s_SLICE_INDEX_CONFIG, "axial");
+    static const std::string s_SLICE_INDEX_CONFIG = s_CONFIG + "sliceIndex";
+    static const std::string s_FILTERING_CONFIG   = s_CONFIG + "filtering";
+    static const std::string s_TF_ALPHA_CONFIG    = s_CONFIG + "tfAlpha";
+    static const std::string s_BORDER_CONFIG      = s_CONFIG + "border";
+    static const std::string s_INTERACTIVE_CONFIG = s_CONFIG + "interactive";
+
+    const auto orientation = config.get<std::string>(s_SLICE_INDEX_CONFIG, "axial");
     if(orientation == "axial")
     {
         m_orientation = OrientationMode::Z_AXIS;
@@ -97,16 +90,15 @@ void SNegato2D::configuring()
         m_orientation = OrientationMode::X_AXIS;
     }
 
-    if(config.count(s_FILTERING_CONFIG) != 0U)
+    if(const auto filteringCfg = config.get_optional<std::string>(s_FILTERING_CONFIG); filteringCfg.has_value())
     {
-        const auto filteringValue = config.get<std::string>(s_FILTERING_CONFIG);
         sight::viz::scene3d::Plane::filter_t filtering(sight::viz::scene3d::Plane::filter_t::LINEAR);
 
-        if(filteringValue == "none")
+        if(filteringCfg.value() == "none")
         {
             filtering = sight::viz::scene3d::Plane::filter_t::NONE;
         }
-        else if(filteringValue == "anisotropic")
+        else if(filteringCfg.value() == "anisotropic")
         {
             filtering = sight::viz::scene3d::Plane::filter_t::ANISOTROPIC;
         }
@@ -390,8 +382,8 @@ void SNegato2D::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, 
 service::IService::KeyConnectionsMap SNegato2D::getAutoConnections() const
 {
     return {
-        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT},
-        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_SLOT},
+        {s_IMAGE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_IMAGE_IN, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_SLICETYPE_SLOT},
         {s_IMAGE_IN, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_SLICEINDEX_SLOT},
         {s_TF_IN, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},

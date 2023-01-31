@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,14 +48,6 @@ namespace sight::module::viz::scene3d::adaptor
 static const core::com::Signals::SignalKeyType s_ADD_DISTANCES_SLOT                 = "addDistances";
 static const core::com::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT              = "removeDistances";
 static const core::com::Signals::SignalKeyType s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
-
-static const std::string s_FONT_SOURCE_CONFIG = "fontSource";
-static const std::string s_FONT_SIZE_CONFIG   = "fontSize";
-static const std::string s_RADIUS_CONFIG      = "radius";
-static const std::string s_INTERACTIVE_CONFIG = "interactive";
-static const std::string s_PRIORITY_CONFIG    = "priority";
-static const std::string s_QUERY_MASK_CONFIG  = "queryMask";
-static const std::string s_QUERY_FLAGS_CONFIG = "distanceQueryFlags";
 
 static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = sight::viz::scene3d::rq::s_SURFACE_ID;
 
@@ -143,17 +135,19 @@ SImageMultiDistances::SImageMultiDistances() noexcept
 
 //------------------------------------------------------------------------------
 
-SImageMultiDistances::~SImageMultiDistances() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void SImageMultiDistances::configuring()
 {
     this->configureParams();
 
-    const ConfigType srvconfig = this->getConfigTree();
-    const ConfigType config    = srvconfig.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_FONT_SOURCE_CONFIG = s_CONFIG + "fontSource";
+    static const std::string s_FONT_SIZE_CONFIG   = s_CONFIG + "fontSize";
+    static const std::string s_RADIUS_CONFIG      = s_CONFIG + "radius";
+    static const std::string s_INTERACTIVE_CONFIG = s_CONFIG + "interactive";
+    static const std::string s_PRIORITY_CONFIG    = s_CONFIG + "priority";
+    static const std::string s_QUERY_MASK_CONFIG  = s_CONFIG + "queryMask";
+    static const std::string s_QUERY_FLAGS_CONFIG = s_CONFIG + "distanceQueryFlags";
 
     m_fontSource           = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_fontSize             = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
@@ -260,7 +254,7 @@ service::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() 
     connections.push(s_IMAGE_IN, data::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);
     connections.push(s_IMAGE_IN, data::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
     connections.push(s_IMAGE_IN, data::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
-    connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     return connections;
 }
 
@@ -329,7 +323,7 @@ void SImageMultiDistances::addDistances()
                 const auto& sigModified = pointList->signal<data::PointList::ModifiedSignalType>(
                     data::PointList::s_MODIFIED_SIG
                 );
-                sigModified->connect(m_slotUpdate);
+                sigModified->connect(slot(IService::slots::s_UPDATE));
             }
         }
     }
@@ -782,7 +776,7 @@ void SImageMultiDistances::updateDistance(
         data::PointList::s_MODIFIED_SIG
     );
 
-    core::com::Connection::Blocker blocker(sigModified->getConnection(m_slotUpdate));
+    core::com::Connection::Blocker blocker(sigModified->getConnection(slot(IService::slots::s_UPDATE)));
     sigModified->asyncEmit();
 
     this->requestRender();
@@ -811,7 +805,7 @@ void SImageMultiDistances::destroyDistance(core::tools::fwID::IDType _id)
     const auto& sigModified = distanceData.m_pointList->signal<data::PointList::ModifiedSignalType>(
         data::PointList::s_MODIFIED_SIG
     );
-    sigModified->disconnect(m_slotUpdate);
+    sigModified->disconnect(slot(IService::slots::s_UPDATE));
 
     // Remove it from the map.
     m_distances.erase(it);

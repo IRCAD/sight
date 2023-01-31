@@ -1,0 +1,63 @@
+<extension implements="sight::service::extension::AppConfig" >
+    <id>PACSSelectorWindow_AppCfg</id>
+    <parameters>
+        <param name="CLOSE_CONFIG_CHANNEL" default="DummyChannel" />
+        <param name="WINDOW_TITLE" />
+        <param name="WINDOW_ICON" />
+        <param name="outputSeriesSet" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${outputSeriesSet}" type="sight::data::SeriesSet" src="ref" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="mainView" type="sight::module::ui::base::SFrame" >
+            <window onclose="notify" />
+            <gui>
+                <frame>
+                    <name>${WINDOW_TITLE}</name>
+                    <icon>${WINDOW_ICON}</icon>
+                    <minSize width="720" height="390" />
+                </frame>
+            </gui>
+            <registry>
+                <view sid="pacsSelectorView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="pacsSelectorView" type="sight::module::ui::base::SView" >
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager" >
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view wid="view" />
+            </registry>
+        </service>
+
+        <!-- TF manager -->
+        <service uid="PACSSelectorCfg"  type="sight::service::SConfigController" >
+            <appConfig id="PACSSelectorWidget_AppCfg" />
+            <parameter replace="WID_PARENT" by="view" />
+            <inout group="data">
+                <key name="outputSeriesSet" uid="${outputSeriesSet}" />
+            </inout>
+        </service>
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <connect channel="${CLOSE_CONFIG_CHANNEL}" >
+            <signal>mainView/closed</signal>
+        </connect>
+
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="mainView" />
+        <start uid="PACSSelectorCfg" />
+    </config>
+</extension>

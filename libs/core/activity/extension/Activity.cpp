@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,21 +20,17 @@
  *
  ***********************************************************************/
 
-// cspell:ignore NOLINTNEXTLINE
-
 #include "Activity.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/Convert.hpp>
-#include <core/runtime/helper.hpp>
 #include <core/runtime/Module.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/path.hpp>
+#include <core/runtime/runtime.hpp>
 #include <core/tools/fwID.hpp>
 
 #include <data/Activity.hpp>
 #include <data/Vector.hpp>
 
-#include <boost/foreach.hpp>
+#include <boost/range/iterator_range_core.hpp>
 
 #include <limits>
 #include <regex>
@@ -62,8 +58,8 @@ ActivityAppConfig::ActivityAppConfig(const ConfigType& config) :
     if(config.count("parameters") == 1)
     {
         const ConfigType& configParameters = config.get_child("parameters");
-        // NOLINTNEXTLINE(bugprone-branch-clone)
-        BOOST_FOREACH(const ConfigType::value_type& v, configParameters.equal_range("parameter"))
+
+        for(const auto& v : boost::make_iterator_range(configParameters.equal_range("parameter")))
         {
             ActivityAppConfigParam parameter(v.second);
             parameters.push_back(parameter);
@@ -91,8 +87,7 @@ ActivityRequirement::ActivityRequirement(const ConfigType& config) :
     minOccurs(config.get_optional<unsigned int>("<xmlattr>.minOccurs").get_value_or(1)),
     maxOccurs(config.get_optional<unsigned int>("<xmlattr>.maxOccurs").get_value_or(1))
 {
-    // NOLINTNEXTLINE(bugprone-branch-clone)
-    BOOST_FOREACH(const ConfigType::value_type& v, config.equal_range("key"))
+    for(const auto& v : boost::make_iterator_range(config.equal_range("key")))
     {
         keys.push_back(ActivityRequirementKey(v.second));
     }
@@ -119,66 +114,54 @@ ActivityRequirement::ActivityRequirement(const ConfigType& config) :
 //-----------------------------------------------------------------------------
 
 ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
-    id(ext->findConfigurationElement("id")->getValue()),
-    title(ext->findConfigurationElement("title")->getValue()),
-    description(ext->findConfigurationElement("desc")->getValue()),
-    icon(core::runtime::getModuleResourceFilePath(ext->findConfigurationElement("icon")->getValue()).string()),
+    id(ext->getConfig().get<std::string>("id")),
+    title(ext->getConfig().get<std::string>("title")),
+    description(ext->getConfig().get<std::string>("desc")),
+    icon(core::runtime::getModuleResourceFilePath(ext->getConfig().get<std::string>("icon")).string()),
     tabInfo(title),
     bundleId(ext->getModule()->getIdentifier()),
-    appConfig(core::runtime::Convert::toPropertyTree(ext->findConfigurationElement("appConfig")).get_child("appConfig"))
+    appConfig(ext->getConfig().get_child("appConfig"))
 {
-    if(ext->findConfigurationElement("tabinfo"))
+    const auto& config = ext->getConfig();
+    tabInfo = config.get<std::string>("tabinfo", tabInfo);
+
+    if(const auto& requirementsCfg = config.get_child_optional("requirements"); requirementsCfg.has_value())
     {
-        tabInfo = ext->findConfigurationElement("tabinfo")->getValue();
-    }
-
-    core::runtime::ConfigurationElement::sptr req = ext->findConfigurationElement("requirements");
-    for(auto& elem : *req)
-    {
-        ActivityRequirement requirement(core::runtime::Convert::toPropertyTree(elem).get_child("requirement"));
-        requirements.push_back(requirement);
-
-        MinMaxType& minMax = m_requirementCount[requirement.type];
-
-        minMax.first += requirement.minOccurs;
-
-        if(requirement.maxOccurs < (std::numeric_limits<unsigned int>::max() - minMax.second))
+        for(const auto& elem : boost::make_iterator_range(requirementsCfg->equal_range("requirement")))
         {
-            minMax.second += requirement.maxOccurs;
-        }
-        else
-        {
-            minMax.second = std::numeric_limits<unsigned int>::max();
+            ActivityRequirement requirement(elem.second);
+            requirements.push_back(requirement);
+
+            MinMaxType& minMax = m_requirementCount[requirement.type];
+
+            minMax.first += requirement.minOccurs;
+
+            if(requirement.maxOccurs < (std::numeric_limits<unsigned int>::max() - minMax.second))
+            {
+                minMax.second += requirement.maxOccurs;
+            }
+            else
+            {
+                minMax.second = std::numeric_limits<unsigned int>::max();
+            }
         }
     }
 
-    core::runtime::ConfigurationElement::csptr builderCfg = ext->findConfigurationElement("builder");
-    if(builderCfg)
-    {
-        builderImpl = builderCfg->getValue();
-    }
-    else
-    {
-        builderImpl = "sight::activity::builder::ActivityInitData";
-    }
+    builderImpl = config.get<std::string>("builder", "sight::activity::builder::ActivityInitData");
 
     // backward compatibility
-    core::runtime::ConfigurationElement::csptr validatorCfg = ext->findConfigurationElement("validator");
-    if(validatorCfg)
+    if(const auto& validatorCfg = config.get_optional<std::string>("validator"); validatorCfg.has_value())
     {
-        std::string validatorImplStr = validatorCfg->getValue();
+        const auto& validatorImplStr = validatorCfg.value();
         if(!validatorImplStr.empty())
         {
             validatorsImpl.push_back(validatorImplStr);
         }
     }
 
-    core::runtime::ConfigurationElement::sptr validatorsCfg = ext->findConfigurationElement("validators");
-    if(validatorsCfg)
+    if(const auto& validators = config.get_child_optional("validators"); validators.has_value())
     {
-        auto validators = core::runtime::Convert::toPropertyTree(validatorsCfg).get_child("validators");
-        // NOLINTNEXTLINE(bugprone-branch-clone)
-        BOOST_FOREACH(auto const& validator, validators.equal_range("validator"))
+        for(const auto& validator : boost::make_iterator_range(validators->equal_range("validator")))
         {
             validatorsImpl.push_back(validator.second.get_value<std::string>());
         }
@@ -400,16 +383,13 @@ std::map<std::string, std::string> Activity::getReplacementMap(
 {
     std::map<std::string, std::string> replacement_map;
 
-    // Get the composite
-    const auto& composite = activity.getData();
-
     // First, use requirements to populate replacement map with an object from the root composite
     for(const auto& requirement : info.requirements)
     {
         // Use the name as "key" for the AppConfig parameter
-        const auto& it = composite->find(requirement.name);
+        const auto& it = activity.find(requirement.name);
 
-        if(it != composite->end() && it->second)
+        if(it != activity.end() && it->second)
         {
             replacement_map[requirement.name] = it->second->getID();
         }

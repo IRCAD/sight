@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/tools/Failed.hpp>
 
 #include <data/DicomSeries.hpp>
 #include <data/Series.hpp>
@@ -61,7 +62,7 @@ SSeriesPusher::~SSeriesPusher() noexcept =
 
 void SSeriesPusher::configuring()
 {
-    service::IService::ConfigType configuration = this->getConfigTree();
+    service::IService::ConfigType configuration = this->getConfiguration();
     //Parse server port and hostname
     if(configuration.count("server") != 0U)
     {

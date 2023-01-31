@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -114,7 +114,7 @@ void SCamera::starting()
 service::IService::KeyConnectionsMap SCamera::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_TRANSFORM_INOUT, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     connections.push(s_CALIBRATION_INPUT, data::Camera::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
     connections.push(s_CALIBRATION_INPUT, data::Camera::s_INTRINSIC_CALIBRATED_SIG, s_CALIBRATE_SLOT);
     connections.push(s_CAMERA_SET_INPUT, data::CameraSet::s_MODIFIED_SIG, s_CALIBRATE_SLOT);
@@ -136,7 +136,7 @@ void SCamera::updating()
         {
             for(std::size_t ct = 0 ; ct < 4 ; ct++)
             {
-                ogreMatrix[ct][lt] = static_cast<Ogre::Real>(transform->getCoefficient(ct, lt));
+                ogreMatrix[ct][lt] = static_cast<Ogre::Real>((*transform)(ct, lt));
             }
         }
     }
@@ -240,13 +240,13 @@ void SCamera::updateTF3D()
     {
         for(std::size_t ct = 0 ; ct < 4 ; ct++)
         {
-            transform->setCoefficient(ct, lt, static_cast<double>(newTransMat[ct][lt]));
+            (*transform)(ct, lt) = static_cast<double>(newTransMat[ct][lt]);
         }
     }
 
     auto sig = transform->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     {
-        core::com::Connection::Blocker blocker(sig->getConnection(m_slotUpdate));
+        core::com::Connection::Blocker blocker(sig->getConnection(slot(IService::slots::s_UPDATE)));
         sig->asyncEmit();
     }
 }

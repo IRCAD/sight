@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -93,12 +93,12 @@ protected:
     /**
      * @brief Returns proposals to connect service slots to associated object signals.
      *
-     * Connect image::s_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect image::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
+     * Connect image::s_BUFFER_MODIFIED_SIG to this::IService::slots::s_UPDATE
      * Connect image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_DEFAULT_VALUE_SLOT
      * Connect imageExtent::s_SLICE_INDEX_MODIFIED_SIG to this::s_UPDATE_SLICE_TYPE_SLOT
-     * Connect imageExtent::s_SLICE_TYPE_MODIFIED_SIG to this::s_UPDATE_SLOT
-     * Connect axes::s_MODIFIED_SIG to this::s_UPDATE_SLOT
+     * Connect imageExtent::s_SLICE_TYPE_MODIFIED_SIG to this::IService::slots::s_UPDATE
+     * Connect axes::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
      */
     MODULE_FILTER_IMAGE_API KeyConnectionsMap getAutoConnections() const override;
 

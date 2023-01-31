@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,10 +24,10 @@
 
 #include "ui/base/config.hpp"
 
-#include <core/com/Slot.hpp>
-#include <core/com/Slots.hpp>
-
 #include <service/IService.hpp>
+
+#include <ui/base/GuiBaseObject.hpp>
+#include <ui/base/parameter.hpp>
 
 namespace sight::ui::base
 {
@@ -66,9 +66,13 @@ class ISlideViewBuilder;
  * @section Slots Slots
  *
  * - \b setEnabled(bool isEnabled) : this slot enables the container (if isEnabled = true) or disables it.
+ * - \b setEnabledByParam(ui::base::parameter_t isEnabled) : this slot enables the container (if isEnabled holds boolean
+ * alternative) or disables it.
  * - \b enable() : this slot enables the container.
  * - \b disable() : this slot disables the container
  * - \b setVisible(bool isVisible) : this slot shows the container (if isVisible = true) or hides it.
+ * - \b setVisibleByParam(ui::base::parameter_t isVisible) : this slot shows the container (if isEnabled holds boolean
+ * alternative) or hides it.
  * - \b show() : this slot shows the container.
  * - \b hide() : this slot hides the container.
  *
@@ -140,10 +144,7 @@ public:
 protected:
 
     UI_BASE_API IGuiContainer();
-
-    UI_BASE_API ~IGuiContainer() override;
-
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
+    UI_BASE_API ~IGuiContainer() override = default;
 
     /**
      * @brief Initialize managers.
@@ -170,6 +171,7 @@ protected:
 
     /// Slot to enable/disable the action
     UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_ENABLED_SLOT;
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_ENABLED_BY_PARAM_SLOT;
 
     /// Slot to enable the container
     UI_BASE_API static const core::com::Slots::SlotKeyType s_ENABLE_SLOT;
@@ -179,6 +181,7 @@ protected:
 
     /// Slot to show/hide the container
     UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_VISIBLE_BY_PARAM_SLOT;
 
     /// Slot to show the container
     UI_BASE_API static const core::com::Slots::SlotKeyType s_SHOW_SLOT;
@@ -187,22 +190,28 @@ protected:
     UI_BASE_API static const core::com::Slots::SlotKeyType s_HIDE_SLOT;
 
     /// SLOT: enable/disable the container
-    UI_BASE_API void setEnabled(bool isEnabled);
+    UI_BASE_API virtual void setEnabled(bool isEnabled);
+
+    /// SLOT: enable/disable the container using parameter_t (only testing bool alternative).
+    UI_BASE_API virtual void setEnabledByParameter(ui::base::parameter_t);
 
     /// SLOT: enable the container
-    UI_BASE_API void enable();
+    UI_BASE_API virtual void enable();
 
     /// SLOT: disable the container
-    UI_BASE_API void disable();
+    UI_BASE_API virtual void disable();
 
     /// SLOT: show/hide the container
-    UI_BASE_API void setVisible(bool isVisible);
+    UI_BASE_API virtual void setVisible(bool isVisible);
+
+    /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
+    UI_BASE_API virtual void setVisibleByParameter(ui::base::parameter_t);
 
     /// SLOT: show the container
-    UI_BASE_API void show();
+    UI_BASE_API virtual void show();
 
     /// SLOT: hide the container
-    UI_BASE_API void hide();
+    UI_BASE_API virtual void hide();
 
 /**
  * @}
@@ -212,9 +221,9 @@ private:
 
     typedef std::vector<SPTR(ui::base::builder::ISlideViewBuilder)> SlideViewContainerType;
 
-    void initializeLayoutManager(core::runtime::ConfigurationElement::sptr layoutConfig);
-    void initializeToolBarBuilder(core::runtime::ConfigurationElement::sptr toolBarConfig);
-    void initializeSlideViewBuilder(core::runtime::ConfigurationElement::sptr slideViewConfig);
+    void initializeLayoutManager(const ui::base::config_t& layoutConfig);
+    void initializeToolBarBuilder(const ui::base::config_t& toolBarConfig);
+    void initializeSlideViewBuilder(const ui::base::config_t& slideViewConfig);
 
     bool m_viewLayoutManagerIsCreated {false};
     SPTR(ui::base::layoutManager::IViewLayoutManager) m_viewLayoutManager;
@@ -223,11 +232,6 @@ private:
     SPTR(ui::base::builder::IToolBarBuilder) m_toolBarBuilder;
     SPTR(ui::base::builder::IContainerBuilder) m_containerBuilder;
     SlideViewContainerType m_slideViewBuilders;
-
-    ConfigurationType m_viewRegistryConfig;
-    ConfigurationType m_viewLayoutConfig;
-    ConfigurationType m_toolBarConfig;
-    ConfigurationType m_slideViewConfig;
 
     bool m_hasToolBar {false};
 };

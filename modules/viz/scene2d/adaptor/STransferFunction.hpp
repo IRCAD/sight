@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,13 +104,13 @@ protected:
      * @return A map of each proposed connection.
      *
      * Connect sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG of s_VIEWPORT_INPUT to
-     * module::viz::scene2d::adaptor::STransferFunction::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::STransferFunction::IService::slots::s_UPDATE.
      * Connect data::Object::s_MODIFIED_SIG of s_TF_POOL_INOUT to
-     * module::viz::scene2d::adaptor::STransferFunction::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::STransferFunction::IService::slots::s_UPDATE.
      * Connect data::Composite::s_ADDED_OBJECTS_SIGof s_TF_POOL_INOUT to
-     * module::viz::scene2d::adaptor::STransferFunction::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::STransferFunction::IService::slots::s_UPDATE.
      * Connect data::Composite::s_REMOVED_OBJECTS_SIG of s_TF_POOL_INOUT to
-     * module::viz::scene2d::adaptor::STransferFunction::s_UPDATE_SLOT.
+     * module::viz::scene2d::adaptor::STransferFunction::IService::slots::s_UPDATE.
      */
     KeyConnectionsMap getAutoConnections() const override;
 

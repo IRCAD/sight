@@ -70,8 +70,6 @@ protected:
 
     void info(std::ostream& _sstream) override;
 
-    typedef core::runtime::ConfigurationElement::sptr Configuration;
-
 private:
 
     std::string m_url;

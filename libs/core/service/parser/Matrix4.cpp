@@ -45,18 +45,18 @@ void Matrix4::createConfig(core::tools::Object::sptr _obj)
     data::Matrix4::sptr matrix = data::Matrix4::dynamicCast(_obj);
     SIGHT_ASSERT("matrix not instanced", matrix);
 
-    for(core::runtime::ConfigurationElement::csptr elem : m_cfg->getElements())
+    for(const auto& elem : m_cfg)
     {
-        if(elem->getName() == "matrix")
+        if(elem.first == "matrix")
         {
-            std::string input = elem->getValue();
+            const auto input = elem.second.get_value<std::string>();
             std::istringstream inputString(input);
 
             double coef = NAN;
             for(unsigned int k = 0 ; k < 16 ; k++)
             {
                 inputString >> coef;
-                matrix->getCoefficients()[k] = coef;
+                (*matrix)[k] = coef;
             }
         }
     }

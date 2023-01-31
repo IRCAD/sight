@@ -41,14 +41,13 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SOrientationMarker" autoConnect="true">
         <in key="matrix" uid="..." />
-        <config layer="default" resource="..." depth="-32.0" />
+        <config resource="..." depth="-32.0" />
     </service>
    @endcode
  *
  * @subsection Input Input
  *  - \b matrix [sight::data::Matrix4]: matrix to follow (usually SCamera Matrix).
  * @subsection Configuration Configuration:
- * - \b layer (mandatory, string): defines the mesh's layer.
  * - \b resource (optional, string): name of the resource to use for the marker.
  * - \b depth (optional, float): value of depth (z) where marker will be positioned, greater value to zoom-in , lower
  * to zoom-out.
@@ -62,30 +61,30 @@ public:
     SIGHT_DECLARE_SERVICE(SOrientationMarker, sight::viz::scene3d::IAdaptor);
 
     /// Constructor
-    MODULE_VIZ_SCENE3D_API SOrientationMarker() noexcept;
+    MODULE_VIZ_SCENE3D_API SOrientationMarker() noexcept = default;
 
     /// Destructor
-    MODULE_VIZ_SCENE3D_API ~SOrientationMarker() noexcept override;
+    MODULE_VIZ_SCENE3D_API ~SOrientationMarker() noexcept final = default;
 
 protected:
 
     /// Configures the service's parameters
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Initializes and starts child services
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /// Updates internal matrix from the input transform
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3D_API void updating() final;
 
     /// Unregisters child services
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
     /// Sets the visibility of the adaptor
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) final;
 
     /// Connects input matrix S_MODIFIED to UPDATE slot.
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 
 private:
 

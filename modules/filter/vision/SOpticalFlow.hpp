@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -79,7 +79,7 @@ public:
     /// Destructor
     MODULE_FILTER_VISION_CLASS_API ~SOpticalFlow() noexcept override;
 
-    /// Connects ::arData:FrameTL::s_OBJECT_PUSHED_SIG to s_UPDATE_SLOT
+    /// Connects ::arData:FrameTL::s_OBJECT_PUSHED_SIG to IService::slots::s_UPDATE
     MODULE_FILTER_VISION_CLASS_API service::IService::KeyConnectionsMap getAutoConnections() const override;
 
 protected:

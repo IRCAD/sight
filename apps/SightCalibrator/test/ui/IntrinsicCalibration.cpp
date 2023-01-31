@@ -21,7 +21,8 @@
 
 #include "IntrinsicCalibration.hpp"
 
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <utestData/Data.hpp>
 
@@ -33,7 +34,7 @@
 #include <QPushButton>
 #include <QToolButton>
 
-#include <ui/test/Tester.hpp>
+#include <ui/testCore/Tester.hpp>
 
 #include <array>
 
@@ -44,9 +45,10 @@ namespace sight::sightcalibrator::test::ui
 
 //------------------------------------------------------------------------------
 
-const char* IntrinsicCalibration::getProfilePath()
+std::filesystem::path IntrinsicCalibration::getProfilePath()
 {
-    return "share/sight/SightCalibrator/profile.xml";
+    const std::filesystem::path cwd = sight::core::runtime::getWorkingPath();
+    return cwd / "share/sight/SightCalibrator/profile.xml";
 }
 
 //------------------------------------------------------------------------------
@@ -56,10 +58,10 @@ void IntrinsicCalibration::test()
     const std::filesystem::path videoPath = utestData::Data::dir()
                                             / "sight/ui/SightCalibrator/chessboard_calibration_test.mp4";
 
-    sight::ui::test::Tester tester("IntrinsicCalibration", true);
+    sight::ui::testCore::Tester tester("IntrinsicCalibration", true);
     start(
         "IntrinsicCalibration",
-        [&videoPath](sight::ui::test::Tester& tester)
+        [&videoPath](sight::ui::testCore::Tester& tester)
         {
             // Access the calibration activity
             tester.take(
@@ -68,20 +70,20 @@ void IntrinsicCalibration::test()
             {
                 return tester.getMainWindow()->findChild<QPushButton*>("activityCreatorSrv/Calibration");
             });
-            tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
 
             // Configure the chessboard size (the size of the example chessboard is 10*8)
             tester.yields(
                 "chessboard size button",
                 [&tester](QObject*) -> QObject*
             {
-                return sight::ui::test::Tester::getWidgetFromAction(
+                return sight::ui::testCore::Tester::getWidgetFromAction(
                     tester.getMainWindow()->findChild<QAction*>(
                         "toolBarView/Chessboard size"
                     )
                 );
             });
-            tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
             tester.yields("chessboard size dialog", [](QObject*) -> QObject* {return qApp->activeModalWidget();});
             const QWidget* chessboardSizeWindow = tester.get<QWidget*>();
             tester.yields(
@@ -104,7 +106,7 @@ void IntrinsicCalibration::test()
             {
                 return chessboardSizeWindow->findChild<QPushButton*>("chessboardSizeAct/OK");
             });
-            tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
             tester.doubt(
                 "the chessboard size dialog is closed",
                 [chessboardSizeWindow](QObject*) -> bool
@@ -140,16 +142,16 @@ void IntrinsicCalibration::test()
                 "add capture button",
                 [&tester]() -> QObject*
             {
-                return sight::ui::test::Tester::getWidgetFromAction(
+                return sight::ui::testCore::Tester::getWidgetFromAction(
                     tester.getMainWindow()->findChild<QAction*>(
                         "intrinsicCameraView/Add"
                     )
                 );
             });
             auto* addCaptureButton = tester.get<QToolButton*>();
-            tester.interact(std::make_unique<sight::ui::test::MouseClick>());
-            tester.interact(std::make_unique<sight::ui::test::MouseClick>());
-            tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
+            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
+            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
             tester.take(
                 "nb captures label",
                 [&tester]() -> QObject*
@@ -193,8 +195,8 @@ void IntrinsicCalibration::test()
             {
                 obj->setText(QString::fromStdString(videoPath.string()));
             });
-            tester.interact(std::make_unique<sight::ui::test::KeyboardClick>(Qt::Key_Enter));
-            tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+            tester.interact(std::make_unique<sight::ui::testCore::KeyboardClick>(Qt::Key_Enter));
+            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
             tester.doubt(
                 "the file window is closed",
                 [fileWindow](
@@ -232,7 +234,7 @@ void IntrinsicCalibration::test()
                     [videoGrabberImplementationDialog](
                         QObject*) -> QObject* {return videoGrabberImplementationDialog;});
                 tester.yields("ok button", [](QObject* old) -> QObject* {return old->findChildren<QPushButton*>()[0];});
-                tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+                tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
                 tester.doubt(
                     "the choose video grabber implementation dialog is closed",
                     [videoGrabberImplementationDialog](QObject*) -> bool
@@ -250,11 +252,11 @@ void IntrinsicCalibration::test()
                 return obj->toolTip() == "Point are visible";
             });
             tester.take("add capture button", addCaptureButton);
-            tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
             for(int i = 0 ; i < 3 ; i++)
             {
                 QTest::qWait(1000);
-                tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+                tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
             }
 
             tester.doubt(
@@ -277,13 +279,13 @@ void IntrinsicCalibration::test()
                 "remove capture button",
                 [&tester]() -> QObject*
             {
-                return sight::ui::test::Tester::getWidgetFromAction(
+                return sight::ui::testCore::Tester::getWidgetFromAction(
                     tester.getMainWindow()->findChild<QAction*>(
                         "intrinsicCameraView/Remove"
                     )
                 );
             });
-            tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
             tester.doubt(
                 "nb captures label shows 3",
                 [nbCapturesLabel](QObject*) -> bool
@@ -303,13 +305,13 @@ void IntrinsicCalibration::test()
                 "calibrate button",
                 [&tester]() -> QObject*
             {
-                return sight::ui::test::Tester::getWidgetFromAction(
+                return sight::ui::testCore::Tester::getWidgetFromAction(
                     tester.getMainWindow()->findChild<QAction*>(
                         "intrinsicCameraView/Calibrate"
                     )
                 );
             });
-            tester.interact(std::make_unique<sight::ui::test::MouseClick>());
+            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
             tester.doubt(
                 "the label says the camera is calibrated",
                 [cameraIsCalibratedLabel](QObject*) -> bool

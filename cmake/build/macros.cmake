@@ -100,24 +100,28 @@ function(get_header_file_install_destination)
     endif()
 
     if("${ROOT}" STREQUAL "libs")
-        set(HEADER_FILE_DESTINATION_REL "${PROJECT_PATH}" PARENT_SCOPE)
+        set(HEADER_FILE_DESTINATION_REL "${PROJECT_PATH}")
     else()
         if("${ROOT}" STREQUAL "modules" OR "${ROOT}" STREQUAL "activities")
-            set(HEADER_FILE_DESTINATION_REL "${ROOT}/${PROJECT_PATH}" PARENT_SCOPE)
+            set(HEADER_FILE_DESTINATION_REL "${ROOT}/${PROJECT_PATH}")
         else()
-            set(HEADER_FILE_DESTINATION_REL "${PROJECT}" PARENT_SCOPE)
+            set(HEADER_FILE_DESTINATION_REL "${PROJECT}")
         endif()
     endif()
+    set(HEADER_FILE_DESTINATION_REL "${HEADER_FILE_DESTINATION_REL}" PARENT_SCOPE)
+    set(HEADER_FILE_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/include/${HEADER_FILE_DESTINATION_REL}" PARENT_SCOPE)
 endfunction()
 
 # Configure header template
-macro(configure_header_file SIGHT_TARGET FILENAME HEADER_FILE_DESTINATION_REL)
-    set(HEADER_FILE_DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/include/${HEADER_FILE_DESTINATION_REL}")
-    configure_file("${FWCMAKE_BUILD_FILES_DIR}/${FILENAME}.in" ${HEADER_FILE_DESTINATION}/${FILENAME} IMMEDIATE @ONLY)
+macro(configure_header_file SIGHT_TARGET FILENAME HEADER_FILE_DESTINATION HEADER_FILE_DESTINATION_REL)
 
-    install(FILES ${HEADER_FILE_DESTINATION}/${FILENAME}
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
-    )
+    configure_file("${FWCMAKE_BUILD_FILES_DIR}/${FILENAME}.in" ${HEADER_FILE_DESTINATION}/${FILENAME} IMMEDIATE @ONLY)
+    # On windows, we must replace the _API macros before, so we install it later with all other headers
+    if(UNIX)
+        install(FILES ${HEADER_FILE_DESTINATION}/${FILENAME}
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
+        )
+    endif()
 endmacro()
 
 # Initialize the project and set basic variables
@@ -307,7 +311,8 @@ macro(fw_exec SIGHT_TARGET)
                        "rem Check if we have elevated privileges\n"
                        "whoami /all | findstr S-1-16-12288 > nul\n"
                        "rem if we do not have those, restart the script as Admin\n"
-                       "if %errorlevel%==1 (powershell start -verb runas '%0' %* & exit /b)\n"
+                       "if %errorlevel%==1 if not \"%~1\"==\"/noadmin\" "
+                       "(powershell start -verb runas '%~f0' %* & exit /b)\n"
             )
         endif()
 
@@ -345,10 +350,7 @@ macro(sight_generic_test SIGHT_TARGET)
     cmake_parse_arguments(FWCPPUNITTEST "${options}" "${oneValueArgs}" "${multiValueArgs}" ${ARGN})
 
     if(SIGHT_ENABLE_PCH AND MSVC AND NOT ${SIGHT_TARGET}_DISABLE_PCH)
-        if(${${SIGHT_TARGET}_PCH_TARGET} STREQUAL ${SIGHT_TARGET})
-            add_precompiled_header_cpp(${SIGHT_TARGET})
-        endif()
-        set(${SIGHT_TARGET}_PCH_LIB $<TARGET_OBJECTS:${${SIGHT_TARGET}_PCH_TARGET}_PCH_OBJ>)
+        set(${SIGHT_TARGET}_PCH_LIB $<TARGET_OBJECTS:${${SIGHT_TARGET}_PCH_TARGET}>)
     endif()
 
     string(REGEX REPLACE "Test$" "" DIRNAME "${SIGHT_TARGET}")
@@ -419,6 +421,12 @@ macro(sight_generic_test SIGHT_TARGET)
             string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
         endif()
 
+        #fill the external modules
+        set(SIGHT_EXTRA_MODULES_OPT "")
+        foreach(MODULE ${SIGHT_EXTRA_MODULES})
+            list(APPEND SIGHT_EXTRA_MODULES_OPT "-B \"${MODULE}\"")
+        endforeach()
+
         # Build the shell script from template_test.sh.in
         configure_file(
             ${FWCMAKE_RESOURCE_PATH}/build/linux/template_test.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${SIGHT_TEST_SCRIPT}
@@ -428,10 +436,15 @@ macro(sight_generic_test SIGHT_TARGET)
         # Cleanup
         unset(FW_SIGHT_EXTERNAL_LIBRARIES_DIR)
     else()
-        # Build the bat script from template_exe.bat.in
+        # Build the bat script from template_test.bat.in
+        set(SIGHT_EXTRA_MODULES_OPT "")
+        foreach(MODULE ${SIGHT_EXTRA_MODULES})
+            list(APPEND SIGHT_EXTRA_MODULES_OPT "-B \"${MODULE}\"")
+        endforeach()
+
         configure_file(
-            ${FWCMAKE_RESOURCE_PATH}/build/windows/template_exe.bat.in ${CMAKE_CURRENT_BINARY_DIR}/${SIGHT_TEST_SCRIPT}
-            @ONLY
+            ${FWCMAKE_RESOURCE_PATH}/build/windows/template_test.bat.in
+            ${CMAKE_CURRENT_BINARY_DIR}/${SIGHT_TEST_SCRIPT} @ONLY
         )
     endif()
 
@@ -453,16 +466,9 @@ macro(sight_generic_test SIGHT_TARGET)
     set_target_properties(${SIGHT_TARGET} PROPERTIES FOLDER "test")
 
     if(SIGHT_ENABLE_PCH AND NOT ${SIGHT_TARGET}_DISABLE_PCH)
-        if(${${SIGHT_TARGET}_PCH_TARGET} STREQUAL ${SIGHT_TARGET})
-            add_precompiled_header(${SIGHT_TARGET} pch.hpp)
-            if(SIGHT_VERBOSE_PCH)
-                message(STATUS "Use custom precompiled header")
-            endif()
-        else()
-            use_precompiled_header(${SIGHT_TARGET} ${${SIGHT_TARGET}_PCH_TARGET})
-            if(SIGHT_VERBOSE_PCH)
-                message(STATUS "Use ${${SIGHT_TARGET}_PCH_TARGET} precompiled header")
-            endif()
+        target_precompile_headers(${SIGHT_TARGET} REUSE_FROM ${${SIGHT_TARGET}_PCH_TARGET})
+        if(SIGHT_VERBOSE_PCH)
+            message(STATUS "Use ${${SIGHT_TARGET}_PCH_TARGET} precompiled header")
         endif()
         if(UNIX)
             # CMAKE_POSITION_INDEPENDENT_CODE sets "-fPIE" but we also needs the "-fPIC" used in the PCH
@@ -474,7 +480,6 @@ endmacro()
 # Create a GUI test
 macro(sight_gui_test SIGHT_TARGET)
     sight_generic_test(${SIGHT_TARGET} REQUIRE_X ON)
-    target_link_libraries(${SIGHT_TARGET} PUBLIC guiTest)
 
     # Set test command
     if(UNIX)
@@ -537,10 +542,7 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
     endif()
 
     if(SIGHT_ENABLE_PCH AND MSVC AND NOT ${SIGHT_TARGET}_DISABLE_PCH)
-        if(${${TARGET_NAME}_PCH_TARGET} STREQUAL ${TARGET_NAME})
-            add_precompiled_header_cpp(${TARGET_NAME})
-        endif()
-        set(${TARGET_NAME}_PCH_LIB $<TARGET_OBJECTS:${${TARGET_NAME}_PCH_TARGET}_PCH_OBJ>)
+        set(${TARGET_NAME}_PCH_LIB $<TARGET_OBJECTS:${${TARGET_NAME}_PCH_TARGET}>)
     endif()
 
     if(${OBJECT_LIBRARY})
@@ -600,19 +602,49 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
 
     # create the config.hpp for the current library
     get_header_file_install_destination()
-    configure_header_file(${SIGHT_TARGET} "config.hpp" "${HEADER_FILE_DESTINATION_REL}")
+    configure_header_file(${SIGHT_TARGET} "config.hpp" "${HEADER_FILE_DESTINATION}" "${HEADER_FILE_DESTINATION_REL}")
 
     # export and install target
     if(NOT ${SIGHT_TARGET} MATCHES "^pch.*")
-        install(
-            DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
-            DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
-            FILES_MATCHING
-            PATTERN "*.h"
-            PATTERN "*.hpp"
-            PATTERN "*.hxx"
-            PATTERN "test/*" EXCLUDE
-        )
+        if(WIN32)
+            set(HEADERS_TO_INSTALL "${${SIGHT_TARGET}_HEADERS}")
+            foreach(HEADER ${HEADERS_TO_INSTALL})
+                cmake_path(RELATIVE_PATH HEADER)
+                list(APPEND GENERATED_HEADERS ${CMAKE_CURRENT_BINARY_DIR}/install/${HEADER})
+            endforeach()
+            list(APPEND HEADERS_TO_INSTALL "${HEADER_FILE_DESTINATION}/config.hpp")
+            list(APPEND GENERATED_HEADERS "${CMAKE_CURRENT_BINARY_DIR}/install/config.hpp")
+
+            # Did not find any simple way to pass a list as argument, semi-columns are always replaced by spaces...
+            # Thus, we hack this by using an another separator character
+            string(REPLACE ";" "," HEADERS_REMAKE "${HEADERS_TO_INSTALL}")
+
+            add_custom_command(
+                OUTPUT ${GENERATED_HEADERS}
+                COMMAND
+                    ${CMAKE_COMMAND} ARGS -DSOURCE_DIR="${CMAKE_CURRENT_SOURCE_DIR}"
+                    -DCONFIG_SOURCE_DIR="${HEADER_FILE_DESTINATION}" -DTARGET_DIR="${CMAKE_CURRENT_BINARY_DIR}/install"
+                    -DHEADERS="${HEADERS_REMAKE}" -P "${FWCMAKE_RESOURCE_PATH}/install/windows/generate_headers.cmake"
+                DEPENDS ${HEADERS_TO_INSTALL}
+                COMMENT "Generate headers for ${SIGHT_TARGET}"
+            )
+            add_custom_target("${SIGHT_TARGET}_headers" ALL DEPENDS ${GENERATED_HEADERS} COMMENT "Copy headers")
+
+            install(DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/install/
+                    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
+            )
+        else()
+            install(
+                DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/
+                DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${FW_INSTALL_PATH_SUFFIX}/${HEADER_FILE_DESTINATION_REL}
+                FILES_MATCHING
+                PATTERN "*.h"
+                PATTERN "*.hpp"
+                PATTERN "*.hxx"
+                PATTERN "test/*" EXCLUDE
+            )
+        endif()
+
         set(TARGETS_TO_EXPORT ${SIGHT_TARGET})
 
         if(${OBJECT_LIBRARY})
@@ -670,16 +702,9 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
     endif()
 
     if(SIGHT_ENABLE_PCH AND NOT ${SIGHT_TARGET}_DISABLE_PCH)
-        if(${${TARGET_NAME}_PCH_TARGET} STREQUAL ${TARGET_NAME})
-            add_precompiled_header(${TARGET_NAME} pch.hpp)
-            if(SIGHT_VERBOSE_PCH)
-                message(STATUS "Use custom precompiled header")
-            endif()
-        else()
-            use_precompiled_header(${TARGET_NAME} ${${TARGET_NAME}_PCH_TARGET})
-            if(SIGHT_VERBOSE_PCH)
-                message(STATUS "Use ${${SIGHT_TARGET}_PCH_TARGET} precompiled header")
-            endif()
+        target_precompile_headers(${TARGET_NAME} REUSE_FROM ${${TARGET_NAME}_PCH_TARGET})
+        if(SIGHT_VERBOSE_PCH)
+            message(STATUS "Use ${${SIGHT_TARGET}_PCH_TARGET} precompiled header")
         endif()
     endif()
 
@@ -689,10 +714,7 @@ endmacro()
 macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
 
     if(SIGHT_ENABLE_PCH AND MSVC AND NOT ${SIGHT_TARGET}_DISABLE_PCH)
-        if(${${SIGHT_TARGET}_PCH_TARGET} STREQUAL ${SIGHT_TARGET})
-            add_precompiled_header_cpp(${SIGHT_TARGET})
-        endif()
-        set(${SIGHT_TARGET}_PCH_LIB $<TARGET_OBJECTS:${${SIGHT_TARGET}_PCH_TARGET}_PCH_OBJ>)
+        set(${SIGHT_TARGET}_PCH_LIB $<TARGET_OBJECTS:${${SIGHT_TARGET}_PCH_TARGET}>)
     endif()
 
     set(MODULE_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_LIB_PREFIX}/${SIGHT_TARGET}")
@@ -724,7 +746,9 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
 
         # create the config.hpp for the current module
         get_header_file_install_destination()
-        configure_header_file(${SIGHT_TARGET} "config.hpp" "${HEADER_FILE_DESTINATION_REL}")
+        configure_header_file(
+            ${SIGHT_TARGET} "config.hpp" "${HEADER_FILE_DESTINATION}" "${HEADER_FILE_DESTINATION_REL}"
+        )
 
         # Allows include of type <ui/config.hpp>
         target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>)
@@ -736,16 +760,9 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
         target_include_directories(${SIGHT_TARGET} PUBLIC $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}>)
 
         if(SIGHT_ENABLE_PCH AND NOT ${SIGHT_TARGET}_DISABLE_PCH)
-            if(${${SIGHT_TARGET}_PCH_TARGET} STREQUAL ${SIGHT_TARGET})
-                add_precompiled_header(${SIGHT_TARGET} pch.hpp)
-                if(SIGHT_VERBOSE_PCH)
-                    message(STATUS "Use custom precompiled header")
-                endif()
-            else()
-                use_precompiled_header(${SIGHT_TARGET} ${${SIGHT_TARGET}_PCH_TARGET})
-                if(SIGHT_VERBOSE_PCH)
-                    message(STATUS "Use ${${SIGHT_TARGET}_PCH_TARGET} precompiled header")
-                endif()
+            target_precompile_headers(${SIGHT_TARGET} REUSE_FROM ${${SIGHT_TARGET}_PCH_TARGET})
+            if(SIGHT_VERBOSE_PCH)
+                message(STATUS "Use ${${SIGHT_TARGET}_PCH_TARGET} precompiled header")
             endif()
         endif()
     else()
@@ -782,6 +799,9 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
                 string(REPLACE ";" ":" FW_SIGHT_EXTERNAL_LIBRARIES_DIR "${FW_SIGHT_EXTERNAL_LIBRARIES_DIR}")
             endif()
 
+            foreach(MODULE ${SIGHT_EXTRA_MODULES})
+                list(APPEND SIGHT_EXTRA_MODULES_OPT "-B \"${MODULE}\"")
+            endforeach()
             configure_file(
                 ${FWCMAKE_RESOURCE_PATH}/build/linux/template.sh.in ${CMAKE_CURRENT_BINARY_DIR}/${APP_NAME} @ONLY
             )
@@ -807,10 +827,10 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
             set(PROFILE_PATH "${SIGHT_TARGET}/profile.xml")
             if(FW_BUILD_EXTERNAL)
                 set(LAUNCHER_PATH "${Sight_BINARY_DIR}\\${LAUNCHER}")
+                cmake_path(NORMAL_PATH LAUNCHER_PATH)
             else()
                 set(LAUNCHER_PATH "%BINDIR%\\${LAUNCHER}")
             endif()
-
             file(TO_NATIVE_PATH "${PROFILE_PATH}" PROFILE_PATH)
 
             if(${TARGET_REQUIRE_ADMIN})
@@ -820,14 +840,30 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
                            "rem Check if we have elevated privileges\n"
                            "whoami /all | findstr S-1-16-12288 > nul\n"
                            "rem if we do not have those, restart the script as Admin\n"
-                           "if %errorlevel%==1 (powershell start -verb runas '%0' %* & exit /b)\n"
+                           "if %errorlevel%==1 if not \"%~1\"==\"/noadmin\" "
+                           "(powershell start -verb runas '%~f0' %* & exit /b)\n"
                 )
             endif()
 
+            foreach(MODULE ${SIGHT_EXTRA_MODULES})
+                list(APPEND SIGHT_EXTRA_MODULES_OPT "-B \"${MODULE}\"")
+            endforeach()
             configure_file(
-                ${FWCMAKE_RESOURCE_PATH}/install/windows/template.bat.in ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat @ONLY
+                ${FWCMAKE_RESOURCE_PATH}/build/windows/template.bat.in ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat @ONLY
             )
-            install(PROGRAMS ${CMAKE_BINARY_DIR}/bin/${APP_NAME}.bat DESTINATION bin)
+
+            # For the install, we use relative paths to the module directories
+            set(SIGHT_EXTRA_MODULES_OPT "")
+            foreach(MODULE ${SIGHT_EXTRA_MODULES})
+                cmake_path(GET MODULE FILENAME MODULE_NAME)
+                list(APPEND SIGHT_EXTRA_MODULES_OPT "-B \"../share/${MODULE_NAME}\"")
+            endforeach()
+
+            configure_file(
+                ${FWCMAKE_RESOURCE_PATH}/install/windows/template.bat.in
+                ${CMAKE_CURRENT_BINARY_DIR}/install/${APP_NAME}.bat @ONLY
+            )
+            install(PROGRAMS ${CMAKE_CURRENT_BINARY_DIR}/install/${APP_NAME}.bat DESTINATION bin)
 
             unset(ADMIN_REQUEST)
         endif()
@@ -1164,7 +1200,8 @@ function(sight_create_package_targets SIGHT_COMPONENTS SIGHT_IMPORTED_COMPONENTS
 
             get_target_property(RC_DIR ${DEP} SIGHT_MODULE_RC_DIR)
             if(RC_DIR)
-                list(APPEND IMPORTED_RC_DIRS ${RC_DIR})
+                string(REGEX REPLACE "(.*)::.*" "\\1" FOLDER ${DEP})
+                list(APPEND IMPORTED_RC_DIRS ${FOLDER},${RC_DIR})
             endif()
         endforeach()
 

@@ -23,18 +23,16 @@
 #include "Plugin.hpp"
 
 #include <core/base.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 
 #include <ui/base/IGuiContainer.hpp>
 #include <ui/qml/App.hpp>
-#include <ui/qml/IQmlAppManager.hpp>
 #include <ui/qml/QmlEngine.hpp>
 #include <ui/qt/WorkerQt.hpp>
 
-#include <modules/ui/qml/activity/ActivityLauncherManager.hpp>
 #include <modules/ui/qml/activity/SSequencer.hpp>
 #include <modules/ui/qml/activity/SView.hpp>
 #include <modules/ui/qml/image/SSliceIndexPositionEditor.hpp>
@@ -66,8 +64,6 @@ Plugin::~Plugin() noexcept =
 
 void Plugin::start()
 {
-    qmlRegisterType<sight::ui::qml::IQmlAppManager>("sight::ui::qml", 1, 0, "IQmlAppManager");
-
     auto profile = core::runtime::getCurrentProfile();
     SIGHT_ASSERT("Profile is not initialized", profile);
     int& argc   = profile->getRawArgCount();
@@ -95,7 +91,6 @@ void Plugin::start()
     qmlRegisterType<reconstruction::SRepresentationEditor>("reconstruction", 1, 0, "SRepresentationEditor");
     qmlRegisterType<activity::SView>("activitiesQml", 1, 0, "SView");
     qmlRegisterType<activity::SSequencer>("activitiesQml", 1, 0, "SSequencer");
-    qmlRegisterType<activity::ActivityLauncherManager>("activitiesQml", 1, 0, "ActivityLauncherManager");
 
     QQuickStyle::setStyle("Material");
 

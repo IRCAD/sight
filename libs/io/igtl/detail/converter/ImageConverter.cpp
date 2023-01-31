@@ -130,7 +130,6 @@ data::Object::sptr ImageConverter::fromIgtlMessage(const ::igtl::MessageBase::Po
 
     if(sight::data::helper::MedicalImage::checkImageValidity(destImg))
     {
-        sight::data::helper::MedicalImage::updateDefaultTransferFunction(*destImg);
         sight::data::helper::MedicalImage::checkImageSliceIndex(destImg);
     }
 

@@ -434,8 +434,8 @@ void Module::startPlugin()
     }
     else
     {
-        Runtime* runtime(Runtime::getDefault());
-        SPTR(IExecutable) executable(runtime->createExecutableInstance(pluginType));
+        auto& runtime = Runtime::get();
+        SPTR(IExecutable) executable(runtime.createExecutableInstance(pluginType));
 
         plugin = std::dynamic_pointer_cast<IPlugin>(executable);
     }

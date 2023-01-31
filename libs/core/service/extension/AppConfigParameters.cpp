@@ -22,9 +22,8 @@
 
 #include "service/extension/AppConfigParameters.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
 #include <core/runtime/helper.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/runtime.hpp>
 
 #include <data/Composite.hpp>
 #include <data/String.hpp>
@@ -45,29 +44,26 @@ AppConfigParameters::sptr AppConfigParameters::getDefault()
 
 //-----------------------------------------------------------------------------
 
-AppConfigParameters::~AppConfigParameters()
-= default;
-
-//-----------------------------------------------------------------------------
-
 void AppConfigParameters::parseBundleInformation()
 {
     auto extensions = core::runtime::getAllExtensionsForPoint("sight::service::extension::AppConfigParameters");
+
     for(const std::shared_ptr<core::runtime::Extension>& ext : extensions)
     {
-        // Get id
-        const std::string extensionId = core::runtime::filterID(ext->findConfigurationElement("id")->getValue());
+        const auto& config = ext->getConfig();
+
+        const auto extensionId = config.get<std::string>("id");
 
         FieldAdaptorType parameters;
 
-        // Get parmeters
-        core::runtime::ConfigurationElement::csptr parametersConfig = ext->findConfigurationElement("parameters");
-        core::runtime::ConfigurationElement::Container elements     = parametersConfig->getElements();
-        for(const core::runtime::ConfigurationElement::sptr& paramConfig : elements)
+        if(const auto parametersCfg = config.get_child_optional("parameters"); parametersCfg.has_value())
         {
-            std::string name = paramConfig->getExistingAttributeValue("name");
-            std::string val  = paramConfig->getExistingAttributeValue("value");
-            parameters[name] = val;
+            for(const auto& param : boost::make_iterator_range(parametersCfg->equal_range("param")))
+            {
+                const auto name  = param.second.get<std::string>("<xmlattr>.name");
+                const auto value = param.second.get<std::string>("<xmlattr>.value");
+                parameters[name] = value;
+            }
         }
 
         core::mt::WriteLock lock(m_registryMutex);

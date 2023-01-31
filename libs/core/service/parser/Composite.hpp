@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,11 +24,10 @@
 
 #include "service/config.hpp"
 
-#include <core/runtime/ConfigurationElement.hpp>
 #include <core/tools/Failed.hpp>
 #include <core/tools/Object.hpp>
 
-#include <service/AppConfigManager.hpp>
+#include <service/IAppConfigManager.hpp>
 #include <service/IXMLParser.hpp>
 
 namespace sight::service::parser
@@ -77,9 +76,6 @@ protected:
     SERVICE_API void updating() override;
 
 private:
-
-    /// To verify some conditions in xml file
-    static bool refObjectValidator(core::runtime::ConfigurationElement::sptr _cfgElement);
 
     std::vector<service::IAppConfigManager::sptr> m_ctmContainer;
 };

@@ -14,6 +14,7 @@ add_dependencies(
     module_ui_base
     module_ui_viz
     module_ui_flaticons
+    module_io_bitmap
     module_io_itk
     module_io_vtk
     module_io_dicom

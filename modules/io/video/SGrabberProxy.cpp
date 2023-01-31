@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,7 +31,7 @@
 
 #include <service/extension/Config.hpp>
 #include <service/macros.hpp>
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/dialog/SelectorDialog.hpp>
@@ -44,45 +44,25 @@ namespace sight::module::io::video
 
 //-----------------------------------------------------------------------------
 
-const core::com::Slots::SlotKeyType SGrabberProxy::s_RECONFIGURE_SLOT = "reconfigure";
-
-const core::com::Slots::SlotKeyType s_MODIFY_POSITION = "modifyPosition";
-const core::com::Slots::SlotKeyType s_MODIFY_DURATION = "modifyDuration";
-
-const core::com::Slots::SlotKeyType s_FWD_START_CAMERA_SLOT = "forwardStartCamera";
-const core::com::Slots::SlotKeyType s_FWD_STOP_CAMERA_SLOT  = "forwardStopCamera";
-
-const core::com::Slots::SlotKeyType s_FWD_NOTIFY_SLOT = "forwardNotify";
-
-const core::com::Slots::SlotKeyType s_FWD_SET_BOOL_PARAMETER_SLOT        = "forwardSetBoolParameter";
-const core::com::Slots::SlotKeyType s_FWD_SET_DOUBLE_PARAMETER_SLOT      = "forwardSetDoubleParameter";
-const core::com::Slots::SlotKeyType s_FWD_SET_INT_PARAMETER_SLOT         = "forwardSetIntParameter";
-const core::com::Slots::SlotKeyType s_FWD_SET_ENUM_PARAMETER_SLOT        = "forwardSetEnumParameter";
-const core::com::Slots::SlotKeyType s_FWD_SET_ENUM_VALUES_PARAMETER_SLOT = "forwardSetEnumValuesParameter";
-
-const core::com::Slots::SlotKeyType s_FWD_PRESENT_FRAME_SLOT = "forwardPresentFrame";
-
 using sight::io::base::service::IGrabber;
 
 //-----------------------------------------------------------------------------
 
 SGrabberProxy::SGrabberProxy() noexcept
 {
-    newSlot(s_RECONFIGURE_SLOT, &SGrabberProxy::reconfigure, this);
+    newSlot(slots::RECONFIGURE, &SGrabberProxy::reconfigure, this);
+    newSlot(slots::START_TARGET_CAMERA, &SGrabberProxy::startTargetCamera, this);
 
-    newSlot(s_MODIFY_POSITION, &SGrabberProxy::modifyPosition, this);
-    newSlot(s_MODIFY_DURATION, &SGrabberProxy::modifyDuration, this);
-    newSlot(s_FWD_START_CAMERA_SLOT, &SGrabberProxy::fwdStartCamera, this);
-    newSlot(s_FWD_STOP_CAMERA_SLOT, &SGrabberProxy::fwdStopCamera, this);
-    newSlot(s_FWD_PRESENT_FRAME_SLOT, &SGrabberProxy::fwdPresentFrame, this);
+    newSlot(slots::MODIFY_POSITION, &SGrabberProxy::modifyPosition, this);
+    newSlot(slots::MODIFY_DURATION, &SGrabberProxy::modifyDuration, this);
+    newSlot(slots::FWD_START_CAMERA, &SGrabberProxy::fwdStartCamera, this);
+    newSlot(slots::FWD_STOP_CAMERA, &SGrabberProxy::fwdStopCamera, this);
+    newSlot(slots::FWD_PRESENT_FRAME, &SGrabberProxy::fwdPresentFrame, this);
 
-    newSlot(s_FWD_NOTIFY_SLOT, &SGrabberProxy::fwdNotify, this);
+    newSlot(slots::FWD_NOTIFY, &SGrabberProxy::fwdNotify, this);
 
-    newSlot(s_FWD_SET_BOOL_PARAMETER_SLOT, &SGrabberProxy::fwdSetBoolParameter, this);
-    newSlot(s_FWD_SET_DOUBLE_PARAMETER_SLOT, &SGrabberProxy::fwdSetDoubleParameter, this);
-    newSlot(s_FWD_SET_INT_PARAMETER_SLOT, &SGrabberProxy::fwdSetIntParameter, this);
-    newSlot(s_FWD_SET_ENUM_PARAMETER_SLOT, &SGrabberProxy::fwdSetEnumParameter, this);
-    newSlot(s_FWD_SET_ENUM_VALUES_PARAMETER_SLOT, &SGrabberProxy::fwdSetEnumValuesParameter, this);
+    newSlot(slots::FWD_SET_PARAMETER, &SGrabberProxy::fwdSetParameter, this);
+    newSlot(slots::FWD_CREATE_JOB, &SGrabberProxy::fwdCreateJob, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -117,7 +97,7 @@ void SGrabberProxy::stopping()
 
 void SGrabberProxy::configuring()
 {
-    const auto config = this->getConfigTree();
+    const auto config = this->getConfiguration();
 
     auto itSubConfig = config.find("config");
 
@@ -183,6 +163,13 @@ void SGrabberProxy::updating()
 
 void SGrabberProxy::startCamera()
 {
+    this->startTargetCamera("");
+}
+
+//-----------------------------------------------------------------------------
+
+void SGrabberProxy::startTargetCamera(std::string impl)
+{
     if(m_services.empty())
     {
         if(m_grabberImpl.empty())
@@ -202,6 +189,18 @@ void SGrabberProxy::startCamera()
             );
 
             std::move(rgbGrabbersImpl.begin(), rgbGrabbersImpl.end(), std::back_inserter(grabbersImpl));
+
+            // If we asked for a specific implementation
+            // Filter the other out
+            if(!impl.empty())
+            {
+                std::erase_if(
+                    grabbersImpl,
+                    [&](std::string g)
+                    {
+                        return g != impl;
+                    });
+            }
 
             data::Camera::SourceType sourceType = data::Camera::UNKNOWN;
 
@@ -237,7 +236,7 @@ void SGrabberProxy::startCamera()
                 {
                     SIGHT_DEBUG("Evaluating if implementation '" + srvImpl + "' is suitable...");
                     auto objectsType  = srvFactory->getServiceObjects(srvImpl);
-                    const auto config = this->getConfigTree();
+                    const auto config = this->getConfiguration();
 
                     // 1. Verify that we have the same number of timelines
                     objectsType.erase(
@@ -259,7 +258,7 @@ void SGrabberProxy::startCamera()
 
                         const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
                         SIGHT_DEBUG("Evaluating if key '" + key + "' is suitable...");
-                        const auto obj = this->getInOut<data::Object>(key).lock();
+                        const auto obj = this->getInOut(key).lock();
                         SIGHT_ASSERT("Object key '" + key + "' not found", obj);
                         if(obj->getClassname() == "data::FrameTL")
                         {
@@ -461,28 +460,32 @@ void SGrabberProxy::startCamera()
                 }
 
                 std::size_t inputTLCount = 0;
-                const auto proxyConfig   = this->getConfigTree();
+                const auto proxyConfig   = this->getConfiguration();
                 auto inoutsCfg           = proxyConfig.equal_range("inout");
                 for(auto itCfg = inoutsCfg.first ; itCfg != inoutsCfg.second ; ++itCfg)
                 {
                     const auto key = itCfg->second.get<std::string>("<xmlattr>.key");
                     SIGHT_ASSERT("Missing 'key' tag.", !key.empty());
 
-                    auto frameTL = this->getInOut<data::FrameTL>(key).lock();
-                    if(frameTL)
+                    auto inout = this->getInOut(key).lock();
+                    if(inout)
                     {
-                        if(m_services.size() > 1)
+                        if(key == IGrabber::s_FRAMETL_INOUT)
                         {
-                            if(inputTLCount == srvCount)
+                            auto frameTL = data::FrameTL::dynamicCast(inout.get_shared());
+                            if(m_services.size() > 1)
                             {
-                                // We are emulating a grabber with several ones, reuse the first TL slot
-                                srv->setInOut(frameTL.get_shared(), s_FRAMETL_INOUT);
-                                break;
+                                if(inputTLCount == srvCount)
+                                {
+                                    // We are emulating a grabber with several ones, reuse the first TL slot
+                                    srv->setInOut(frameTL, IGrabber::s_FRAMETL_INOUT);
+                                    break;
+                                }
                             }
-                        }
-                        else
-                        {
-                            srv->setInOut(frameTL.get_shared(), key);
+                            else
+                            {
+                                srv->setInOut(frameTL, IGrabber::s_FRAMETL_INOUT);
+                            }
                         }
                     }
 
@@ -492,48 +495,34 @@ void SGrabberProxy::startCamera()
                 if(!m_grabberConfig.empty())
                 {
                     const auto& srvConfigRegistry = service::extension::Config::getDefault();
-
-                    core::runtime::ConfigurationElement::csptr srvCfg =
-                        srvConfigRegistry->getServiceConfig(m_grabberConfig, m_grabberImpl);
-                    srv->setConfiguration(core::runtime::ConfigurationElement::constCast(srvCfg));
+                    const auto srvCfg             = srvConfigRegistry->getServiceConfig(m_grabberConfig, m_grabberImpl);
+                    srv->setConfiguration(srvCfg);
                     srv->configure();
                 }
 
-                srv->setWorker(m_associatedWorker);
+                srv->setWorker(this->worker());
                 srv->start();
 
-                m_connections.connect(srv, IGrabber::s_POSITION_MODIFIED_SIG, this->getSptr(), s_MODIFY_POSITION);
-                m_connections.connect(srv, IGrabber::s_DURATION_MODIFIED_SIG, this->getSptr(), s_MODIFY_DURATION);
-                m_connections.connect(srv, IGrabber::s_CAMERA_STARTED_SIG, this->getSptr(), s_FWD_START_CAMERA_SLOT);
-                m_connections.connect(srv, IGrabber::s_CAMERA_STOPPED_SIG, this->getSptr(), s_FWD_STOP_CAMERA_SLOT);
-                m_connections.connect(srv, IGrabber::s_FRAME_PRESENTED_SIG, this->getSptr(), s_FWD_PRESENT_FRAME_SLOT);
+                m_connections.connect(srv, IGrabber::s_POSITION_MODIFIED_SIG, this->getSptr(), slots::MODIFY_POSITION);
+                m_connections.connect(srv, IGrabber::s_DURATION_MODIFIED_SIG, this->getSptr(), slots::MODIFY_DURATION);
+                m_connections.connect(srv, IGrabber::s_CAMERA_STARTED_SIG, this->getSptr(), slots::FWD_START_CAMERA);
+                m_connections.connect(srv, IGrabber::s_CAMERA_STOPPED_SIG, this->getSptr(), slots::FWD_STOP_CAMERA);
+                m_connections.connect(srv, IGrabber::s_FRAME_PRESENTED_SIG, this->getSptr(), slots::FWD_PRESENT_FRAME);
 
-                m_connections.connect(srv, IService::s_NOTIFIED_SIG, this->getSptr(), s_FWD_NOTIFY_SLOT);
+                m_connections.connect(srv, IService::signals::s_NOTIFIED, this->getSptr(), slots::FWD_NOTIFY);
 
                 m_connections.connect(
                     srv,
-                    IGrabber::s_BOOL_CHANGED_SIG,
+                    IGrabber::s_PARAMETER_CHANGED_SIG,
                     this->getSptr(),
-                    s_FWD_SET_BOOL_PARAMETER_SLOT
+                    slots::FWD_SET_PARAMETER
                 );
+
                 m_connections.connect(
                     srv,
-                    IGrabber::s_DOUBLE_CHANGED_SIG,
+                    IGrabber::s_JOB_CREATED_SIG,
                     this->getSptr(),
-                    s_FWD_SET_DOUBLE_PARAMETER_SLOT
-                );
-                m_connections.connect(srv, IGrabber::s_INT_CHANGED_SIG, this->getSptr(), s_FWD_SET_INT_PARAMETER_SLOT);
-                m_connections.connect(
-                    srv,
-                    IGrabber::s_ENUM_CHANGED_SIG,
-                    this->getSptr(),
-                    s_FWD_SET_ENUM_PARAMETER_SLOT
-                );
-                m_connections.connect(
-                    srv,
-                    IGrabber::s_ENUM_VALUES_CHANGED_SIG,
-                    this->getSptr(),
-                    s_FWD_SET_ENUM_VALUES_PARAMETER_SLOT
+                    slots::FWD_CREATE_JOB
                 );
 
                 ++srvCount;
@@ -633,72 +622,20 @@ void SGrabberProxy::setStep(int step, std::string key)
     {
         if(srv != nullptr)
         {
-            srv->setStep(step, key);
+            srv->setParameter(step, key);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SGrabberProxy::setBoolParameter(bool value, std::string key)
+void SGrabberProxy::setParameter(ui::base::parameter_t value, std::string key)
 {
     for(auto& srv : m_services)
     {
         if(srv != nullptr)
         {
-            srv->setBoolParameter(value, key);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SGrabberProxy::setDoubleParameter(double value, std::string key)
-{
-    for(auto& srv : m_services)
-    {
-        if(srv != nullptr)
-        {
-            srv->setDoubleParameter(value, key);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SGrabberProxy::setIntParameter(int value, std::string key)
-{
-    for(auto& srv : m_services)
-    {
-        if(srv != nullptr)
-        {
-            srv->setIntParameter(value, key);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SGrabberProxy::setEnumParameter(std::string value, std::string key)
-{
-    for(auto& srv : m_services)
-    {
-        if(srv != nullptr)
-        {
-            srv->setEnumParameter(value, key);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SGrabberProxy::setEnumValuesParameter(std::string value, std::string key)
-{
-    for(auto& srv : m_services)
-    {
-        if(srv != nullptr)
-        {
-            srv->setEnumValuesParameter(value, key);
+            srv->setParameter(value, key);
         }
     }
 }
@@ -712,6 +649,45 @@ void SGrabberProxy::requestSettings()
         if(srv != nullptr)
         {
             srv->requestSettings();
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::optimize()
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->optimize();
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::addROICenter(sight::data::Point::sptr p)
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->addROICenter(p);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::removeROICenter(sight::data::Point::sptr p)
+{
+    for(auto& srv : m_services)
+    {
+        if(srv != nullptr)
+        {
+            srv->removeROICenter(p);
         }
     }
 }
@@ -781,48 +757,26 @@ void SGrabberProxy::fwdPresentFrame()
 
 void SGrabberProxy::fwdNotify(IService::NotificationType type, const std::string message)
 {
-    auto sig = this->signal<IService::notification_signal_type>(IService::s_NOTIFIED_SIG);
+    auto sig = this->signal<IService::signals::notification_t>(IService::signals::s_NOTIFIED);
     sig->asyncEmit(type, message);
 }
 
-//-----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void SGrabberProxy::fwdSetBoolParameter(bool value, std::string key)
+void SGrabberProxy::fwdSetParameter(ui::base::parameter_t value, std::string key)
 {
-    auto sig = this->signal<IGrabber::BoolChangedSignalType>(IGrabber::s_BOOL_CHANGED_SIG);
+    auto sig = this->signal<IGrabber::ParameterChangedSignalType>(IGrabber::s_PARAMETER_CHANGED_SIG);
     sig->asyncEmit(value, key);
 }
 
 //------------------------------------------------------------------------------
 
-void SGrabberProxy::fwdSetDoubleParameter(double value, std::string key)
+void SGrabberProxy::fwdCreateJob(sight::core::jobs::IJob::sptr job)
 {
-    auto sig = this->signal<IGrabber::DoubleChangedSignalType>(IGrabber::s_DOUBLE_CHANGED_SIG);
-    sig->asyncEmit(value, key);
+    auto sig = this->signal<IGrabber::JobCreatedSignalType>(IGrabber::s_JOB_CREATED_SIG);
+    sig->asyncEmit(job);
 }
 
 //------------------------------------------------------------------------------
-
-void SGrabberProxy::fwdSetIntParameter(int value, std::string key)
-{
-    auto sig = this->signal<IGrabber::IntChangedSignalType>(IGrabber::s_INT_CHANGED_SIG);
-    sig->asyncEmit(value, key);
-}
-
-//------------------------------------------------------------------------------
-
-void SGrabberProxy::fwdSetEnumParameter(std::string value, std::string key)
-{
-    auto sig = this->signal<IGrabber::EnumChangedSignalType>(IGrabber::s_ENUM_CHANGED_SIG);
-    sig->asyncEmit(value, key);
-}
-
-//------------------------------------------------------------------------------
-
-void SGrabberProxy::fwdSetEnumValuesParameter(std::string value, std::string key)
-{
-    auto sig = this->signal<IGrabber::EnumValuesChangedSignalType>(IGrabber::s_ENUM_VALUES_CHANGED_SIG);
-    sig->asyncEmit(value, key);
-}
 
 } // namespace sight::module::io::video

@@ -41,6 +41,9 @@ private:
     CPPUNIT_TEST(constArrayTest);
     CPPUNIT_TEST(emptyIteratorTest);
     CPPUNIT_TEST(equalityTest);
+    CPPUNIT_TEST(swapTest);
+    CPPUNIT_TEST(resizeNonOwnerTest);
+    CPPUNIT_TEST(setBufferObjectNullThenResizeTest);
     CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -58,6 +61,10 @@ public:
     static void constArrayTest();
     static void emptyIteratorTest();
     static void equalityTest();
+    static void swapTest();
+    static void resizeNonOwnerTest();
+    static void setBufferObjectNullThenResizeTest();
+    static void atTest();
 };
 
 } // namespace sight::data::ut

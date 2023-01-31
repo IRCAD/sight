@@ -57,7 +57,7 @@ SQueryEditor::~SQueryEditor() noexcept =
 
 void SQueryEditor::configuring()
 {
-    service::IService::ConfigType configuration = this->getConfigTree();
+    service::IService::ConfigType configuration = this->getConfiguration();
     //Parse server port and hostname
     if(configuration.count("server") != 0U)
     {

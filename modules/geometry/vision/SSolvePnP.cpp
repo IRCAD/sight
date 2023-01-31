@@ -126,7 +126,7 @@ void SSolvePnP::computeRegistration(core::HiResClock::HiResClockType /*timestamp
 
 void SSolvePnP::configuring()
 {
-    const ConfigType config = this->getConfigTree().get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration().get_child("config.<xmlattr>");
 
     m_reverseMatrix = config.get<bool>("inverse", m_reverseMatrix);
     m_shiftPoints   = config.get<bool>("shift", m_shiftPoints);

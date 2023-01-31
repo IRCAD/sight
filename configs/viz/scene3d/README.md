@@ -42,7 +42,9 @@ Last, the `OgreOrganManager` configuration can be included with the following co
     <appConfig id="OgreOrganManager" />
     <parameter replace="WID_PARENT" by="parentView" />
     <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
-    <inout key="organManagerModelSeries" uid="modelSeries" />
+    <inout group="data">
+        <key name="organManagerModelSeries" uid="modelSeries" />
+    </inout>
 </service>
 ```
 

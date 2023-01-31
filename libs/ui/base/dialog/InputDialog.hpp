@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,7 +56,7 @@ public:
      * @param text the input text in the input field
      * @return Returns text in the input field
      */
-    UI_BASE_API static std::string showInputDialog(
+    UI_BASE_API static std::pair<std::string, bool> showInputDialog(
         const std::string& title,
         const std::string& message,
         const std::string& text = "",
@@ -106,7 +106,7 @@ public:
     UI_BASE_API void setInput(const std::string& text) override;
 
     /// Get the input text in the input field
-    UI_BASE_API std::string getInput() override;
+    UI_BASE_API std::pair<std::string, bool> getInput() override;
 
 protected:
 

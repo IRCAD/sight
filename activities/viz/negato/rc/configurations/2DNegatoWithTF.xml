@@ -6,7 +6,7 @@
         <param name="landmarks" />
         <param name="patient_name" default="" />
         <param name="orientation" default="axial" /> <!-- axial, frontal, sagittal -->
-        <param name="CrossTypeChannel" default="crossTypeChannel"/>
+        <param name="CrossTypeChannel" default="crossTypeChannel" />
         <param name="transferFunctionDeferred" />
         <param name="PickingChannel" default="pickingChannel" />
     </parameters>
@@ -60,55 +60,54 @@
         </service>
 
         <!-- Save the snapshot image -->
-        <service uid="snapshotAct" type="sight::module::ui::base::SAction"/>
+        <service uid="snapshotAct" type="sight::module::ui::base::SAction" />
 
         <!-- Generic Scene Negato -->
         <!-- *************************** Begin generic scene *************************** -->
 
-        <service uid="negato" type="sight::viz::scene3d::SRender" >
+        <service uid="negato" type="sight::viz::scene3d::SRender">
             <scene>
                 <background topColor="#000000" bottomColor="#000000" />
 
-                <layer id="defaultLayer" order="1" />
-
-                <adaptor uid="snapshotAdp" />
-                <adaptor uid="negatoCameraAdp" />
-                <adaptor uid="pickerInteractorAdp" />
-                <adaptor uid="negatoAdp" />
-                <adaptor uid="multiDistancesAdp" />
-                <adaptor uid="landmarksAdp" />
+                <layer id="defaultLayer" order="1">
+                    <adaptor uid="snapshotAdp" />
+                    <adaptor uid="negatoCameraAdp" />
+                    <adaptor uid="pickerInteractorAdp" />
+                    <adaptor uid="negatoAdp" />
+                    <adaptor uid="multiDistancesAdp" />
+                    <adaptor uid="landmarksAdp" />
+                </layer>
             </scene>
         </service>
 
         <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo">
             <inout key="image" uid="snapshot" />
-            <config layer="defaultLayer" flip="true" />
         </service>
 
-        <service uid="negatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true" >
+        <service uid="negatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true">
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunctionDeferred}" />
-            <config layer="defaultLayer" priority="0" orientation="${orientation}" />
+            <config priority="0" orientation="${orientation}" />
         </service>
 
         <service uid="pickerInteractorAdp" type="sight::module::viz::scene3d::adaptor::SPicker">
-            <config layer="defaultLayer" queryMask="0x40000000" priority="1" />
+            <config queryMask="0x40000000" priority="1" />
         </service>
 
-        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true" >
+        <service uid="negatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D" autoConnect="true">
             <in key="image" uid="${image}" />
             <in key="tf" uid="${transferFunctionDeferred}" />
-            <config layer="defaultLayer" sliceIndex="${orientation}" filtering="none" />
+            <config sliceIndex="${orientation}" filtering="none" />
         </service>
 
-        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
+        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true">
             <in key="image" uid="${image}" />
-            <config layer="defaultLayer" fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
+            <config fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
 
-        <service uid="landmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="true" >
+        <service uid="landmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="true">
             <inout key="landmarks" uid="${landmarks}" />
-            <config layer="defaultLayer" priority="4" />
+            <config priority="4" />
         </service>
 
         <!-- *************************** End generic scene *************************** -->
@@ -117,7 +116,7 @@
             <inout key="target" uid="${image}" />
         </service>
 
-        <service uid="slider_negato" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true" >
+        <service uid="slider_negato" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
             <inout key="image" uid="${image}" />
             <sliceIndex>${orientation}</sliceIndex>
         </service>
@@ -127,11 +126,10 @@
         </service>
 
         <!-- Write the snapshot image -->
-        <service uid="imageWriterSrv" type="sight::module::ui::base::io::SSelector" >
-            <inout key="data" uid="snapshot" />
-            <type mode="writer" />
-            <selection mode="exclude" />
-            <addSelection service="sight::module::io::session::SWriter" />
+        <service uid="imageWriterSrv" type="sight::module::io::bitmap::SWriter">
+            <in key="data" uid="snapshot" />
+            <dialog policy="always" />
+            <backends enable="all" mode="best"/>
         </service>
 
         <!-- START AND STOP SERVICES -->
@@ -157,7 +155,7 @@
         <start uid="mainView" />
 
         <!-- negato adaptors -->
-        <start uid="snapshotAdp"/>
+        <start uid="snapshotAdp" />
         <start uid="negatoCameraAdp" />
         <start uid="pickerInteractorAdp" />
         <start uid="negatoAdp" />

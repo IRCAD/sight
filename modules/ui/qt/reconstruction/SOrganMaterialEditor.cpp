@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,16 +22,12 @@
 
 #include "modules/ui/qt/reconstruction/SOrganMaterialEditor.hpp"
 
-#include <core/base.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
-#include <core/runtime/operations.hpp>
+#include <core/runtime/path.hpp>
 
 #include <data/Material.hpp>
 #include <data/Mesh.hpp>
 #include <data/Reconstruction.hpp>
 
-#include <service/IService.hpp>
-#include <service/macros.hpp>
 #include <service/op/Get.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
@@ -62,7 +58,7 @@ SOrganMaterialEditor::~SOrganMaterialEditor() noexcept =
 service::IService::KeyConnectionsMap SOrganMaterialEditor::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_RECONSTRUCTION, data::Object::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_RECONSTRUCTION, data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     return connections;
 }
 

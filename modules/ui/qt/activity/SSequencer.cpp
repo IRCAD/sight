@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,8 +24,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/operations.hpp>
-#include <core/runtime/Runtime.hpp>
+#include <core/runtime/path.hpp>
 #include <core/tools/Os.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -91,7 +90,7 @@ void SSequencer::configuring()
 {
     this->sight::ui::base::IGuiContainer::initialize();
 
-    const service::IService::ConfigType config = this->getConfigTree();
+    const service::IService::ConfigType config = this->getConfiguration();
 
     auto pair = config.equal_range("activity");
     auto it   = pair.first;
@@ -314,7 +313,7 @@ void SSequencer::goTo(int index)
 
     const auto newIdx = static_cast<std::size_t>(index);
 
-    data::Activity::sptr activity = this->getActivity(*activity_set, newIdx, m_slotUpdate);
+    data::Activity::sptr activity = this->getActivity(*activity_set, newIdx, slot(IService::slots::s_UPDATE));
 
     bool ok = true;
     std::string errorMsg;
@@ -353,7 +352,7 @@ void SSequencer::checkNext()
     const auto nextIdx = static_cast<std::size_t>(m_currentActivity) + 1;
     if(nextIdx < m_activityIds.size())
     {
-        data::Activity::sptr nextActivity = this->getActivity(*activity_set, nextIdx, m_slotUpdate);
+        data::Activity::sptr nextActivity = this->getActivity(*activity_set, nextIdx, slot(IService::slots::s_UPDATE));
 
         bool ok = true;
         std::string errorMsg;
@@ -418,8 +417,8 @@ void SSequencer::disableActivity(int index)
 service::IService::KeyConnectionsMap SSequencer::getAutoConnections() const
 {
     KeyConnectionsMap connections;
-    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_ADDED_OBJECTS_SIG, s_UPDATE_SLOT);
-    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_ADDED_OBJECTS_SIG, IService::slots::s_UPDATE);
+    connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }

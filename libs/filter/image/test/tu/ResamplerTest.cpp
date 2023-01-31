@@ -133,7 +133,7 @@ void ResamplerTest::translateTest()
 
     // 5 mm translation along the x axis.
     data::Matrix4::sptr transMat = data::Matrix4::New();
-    transMat->setCoefficient(0, 3, 5);
+    (*transMat)(0, 3) = 5;
 
     filter::image::Resampler::resample(
         data::Image::csptr(imageIn),
@@ -199,13 +199,13 @@ void ResamplerTest::rotateTest()
 
     data::Matrix4::sptr rotMat = data::Matrix4::New();
     // 90° rotation along the Y axis.
-    rotMat->setCoefficient(0, 0, 0);
-    rotMat->setCoefficient(0, 2, 1);
-    rotMat->setCoefficient(2, 0, -1);
-    rotMat->setCoefficient(2, 2, 0);
+    (*rotMat)(0, 0) = 0;
+    (*rotMat)(0, 2) = 1;
+    (*rotMat)(2, 0) = -1;
+    (*rotMat)(2, 2) = 0;
 
     // 32 mm translation along the X axis.
-    rotMat->setCoefficient(0, 3, double(SIZE[0]) / 2.);
+    (*rotMat)(0, 3) = double(SIZE[0]) / 2.;
 
     filter::image::Resampler::resample(
         data::Image::csptr(imageIn),

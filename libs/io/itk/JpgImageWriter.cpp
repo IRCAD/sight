@@ -109,16 +109,7 @@ struct JpgITKSaverFunctor
 
         double min = NAN;
         double max = NAN;
-        auto tf    = data::helper::MedicalImage::getTransferFunction(*image);
-
-        if(tf)
-        {
-            std::tie(min, max) = tf->windowMinMax();
-        }
-        else
-        {
-            data::helper::MedicalImage::getMinMax(image, min, max);
-        }
+        data::helper::MedicalImage::getMinMax(image, min, max);
 
         rescaleFilter->SetWindowMinimum(PIXELTYPE(min));
         rescaleFilter->SetWindowMaximum(PIXELTYPE(max));

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,29 +33,6 @@ namespace sight::service::parser
 
 //------------------------------------------------------------------------------
 
-bool Composite::refObjectValidator(core::runtime::ConfigurationElement::sptr _cfgElement)
-{
-    bool isOk = true;
-
-    for(auto& configEltIter : *_cfgElement)
-    {
-        std::string subElementName = configEltIter->getName();
-        if(subElementName != "service"
-           && subElementName != "serviceList")
-        {
-            SIGHT_ERROR(
-                "xml subelement \"" << subElementName
-                << "\" for element object is not supported for the moment when you use a reference on item composite."
-            );
-            isOk = false;
-        }
-    }
-
-    return isOk;
-}
-
-//------------------------------------------------------------------------------
-
 void Composite::updating()
 {
     SIGHT_FATAL("This method is deprecated, and this, shouldn't be used.");
@@ -73,35 +50,22 @@ void Composite::createConfig(core::tools::Object::sptr _obj)
     data::Composite::sptr dataComposite = data::Composite::dynamicCast(_obj);
     SIGHT_ASSERT("The passed object must be a data::Composite", dataComposite);
 
-    for(core::runtime::ConfigurationElement::csptr elem : m_cfg->getElements())
+    for(const auto& elem : m_cfg)
     {
-        if(elem->getName() == "item")
+        if(elem.first == "item")
         {
-            // Test build mode
-            std::string buildMode = BUILD_OBJECT;
-
-            if(elem->hasAttribute(OBJECT_BUILD_MODE))
-            {
-                buildMode = elem->getExistingAttributeValue(OBJECT_BUILD_MODE);
-                SIGHT_ASSERT(
-                    "The buildMode \"" << buildMode << "\" is not supported, it should be either BUILD_OBJECT"
-                                                       "or GET_OBJECT.",
-                    buildMode == BUILD_OBJECT || buildMode == GET_OBJECT
-                );
-            }
-
+            const auto buildMode = elem.second.get<std::string>(OBJECT_BUILD_MODE, BUILD_OBJECT);
             SIGHT_ASSERT(
-                "The xml element \"item\" must have an attribute named \"key\" .",
-                elem->hasAttribute("key")
+                "The buildMode \"" << buildMode << "\" is not supported, it should be either BUILD_OBJECT"
+                                                   "or GET_OBJECT.",
+                buildMode == BUILD_OBJECT || buildMode == GET_OBJECT
             );
-            std::string key = elem->getExistingAttributeValue("key");
-            SIGHT_ASSERT(
-                "The xml element \"item\" must have an attribute named \"key\" which is not empty.",
-                !key.empty()
-            );
+
+            const auto key = elem.second.get<std::string>("<xmlattr>.key");
+
             SIGHT_ASSERT(
                 "The xml element \"item\" must have one (and only one) xml sub-element \"object\".",
-                elem->size() == 1 && (*elem->getElements().begin())->getName() == "object"
+                elem.second.count("object") == 1
             );
 
             if(buildMode == BUILD_OBJECT)
@@ -115,8 +79,8 @@ void Composite::createConfig(core::tools::Object::sptr _obj)
                 );
 
                 // Create and manage object config
-                auto ctm = service::AppConfigManager::New();
-                ctm->service::IAppConfigManager::setConfig(elem);
+                auto ctm = service::IAppConfigManager::New();
+                ctm->service::IAppConfigManager::setConfig(elem.second);
 
                 m_ctmContainer.push_back(ctm);
                 ctm->create();

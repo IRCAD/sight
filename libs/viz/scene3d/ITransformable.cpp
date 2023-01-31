@@ -23,11 +23,12 @@
 #include "viz/scene3d/ITransformable.hpp"
 
 #include "viz/scene3d/helper/Scene.hpp"
+#include "viz/scene3d/IAdaptor.hpp"
 
 namespace sight::viz::scene3d
 {
 
-const std::string ITransformable::s_TRANSFORM_CONFIG = "transform";
+const std::string ITransformable::s_TRANSFORM_CONFIG = "config.<xmlattr>.transform";
 
 //------------------------------------------------------------------------------
 

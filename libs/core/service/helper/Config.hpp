@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2016 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,6 +29,7 @@
 #include <core/base.hpp>
 #include <core/com/Signals.hpp>
 #include <core/com/Slots.hpp>
+#include <core/runtime/types.hpp>
 #include <core/tools/Object.hpp>
 
 namespace sight::core::tools
@@ -45,19 +46,60 @@ class Object;
 
 } // namespace sight::data
 
-namespace sight::core::runtime
-{
-
-struct ConfigurationElement;
-
-} // namespace sight::core::runtime
-
 namespace sight::core::com::helper
 {
 
 class SigSlotConnection;
 
 } // namespace sight::core::com::helper
+
+namespace sight::service::detail
+{
+
+/// Used to store object configuration in a service.
+struct ObjectServiceConfig
+{
+    /// Object key name, may contains a suffix #N with the number of the key if it is part of a group
+    std::string m_key;
+
+    /// Object identifier
+    std::string m_uid;
+
+    /// Object access (INPUT, INOUT, OUTPUT)
+    data::Access m_access {data::Access::INOUT};
+
+    /// True if the service is autoConnected this object according to the auto-connection map
+    bool m_autoConnect {false};
+
+    /// True if the object is optional (i.e. the service can start even if the object is not present)
+    bool m_optional {false};
+};
+/// Used to store a service configuration.
+struct ServiceConfig
+{
+    /// Service uid
+    std::string m_uid;
+
+    /// Service implementation
+    std::string m_type;
+
+    /// True if the service is autoConnected to all of its inputs/inouts according to the auto-connection map
+    bool m_globalAutoConnect {false};
+
+    /// Service worker
+    std::string m_worker;
+
+    /// list of required objects information (inputs, inouts and outputs), indexed by key name and index
+    std::map<std::pair<std::string, std::optional<std::size_t> >, ObjectServiceConfig> m_objects;
+
+    /// list of required object groups information (inputs, inouts and outputs), indexed by key name
+    std::map<std::string, ObjectServiceConfig> m_groups;
+
+    /// Service configuration (only used with XML config)
+    IService::config_t m_config;
+};
+
+}
 
 namespace sight::service::helper
 {
@@ -76,7 +118,6 @@ public:
     typedef std::string ObjectIdType;
     typedef std::vector<ProxyConnections> ProxyConnectionsVectType;
     typedef std::map<ObjectIdType, ProxyConnectionsVectType> ProxyConnectionsMapType;
-
     struct ConnectionInfo
     {
         SignalInfoType m_signal;
@@ -91,7 +132,7 @@ public:
      * @param obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
     SERVICE_API static ConnectionInfo parseConnections(
-        const CSPTR(core::runtime::ConfigurationElement)& cfg,
+        const core::runtime::config_t& cfg,
         const CSPTR(core::tools::Object)& obj =
         CSPTR(core::tools::Object)()
     );
@@ -103,7 +144,7 @@ public:
      * @param cfg configuration element containing "<connect>" tags
      */
     SERVICE_API static ProxyConnections parseConnections2(
-        const CSPTR(core::runtime::ConfigurationElement)& connectionCfg,
+        const core::runtime::config_t& connectionCfg,
         const std::string& errMsgHead,
         std::function<std::string()> generateChannelNameFn
     );
@@ -116,24 +157,9 @@ public:
      * @param obj optional object used to retrieve signal if uid is not defined [deprecated]
      */
     SERVICE_API static void createConnections(
-        const CSPTR(core::runtime::ConfigurationElement)& cfg,
+        const core::runtime::config_t& cfg,
         core::com::helper::SigSlotConnection& helper,
         const CSPTR(core::tools::Object)& obj = CSPTR(core::tools::Object)()
-    );
-
-    /**
-     * @brief Parses "<proxy>" tags from given configuration to connect signals and slots using proxies.
-     *
-     * @param objectKey Id of the object
-     * @param cfg configuration element containing "<proxy>" tags
-     * @param proxyMap map containing the proxy's signals and slots connections
-     * @param obj optional object used to retrieve signal if uid is not defined
-     */
-    SERVICE_API static void createProxy(
-        const std::string& objectKey,
-        const CSPTR(core::runtime::ConfigurationElement)& cfg,
-        ProxyConnectionsMapType& proxyMap,
-        const CSPTR(data::Object)& obj = CSPTR(data::Object)()
     );
 
     /// Disconnects all proxies associated to objectKey
@@ -143,17 +169,17 @@ public:
     );
 
     /// Parse a service and return a service configuration
-    SERVICE_API static service::IService::Config parseService(
+    SERVICE_API static service::detail::ServiceConfig parseService(
         const boost::property_tree::ptree& srvElem,
         const std::string& errMsgHead
     );
 
-    SERVICE_API static const service::IService::ObjectServiceConfig* getKeyProps(
+    SERVICE_API static std::pair<bool, bool> getKeyProps(
         const std::string& serviceType,
         const std::string& key
     );
 
-    SERVICE_API static void clearKeyProps();
+    SERVICE_API static void clearProps();
 };
 
 } // namespace sight::service::helper

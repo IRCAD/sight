@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@
 
 #include <data/tools/Color.hpp>
 
-#include <service/registry/ObjectService.hpp>
+#include <service/registry.hpp>
 
 #include <boost/tokenizer.hpp>
 
@@ -153,11 +153,6 @@ Layer::Layer()
     newSlot(s_INTERACTION_SLOT, &Layer::interaction, this);
     newSlot(s_RESET_CAMERA_SLOT, &Layer::resetCameraCoordinates, this);
 }
-
-//-----------------------------------------------------------------------------
-
-Layer::~Layer()
-= default;
 
 //-----------------------------------------------------------------------------
 
@@ -532,6 +527,54 @@ void Layer::interaction(viz::scene3d::IWindowInteractor::InteractionInfo info)
                 [&info](const interactor::IInteractor::sptr& _i)
             {
                 _i->buttonDoublePressEvent(info.button, info.modifiers, info.x, info.y);
+            });
+            break;
+
+        case viz::scene3d::IWindowInteractor::InteractionInfo::PINCH_GESTURE:
+            this->forAllInteractors(
+                [&info](const interactor::IInteractor::sptr& _i)
+            {
+                _i->pinchGestureEvent(info.delta, info.x, info.y);
+            });
+            break;
+
+        case viz::scene3d::IWindowInteractor::InteractionInfo::PAN_GESTURE_MOVE:
+            this->forAllInteractors(
+                [&info](const interactor::IInteractor::sptr& _i)
+            {
+                _i->panGestureMoveEvent(info.x, info.y, info.dx, info.dy);
+            });
+            break;
+
+        case viz::scene3d::IWindowInteractor::InteractionInfo::PAN_GESTURE_RELEASE:
+            this->forAllInteractors(
+                [&info](const interactor::IInteractor::sptr& _i)
+            {
+                _i->panGestureReleaseEvent(info.x, info.y, info.dx, info.dy);
+            });
+            break;
+
+        case viz::scene3d::IWindowInteractor::InteractionInfo::LONG_TAP_GESTURE:
+            this->forAllInteractors(
+                [&info](const interactor::IInteractor::sptr& _i)
+            {
+                _i->longTapGestureEvent(info.x, info.y);
+            });
+            break;
+
+        case viz::scene3d::IWindowInteractor::InteractionInfo::PAN2_GESTURE_MOVE:
+            this->forAllInteractors(
+                [&info](const interactor::IInteractor::sptr& _i)
+            {
+                _i->pan2GestureMoveEvent(info.x, info.y, info.dx, info.dy);
+            });
+            break;
+
+        case viz::scene3d::IWindowInteractor::InteractionInfo::PAN2_GESTURE_RELEASE:
+            this->forAllInteractors(
+                [&info](const interactor::IInteractor::sptr& _i)
+            {
+                _i->pan2GestureReleaseEvent(info.x, info.y, info.dx, info.dy);
             });
             break;
     }

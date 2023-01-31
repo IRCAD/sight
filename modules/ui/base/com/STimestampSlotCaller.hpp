@@ -24,11 +24,6 @@
 
 #include "modules/ui/base/config.hpp"
 
-#include <core/base.hpp>
-
-#include <service/IService.hpp>
-#include <service/macros.hpp>
-
 #include <ui/base/IAction.hpp>
 
 namespace sight::module::ui::base::com
@@ -56,25 +51,19 @@ public:
 
     SIGHT_DECLARE_SERVICE(STimestampSlotCaller, sight::ui::base::IAction);
 
-    /// Constructor
-    MODULE_UI_BASE_API STimestampSlotCaller();
-
-    /// Destructor
-    MODULE_UI_BASE_API ~STimestampSlotCaller() override;
+    MODULE_UI_BASE_API STimestampSlotCaller()           = default;
+    MODULE_UI_BASE_API ~STimestampSlotCaller() override = default;
 
 protected:
 
-    typedef core::runtime::ConfigurationElement::sptr ConfigurationType;
-    typedef std::string HasSlotIDType;
-    typedef std::pair<HasSlotIDType, core::com::Slots::SlotKeyType> SlotInfoType;
-    typedef std::vector<SlotInfoType> SlotInfoContainerType;
+    using HasSlotIDType         = std::string;
+    using SlotInfoType          = std::pair<HasSlotIDType, core::com::Slots::SlotKeyType>;
+    using SlotInfoContainerType = std::vector<SlotInfoType>;
 
     /// Does nothing
     MODULE_UI_BASE_API void starting() override;
 
-    /**
-     * @brief Configure the service
-     */
+    /// Configures the service
     MODULE_UI_BASE_API void configuring() override;
 
     /// Does nothing

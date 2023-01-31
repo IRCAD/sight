@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
-#include <core/macros.hpp>
-
-#include <data/Composite.hpp>
+#include <data/Image.hpp>
 #include <data/TransferFunction.hpp>
 
 #include <ui/base/IEditor.hpp>
@@ -41,12 +39,17 @@ namespace sight::module::ui::qt::image
 {
 
 /**
- * @brief Editor to select a transfer function preset.
+ * @brief Editor to select a transfer function from a list of presets.
+ *
+ * The default presets are dedicated to CT and MRI images. Other locations can be specified to add different presets.
+ * The editor also generates a default transfer function called "GreyLevel". If a reference image is specified,
+ * this function will be generated accordingly to the image type.
  *
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::ui::qt::image::STransferFunction">
        <inout key="tf" uid="..." />
+       <in key="image" uid="..." />
        <config useDefaultPath="true" >
            <path>....</path>
            <path>....</path>
@@ -58,7 +61,11 @@ namespace sight::module::ui::qt::image
  * @subsection In-Out In-Out
  * - \b current [sight::data::TransferFunction]: current transfer function used to change editor
  * selection. It should be the same as the output.
- * *
+ *
+ * @subsection Input Input
+ * - \b image [sight::data::Image](optional): reference image that can be used to generate the default transfer
+ * function.
+ *
  * @subsection Configuration Configuration
  * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF module.
  * - \b path (optional): path to a directory containing tf files.
@@ -72,9 +79,8 @@ namespace sight::module::ui::qt::image
  * - \b iconWidth (optional, default="16"): icon width.
  * - \b iconHeight (optional, default="16"): icon height.
  */
-class MODULE_UI_QT_CLASS_API STransferFunction final :
-    public QObject,
-    public sight::ui::base::IEditor
+class MODULE_UI_QT_CLASS_API STransferFunction final : public QObject,
+                                                       public sight::ui::base::IEditor
 {
 Q_OBJECT
 
@@ -87,9 +93,9 @@ public:
     MODULE_UI_QT_API STransferFunction();
 
     /// Destroyes the editor.
-    MODULE_UI_QT_API ~STransferFunction() noexcept override;
+    MODULE_UI_QT_API ~STransferFunction() noexcept override = default;
 
-protected:
+private:
 
     /// Configures the editor.
     MODULE_UI_QT_API void configuring() override;
@@ -103,7 +109,12 @@ protected:
     /// Destroys the UI.
     MODULE_UI_QT_API void stopping() override;
 
-private:
+    /**
+     * @brief
+     * Connect Image::s_MODIFIED_SIG to this::IService::slots::s_UPDATE
+     * Connect Image::s_BUFFER_MODIFIED_SIG to this::s_UPDATE_BUFFER_SLOT
+     */
+    MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const override;
 
     /**
      * @brief Checks if the composite contains the specified key.
@@ -137,6 +148,9 @@ private:
 
     /// Sets the current TF preset to the output of this service.
     void setCurrentPreset();
+
+    /// Update the default transfer function according to the image
+    void updateDefaultPreset();
 
 private Q_SLOTS:
 
@@ -223,7 +237,9 @@ private:
     std::map<std::string, sight::data::TransferFunction::sptr> m_tfPresets;
 
     static constexpr std::string_view s_CURRENT_INPUT = "tf";
-    data::ptr<data::TransferFunction, data::Access::inout> m_currentTF {this, s_CURRENT_INPUT, false, true};
+    static constexpr std::string_view s_IMAGE_INPUT   = "image";
+    data::ptr<data::TransferFunction, data::Access::inout> m_currentTF {this, s_CURRENT_INPUT, false};
+    data::ptr<data::Image, data::Access::in> m_image {this, s_IMAGE_INPUT, true, true};
 };
 
 } // namespace sight::module::ui::qt::image.

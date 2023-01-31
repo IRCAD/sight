@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,7 +72,7 @@ void SPointToLandmarkVector::stopping()
 
 void SPointToLandmarkVector::configuring()
 {
-    const ConfigType configuration = this->getConfigTree();
+    const ConfigType configuration = this->getConfiguration();
     m_originLabel    = configuration.get<std::string>("originLabel", m_originLabel);
     m_endLabel       = configuration.get<std::string>("endLabel", m_endLabel);
     m_groupLabel     = configuration.get<std::string>("computedLandmarkLabel", m_groupLabel);
@@ -146,9 +146,9 @@ void SPointToLandmarkVector::updating()
     auto sig1 = computedLandmark->signal<data::Landmarks::PointAddedSignalType>(data::Landmarks::s_POINT_ADDED_SIG);
     sig1->asyncEmit(m_groupLabel);
 
-    translationMatrix->setCoefficient(0, 3, pointToTarget[0]);
-    translationMatrix->setCoefficient(1, 3, pointToTarget[1]);
-    translationMatrix->setCoefficient(2, 3, pointToTarget[2]);
+    (*translationMatrix)(0, 3) = pointToTarget[0];
+    (*translationMatrix)(1, 3) = pointToTarget[1];
+    (*translationMatrix)(2, 3) = pointToTarget[2];
 
     auto sig2 = translationMatrix->signal<data::Object::ModifiedSignalType>(data::Object::s_MODIFIED_SIG);
     sig2->asyncEmit();
@@ -158,7 +158,7 @@ void SPointToLandmarkVector::updating()
 
 service::IService::KeyConnectionsMap SPointToLandmarkVector::getAutoConnections() const
 {
-    return {{s_LANDMARK_INPUT, data::Landmarks::s_POINT_ADDED_SIG, s_UPDATE_SLOT}};
+    return {{s_LANDMARK_INPUT, data::Landmarks::s_POINT_ADDED_SIG, IService::slots::s_UPDATE}};
 }
 
 // -----------------------------------------------------------------------------

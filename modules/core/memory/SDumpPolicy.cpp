@@ -43,32 +43,15 @@ SDumpPolicy::~SDumpPolicy()
 
 void SDumpPolicy::configuring()
 {
-    using ConfigurationType = core::runtime::ConfigurationElement::sptr;
-    std::vector<ConfigurationType> config = m_configuration->find("config");
+    const auto& config = this->getConfiguration();
 
-    if(!config.empty())
+    m_policy = config.get<std::string>("config.policy", m_policy);
+
+    if(const auto& params = config.get_child_optional("config.params"); params.has_value())
     {
-        std::vector<ConfigurationType> policy        = config.at(0)->find("policy");
-        std::vector<ConfigurationType> paramsElement = config.at(0)->find("params");
-
-        m_policyParams.clear();
-        m_policy = "";
-
-        if(!policy.empty())
+        for(const auto& iter : params.value())
         {
-            m_policy = policy.at(0)->getValue();
-        }
-
-        if(!paramsElement.empty())
-        {
-            const ConfigurationType& params = paramsElement.at(0);
-
-            core::runtime::ConfigurationElement::Container::const_iterator iter;
-
-            for(iter = params->begin() ; iter != params->end() ; ++iter)
-            {
-                m_policyParams.push_back(ParametersType::value_type((*iter)->getName(), (*iter)->getValue()));
-            }
+            m_policyParams.push_back(ParametersType::value_type(iter.first, iter.second.get_value<std::string>()));
         }
     }
 }

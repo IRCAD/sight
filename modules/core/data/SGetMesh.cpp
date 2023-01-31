@@ -30,7 +30,7 @@ namespace sight::module::data
 
 void SGetMesh::configuring()
 {
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
     const ConfigType configOut           = config.get_child("out");
     const auto keyCfg                    = configOut.equal_range("key");
     size_t outputVarIndex                = 0;

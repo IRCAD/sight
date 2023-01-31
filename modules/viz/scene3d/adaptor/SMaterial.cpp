@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,6 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/runtime/Convert.hpp>
 
 #include <data/Composite.hpp>
 #include <data/helper/Field.hpp>
@@ -55,11 +54,6 @@ const core::com::Slots::SlotKeyType SMaterial::s_REMOVE_TEXTURE_SLOT = "removeTe
 
 const std::string SMaterial::s_MATERIAL_INOUT = "material";
 
-static const std::string s_MATERIAL_TEMPLATE_NAME_CONFIG = "materialTemplate";
-static const std::string s_MATERIAL_NAME_CONFIG          = "materialName";
-static const std::string s_TEXTURE_NAME_CONFIG           = "textureName";
-static const std::string s_SHADING_MODE_CONFIG           = "shadingMode";
-
 //------------------------------------------------------------------------------
 
 SMaterial::SMaterial() noexcept
@@ -77,17 +71,16 @@ SMaterial::SMaterial() noexcept
 
 //------------------------------------------------------------------------------
 
-SMaterial::~SMaterial() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
 void SMaterial::configuring()
 {
     this->configureParams();
 
-    const ConfigType configType = this->getConfigTree();
-    const ConfigType config     = configType.get_child("config.<xmlattr>");
+    const ConfigType config = this->getConfiguration();
+
+    static const std::string s_MATERIAL_TEMPLATE_NAME_CONFIG = s_CONFIG + "materialTemplate";
+    static const std::string s_MATERIAL_NAME_CONFIG          = s_CONFIG + "materialName";
+    static const std::string s_TEXTURE_NAME_CONFIG           = s_CONFIG + "textureName";
+    static const std::string s_SHADING_MODE_CONFIG           = s_CONFIG + "shadingMode";
 
     m_materialTemplateName = config.get(s_MATERIAL_TEMPLATE_NAME_CONFIG, m_materialTemplateName);
     m_materialName         = config.get(s_MATERIAL_NAME_CONFIG, this->getID());
@@ -105,6 +98,25 @@ void SMaterial::configuring()
         );
         m_representationMode = "SURFACE";
     }
+}
+
+//------------------------------------------------------------------------------
+
+void SMaterial::configure(
+    const std::string& _id,
+    const std::string& _name,
+    sight::viz::scene3d::SRender::sptr _service,
+    const std::string& _layer,
+    const std::string& _shadingMode,
+    const std::string& _template
+)
+{
+    this->setID(_id);
+    this->setMaterialName(_name);
+    this->setRenderService(_service);
+    this->setLayerID(_layer);
+    this->setShadingMode(_shadingMode);
+    this->setMaterialTemplateName(_template);
 }
 
 //------------------------------------------------------------------------------
@@ -176,7 +188,7 @@ void SMaterial::starting()
         this->createTextureAdaptor();
     }
 
-    const auto configTree = core::runtime::Convert::toPropertyTree(this->getConfiguration());
+    const auto configTree = this->getConfiguration();
 
     if(configTree.find("config") != configTree.not_found())
     {
@@ -189,7 +201,7 @@ void SMaterial::starting()
 service::IService::KeyConnectionsMap SMaterial::getAutoConnections() const
 {
     service::IService::KeyConnectionsMap connections;
-    connections.push(s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, s_UPDATE_SLOT);
+    connections.push(s_MATERIAL_INOUT, data::Material::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     connections.push(s_MATERIAL_INOUT, data::Material::s_ADDED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
     connections.push(s_MATERIAL_INOUT, data::Material::s_CHANGED_FIELDS_SIG, s_UPDATE_FIELD_SLOT);
     connections.push(s_MATERIAL_INOUT, data::Material::s_ADDED_TEXTURE_SIG, s_ADD_TEXTURE_SLOT);
@@ -276,11 +288,11 @@ void SMaterial::createShaderParameterAdaptors()
             srv->setRenderService(this->getRenderService());
 
             service::IService::ConfigType config;
-            config.add("config.<xmlattr>.layer", m_layerID);
             config.add("config.<xmlattr>.parameter", constantName);
             config.add("config.<xmlattr>.shaderType", shaderTypeStr);
             config.add("config.<xmlattr>.materialName", m_materialName);
 
+            srv->setLayerID(m_layerID);
             srv->setConfiguration(config);
             srv->configure();
             srv->start();

@@ -82,8 +82,6 @@ Image::Image(data::Object::Key /*unused*/) :
 
     auto pl = data::PointList::New();
     data::helper::MedicalImage::setLandmarks(*this, pl);
-
-    sight::data::helper::MedicalImage::updateDefaultTransferFunction(*this);
 }
 
 //-----------------------------------------------------------------------------

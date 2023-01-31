@@ -26,7 +26,6 @@
 #include "ui/qt/container/QtToolBarContainer.hpp"
 
 #include <core/base.hpp>
-#include <core/runtime/ConfigurationElement.hpp>
 
 #include <ui/base/container/fwToolBar.hpp>
 #include <ui/base/layoutManager/IToolBarLayoutManager.hpp>

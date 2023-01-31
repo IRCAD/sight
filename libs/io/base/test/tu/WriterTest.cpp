@@ -22,8 +22,8 @@
 #include "WriterTest.hpp"
 
 #include <core/Exception.hpp>
-#include <core/runtime/operations.hpp>
 #include <core/runtime/Profile.hpp>
+#include <core/runtime/runtime.hpp>
 #include <core/tools/Os.hpp>
 #include <core/tools/System.hpp>
 #include <core/tools/UUID.hpp>

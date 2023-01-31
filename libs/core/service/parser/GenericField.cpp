@@ -44,17 +44,13 @@ void GenericField::updating()
 
 void GenericField::createConfig(core::tools::Object::sptr _obj)
 {
-    core::runtime::ConfigurationElementContainer configs = m_cfg->findAllConfigurationElement("value");
-    SIGHT_ASSERT("GenericField config must contain at most one tag <value>...</value>", configs.size() <= 1);
+    const auto input = m_cfg.get_optional<std::string>("value");
 
-    if(configs.size() >= 1)
+    if(input.has_value())
     {
-        core::runtime::ConfigurationElement::sptr config = *configs.begin();
-        std::string input                                = config->getValue();
-
         const auto field = data::GenericFieldBase::dynamicCast(_obj);
         SIGHT_ASSERT("GenericField not instanced", field);
-        field->fromString(input);
+        field->fromString(input.value());
     }
 }
 

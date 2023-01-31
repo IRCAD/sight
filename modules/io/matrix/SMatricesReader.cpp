@@ -46,9 +46,10 @@
 namespace sight::module::io::matrix
 {
 
-static const core::com::Slots::SlotKeyType s_START_READING = "startReading";
-static const core::com::Slots::SlotKeyType s_STOP_READING  = "stopReading";
-static const core::com::Slots::SlotKeyType s_PAUSE         = "pause";
+static const core::com::Slots::SlotKeyType s_START_READING    = "startReading";
+static const core::com::Slots::SlotKeyType s_STOP_READING     = "stopReading";
+static const core::com::Slots::SlotKeyType s_PAUSE            = "pause";
+static const core::com::Slots::SlotKeyType s_TOGGLE_LOOP_MODE = "toggleLoopMode";
 
 static const core::com::Slots::SlotKeyType s_READ_NEXT     = "readNext";
 static const core::com::Slots::SlotKeyType s_READ_PREVIOUS = "readPrevious";
@@ -61,6 +62,7 @@ SMatricesReader::SMatricesReader() noexcept
     newSlot(s_START_READING, &SMatricesReader::startReading, this);
     newSlot(s_STOP_READING, &SMatricesReader::stopReading, this);
     newSlot(s_PAUSE, &SMatricesReader::pause, this);
+    newSlot(s_TOGGLE_LOOP_MODE, &SMatricesReader::toggleLoopMode, this);
 
     newSlot(s_READ_NEXT, &SMatricesReader::readNext, this);
     newSlot(s_READ_PREVIOUS, &SMatricesReader::readPrevious, this);
@@ -91,7 +93,7 @@ void SMatricesReader::configuring()
 {
     sight::io::base::service::IReader::configuring();
 
-    service::IService::ConfigType config = this->getConfigTree();
+    service::IService::ConfigType config = this->getConfiguration();
 
     m_fps = config.get<unsigned int>("fps", 30);
     SIGHT_ASSERT("Fps setting is set to " << m_fps << " but should be > 0.", m_fps > 0);
@@ -105,6 +107,8 @@ void SMatricesReader::configuring()
     m_step = config.get<std::uint64_t>("step", m_step);
     SIGHT_ASSERT("Step value is set to " << m_step << " but should be > 0.", m_step > 0);
     m_stepChanged = m_step;
+
+    m_loopMatrix = config.get<bool>("loop", m_loopMatrix);
 }
 
 //------------------------------------------------------------------------------
@@ -399,9 +403,10 @@ void SMatricesReader::stopReading()
 
 void SMatricesReader::pause()
 {
+    m_isPaused = !m_isPaused;
     if(m_timer)
     {
-        m_timer->isRunning() ? m_timer->stop() : m_timer->start();
+        m_isPaused ? m_timer->stop() : m_timer->start();
     }
 }
 
@@ -409,7 +414,7 @@ void SMatricesReader::pause()
 
 void SMatricesReader::readMatrices()
 {
-    if(m_tsMatricesCount < m_tsMatrices.size())
+    if(!m_isPaused && m_tsMatricesCount < m_tsMatrices.size())
     {
         const auto tStart   = core::HiResClock::getTimeInMilliSec();
         const auto matrixTL = m_matrixTL.lock();
@@ -457,6 +462,14 @@ void SMatricesReader::readMatrices()
             if((m_tsMatricesCount + m_step) == m_tsMatrices.size())
             {
                 m_timer->stop();
+                if(m_loopMatrix)
+                {
+                    matrixTL->clearTimeline();
+                    m_tsMatricesCount = 0;
+                    core::thread::Timer::TimeDurationType duration = std::chrono::milliseconds(1000 / m_fps);
+                    m_timer->setDuration(duration);
+                    m_timer->start();
+                }
             }
             else
             {
@@ -479,6 +492,19 @@ void SMatricesReader::readMatrices()
 
         m_tsMatricesCount += m_step;
     }
+    else if(!m_isPaused && m_loopMatrix)
+    {
+        const auto matrixTL = m_matrixTL.lock();
+        matrixTL->clearTimeline();
+        m_tsMatricesCount = 0;
+    }
+}
+
+// -----------------------------------------------------------------------------
+
+void SMatricesReader::toggleLoopMode()
+{
+    m_loopMatrix = !m_loopMatrix;
 }
 
 //------------------------------------------------------------------------------

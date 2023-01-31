@@ -7,8 +7,10 @@ Example:
 <service uid="..." type="sight::service::SConfigController">
     <appConfig id="ImageManager" />
     <parameter replace="WID_PARENT" by="referenceSceneEditor" />
-    <inout key="image" uid="..." />
-    <inout key="transferFunction" uid="..." />
+    <inout group="data">
+        <key name="image" uid="..." />
+        <key name="transferFunction" uid="..." />
+    </inout>
 </service>
 -->
 <extension implements="sight::service::extension::AppConfig">

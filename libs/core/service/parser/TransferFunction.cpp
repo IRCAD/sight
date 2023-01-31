@@ -22,10 +22,6 @@
 
 #include "service/parser/TransferFunction.hpp"
 
-#include "service/macros.hpp"
-
-#include <core/runtime/Convert.hpp>
-
 #include <data/Color.hpp>
 #include <data/TransferFunction.hpp>
 
@@ -46,12 +42,9 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
     data::TransferFunction::sptr tf = data::TransferFunction::dynamicCast(_obj);
     SIGHT_ASSERT("TransferFunction not instanced", tf);
 
-    const ConfigType config = core::runtime::Convert::toPropertyTree(m_cfg).get_child("object");
-    if(config.count("colors") != 0U)
+    if(const auto colorCfg = m_cfg.get_child_optional("colors"); colorCfg.has_value())
     {
-        const ConfigType colorCfg = config.get_child("colors");
-
-        const bool isDefault = colorCfg.get("<xmlattr>.default", false);
+        const bool isDefault = colorCfg->get("<xmlattr>.default", false);
         if(isDefault)
         {
             data::TransferFunction::sptr defaultTf = data::TransferFunction::createDefaultTF();
@@ -59,10 +52,10 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
         }
         else
         {
-            const auto stepsConfig = colorCfg.equal_range("step");
+            const auto stepsConfig = colorCfg->equal_range("step");
 
             auto tfData            = tf->pieces().emplace_back(data::TransferFunctionPiece::New());
-            const std::string name = config.get<std::string>("name", "");
+            const std::string name = m_cfg.get<std::string>("name", "");
             if(!name.empty())
             {
                 tf->setName(name);
@@ -83,8 +76,10 @@ void TransferFunction::createConfig(core::tools::Object::sptr _obj)
 
             tfData->setWindowMinMax(tfData->minMax());
 
-            const bool isClamped = colorCfg.get<bool>("<xmlattr>.isClamped", true);
+            const bool isClamped = colorCfg->get<bool>("<xmlattr>.isClamped", true);
             tfData->setClamped(isClamped);
+
+            tf->fitWindow();
         }
     }
     else

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2015 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,19 +30,11 @@
 namespace sight::core::com
 {
 
-Slots::Slots()
-= default;
-
-//-----------------------------------------------------------------------------
-
-Slots::~Slots()
-= default;
-
 //-----------------------------------------------------------------------------
 
 void Slots::setWorker(const core::thread::Worker::sptr& worker)
 {
-    for(const SlotMapType::value_type& elem : m_slots)
+    for(const auto& elem : m_slots)
     {
         elem.second->setWorker(worker);
     }
@@ -50,15 +42,15 @@ void Slots::setWorker(const core::thread::Worker::sptr& worker)
 
 //-----------------------------------------------------------------------------
 
-Slots& Slots::operator()(const SlotKeyType& key, const SlotBase::sptr& slot)
+Slots& Slots::operator()(const key_t& key, const SlotBase::sptr& slot)
 {
-    m_slots.insert(SlotMapType::value_type(key, slot));
+    m_slots.insert({key, slot});
     return *this;
 }
 
 //-----------------------------------------------------------------------------
 
-SlotBase::sptr Slots::operator[](const SlotKeyType& key) const
+SlotBase::sptr Slots::operator[](const key_t& key) const
 {
     auto it = m_slots.find(key);
 
@@ -75,7 +67,7 @@ SlotBase::sptr Slots::operator[](const SlotKeyType& key) const
 Slots::SlotKeyContainerType Slots::getSlotKeys() const
 {
     Slots::SlotKeyContainerType slotKeys;
-    for(const SlotMapType::value_type& elem : m_slots)
+    for(const auto& elem : m_slots)
     {
         slotKeys.push_back(elem.first);
     }
