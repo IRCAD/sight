@@ -1,3 +1,317 @@
+# sight 22.1.0
+
+## New features:
+
+### core
+
+*Add a function profiling utility.*
+
+- fix Warning C4244
+- windows pch off support
+
+### io
+
+*Add a DICOM Enhanced-US volume writer.*
+
+The current Dicom Series writer has been updated to call a specialized writer when the SOP class is [Enhanced US Volume](https://dicom.nema.org/dicom/2013/output/chtml/part03/sect_A.59.html).
+
+The new writer is for now minimalist and maybe not 100% DICOM compliant yet, as it requires, nor checks for mandatory tags to operate. However, all frames of a data`::ImageSeries`(on the Z axis) are saved losslessly in jpeg2000, and Series API allows writing/reading per-frame `Image Position Patient/Volume`, `Image Orientation Patient/Volume`, and `Frame Acquisition Date Time`. Even if the writer doesn't ensure other mandatory tags are present, it is still possible (and desirable) to write them using the Series API with the generated tag name/sop class from sight`::data::dicom::Tag`and sight::data::dicom::SopClass. Note however that the current API is limited to simple attributes, not the one located in a frame sequence like in `Shared Functional Groups Sequence`. Some adaptations are required (the same as \`Image Position Patient…). This part will be updated later when needed.
+
+*Use correct gdcm attributes for US volume.*
+
+- ImagePositionVolume, ImageOrientationVolume, FrameAcquisitionDateTime DICOM attribute are now stored into sequence element when using Enhenced US Volume, as before for CT/MR.
+- DICOM Tags, SOPClasses, Modules definitions are generated from official documentation using python code. This allows friendlier operations (no need to remember exact tag values, or SOP uids).
+- Unit tests have been updated to match changes and use generated DICOM tags, SOPClasses.
+- Some bugs with equality operator have been corrected
+
+*Allow forwarding grabber long running jobs.*
+
+*Add optimize slot to IGrabber/SGrabberProxy.*
+
+*Allow specifying a target camera in SGrabberProxy.*
+
+*Nvjpeg writer implementation.*
+
+A "fast" 2D image writer (sight::io::bitmap::Writer) and its associated service (sight::module::io::bitmap::SWriter) have been implemented. The writer uses NVidia CUDA accelerated JPEG / JPEG2000 encoding library: nvJPEG, if support has been compiled in and if a suitable GPU has been found. Alternatively, libjpeg-turbo, openJPEG, libtiff or libPNG can be used as CPU fallback. The performance should be better than VTK or even OpenCV because of direct API calls and avoided unneeded buffer copy.
+
+> :warning: VTK SImageWriter support for 2D bitmap format has been removed. The support was anyway bugged as the image were saved upsode down.
+>
+> also added:
+> - fix on `LocationDialog::getCurrentSelection()` that erased the first char to return an extension from a wildcard filter. Now there is a `ILocationDialog::getSelectedExtensions()` that returns a vector of extension, in case there are more than one extension from a filter.
+> - some small fix for high dpi displays in the GUI tester code.
+
+*Add zoom capability in video grabbers.*
+
+We added the possibility to zoom on videos. Some hardware devices offers this possibility, so it is better to use this instead of zooming in the visualization pipeline.
+
+## Enhancement:
+
+### build
+
+*Use /Z7 in all cases and enable ccache for windows.*
+
+### ci
+
+*Enable debug optimized build for GUI tester.*
+
+Our GUI tester is very slow in the coverage build. We enabled optimizations for the tester code, especially for the image comparison functions, hoping that this will decrease the number of false positives.
+
+*Increase test timeout on test coverage.*
+
+### core
+
+*Add private tag support.*
+
+*Lower the test epsilon to be a bit more tolerant.*
+
+*Add strict mode to require matrix presence in SFrameMatrixSynchronizer.*
+
+*Add a simple function to set the location of series instances.*
+
+A function was added to set both the position and orientation of a series instance at once, passing a `sight::data::Matrix4`. Besides this, `sight::data::Matrix4` has been modernized.
+
+### filter
+
+*Make SFrameMatrix synchroniser delay specific for each timeline.*
+
+add a vector for the framesTl and one for the matrixTl to store the delay.
+The delay is applied at the synchronization, and the frame/matrix picked is in the past regarding the most recent data, from an amount of delay.
+The timelines are associated through their index.
+
+### io
+
+*Un-pause grabber on successive startCamera calls.*
+
+*Skip camera restart when already started.*
+
+### test
+
+*Enhance global test code coverage.*
+
+Many tests were added, especially for the most used services in our applications, that were untested so far.
+
+*Add external project gui test support.*
+
+- rename the gui test core folder to testCore
+
+-change the ITest profile path handling, by geting the full path, and not using "getWorkingDir()". It will be up to the GUI tests to provide the full profile path.
+
+- add the profile modules. The clasicall sightrun looks for the modules situated relatively to the profile path. This allows to load automatically the project modules; This will be done in the ITest too, at the test setup()
+
+-add -B bundlesPath in the cppunit_main. Similarly to classical applications, the -B argument allows specifying additional bundles path. This will be handled in the unit test too.
+
+- change test templates to add external libs path in the PATH variable  and bundles path
+
+- in the eventHandling, verify that the event catched is a testEvent, and do nothing if it is not one.
+
+-install exec_gui_test and copy it in sight-projects build bin dir
+
+*Improve operator== tests for Data Objects.*
+
+### ui
+
+*Use unique slot to configure Grabbers.*
+
+* rename some slots from SParameter from "set" to "update" for clarity
+* also add a vector of string as part of the parameter_t variant to be able to update all values of enum widget
+
+*Emit signal with value and key from SPreferenceConfiguration.*
+
+The signal, called `preferenceChanged`, has the same signature as the signal `SParameter::parameterChanged`. This simplifies the API when the service needs to listen to a parameter that can be changed from preference or/and from a`SParameter`.
+
+An example of usage is shown in ExSParameter.
+
+*Use a 3 columns layout for SParameters.*
+
+These changes modify SParameters layout to use a 3 columns system instead of the current 6 columns system, to improve the usability of the second and third spinboxes. In addition, the labels of the parameters now can wrap if they are too wide, and a bug where the second and third spinboxes wouldn't be disabled if the depend is disabled is also fixed.
+
+*Apply SParameters' stylesheet globally.*
+
+These changes apply the stylesheet from https://git.ircad.fr/sight/sight/-/merge_requests/795 globally. It can be enabled by setting the `"touch_friendly"` application option to `"true"` at configure time.
+
+*Add a generic signal/slot parameter type.*
+
+*Improve hitboxes for Q*SpinBox controls.*
+
+*Rename toolbar.xml to controls.xml and add more signals.*
+
+=> add some out signals
+=> disconnect fileConfigured with video play
+=> add documentation
+
+### viz
+
+*Add slot in SShapeExtruder to replace right click.*
+
+These changes add a slot called "cancelLastClick" to cancel the last click in the shape extruder. This allows to replace the right click in context where it isn't available, such as in a touchscreen context.
+In addition, this adds a button in SightViewer which triggers this slot when clicked.
+
+*Adapt default transfer function to a reference image.*
+
+The default transfer function can now be adapted to the image pixel type, especially for ultrasound images.
+
+The `data`::Image``no longer holds a default transfer function. To get a default transfer function, you have to use `sight`::module::ui::qt::image::STransferFunction``and specify a reference image as input. This is no issue if you don't want the transfer function selector in the user interface. You can register the service in an invisible view. You can have a look at `Tuto07GenericScene` for instance.
+
+Also, some bugs were fixed in SNegato2DCamera for the computation of the viewport of the axial view.
+
+*Add gestures to scene 3D.*
+
+These changes will allow to use gestures on the 3D scene. It allows in particular to pinch fingers to zoom and to long tap to place a landmark. Simple taps and pan gestures should intuitively map to mouse clicks and mouse drags.
+
+## Refactor:
+
+### build
+
+*Use built-in CMake PCH functions.*
+
+### core
+
+*Introduce SSynchronizer to replace all frame/matrices sync services.*
+
+This refactors fundamentally the synchronization between frames and matrices, by bringing a single service SSynchronization that replaces all the previous ones: `SFrameMatrixSynchronizer`, `SMatrixSynchronizer`, `SMatrixTLSynchronizer` and `SFrameUpdater`. It is much more versatile to answer all the different use cases and his behaviour is well tested.
+
+*Inherit data::Activity from data::Composite.*
+
+*Separate service public and private API.*
+
+We reduced the size of the public API of the IService interface, which is undoubtedly the most used in Sight.
+
+First, the data management responsibility has been moved to the IHasData interface and now holds the getters and setters for inputs, in/outs and outputs. Secondly, a significant part of the implementation of IService methods has been moved to a pimpl in service`::detail::Service`and service::detail::ServiceConnection.
+
+The AppConfigManager was moved in the detail namespace as well, so now the public API only exposes IAppConfigManager.
+
+This refactor also finishes the migration of data::ptr. Now the objects of services are only held in data::ptr, the former input, inout and output maps of IService were removed, which simplifies a lot the code. This also implies that services can no longer specify any data in the XML configuration that is not declared as data::ptr. In this repository, only two services relied on the old behaviour SConfigController and SConfigLauncher. The migration consisted in using a single declared group of objects (data::ptr_vector<data::Object>) instead of multiple undeclared objects. Changes were brought in all XML configurations.
+
+Last, the ObjectService registry refactor was also finished. Its role has been reduced because we no longer rely on it to store the relationship between services and objects. This responsibility is filled by the services themselves. So now, this registry only holds a global list of registered services. It has been renamed accordingly. Doing so, the sight`::service::registry`namespace was removed, and the only other class that was there, sight`::service::registry::Proxy`was moved to sight::core::com::Proxy. Indeed, it has actually no dependency at all on services and is generic enough to be in the core`::com`namespace.
+
+*Deprecate IService::getConfigTree().*
+
+*Remove ConfigurationElement totally.*
+
+*Remove AppManager and Qml apps based on it.*
+
+*Replace ConfigurationElement in IService.*
+
+*Replace ConfigurationElement in all service configurations.*
+
+### io
+
+*Create a widget & window configuration for pacs selector.*
+
+* the widget config is called by the windows config
+* widget can be used if the pacs selector should be integrated in a existing window
+
+*Create macros `SIGHT_REGISTER_SERIALIZER` to ease the serialization's function registration for each data.*
+
+### viz
+
+*Simplify layer configuration for scene3d adaptors.*
+
+The scene3d adaptors no longer specify their layer. Instead, it is implicitly declared in the `SRender` configuration by putting the adaptors as children of the layers tags.
+
+```xml
+<service uid="genericSceneSrv" type="sight::viz::scene3d::SRender" >
+    <scene>
+        <background topColor="#36393E" bottomColor="#36393E" />
+
+        <layer id="first" order="1" />
+            <adaptor uid="trackballInteractorAdp" />
+        </layer>
+
+        <layer id="second" order="2" />
+            <adaptor uid="negatoAdp" />
+        </layer>
+
+    </scene>
+</service>
+```
+
+*Store transfer function as 2D Nx1x1 texture.*
+
+## Bug fixes:
+
+### build
+
+*Update dependency URLs.*
+
+*Use relative paths in launcher installed scripts.*
+
+*Only install header files when necessary.*
+
+This prevents rebuilding a child repository each time sight is installed. To achieve this, a custom target was added to generate the library headers without `*_API` macros in the build folder, and then copy these at install. Previously, we modified the files directly in the install folders, which led to always modify the timestamp of the headers, thus triggering the rebuild.
+
+### ci
+
+*Use 'fetch' strategy instead of none on Windows.*
+
+On Windows, we do not have docker runners. Thus the build folders are reused between jobs. GIT_STRATEGY='none' is faster but does not provide the clean stage that is performed with 'clone' and 'fetch'. Because of this, we may end up with artifacts from previous jobs in the deploy stages. To overcome this, we use the 'fetch' strategy. It is useless to get the sources, but, this gives us the clean stage which is impossible to do in a build script.
+See https://gitlab.com/gitlab-org/gitlab/-/issues/17103
+
+*Doxygen deployment.*
+
+### io
+
+*Use new bitmap writer for screenshots.*
+
+*Ensure serializer register is unique.*
+
+*Make loop great again.*
+
+reset the timelines when reading process reached the end and is in loop mode
+add loop mode (slot + config + mechanism) in SMatricesReader
+make SMatricesReader pause system similar to SFrameGrabber one
+
+*Serialize & deserialize correctly empty objects.*
+
+- Data::Mesh
+  * do not resize if mesh has no points / cells
+  * Add VTK_EMPTY_CELLS in switch case
+- Data::Array
+  * do not resize if deseralized array is empty
+- Data`::Image`/ ImageSeries
+  * initialize Image windowCenter and windowWidth to empty vectors
+- Data::TransfertFunction
+  * mistake in operator==
+  * also test pieces vector
+  * implementation of operator !=
+- Misc
+  * Remove Graph, Node, Edge, Port, ReconstructionTraits, ROITraits Data
+  * Use operator== to compare all data in sessionTest
+
+### test
+
+*Handle external modules properly in test bat and bin.*
+
+*Improve LoadDicom GUI test sensitiveness.*
+
+### ui
+
+*Fix password management for preferences.*
+
+* restore BadPassword exception
+* changed inputDialog to return value and a boolean to know if user canceled it
+* allow closing sight if user cancel or if wrong password have been entered 3 times
+* updated ExActivities plugin configuration to force encryption and to exit on password error
+* "once" passwod policy configuration has been changed to "global": "global" which means the global password will be used, if set, otherwise or if wrong, it will be asked to the user
+* "default" configuration has been removed. User should simply not set any configuration if they want the default to apply
+
+*Add a slot in SLandmarks scene 3d adaptor to take care of landmarks' group renaming.*
+
+*Replace delete by deleteLater in QtContainer class.*
+
+To get rid of the deletion order we use deleteLater() function on the m_container QPointer.
+
+*Destroy the GUI elements in the reverse order in IGuiContainer.*
+
+### viz
+
+*Use a read lock on the image when possible in SNegato2DCamera.*
+
+When receiving the resize event, we may end up with a deadlock if the image is already locked in writing. This may happen for instance with a writer that uses a progress bar.
+
+*Switch current drawable when swiching OpenGL context.*
+
+
 # sight 22.0.0
 
 ## Enhancement:
