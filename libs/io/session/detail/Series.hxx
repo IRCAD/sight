@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -44,7 +44,6 @@ namespace sight::io::session::detail::Series
 {
 
 constexpr static auto s_uuid {"uuid"};
-constexpr static auto s_common_dataset {"common_dataset.dcm"};
 constexpr static auto s_instance_dataset {"instance_dataset.dcm"};
 constexpr static auto s_num_instances {"num_instances"};
 
@@ -62,17 +61,6 @@ inline static void write(
 
     // Add a version number. Not mandatory, but could help for future release
     Helper::writeVersion<data::Series>(tree, 1);
-
-    {
-        // Get an output stream
-        const auto& ostream = archive.openFile(
-            std::filesystem::path(series->getUUID() + "/" + s_common_dataset),
-            password
-        );
-
-        // Write to disk the common dataset as raw data
-        series->getDataSet().Write<gdcm::ExplicitDataElement, gdcm::SwapperNoOp>(*ostream);
-    }
 
     // Store the instance count to be able to know how many instances to read
     tree.put(s_num_instances, series->numInstances());
@@ -107,18 +95,6 @@ inline static data::Series::sptr read(
 
     // Get the input stream
     const auto& uuid = tree.get<std::string>(s_uuid);
-
-    {
-        const auto& istream = archive.openFile(
-            std::filesystem::path(uuid + "/" + s_common_dataset),
-            password
-        );
-
-        // Read the common dataset
-        gdcm::DataSet dataset;
-        dataset.Read<gdcm::ExplicitDataElement, gdcm::SwapperNoOp>(*istream);
-        series->setDataSet(dataset);
-    }
 
     // Read the instance count to be able to know how many instances to read
     for(std::size_t instance = 0, end = tree.get<std::size_t>(s_num_instances) ; instance < end ; ++instance)

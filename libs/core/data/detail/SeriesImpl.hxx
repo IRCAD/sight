@@ -28,13 +28,24 @@
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
 
+#ifdef WIN32
+#pragma warning( push )
+#pragma warning( disable : 4702) // warning C4702: unreachable code
+#endif
+
 #include <gdcmDataSet.h>
+#include <gdcmExplicitDataElement.h>
 #include <gdcmImage.h>
 #include <gdcmImageReader.h>
 #include <gdcmMediaStorage.h>
+#include <gdcmSwapper.h>
 #include <gdcmTagKeywords.h>
 #include <gdcmTagToVR.h>
 #include <gdcmUIDs.h>
+
+#ifdef WIN32
+#pragma warning( pop )
+#endif
 
 namespace sight::data::detail
 {
@@ -287,6 +298,11 @@ public:
         std::optional<typename A::ArrayType>
     > getValue(std::size_t instance = 0) const
     {
+        if(instance >= m_frame_datasets.size())
+        {
+            return {};
+        }
+
         const auto& dataset = getDataSet(instance);
 
         // Unfortunately with GDCM, all non pure string attributes (Integer String, Decimal String, ...) will always
@@ -329,6 +345,11 @@ public:
     template<typename A>
     [[nodiscard]] inline std::string getStringValue(std::size_t instance = 0) const
     {
+        if(instance >= m_frame_datasets.size())
+        {
+            return {};
+        }
+
         const auto& value = getValue<A>(instance);
 
         if(value)
@@ -353,6 +374,11 @@ public:
     template<typename A>
     [[nodiscard]] constexpr std::vector<typename A::ArrayType> getValues(std::size_t instance = 0) const
     {
+        if(instance >= m_frame_datasets.size())
+        {
+            return {};
+        }
+
         A attribute {};
         attribute.SetFromDataSet(getDataSet(instance));
 
@@ -400,6 +426,11 @@ public:
     template<typename A>
     [[nodiscard]] inline std::vector<std::string> getStringValues(std::size_t instance = 0) const noexcept
     {
+        if(instance >= m_frame_datasets.size())
+        {
+            return {};
+        }
+
         A attribute;
         attribute.SetFromDataSet(getDataSet(instance));
 
@@ -576,6 +607,11 @@ public:
     [[nodiscard]] inline std::string getArithmeticValue(const gdcm::Tag& tag, std::size_t instance = 0) const
     {
         static_assert(std::is_arithmetic_v<T>, "The type must be arithmetic.");
+
+        if(instance >= m_frame_datasets.size())
+        {
+            return {};
+        }
 
         const auto& dataset = getDataSet(instance);
 
@@ -869,6 +905,27 @@ public:
         {
             // Tag not found, remove it
             getDataSet(instance).Remove(tag);
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    inline void copyFrameDatasets(const FrameDatasets& source)
+    {
+        m_frame_datasets = source;
+
+        for(auto& series_dataset : m_frame_datasets)
+        {
+            // Using streams to perform a deep copy is a required nonsense since GDCM only allows shallow copy
+            std::ostringstream os;
+            series_dataset.first.Write<gdcm::ExplicitDataElement, gdcm::SwapperNoOp>(os);
+
+            std::istringstream is;
+            is.str(os.str());
+
+            gdcm::DataSet new_dataset;
+            new_dataset.Read<gdcm::ExplicitDataElement, gdcm::SwapperNoOp>(is);
+            series_dataset.first = new_dataset;
         }
     }
 

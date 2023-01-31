@@ -920,10 +920,14 @@ inline static data::SeriesSet::sptr readImageInstance(
         {
             image_series->setDataSet(gdcm_dataset);
 
-            // Make direction vectors orthogonal. Also found in ITK
-            // This is for some strange DICOM files that have non orthogonal direction vectors.
-            const auto& tuned_directions = tuneDirections(gdcm_image.GetDirectionCosines());
-            image_series->setImageOrientationPatient(tuned_directions);
+            if(!image_series->isMultiFrame())
+            {
+                // Make direction vectors orthogonal. Also found in ITK
+                // This is for some strange DICOM files that have non orthogonal direction vectors.
+                /// @note This is not done for multi-frame images, because frame may be independently oriented.
+                const auto& tuned_directions = tuneDirections(gdcm_image.GetDirectionCosines());
+                image_series->setImageOrientationPatient(tuned_directions);
+            }
 
             // Add the series to a new dataset
             if(!splitted_series)

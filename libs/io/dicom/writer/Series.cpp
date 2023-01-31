@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,7 @@
 
 #include "io/dicom/writer/Series.hpp"
 
+#include "io/dicom/Writer.hpp"
 #include "io/dicom/writer/iod/ComprehensiveSRIOD.hpp"
 #include "io/dicom/writer/iod/CTMRImageIOD.hpp"
 #include "io/dicom/writer/iod/SpatialFiducialsIOD.hpp"
@@ -98,6 +99,16 @@ void Series::write()
                 documentIOD.write(series);
             }
         }
+    }
+    else if(sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::EnhancedUSVolumeStorage))
+    {
+        auto seriesSet = data::SeriesSet::New();
+        seriesSet->push_back(std::const_pointer_cast<data::Series>(series));
+
+        auto writer = io::dicom::Writer::New();
+        writer->setObject(seriesSet);
+        writer->setFolder(getFolder());
+        writer->write();
     }
     else if(sopClassUID == gdcm::MediaStorage::GetMSString(gdcm::MediaStorage::SurfaceSegmentationStorage))
     {

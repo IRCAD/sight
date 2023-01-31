@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -2320,31 +2320,41 @@ void SeriesTest::frameLabelTest()
 void SeriesTest::frameAcquisitionTimePointTest()
 {
     // DICOM DT format is  "YYYYMMDDHHMMSS.FFFFFF"
-    static const std::string expected_frameAcquisitionDateTime0("20221026150703.000000");
-    static const std::string expected_frameAcquisitionDateTime1("20221026150703.000001");
-    static const std::string expected_frameAcquisitionDateTime2("20221026150703.000002");
-    static const std::string expected_frameAcquisitionDateTime3("2023");
-    static const std::string expected_frameAcquisitionDateTime3b("20230101000000.000000");
-    static const std::string expected_frameAcquisitionDateTime4("20221026150703.100000");
-    static const std::string expected_frameAcquisitionDateTime5("20221026150703");
-    static const std::string expected_frameAcquisitionDateTime5b("20221026150703.000000");
+    static const std::string expected_0("20221026150703.000000");
+    static const std::string expected_1("20221026150703.000001");
+    static const std::string expected_2("20221026150703.000002");
+    static const std::string expected_3("2023");
+    static const std::string expected_3b("20230101000000.000000");
+    static const std::string expected_4("20221026150703.100000");
+    static const std::string expected_5("20221026150703");
+    static const std::string expected_5b("20221026150703.000000");
 
     auto series = data::ImageSeries::New();
 
-    series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime0, 0);
-    series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime1, 1);
-    series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime2, 2);
-    series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime3, 3);
-    series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime4, 4);
-    series->setFrameAcquisitionDateTime(expected_frameAcquisitionDateTime5, 5);
+    series->setFrameAcquisitionDateTime(expected_0, 0);
+    series->setFrameAcquisitionDateTime(expected_1, 1);
+    series->setFrameAcquisitionDateTime(expected_2, 2);
+    series->setFrameAcquisitionDateTime(expected_3, 3);
+    series->setFrameAcquisitionDateTime(expected_4, 4);
+    series->setFrameAcquisitionDateTime(expected_5, 5);
 
-    const auto timePoint0 = series->getFrameAcquisitionTimePoint(0);
-    const auto timePoint1 = series->getFrameAcquisitionTimePoint(1);
-    const auto timePoint2 = series->getFrameAcquisitionTimePoint(2);
-    const auto timePoint3 = series->getFrameAcquisitionTimePoint(3);
-    const auto timePoint4 = series->getFrameAcquisitionTimePoint(4);
-    const auto timePoint5 = series->getFrameAcquisitionTimePoint(5);
+    const auto timePoint0 = *series->getFrameAcquisitionTimePoint(0);
+    const auto timePoint1 = *series->getFrameAcquisitionTimePoint(1);
+    const auto timePoint2 = *series->getFrameAcquisitionTimePoint(2);
+    const auto timePoint3 = *series->getFrameAcquisitionTimePoint(3);
+    const auto timePoint4 = *series->getFrameAcquisitionTimePoint(4);
+    const auto timePoint5 = *series->getFrameAcquisitionTimePoint(5);
 
+    CPPUNIT_ASSERT_EQUAL(expected_0, data::Series::timePointToDateTime(timePoint0));
+    CPPUNIT_ASSERT_EQUAL(expected_1, data::Series::timePointToDateTime(timePoint1));
+    CPPUNIT_ASSERT_EQUAL(expected_2, data::Series::timePointToDateTime(timePoint2));
+    CPPUNIT_ASSERT_EQUAL(expected_4, data::Series::timePointToDateTime(timePoint4));
+
+    // Using time point API will force "YYYYMMDDHHMMSS.FFFFFF" format
+    CPPUNIT_ASSERT_EQUAL(expected_3b, data::Series::timePointToDateTime(timePoint3));
+    CPPUNIT_ASSERT_EQUAL(expected_5b, data::Series::timePointToDateTime(timePoint5));
+
+    // Test setting time point directly, with overwrite
     series->setFrameAcquisitionTimePoint(timePoint1, 0);
     series->setFrameAcquisitionTimePoint(timePoint2, 1);
     series->setFrameAcquisitionTimePoint(timePoint3, 2);
@@ -2352,21 +2362,65 @@ void SeriesTest::frameAcquisitionTimePointTest()
     series->setFrameAcquisitionTimePoint(timePoint5, 4);
     series->setFrameAcquisitionTimePoint(timePoint0, 5);
 
-    const std::string actual_frameAcquisitionDateTime1(*(series->getFrameAcquisitionDateTime(0)));
-    const std::string actual_frameAcquisitionDateTime2(*(series->getFrameAcquisitionDateTime(1)));
-    const std::string actual_frameAcquisitionDateTime3(*(series->getFrameAcquisitionDateTime(2)));
-    const std::string actual_frameAcquisitionDateTime4(*(series->getFrameAcquisitionDateTime(3)));
-    const std::string actual_frameAcquisitionDateTime5(*(series->getFrameAcquisitionDateTime(4)));
-    const std::string actual_frameAcquisitionDateTime0(*(series->getFrameAcquisitionDateTime(5)));
+    const std::string actual_1(*(series->getFrameAcquisitionDateTime(0)));
+    const std::string actual_2(*(series->getFrameAcquisitionDateTime(1)));
+    const std::string actual_3(*(series->getFrameAcquisitionDateTime(2)));
+    const std::string actual_4(*(series->getFrameAcquisitionDateTime(3)));
+    const std::string actual_5(*(series->getFrameAcquisitionDateTime(4)));
+    const std::string actual_0(*(series->getFrameAcquisitionDateTime(5)));
 
-    CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime0, actual_frameAcquisitionDateTime0);
-    CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime1, actual_frameAcquisitionDateTime1);
-    CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime2, actual_frameAcquisitionDateTime2);
-    CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime4, actual_frameAcquisitionDateTime4);
+    CPPUNIT_ASSERT_EQUAL(expected_0, actual_0);
+    CPPUNIT_ASSERT_EQUAL(expected_1, actual_1);
+    CPPUNIT_ASSERT_EQUAL(expected_2, actual_2);
+    CPPUNIT_ASSERT_EQUAL(expected_4, actual_4);
 
     // Using time point API will force "YYYYMMDDHHMMSS.FFFFFF" format
-    CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime3b, actual_frameAcquisitionDateTime3);
-    CPPUNIT_ASSERT_EQUAL(expected_frameAcquisitionDateTime5b, actual_frameAcquisitionDateTime5);
+    CPPUNIT_ASSERT_EQUAL(expected_3b, actual_3);
+    CPPUNIT_ASSERT_EQUAL(expected_5b, actual_5);
+
+    // Test DeepCopy
+    {
+        auto destination      = data::ImageSeries::New();
+        auto destination_lock = destination->dump_lock();
+
+        {
+            auto source      = data::ImageSeries::New();
+            auto source_lock = source->dump_lock();
+
+            source->setFrameAcquisitionDateTime(expected_0, 0);
+            source->setFrameAcquisitionDateTime(expected_1, 1);
+            source->setFrameAcquisitionDateTime(expected_2, 2);
+            source->setFrameAcquisitionDateTime(expected_3, 3);
+            source->setFrameAcquisitionDateTime(expected_4, 4);
+            source->setFrameAcquisitionDateTime(expected_5, 5);
+
+            destination->deepCopy(source);
+
+            // This should not change destination
+            source->setFrameAcquisitionDateTime(expected_5, 0);
+            source->setFrameAcquisitionDateTime(expected_0, 1);
+            source->setFrameAcquisitionDateTime(expected_1, 2);
+            source->setFrameAcquisitionDateTime(expected_2, 3);
+            source->setFrameAcquisitionDateTime(expected_3, 4);
+            source->setFrameAcquisitionDateTime(expected_4, 5);
+        }
+
+        const std::string destination_0(*(destination->getFrameAcquisitionDateTime(0)));
+        const std::string destination_1(*(destination->getFrameAcquisitionDateTime(1)));
+        const std::string destination_2(*(destination->getFrameAcquisitionDateTime(2)));
+        const std::string destination_3(*(destination->getFrameAcquisitionDateTime(3)));
+        const std::string destination_4(*(destination->getFrameAcquisitionDateTime(4)));
+        const std::string destination_5(*(destination->getFrameAcquisitionDateTime(5)));
+
+        CPPUNIT_ASSERT_EQUAL(expected_0, destination_0);
+        CPPUNIT_ASSERT_EQUAL(expected_1, destination_1);
+        CPPUNIT_ASSERT_EQUAL(expected_2, destination_2);
+        CPPUNIT_ASSERT_EQUAL(expected_4, destination_4);
+
+        // Using time point API will force "YYYYMMDDHHMMSS.FFFFFF" format
+        CPPUNIT_ASSERT_EQUAL(expected_3b, actual_3);
+        CPPUNIT_ASSERT_EQUAL(expected_5b, actual_5);
+    }
 }
 
 //------------------------------------------------------------------------------

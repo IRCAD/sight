@@ -19,6 +19,24 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+
+/************************************************************************
+ *
+ * Copyright (C) 2009-2023 IRCAD France Copyright (C) 2012-2019 IHU Strasbourg
+ *
+ * This file is part of Sight.
+ *
+ * Sight is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
+ * version.
+ *
+ * Sight is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
+ * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with Sight. If not, see
+ * <https://www.gnu.org/licenses/>.
+ *
+ ***********************************************************************/
 #include "data/ImageSeries.hpp"
 #include "data/ModelSeries.hpp"
 
@@ -38,6 +56,7 @@
 #include <glm/gtc/epsilon.hpp>
 
 #include <iomanip>
+#include <sstream>
 #include <utility>
 
 SIGHT_REGISTER_DATA(sight::data::Series)
@@ -219,7 +238,7 @@ void Series::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCop
         !bool(other)
     );
 
-    m_pimpl->m_frame_datasets = other->m_pimpl->m_frame_datasets;
+    m_pimpl->copyFrameDatasets(other->m_pimpl->m_frame_datasets);
 
     BaseClass::deepCopy(source, cache);
 }
