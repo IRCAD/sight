@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -189,7 +189,7 @@ void PasswordKeeper::set_global_password(
 
 #if defined(SIGHT_ENABLE_ENCRYPTED_LOG)
     // Check if the password is new
-    if(restart_logger && core::crypto::decrypt(s_password, get_global_password_key()) != password)
+    if(restart_logger && core::crypto::decrypt(s_password, getGlobalPasswordKey()) != password)
     {
         // If we use encrypted log
         if(auto& logger = core::log::SpyLogger::get(); logger.is_log_encrypted())

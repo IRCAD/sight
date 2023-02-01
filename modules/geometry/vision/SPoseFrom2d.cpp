@@ -140,7 +140,6 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timesta
         for(const auto& markerKey : m_matricesTag)
         {
             std::vector<Marker> markers;
-            std::size_t indexTL = 0;
 
             // For each camera timeline
             for(const auto& markerMap : m_markerMap)
@@ -158,8 +157,6 @@ void SPoseFrom2d::computeRegistration(core::HiResClock::HiResClockType /*timesta
 
                     markers.push_back(currentMarker);
                 }
-
-                ++indexTL;
             }
 
             auto matrix = m_matrix[markerIndex].lock();
