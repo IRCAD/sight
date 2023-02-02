@@ -641,6 +641,11 @@ public:
     /// Helper function to convert a std::chrono::system_clock::time_point to /from DICOM date time string
     DATA_API static std::string timePointToDateTime(const std::chrono::system_clock::time_point& timePoint);
 
+    /// Shrink the number of instances / frames to the given size.
+    /// This is mainly an optimization and a bugfix when using GDCM to write a multi-frame DICOM file.
+    /// @param size
+    DATA_API void shrinkFrames(std::size_t size);
+
 protected:
 
     std::unique_ptr<detail::SeriesImpl> m_pimpl;

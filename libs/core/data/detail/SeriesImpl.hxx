@@ -929,6 +929,30 @@ public:
         }
     }
 
+    /// Shrink a multi-frame sequence attribute of a sequence group.
+    /// @param size the new number of frames
+    inline void shrinkMultiFrame(std::size_t size)
+    {
+        if(!m_frame_datasets.empty())
+        {
+            auto& dataset = m_frame_datasets[0].first;
+
+            // Remove the extra frames
+            const auto& group_tag = gdcm::Keywords::PerFrameFunctionalGroupsSequence::GetTag();
+            if(dataset.FindDataElement(group_tag))
+            {
+                // Retrieve the Frame Sequence
+                auto group_sequence = dataset.GetDataElement(group_tag).GetValueAsSQ();
+
+                // Resize the sequence
+                group_sequence->SetNumberOfItems(size);
+
+                // Set the number of frames
+                setValue<gdcm::Keywords::NumberOfFrames>(std::int32_t(size));
+            }
+        }
+    }
+
     /// Pointer to the public class
     sight::data::Series* const m_series {nullptr};
 

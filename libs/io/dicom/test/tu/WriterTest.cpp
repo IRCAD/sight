@@ -233,6 +233,12 @@ inline static void compareEnhancedUSVolume(
         );
     }
 
+    // Ensure that getting value outside the frame range returns std::nullopts
+    CPPUNIT_ASSERT(
+        !expected->getFrameAcquisitionDateTime(actual_sizes[2])
+        && !actual->getFrameAcquisitionDateTime(actual_sizes[2])
+    );
+
     // Compare buffer
     const auto expected_locked = expected->dump_lock();
     const auto actual_locked   = actual->dump_lock();
@@ -402,6 +408,51 @@ void WriterTest::writeEnhancedUSVolumeTest()
             CPPUNIT_ASSERT(std::filesystem::exists(folder / "000-custom_filename.dcm"));
             CPPUNIT_ASSERT(std::filesystem::exists(folder / "001-custom_filename.dcm"));
             CPPUNIT_ASSERT(std::filesystem::exists(folder / "002-custom_filename.dcm"));
+        }
+    }
+
+    // test resized ImageSeries
+    {
+        const auto& folder   = createTempFolder();
+        const auto& expected = getUSVolumeImage(2, 4);
+
+        // Write a 4 frames RGB uint8 image, with a custom filename
+        {
+            auto seriesSet = data::SeriesSet::New();
+
+            auto resized = data::ImageSeries::New();
+            resized->deepCopy(expected);
+
+            // Resize and set a value at the end...
+            auto new_size = expected->getSize();
+            new_size[2] += 1;
+            resized->resize(new_size, expected->getType(), expected->getPixelFormat());
+            resized->setFrameAcquisitionDateTime(formatDateTime(std::chrono::system_clock::now()), new_size[2] - 1);
+
+            // Resize back to original size
+            resized->resize(expected->getSize(), expected->getType(), expected->getPixelFormat());
+            seriesSet->push_back(resized);
+
+            auto writer = io::dicom::Writer::New();
+            writer->setObject(seriesSet);
+            writer->setFolder(folder);
+            writer->setFile("custom_filename.dcm");
+
+            CPPUNIT_ASSERT_NO_THROW(writer->write());
+            CPPUNIT_ASSERT(std::filesystem::exists(folder / "custom_filename.dcm"));
+        }
+
+        // Read the previously written 4 frames image
+        {
+            auto seriesSet = data::SeriesSet::New();
+            auto reader    = io::dicom::Reader::New();
+            reader->setObject(seriesSet);
+            reader->setFolder(folder);
+
+            CPPUNIT_ASSERT_NO_THROW(reader->read());
+            CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
+
+            compareEnhancedUSVolume(expected, data::ImageSeries::dynamicCast(seriesSet->front()));
         }
     }
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -272,7 +272,7 @@ public:
      *
      * @return Allocated size in bytes
      */
-    DATA_API std::size_t resize(const Size& size, const core::Type& type, PixelFormat format);
+    DATA_API virtual std::size_t resize(const Size& size, const core::Type& type, PixelFormat format);
     /// @}
 
     /// @brief return image size in bytes

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,6 +34,7 @@ class ImageSeriesTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(ImageSeriesTest);
 CPPUNIT_TEST(imageTest);
 CPPUNIT_TEST(equalityTest);
+CPPUNIT_TEST(resizeTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -44,6 +45,7 @@ public:
 
     void imageTest();
     static void equalityTest();
+    static void resizeTest();
 
 private:
 

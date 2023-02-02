@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -279,6 +279,53 @@ void ImageSeriesTest::equalityTest()
     auto series3 = data::ImageSeries::New();
     series3->deepCopy(series1);
     CPPUNIT_ASSERT(*series1 == *series3 && !(*series1 != *series3));
+}
+
+//------------------------------------------------------------------------------
+
+void ImageSeriesTest::resizeTest()
+{
+    auto series1 = data::ImageSeries::New();
+    series1->setSOPKeyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+    utestData::generator::Image::generateRandomImage(series1, core::Type::INT8);
+    auto size = series1->getSize();
+
+    for(std::size_t i = 0, end = size[2] ; i < end ; ++i)
+    {
+        series1->setImagePositionPatient({0.1 * double(i), 0.2 * double(i), 0.3 * double(i)}, i);
+        series1->setFrameComments("Comments" + std::to_string(i), i);
+        series1->setFrameLabel("Label" + std::to_string(i), i);
+    }
+
+    auto series2 = data::ImageSeries::New();
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+
+    series2->deepCopy(series1);
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
+
+    // Resize to 2 slices
+    size[2] = 2;
+    series1->resize(size, series1->getType(), series1->getPixelFormat());
+
+    CPPUNIT_ASSERT(*series1 != *series2 && !(*series1 == *series2));
+
+    CPPUNIT_ASSERT(series2->getImagePositionPatient(0) == series1->getImagePositionPatient(0));
+    CPPUNIT_ASSERT(series2->getImagePositionPatient(1) == series1->getImagePositionPatient(1));
+    CPPUNIT_ASSERT(
+        series2->getImagePositionPatient(2) != series1->getImagePositionPatient(2)
+        && series1->getImagePositionPatient(2).empty()
+    );
+
+    CPPUNIT_ASSERT_EQUAL(*series2->getFrameComments(0), *series1->getFrameComments(0));
+    CPPUNIT_ASSERT_EQUAL(*series2->getFrameComments(1), *series1->getFrameComments(1));
+    CPPUNIT_ASSERT(series2->getFrameComments(2) && !series1->getFrameComments(2));
+
+    CPPUNIT_ASSERT_EQUAL(*series2->getFrameLabel(0), *series1->getFrameLabel(0));
+    CPPUNIT_ASSERT_EQUAL(*series2->getFrameLabel(1), *series1->getFrameLabel(1));
+    CPPUNIT_ASSERT(series2->getFrameLabel(2) && !series1->getFrameLabel(2));
+
+    series2->deepCopy(series1);
+    CPPUNIT_ASSERT(*series1 == *series2 && !(*series1 != *series2));
 }
 
 //------------------------------------------------------------------------------

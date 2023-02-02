@@ -1056,6 +1056,22 @@ std::size_t Series::numFrames() const noexcept
 
 //------------------------------------------------------------------------------
 
+void Series::shrinkFrames(std::size_t size)
+{
+    if(isMultiFrame())
+    {
+        m_pimpl->m_frame_datasets.resize(1);
+    }
+    else if(size < m_pimpl->m_frame_datasets.size())
+    {
+        m_pimpl->m_frame_datasets.resize(size);
+    }
+
+    m_pimpl->shrinkMultiFrame(size);
+}
+
+//------------------------------------------------------------------------------
+
 bool Series::sort(const std::vector<std::size_t>& sorted)
 {
     // Some checks to be sure everything is fine
@@ -2382,28 +2398,11 @@ std::vector<double> Series::getImagePositionPatient(std::size_t instance) const
         // ...
         // <shared Functional Groups Sequence Attribute>
         // | ...
-
-        // Try with Per-Frame Functional Groups
-        if(auto imagePositionPatient =
-               m_pimpl->getMultiFrameValues<
-                   gdcm::Keywords::PerFrameFunctionalGroupsSequence,
-                   gdcm::Keywords::PlanePositionSequence,
-                   gdcm::Keywords::ImagePositionPatient
-               >(instance); !imagePositionPatient.empty())
-        {
-            return imagePositionPatient;
-        }
-
-        // Try with shared Functional Groups
-        if(auto imagePositionPatient =
-               m_pimpl->getMultiFrameValues<
-                   gdcm::Keywords::SharedFunctionalGroupsSequence,
-                   gdcm::Keywords::PlanePositionSequence,
-                   gdcm::Keywords::ImagePositionPatient
-               >(0); !imagePositionPatient.empty())
-        {
-            return imagePositionPatient;
-        }
+        return m_pimpl->getMultiFrameValues<
+            gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+            gdcm::Keywords::PlanePositionSequence,
+            gdcm::Keywords::ImagePositionPatient
+        >(instance);
     }
 
     // Default case use simple ImagePositionPatient tag values.
@@ -2441,16 +2440,6 @@ void Series::setImagePositionPatient(const std::vector<double>& imagePositionPat
             gdcm::Keywords::PlanePositionSequence,
             gdcm::Keywords::ImagePositionPatient
         >(imagePositionPatient, instance);
-
-        // Also set for the shared for first frame
-        if(instance == 0)
-        {
-            m_pimpl->setMultiFrameValues<
-                gdcm::Keywords::SharedFunctionalGroupsSequence,
-                gdcm::Keywords::PlanePositionSequence,
-                gdcm::Keywords::ImagePositionPatient
-            >(imagePositionPatient, instance);
-        }
     }
     else
     {
@@ -2484,28 +2473,11 @@ std::vector<double> Series::getImageOrientationPatient(std::size_t instance) con
         // <shared Functional Groups Sequence Attribute>
         // | ...
         // Assert if the SOP class is not set
-
-        // Try with Per-Frame Functional Groups
-        if(auto imageOrientationPatient =
-               m_pimpl->getMultiFrameValues<
-                   gdcm::Keywords::PerFrameFunctionalGroupsSequence,
-                   gdcm::Keywords::PlaneOrientationSequence,
-                   gdcm::Keywords::ImageOrientationPatient
-               >(instance); !imageOrientationPatient.empty())
-        {
-            return imageOrientationPatient;
-        }
-
-        // Try with shared Functional Groups
-        if(auto imageOrientationPatient =
-               m_pimpl->getMultiFrameValues<
-                   gdcm::Keywords::SharedFunctionalGroupsSequence,
-                   gdcm::Keywords::PlaneOrientationSequence,
-                   gdcm::Keywords::ImageOrientationPatient
-               >(0); !imageOrientationPatient.empty())
-        {
-            return imageOrientationPatient;
-        }
+        return m_pimpl->getMultiFrameValues<
+            gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+            gdcm::Keywords::PlaneOrientationSequence,
+            gdcm::Keywords::ImageOrientationPatient
+        >(instance);
     }
 
     return m_pimpl->getValues<gdcm::Keywords::ImageOrientationPatient>(instance);
@@ -2541,16 +2513,6 @@ void Series::setImageOrientationPatient(const std::vector<double>& imageOrientat
             gdcm::Keywords::PlaneOrientationSequence,
             gdcm::Keywords::ImageOrientationPatient
         >(imageOrientationPatient, instance);
-
-        // Also set for the shared for first frame
-        if(instance == 0)
-        {
-            m_pimpl->setMultiFrameValues<
-                gdcm::Keywords::SharedFunctionalGroupsSequence,
-                gdcm::Keywords::PlaneOrientationSequence,
-                gdcm::Keywords::ImageOrientationPatient
-            >(imageOrientationPatient, instance);
-        }
     }
     else
     {
@@ -2578,22 +2540,11 @@ std::vector<double> Series::getImagePositionVolume(std::size_t frameIndex) const
     // | ...
 
     // Try with Per-Frame Functional Groups
-    if(auto imagePositionVolume =
-           m_pimpl->getMultiFrameValues<
-               gdcm::Keywords::PerFrameFunctionalGroupsSequence,
-               gdcm::Keywords::PlanePositionVolumeSequence,
-               gdcm::Keywords::ImagePositionVolume
-           >(frameIndex); !imagePositionVolume.empty())
-    {
-        return imagePositionVolume;
-    }
-
-    // Try with shared Functional Groups
     return m_pimpl->getMultiFrameValues<
-        gdcm::Keywords::SharedFunctionalGroupsSequence,
+        gdcm::Keywords::PerFrameFunctionalGroupsSequence,
         gdcm::Keywords::PlanePositionVolumeSequence,
         gdcm::Keywords::ImagePositionVolume
-    >(0);
+    >(frameIndex);
 }
 
 //------------------------------------------------------------------------------
@@ -2619,16 +2570,6 @@ void Series::setImagePositionVolume(const std::vector<double>& imagePositionVolu
         gdcm::Keywords::PlanePositionSequence,
         gdcm::Keywords::ImagePositionVolume
     >(imagePositionVolume, frameIndex);
-
-    // Also set for the shared for first frame
-    if(frameIndex == 0)
-    {
-        m_pimpl->setMultiFrameValues<
-            gdcm::Keywords::SharedFunctionalGroupsSequence,
-            gdcm::Keywords::PlanePositionSequence,
-            gdcm::Keywords::ImagePositionVolume
-        >(imagePositionVolume, frameIndex);
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -2649,24 +2590,11 @@ std::vector<double> Series::getImageOrientationVolume(std::size_t frameIndex) co
     // ...
     // <shared Functional Groups Sequence Attribute>
     // | ...
-
-    // Try with Per-Frame Functional Groups
-    if(auto imageOrientationVolume =
-           m_pimpl->getMultiFrameValues<
-               gdcm::Keywords::PerFrameFunctionalGroupsSequence,
-               gdcm::Keywords::PlaneOrientationVolumeSequence,
-               gdcm::Keywords::ImageOrientationVolume
-           >(frameIndex); !imageOrientationVolume.empty())
-    {
-        return imageOrientationVolume;
-    }
-
-    // Try with shared Functional Groups
     return m_pimpl->getMultiFrameValues<
-        gdcm::Keywords::SharedFunctionalGroupsSequence,
+        gdcm::Keywords::PerFrameFunctionalGroupsSequence,
         gdcm::Keywords::PlaneOrientationVolumeSequence,
         gdcm::Keywords::ImageOrientationVolume
-    >(0);
+    >(frameIndex);
 }
 
 //------------------------------------------------------------------------------
@@ -2692,16 +2620,6 @@ void Series::setImageOrientationVolume(const std::vector<double>& imageOrientati
         gdcm::Keywords::PlaneOrientationSequence,
         gdcm::Keywords::ImageOrientationVolume
     >(imageOrientationVolume, frameIndex);
-
-    // Also set for the shared for first frame
-    if(frameIndex == 0)
-    {
-        m_pimpl->setMultiFrameValues<
-            gdcm::Keywords::SharedFunctionalGroupsSequence,
-            gdcm::Keywords::PlaneOrientationSequence,
-            gdcm::Keywords::ImageOrientationVolume
-        >(imageOrientationVolume, frameIndex);
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -2722,27 +2640,16 @@ std::optional<std::string> Series::getFrameAcquisitionDateTime(std::size_t frame
     // ...
     // <shared Functional Groups Sequence Attribute>
     // | ...
-
-    // Try with Per-Frame Functional Groups
-    if(auto frameAcquisitionDateTime =
-           m_pimpl->getMultiFrameValue<
-               gdcm::Keywords::PerFrameFunctionalGroupsSequence,
-               gdcm::Keywords::FrameContentSequence,
-               gdcm::Keywords::FrameAcquisitionDateTime
-           >(frameIndex); frameAcquisitionDateTime.has_value())
+    if(const auto& value = m_pimpl->getMultiFrameValue<
+           gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+           gdcm::Keywords::FrameContentSequence,
+           gdcm::Keywords::FrameAcquisitionDateTime
+                           >(frameIndex); value)
     {
-        // frameAcquisitionDateTime can have padding...
-        return detail::shrink(frameAcquisitionDateTime->Trim());
+        return detail::shrink(value->Trim());
     }
 
-    // Try with shared Functional Groups
-    return detail::shrink(
-        m_pimpl->getMultiFrameValue<
-            gdcm::Keywords::SharedFunctionalGroupsSequence,
-            gdcm::Keywords::FrameContentSequence,
-            gdcm::Keywords::FrameAcquisitionDateTime
-        >(0)->Trim()
-    );
+    return std::nullopt;
 }
 
 //------------------------------------------------------------------------------
@@ -2771,16 +2678,6 @@ void Series::setFrameAcquisitionDateTime(
         gdcm::Keywords::FrameContentSequence,
         gdcm::Keywords::FrameAcquisitionDateTime
     >(frameAcquisitionDateTime, frameIndex);
-
-    // Also set for the shared for first frame
-    if(frameIndex == 0)
-    {
-        m_pimpl->setMultiFrameValue<
-            gdcm::Keywords::SharedFunctionalGroupsSequence,
-            gdcm::Keywords::FrameContentSequence,
-            gdcm::Keywords::FrameAcquisitionDateTime
-        >(frameAcquisitionDateTime, frameIndex);
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -2842,27 +2739,16 @@ std::optional<std::string> Series::getFrameComments(std::size_t frameIndex) cons
     // ...
     // <shared Functional Groups Sequence Attribute>
     // | ...
-
-    // Try with Per-Frame Functional Groups
-    if(auto frameComments =
-           m_pimpl->getMultiFrameValue<
-               gdcm::Keywords::PerFrameFunctionalGroupsSequence,
-               gdcm::Keywords::FrameContentSequence,
-               gdcm::Keywords::FrameComments
-           >(frameIndex); frameComments.has_value())
+    if(const auto& value = m_pimpl->getMultiFrameValue<
+           gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+           gdcm::Keywords::FrameContentSequence,
+           gdcm::Keywords::FrameComments
+                           >(frameIndex); value)
     {
-        // frameAcquisitionDateTime can have padding...
-        return detail::shrink(frameComments->Trim());
+        return detail::shrink(value->Trim());
     }
 
-    // Try with shared Functional Groups
-    return detail::shrink(
-        m_pimpl->getMultiFrameValue<
-            gdcm::Keywords::SharedFunctionalGroupsSequence,
-            gdcm::Keywords::FrameContentSequence,
-            gdcm::Keywords::FrameComments
-        >(0)->Trim()
-    );
+    return std::nullopt;
 }
 
 //------------------------------------------------------------------------------
@@ -2888,16 +2774,6 @@ void Series::setFrameComments(const std::optional<std::string>& frameComments, s
         gdcm::Keywords::FrameContentSequence,
         gdcm::Keywords::FrameComments
     >(frameComments, frameIndex);
-
-    // Also set for the shared for first frame
-    if(frameIndex == 0)
-    {
-        m_pimpl->setMultiFrameValue<
-            gdcm::Keywords::SharedFunctionalGroupsSequence,
-            gdcm::Keywords::FrameContentSequence,
-            gdcm::Keywords::FrameComments
-        >(frameComments, frameIndex);
-    }
 }
 
 //------------------------------------------------------------------------------
@@ -2918,27 +2794,16 @@ std::optional<std::string> Series::getFrameLabel(std::size_t frameIndex) const
     // ...
     // <shared Functional Groups Sequence Attribute>
     // | ...
-
-    // Try with Per-Frame Functional Groups
-    if(auto frameLabel =
-           m_pimpl->getMultiFrameValue<
-               gdcm::Keywords::PerFrameFunctionalGroupsSequence,
-               gdcm::Keywords::FrameContentSequence,
-               gdcm::Keywords::FrameLabel
-           >(frameIndex); frameLabel.has_value())
+    if(const auto& value = m_pimpl->getMultiFrameValue<
+           gdcm::Keywords::PerFrameFunctionalGroupsSequence,
+           gdcm::Keywords::FrameContentSequence,
+           gdcm::Keywords::FrameLabel
+                           >(frameIndex); value)
     {
-        // frameAcquisitionDateTime can have padding...
-        return detail::shrink(frameLabel->Trim());
+        return detail::shrink(value->Trim());
     }
 
-    // Try with shared Functional Groups
-    return detail::shrink(
-        m_pimpl->getMultiFrameValue<
-            gdcm::Keywords::SharedFunctionalGroupsSequence,
-            gdcm::Keywords::FrameContentSequence,
-            gdcm::Keywords::FrameLabel
-        >(0)->Trim()
-    );
+    return std::nullopt;
 }
 
 //------------------------------------------------------------------------------
@@ -2964,16 +2829,6 @@ void Series::setFrameLabel(const std::optional<std::string>& frameLabel, std::si
         gdcm::Keywords::FrameContentSequence,
         gdcm::Keywords::FrameLabel
     >(frameLabel, frameIndex);
-
-    // Also set for the shared for first frame
-    if(frameIndex == 0)
-    {
-        m_pimpl->setMultiFrameValue<
-            gdcm::Keywords::SharedFunctionalGroupsSequence,
-            gdcm::Keywords::FrameContentSequence,
-            gdcm::Keywords::FrameLabel
-        >(frameLabel, frameIndex);
-    }
 }
 
 //------------------------------------------------------------------------------
