@@ -33,9 +33,9 @@ Deprecated, this class is no longer supported, please  use `sight::service::AppC
 
 ### _extension_
 
-- **AppConfig**: registers all the configurations from an xml file element with the point extention '<appConfig>'
-- **AppConfigParameters**: registers all the configurations from an xml file element with the point extention '<AppConfigParameters>'
-- **Config**: registers all the configurations from an xml file element with the point extention '<config>'
+- **AppConfig**: registers all the configurations from an xml file element with the point extension '<appConfig>'
+- **AppConfigParameters**: registers all the configurations from an xml file element with the point extension '<AppConfigParameters>'
+- **Config**: registers all the configurations from an xml file element with the point extension '<config>'
 - **Factory**: registry of all the services. It allows to retrieve the information necessary to instantiate the services
 
 ### _factory_
@@ -45,7 +45,7 @@ Deprecated, this class is no longer supported, please  use `sight::service::AppC
 ### _helper_
 
 - **Config**: provides configuration element parsing tools.
-- **ConfigLauncher**: provides few methods to manage AppConfig (parsing, starting, stopping...) associated from an xml configuration file element with the point extention '<appConfig>'
+- **ConfigLauncher**: provides few methods to manage AppConfig (parsing, starting, stopping...) associated from an xml configuration file element with the point extension '<appConfig>'
 - **ProxyConnections**: provides helper class to register proxy connections
 
 ### _op_
@@ -68,7 +68,7 @@ Deprecated, this class is no longer supported, please  use `sight::service::AppC
 
 ### _registry_
 
-- **ActiveWorkers**: registers active worker and creates a default worker if necessary. 
+- **ActiveWorkers**: registers active worker and creates a default worker if necessary.
 Deprecated, please use `sight::core::thread` instead.
 - **ObjectService**:  maintains the relation between objects and services
  The API of ObjectService should not be directly invoked, please make use of service/op methods (i.e. add, get,...) instead
@@ -79,9 +79,7 @@ Deprecated, please use `sight::core::thread` instead.
 ### CMake
 
 ```cmake
-target_link_libraries( myTarget <PUBLIC|PRIVATE> 
-                       service
-)
+target_link_libraries( myTarget <PUBLIC|PRIVATE> service)
 ```
 
 ### XML

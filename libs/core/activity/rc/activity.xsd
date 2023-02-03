@@ -26,6 +26,7 @@
                         </xs:simpleContent>
                       </xs:complexType>
                     </xs:element>
+                    <xs:element name="config" minOccurs="0" maxOccurs="0" />
                   </xs:sequence>
 
                   <xs:attribute type="xs:string" name="name" use="required"/>

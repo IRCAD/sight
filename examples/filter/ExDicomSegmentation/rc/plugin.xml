@@ -19,7 +19,7 @@
         <requirements>
             <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="ExDicomSegmentation_VTKMesher_AppCfg"/>
     </extension>
 
@@ -31,7 +31,7 @@
         <requirements>
             <requirement name="imageSeries" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="ExDicomSegmentation_Threshold_AppCfg" />
     </extension>
 

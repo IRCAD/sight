@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,6 +40,7 @@ class ActivityBuilderTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(ActivityBuilderTest);
 
 CPPUNIT_TEST(buildDataTest);
+CPPUNIT_TEST(objectParserTest);
 
 CPPUNIT_TEST_SUITE_END();
 
@@ -50,10 +51,10 @@ public:
     void tearDown();
 
     void buildDataTest();
+    void objectParserTest();
 
 protected:
 
-    SPTR(core::runtime::Module) m_module;
     SPTR(activity::extension::Activity) m_activity;
 };
 

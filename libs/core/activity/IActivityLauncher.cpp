@@ -25,6 +25,8 @@
 #include "activity/IActivityValidator.hpp"
 #include "activity/IValidator.hpp"
 
+#include <activity/builder/data.hpp>
+
 #include <core/runtime/runtime.hpp>
 
 #include <data/Composite.hpp>
@@ -152,7 +154,7 @@ data::Activity::sptr IActivityLauncher::createMainActivity() const
         {
             if((req.minOccurs == 0 && req.maxOccurs == 0) || req.create)
             {
-                (*activity)[req.name] = data::factory::New(req.type);
+                (*activity)[req.name] = sight::activity::detail::data::create(req.type, req.objectConfig);
             }
             else
             {

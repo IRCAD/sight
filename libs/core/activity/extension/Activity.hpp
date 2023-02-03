@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -115,6 +115,7 @@ struct ACTIVITY_CLASS_API ActivityRequirement
     bool create {};            /// True if the data must be created if it is not present (only if minOccurs = 0 and
                                /// maxOccurs = 1)
     KeyType keys;              /// Parameter key if the container == "composite"
+    ConfigType objectConfig;   /// Child configuration, used for instance when invoking object parsers
 };
 
 /**

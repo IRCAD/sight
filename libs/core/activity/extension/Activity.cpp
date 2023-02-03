@@ -81,11 +81,12 @@ ActivityRequirementKey::ActivityRequirementKey(const ConfigType& config) :
 ActivityRequirement::ActivityRequirement(const ConfigType& config) :
     name(config.get<std::string>("<xmlattr>.name")),
     type(config.get<std::string>("<xmlattr>.type")),
-    container(config.get_optional<std::string>("<xmlattr>.container").get_value_or("")),
-    description(config.get_optional<std::string>("desc").get_value_or("")),
-    validator(config.get_optional<std::string>("validator").get_value_or("")),
-    minOccurs(config.get_optional<unsigned int>("<xmlattr>.minOccurs").get_value_or(1)),
-    maxOccurs(config.get_optional<unsigned int>("<xmlattr>.maxOccurs").get_value_or(1))
+    container(config.get<std::string>("<xmlattr>.container", "")),
+    description(config.get<std::string>("desc", "")),
+    validator(config.get<std::string>("validator", "")),
+    minOccurs(config.get<unsigned int>("<xmlattr>.minOccurs", 1)),
+    maxOccurs(config.get<unsigned int>("<xmlattr>.maxOccurs", 1)),
+    objectConfig(config.get_child("config", ConfigType()))
 {
     for(const auto& v : boost::make_iterator_range(config.equal_range("key")))
     {
@@ -147,7 +148,7 @@ ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
         }
     }
 
-    builderImpl = config.get<std::string>("builder", "sight::activity::builder::ActivityInitData");
+    builderImpl = config.get<std::string>("builder", "sight::activity::builder::Activity");
 
     // backward compatibility
     if(const auto& validatorCfg = config.get_optional<std::string>("validator"); validatorCfg.has_value())

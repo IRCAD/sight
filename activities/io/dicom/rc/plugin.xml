@@ -19,7 +19,7 @@
         <icon>sight::module::ui::icons/Pull.svg</icon>
         <requirements>
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="DicomPacsReader">
         </appConfig>
         </extension>
@@ -31,7 +31,7 @@
         <icon>sight::module::ui::icons/Push.svg</icon>
         <requirements>
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="DicomPacsWriter">
         </appConfig>
     </extension>
@@ -51,7 +51,7 @@
         <icon>sight::module::ui::icons/icon-DICOM-Filtering.svg</icon>
         <requirements>
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="DicomFiltering">
         </appConfig>
     </extension>

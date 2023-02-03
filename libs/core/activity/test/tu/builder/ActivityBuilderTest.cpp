@@ -32,6 +32,7 @@
 #include <data/Composite.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
+#include <data/String.hpp>
 #include <data/Vector.hpp>
 
 // Registers the fixture into the 'registry'
@@ -58,8 +59,6 @@ void ActivityBuilderTest::setUp()
 void ActivityBuilderTest::tearDown()
 {
     activity::extension::Activity::getDefault()->clearRegistry();
-    // Clean up after the test run.
-    m_module.reset();
 }
 
 //------------------------------------------------------------------------------
@@ -77,11 +76,9 @@ void ActivityBuilderTest::buildDataTest()
     CPPUNIT_ASSERT_EQUAL(std::size_t(2), activities.size());
 
     activity::extension::ActivityInfo activityInfo = activities[0];
-    data::Activity::sptr activity;
-    activity::IBuilder::sptr builder;
-    builder = activity::builder::factory::New(activityInfo.builderImpl);
+    activity::IBuilder::sptr builder               = activity::builder::factory::New(activityInfo.builderImpl);
     CPPUNIT_ASSERT_MESSAGE("<" + activityInfo.builderImpl + "> instantiation failed", builder);
-    activity = builder->buildData(activityInfo, selection);
+    data::Activity::sptr activity = builder->buildData(activityInfo, selection);
 
     CPPUNIT_ASSERT_MESSAGE("Activity instantiation failed", activity);
 
@@ -103,6 +100,38 @@ void ActivityBuilderTest::buildDataTest()
     CPPUNIT_ASSERT_MESSAGE(modelKey + " param dynamicCast to data::Composite failed", composite);
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), composite->size());
     CPPUNIT_ASSERT(modelSeriesSelected == (*composite)["key1"]);
+}
+
+//------------------------------------------------------------------------------
+
+void ActivityBuilderTest::objectParserTest()
+{
+    core::runtime::addModules(core::runtime::getResourceFilePath("module_service"));
+    auto module = core::runtime::loadModule("sight::module::service");
+    CPPUNIT_ASSERT_MESSAGE("Cannot load 'service' module.", module);
+
+    data::Vector::sptr selection     = data::Vector::New();
+    auto activityInfo                = m_activity->getInfo("TestBuilderObjectParser");
+    activity::IBuilder::sptr builder = activity::builder::factory::New(activityInfo.builderImpl);
+    CPPUNIT_ASSERT_MESSAGE("<" + activityInfo.builderImpl + "> instantiation failed", builder);
+    data::Activity::sptr activity = builder->buildData(activityInfo, selection);
+
+    CPPUNIT_ASSERT_MESSAGE("Activity instantiation failed", activity);
+
+    CPPUNIT_ASSERT_EQUAL(activityInfo.id, activity->getActivityConfigId());
+    CPPUNIT_ASSERT_EQUAL(std::size_t(1), activity->size());
+
+    const std::string stringKey = "string";
+    CPPUNIT_ASSERT_MESSAGE(stringKey + " key is missing", activity->find(stringKey) != activity->end());
+
+    // Check that the string parser is well executed
+    // This implicitly test the function sight::activity::detail::data::create()
+    const auto obj            = (*activity)[stringKey];
+    data::String::sptr string = data::String::dynamicCast(obj);
+    CPPUNIT_ASSERT_MESSAGE(stringKey + " param dynamicCast to data::Composite failed", string);
+    CPPUNIT_ASSERT_EQUAL(std::string("dummy string"), string->value());
+
+    core::runtime::unloadModule("sight::module::service");
 }
 
 } //namespace sight::activity::ut

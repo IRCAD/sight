@@ -22,23 +22,12 @@
 
 #include "activity/IActivitySequencer.hpp"
 
-#include <core/com/Connection.hpp>
-#include <core/com/Signal.hxx>
-#include <core/tools/dateAndTime.hpp>
-#include <core/tools/UUID.hpp>
+#include "activity/builder/data.hpp"
+
+#include <activity/IBuilder.hpp>
 
 namespace sight::activity
 {
-
-//-----------------------------------------------------------------------------
-
-IActivitySequencer::IActivitySequencer()
-= default;
-
-//-----------------------------------------------------------------------------
-
-IActivitySequencer::~IActivitySequencer()
-= default;
 
 //------------------------------------------------------------------------------
 
@@ -101,8 +90,7 @@ void IActivitySequencer::storeActivityData(
 data::Activity::sptr IActivitySequencer::getActivity(
     data::ActivitySet& activity_set,
     std::size_t index,
-    const core::com::SlotBase::sptr& slot,
-    const data::Composite::csptr& overrides
+    const core::com::SlotBase::sptr& slot
 )
 {
     data::Activity::sptr activity;
@@ -118,17 +106,6 @@ data::Activity::sptr IActivitySequencer::getActivity(
         // FIXME: update all the data or only the requirement ?
         for(const auto& req : info.requirements)
         {
-            if(overrides)
-            {
-                if(const auto& it = overrides->find(req.name); it != overrides->cend())
-                {
-                    activity->insert_or_assign(req.name, it->second);
-
-                    // Look for the next requirement
-                    continue;
-                }
-            }
-
             // Look at the non overriden requirements
             if(const auto& it = m_requirements.find(req.name); it != m_requirements.cend())
             {
@@ -141,7 +118,7 @@ data::Activity::sptr IActivitySequencer::getActivity(
         // try to create the intermediate activities
         if(index > 0 && (index - 1) >= activity_set.size())
         {
-            getActivity(activity_set, index - 1, slot, overrides);
+            getActivity(activity_set, index - 1, slot);
         }
 
         // Create the activity
@@ -152,17 +129,6 @@ data::Activity::sptr IActivitySequencer::getActivity(
 
         for(const auto& req : info.requirements)
         {
-            if(overrides)
-            {
-                if(const auto& it = overrides->find(req.name); it != overrides->cend())
-                {
-                    activity->insert_or_assign(req.name, it->second);
-
-                    // Look for the next requirement
-                    continue;
-                }
-            }
-
             // Look at the non overriden requirements
             if(const auto& it = m_requirements.find(req.name); it != m_requirements.cend())
             {
@@ -171,7 +137,7 @@ data::Activity::sptr IActivitySequencer::getActivity(
             else if(req.create || (req.minOccurs == 0 && req.maxOccurs == 0))
             {
                 // Create the new data
-                auto object = data::factory::New(req.type);
+                auto object = sight::activity::detail::data::create(req.type, req.objectConfig);
                 activity->insert_or_assign(req.name, object);
                 m_requirements.insert_or_assign(req.name, object);
             }

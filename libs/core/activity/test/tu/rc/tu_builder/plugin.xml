@@ -12,8 +12,22 @@
                 <key>key2</key>
             </requirement>
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="TestBuilderCfg0" />
     </extension>
 
+    <extension implements="sight::activity::extension::Activity">
+        <id>TestBuilderObjectParser</id>
+        <title>ObjectParser</title>
+        <desc>Desc Test1</desc>
+        <icon>Icon Test1</icon>
+        <requirements>
+            <requirement name="string" type="sight::data::String" minOccurs="0" maxOccurs="1" create="true">
+                <config>
+                    <value>dummy string</value>
+                </config>
+            </requirement>
+        </requirements>
+        <appConfig id="TestBuilderCfg1" />
+    </extension>
 </plugin>

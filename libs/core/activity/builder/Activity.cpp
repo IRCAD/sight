@@ -22,20 +22,16 @@
 
 #include "activity/builder/Activity.hpp"
 
+#include "activity/builder/data.hpp"
 #include "activity/builder/registry/macros.hpp"
-
-#include <core/tools/dateAndTime.hpp>
-#include <core/tools/UUID.hpp>
 
 #include <data/Composite.hpp>
 #include <data/Vector.hpp>
 
-#include <boost/date_time/posix_time/posix_time.hpp>
-
 namespace sight::activity::builder
 {
 
-SIGHT_REGISTER_ACTIVITY_BUILDER(activity::builder::Activity, "::activity::builder::Activity");
+SIGHT_REGISTER_ACTIVITY_BUILDER(activity::builder::Activity, "sight::activity::builder::Activity");
 
 //-----------------------------------------------------------------------------
 
@@ -76,6 +72,7 @@ data::Activity::sptr Activity::buildData(
     auto activity = data::Activity::New();
 
     activity->setActivityConfigId(activityInfo.id);
+    activity->setDescription(activityInfo.description);
 
     namespace ActReg = activity::extension;
 
@@ -88,6 +85,10 @@ data::Activity::sptr Activity::buildData(
         {
             SIGHT_ASSERT("No param name " << req.name << " with type " << req.type, !vectorType->empty());
             (*activity)[req.name] = (*vectorType)[0];
+        }
+        else if(req.create || (req.minOccurs == 0 && req.maxOccurs == 0))
+        {
+            (*activity)[req.name] = sight::activity::detail::data::create(req.type, req.objectConfig);
         }
         else
         {

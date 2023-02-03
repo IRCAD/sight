@@ -22,7 +22,6 @@
         <requirements>
             <requirement name="cameraSet" type="sight::data::CameraSet" minOccurs="0" maxOccurs="0" />
         </requirements>
-        <builder>sight::activity::builder::ActivityInitData</builder>
         <appConfig id="calibration" />
     </extension>
 

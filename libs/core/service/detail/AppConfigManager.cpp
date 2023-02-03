@@ -139,7 +139,10 @@ void AppConfigManager::start()
     this->processStartItems();
     for(auto& createdObject : m_createdObjects)
     {
-        createdObject.second.second->startConfig();
+        if(createdObject.second.second)
+        {
+            createdObject.second.second->startConfig();
+        }
     }
 
     m_state = STATE_STARTED;
@@ -152,7 +155,10 @@ void AppConfigManager::update()
     this->processUpdateItems();
     for(auto& createdObject : m_createdObjects)
     {
-        createdObject.second.second->updateConfig();
+        if(createdObject.second.second)
+        {
+            createdObject.second.second->updateConfig();
+        }
     }
 }
 
@@ -170,7 +176,10 @@ void AppConfigManager::stop()
 
     for(auto& createdObject : m_createdObjects)
     {
-        createdObject.second.second->stopConfig();
+        if(createdObject.second.second)
+        {
+            createdObject.second.second->stopConfig();
+        }
     }
 
     this->stopStartedServices();
@@ -187,7 +196,10 @@ void AppConfigManager::destroy()
 
     for(auto& createdObject : m_createdObjects)
     {
-        createdObject.second.second->destroyConfig();
+        if(createdObject.second.second)
+        {
+            createdObject.second.second->destroyConfig();
+        }
     }
 
     this->destroyCreatedServices();
@@ -544,6 +556,7 @@ void AppConfigManager::createObjects(const core::runtime::config_t& cfgElem)
             {
                 // Creation of a new object
                 data::Object::sptr obj;
+                service::IXMLParser::sptr objParser;
 
                 // Create new or get the referenced object
                 if(buildMode.second && buildMode.first == "ref")
@@ -554,22 +567,22 @@ void AppConfigManager::createObjects(const core::runtime::config_t& cfgElem)
                 else
                 {
                     obj = this->getNewObject(type, id);
+
+                    // Get the object parser associated with the object type
+                    const auto srvFactory = service::extension::Factory::getDefault();
+
+                    std::string srvImpl = srvFactory->getDefaultImplementationIdFromObjectAndType(
+                        obj->getClassname(),
+                        "sight::service::IXMLParser"
+                    );
+
+                    service::IService::sptr srv = srvFactory->create(srvImpl);
+                    objParser = service::IXMLParser::dynamicCast(srv);
+                    objParser->setObjectConfig(elem.second);
+                    objParser->createConfig(obj);
                 }
 
-                // Get the object parser associated with the object type
-                const auto srvFactory = service::extension::Factory::getDefault();
-
-                std::string srvImpl = srvFactory->getDefaultImplementationIdFromObjectAndType(
-                    obj->getClassname(),
-                    "sight::service::IXMLParser"
-                );
-
-                service::IService::sptr srv = srvFactory->create(srvImpl);
-                auto objectParser           = service::IXMLParser::dynamicCast(srv);
-                objectParser->setObjectConfig(elem.second);
-                objectParser->createConfig(obj);
-
-                m_createdObjects[id.first] = std::make_pair(obj, objectParser);
+                m_createdObjects[id.first] = std::make_pair(obj, objParser);
             }
         }
     }

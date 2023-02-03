@@ -27,8 +27,6 @@
 #include "service/IAppConfigManager.hpp"
 #include "service/IService.hpp"
 
-#include <activity/extension/Activity.hpp>
-
 #include <core/tools/Failed.hpp>
 
 namespace sight::service::helper
@@ -79,7 +77,16 @@ public:
 private:
 
     /// Stores the app config.
-    activity::extension::ActivityAppConfig m_appConfig;
+    class Parameters
+    {
+    public:
+
+        Parameters() = default;
+        Parameters(const service::IService::ConfigType& config);
+        std::string m_id;
+        std::vector<std::pair<std::string, std::string> > m_parameters;
+    };
+    Parameters m_appConfig;
 
     /// Sets the configuration running state.
     bool m_configIsRunning {false};

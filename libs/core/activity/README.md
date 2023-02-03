@@ -11,7 +11,6 @@ This is one of the most important library in _Sight_. It allows to build, to con
 ### Activity builders
 
 - **Activity**: defines the default builder for the data Activity.
-- **ActivityInitData**: defines an activity builder which instantiates a new requirement if minOccurs and maxOccurs are set to 0.
 
 ### Activity interfaces
 

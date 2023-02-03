@@ -30,6 +30,29 @@
 namespace sight::service::helper
 {
 
+//-----------------------------------------------------------------------------
+
+ConfigLauncher::Parameters::Parameters(const service::IService::ConfigType& config) :
+    m_id(config.get<std::string>("<xmlattr>.id"))
+{
+    if(config.count("parameters") == 1)
+    {
+        const service::IService::ConfigType& configParameters = config.get_child("parameters");
+
+        for(const auto& v : boost::make_iterator_range(configParameters.equal_range("parameter")))
+        {
+            m_parameters.emplace_back(
+                std::make_pair(
+                    v.second.get<std::string>("<xmlattr>.replace"),
+                    v.second.get<std::string>("<xmlattr>.by")
+                )
+            );
+        }
+    }
+
+    SIGHT_ASSERT("At most 1 <parameters> tag is allowed", config.count("parameters") < 2);
+}
+
 //------------------------------------------------------------------------------
 
 const std::string ConfigLauncher::s_SELF_KEY        = "self";
@@ -75,13 +98,13 @@ void ConfigLauncher::parseConfig(
             if(optional)
             {
                 m_optionalInputs[key] = {uid, i};
-                parameterCfg.add("<xmlattr>.uid", uid);
+                parameterCfg.add("<xmlattr>.by", uid);
             }
             else
             {
                 const auto obj = _service->getInOut(s_DATA_GROUP, i).lock();
                 SIGHT_ASSERT(std::string("Object key '") + key + "' with uid '" + uid + "' does not exist.", obj);
-                parameterCfg.add("<xmlattr>.uid", obj->getID());
+                parameterCfg.add("<xmlattr>.by", obj->getID());
             }
 
             newCfg.add_child("parameters.parameter", parameterCfg);
@@ -111,7 +134,9 @@ void ConfigLauncher::parseConfig(
     SIGHT_ASSERT("There must be only one <appConfig/> element.", srvconfig.count("appConfig") == 1);
 
     const service::IService::ConfigType& appConfigCfg = srvconfig.get_child("appConfig");
-    m_appConfig = activity::extension::ActivityAppConfig(appConfigCfg);
+
+    m_appConfig = Parameters(appConfigCfg);
+    SIGHT_ASSERT("There must be only one <appConfig/> element.", srvconfig.count("appConfig") == 1);
 }
 
 //------------------------------------------------------------------------------
@@ -127,14 +152,14 @@ void ConfigLauncher::startConfig(
     const std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(_service->getID());
     replaceMap[ConfigLauncher::s_GENERIC_UID_KEY] = genericUidAdaptor;
 
-    for(const auto& param : m_appConfig.parameters)
+    for(const auto& param : m_appConfig.m_parameters)
     {
-        replaceMap[param.replace] = param.by;
+        replaceMap[param.first] = param.second;
     }
 
     // Init manager
     auto appConfigManager = service::detail::AppConfigManager::New();
-    appConfigManager->setConfig(m_appConfig.id, replaceMap);
+    appConfigManager->setConfig(m_appConfig.m_id, replaceMap);
 
     // When a configuration is launched, deferred objects may already exist.
     // This loop allow to notify the app config manager that this data exist and can be used by services.

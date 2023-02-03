@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,20 +21,16 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <activity/config.hpp>
+#include <activity/extension/Activity.hpp>
 
-namespace sight::activity::builder::ut
+#include <data/Object.hpp>
+
+namespace sight::activity::detail::data
 {
 
-class ActivityInitDataTest : public CPPUNIT_NS::TestFixture
-{
-CPPUNIT_TEST_SUITE(ActivityInitDataTest);
-CPPUNIT_TEST(basicTest);
-CPPUNIT_TEST_SUITE_END();
+//------------------------------------------------------------------------------
 
-public:
+ACTIVITY_API sight::data::Object::sptr create(const std::string& _type, const activity::extension::ConfigType& _config);
 
-    static void basicTest();
-};
-
-} // namespace sight::activity::builder::ut
+} // namespace sight::activity::detail::data

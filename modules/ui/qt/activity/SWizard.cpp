@@ -22,6 +22,7 @@
 
 #include "SWizard.hpp"
 
+#include <activity/builder/data.hpp>
 #include <activity/IValidator.hpp>
 
 #include <core/com/Signal.hxx>
@@ -269,7 +270,7 @@ void SWizard::createActivity(std::string activityID)
         for(const auto& req : info.requirements)
         {
             SIGHT_ASSERT("minOccurs and maxOccurs should be 0", req.minOccurs == 0 && req.maxOccurs == 0);
-            (*m_new_activity)[req.name] = data::factory::New(req.type);
+            (*m_new_activity)[req.name] = sight::activity::detail::data::create(req.type, req.objectConfig);
         }
 
         const auto activity_set = m_activity_set.lock();
