@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -112,6 +112,13 @@ void SNotifier::starting()
 
 void SNotifier::stopping()
 {
+    for(const auto& notif : m_popups)
+    {
+        // Old callback still references 'this', which causes a segfault upon notification destruction
+        notif->setClosedCallback([](){});
+        notif->close();
+    }
+
     m_popups.clear();
 }
 
