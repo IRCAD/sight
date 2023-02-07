@@ -6,6 +6,7 @@
         <param name="WINDOW_ICON" />
         <param name="image" />
         <param name="currentTF" />
+        <param name="presets" />
     </parameters>
     <config>
 
@@ -13,6 +14,7 @@
 
         <object uid="${image}" type="sight::data::Image" src="ref" />
         <object uid="${currentTF}" type="sight::data::TransferFunction" src="ref" />
+        <object uid="${presets}" type="sight::data::Composite" src="deferred" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -50,6 +52,7 @@
             <inout group="data">
                 <key name="image" uid="${image}" />
                 <key name="currentTF" uid="${currentTF}" />
+                <key name="presets" uid="${presets}" optional="true"/>
             </inout>
         </service>
 

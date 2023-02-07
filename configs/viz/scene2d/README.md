@@ -50,6 +50,7 @@ The `TransferFunctionWindow` configuration can be included with the following co
     <inout group="data">
         <key name="image" uid="..." />
         <key name="currentTF" uid="..." />
+        <key name="presets" uid="..." />
     </inout>
 </service>
 ```
@@ -58,3 +59,4 @@ where:
 - WID_PARENT is the identifier of the parent window view,
 - image is a `sight::data::Image`,
 - currentTF is a `sight::data::TransferFunction`.
+- presets is a `sight::data::Composite`.
