@@ -40,9 +40,6 @@
         <object uid="clippingMatrix" type="sight::data::Matrix4" />
         <object uid="identityMatrix" type="sight::data::Matrix4" />
         <object uid="background" type="sight::data::Image" />
-        <object uid="border" type="sight::data::Color">
-            <value>#2E3034</value>
-        </object>
         <object uid="snapshot" type="sight::data::Image" />
         <!-- Camera matrix -->
         <object uid="globalCamera" type="sight::data::Matrix4" />
@@ -60,35 +57,17 @@
                         ]]>
                     </styleSheet>
                 </slideView>
-                <slideView opacity="1" hAlign="right" vAlign="bottom" width="50%" height="35" vOffset="50%">
-                    <styleSheet>
-                        <![CDATA[
-                        #SlideBar QWidget {
-                            background-color: none;
-                        }
-                        ]]>
-                    </styleSheet>
-                </slideView>
                 <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
-                    <view proportion="1" />
+                    <view proportion="0" />
+                    <view proportion="0" />
                 </layout>
-                <slideView opacity="1" hAlign="left" vAlign="bottom" height="35">
-                    <styleSheet>
-                        <![CDATA[
-                        #SlideBar QWidget {
-                            background-color: none;
-                        }
-                        ]]>
-                    </styleSheet>
-                </slideView>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <slideView sid="topToolbarSliderView" start="true" />
-                <slideView sid="topNegatoSlicerSliderView" start="true" />
-                <view sid="genericSceneSrv" start="true" />
-                <slideView sid="bottomNegatoSlicerSliderView" start="true" />
+                <view sid="topScenesView" start="true" />
+                <view sid="bottomScenesView" start="true" />
             </registry>
         </service>
 
@@ -120,45 +99,6 @@
             </registry>
         </service>
 
-        <service uid="topNegatoSlicerSliderView" type="sight::module::ui::base::SView">
-            <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="0" backgroundColor="#00000000" border="5" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="axialNegatoSlicerSrv" start="false" />
-            </registry>
-        </service>
-
-        <service uid="bottomNegatoSlicerSliderView" type="sight::module::ui::base::SView">
-            <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <spacer />
-                    <view proportion="0" backgroundColor="#00000000" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="bottomNegatoSlicerView" start="false" />
-            </registry>
-        </service>
-
-        <service uid="bottomNegatoSlicerView" type="sight::module::ui::base::SView">
-            <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
-                    <orientation value="horizontal" />
-                    <view proportion="0" backgroundColor="#00000000" border="5" />
-                    <view proportion="0" backgroundColor="#00000000" border="5" />
-                </layout>
-            </gui>
-            <registry>
-                <view sid="sagittalNegatoSlicerSrv" start="false" />
-                <view sid="frontalNegatoSlicerSrv" start="false" />
-            </registry>
-        </service>
-
         <service uid="notifierSrv" type="sight::module::ui::qt::SNotifier">
             <parent uid="mainview" />
             <message>Default message</message>
@@ -169,7 +109,36 @@
 
         <!-- ******************************* Begin Generic Scene ******************************* -->
 
-        <service uid="genericSceneSrv" type="sight::viz::scene3d::SRender">
+        <service uid="topScenesView" type="sight::module::ui::base::SView">
+            <gui>
+              <layout type="sight::ui::base::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view proportion="0" minWidth="0" />
+                    <view proportion="0" minWidth="0" visible="false" />
+               </layout>
+           </gui>
+           <registry>
+               <view sid="mainSceneSrv" start="true" />
+               <view sid="axialSceneView" start="true"/>
+
+           </registry>
+        </service>
+
+        <service uid="bottomScenesView" type="sight::module::ui::base::SView">
+            <gui>
+              <layout type="sight::ui::base::LineLayoutManager" >
+                    <orientation value="horizontal" />
+                    <view proportion="0" minWidth="0" visible="false" />
+                    <view proportion="0" minWidth="0" visible="false" />
+               </layout>
+           </gui>
+           <registry>
+               <view sid="sagittalSceneView" start="true" />
+               <view sid="frontalSceneView" start="true" />
+           </registry>
+        </service>
+
+        <service uid="mainSceneSrv" type="sight::viz::scene3d::SRender">
             <scene>
                 <background topColor="#36393E" bottomColor="#36393E" />
 
@@ -186,68 +155,99 @@
                     <adaptor uid="axisAdp" />
                     <adaptor uid="pickedVoxelTextAdp" />
                     <adaptor uid="shapeExtruderAdp" />
-                    <adaptor uid="resizeViewportAdp" />
                     <adaptor uid="snapshotAdp" />
                 </layer>
 
-                <layer id="axialBackgroundNegatoLayer" order="2">
-                    <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top" />
-                    <adaptor uid="axialBackgroundAdp" />
-                    <adaptor uid="axialBackgroundResizeViewportAdp" />
+                <layer id="orientationMarkerLayer" order="2">
+                    <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom" />
+                    <adaptor uid="orientationMarkerAdp" />
                 </layer>
+            </scene>
+        </service>
 
-                <layer id="axialNegatoLayer" order="3" compositors="ViewportBorder">
-                    <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top" />
-                    <adaptor uid="axialCompositorAdp" />
+        <service uid="axialSceneView" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" minWidth="0" />
+                    <view proportion="0" minWidth="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="axialSceneSrv" start="true"/>
+                <view sid="axialNegatoSlicerSrv" start="false" />
+            </registry>
+        </service>
+
+        <service uid="axialSceneSrv" type="sight::viz::scene3d::SRender">
+            <scene>
+                <background topColor="#36393E" bottomColor="#36393E" />
+
+                <layer id="axialNegatoLayer" order="1">
                     <adaptor uid="axialNegatoAdp" />
                     <adaptor uid="axialNegatoMultiDistancesAdp" />
                     <adaptor uid="axialNegatoCameraAdp" />
-                    <adaptor uid="axialNegatoResizeViewportAdp" />
                     <adaptor uid="axialPickerInteractorAdp" />
                     <adaptor uid="axialLandmarksAdp" />
                     <adaptor uid="axialPickedVoxelTextAdp" />
                 </layer>
+            </scene>
+        </service>
 
-                <layer id="sagittalBackgroundNegatoLayer" order="4">
-                    <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top" />
-                    <adaptor uid="sagittalBackgroundAdp" />
-                    <adaptor uid="sagittalBackgroundResizeViewportAdp" />
-                </layer>
+        <service uid="sagittalSceneView" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" minWidth="0" />
+                    <view proportion="0" minWidth="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="sagittalSceneSrv" start="true"/>
+                <view sid="sagittalNegatoSlicerSrv" start="false" />
+            </registry>
+        </service>
 
-                <layer id="sagittalNegatoLayer" order="5" compositors="ViewportBorder">
-                    <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="left" vAlign="bottom" />
-                    <adaptor uid="sagittalCompositorAdp" />
+        <service uid="sagittalSceneSrv" type="sight::viz::scene3d::SRender">
+            <scene>
+                <background topColor="#36393E" bottomColor="#36393E" />
+
+                <layer id="sagittalNegatoLayer" order="1">
                     <adaptor uid="sagittalNegatoAdp" />
                     <adaptor uid="sagittalNegatoMultiDistancesAdp" />
                     <adaptor uid="sagittalNegatoCameraAdp" />
-                    <adaptor uid="sagittalNegatoResizeViewportAdp" />
                     <adaptor uid="sagittalPickerInteractorAdp" />
                     <adaptor uid="sagittalLandmarksAdp" />
                     <adaptor uid="sagittalPickedVoxelTextAdp" />
                 </layer>
+            </scene>
+        </service>
 
-                <layer id="frontalBackgroundNegatoLayer" order="6">
-                    <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="top" />
-                    <adaptor uid="frontalBackgroundAdp" />
-                    <adaptor uid="frontalBackgroundResizeViewportAdp" />
-                </layer>
+        <service uid="frontalSceneView" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" minWidth="0" />
+                    <view proportion="0" minWidth="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="frontalSceneSrv" start="true"/>
+                <view sid="frontalNegatoSlicerSrv" start="false" />
+            </registry>
+        </service>
 
-                <layer id="frontalNegatoLayer" order="7" compositors="ViewportBorder">
-                    <viewport hOffset="1" vOffset="1" width="1" height="1" hAlign="right" vAlign="bottom" />
-                    <adaptor uid="frontalCompositorAdp" />
+        <service uid="frontalSceneSrv" type="sight::viz::scene3d::SRender">
+            <scene>
+                <background topColor="#36393E" bottomColor="#36393E" />
+
+                <layer id="frontalNegatoLayer" order="1">
                     <adaptor uid="frontalNegatoAdp" />
                     <adaptor uid="frontalNegatoMultiDistancesAdp" />
                     <adaptor uid="frontalNegatoCameraAdp" />
-                    <adaptor uid="frontalNegatoResizeViewportAdp" />
                     <adaptor uid="frontalPickerInteractorAdp" />
                     <adaptor uid="frontalLandmarksAdp" />
                     <adaptor uid="frontalPickedVoxelTextAdp" />
-                </layer>
-
-                <layer id="orientationMarkerLayer" order="8">
-                    <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom" />
-                    <adaptor uid="orientationMarkerAdp" />
-                    <adaptor uid="resizeOrientationMarkerViewportAdp" />
                 </layer>
             </scene>
         </service>
@@ -312,14 +312,6 @@
             <config lineColor="#FFC66D" edgeColor="#D35151" />
         </service>
 
-        <service uid="resizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport">
-            <config hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="top" />
-        </service>
-
-        <service uid="resizeOrientationMarkerViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport">
-            <config hOffset="0.5" vOffset="0.5" width="0.1" height="0.1" hAlign="right" vAlign="bottom" />
-        </service>
-
         <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo">
             <inout key="image" uid="snapshot" />
         </service>
@@ -329,18 +321,6 @@
         </service>
 
         <!-- Axial -->
-        <service uid="axialBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true">
-            <in key="image" uid="background" />
-        </service>
-
-        <service uid="axialBackgroundResizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport">
-            <config hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="top" />
-        </service>
-
-        <service uid="axialCompositorAdp" type="sight::module::viz::scene3d::adaptor::SCompositorParameter">
-            <inout key="parameter" uid="border" />
-            <config compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
-        </service>
 
         <service uid="axialNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D">
             <in key="image" uid="${image}" />
@@ -357,10 +337,6 @@
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config priority="0" orientation="axial" />
-        </service>
-
-        <service uid="axialNegatoResizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport">
-            <config hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="top" />
         </service>
 
         <service uid="axialPickerInteractorAdp" type="sight::module::viz::scene3d::adaptor::SPicker">
@@ -380,19 +356,6 @@
 
         <!-- Sagittal -->
 
-        <service uid="sagittalBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true">
-            <in key="image" uid="background" />
-        </service>
-
-        <service uid="sagittalBackgroundResizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport">
-            <config hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="bottom" />
-        </service>
-
-        <service uid="sagittalCompositorAdp" type="sight::module::viz::scene3d::adaptor::SCompositorParameter">
-            <inout key="parameter" uid="border" />
-            <config compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
-        </service>
-
         <service uid="sagittalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D">
             <in key="image" uid="${image}" />
             <in key="tf" uid="${volumeTF}" />
@@ -408,10 +371,6 @@
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config priority="0" orientation="sagittal" />
-        </service>
-
-        <service uid="sagittalNegatoResizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport">
-            <config hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="left" vAlign="bottom" />
         </service>
 
         <service uid="sagittalPickerInteractorAdp" type="sight::module::viz::scene3d::adaptor::SPicker">
@@ -431,19 +390,6 @@
 
         <!-- Frontal -->
 
-        <service uid="frontalBackgroundAdp" type="sight::module::viz::scene3d::adaptor::SVideo" autoConnect="true">
-            <in key="image" uid="background" />
-        </service>
-
-        <service uid="frontalBackgroundResizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport">
-            <config hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="bottom" />
-        </service>
-
-        <service uid="frontalCompositorAdp" type="sight::module::viz::scene3d::adaptor::SCompositorParameter">
-            <inout key="parameter" uid="border" />
-            <config compositorName="ViewportBorder" parameter="u_borderColor" shaderType="fragment" />
-        </service>
-
         <service uid="frontalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D">
             <in key="image" uid="${image}" />
             <in key="tf" uid="${volumeTF}" />
@@ -459,10 +405,6 @@
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="${volumeTF}" />
             <config priority="0" orientation="frontal" />
-        </service>
-
-        <service uid="frontalNegatoResizeViewportAdp" type="sight::module::viz::scene3d::adaptor::SResizeViewport">
-            <config hOffset="0" vOffset="0" width="0.5" height="0.5" hAlign="right" vAlign="bottom" />
         </service>
 
         <service uid="frontalPickerInteractorAdp" type="sight::module::viz::scene3d::adaptor::SPicker">
@@ -541,29 +483,15 @@
         <!-- ******************************* Connections ***************************************** -->
 
         <connect channel="${NEGATO_VIEW_RECEIVE_CHANNEL}">
-            <slot>axialBackgroundResizeViewportAdp/resize</slot>
-            <slot>axialNegatoResizeViewportAdp/resize</slot>
-            <slot>sagittalBackgroundResizeViewportAdp/resize</slot>
-            <slot>sagittalNegatoResizeViewportAdp/resize</slot>
-            <slot>frontalBackgroundResizeViewportAdp/resize</slot>
-            <slot>frontalNegatoResizeViewportAdp/resize</slot>
-            <slot>resizeViewportAdp/resize</slot>
-            <slot>resizeOrientationMarkerViewportAdp/resize</slot>
-            <slot>topNegatoSlicerSliderView/show</slot>
-            <slot>bottomNegatoSlicerSliderView/show</slot>
+            <slot>axialSceneView/show</slot>
+            <slot>sagittalSceneView/show</slot>
+            <slot>frontalSceneView/show</slot>
         </connect>
 
         <connect channel="${VOLUME_VIEW_RECEIVE_CHANNEL}">
-            <slot>axialBackgroundResizeViewportAdp/revert</slot>
-            <slot>axialNegatoResizeViewportAdp/revert</slot>
-            <slot>sagittalBackgroundResizeViewportAdp/revert</slot>
-            <slot>sagittalNegatoResizeViewportAdp/revert</slot>
-            <slot>frontalBackgroundResizeViewportAdp/revert</slot>
-            <slot>frontalNegatoResizeViewportAdp/revert</slot>
-            <slot>resizeViewportAdp/revert</slot>
-            <slot>resizeOrientationMarkerViewportAdp/revert</slot>
-            <slot>topNegatoSlicerSliderView/hide</slot>
-            <slot>bottomNegatoSlicerSliderView/hide</slot>
+            <slot>axialSceneView/hide</slot>
+            <slot>sagittalSceneView/hide</slot>
+            <slot>frontalSceneView/hide</slot>
         </connect>
 
         <!-- Volume rendering parameters -->
@@ -646,11 +574,11 @@
         <connect>
             <signal>fullscreenAct/screenSelected</signal>
             <slot>fullscreenAct/hide</slot>
-            <slot>genericSceneSrv/enableFullscreen</slot>
+            <slot>mainSceneSrv/enableFullscreen</slot>
         </connect>
 
         <connect>
-            <signal>genericSceneSrv/fullscreenSet</signal>
+            <signal>mainSceneSrv/fullscreenSet</signal>
             <slot>windowedAct/setVisible</slot>
             <slot>windowedAct/setEnabled</slot>
         </connect>
@@ -697,7 +625,7 @@
 
         <connect>
             <signal>windowedAct/clicked</signal>
-            <slot>genericSceneSrv/disableFullscreen</slot>
+            <slot>mainSceneSrv/disableFullscreen</slot>
             <slot>fullscreenAct/show</slot>
         </connect>
 
@@ -726,8 +654,6 @@
         <start uid="axisAdp" />
         <start uid="pickedVoxelTextAdp" />
         <start uid="shapeExtruderAdp" />
-        <start uid="resizeViewportAdp" />
-        <start uid="resizeOrientationMarkerViewportAdp" />
         <start uid="snapshotAdp" />
         <start uid="orientationMarkerAdp" />
 
@@ -737,30 +663,20 @@
 
         <start uid="3DNegatoAdp" />
 
-        <start uid="axialBackgroundAdp" />
-        <start uid="axialBackgroundResizeViewportAdp" />
-        <start uid="axialCompositorAdp" />
         <start uid="axialNegatoAdp" />
         <start uid="axialNegatoMultiDistancesAdp" />
-        <start uid="axialNegatoResizeViewportAdp" />
         <start uid="axialPickerInteractorAdp" />
         <start uid="axialLandmarksAdp" />
         <start uid="axialPickedVoxelTextAdp" />
-        <start uid="sagittalBackgroundAdp" />
-        <start uid="sagittalBackgroundResizeViewportAdp" />
-        <start uid="sagittalCompositorAdp" />
+
         <start uid="sagittalNegatoAdp" />
         <start uid="sagittalNegatoMultiDistancesAdp" />
-        <start uid="sagittalNegatoResizeViewportAdp" />
         <start uid="sagittalPickerInteractorAdp" />
         <start uid="sagittalLandmarksAdp" />
         <start uid="sagittalPickedVoxelTextAdp" />
-        <start uid="frontalBackgroundAdp" />
-        <start uid="frontalBackgroundResizeViewportAdp" />
-        <start uid="frontalCompositorAdp" />
+
         <start uid="frontalNegatoAdp" />
         <start uid="frontalNegatoMultiDistancesAdp" />
-        <start uid="frontalNegatoResizeViewportAdp" />
         <start uid="frontalPickerInteractorAdp" />
         <start uid="frontalLandmarksAdp" />
         <start uid="frontalPickedVoxelTextAdp" />
@@ -768,7 +684,6 @@
         <start uid="axialNegatoSlicerSrv" />
         <start uid="frontalNegatoSlicerSrv" />
         <start uid="sagittalNegatoSlicerSrv" />
-        <start uid="bottomNegatoSlicerView" />
 
         <update uid="backgroundReaderSrv" />
         <update uid="imageExtruderSrv" />

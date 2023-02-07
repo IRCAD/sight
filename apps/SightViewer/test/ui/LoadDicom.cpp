@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -68,7 +68,7 @@ void LoadDicom::test()
             // The image appears small, zoom in with the mouse to make it bigger
             tester.take(
                 "ogre scene",
-                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("genericSceneSrv");});
+                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("mainSceneSrv");});
 
             tester.interact(
                 std::make_unique<sight::ui::testCore::MouseWheel>(QPoint(0, int(1200 / qApp->devicePixelRatio())))

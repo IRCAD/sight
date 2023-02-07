@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -57,7 +57,7 @@ void SagittalNegato::test()
                 "ogre scene",
                 [&tester]() -> QObject*
             {
-                return tester.getMainWindow()->findChild<QWidget*>("genericSceneSrv");
+                return tester.getMainWindow()->findChild<QWidget*>("mainSceneSrv");
             });
             const QWidget* ogreScene = tester.get<QWidget*>();
             const int width          = ogreScene->width();

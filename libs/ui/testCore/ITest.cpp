@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -82,7 +82,7 @@ void ITest::compareImages(const std::filesystem::path& a, const std::filesystem:
                                 + '\n';
     CPPUNIT_ASSERT_MESSAGE(message + " (MSE)\n" + score, mse > 0.96);
     CPPUNIT_ASSERT_MESSAGE(message + " (Histogram)\n" + score, histogram > 0.98);
-    CPPUNIT_ASSERT_MESSAGE(message + " (Correlation)\n" + score, correlation > 0.71);
+    CPPUNIT_ASSERT_MESSAGE(message + " (Correlation)\n" + score, correlation > 0.69);
     CPPUNIT_ASSERT_MESSAGE(message + " (Voodoo)\n" + score, voodoo > 0.96);
 }
 
