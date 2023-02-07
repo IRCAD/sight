@@ -1,0 +1,3 @@
+sight_add_target(exsparametersGuiTest TYPE GUI_TEST)
+
+target_link_libraries(exsparametersGuiTest guiTest ExSParameters ui_qt)

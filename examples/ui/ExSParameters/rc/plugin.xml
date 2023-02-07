@@ -111,6 +111,7 @@ This example shows the possibilities of SParameters:
                     <param type="int2"    name="2 Integer" key="int2_1"    widget="spin"   defaultValue="5" min="0" max="100" depends="enable" />
                     <param type="int3"    name="3 Integer" key="int3_1"    widget="spin"   defaultValue="5" min="0" max="100" depends="enable" />
                     <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V1" values="V0,V1=v1,V2=v2,V3=v3" />
+                    <param type="enum"    name="Nonlinear" key="nonlin"    widget="slider" values="25,50,90,120,150" defaultValue="90"/>
                 </parameters>
             </service>
 
@@ -128,6 +129,7 @@ This example shows the possibilities of SParameters:
                     <param type="int2"    name="2 Integer" key="int2_1"    widget="spin"   defaultValue="8" min="0" max="100" depends="enable"  />
                     <param type="int3"    name="3 Integer" key="int3_1"    widget="spin"   defaultValue="12" min="0" max="100" depends="enable"  />
                     <param type="enum"    name="Enum"      key="enum_1"    defaultValue="V2" values="V0,V1=v1,V2=v2,V3=v3" depends="enable"  />
+                    <param type="enum"    name="Nonlinear" key="nonlin"    widget="combobox" values="25,50,90,120,150" defaultValue="90" depends="enable" />
                 </parameters>
             </service>
 
