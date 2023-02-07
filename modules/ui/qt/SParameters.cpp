@@ -220,6 +220,7 @@ void SParameters::starting()
         {
             auto* parameterLabel = new QLabel(QString::fromStdString(name));
             parameterLabel->setWordWrap(true);
+            parameterLabel->setStyleSheet("margin: -0.1em;");
             layout->addWidget(parameterLabel, row, 0);
         }
 
