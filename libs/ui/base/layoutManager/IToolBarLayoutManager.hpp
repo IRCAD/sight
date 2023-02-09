@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -171,6 +171,11 @@ public:
      * @brief Set the action checked or not.
      */
     UI_BASE_API virtual void menuItemSetChecked(ui::base::container::fwMenuItem::sptr, bool isChecked) = 0;
+
+    /**
+     * @brief Set the toolbar visibility.
+     */
+    UI_BASE_API virtual void setVisible(bool isVisible) = 0;
 
     /**
      * @brief Sets callbacks associate with toolBar items.

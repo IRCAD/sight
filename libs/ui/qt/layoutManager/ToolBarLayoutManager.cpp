@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,6 @@
 
 #include <ui/base/registry/macros.hpp>
 
-#include <QAction>
 #include <QActionGroup>
 #include <QMenu>
 #include <QToolBar>
@@ -254,6 +253,9 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
             (toolBar->orientation() == Qt::Horizontal) ? tb->setMinimumWidth(max) : tb->setMaximumHeight(max);
         }
     }
+
+    m_toggleToolbarVisibilityAction = toolBar->toggleViewAction();
+    m_toggleToolbarVisibilityAction->setVisible(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -296,5 +298,14 @@ void ToolBarLayoutManager::menuItemSetChecked(ui::base::container::fwMenuItem::s
 }
 
 //-----------------------------------------------------------------------------
+
+void ToolBarLayoutManager::setVisible(bool isVisible)
+{
+    if(m_toggleToolbarVisibilityAction != nullptr)
+    {
+        m_toggleToolbarVisibilityAction->setChecked(!isVisible);
+        m_toggleToolbarVisibilityAction->trigger();
+    }
+}
 
 } // namespace sight::ui::qt::layoutManager
