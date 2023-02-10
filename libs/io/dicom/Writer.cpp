@@ -21,6 +21,8 @@
 
 #include "Writer.hpp"
 
+#include "codec/NvJpeg2K.hpp"
+
 #include <core/macros.hpp>
 
 #include <data/ImageSeries.hpp>
@@ -173,10 +175,12 @@ inline static void writeEnhancedUSVolume(
     gdcm_image.SetDataElement(pixeldata);
 
     // Change data as JPEG2000 lossless
-    /// @note This could be a lot faster by using nvJPEG2000 library...
-    /// @note ...but it seems difficult without changing GDCM source code.
     gdcm::ImageChangeTransferSyntax transferSyntaxChanger;
     transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEG2000Lossless);
+#ifdef SIGHT_ENABLE_NVJPEG2K
+    codec::NvJpeg2K codec;
+    transferSyntaxChanger.SetUserCodec(&codec);
+#endif
     transferSyntaxChanger.SetInput(gdcm_image);
     transferSyntaxChanger.Change();
     writer.SetImage(transferSyntaxChanger.GetOutput());

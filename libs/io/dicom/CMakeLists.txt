@@ -22,6 +22,7 @@ target_link_libraries(
            data
            service
            io_zip
+           io_bitmap
 )
 
 if(SIGHT_BUILD_TESTS)
