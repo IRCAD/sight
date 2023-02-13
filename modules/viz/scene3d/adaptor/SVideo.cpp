@@ -210,6 +210,10 @@ void SVideo::updating()
                                }();
     const auto type = typeAndSize.first;
     const auto size = typeAndSize.second;
+    if(size[0] == 0 || size[1] == 0)
+    {
+        return;
+    }
 
     if(!m_isTextureInit || type != m_previousType)
     {
