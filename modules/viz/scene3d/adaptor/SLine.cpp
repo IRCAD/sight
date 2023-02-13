@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -170,7 +170,8 @@ void SLine::stopping()
 
 void SLine::attachNode(Ogre::MovableObject* object)
 {
-    Ogre::SceneNode* transNode = this->getTransformNode();
+    Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
+    Ogre::SceneNode* transNode     = this->getOrCreateTransformNode(rootSceneNode);
     SIGHT_ASSERT("Transform node shouldn't be null", transNode);
 
     transNode->setVisible(m_isVisible);
