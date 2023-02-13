@@ -99,6 +99,8 @@ Usage:
         <param name="addROICenterChannelIn" default="addROICenterChannelIn" />
         <param name="removeROICenterChannelIn" default="removeROICenterChannelIn" />
 
+        <param name="optimizeGrabberIn" default="optimizeGrabberIn" />
+
     </parameters>
     <config>
 
@@ -288,6 +290,12 @@ Usage:
         <connect channel="${removeROICenterChannelIn}">
             <slot>grabberProxySrv/removeROICenter</slot>
         </connect>
+
+        <connect channel="${optimizeGrabberIn}">
+            <slot>grabberProxySrv/optimize</slot>
+        </connect>
+
+        
 
         <start uid="containerViewSrv" />
         <start uid="grabberProxySrv" />
