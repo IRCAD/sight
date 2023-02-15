@@ -110,6 +110,11 @@ public:
  * Enable or disable preference management as a whoole. All functions, including constructor will throw
  * `PreferencesDisabled` exception if used while "disabled". Default is `true`.
  *
+ * @subsection ignoreFilesystem ignoreFilesystem
+ * Enable or disable loading and saving from the filesystem. If true, the preference file won't be loaded when the
+ * Preference is used, and it won't be saved either when the application exits. This is primarily intended for GUI
+ * tests, in order to enhance reproducibility of the tests and to avoid to mess with the preferences of the user.
+ *
  * @subsection set_password set_password
  * Set an harcoded password to be used. It enables defacto the encryption
  *
@@ -313,6 +318,9 @@ public:
     /// Enable / disable the preferences system. All functions will throw a PreferencesDisabled, if disabled
     UI_BASE_API static void set_enabled(bool enable);
 
+    /// Enable / disable loading/saving from the filesystem.
+    UI_BASE_API static void ignoreFilesystem(bool ignore);
+
     /// Set a password and enable encryption
     UI_BASE_API static void set_password(const core::crypto::secure_string& password);
 
@@ -343,6 +351,9 @@ private:
 
     /// Preferences can be disabled globally
     UI_BASE_API static bool s_is_enabled;
+
+    /// If true, the preferences won't be loaded/saved from the filesystem
+    UI_BASE_API static bool s_ignoreFilesystem;
 };
 
 } // namespace sight::ui::base

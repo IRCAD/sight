@@ -80,6 +80,8 @@ bool Preferences::s_is_preferences_modified {false};
 // Preferences can be disabled globally
 bool Preferences::s_is_enabled {false};
 
+bool Preferences::s_ignoreFilesystem {false};
+
 //------------------------------------------------------------------------------
 
 inline static bool mustEncrypt()
@@ -180,6 +182,13 @@ Preferences::Preferences()
             // Create and load the preferences file if not already done
             if(s_is_enabled && !s_preferences)
             {
+                if(s_ignoreFilesystem)
+                {
+                    // Don't read a preference file, simply create an empty preferences
+                    s_preferences = std::make_unique<boost::property_tree::ptree>();
+                    return;
+                }
+
                 // Set the password to use
                 // NEVER policy means we never ask for a password and only rely on manually set
                 if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
@@ -354,7 +363,7 @@ Preferences::~Preferences()
     std::unique_lock guard(s_preferences_mutex);
 
     // Check if we must save the modifications
-    if(s_is_enabled && s_is_preferences_modified)
+    if(s_is_enabled && s_is_preferences_modified && !s_ignoreFilesystem)
     {
         const auto& preferences_filepath = computePreferencesFilepath();
 
@@ -429,6 +438,14 @@ void Preferences::set_enabled(bool enable)
         s_preferences.reset();
         s_is_preferences_modified = false;
     }
+}
+
+//------------------------------------------------------------------------------
+
+void Preferences::ignoreFilesystem(bool ignore)
+{
+    std::unique_lock guard(s_preferences_mutex);
+    s_ignoreFilesystem = ignore;
 }
 
 //------------------------------------------------------------------------------

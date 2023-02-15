@@ -273,8 +273,8 @@ void SChessboardReprojection::toggleDistortion()
 
 void SChessboardReprojection::updateChessboardSize()
 {
-    std::uint64_t width(0);
-    std::uint64_t height(0);
+    std::uint64_t width(1);
+    std::uint64_t height(1);
     double squareSize(0.);
 
     try

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,6 +23,8 @@
 #include "Tester.hpp"
 
 #include <core/spyLog.hpp>
+
+#include <ui/base/Preferences.hpp>
 
 #include <QAction>
 #include <QApplication>
@@ -343,6 +345,8 @@ void Tester::init()
         {
             s_imageOutputPath = image_output_path;
         }
+
+        sight::ui::base::Preferences::ignoreFilesystem(true);
 
         s_alreadyLoaded = true;
 
