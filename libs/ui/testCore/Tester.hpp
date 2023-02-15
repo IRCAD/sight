@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -79,8 +79,23 @@ class GUITEST_CLASS_API Tester
 {
 public:
 
+    class GUITEST_CLASS_API BacktraceLock
+    {
+    public:
+
+        GUITEST_API BacktraceLock(Tester& tester);
+        GUITEST_API ~BacktraceLock();
+
+    private:
+
+        Tester& m_tester;
+    };
+
     /// Constructor. Initializes the test name.
     GUITEST_API Tester(std::string testName, bool verboseMode = false);
+
+    /// Destructor. Joins the thread.
+    GUITEST_API ~Tester();
 
     /**
      * @brief Stores a graphic component as the new current graphic component.
@@ -117,6 +132,30 @@ public:
      * @param graphicComponent The new graphic component.
      */
     GUITEST_API void take(const std::string& componentDescription, QObject* graphicComponent);
+
+    /**
+     * @brief Stores a graphic component as the new current graphic component.
+     *
+     * @param componentDescription The description of the new graphic component. Used in failure messages.
+     * @param parent The parent of the new current graphic component, typically a window. Default is the main window.
+     * @param componentName The objectName of the new current graphic component to be found.
+     *
+     * @{
+     */
+    GUITEST_API void take(
+        const std::string& componentDescription,
+        QObject* parent,
+        const std::string& objectName,
+        std::function<bool(QObject*)> condition = alwaysTrue,
+        int timeout                             = DEFAULT_TIMEOUT
+    );
+    GUITEST_API void take(
+        const std::string& componentDescription,
+        const std::string& objectName,
+        std::function<bool(QObject*)> condition = alwaysTrue,
+        int timeout                             = DEFAULT_TIMEOUT
+    );
+    /// @}
 
     /**
      * @brief Interacts with the current graphic component.
@@ -182,6 +221,32 @@ public:
     /// @}
 
     /**
+     * @brief Like @ref take, but the graphicComponent is found inside the current graphic component tree. It also
+     * slightly changes the failure messages.
+     *
+     * @param componentDescription The description of the new graphic component. Used in failure messages.
+     * @param objectName The objectName of the new graphic component to be found.
+     *
+     * @note The template version narrows the search to the components compatible with that type.
+     *
+     * @{
+     */
+    template<typename T>
+    void yields(
+        const std::string& componentDescription,
+        const std::string& objectName           = "",
+        std::function<bool(QObject*)> condition = alwaysTrue,
+        int timeout                             = DEFAULT_TIMEOUT
+    );
+    void yields(
+        const std::string& componentDescription,
+        const std::string& objectName           = "",
+        std::function<bool(QObject*)> condition = alwaysTrue,
+        int timeout                             = DEFAULT_TIMEOUT
+    );
+    /// @}
+
+    /**
      * @brief Like @ref take, but the test doesn't fail if the component doesn't appear, instead the following commands
      * will be ignored, until the next @ref take.
      *
@@ -239,6 +304,12 @@ public:
     /// @}
 
     /**
+     * @brief Takes a screenshot of the current graphic component
+     * @param path Where to save the screenshot
+     */
+    GUITEST_API void takeScreenshot(const std::filesystem::path& path);
+
+    /**
      * @brief Starts the test.
      * @details It will create a thread which will wait for the main window to appear, call f, then try to close the
      * main window, and finally wait for the main window to disappear. Code in the thread is surrounded with a
@@ -247,17 +318,60 @@ public:
      * @param f The function to be called.
      *
      * @pre @ref init was called.
-     *
-     * @warning You @b must call @ref end when the test ends to join the thread properly, as to destroy a thread which
-     * isn't joined is undefined behavior in C++.
      */
     GUITEST_API void start(std::function<void()> f);
 
     /**
-     * @brief Properly ends the test.
-     * @details As @ref start creates a thread, end joins it.
+     * @brief Check if the specified component doesn't exist or exists but is hidden, the test fails else.
+     *
+     * @param componentDescription The description of the new graphic component. Used in failure messages.
+     * @param graphicComponent A function which returns the new graphic component and takes the old graphic component
+     * @param condition An additional condition the new graphic component must respect.
+     * @param timeout The max time to wait for the component.
+     *
+     * @return Is the component is hidden?
+     *
+     * @warning The current graphic component becomes undefined after the call of this method.
      */
-    GUITEST_API void end();
+    GUITEST_API void shouldBeHidden(
+        const std::string& componentDescription,
+        std::function<QWidget* ()> graphicComponent,
+        std::function<bool(QWidget*)> condition = alwaysTrue,
+        int timeout                             = DEFAULT_TIMEOUT
+    );
+
+    /**
+     * @brief Check if the specified component exist and is visible, the test fails else. The current graphic component
+     * becomes this one after the call.
+     *
+     * @param componentDescription The description of the new graphic component. Used in failure messages.
+     * @param graphicComponent A function which returns the new graphic component and takes the old graphic component
+     * @param condition An additional condition the new graphic component must respect.
+     * @param timeout The max time to wait for the component.
+     *
+     * @return Is the component present?
+     */
+    GUITEST_API void shouldBePresent(
+        const std::string& componentDescription,
+        std::function<QWidget* ()> graphicComponent,
+        std::function<bool(QWidget*)> condition = alwaysTrue,
+        int timeout                             = DEFAULT_TIMEOUT
+    );
+
+    /**
+     * @brief Check if there is a current component. Useful to check if a @ref maybeTake succeeded.
+     *
+     * @return Is there a current component?
+     */
+    GUITEST_API bool exists();
+
+    /**
+     * @brief Check if the current component is castable to a given type.
+     *
+     * @return Is the current component castable to the given type?
+     */
+    template<typename T>
+    bool isA();
 
     /**
      * @brief Get the current component.
@@ -292,6 +406,15 @@ public:
      * @returns Did the test fail?
      */
     [[nodiscard]] GUITEST_API bool failed() const;
+
+    [[nodiscard]] GUITEST_API BacktraceLock addInBacktrace(const std::string& description);
+
+    /**
+     * @brief Returns the description associated to the current graphic component.
+     *
+     * @returns Current graphic component description
+     */
+    [[nodiscard]] GUITEST_API std::string getDescription() const;
 
     /**
      * @brief Properly initializes GuiTester.
@@ -448,6 +571,7 @@ private:
     std::string m_resultDescription;
     const std::string m_testName;
     bool m_verboseMode;
+    std::vector<std::string> m_backtrace;
 
     static bool s_alreadyLoaded;
     static std::filesystem::path s_imageOutputPath;

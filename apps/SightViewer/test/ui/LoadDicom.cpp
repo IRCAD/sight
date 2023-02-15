@@ -24,7 +24,8 @@
 
 #include <utestData/Data.hpp>
 
-#include <QAction>
+#include <ui/testCore/helper/Button.hpp>
+#include <ui/testCore/helper/Scene3d.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::LoadDicom);
 
@@ -35,6 +36,8 @@ namespace sight::sightviewer::test::ui
 
 void LoadDicom::test()
 {
+    namespace helper = sight::ui::testCore::helper;
+
     const std::string testName               = "sightViewerLoadDicomTest";
     const std::string imageName              = testName + ".png";
     const std::filesystem::path snapshotPath = sight::ui::testCore::Tester::getImageOutputPath() / imageName;
@@ -52,27 +55,10 @@ void LoadDicom::test()
                 utestData::Data::dir() / "sight/Patient/Dicom/JMSGenou"
             );
 
-            tester.take<QWidget*>(
-                "Show/hide volume button",
-                [&tester]() -> QWidget*
-            {
-                return sight::ui::testCore::Tester::getWidgetFromAction(
-                    tester.getMainWindow()->findChild<QAction*>(
-                        "toolBarView/Show/hide volume"
-                    )
-                );
-            },
-                [](QWidget* obj) -> bool {return obj->isEnabled();});
-            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
+            helper::Button::push(tester, "toolBarView/Show/hide volume");
 
             // The image appears small, zoom in with the mouse to make it bigger
-            tester.take(
-                "ogre scene",
-                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("mainSceneSrv");});
-
-            tester.interact(
-                std::make_unique<sight::ui::testCore::MouseWheel>(QPoint(0, int(1200 / qApp->devicePixelRatio())))
-            );
+            helper::Scene3d::zoom(tester, "mainSceneSrv", 10);
 
             saveSnapshot(tester, snapshotPath);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,6 +72,7 @@ std::string SelectorDialog::show()
     dialog->setWindowTitle(QString::fromStdString(m_title));
 
     auto* selectionList = new QListWidget(dialog);
+    selectionList->setObjectName("selectionList");
     for(const std::string& selection : m_selections)
     {
         selectionList->addItem(QString::fromStdString(selection));
@@ -80,8 +81,10 @@ std::string SelectorDialog::show()
     QListWidgetItem* firstItem = selectionList->item(0);
     selectionList->setCurrentItem(firstItem);
 
-    auto* okButton     = new QPushButton(QObject::tr("Ok"));
+    auto* okButton = new QPushButton(QObject::tr("Ok"));
+    okButton->setObjectName("Ok");
     auto* cancelButton = new QPushButton(QObject::tr("Cancel"));
+    cancelButton->setObjectName("Cancel");
 
     auto* h_layout = new QHBoxLayout();
     h_layout->addWidget(okButton);

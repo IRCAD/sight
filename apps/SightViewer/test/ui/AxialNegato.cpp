@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,8 +23,8 @@
 
 #include <utestData/Data.hpp>
 
-#include <QAction>
-#include <QSlider>
+#include <ui/testCore/helper/Button.hpp>
+#include <ui/testCore/helper/Slider.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::AxialNegato);
 
@@ -35,6 +35,8 @@ namespace sight::sightviewer::test::ui
 
 void AxialNegato::test()
 {
+    namespace helper = sight::ui::testCore::helper;
+
     const std::string testName               = "sightViewerAxialNegatoTest";
     const std::string imageName              = testName + ".png";
     const std::filesystem::path snapshotPath = sight::ui::testCore::Tester::getImageOutputPath() / imageName;
@@ -53,58 +55,16 @@ void AxialNegato::test()
             );
 
             // We want to hide the volume, we must click on the Show/hide volume button to achieve this
-            tester.take<QWidget*>(
-                "Show/hide volume button",
-                [&tester]() -> QWidget*
-            {
-                return sight::ui::testCore::Tester::getWidgetFromAction(
-                    tester.getMainWindow()->findChild<QAction*>(
-                        "toolBarView/Show/hide volume"
-                    )
-                );
-            },
-                // We want to click on it, so it should be clickable
-                [](QWidget* obj) -> bool {return obj->isEnabled();});
-            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
+            helper::Button::push(tester, "toolBarView/Show/hide volume");
 
             // Then we want to display the negato view, we must click on the Negato view button to achieve this
-            tester.take(
-                "Negato view button",
-                [&tester]() -> QObject*
-            {
-                return sight::ui::testCore::Tester::getWidgetFromAction(
-                    tester.getMainWindow()->findChild<QAction*>(
-                        "toolBarView/Negato view"
-                    )
-                );
-            });
-            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
+            helper::Button::push(tester, "toolBarView/Negato view");
 
             // For the test to work, we must first reset all negatos to 0
             resetNegatos(tester);
 
             // We want to move the negato, we must click in the negato slider to do that
-            tester.yields(
-                "Axial negato slicer",
-                [&tester](QObject*) -> QObject*
-            {
-                return tester.getMainWindow()->findChild<QObject*>("axialNegatoSlicerSrv");
-            });
-            tester.yields<QSlider*>(
-                "Axial negato slider",
-                [](QObject* old) -> QSlider* {return old->findChild<QSlider*>();},
-                [](QSlider* obj) -> bool {return obj->isEnabled();});
-            auto* negatoSlider = tester.get<QSlider*>();
-            for(int i = 0 ; i < 14 ; i++)
-            {
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
-                        Qt::LeftButton,
-                        Qt::NoModifier,
-                        sight::ui::testCore::Tester::rightOf(negatoSlider)
-                    )
-                );
-            }
+            helper::Slider::move(tester, "axialNegatoSlicerSrv", helper::Slider::Position::RIGHT, 14);
 
             saveSnapshot(tester, snapshotPath);
 

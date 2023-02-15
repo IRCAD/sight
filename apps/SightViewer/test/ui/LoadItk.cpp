@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,11 +21,9 @@
 
 #include "LoadItk.hpp"
 
-#include <core/runtime/path.hpp>
-
 #include <utestData/Data.hpp>
 
-#include <QAction>
+#include <ui/testCore/helper/Button.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::LoadItk);
 
@@ -36,12 +34,12 @@ namespace sight::sightviewer::test::ui
 
 void LoadItk::test()
 {
+    namespace helper = sight::ui::testCore::helper;
     const std::string testName               = "sightViewerLoadItkTest";
     const std::string imageName              = testName + ".png";
     const std::filesystem::path snapshotPath = sight::ui::testCore::Tester::getImageOutputPath() / imageName;
     std::filesystem::remove(snapshotPath);
 
-    const std::filesystem::path cwd = core::runtime::getWorkingPath();
     const std::filesystem::path referencePath(utestData::Data::dir() / "sight/ui/SightViewer" / imageName);
 
     start(
@@ -54,18 +52,7 @@ void LoadItk::test()
                 utestData::Data::dir() / "sight/image/inr/image.inr.gz"
             );
 
-            tester.take<QWidget*>(
-                "Show/hide volume button",
-                [&tester]() -> QWidget*
-            {
-                return sight::ui::testCore::Tester::getWidgetFromAction(
-                    tester.getMainWindow()->findChild<QAction*>(
-                        "toolBarView/Show/hide volume"
-                    )
-                );
-            },
-                [](QWidget* obj) -> bool {return obj->isEnabled();});
-            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
+            helper::Button::push(tester, "toolBarView/Show/hide volume");
 
             saveSnapshot(tester, snapshotPath);
 

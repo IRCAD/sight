@@ -61,7 +61,6 @@ void ITest::start(const std::string& testName, std::function<void(Tester&)> test
     tester.start([&tester, test]{test(tester);});
     m_profile->run();
     m_profile->stop();
-    tester.end();
     CPPUNIT_ASSERT_MESSAGE(tester.getFailureMessage(), !tester.failed());
 }
 

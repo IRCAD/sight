@@ -26,6 +26,8 @@
 
 #include <ui/base/Preferences.hpp>
 
+#include <boost/algorithm/string.hpp>
+
 #include <QAction>
 #include <QApplication>
 #include <QMutex>
@@ -89,10 +91,32 @@ bool alwaysTrue(QObject* /*unused*/)
     return true;
 }
 
+Tester::BacktraceLock::BacktraceLock(Tester& tester) :
+    m_tester(tester)
+{
+}
+
+Tester::BacktraceLock::~BacktraceLock()
+{
+    // If stack unwinding is in progress, it means the backtrace will be useful, so we shouldn't clear it
+    if(std::uncaught_exceptions() == 0)
+    {
+        m_tester.m_backtrace.pop_back();
+    }
+}
+
 Tester::Tester(std::string testName, bool verboseMode) :
     m_testName(std::move(testName)),
     m_verboseMode(verboseMode)
 {
+}
+
+Tester::~Tester()
+{
+    if(m_thread.joinable())
+    {
+        m_thread.join();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -113,6 +137,39 @@ void Tester::take(const std::string& componentDescription, QObject* graphicCompo
 {
     m_componentDescription = componentDescription;
     m_graphicComponent     = graphicComponent;
+}
+
+//------------------------------------------------------------------------------
+
+void Tester::take(
+    const std::string& componentDescription,
+    QObject* parent,
+    const std::string& objectName,
+    std::function<bool(QObject*)> condition,
+    int timeout
+)
+{
+    take(
+        componentDescription,
+        [parent, &objectName]
+        {
+            return parent->findChild<QObject*>(QString::fromStdString(objectName));
+        },
+        condition,
+        timeout
+    );
+}
+
+//------------------------------------------------------------------------------
+
+void Tester::take(
+    const std::string& componentDescription,
+    const std::string& objectName,
+    std::function<bool(QObject*)> condition,
+    int timeout
+)
+{
+    take(componentDescription, getMainWindow(), objectName, condition, timeout);
 }
 
 //------------------------------------------------------------------------------
@@ -169,6 +226,18 @@ void Tester::yields(
 
 //------------------------------------------------------------------------------
 
+void Tester::yields(
+    const std::string& componentDescription,
+    const std::string& objectName,
+    std::function<bool(QObject*)> condition,
+    int timeout
+)
+{
+    yields<QObject*>(componentDescription, objectName, condition, timeout);
+}
+
+//------------------------------------------------------------------------------
+
 void Tester::maybeTake(
     const std::string& componentDescription,
     std::function<QObject* ()> graphicComponent,
@@ -191,6 +260,20 @@ void Tester::doSomething(std::function<void(QObject*)> f)
 void Tester::doSomethingAsynchronously(std::function<void(QObject*)> f)
 {
     doSomethingAsynchronously<QObject*>(f);
+}
+
+//------------------------------------------------------------------------------
+
+void Tester::takeScreenshot(const std::filesystem::path& path)
+{
+    if(get<QWidget*>()->windowHandle() != nullptr)
+    {
+        get<QWidget*>()->screen()->grabWindow(get<QWidget*>()->winId()).save(QString::fromStdString(path.string()));
+    }
+    else
+    {
+        doSomethingAsynchronously<QWidget*>([path](QWidget* o){o->grab().save(QString::fromStdString(path.string()));});
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -276,7 +359,8 @@ void Tester::start(std::function<void()> f)
                 });
                 if(!ok)
                 {
-                    exit(1);
+                    qDebug() << "The application didn't close in 5 seconds, force-quitting.";
+                    std::exit(1);
                 }
             }
             catch(std::exception& e)
@@ -298,7 +382,8 @@ void Tester::start(std::function<void()> f)
                 });
                 if(!ok)
                 {
-                    exit(1);
+                    qDebug() << "The application didn't close in 5 seconds, force-quitting.";
+                    std::exit(1);
                 }
             }
         });
@@ -306,9 +391,53 @@ void Tester::start(std::function<void()> f)
 
 //------------------------------------------------------------------------------
 
-void Tester::end()
+void Tester::shouldBeHidden(
+    const std::string& componentDescription,
+    std::function<QWidget* ()> graphicComponent,
+    std::function<bool(QWidget*)> condition,
+    int timeout
+)
 {
-    m_thread.join();
+    maybeTake<QWidget*>(
+        componentDescription,
+        graphicComponent,
+        [&condition](QWidget* obj)
+        {
+            return condition(obj) && !obj->isVisible();
+        },
+        timeout
+    );
+    if(exists())
+    {
+        fail('"' + componentDescription + "\" is present, though it should be hidden");
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Tester::shouldBePresent(
+    const std::string& componentDescription,
+    std::function<QWidget* ()> graphicComponent,
+    std::function<bool(QWidget*)> condition,
+    int timeout
+)
+{
+    take<QWidget*>(
+        componentDescription,
+        graphicComponent,
+        [&condition](QWidget* obj)
+        {
+            return condition(obj) && obj->isVisible();
+        },
+        timeout
+    );
+}
+
+//------------------------------------------------------------------------------
+
+bool Tester::exists()
+{
+    return m_graphicComponent != nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -330,6 +459,21 @@ std::string Tester::getFailureMessage() const
 bool Tester::failed() const
 {
     return m_failed;
+}
+
+//------------------------------------------------------------------------------
+
+Tester::BacktraceLock Tester::addInBacktrace(const std::string& description)
+{
+    m_backtrace.push_back(description);
+    return {*this};
+}
+
+//------------------------------------------------------------------------------
+
+std::string Tester::getDescription() const
+{
+    return m_componentDescription;
 }
 
 //------------------------------------------------------------------------------
@@ -621,6 +765,11 @@ std::string Tester::generateFailureMessage()
     if(!m_resultDescription.empty())
     {
         message += "THEN: " + m_resultDescription + '\n';
+    }
+
+    if(!m_backtrace.empty())
+    {
+        message += "BACKTRACE: " + boost::join(m_backtrace, " / ") + '\n';
     }
 
     return message;
