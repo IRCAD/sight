@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,6 +39,7 @@ const core::com::Signals::SignalKeyType IGrabber::s_FRAME_PRESENTED_SIG = "frame
 const core::com::Signals::SignalKeyType IGrabber::s_PARAMETER_CHANGED_SIG = "parameterChanged";
 
 const core::com::Signals::SignalKeyType IGrabber::s_JOB_CREATED_SIG = "jobCreated";
+const core::com::Signals::SignalKeyType IGrabber::s_FPS_CHANGED_SIG = "fpsChanged";
 
 const core::com::Slots::SlotKeyType IGrabber::s_START_CAMERA_SLOT       = "startCamera";
 const core::com::Slots::SlotKeyType IGrabber::s_STOP_CAMERA_SLOT        = "stopCamera";
@@ -52,8 +53,9 @@ const core::com::Slots::SlotKeyType IGrabber::s_SET_STEP_SLOT           = "setSt
 
 const core::com::Slots::SlotKeyType IGrabber::s_SET_PARAMETER_SLOT = "setParameter";
 
-const core::com::Slots::SlotKeyType IGrabber::s_REQUEST_SETTINGS_SLOT = "requestSettings";
-const core::com::Slots::SlotKeyType IGrabber::s_OPTIMIZE_SLOT         = "optimize";
+const core::com::Slots::SlotKeyType IGrabber::s_REQUEST_SETTINGS_SLOT    = "requestSettings";
+const core::com::Slots::SlotKeyType IGrabber::s_OPTIMIZE_SLOT            = "optimize";
+const core::com::Slots::SlotKeyType IGrabber::s_FORWARD_FPS_CHANGED_SLOT = "forwardFPSChanged";
 
 const std::string IGrabber::s_ADD_ROI_CENTER_SLOT    = "addROICenter";
 const std::string IGrabber::s_REMOVE_ROI_CENTER_SLOT = "removeROICenter";
@@ -71,6 +73,7 @@ IGrabber::IGrabber() noexcept
 
     newSignal<ParameterChangedSignalType>(s_PARAMETER_CHANGED_SIG);
     newSignal<JobCreatedSignalType>(s_JOB_CREATED_SIG);
+    newSignal<FPSChangedSignalType>(s_FPS_CHANGED_SIG);
 
     newSlot(s_START_CAMERA_SLOT, &IGrabber::startCamera, this);
     newSlot(s_STOP_CAMERA_SLOT, &IGrabber::stopCamera, this);
@@ -89,6 +92,8 @@ IGrabber::IGrabber() noexcept
 
     newSlot(s_ADD_ROI_CENTER_SLOT, &IGrabber::addROICenter, this);
     newSlot(s_REMOVE_ROI_CENTER_SLOT, &IGrabber::removeROICenter, this);
+
+    newSlot(s_FORWARD_FPS_CHANGED_SLOT, &IGrabber::forwardFPSChanged, this);
 }
 
 // ----------------------------------------------------------------------------
@@ -190,6 +195,12 @@ void IGrabber::clearTimeline(data::FrameTL& _tl)
 void IGrabber::setStartState(bool state)
 {
     m_isStarted = state;
+}
+
+//------------------------------------------------------------------------------
+
+void IGrabber::forwardFPSChanged(double /* fps */)
+{
 }
 
 // ----------------------------------------------------------------------------

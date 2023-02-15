@@ -525,6 +525,13 @@ void SGrabberProxy::startTargetCamera(std::string impl)
                     slots::FWD_CREATE_JOB
                 );
 
+                m_connections.connect(
+                    srv,
+                    IGrabber::s_FPS_CHANGED_SIG,
+                    this->getSptr(),
+                    IGrabber::s_FORWARD_FPS_CHANGED_SLOT
+                );
+
                 ++srvCount;
             }
         }
@@ -775,6 +782,14 @@ void SGrabberProxy::fwdCreateJob(sight::core::jobs::IJob::sptr job)
 {
     auto sig = this->signal<IGrabber::JobCreatedSignalType>(IGrabber::s_JOB_CREATED_SIG);
     sig->asyncEmit(job);
+}
+
+//------------------------------------------------------------------------------
+
+void SGrabberProxy::forwardFPSChanged(double fps)
+{
+    auto sig = this->signal<IGrabber::FPSChangedSignalType>(IGrabber::s_FPS_CHANGED_SIG);
+    sig->asyncEmit(fps);
 }
 
 //------------------------------------------------------------------------------

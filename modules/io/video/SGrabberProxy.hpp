@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -239,6 +239,9 @@ private:
     // Forwards notifications
     void fwdNotify(IService::NotificationType, const std::string message);
     /** @} */
+
+    /// Forward FPS data
+    void forwardFPSChanged(double fps) final;
 
     /// Camera type (RGB, RGBD,...)
     CameraType m_type {CameraType::RGB};
