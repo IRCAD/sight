@@ -237,6 +237,8 @@ void SSignalButton::uncheck()
 
 void SSignalButton::setEnabled(bool _isEnabled)
 {
+    IEditor::setEnabled(_isEnabled);
+    // Keep this in case of SSignalButton is used outside a view container
     m_button->setEnabled(_isEnabled);
 }
 
@@ -258,6 +260,8 @@ void SSignalButton::disable()
 
 void SSignalButton::setVisible(bool _isVisible)
 {
+    IEditor::setVisible(_isVisible);
+    // Keep this in case of SSignalButton is used outside a view container
     m_button->setVisible(_isVisible);
 }
 
@@ -265,14 +269,14 @@ void SSignalButton::setVisible(bool _isVisible)
 
 void SSignalButton::show()
 {
-    m_button->show();
+    this->setVisible(true);
 }
 
 //-----------------------------------------------------------------------------
 
 void SSignalButton::hide()
 {
-    m_button->hide();
+    this->setVisible(false);
 }
 
 //-----------------------------------------------------------------------------
