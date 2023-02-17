@@ -35,10 +35,15 @@ void FileDialog::fill(Tester& tester, const std::filesystem::path& path)
 {
     auto bt = tester.addInBacktrace("fill " + path.string() + " in the file window");
     Dialog::take<QFileDialog*>(tester, "file window");
-    const QFileDialog* fileWindow = tester.get<QFileDialog*>();
+    const QPointer<QFileDialog> fileWindow = tester.get<QFileDialog*>();
     helper::Field::fill(tester, Select::fromDialog("fileNameEdit"), path.string());
     tester.interact(std::make_unique<KeyboardClick>(Qt::Key_Enter));
-    tester.doubt("the file window is closed", [fileWindow](QObject*){return !fileWindow->isVisible();});
+    tester.doubt(
+        "the file window is closed",
+        [&fileWindow](QObject*)
+        {
+            return fileWindow == nullptr || !fileWindow->isVisible();
+        });
 }
 
 } // namespace sight::ui::testCore::helper

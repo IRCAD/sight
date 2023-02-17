@@ -56,7 +56,7 @@ void PreferencesConfiguration::fill(Tester& tester, const std::map<std::string, 
 {
     auto bt = tester.addInBacktrace("fill preferences configuration window with " + mapToString(values));
     Dialog::take(tester, "preferences configuration window");
-    auto* window = tester.get<QWidget*>();
+    QPointer<QWidget> window = tester.get<QWidget*>();
     for(const auto& e : values)
     {
         auto key   = e.first;
@@ -81,9 +81,9 @@ void PreferencesConfiguration::fill(Tester& tester, const std::map<std::string, 
     helper::Button::push(tester, Select::fromDialog("OK"));
     tester.doubt(
         "the preferences configuration window is closed",
-        [window](QObject*) -> bool
+        [&window](QObject*) -> bool
         {
-            return !window->isVisible();
+            return window == nullptr || !window->isVisible();
         });
 }
 

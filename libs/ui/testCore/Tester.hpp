@@ -561,7 +561,7 @@ private:
     static QImage voodooize(const QImage& img);
     GUITEST_API static bool waitForAsynchronously(std::function<bool()> predicate, int timeout = DEFAULT_TIMEOUT);
 
-    QObject* m_graphicComponent = nullptr;
+    QPointer<QObject> m_graphicComponent = nullptr;
     std::string m_componentDescription;
     std::vector<std::unique_ptr<Interaction> > m_interactions;
     bool m_failed = false;
