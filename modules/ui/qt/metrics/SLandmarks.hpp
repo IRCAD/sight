@@ -26,6 +26,7 @@
 
 #include <data/Landmarks.hpp>
 #include <data/Matrix4.hpp>
+#include <data/Point.hpp>
 #include <data/tools/PickingInfo.hpp>
 
 #include <ui/base/IEditor.hpp>
@@ -63,6 +64,7 @@ namespace sight::module::ui::qt::metrics
  * @code{.xml}
         <service uid="..." type="sight::module::ui::qt::metrics::SLandmarks" >
            <inout key="landmarks" uid="..." />
+           <inout key="currentLandmark" uid="..." />
            <in key="matrix" uid="..." />
            <text>Use 'Ctrl+Left Click' to add new landmarks</text>
            <size>10.0</size>
@@ -77,6 +79,8 @@ namespace sight::module::ui::qt::metrics
  *
  *  @subsection In-Out In-Out
  * - \b landmarks [sight::data::Landmarks]: the landmarks structure on which this editor is working.
+ * - \b currentLandmark [sight::data::Point]: (optional) the coordinates of the currently selected landmark.
+ *  It is updated when a new landmark is created, or when a double click is made on an existing landmark.
  *
  * @subsection Configuration Configuration
  * - \b text (optional): text displayed at the top of this editor.
@@ -169,6 +173,13 @@ public:
      * @param _column column num (not used)
      */
     void onLandmarkDoubleClicked(QTreeWidgetItem* _item, int _column) const;
+
+    /**
+     * @brief Called when a new landmark is set as current one (double click or pick)
+     *
+     * @param world_coord coordinate of the current landmark
+     */
+    void updateCurrentLandmark(data::Landmarks::PointType& world_coord) const;
 
     /**
      * @brief Called when a group's point size is modified.
@@ -350,10 +361,12 @@ public:
     /// Sets the text displayed at the top of this editor.
     std::string m_text {"Use 'Ctrl+Left Click' to add new landmarks"};
 
-    static constexpr std::string_view s_LANDMARKS_INOUT = "landmarks";
-    static constexpr std::string_view s_MATRIX_IN       = "matrix";
+    static constexpr std::string_view s_LANDMARKS_INOUT        = "landmarks";
+    static constexpr std::string_view s_MATRIX_IN              = "matrix";
+    static constexpr std::string_view s_CURRENT_LANDMARK_INOUT = "currentLandmark";
     data::ptr<data::Matrix4, sight::data::Access::in> m_matrix {this, s_MATRIX_IN, false, true};
     data::ptr<data::Landmarks, sight::data::Access::inout> m_landmarks {this, s_LANDMARKS_INOUT, true};
+    data::ptr<data::Point, sight::data::Access::inout> m_currentLandmark {this, s_CURRENT_LANDMARK_INOUT, false, true};
 
     /// Used to generate random color
     std::uniform_real_distribution<float> m_distributor {0.0F, 1.0F};
