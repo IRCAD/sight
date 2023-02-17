@@ -248,7 +248,7 @@ void SWriter::updating()
                 auto data = m_data.lock();
                 writer->setObject(data.get_shared());
                 writer->setFile(temporaryFile.filePath());
-                writer->set_password(password);
+                writer->setPassword(password);
                 writer->setEncryptionPolicy(m_pimpl->m_encryption_policy);
                 writer->setArchiveFormat(m_pimpl->m_archive_format);
             }

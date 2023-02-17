@@ -249,7 +249,7 @@ void SReader::updating()
             // Create the session reader
             auto reader = sight::io::session::SessionReader::New();
             reader->setFile(filepath);
-            reader->set_password(password);
+            reader->setPassword(password);
             reader->setEncryptionPolicy(m_pimpl->m_encryption_policy);
             reader->setArchiveFormat(m_pimpl->m_archive_format);
 

@@ -117,7 +117,7 @@ std::string SessionReader::extension() const
 
 //------------------------------------------------------------------------------
 
-void SessionReader::set_password(const secure_string& password)
+void SessionReader::setPassword(const secure_string& password)
 {
     m_pimpl->m_password->set_password(password);
 }
@@ -148,6 +148,13 @@ void SessionReader::setCustomDeserializer(const std::string& className, deserial
 void SessionReader::setDeserializer(const std::string& className, deserializer_t deserializer)
 {
     detail::SessionDeserializer::setDeserializer(className, deserializer);
+}
+
+//------------------------------------------------------------------------------
+
+deserializer_t SessionReader::deserializer(const std::string& className)
+{
+    return detail::SessionDeserializer::deserializer(className);
 }
 
 } // namespace sight::io::session

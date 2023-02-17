@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,10 +66,22 @@ void ArchiveTest::newTest()
 
         {
             auto archiveWriter = ArchiveWriter::get(archivePath);
+
+            // check the archive path getter
+            CPPUNIT_ASSERT_EQUAL(
+                archivePath,
+                archiveWriter->getArchivePath()
+            );
         }
 
         {
-            auto archive_reader = ArchiveReader::get(archivePath);
+            auto archiveReader = ArchiveReader::get(archivePath);
+
+            // check the archive path getter
+            CPPUNIT_ASSERT_EQUAL(
+                archivePath,
+                archiveReader->getArchivePath()
+            );
         }
     }
 

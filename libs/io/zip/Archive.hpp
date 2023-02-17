@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -104,6 +104,9 @@ public:
         return ArchiveFormat::INVALID;
     }
 
+    /// Returns the path of the archive
+    inline const std::filesystem::path& getArchivePath() const;
+
 protected:
 
     /// Constructor
@@ -113,5 +116,12 @@ private:
 
     const std::filesystem::path m_archive_path;
 };
+
+//------------------------------------------------------------------------------
+
+inline const std::filesystem::path& Archive::getArchivePath() const
+{
+    return m_archive_path;
+}
 
 } // namespace sight::io::zip

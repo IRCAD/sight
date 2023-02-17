@@ -247,7 +247,7 @@ inline void test(const bool encrypt, const bool raw, const bool empty_obj = fals
         }
         else if(encrypt)
         {
-            sessionWriter->set_password(password);
+            sessionWriter->setPassword(password);
         }
 
         // Write the session
@@ -270,7 +270,7 @@ inline void test(const bool encrypt, const bool raw, const bool empty_obj = fals
         }
         else if(encrypt)
         {
-            sessionReader->set_password(password);
+            sessionReader->setPassword(password);
         }
 
         // Read the session
@@ -1649,6 +1649,9 @@ void SessionTest::customSerializerTest()
         sessionWriter->setObject(object);
         sessionWriter->setFile(testPath);
 
+        // Test serializer getter
+        CPPUNIT_ASSERT(sessionWriter->serializer(data::String::classname()));
+
         // Change the session serializer by setting a new one using setCustomSerializer
         sessionWriter->setCustomSerializer(data::String::classname(), customSerialize);
 
@@ -1669,8 +1672,12 @@ void SessionTest::customSerializerTest()
         // Read the session: it should fail since the serializer has been modified by a custom one
         CPPUNIT_ASSERT_THROW(sessionReader->read(), sight::core::Exception);
 
+        // Test deserializer getter
+        CPPUNIT_ASSERT(sessionReader->deserializer(data::String::classname()));
+
         // Set the new customDeserializer
         sessionReader->setCustomDeserializer(data::String::classname(), customDeserialize);
+
         CPPUNIT_ASSERT_NO_THROW(sessionReader->read());
 
         // Test value
