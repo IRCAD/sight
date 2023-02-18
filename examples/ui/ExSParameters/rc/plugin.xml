@@ -190,6 +190,13 @@ This example shows the possibilities of SParameters:
                     <key>bool_1</key>
                     <default_value>false</default_value>
                 </preference>
+                <preference>
+                    <type>list</type>
+                    <name>Values for Nonlinear</name>
+                    <key>nonlin</key>
+                    <separator>,</separator>
+                    <default_value>25,50,90,120,150</default_value>
+                </preference>
             </service>
 
             <!-- ******************************* Connections ***************************************** -->
@@ -199,6 +206,7 @@ This example shows the possibilities of SParameters:
             <connect>
                 <signal>preferencesAct/preferenceChanged</signal>
                 <slot>parameters1Srv/setParameter</slot>
+                <slot>parameters2Srv/setParameter</slot>
             </connect>
 
             <connect>

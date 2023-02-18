@@ -19,42 +19,28 @@
  *
  ***********************************************************************/
 
+// cspell:ignore exsparameters
+
 #pragma once
 
-#include "Select.hpp"
+#include <cppunit/extensions/HelperMacros.h>
 
-#include <ui/testCore/Tester.hpp>
+#include <ui/testCore/ITest.hpp>
 
-namespace sight::ui::testCore::helper
+namespace sight::examples::ui::exsparameters::test::ui
 {
 
-class Button
+class NonLinearSliderValuesChange : public sight::ui::testCore::ITest
 {
+CPPUNIT_TEST_SUITE(NonLinearSliderValuesChange);
+CPPUNIT_TEST(test);
+CPPUNIT_TEST_SUITE_END();
+
 public:
 
-    /**
-     * Click on the specified button
-     * @param tester The current tester
-     * @param button How to get the button to be clicked
-     */
-    GUITEST_API static void push(Tester& tester, const Select& button);
+    std::filesystem::path getProfilePath() override;
 
-    /**
-     * Click on a button in a menu bar
-     * @param tester The current tester
-     * @param button How to get the menu bar button to be clicked
-     */
-    GUITEST_API static void pushMenuBarItem(Tester& tester, const Select& button);
-
-    /**
-     * Wait for a button to be clickable
-     * @param tester The current tester
-     * @param button How to get the button to wait
-     */
-    GUITEST_API static void waitForClickability(
-        Tester& tester,
-        const Select& button
-    );
+    void test();
 };
 
-} // namespace sight::ui::testCore::helper
+}

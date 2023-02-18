@@ -40,13 +40,6 @@ NonLinearSlider::NonLinearSlider(QWidget* parent) :
         {
             Q_EMIT valueChanged(m_values[std::size_t(v)]);
         });
-    QObject::connect(
-        m_slider.get(),
-        &QAbstractSlider::rangeChanged,
-        [this](int min, int max)
-        {
-            Q_EMIT rangeChanged(min, max);
-        });
 }
 
 //------------------------------------------------------------------------------
@@ -57,6 +50,8 @@ void NonLinearSlider::setValues(const std::vector<int>& values)
     m_values = values;
     m_slider->setRange(0, static_cast<int>(values.size() - 1));
     m_slider->setValue(0);
+    Q_EMIT rangeChanged(values.front(), values.back());
+    Q_EMIT valueChanged(value());
 }
 
 //------------------------------------------------------------------------------

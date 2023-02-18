@@ -63,6 +63,15 @@ void Button::push(Tester& tester, const Select& button)
 
 //------------------------------------------------------------------------------
 
+void Button::pushMenuBarItem(Tester& tester, const Select& button)
+{
+    auto bt = tester.addInBacktrace("pushing " + button.getDescription(tester) + " button");
+    button.select(tester);
+    tester.doSomething<QAction*>([](QAction* obj){obj->trigger();});
+}
+
+//------------------------------------------------------------------------------
+
 void Button::waitForClickability(Tester& tester, const Select& button)
 {
     auto bt = tester.addInBacktrace("waiting for " + button.getDescription(tester) + " to become clickable");

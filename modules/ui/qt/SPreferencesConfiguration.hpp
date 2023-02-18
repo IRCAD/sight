@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -103,6 +103,13 @@ namespace sight::module::ui::qt
             <key>DEVICE_PORT</key>
             <default_value>104</default_value>
         </preference>
+        <preference>
+            <type>list</type>
+            <name>Values for Nonlinear</name>
+            <key>nonlin</key>
+            <separator>,</separator>
+            <default_value>25,50,90,120,150</default_value>
+        </preference>
     </service>
    @endcode
  *
@@ -115,6 +122,7 @@ namespace sight::module::ui::qt
  *                         'combobox' type).
  * - \b min (optional, int/double, default=0/-1000000.0): minimum value allowed in the field.
  * - \b max (optional, int/double, default=999999/1000000.0): maximum value allowed in the field.
+ * - \b separator (optional, list, default=','): the separator for the list type
  */
 class MODULE_UI_QT_CLASS_API SPreferencesConfiguration final : public QObject,
                                                                public sight::ui::base::IAction
@@ -164,7 +172,8 @@ private:
         PATH,
         FILE,
         COMBOBOX,
-        DOUBLE
+        DOUBLE,
+        LIST
     };
 
     struct PreferenceElt
@@ -179,13 +188,13 @@ private:
         std::string m_defaultValue;
         std::pair<int, int> m_iMinMax {0, 999999};
         std::pair<double, double> m_dMinMax {-1000000.0, 1000000.0};
+        std::string m_separator;
     };
 
     /// @brief Converts string value from PreferenceElt.m_preferenceValue to real type regarding PreferenceElt.m_type.
-    /// @param _type, the type as PreferenceType
-    /// @param _stringValue: value stored in std::string
+    /// @param _elt The preference element
     /// @return std::variant as defined by parameter_t.
-    static sight::ui::base::parameter_t convertValue(const PreferenceType& _type, const std::string& _stringValue);
+    static sight::ui::base::parameter_t convertValue(const PreferenceElt& _elt);
 
     static void onSelectDir(QPointer<QLineEdit> _lineEdit);
 
