@@ -26,7 +26,7 @@
         <service uid="mainFrame" type="sight::module::ui::base::SFrame">
             <gui>
                 <frame>
-                    <name>${appName}</name>
+                    <name>${appName} ${appVersion}</name>
                     <icon>${appIconPath}</icon>
                     <minSize width="800" height="600" />
                 </frame>

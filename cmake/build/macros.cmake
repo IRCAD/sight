@@ -191,36 +191,38 @@ macro(configure_project SIGHT_TARGET)
 endmacro()
 
 # Create a target for the resources
-macro(create_resources_target TARGET RES_DIR TARGET_DIR)
+macro(create_resources_target TARGET TARGET_RC RES_DIR TARGET_RC_DIR)
     file(GLOB_RECURSE RESOURCES_FILES "${RES_DIR}/*")
     set(CREATED_RESOURCES_LIST)
     foreach(RESOURCE_FILE ${RESOURCES_FILES})
         file(RELATIVE_PATH REL_PATH "${RES_DIR}" "${RESOURCE_FILE}")
-        if("${TARGET_DIR}/${REL_PATH}" MATCHES "^.*\\.(txt|xml|cfg)$")
-            set(COPY_COMMAND ${CMAKE_COMMAND} -DIN_FILE="${RES_DIR}/${REL_PATH}" -DOUT_FILE="${TARGET_DIR}/${REL_PATH}"
-                             -DFWPROJECT_NAME="${SIGHT_TARGET}" -P ${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake
+        if("${TARGET_RC_DIR}/${REL_PATH}" MATCHES "^.*\\.(txt|xml|cfg)$")
+            set(COPY_COMMAND
+                ${CMAKE_COMMAND} -DIN_FILE="${RES_DIR}/${REL_PATH}" -DOUT_FILE="${TARGET_RC_DIR}/${REL_PATH}"
+                -DFWPROJECT_NAME="${SIGHT_TARGET_RC}" -D${TARGET}_VERSION="${${TARGET}_VERSION}"
+                -DPROJECT_VERSION="${PROJECT_VERSION}" -P ${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake
             )
             set(COPY_DEPENDS "${FWCMAKE_RESOURCE_PATH}/build/configure_file.cmake")
         else()
 
-            set(COPY_COMMAND ${CMAKE_COMMAND} -E copy "${RES_DIR}/${REL_PATH}" "${TARGET_DIR}/${REL_PATH}")
+            set(COPY_COMMAND ${CMAKE_COMMAND} -E copy "${RES_DIR}/${REL_PATH}" "${TARGET_RC_DIR}/${REL_PATH}")
             set(COPY_DEPENDS)
         endif()
 
         add_custom_command(
-            OUTPUT "${TARGET_DIR}/${REL_PATH}"
+            OUTPUT "${TARGET_RC_DIR}/${REL_PATH}"
             COMMAND ${COPY_COMMAND}
             DEPENDS "${RES_DIR}/${REL_PATH}" ${COPY_DEPENDS}
             COMMENT "Copy resource ${RESOURCE_FILE}"
         )
-        list(APPEND CREATED_RESOURCES_LIST "${TARGET_DIR}/${REL_PATH}")
+        list(APPEND CREATED_RESOURCES_LIST "${TARGET_RC_DIR}/${REL_PATH}")
 
     endforeach()
 
-    add_custom_target("${TARGET}" ALL DEPENDS ${CREATED_RESOURCES_LIST} COMMENT "Copy resources")
+    add_custom_target("${TARGET_RC}" ALL DEPENDS ${CREATED_RESOURCES_LIST} COMMENT "Copy resources")
 
     # Adds project into folder rc
-    set_target_properties("${TARGET}" PROPERTIES FOLDER "rc")
+    set_target_properties("${TARGET_RC}" PROPERTIES FOLDER "rc")
 
     unset(CREATED_RESOURCES_LIST)
 endmacro()
@@ -259,7 +261,9 @@ macro(fw_exec SIGHT_TARGET)
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
         set(${SIGHT_TARGET}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${SIGHT_TARGET}")
-        create_resources_target(${SIGHT_TARGET}_rc "${PRJ_SOURCE_DIR}/rc" "${${SIGHT_TARGET}_RC_BUILD_DIR}")
+        create_resources_target(
+            ${SIGHT_TARGET} ${SIGHT_TARGET}_rc "${PRJ_SOURCE_DIR}/rc" "${${SIGHT_TARGET}_RC_BUILD_DIR}"
+        )
         add_dependencies(${SIGHT_TARGET} ${SIGHT_TARGET}_rc)
 
         create_resources_install_target("${${SIGHT_TARGET}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${SIGHT_TARGET}")
@@ -408,7 +412,7 @@ macro(sight_generic_test SIGHT_TARGET)
     if(TEST_RC_DIR)
         set(${SIGHT_TARGET}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${TU_NAME}")
 
-        create_resources_target(${SIGHT_TARGET}_rc "${TEST_RC_DIR}" "${${SIGHT_TARGET}_RC_BUILD_DIR}")
+        create_resources_target(${SIGHT_TARGET} ${SIGHT_TARGET}_rc "${TEST_RC_DIR}" "${${SIGHT_TARGET}_RC_BUILD_DIR}")
         add_dependencies(${SIGHT_TARGET} ${SIGHT_TARGET}_rc)
     endif()
 
@@ -590,7 +594,9 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
 
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
         set(${SIGHT_TARGET}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${SIGHT_TARGET}")
-        create_resources_target(${SIGHT_TARGET}_rc "${PRJ_SOURCE_DIR}/rc" "${${SIGHT_TARGET}_RC_BUILD_DIR}")
+        create_resources_target(
+            ${SIGHT_TARGET} ${SIGHT_TARGET}_rc "${PRJ_SOURCE_DIR}/rc" "${${SIGHT_TARGET}_RC_BUILD_DIR}"
+        )
         add_dependencies(${SIGHT_TARGET} ${SIGHT_TARGET}_rc)
 
         create_resources_install_target("${${SIGHT_TARGET}_RC_BUILD_DIR}" "${SIGHT_MODULE_RC_PREFIX}/${SIGHT_TARGET}")
@@ -897,7 +903,9 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
 
     set(${SIGHT_TARGET}_RC_BUILD_DIR "${CMAKE_BINARY_DIR}/${SIGHT_MODULE_RC_PREFIX}/${SIGHT_TARGET}")
     if(EXISTS "${PRJ_SOURCE_DIR}/rc")
-        create_resources_target(${SIGHT_TARGET}_rc "${PRJ_SOURCE_DIR}/rc" "${${SIGHT_TARGET}_RC_BUILD_DIR}")
+        create_resources_target(
+            ${SIGHT_TARGET} ${SIGHT_TARGET}_rc "${PRJ_SOURCE_DIR}/rc" "${${SIGHT_TARGET}_RC_BUILD_DIR}"
+        )
         add_dependencies(${SIGHT_TARGET} ${SIGHT_TARGET}_rc)
     endif()
 
@@ -1009,6 +1017,8 @@ macro(sight_add_target)
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "GUI_TEST")
         sight_gui_test(${SIGHT_TARGET} "${OPTIONS}")
     elseif("${SIGHT_TARGET_TYPE}" STREQUAL "APP")
+        get_last_git_tag(${SIGHT_TARGET})
+        set(${SIGHT_TARGET}_VERSION ${GIT_TAG})
         if(${SIGHT_TARGET_REQUIRE_ADMIN})
             fw_module(${SIGHT_TARGET} ${SIGHT_TARGET_TYPE} ON)
         else()

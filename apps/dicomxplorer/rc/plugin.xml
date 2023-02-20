@@ -13,7 +13,7 @@
         <parameters>
             <param name="appName" value="DicomXplorer" />
             <param name="appIconPath" value="dicomxplorer/dicomXplorer.ico" />
-            <param name="appVersion" value="@SIGHT_VERSION@" />
+            <param name="appVersion" value="@dicomxplorer_VERSION@" />
         </parameters>
     </extension>
 

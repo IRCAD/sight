@@ -83,7 +83,7 @@
             <service uid="mainView" type="sight::module::ui::base::SFrame" >
                 <gui>
                     <frame>
-                        <name>Sight Viewer</name>
+                        <name>Sight Viewer @SightViewer_VERSION@</name>
                         <icon>SightViewer/Ogre_logo.svg</icon>
                         <minSize width="1150" height="700" />
                     </frame>
