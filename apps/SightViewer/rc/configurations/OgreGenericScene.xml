@@ -4,6 +4,7 @@
         <param name="WID_PARENT" />
         <param name="NEGATO_VIEW_RECEIVE_CHANNEL" />
         <param name="VOLUME_VIEW_RECEIVE_CHANNEL" />
+        <param name="NEGATO_VOLUME_VIEW_TOGGLE_SENDER_CHANNEL" />
         <param name="VR_BASIC_BOOL_PARAM_RECEIVER_CHANNEL" />
         <param name="VR_BASIC_INT_PARAM_RECEIVER_CHANNEL" />
         <param name="VR_BASIC_DOUBLE_PARAM_RECEIVER_CHANNEL" />
@@ -156,6 +157,7 @@
                     <adaptor uid="pickedVoxelTextAdp" />
                     <adaptor uid="shapeExtruderAdp" />
                     <adaptor uid="snapshotAdp" />
+                    <adaptor uid="eventAdp" />
                 </layer>
 
                 <layer id="orientationMarkerLayer" order="2">
@@ -190,6 +192,7 @@
                     <adaptor uid="axialPickerInteractorAdp" />
                     <adaptor uid="axialLandmarksAdp" />
                     <adaptor uid="axialPickedVoxelTextAdp" />
+                    <adaptor uid="axialEventAdp" />
                 </layer>
             </scene>
         </service>
@@ -219,6 +222,7 @@
                     <adaptor uid="sagittalPickerInteractorAdp" />
                     <adaptor uid="sagittalLandmarksAdp" />
                     <adaptor uid="sagittalPickedVoxelTextAdp" />
+                    <adaptor uid="sagittalEventAdp" />
                 </layer>
             </scene>
         </service>
@@ -248,6 +252,7 @@
                     <adaptor uid="frontalPickerInteractorAdp" />
                     <adaptor uid="frontalLandmarksAdp" />
                     <adaptor uid="frontalPickedVoxelTextAdp" />
+                    <adaptor uid="frontalEventAdp" />
                 </layer>
             </scene>
         </service>
@@ -316,6 +321,10 @@
             <inout key="image" uid="snapshot" />
         </service>
 
+        <service uid="eventAdp" type="sight::module::viz::scene3d::adaptor::SEvent">
+            <event type="buttonDoublePress" buttons="left" modifiers="none"/>
+        </service>
+
         <service uid="orientationMarkerAdp" type="sight::module::viz::scene3d::adaptor::SOrientationMarker" autoConnect="true">
             <in key="matrix" uid="globalCamera" />
         </service>
@@ -354,6 +363,10 @@
             <config x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
         </service>
 
+        <service uid="axialEventAdp" type="sight::module::viz::scene3d::adaptor::SEvent">
+            <event type="buttonDoublePress" buttons="left" modifiers="none"/>
+        </service>
+
         <!-- Sagittal -->
 
         <service uid="sagittalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D">
@@ -388,6 +401,10 @@
             <config x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
         </service>
 
+        <service uid="sagittalEventAdp" type="sight::module::viz::scene3d::adaptor::SEvent">
+            <event type="buttonDoublePress" buttons="left" modifiers="none"/>
+        </service>
+
         <!-- Frontal -->
 
         <service uid="frontalNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato2D">
@@ -420,6 +437,10 @@
         <service uid="frontalPickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::SText">
             <text></text>
             <config x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
+        </service>
+
+        <service uid="frontalEventAdp" type="sight::module::viz::scene3d::adaptor::SEvent">
+            <event type="buttonDoublePress" buttons="left" modifiers="none"/>
         </service>
 
 
@@ -465,6 +486,8 @@
             <inout key="extrudedImage" uid="extrudedImage" />
         </service>
 
+
+
         <!-- ************************************* Action ************************************ -->
 
         <!-- Set the view in full screen -->
@@ -483,12 +506,14 @@
         <!-- ******************************* Connections ***************************************** -->
 
         <connect channel="${NEGATO_VIEW_RECEIVE_CHANNEL}">
+            <slot>mainSceneSrv/show</slot>
             <slot>axialSceneView/show</slot>
             <slot>sagittalSceneView/show</slot>
             <slot>frontalSceneView/show</slot>
         </connect>
 
         <connect channel="${VOLUME_VIEW_RECEIVE_CHANNEL}">
+            <slot>mainSceneSrv/show</slot>
             <slot>axialSceneView/hide</slot>
             <slot>sagittalSceneView/hide</slot>
             <slot>frontalSceneView/hide</slot>
@@ -634,6 +659,41 @@
             <slot>imageWriterSrv/update</slot>
         </connect>
 
+        <!-- Enlarge CT view by double-clicking it -->
+
+        <connect channel="${NEGATO_VOLUME_VIEW_TOGGLE_SENDER_CHANNEL}">
+            <signal>eventAdp/triggered</signal>
+        </connect>
+
+
+        <connect>
+            <signal>eventAdp/triggered</signal>
+            <slot>axialSceneView/toggleVisibility</slot>
+            <slot>sagittalSceneView/toggleVisibility</slot>
+            <slot>frontalSceneView/toggleVisibility</slot>
+        </connect>
+
+        <connect>
+            <signal>axialEventAdp/triggered</signal>
+            <slot>mainSceneSrv/toggleVisibility</slot>
+            <slot>sagittalSceneView/toggleVisibility</slot>
+            <slot>frontalSceneView/toggleVisibility</slot>
+        </connect>
+
+        <connect>
+            <signal>sagittalEventAdp/triggered</signal>
+            <slot>mainSceneSrv/toggleVisibility</slot>
+            <slot>axialSceneView/toggleVisibility</slot>
+            <slot>frontalSceneView/toggleVisibility</slot>
+        </connect>
+
+        <connect>
+            <signal>frontalEventAdp/triggered</signal>
+            <slot>mainSceneSrv/toggleVisibility</slot>
+            <slot>axialSceneView/toggleVisibility</slot>
+            <slot>sagittalSceneView/toggleVisibility</slot>
+        </connect>
+
         <!-- ******************************* Start/Stop services ***************************************** -->
 
         <start uid="mainView" />
@@ -655,6 +715,7 @@
         <start uid="pickedVoxelTextAdp" />
         <start uid="shapeExtruderAdp" />
         <start uid="snapshotAdp" />
+        <start uid="eventAdp" />
         <start uid="orientationMarkerAdp" />
 
         <start uid="axialNegatoCameraAdp" />
@@ -668,18 +729,21 @@
         <start uid="axialPickerInteractorAdp" />
         <start uid="axialLandmarksAdp" />
         <start uid="axialPickedVoxelTextAdp" />
+        <start uid="axialEventAdp" />
 
         <start uid="sagittalNegatoAdp" />
         <start uid="sagittalNegatoMultiDistancesAdp" />
         <start uid="sagittalPickerInteractorAdp" />
         <start uid="sagittalLandmarksAdp" />
         <start uid="sagittalPickedVoxelTextAdp" />
+        <start uid="sagittalEventAdp" />
 
         <start uid="frontalNegatoAdp" />
         <start uid="frontalNegatoMultiDistancesAdp" />
         <start uid="frontalPickerInteractorAdp" />
         <start uid="frontalLandmarksAdp" />
         <start uid="frontalPickedVoxelTextAdp" />
+        <start uid="frontalEventAdp" />
 
         <start uid="axialNegatoSlicerSrv" />
         <start uid="frontalNegatoSlicerSrv" />

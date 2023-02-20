@@ -458,6 +458,7 @@
                 <parameter replace="WID_PARENT" by="ogreSceneView" />
                 <parameter replace="NEGATO_VIEW_RECEIVE_CHANNEL" by="NEGATO_VIEW_SENDER_CHANNEL" />
                 <parameter replace="VOLUME_VIEW_RECEIVE_CHANNEL" by="VOLUME_VIEW_SENDER_CHANNEL" />
+                <parameter replace="NEGATO_VOLUME_VIEW_TOGGLE_SENDER_CHANNEL" by="NEGATO_VOLUME_VIEW_TOGGLE_RECEIVER_CHANNEL" />
                 <parameter replace="VR_BASIC_BOOL_PARAM_RECEIVER_CHANNEL" by="VOLUME_BASIC_BOOL_SENDER_CHANNEL" />
                 <parameter replace="VR_BASIC_INT_PARAM_RECEIVER_CHANNEL" by="VOLUME_BASIC_INT_SENDER_CHANNEL" />
                 <parameter replace="VR_BASIC_DOUBLE_PARAM_RECEIVER_CHANNEL" by="VOLUME_BASIC_DOUBLE_SENDER_CHANNEL" />
@@ -574,6 +575,11 @@
                 <signal>volumeViewAct/triggered</signal>
                 <slot>volumeViewAct/hide</slot>
                 <slot>negatoViewAct/show</slot>
+            </connect>
+
+            <connect channel="NEGATO_VOLUME_VIEW_TOGGLE_RECEIVER_CHANNEL" >
+                <slot>negatoViewAct/toggleVisibility</slot>
+                <slot>volumeViewAct/toggleVisibility</slot>
             </connect>
 
             <connect channel="VR_VISIBILITY_SENDER_CHANNEL" >

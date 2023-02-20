@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -182,7 +182,7 @@ void WindowInteractor::createContainer(
         new EventDispatcher(
             m_qOgreWidget,
             {QEvent::MouseButtonPress, QEvent::MouseButtonRelease, QEvent::Enter, QEvent::MouseMove, QEvent::Leave,
-             QEvent::Wheel
+             QEvent::Wheel, QEvent::MouseButtonDblClick
             })
     );
     layout->addWidget(m_windowContainer);

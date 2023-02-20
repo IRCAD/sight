@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,6 +45,7 @@ const core::com::Slots::SlotKeyType IGuiContainer::s_SET_VISIBLE_SLOT          =
 const core::com::Slots::SlotKeyType IGuiContainer::s_SET_VISIBLE_BY_PARAM_SLOT = "setVisibleByParam";
 const core::com::Slots::SlotKeyType IGuiContainer::s_SHOW_SLOT                 = "show";
 const core::com::Slots::SlotKeyType IGuiContainer::s_HIDE_SLOT                 = "hide";
+const core::com::Slots::SlotKeyType IGuiContainer::s_TOGGLE_VISIBILITY         = "toggleVisibility";
 
 //-----------------------------------------------------------------------------
 
@@ -58,6 +59,7 @@ IGuiContainer::IGuiContainer()
     newSlot(s_SET_VISIBLE_BY_PARAM_SLOT, &IGuiContainer::setVisibleByParameter, this);
     newSlot(s_SHOW_SLOT, &IGuiContainer::show, this);
     newSlot(s_HIDE_SLOT, &IGuiContainer::hide, this);
+    newSlot(s_TOGGLE_VISIBILITY, &IGuiContainer::toggleVisibility, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -355,6 +357,13 @@ void IGuiContainer::show()
 void IGuiContainer::hide()
 {
     this->setVisible(false);
+}
+
+//------------------------------------------------------------------------------
+
+void IGuiContainer::toggleVisibility()
+{
+    this->setVisible(!m_viewRegistry->getParent()->isShownOnScreen());
 }
 
 //-----------------------------------------------------------------------------

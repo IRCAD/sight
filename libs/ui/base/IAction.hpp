@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,6 +48,7 @@ namespace sight::ui::base
  * - \b setVisible(bool): sets whether the action is visible in its container.
  * - \b show(): make the action visible.
  * - \b hide(): make the action invisible.
+ * - \b toggleVisibility(): make the action visible if it was invisible or invisible if it was visible
  * - \b setEnabled(bool): sets whether the action can be interacted with.
  * - \b enable(): make the action interactive.
  * - \b disable(): make the action not interactive.
@@ -128,6 +129,9 @@ public:
 
     /// Slot to disable the action
     static const core::com::Slots::SlotKeyType s_HIDE_SLOT;
+
+    /// Slot to make the action visible when it is invisible and invisible when it is visible
+    static const core::com::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
 
     /// Deprecated: Slot to check or uncheck the action
     static const core::com::Slots::SlotKeyType s_SET_IS_ACTIVE_SLOT;

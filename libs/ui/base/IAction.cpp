@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,15 +33,16 @@
 namespace sight::ui::base
 {
 
-const core::com::Slots::SlotKeyType IAction::s_SET_CHECKED_SLOT = "setChecked";
-const core::com::Slots::SlotKeyType IAction::s_CHECK_SLOT       = "check";
-const core::com::Slots::SlotKeyType IAction::s_UNCHECK_SLOT     = "uncheck";
-const core::com::Slots::SlotKeyType IAction::s_SET_VISIBLE_SLOT = "setVisible";
-const core::com::Slots::SlotKeyType IAction::s_SHOW_SLOT        = "show";
-const core::com::Slots::SlotKeyType IAction::s_HIDE_SLOT        = "hide";
-const core::com::Slots::SlotKeyType IAction::s_SET_ENABLED_SLOT = "setEnabled";
-const core::com::Slots::SlotKeyType IAction::s_ENABLE_SLOT      = "enable";
-const core::com::Slots::SlotKeyType IAction::s_DISABLE_SLOT     = "disable";
+const core::com::Slots::SlotKeyType IAction::s_SET_CHECKED_SLOT       = "setChecked";
+const core::com::Slots::SlotKeyType IAction::s_CHECK_SLOT             = "check";
+const core::com::Slots::SlotKeyType IAction::s_UNCHECK_SLOT           = "uncheck";
+const core::com::Slots::SlotKeyType IAction::s_SET_VISIBLE_SLOT       = "setVisible";
+const core::com::Slots::SlotKeyType IAction::s_SHOW_SLOT              = "show";
+const core::com::Slots::SlotKeyType IAction::s_HIDE_SLOT              = "hide";
+const core::com::Slots::SlotKeyType IAction::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
+const core::com::Slots::SlotKeyType IAction::s_SET_ENABLED_SLOT       = "setEnabled";
+const core::com::Slots::SlotKeyType IAction::s_ENABLE_SLOT            = "enable";
+const core::com::Slots::SlotKeyType IAction::s_DISABLE_SLOT           = "disable";
 
 const core::com::Signals::SignalKeyType IAction::s_IS_ENABLED_SIG = "isEnabled";
 const core::com::Signals::SignalKeyType IAction::s_ENABLED_SIG    = "enabled";
@@ -72,6 +73,7 @@ IAction::IAction()
     newSlot(s_SET_VISIBLE_SLOT, &IAction::setVisible, this);
     newSlot(s_SHOW_SLOT, [this](){this->setVisible(true);});
     newSlot(s_HIDE_SLOT, [this](){this->setVisible(false);});
+    newSlot(s_TOGGLE_VISIBILITY_SLOT, [this]{this->setVisible(!m_visible);});
 
     newSlot(s_SET_IS_ACTIVE_SLOT, &IAction::setIsActive, this);
     newSlot(s_ACTIVATE_SLOT, [this](){this->setIsActive(true);});

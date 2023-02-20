@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,6 +56,32 @@ class MouseClick : public Interaction
 public:
 
     GUITEST_API MouseClick(
+        Qt::MouseButton button          = Qt::MouseButton::LeftButton,
+        Qt::KeyboardModifiers modifiers = Qt::NoModifier,
+        const QPoint& pos               = QPoint()
+    );
+
+    void interactWith(QWidget* widget) const override;
+    void interactWith(QWindow* window) const override;
+
+    [[nodiscard]] std::string toString() const override;
+
+private:
+
+    template<typename T>
+    void interactWith(T thing) const;
+
+    Qt::MouseButton m_button;
+    Qt::KeyboardModifiers m_modifiers;
+    QPoint m_pos;
+};
+
+/// Represents a mouse double click.
+class MouseDoubleClick : public Interaction
+{
+public:
+
+    GUITEST_API MouseDoubleClick(
         Qt::MouseButton button          = Qt::MouseButton::LeftButton,
         Qt::KeyboardModifiers modifiers = Qt::NoModifier,
         const QPoint& pos               = QPoint()
