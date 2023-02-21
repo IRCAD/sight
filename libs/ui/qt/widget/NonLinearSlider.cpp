@@ -32,6 +32,8 @@ NonLinearSlider::NonLinearSlider(QWidget* parent) :
     QWidget(parent)
 {
     m_slider->setOrientation(Qt::Horizontal);
+    m_slider->setSingleStep(1);
+    m_slider->setPageStep(1);
     setSizePolicy(m_slider->sizePolicy().horizontalPolicy(), m_slider->sizePolicy().verticalPolicy());
     QObject::connect(
         m_slider.get(),

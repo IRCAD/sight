@@ -208,15 +208,15 @@ void Synchronization::test()
                     ),
                     helper::Slider::Position::RIGHT
                 );
-                helper::Label::exactlyMatch(tester, Select::fromParent("parameters1Srv", "nonlin/valueLabel"), "150");
-                helper::ComboBox::valueEquals(tester, Select::fromParent("parameters2Srv", "nonlin"), "150");
+                helper::Label::exactlyMatch(tester, Select::fromParent("parameters1Srv", "nonlin/valueLabel"), "120");
+                helper::ComboBox::valueEquals(tester, Select::fromParent("parameters2Srv", "nonlin"), "120");
             }
 
             {
                 auto bt = tester.addInBacktrace("Check synchronization from 'Nonlinear' combobox to non-linear slider");
-                helper::ComboBox::select(tester, Select::fromParent("parameters2Srv", "nonlin"), "120");
-                helper::ComboBox::valueEquals(tester, Select::current(), "120");
-                helper::Label::exactlyMatch(tester, Select::fromParent("parameters1Srv", "nonlin/valueLabel"), "120");
+                helper::ComboBox::select(tester, Select::fromParent("parameters2Srv", "nonlin"), "50");
+                helper::ComboBox::valueEquals(tester, Select::current(), "50");
+                helper::Label::exactlyMatch(tester, Select::fromParent("parameters1Srv", "nonlin/valueLabel"), "50");
             }
         },
         true
