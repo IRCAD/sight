@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -62,7 +62,6 @@ void SRecurrentSignalTest::basicTest()
 
     int nbRepeat = 0;
     CPPUNIT_ASSERT_NO_THROW(m_recurrentSignal->configure());
-    CPPUNIT_ASSERT_NO_THROW(m_recurrentSignal->start().get());
 
     auto repeatedSlot = core::com::newSlot(
         [&nbRepeat]
@@ -73,7 +72,12 @@ void SRecurrentSignalTest::basicTest()
     repeatedSlot->setWorker(m_worker);
     m_recurrentSignal->signal("repeated")->connect(repeatedSlot);
 
+    CPPUNIT_ASSERT_NO_THROW(m_recurrentSignal->start().get());
+
     std::this_thread::sleep_for(999ms);
+
+    CPPUNIT_ASSERT_NO_THROW(m_recurrentSignal->stop().get());
+
     // 999/100 = 9, but on the CI 8 might be returned, most likely because of heavy load, so we tolerate 8.
     CPPUNIT_ASSERT(nbRepeat == 9 || nbRepeat == 8);
 }

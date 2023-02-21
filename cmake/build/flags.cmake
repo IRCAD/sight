@@ -108,11 +108,10 @@ elseif(CXX_COMPILER_ID STREQUAL "Clang" AND (CMAKE_BUILD_TYPE STREQUAL "Debug" O
 endif()
 
 # -fuse-ld=gold will make use of gold linker, which is faster and allows --gdb-index
+add_link_options("$<$<CXX_COMPILER_ID:GNU>:-fuse-ld=gold>" "$<$<CXX_COMPILER_ID:Clang>:-fuse-ld=lld>")
+
 # -Wl,--gdb-index pass the --gdb-index option to the linker to generate indexes that will speedup gdb start
-add_link_options(
-    "$<$<AND:$<CXX_COMPILER_ID:GNU>,$<CONFIG:Debug>>:-fuse-ld=gold;-Wl,--gdb-index>"
-    "$<$<AND:$<CXX_COMPILER_ID:Clang>,$<CONFIG:Debug>>:-fuse-ld=lld;-Wl,--gdb-index>"
-)
+add_link_options("$<$<AND:$<CXX_COMPILER_ID:GNU,Clang>,$<CONFIG:Debug>>:-Wl,--gdb-index>")
 
 # General linker optimization
 add_link_options(

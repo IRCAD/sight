@@ -17,6 +17,8 @@ lint:sheldon:
   extends: .lint
   variables:
     ENABLE_CLANG_TIDY: "ON"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
 .linux_build:
   extends: .linux_before
@@ -70,7 +72,7 @@ lint:sheldon:
       else
         TIMEOUT="480"
       fi
-    - ctest --timeout $TIMEOUT --output-on-failure -O ctest.log -j4 --output-junit junit.xml
+    - ctest --timeout $TIMEOUT --output-on-failure -O ctest.log -j$(nproc) --output-junit junit.xml
     # Build documentation if needed
     - >
       if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
@@ -147,9 +149,11 @@ build:linux-22.04-debug-gcc:
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_BUILD_SDK: "ON"
-    SIGHT_IGNORE_UNSTABLE_TESTS: 1
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 build:linux-22.04-release-gcc:
   extends: .linux_build
@@ -161,6 +165,9 @@ build:linux-22.04-release-gcc:
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 build:linux-22.04-RelWithDebInfo-clang:
   extends: .linux_build
@@ -171,6 +178,9 @@ build:linux-22.04-RelWithDebInfo-clang:
     SIGHT_ENABLE_CLANG_TIDY: "ON"
     CC: "/usr/lib/ccache/clang"
     CXX: "/usr/lib/ccache/clang++"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 build:linux-22.04-coverage-gcc:
   extends: .linux_build
@@ -182,6 +192,9 @@ build:linux-22.04-coverage-gcc:
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy-test:linux-debug:
   extends: .linux_deploy_test
@@ -191,6 +204,9 @@ deploy-test:linux-debug:
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_TEST_SDK: "ON"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy:linux-debug:
   extends: .linux_deploy
@@ -201,21 +217,8 @@ deploy:linux-debug:
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
-  only:
-    refs:
-      - master
-      - dev
-
-deploy_manual:linux-debug:
-  extends: .linux_deploy
-  image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  dependencies:
-    - build:linux-22.04-debug-gcc
-    - deploy-test:linux-debug
-  variables:
-    APPS: "sight-"
-    URL: "IRCAD%20-%20Open/"
-  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy-test:linux-release:
   extends: .linux_deploy_test
@@ -226,6 +229,9 @@ deploy-test:linux-release:
     BUILD_TYPE: "Release"
     SIGHT_TEST_PACKAGES: "ON"
     SIGHT_TEST_SDK: "ON"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy:linux-release:
   extends: .linux_deploy
@@ -236,21 +242,8 @@ deploy:linux-release:
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
-  only:
-    refs:
-      - master
-      - dev
-
-deploy_manual:linux-release:
-  extends: .linux_deploy
-  image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  dependencies:
-    - build:linux-22.04-release-gcc
-    - deploy-test:linux-release
-  variables:
-    APPS: "sight-"
-    URL: "IRCAD%20-%20Open/"
-  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy:apps-linux-release:
   extends: .linux_deploy
@@ -261,21 +254,8 @@ deploy:apps-linux-release:
   variables:
     APPS: "SightViewer,SightCalibrator"
     URL: "IRCAD%20-%20Open/"
-  only:
-    refs:
-      - master
-      - dev
-
-deploy_manual:apps-linux-release:
-  extends: .linux_deploy
-  image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  dependencies:
-    - build:linux-22.04-release-gcc
-    - deploy-test:linux-release
-  variables:
-    APPS: "SightViewer,SightCalibrator"
-    URL: "IRCAD%20-%20Open/"
-  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 .windows_build:
   extends: .windows_before
@@ -420,6 +400,9 @@ build:windows-debug:
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_BUILD_SDK: "ON"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 build:windows-release:
   extends: .windows_build
@@ -427,6 +410,9 @@ build:windows-release:
     BUILD_TYPE: "Release"
     SIGHT_BUILD_PACKAGES: "ON"
     SIGHT_BUILD_SDK: "ON"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy-test:window-debug:
   extends: .windows_deploy_test
@@ -435,6 +421,9 @@ deploy-test:window-debug:
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_TEST_SDK: "ON"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy:windows-debug:
   extends: .windows_deploy
@@ -444,20 +433,8 @@ deploy:windows-debug:
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
-  only:
-    refs:
-      - master
-      - dev
-
-deploy_manual:windows-debug:
-  extends: .windows_deploy
-  dependencies:
-    - build:windows-debug
-    - deploy-test:window-debug
-  variables:
-    APPS: "sight-"
-    URL: "IRCAD%20-%20Open/"
-  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy-test:windows-release:
   extends: .windows_deploy_test
@@ -467,6 +444,9 @@ deploy-test:windows-release:
     BUILD_TYPE: "Release"
     SIGHT_TEST_PACKAGES: "ON"
     SIGHT_TEST_SDK: "ON"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy:windows-release:
   extends: .windows_deploy
@@ -476,20 +456,8 @@ deploy:windows-release:
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
-  only:
-    refs:
-      - master
-      - dev
-
-deploy_manual:windows-release:
-  extends: .windows_deploy
-  dependencies:
-    - build:windows-release
-    - deploy-test:windows-release
-  variables:
-    APPS: "sight-"
-    URL: "IRCAD%20-%20Open/"
-  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy:apps-windows-release:
   extends: .windows_deploy
@@ -499,20 +467,8 @@ deploy:apps-windows-release:
   variables:
     APPS: "SightViewer,SightCalibrator"
     URL: "IRCAD%20-%20Open/"
-  only:
-    refs:
-      - master
-      - dev
-
-deploy_manual:apps-windows-release:
-  extends: .windows_deploy
-  dependencies:
-    - build:windows-release
-    - deploy-test:windows-release
-  variables:
-    APPS: "SightViewer,SightCalibrator"
-    URL: "IRCAD%20-%20Open/"
-  when: manual
+  rules:
+    - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 pages:
   image: "${SIGHT_CI_UBUNTU22_04}:dev"
