@@ -200,6 +200,12 @@ void SWriter::updating()
         filepath += m_pimpl->m_extension_name;
     }
 
+    // In case the path is computed instead of user-selected, make sure it exists
+    if(filepath.has_parent_path() && !std::filesystem::exists(filepath.parent_path()))
+    {
+        std::filesystem::create_directories(filepath.parent_path());
+    }
+
     SIGHT_THROW_IF("The file '" << filepath << "' is an existing folder.", std::filesystem::is_directory(filepath));
 
     // Generate temporary file
