@@ -20,8 +20,10 @@ lint:sheldon:
 
 .linux_build:
   extends: .linux_before
-  dependencies: []
   stage: build
+  needs:
+  - job: lint:sheldon
+    optional: true
   variables:
     SIGHT_BUILD_DOC: "OFF"
     SIGHT_BUILD_PACKAGES: "OFF"
@@ -109,7 +111,6 @@ lint:sheldon:
       metrics: .build/metrics.txt
 
 .linux_deploy_test:
-  dependencies: []
   stage: deploy-test
   variables:
     BUILD_TYPE: "Debug"
@@ -209,8 +210,9 @@ build:linux-22.04-coverage-gcc-draft:
 deploy-test:linux-debug:
   extends: .linux_deploy_test
   image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  dependencies:
-    - build:linux-22.04-debug-gcc
+  needs:
+    - job: build:linux-22.04-debug-gcc
+      artifacts: true
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_TEST_SDK: "ON"
@@ -221,9 +223,10 @@ deploy-test:linux-debug:
 deploy:linux-debug:
   extends: .linux_deploy
   image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  dependencies:
-    - build:linux-22.04-debug-gcc
-    - deploy-test:linux-debug
+  needs:
+    - job: build:linux-22.04-debug-gcc
+      artifacts: true
+    - job: deploy-test:linux-debug
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -233,8 +236,9 @@ deploy:linux-debug:
 deploy-test:linux-release:
   extends: .linux_deploy_test
   image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  dependencies:
-    - build:linux-22.04-release-gcc
+  needs:
+    - job: build:linux-22.04-release-gcc
+      artifacts: true
   variables:
     BUILD_TYPE: "Release"
     SIGHT_TEST_PACKAGES: "ON"
@@ -246,9 +250,10 @@ deploy-test:linux-release:
 deploy:linux-release:
   extends: .linux_deploy
   image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  dependencies:
-    - build:linux-22.04-release-gcc
-    - deploy-test:linux-release
+  needs:
+    - job: build:linux-22.04-release-gcc
+      artifacts: true
+    - job: deploy-test:linux-release
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -258,9 +263,10 @@ deploy:linux-release:
 deploy:apps-linux-release:
   extends: .linux_deploy
   image: "${SIGHT_CI_UBUNTU22_04}:dev"
-  dependencies:
-    - build:linux-22.04-release-gcc
-    - deploy-test:linux-release
+  needs:
+    - job: build:linux-22.04-release-gcc
+      artifacts: true
+    - job: deploy-test:linux-release
   variables:
     APPS: "SightViewer,SightCalibrator"
     URL: "IRCAD%20-%20Open/"
@@ -269,7 +275,10 @@ deploy:apps-linux-release:
 
 .windows_build:
   extends: .windows_before
-  dependencies: []
+  needs:
+  - job: lint:sheldon
+    optional: true
+  - job: prebuild:windows
   variables:
     TOOLCHAIN: "scripts\\buildsystems\\vcpkg.cmake"
     SIGHT_BUILD_PACKAGES: "OFF"
@@ -334,7 +343,6 @@ deploy:apps-linux-release:
       junit: build/junit.xml
 
 .windows_deploy_test:
-  dependencies: []
   stage: deploy-test
   variables:
     SIGHT_TEST_PACKAGES: "OFF"
@@ -433,10 +441,11 @@ build:windows-release-draft:
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE =~ "/^Draft.*/"
 
-deploy-test:window-debug:
+deploy-test:windows-debug:
   extends: .windows_deploy_test
-  dependencies:
-    - build:windows-debug
+  needs:
+    - job: build:windows-debug
+      artifacts: true
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_TEST_SDK: "ON"
@@ -446,9 +455,10 @@ deploy-test:window-debug:
 
 deploy:windows-debug:
   extends: .windows_deploy
-  dependencies:
-    - build:windows-debug
-    - deploy-test:window-debug
+  needs:
+    - job: build:windows-debug
+      artifacts: true
+    - job: deploy-test:windows-debug
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -457,8 +467,9 @@ deploy:windows-debug:
 
 deploy-test:windows-release:
   extends: .windows_deploy_test
-  dependencies:
-    - build:windows-release
+  needs:
+    - job: build:windows-release
+      artifacts: true
   variables:
     BUILD_TYPE: "Release"
     SIGHT_TEST_PACKAGES: "ON"
@@ -469,9 +480,10 @@ deploy-test:windows-release:
 
 deploy:windows-release:
   extends: .windows_deploy
-  dependencies:
-    - build:windows-release
-    - deploy-test:windows-release
+  needs:
+    - job: build:windows-release
+      artifacts: true
+    - job: deploy-test:windows-release
   variables:
     APPS: "sight-"
     URL: "IRCAD%20-%20Open/"
@@ -480,9 +492,10 @@ deploy:windows-release:
 
 deploy:apps-windows-release:
   extends: .windows_deploy
-  dependencies:
-    - build:windows-release
-    - deploy-test:windows-release
+  needs:
+    - job: build:windows-release
+      artifacts: true
+    - job: deploy-test:windows-release
   variables:
     APPS: "SightViewer,SightCalibrator"
     URL: "IRCAD%20-%20Open/"
@@ -492,8 +505,9 @@ deploy:apps-windows-release:
 pages:
   image: "${SIGHT_CI_UBUNTU22_04}:dev"
   stage: deploy
-  dependencies:
-    - build:linux-22.04-coverage-gcc
+  needs:
+    - job: build:linux-22.04-coverage-gcc
+      artifacts: true
   script:
     - mv .build/Documentation/Doxygen/html/ public/
     - mv .build/coverage/ public/coverage
