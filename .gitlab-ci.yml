@@ -17,8 +17,6 @@ lint:sheldon:
   extends: .lint
   variables:
     ENABLE_CLANG_TIDY: "ON"
-  rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
 
 .linux_build:
   extends: .linux_before
@@ -152,7 +150,7 @@ build:linux-22.04-debug-gcc:
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 build:linux-22.04-release-gcc:
@@ -196,6 +194,18 @@ build:linux-22.04-coverage-gcc:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
+build:linux-22.04-coverage-gcc-draft:
+  extends: .linux_build
+  image: "${SIGHT_CI_UBUNTU22_04}:dev"
+  variables:
+    BUILD_TYPE: "RelWithDebInfo"
+    SIGHT_ENABLE_COVERAGE: "ON"
+    SIGHT_IGNORE_UNSTABLE_TESTS: 1
+    CC: "/usr/lib/ccache/gcc"
+    CXX: "/usr/lib/ccache/g++"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE =~ "/^Draft.*/"
+
 deploy-test:linux-debug:
   extends: .linux_deploy_test
   image: "${SIGHT_CI_UBUNTU22_04}:dev"
@@ -205,7 +215,7 @@ deploy-test:linux-debug:
     BUILD_TYPE: "Debug"
     SIGHT_TEST_SDK: "ON"
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy:linux-debug:
@@ -401,7 +411,7 @@ build:windows-debug:
     BUILD_TYPE: "Debug"
     SIGHT_BUILD_SDK: "ON"
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 build:windows-release:
@@ -414,6 +424,15 @@ build:windows-release:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
+build:windows-release-draft:
+  extends: .windows_build
+  variables:
+    BUILD_TYPE: "Release"
+    SIGHT_BUILD_PACKAGES: "OFF"
+    SIGHT_BUILD_SDK: "OFF"
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE =~ "/^Draft.*/"
+
 deploy-test:window-debug:
   extends: .windows_deploy_test
   dependencies:
@@ -422,7 +441,7 @@ deploy-test:window-debug:
     BUILD_TYPE: "Debug"
     SIGHT_TEST_SDK: "ON"
   rules:
-    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
 
 deploy:windows-debug:

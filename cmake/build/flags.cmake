@@ -121,7 +121,7 @@ add_link_options(
 )
 
 # Coverage (only supported for GCC and Clang)
-if(CXX_COMPILER_ID STREQUAL "GNU" OR CXX_COMPILER_ID STREQUAL "Clang")
+if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
     option(SIGHT_ENABLE_COVERAGE "Enable coverage information generation" OFF)
     mark_as_advanced(SIGHT_ENABLE_COVERAGE)
 endif()
