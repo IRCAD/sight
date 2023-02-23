@@ -387,19 +387,14 @@ void SSynchronizer::copyFrameFromTLtoOutput(
     core::HiResClock::HiResClockType synchronizationTimestamp
 )
 {
-    CSPTR(data::FrameTL::BufferType) buffer;
-    data::Image::Size frameTLsize;
-    std::size_t frameTlNumComponents = 0;
-    core::Type frameTlType;
-    data::FrameTL::PixelFormat frameTlPixelFormat = data::FrameTL::PixelFormat::UNDEFINED;
-    {
-        const auto frameTL = m_frameTLs[frameTLIndex].lock();
-        buffer               = frameTL->getClosestBuffer(synchronizationTimestamp - m_frameTLDelay[frameTLIndex]);
-        frameTLsize          = {frameTL->getWidth(), frameTL->getHeight(), 0};
-        frameTlNumComponents = frameTL->numComponents();
-        frameTlType          = frameTL->getType();
-        frameTlPixelFormat   = frameTL->getPixelFormat();
-    }
+    const auto frameTL = m_frameTLs[frameTLIndex].lock();
+    CSPTR(data::FrameTL::BufferType) buffer =
+        frameTL->getClosestBuffer(synchronizationTimestamp - m_frameTLDelay[frameTLIndex]);
+    data::Image::Size frameTLsize                 = {frameTL->getWidth(), frameTL->getHeight(), 0};
+    std::size_t frameTlNumComponents              = frameTL->numComponents();
+    core::Type frameTlType                        = frameTL->getType();
+    data::FrameTL::PixelFormat frameTlPixelFormat = frameTL->getPixelFormat();
+
     if(buffer)
     {
         for(const outVarParameter outputVarParam : getFrameTlOutputVarIndex(frameTLIndex))
@@ -493,11 +488,10 @@ void SSynchronizer::copyMatrixFromTLtoOutput(
     core::HiResClock::HiResClockType synchronizationTimestamp
 )
 {
-    CSPTR(data::MatrixTL::BufferType) buffer;
-    {
-        const auto matrixTL = m_matrixTLs[matrixTLIndex].lock();
-        buffer = matrixTL->getClosestBuffer(synchronizationTimestamp - m_matrixTLDelay[matrixTLIndex]);
-    }
+    const auto matrixTL = m_matrixTLs[matrixTLIndex].lock();
+    CSPTR(data::MatrixTL::BufferType) buffer =
+        matrixTL->getClosestBuffer(synchronizationTimestamp - m_matrixTLDelay[matrixTLIndex]);
+
     if(buffer)
     {
         for(const auto outputVarParam : getMatrixTlOutputVarIndex(matrixTLIndex))
