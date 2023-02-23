@@ -51,9 +51,9 @@ lint:sheldon:
       -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
       -DSIGHT_ENABLE_GDB=ON
     # Touch all generated files to improve CCache performance
-    - find . -type f -iname '*.?pp' -exec touch -t 197001010000 {} \;
+    - find . -type f -name '*.?pp' -exec touch -t 197001010000 {} \;
     # Build
-    - ninja | tee output.log
+    - ninja -j${RUNNER_THREADS} | tee output.log
     # Generate metrics information
     - nb_warnings=$(grep -c "warning:" output.log)
     - nb_deprecated=$(grep -ce "-Wdeprecated-declarations" output.log)
@@ -72,29 +72,29 @@ lint:sheldon:
       else
         TIMEOUT="480"
       fi
-    - ctest --timeout $TIMEOUT --output-on-failure -O ctest.log -j$(nproc) --output-junit junit.xml
+    - ctest --timeout $TIMEOUT --output-on-failure -O ctest.log -j${RUNNER_THREADS}--output-junit junit.xml
     # Build documentation if needed
     - >
       if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
-        ninja doc
+        ninja -j${RUNNER_THREADS} doc
       fi
     - >
       if [ "${SIGHT_BUILD_PACKAGES}" == "ON" ]; then
-        ninja SightViewer_package
+        ninja -j${RUNNER_THREADS} SightViewer_package
         rm -rf ${CI_PROJECT_DIR}/.install
 
-        ninja SightCalibrator_package
+        ninja -j${RUNNER_THREADS} SightCalibrator_package
         rm -rf ${CI_PROJECT_DIR}/.install
       fi
     - >
       if [ "${SIGHT_BUILD_SDK}" == "ON" ]; then
-        ninja install
-        ninja package
+        ninja -j${RUNNER_THREADS} install
+        ninja -j${RUNNER_THREADS} package
       fi
     - >
       if [ "${SIGHT_ENABLE_COVERAGE}" == "ON" ]; then
         mkdir -p coverage
-        gcovr -j$(nproc) -r .. --filter ../libs --filter ../modules --exclude ".*test.*" --html --html-details coverage/index.html --xml coverage/cobertura-coverage.xml --print-summary . | grep lines | sed -sE 's/.* \((.*) out of (.*)\)/\1\/\2/' | xargs -i echo 'scale=4;a={}*100;scale=2;a/1' | bc | xargs -i echo "lines: {}%"
+        gcovr -j${RUNNER_THREADS} -r .. --filter ../libs --filter ../modules --exclude ".*test.*" --html --html-details coverage/index.html --xml coverage/cobertura-coverage.xml --print-summary . | grep lines | sed -sE 's/.* \((.*) out of (.*)\)/\1\/\2/' | xargs -i echo 'scale=4;a={}*100;scale=2;a/1' | bc | xargs -i echo "lines: {}%"
       fi
 
   artifacts: &linux_build_artifacts
@@ -174,7 +174,6 @@ build:linux-22.04-RelWithDebInfo-clang:
   variables:
     BUILD_TYPE: "RelWithDebInfo"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
-    SIGHT_ENABLE_CLANG_TIDY: "ON"
     CC: "/usr/lib/ccache/clang"
     CXX: "/usr/lib/ccache/clang++"
   rules:
