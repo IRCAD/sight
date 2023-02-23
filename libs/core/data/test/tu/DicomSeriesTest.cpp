@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "DicomSeriesTest.hpp"
 
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 #include <core/Type.hpp>
 
 #include <data/Array.hpp>
@@ -59,11 +59,9 @@ void DicomSeriesTest::dicomTest()
     CPPUNIT_ASSERT(m_series);
 
     //Create Path
-    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "dicomTest";
-    std::filesystem::create_directories(path);
-    const std::string filename = path.string() + "/" + "file";
+    core::os::TempFile tmpFile;
     std::ofstream file;
-    file.open(filename.c_str(), std::ofstream::out);
+    file.open(tmpFile, std::ofstream::out);
     file << "42";
     file.close();
 
@@ -74,7 +72,7 @@ void DicomSeriesTest::dicomTest()
     CPPUNIT_ASSERT_EQUAL(nb_instances, m_series->numInstances());
 
     //Paths
-    m_series->addDicomPath(42, filename);
+    m_series->addDicomPath(42, tmpFile);
     CPPUNIT_ASSERT(m_series->isInstanceAvailable(42));
 
     //Binaries

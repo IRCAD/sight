@@ -21,8 +21,7 @@
 
 #include "WriterTest.hpp"
 
-#include <core/tools/System.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <data/ImageSeries.hpp>
 
@@ -41,17 +40,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::dicom::ut::WriterTest);
 
 namespace sight::io::dicom::ut
 {
-
-//------------------------------------------------------------------------------
-
-inline static std::filesystem::path createTempFolder()
-{
-    auto tmp_folder = core::tools::System::getTemporaryFolder() / core::tools::UUID::generateUUID();
-    std::filesystem::remove_all(tmp_folder);
-    std::filesystem::create_directories(tmp_folder);
-
-    return tmp_folder;
-}
 
 //------------------------------------------------------------------------------
 
@@ -265,7 +253,7 @@ void WriterTest::tearDown()
 void WriterTest::writeEnhancedUSVolumeTest()
 {
     {
-        const auto& folder   = createTempFolder();
+        core::os::TempDir tmpDir;
         const auto& expected = getUSVolumeImage(0);
 
         // Write a single RGB uint8 frame image
@@ -275,7 +263,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
 
             auto writer = io::dicom::Writer::New();
             writer->setObject(seriesSet);
-            writer->setFolder(folder);
+            writer->setFolder(tmpDir);
 
             CPPUNIT_ASSERT_NO_THROW(writer->write());
         }
@@ -285,7 +273,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
             auto seriesSet = data::SeriesSet::New();
             auto reader    = io::dicom::Reader::New();
             reader->setObject(seriesSet);
-            reader->setFolder(folder);
+            reader->setFolder(tmpDir);
 
             CPPUNIT_ASSERT_NO_THROW(reader->read());
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
@@ -295,7 +283,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
     }
 
     {
-        const auto& folder   = createTempFolder();
+        core::os::TempDir tmpDir;
         const auto& expected = getUSVolumeImage(1, 4);
 
         // Write a 4 frames RGB uint8 image
@@ -305,7 +293,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
 
             auto writer = io::dicom::Writer::New();
             writer->setObject(seriesSet);
-            writer->setFolder(folder);
+            writer->setFolder(tmpDir);
 
             CPPUNIT_ASSERT_NO_THROW(writer->write());
         }
@@ -315,7 +303,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
             auto seriesSet = data::SeriesSet::New();
             auto reader    = io::dicom::Reader::New();
             reader->setObject(seriesSet);
-            reader->setFolder(folder);
+            reader->setFolder(tmpDir);
 
             CPPUNIT_ASSERT_NO_THROW(reader->read());
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
@@ -325,7 +313,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
     }
 
     {
-        const auto& folder   = createTempFolder();
+        core::os::TempDir tmpDir;
         const auto& expected = getUSVolumeImage(2, 4, core::Type::UINT16, data::Image::PixelFormat::GRAY_SCALE);
 
         // Write a 4 frames monochrome uint16 image
@@ -335,7 +323,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
 
             auto writer = io::dicom::Writer::New();
             writer->setObject(seriesSet);
-            writer->setFolder(folder);
+            writer->setFolder(tmpDir);
 
             CPPUNIT_ASSERT_NO_THROW(writer->write());
         }
@@ -345,7 +333,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
             auto seriesSet = data::SeriesSet::New();
             auto reader    = io::dicom::Reader::New();
             reader->setObject(seriesSet);
-            reader->setFolder(folder);
+            reader->setFolder(tmpDir);
 
             CPPUNIT_ASSERT_NO_THROW(reader->read());
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
@@ -355,7 +343,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
     }
 
     {
-        const auto& folder   = createTempFolder();
+        core::os::TempDir tmpDir;
         const auto& expected = getUSVolumeImage(2, 4);
 
         // Write a 4 frames RGB uint8 image, with a custom filename
@@ -365,11 +353,11 @@ void WriterTest::writeEnhancedUSVolumeTest()
 
             auto writer = io::dicom::Writer::New();
             writer->setObject(seriesSet);
-            writer->setFolder(folder);
+            writer->setFolder(tmpDir);
             writer->setFile("custom_filename.dcm");
 
             CPPUNIT_ASSERT_NO_THROW(writer->write());
-            CPPUNIT_ASSERT(std::filesystem::exists(folder / "custom_filename.dcm"));
+            CPPUNIT_ASSERT(std::filesystem::exists(tmpDir / "custom_filename.dcm"));
         }
 
         // Read the previously written 4 frames image
@@ -377,7 +365,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
             auto seriesSet = data::SeriesSet::New();
             auto reader    = io::dicom::Reader::New();
             reader->setObject(seriesSet);
-            reader->setFolder(folder);
+            reader->setFolder(tmpDir);
 
             CPPUNIT_ASSERT_NO_THROW(reader->read());
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());
@@ -387,7 +375,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
     }
 
     {
-        const auto& folder    = createTempFolder();
+        core::os::TempDir tmpDir;
         const auto& expected0 = getUSVolumeImage(0, 4);
         const auto& expected1 = getUSVolumeImage(1, 4);
         const auto& expected2 = getUSVolumeImage(2, 4);
@@ -401,19 +389,19 @@ void WriterTest::writeEnhancedUSVolumeTest()
 
             auto writer = io::dicom::Writer::New();
             writer->setObject(seriesSet);
-            writer->setFolder(folder);
+            writer->setFolder(tmpDir);
             writer->setFile("custom_filename.dcm");
 
             CPPUNIT_ASSERT_NO_THROW(writer->write());
-            CPPUNIT_ASSERT(std::filesystem::exists(folder / "000-custom_filename.dcm"));
-            CPPUNIT_ASSERT(std::filesystem::exists(folder / "001-custom_filename.dcm"));
-            CPPUNIT_ASSERT(std::filesystem::exists(folder / "002-custom_filename.dcm"));
+            CPPUNIT_ASSERT(std::filesystem::exists(tmpDir / "000-custom_filename.dcm"));
+            CPPUNIT_ASSERT(std::filesystem::exists(tmpDir / "001-custom_filename.dcm"));
+            CPPUNIT_ASSERT(std::filesystem::exists(tmpDir / "002-custom_filename.dcm"));
         }
     }
 
     // test resized ImageSeries
     {
-        const auto& folder   = createTempFolder();
+        core::os::TempDir tmpDir;
         const auto& expected = getUSVolumeImage(2, 4);
 
         // Write a 4 frames RGB uint8 image, with a custom filename
@@ -435,11 +423,11 @@ void WriterTest::writeEnhancedUSVolumeTest()
 
             auto writer = io::dicom::Writer::New();
             writer->setObject(seriesSet);
-            writer->setFolder(folder);
+            writer->setFolder(tmpDir);
             writer->setFile("custom_filename.dcm");
 
             CPPUNIT_ASSERT_NO_THROW(writer->write());
-            CPPUNIT_ASSERT(std::filesystem::exists(folder / "custom_filename.dcm"));
+            CPPUNIT_ASSERT(std::filesystem::exists(tmpDir / "custom_filename.dcm"));
         }
 
         // Read the previously written 4 frames image
@@ -447,7 +435,7 @@ void WriterTest::writeEnhancedUSVolumeTest()
             auto seriesSet = data::SeriesSet::New();
             auto reader    = io::dicom::Reader::New();
             reader->setObject(seriesSet);
-            reader->setFolder(folder);
+            reader->setFolder(tmpDir);
 
             CPPUNIT_ASSERT_NO_THROW(reader->read());
             CPPUNIT_ASSERT_EQUAL(std::size_t(1), seriesSet->size());

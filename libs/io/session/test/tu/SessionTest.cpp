@@ -24,7 +24,7 @@
 
 #include <core/crypto/AES256.hpp>
 #include <core/crypto/Base64.hpp>
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 #include <core/tools/UUID.hpp>
 
 #include <data/Activity.hpp>
@@ -218,10 +218,8 @@ inline void test(const bool encrypt, const bool raw, const bool empty_obj = fals
     const auto& test_id = T::leafClassname() + "_" + std::to_string(encrypt) + "_" + std::to_string(raw);
 
     // Create a temporary directory
-    const auto tmpfolder = core::tools::System::getTemporaryFolder() / UUID::generateUUID();
-    std::filesystem::remove_all(tmpfolder);
-    std::filesystem::create_directories(tmpfolder);
-    const auto testPath = tmpfolder / (test_id + (raw ? ".json" : ".zip"));
+    core::os::TempDir tmpDir;
+    const auto testPath = tmpDir / (test_id + (raw ? ".json" : ".zip"));
 
     static constexpr auto fieldName = "field";
 
@@ -287,8 +285,6 @@ inline void test(const bool encrypt, const bool raw, const bool empty_obj = fals
 
         CPPUNIT_ASSERT(*expected_object == *actual_object);
     }
-
-    std::filesystem::remove_all(tmpfolder);
 }
 
 //------------------------------------------------------------------------------
@@ -1631,10 +1627,8 @@ inline static data::String::sptr customDeserialize(
 void SessionTest::customSerializerTest()
 {
     // Create a temporary directory
-    const auto tmpfolder = core::tools::System::getTemporaryFolder();
-    std::filesystem::create_directories(tmpfolder);
-    const auto testPath = tmpfolder / "customSerializerTest.zip";
-    std::filesystem::remove(testPath);
+    core::os::TempDir tmpDir;
+    const auto testPath = tmpDir / "customSerializerTest.zip";
 
     // Test serialization
     {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,8 +21,7 @@
 
 #include "SWriterTest.hpp"
 
-#include <core/tools/System.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <data/Image.hpp>
 
@@ -121,17 +120,6 @@ inline static data::Image::csptr getSyntheticImage()
 
 //------------------------------------------------------------------------------
 
-inline static std::filesystem::path createTempFolder()
-{
-    auto tmpFolder = core::tools::System::getTemporaryFolder() / core::tools::UUID::generateUUID();
-    std::filesystem::remove_all(tmpFolder);
-    std::filesystem::create_directories(tmpFolder);
-
-    return tmpFolder;
-}
-
-//------------------------------------------------------------------------------
-
 inline static void testEnable(
     const std::filesystem::path& tempFolder,
     const data::Image::csptr& expected_image,
@@ -219,8 +207,8 @@ void SWriterTest::tearDown()
 
 void SWriterTest::basicTest()
 {
-    const auto& tempFolder = createTempFolder();
-    const auto& filePath   = tempFolder / "basic.tiff";
+    core::os::TempDir tmpDir;
+    const auto& filePath = tmpDir / "basic.tiff";
 
     service::IService::ConfigType config;
     config.add("file", filePath.string());
@@ -231,7 +219,9 @@ void SWriterTest::basicTest()
     // Only test if the file exists. Conformance tests are already done in the writer
     CPPUNIT_ASSERT_MESSAGE(
         "File '" + filePath.string() + "' doesn't exist.",
-        std::filesystem::exists(filePath) && std::filesystem::is_regular_file(filePath)
+        std::filesystem::exists(filePath)
+        && std::filesystem::is_regular_file(filePath)
+        && std::filesystem::file_size(filePath) > 0
     );
 }
 
@@ -239,7 +229,7 @@ void SWriterTest::basicTest()
 
 void SWriterTest::configTest()
 {
-    const auto& tempFolder = createTempFolder();
+    core::os::TempDir tmpDir;
 
     // Build backend list
     std::vector backends {
@@ -272,13 +262,13 @@ void SWriterTest::configTest()
     // Test enable="all"
     {
         // For each backend and each mode ("all" means ".jpeg, .tiff, .png, .jp2")
-        testEnable(tempFolder, expected_image, backends, modes, "all");
+        testEnable(tmpDir, expected_image, backends, modes, "all");
     }
 
     // Test enable="cpu"
     {
         // For each backend and each mode ("cpu" means ".jpeg, .tiff, .png, .jp2")
-        testEnable(tempFolder, expected_image, backends, modes, "cpu");
+        testEnable(tmpDir, expected_image, backends, modes, "cpu");
     }
 
     // Test enable="gpu"
@@ -298,7 +288,7 @@ void SWriterTest::configTest()
         }
 
         // For each backend and each mode ("cpu" means ".jpeg, .jp2")
-        testEnable(tempFolder, expected_image, gpu_backend, modes, "gpu");
+        testEnable(tmpDir, expected_image, gpu_backend, modes, "gpu");
     }
 
     // Test custom backend choice
@@ -310,7 +300,7 @@ void SWriterTest::configTest()
             for(const auto& mode : modes)
             {
                 const std::string mode_string(mode == sight::io::bitmap::Writer::Mode::BEST ? "best" : "fast");
-                const auto& filePath = tempFolder / (
+                const auto& filePath = tmpDir / (
                     "config_" + mode_string + sight::io::bitmap::Writer::extensions(backend).front()
                 );
 

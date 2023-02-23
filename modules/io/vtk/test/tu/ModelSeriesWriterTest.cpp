@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ModelSeriesWriterTest.hpp"
 
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <data/ActivitySet.hpp>
 #include <data/Array.hpp>
@@ -125,36 +125,14 @@ void ModelSeriesWriterTest::testWriteMeshes()
 
     const std::vector<std::string> allExtensions = {"vtk", "vtp", "obj", "ply", "stl"};
 
-    const fs::path dir = core::tools::System::getTemporaryFolder() / "modelSeries";
-
-    if(fs::exists(dir))
-    {
-        CPPUNIT_ASSERT_MESSAGE(
-            std::string("Directory ") + dir.string() + " must be empty",
-            fs::is_empty(dir)
-        );
-    }
-    else
-    {
-        fs::create_directories(dir);
-    }
+    core::os::TempDir tmpDir;
 
     for(const auto& ext : allExtensions)
     {
-        // Create subfolers per extensions ("/vtk", "/vtp", ...)
-        if(fs::exists(dir / ext))
-        {
-            CPPUNIT_ASSERT_MESSAGE(
-                std::string("Directory ") + dir.string() + "/" + ext + " must be empty",
-                fs::is_empty(dir / ext)
-            );
-        }
-        else
-        {
-            fs::create_directories(dir / ext);
-        }
+        const auto& extDir = tmpDir / ext;
+        fs::create_directories(extDir);
 
-        auto cfg = getIOCfgFromFolder(dir / ext);
+        auto cfg = getIOCfgFromFolder(extDir);
         cfg.add("extension", ext);
 
         runModelSeriesSrv(
@@ -164,7 +142,7 @@ void ModelSeriesWriterTest::testWriteMeshes()
         );
 
         FileContainerType files;
-        for(fs::directory_iterator it(dir / ext) ; it != fs::directory_iterator() ; ++it)
+        for(fs::directory_iterator it(extDir) ; it != fs::directory_iterator() ; ++it)
         {
             if(it->path().extension() == "." + ext)
             {
@@ -279,28 +257,16 @@ void ModelSeriesWriterTest::testWriteReconstructions()
 {
     data::ModelSeries::sptr modelSeries = utestData::generator::SeriesSet::createModelSeries(5);
 
-    const fs::path dir = core::tools::System::getTemporaryFolder() / "modelSeriesObj";
-
-    if(fs::exists(dir))
-    {
-        CPPUNIT_ASSERT_MESSAGE(
-            std::string("Directory ") + dir.string() + " must be empty",
-            fs::is_empty(dir)
-        );
-    }
-    else
-    {
-        fs::create_directories(dir);
-    }
+    core::os::TempDir tmpDir;
 
     runModelSeriesSrv(
         "sight::module::io::vtk::SModelSeriesObjWriter",
-        getIOCfgFromFolder(dir),
+        getIOCfgFromFolder(tmpDir),
         modelSeries
     );
 
     FileContainerType files;
-    for(fs::directory_iterator it(dir) ; it != fs::directory_iterator() ; ++it)
+    for(fs::directory_iterator it(tmpDir) ; it != fs::directory_iterator() ; ++it)
     {
         files.push_back(it->path().string());
     }

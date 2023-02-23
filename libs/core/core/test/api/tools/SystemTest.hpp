@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,6 @@ namespace sight::core::tools::ut
 class SystemTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(SystemTest);
-CPPUNIT_TEST(genTempFilenameTest);
 CPPUNIT_TEST(robustRenameTest);
 CPPUNIT_TEST_SUITE_END();
 
@@ -40,7 +39,6 @@ public:
     void setUp() override;
     void tearDown() override;
 
-    static void genTempFilenameTest();
     static void robustRenameTest();
 };
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,9 +24,9 @@
 
 #include "io/dimse/exceptions/RequestFailure.hpp"
 
+#include <core/os/TempPath.hpp>
 #include <core/runtime/path.hpp>
 #include <core/thread/Worker.hpp>
-#include <core/tools/System.hpp>
 
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmnet/diutil.h>
@@ -63,7 +63,7 @@ void SeriesRetriever::initialize(
     m_progressCallback = progressCallback;
 
     //Creating folder
-    m_path = core::tools::System::getTemporaryFolder() / "dicom/";
+    m_path = core::os::TempDir::sharedDirectory() / "dicom/";
     if(!std::filesystem::exists(m_path))
     {
         std::filesystem::create_directories(m_path);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -24,7 +24,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <data/SeriesSet.hpp>
 
@@ -334,7 +334,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
             // Clear temporary series.
             m_series_set->clear();
 
-            const auto& path = core::tools::System::getTemporaryFolder() / "dicom/";
+            const auto& path = core::os::TempDir::sharedDirectory() / "dicom/";
             m_dicomReader->setFolder(path.string() + selectedSeriesUID + "/");
             m_dicomReader->update();
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,8 @@
 
 #include "MeshTest.hpp"
 
+#include <core/os/TempPath.hpp>
 #include <core/tools/random/Generator.hpp>
-#include <core/tools/System.hpp>
 
 #include <data/iterator.hpp>
 
@@ -221,8 +221,8 @@ void MeshTest::testExportImportSyntheticMesh()
 
     mesh1->shrinkToFit();
 
-    const std::filesystem::path testFile = core::tools::System::getTemporaryFolder()
-                                           / "testExportImportSyntheticMesh.vtk";
+    core::os::TempDir tmpDir;
+    const auto testFile = tmpDir / "testExportImportSyntheticMesh.vtk";
 
     const io::vtk::MeshWriter::sptr writer = io::vtk::MeshWriter::New();
     writer->setObject(mesh1);
@@ -237,9 +237,6 @@ void MeshTest::testExportImportSyntheticMesh()
     reader->read();
 
     CPPUNIT_ASSERT(*mesh1 == *mesh2);
-
-    const bool removed = std::filesystem::remove(testFile);
-    CPPUNIT_ASSERT(removed);
 }
 
 //------------------------------------------------------------------------------
@@ -405,10 +402,10 @@ void MeshTest::testWriteVtkFile()
 
     mesh1->shrinkToFit();
 
-    const std::filesystem::path testFile = core::tools::System::getTemporaryFolder()
-                                           / "vtkTestMesh.vtk";
+    core::os::TempDir tmpDir;
+    const auto testFile = tmpDir / "vtkTestMesh.vtk";
 
-    const io::vtk::MeshWriter::sptr writer = io::vtk::MeshWriter::New();
+    const auto writer = io::vtk::MeshWriter::New();
     writer->setObject(mesh1);
     writer->setFile(testFile);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
@@ -429,10 +426,10 @@ void MeshTest::testWriteVtpFile()
 
     mesh1->shrinkToFit();
 
-    const std::filesystem::path testFile = core::tools::System::getTemporaryFolder()
-                                           / "vtpTestMesh.vtp";
+    core::os::TempDir tmpDir;
+    const auto testFile = tmpDir / "vtpTestMesh.vtp";
 
-    const io::vtk::VtpMeshWriter::sptr writer = io::vtk::VtpMeshWriter::New();
+    const auto writer = io::vtk::VtpMeshWriter::New();
     writer->setObject(mesh1);
     writer->setFile(testFile);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
@@ -453,10 +450,10 @@ void MeshTest::testWriteObjFile()
 
     mesh1->shrinkToFit();
 
-    const std::filesystem::path testFile = core::tools::System::getTemporaryFolder()
-                                           / "objTestMesh.obj";
+    core::os::TempDir tmpDir;
+    const auto testFile = tmpDir / "objTestMesh.obj";
 
-    const io::vtk::ObjMeshWriter::sptr writer = io::vtk::ObjMeshWriter::New();
+    const auto writer = io::vtk::ObjMeshWriter::New();
     writer->setObject(mesh1);
     writer->setFile(testFile);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
@@ -477,10 +474,10 @@ void MeshTest::testWritePlyFile()
 
     mesh1->shrinkToFit();
 
-    const std::filesystem::path testFile = core::tools::System::getTemporaryFolder()
-                                           / "plyTestMesh.ply";
+    core::os::TempDir tmpDir;
+    const auto testFile = tmpDir / "plyTestMesh.ply";
 
-    const io::vtk::PlyMeshWriter::sptr writer = io::vtk::PlyMeshWriter::New();
+    const auto writer = io::vtk::PlyMeshWriter::New();
     writer->setObject(mesh1);
     writer->setFile(testFile);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
@@ -501,10 +498,10 @@ void MeshTest::testWriteStlFile()
 
     mesh1->shrinkToFit();
 
-    const std::filesystem::path testFile = core::tools::System::getTemporaryFolder()
-                                           / "stlTestMesh.stl";
+    core::os::TempDir tmpDir;
+    const auto testFile = tmpDir / "stlTestMesh.stl";
 
-    const io::vtk::StlMeshWriter::sptr writer = io::vtk::StlMeshWriter::New();
+    const auto writer = io::vtk::StlMeshWriter::New();
     writer->setObject(mesh1);
     writer->setFile(testFile);
     CPPUNIT_ASSERT_NO_THROW(writer->write());

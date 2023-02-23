@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "HelperTest.hpp"
 
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <data/Camera.hpp>
 
@@ -175,17 +175,16 @@ void HelperTest::writeReadConfig()
 
     const auto config = navigation::openvslam::Helper::createMonocularConfig(cam, orbParam, initParams);
 
-    const std::filesystem::path tmp = core::tools::System::getTemporaryFolder();
+    core::os::TempFile tmpFile;
 
     CPPUNIT_ASSERT_NO_THROW(
         navigation::openvslam::Helper::writeOpenvslamConfig(
             config->yaml_node_,
-            tmp.string()
-            + "/test.yaml"
+            tmpFile
         )
     );
 
-    const auto config2 = navigation::openvslam::Helper::readOpenvslamConfig(tmp.string() + "/test.yaml");
+    const auto config2 = navigation::openvslam::Helper::readOpenvslamConfig(tmpFile);
     CPPUNIT_ASSERT(config2 != nullptr);
 
     const auto orb = config2->orb_params_;

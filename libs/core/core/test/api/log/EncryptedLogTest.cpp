@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,8 +25,8 @@
 
 #include <core/crypto/Base64.hpp>
 #include <core/log/SpyLogger.hpp>
+#include <core/os/TempPath.hpp>
 #include <core/spyLog.hpp>
-#include <core/tools/System.hpp>
 #include <core/tools/UUID.hpp>
 
 #include <boost/dll.hpp>
@@ -138,8 +138,7 @@ inline static std::filesystem::path decrypt(
 inline static std::filesystem::path setupEncryptedLog()
 {
     // Create a temporary directory
-    const auto& tmp_folder = core::tools::System::getTemporaryFolder();
-    std::filesystem::create_directories(tmp_folder);
+    const auto& tmp_folder  = core::os::TempDir::sharedDirectory();
     const auto& log_archive = tmp_folder / ENCRYPTED_LOG_FILE;
     std::filesystem::remove(log_archive);
 

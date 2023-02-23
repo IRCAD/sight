@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,7 @@
 
 #include "SystemTest.hpp"
 
+#include <core/os/TempPath.hpp>
 #include <core/tools/System.hpp>
 
 #include <fstream>
@@ -48,36 +49,12 @@ void SystemTest::tearDown()
 
 //------------------------------------------------------------------------------
 
-void SystemTest::genTempFilenameTest()
-{
-    {
-        const std::string filename = core::tools::System::genTempFileName();
-        CPPUNIT_ASSERT_EQUAL(static_cast<std::size_t>(64), filename.size());
-
-        for(auto c : filename)
-        {
-            CPPUNIT_ASSERT(std::isalnum(c) != 0);
-        }
-    }
-
-    const std::vector<std::size_t> size = {234, 0, 1, 36, 98, 2034};
-
-    for(auto s : size)
-    {
-        const std::string filename = core::tools::System::genTempFileName(s);
-        CPPUNIT_ASSERT_EQUAL(s, filename.size());
-        for(auto c : filename)
-        {
-            CPPUNIT_ASSERT(std::isalnum(c) != 0);
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void SystemTest::robustRenameTest()
 {
-    const std::filesystem::path originFile(core::tools::System::getTemporaryFolder() / "test.sight");
+    core::os::TempDir tmpDir;
+
+    const auto originFile = tmpDir / "test.sight";
+
     // Create fake file.
     {
         std::fstream fs;
@@ -85,7 +62,7 @@ void SystemTest::robustRenameTest()
         fs.close();
     }
 
-    const std::filesystem::path destinationFile(core::tools::System::getTemporaryFolder() / "test1000.sight");
+    const auto destinationFile = tmpDir / "test1000.sight";
 
     //1. Basic renaming.
     CPPUNIT_ASSERT_NO_THROW(core::tools::System::robustRename(originFile, destinationFile));

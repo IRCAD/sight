@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,7 @@
 
 #include "SessionTest.hpp"
 
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <data/String.hpp>
 
@@ -167,11 +167,9 @@ inline static service::IService::ConfigType getConfiguration(const bool read = t
 
 inline static void basicTest(const bool raw = false)
 {
-    // Create a temporary directory
-    const auto tmpfolder = core::tools::System::getTemporaryFolder("BasicTest");
-    std::filesystem::remove_all(tmpfolder);
-    std::filesystem::create_directories(tmpfolder);
-    const auto testPath = tmpfolder / "powder.perlimpinpin";
+    // Create a temporary file
+    core::os::TempDir tmpDir;
+    const auto& tmpFile = tmpDir / "powder.perlimpinpin";
 
     const std::string expected("Abracadabra");
     {
@@ -186,7 +184,7 @@ inline static void basicTest(const bool raw = false)
         writer->setInput(inString, sight::io::base::service::s_DATA_KEY);
 
         // Set file output
-        writer->setFile(testPath);
+        writer->setFile(tmpFile);
 
         // Configure the writer service
         writer->setConfiguration(getConfiguration(false, raw));
@@ -202,7 +200,11 @@ inline static void basicTest(const bool raw = false)
     }
 
     // The file should have been created
-    CPPUNIT_ASSERT(std::filesystem::exists(testPath) && std::filesystem::is_regular_file(testPath));
+    CPPUNIT_ASSERT(
+        std::filesystem::exists(tmpFile)
+        && std::filesystem::is_regular_file(tmpFile)
+        && std::filesystem::file_size(tmpFile) > 0
+    );
 
     {
         // Create a reader service
@@ -216,7 +218,7 @@ inline static void basicTest(const bool raw = false)
         reader->setInOut(outString, sight::io::base::service::s_DATA_KEY);
 
         // Set file input
-        reader->setFile(testPath);
+        reader->setFile(tmpFile);
 
         // Configure the reader service
         reader->setConfiguration(getConfiguration(true, raw));
@@ -316,11 +318,9 @@ void SessionTest::writerBadPasswordEncryptionTest()
 
 void SessionTest::fileDialogTest()
 {
-    // Create a temporary directory
-    const auto tmpfolder = core::tools::System::getTemporaryFolder("FileDialogTest");
-    std::filesystem::remove_all(tmpfolder);
-    std::filesystem::create_directories(tmpfolder);
-    const auto testPath = tmpfolder / "powder.perlimpinpin";
+    // Create a temporary file
+    core::os::TempDir tmpDir;
+    const auto& tmpFile = tmpDir / "powder.perlimpinpin";
 
     const std::string expected("Abracadabra");
     {
@@ -343,7 +343,7 @@ void SessionTest::fileDialogTest()
         // Execute the writer service
         writer->start().wait();
 
-        sight::ui::base::dialog::DummyLocationDialog::setPaths({testPath});
+        sight::ui::base::dialog::DummyLocationDialog::setPaths({tmpFile});
 
         writer->update().wait();
         writer->stop().wait();
@@ -353,7 +353,11 @@ void SessionTest::fileDialogTest()
     }
 
     // The file should have been created
-    CPPUNIT_ASSERT(std::filesystem::exists(testPath) && std::filesystem::is_regular_file(testPath));
+    CPPUNIT_ASSERT(
+        std::filesystem::exists(tmpFile)
+        && std::filesystem::is_regular_file(tmpFile)
+        && std::filesystem::file_size(tmpFile) > 0
+    );
 
     {
         // Create a reader service
@@ -375,7 +379,7 @@ void SessionTest::fileDialogTest()
         // Execute the writer service
         reader->start().wait();
 
-        sight::ui::base::dialog::DummyLocationDialog::setPaths({testPath});
+        sight::ui::base::dialog::DummyLocationDialog::setPaths({tmpFile});
 
         reader->update().wait();
         reader->stop().wait();
@@ -392,11 +396,9 @@ void SessionTest::fileDialogTest()
 
 void SessionTest::passwordTest()
 {
-    // Create a temporary directory
-    const auto tmpfolder = core::tools::System::getTemporaryFolder("BasicTest");
-    std::filesystem::remove_all(tmpfolder);
-    std::filesystem::create_directories(tmpfolder);
-    const auto testPath = tmpfolder / "powder.perlimpinpin";
+    // Create a temporary file
+    core::os::TempDir tmpDir;
+    const auto& tmpFile = tmpDir / "powder.perlimpinpin";
 
     const std::string expected("Abracadabra");
     {
@@ -411,7 +413,7 @@ void SessionTest::passwordTest()
         writer->setInput(inString, sight::io::base::service::s_DATA_KEY);
 
         // Set file output
-        writer->setFile(testPath);
+        writer->setFile(tmpFile);
 
         // Configure the writer service
         auto config = getConfiguration(false);
@@ -432,7 +434,11 @@ void SessionTest::passwordTest()
     }
 
     // The file should have been created
-    CPPUNIT_ASSERT(std::filesystem::exists(testPath) && std::filesystem::is_regular_file(testPath));
+    CPPUNIT_ASSERT(
+        std::filesystem::exists(tmpFile)
+        && std::filesystem::is_regular_file(tmpFile)
+        && std::filesystem::file_size(tmpFile) > 0
+    );
 
     {
         // Create a reader service
@@ -446,7 +452,7 @@ void SessionTest::passwordTest()
         reader->setInOut(outString, sight::io::base::service::s_DATA_KEY);
 
         // Set file input
-        reader->setFile(testPath);
+        reader->setFile(tmpFile);
 
         // Configure the reader service
         auto config = getConfiguration(true);

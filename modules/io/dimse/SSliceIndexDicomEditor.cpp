@@ -23,7 +23,7 @@
 #include "SSliceIndexDicomEditor.hpp"
 
 #include <core/com/Slots.hxx>
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/ImageSeries.hpp>
@@ -293,7 +293,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
             }
 
             // Compute the path and add it to the DICOM series.
-            std::filesystem::path tmpPath      = core::tools::System::getTemporaryFolder() / "dicom";
+            std::filesystem::path tmpPath      = core::os::TempDir::sharedDirectory() / "dicom";
             std::filesystem::path downloadPath = tmpPath / seriesInstanceUID / sopInstanceUID;
             dicomSeries->addDicomPath(_selectedSliceIndex, downloadPath);
 
@@ -351,11 +351,11 @@ void SSliceIndexDicomEditor::readSlice(
     const std::size_t bufferSize = bufferObj->getSize();
 
     // Creates unique temporary folder to save the DICOM instance.
-    std::filesystem::path tmpPath = core::tools::System::getTemporaryFolder("dicom");
-    std::filesystem::create_directories(tmpPath);
+    // Do not delete the folder, as we may use the file in the DicomReference.
+    const auto tmpDir = core::os::TempDir::sharedDirectory("do_not_delete_");
 
     // Open the temporary folder and write the buffer.
-    std::filesystem::path path = tmpPath / std::to_string(_selectedSliceIndex);
+    std::filesystem::path path = tmpDir / std::to_string(_selectedSliceIndex);
     std::ofstream fs(path, std::ios::binary | std::ios::trunc);
     if(!fs.good())
     {
@@ -367,7 +367,7 @@ void SSliceIndexDicomEditor::readSlice(
     fs.close();
 
     // Read the image.
-    m_dicomReader->setFolder(tmpPath);
+    m_dicomReader->setFolder(tmpDir);
     m_dicomReader->update().wait();
 
     if(!m_dicomReader->hasFailed() && !m_series_set->empty())

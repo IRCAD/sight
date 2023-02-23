@@ -24,7 +24,7 @@
 #include "io/http/Download.hpp"
 
 #include <core/Exception.hpp>
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <filesystem>
 
@@ -51,53 +51,58 @@ void DownloadTest::tearDown()
 
 void DownloadTest::downloadTestSuccess()
 {
-    const fs::path dir = core::tools::System::getTemporaryFolder();
+    core::os::TempDir tmpDir;
+
+    const auto& sample_bin_path = tmpDir / "sample.bin";
+    const auto& sample_txt_path = tmpDir / "sample.txt";
 
     CPPUNIT_ASSERT_NO_THROW(
         io::http::downloadFile(
             "https://cloud.ircad.fr/s/tqYHyjZ2cgHT4mG/download",
-            dir / "sample.bin"
+            sample_bin_path
         )
     );
 
     CPPUNIT_ASSERT_NO_THROW(
         io::http::downloadFile(
             "https://cloud.ircad.fr/s/5GA5bjqsEYwenPT/download",
-            dir / "sample.txt"
+            sample_txt_path
         )
     );
 
-    CPPUNIT_ASSERT(fs::exists(dir / "sample.bin"));
-    CPPUNIT_ASSERT(fs::exists(dir / "sample.txt"));
+    CPPUNIT_ASSERT(fs::exists(sample_bin_path));
+    CPPUNIT_ASSERT(fs::exists(sample_txt_path));
 
-    CPPUNIT_ASSERT_EQUAL(std::uintmax_t(1024), fs::file_size(dir / "sample.bin"));
-    CPPUNIT_ASSERT_EQUAL(std::uintmax_t(54), fs::file_size(dir / "sample.txt"));
+    CPPUNIT_ASSERT_EQUAL(std::uintmax_t(1024), fs::file_size(sample_bin_path));
+    CPPUNIT_ASSERT_EQUAL(std::uintmax_t(54), fs::file_size(sample_txt_path));
 }
 
 //------------------------------------------------------------------------------
 
 void DownloadTest::downloadTestFailure()
 {
-    const fs::path dir = core::tools::System::getTemporaryFolder();
+    core::os::TempDir tmpDir;
+    const auto& test_bin_path = tmpDir / "test.bin";
 
     CPPUNIT_ASSERT_THROW(
         io::http::downloadFile(
             "https://whateverTheCloud.com/fileDoesNotExists.txt/download",
-            dir / "test.bin"
+            test_bin_path
         ),
         sight::core::Exception
     );
 
-    CPPUNIT_ASSERT(!fs::exists(dir / "test.bin"));
+    CPPUNIT_ASSERT(!fs::exists(test_bin_path));
 }
 
 //------------------------------------------------------------------------------
 
 void DownloadTest::downloadTestWrongInputs()
 {
-    const fs::path dir = core::tools::System::getTemporaryFolder();
+    core::os::TempDir tmpDir;
+    const auto& test2_bin_path = tmpDir / "test2.bin";
 
-    CPPUNIT_ASSERT_THROW(io::http::downloadFile("", dir / "test2.bin"), sight::core::Exception);
+    CPPUNIT_ASSERT_THROW(io::http::downloadFile("", test2_bin_path), sight::core::Exception);
 
     CPPUNIT_ASSERT_THROW(
         io::http::downloadFile("https://whateverTheCloud.com/fileDoesNotExists.txt/download", ""),
@@ -109,14 +114,22 @@ void DownloadTest::downloadTestWrongInputs()
 
 void DownloadTest::downloadTestOverwritesFile()
 {
-    const fs::path dir = core::tools::System::getTemporaryFolder();
+    core::os::TempDir tmpDir;
+    const auto& sample_bin_path = tmpDir / "sample.bin";
 
-    CPPUNIT_ASSERT(fs::exists(dir / "sample.bin"));
+    CPPUNIT_ASSERT_NO_THROW(
+        io::http::downloadFile(
+            "https://cloud.ircad.fr/s/tqYHyjZ2cgHT4mG/download",
+            sample_bin_path
+        )
+    );
+
+    CPPUNIT_ASSERT(fs::exists(sample_bin_path));
 
     CPPUNIT_ASSERT_THROW(
         io::http::downloadFile(
-            "https://cloud.ircad.fr/index.php/s/xGt4afRfMiWyeo4/download",
-            dir / "sample.bin"
+            "https://cloud.ircad.fr/s/tqYHyjZ2cgHT4mG/download",
+            sample_bin_path
         ),
         sight::core::Exception
     );

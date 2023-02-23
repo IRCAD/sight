@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,10 +32,10 @@
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/vr/GridProxyGeometry.hpp"
 
+#include <core/os/TempPath.hpp>
 #include <core/runtime/path.hpp>
 #include <core/spyLog.hpp>
 #include <core/tools/Os.hpp>
-#include <core/tools/System.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -110,12 +110,12 @@ void Utils::loadResources()
                 SIGHT_FATAL("File '" + path.string() + "' doesn't exist. Ogre needs it to load resources");
             }
 
-            const auto tmpPath = std::filesystem::temp_directory_path() / core::tools::System::genTempFileName();
-            std::ofstream newResourceFile(tmpPath.string());
+            core::os::TempFile tmpFile;
+            std::ofstream newResourceFile(tmpFile);
 
-            if(!std::filesystem::exists(tmpPath))
+            if(!std::filesystem::exists(tmpFile))
             {
-                SIGHT_FATAL("Can't create the file '" + tmpPath.string() + "'");
+                SIGHT_FATAL("Can't create the file '" + tmpFile.string() + "'");
             }
 
             // Copy the resource file and make paths absolute.
@@ -124,8 +124,7 @@ void Utils::loadResources()
             makePathsAbsolute("FileSystem", resourceFile, newResourceFile, path.parent_path());
             resourceFile.close();
             newResourceFile.close();
-            cf.load(tmpPath.string());
-            std::filesystem::remove(tmpPath);
+            cf.load(tmpFile.string());
 
             const Ogre::ConfigFile::SettingsBySection_ settings_by_section = cf.getSettingsBySection();
 
@@ -191,7 +190,7 @@ Ogre::Root* Utils::getOgreRoot()
             SIGHT_FATAL("File '" + confPath.string() + "' doesn't exist. Ogre needs it to be configured");
         }
 
-        const auto tmpPluginCfg = std::filesystem::temp_directory_path() / core::tools::System::genTempFileName();
+        core::os::TempFile tmpPluginCfg;
 
         // Set the actual plugin path in the plugin config file and add application plugins.
         {
@@ -282,8 +281,6 @@ Ogre::Root* Utils::getOgreRoot()
         }
 
         root = new Ogre::Root(tmpPluginCfg.string());
-
-        std::filesystem::remove(tmpPluginCfg);
 
         s_overlaySystem = new Ogre::OverlaySystem();
 

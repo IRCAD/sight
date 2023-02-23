@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "DictionaryReaderTest.hpp"
 
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <data/StructureTraits.hpp>
 #include <data/StructureTraitsDictionary.hpp>
@@ -45,7 +45,7 @@ namespace sight::io::base::ut
 void DictionaryReaderTest::setUp()
 {
     // Set up context before running a test.
-    m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "Dictionary.dic";
+    m_tmpDictionaryFilePath = core::os::TempDir::sharedDirectory() / "Dictionary.dic";
 
     sight::io::base::ut::DictionaryReaderTest::generateDictionaryFile(m_tmpDictionaryFilePath);
 
@@ -114,7 +114,7 @@ void DictionaryReaderTest::test_1()
 void DictionaryReaderTest::test_2()
 {
     // Set up context before running a test.
-    m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "WrongDictionary.dic";
+    m_tmpDictionaryFilePath = core::os::TempDir::sharedDirectory() / "WrongDictionary.dic";
     sight::io::base::ut::DictionaryReaderTest::generateDictionaryFileWithMissingSemiColon(m_tmpDictionaryFilePath);
 
     data::StructureTraitsDictionary::sptr structDico = data::StructureTraitsDictionary::New();
@@ -130,8 +130,7 @@ void DictionaryReaderTest::test_2()
 
 void DictionaryReaderTest::test_3()
 {
-    m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder()
-                              / "NoDictionary.dic";
+    m_tmpDictionaryFilePath = core::os::TempDir::sharedDirectory() / "NoDictionary.dic";
     data::StructureTraitsDictionary::sptr structDico = data::StructureTraitsDictionary::New();
     // Get data from file.
     io::base::reader::DictionaryReader::sptr dictionaryReader = io::base::reader::DictionaryReader::New();
@@ -146,7 +145,7 @@ void DictionaryReaderTest::test_3()
 void DictionaryReaderTest::test_4()
 {
     // Set up context before running a test.
-    m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "WrongDictionary.dic";
+    m_tmpDictionaryFilePath = core::os::TempDir::sharedDirectory() / "WrongDictionary.dic";
     sight::io::base::ut::DictionaryReaderTest::generateDictionaryFileWithWrongCategory(m_tmpDictionaryFilePath);
 
     data::StructureTraitsDictionary::sptr structDico = data::StructureTraitsDictionary::New();
@@ -163,7 +162,7 @@ void DictionaryReaderTest::test_4()
 void DictionaryReaderTest::test_5()
 {
     // Set up context before running a test.
-    m_tmpDictionaryFilePath = core::tools::System::getTemporaryFolder() / "WrongDictionary.dic";
+    m_tmpDictionaryFilePath = core::os::TempDir::sharedDirectory() / "WrongDictionary.dic";
     sight::io::base::ut::DictionaryReaderTest::generateDictionaryFileWithWrongClass(m_tmpDictionaryFilePath);
 
     data::StructureTraitsDictionary::sptr structDico = data::StructureTraitsDictionary::New();

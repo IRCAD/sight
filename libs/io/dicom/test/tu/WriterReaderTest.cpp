@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "WriterReaderTest.hpp"
 
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <data/Boolean.hpp>
 #include <data/helper/MedicalImage.hpp>
@@ -102,27 +102,21 @@ void WriterReaderTest::writeReadImageSeriesTest()
         return;
     }
 
-    data::ImageSeries::sptr imgSeries;
-    imgSeries = utestData::generator::SeriesSet::createImageSeries();
+    auto imgSeries = utestData::generator::SeriesSet::createImageSeries();
+    core::os::TempDir tmpDir;
 
-    const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "dicomTest";
-
-    std::filesystem::create_directories(PATH);
-
-    io::dicom::writer::Series::sptr writer = io::dicom::writer::Series::New();
+    auto writer = io::dicom::writer::Series::New();
     writer->setObject(imgSeries);
-    writer->setFolder(PATH);
+    writer->setFolder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     // load ImageSeries
     auto series_set = data::SeriesSet::New();
     auto reader     = io::dicom::reader::SeriesSet::New();
     reader->setObject(series_set);
-    reader->setFolder(PATH);
+    reader->setFolder(tmpDir);
 
     CPPUNIT_ASSERT_NO_THROW(reader->read());
-
-    std::filesystem::remove_all(PATH);
 
     // check series
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());

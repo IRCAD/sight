@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2020 IHU Strasbourg
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,7 +24,7 @@
 #include "helper.hpp"
 
 #include <core/base.hpp>
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <io/itk/InrImageReader.hpp>
 #include <io/itk/InrImageWriter.hpp>
@@ -204,16 +203,16 @@ void ImageReaderWriterTest::niftiWriteTest()
     image->setOrigin(originD);
 
     // save image in nifti
-    const std::filesystem::path filename = core::tools::System::getTemporaryFolder() / "imageNiftiTest/image.nii";
-    std::filesystem::create_directories(filename.parent_path());
-    io::itk::NiftiImageWriter::sptr myWriter = io::itk::NiftiImageWriter::New();
+    core::os::TempDir tmpDir;
+    const std::filesystem::path filename = tmpDir / "image.nii";
+    auto myWriter                        = io::itk::NiftiImageWriter::New();
 
     myWriter->setObject(image);
     myWriter->setFile(filename);
     myWriter->write();
 
     CPPUNIT_ASSERT_MESSAGE(
-        "test on imageNiftiTest/image.nii failed ",
+        "test on '" + filename.string() + "' failed ",
         std::filesystem::exists(filename)
     );
 
@@ -222,12 +221,10 @@ void ImageReaderWriterTest::niftiWriteTest()
     image2->setWindowCenter(image->getWindowCenter());
     image2->setWindowWidth(image->getWindowWidth());
 
-    io::itk::NiftiImageReader::sptr myReader = io::itk::NiftiImageReader::New();
+    auto myReader = io::itk::NiftiImageReader::New();
     myReader->setObject(image2);
     myReader->setFile(filename);
     myReader->read();
-
-    std::filesystem::remove(filename);
 
     CPPUNIT_ASSERT(*image == *image2);
 }
@@ -241,11 +238,10 @@ void ImageReaderWriterTest::jpegWriteTest()
     utestData::generator::Image::generateRandomImage(image, core::Type::INT16);
 
     // save image in inr
-    const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "imageJPG";
-    std::filesystem::create_directories(PATH);
-    io::itk::JpgImageWriter::sptr myWriter = io::itk::JpgImageWriter::New();
+    core::os::TempDir tmpDir;
+    auto myWriter = io::itk::JpgImageWriter::New();
     myWriter->setObject(image);
-    myWriter->setFolder(PATH);
+    myWriter->setFolder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(myWriter->write());
 }
 
@@ -254,7 +250,7 @@ void ImageReaderWriterTest::jpegWriteTest()
 void ImageReaderWriterTest::inrReadJpegWriteTest()
 {
     // create Image
-    std::filesystem::path pathInr = utestData::Data::dir() / "sight/image/inr/image.inr.gz";
+    std::filesystem::path pathInr = utestData::Data::dir() / "sight" / "image" / "inr" / "image.inr.gz";
 
     CPPUNIT_ASSERT_MESSAGE(
         "The file '" + pathInr.string() + "' does not exist",
@@ -268,11 +264,10 @@ void ImageReaderWriterTest::inrReadJpegWriteTest()
     myReader->read();
 
     // save image in inr
-    const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "imageJPG";
-    std::filesystem::create_directories(PATH);
-    io::itk::JpgImageWriter::sptr myWriter = io::itk::JpgImageWriter::New();
+    core::os::TempDir tmpDir;
+    auto myWriter = io::itk::JpgImageWriter::New();
     myWriter->setObject(image);
-    myWriter->setFolder(PATH);
+    myWriter->setFolder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(myWriter->write());
 }
 
@@ -297,16 +292,16 @@ void ImageReaderWriterTest::inrReadWriteCheck(data::Image::sptr image)
     image->setOrigin(origin);
 
     // save image in inr
-    const std::filesystem::path PATH = core::tools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
-    std::filesystem::create_directories(PATH.parent_path());
-    io::itk::InrImageWriter::sptr myWriter = io::itk::InrImageWriter::New();
+    core::os::TempDir tmpDir;
+    const std::filesystem::path PATH = tmpDir / "image.inr.gz";
+    auto myWriter                    = io::itk::InrImageWriter::New();
     myWriter->setObject(image);
     myWriter->setFile(PATH);
     myWriter->write();
 
     // load Image
-    data::Image::sptr image2               = data::Image::New();
-    io::itk::InrImageReader::sptr myReader = io::itk::InrImageReader::New();
+    auto image2   = data::Image::New();
+    auto myReader = io::itk::InrImageReader::New();
     myReader->setObject(image2);
     myReader->setFile(PATH);
     myReader->read();

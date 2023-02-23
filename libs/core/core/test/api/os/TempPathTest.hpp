@@ -19,35 +19,28 @@
  *
  ***********************************************************************/
 
-#include "FileHolderTest.hpp"
+#pragma once
 
-#include <core/memory/FileHolder.hpp>
-#include <core/os/TempPath.hpp>
+#include <cppunit/extensions/HelperMacros.h>
 
-CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::memory::ut::FileHolderTest);
-
-namespace sight::core::memory::ut
+namespace sight::core::tools::ut
 {
 
-//------------------------------------------------------------------------------
-
-void FileHolderTest::fileAutoDeleteTest()
+class TempPathTest : public CPPUNIT_NS::TestFixture
 {
-    core::os::TempFile tempFile;
-    {
-        sight::core::memory::FileHolder holder(tempFile, true);
-        std::ofstream out(tempFile);
-        out << 1;
-        out.close();
+CPPUNIT_TEST_SUITE(TempPathTest);
+CPPUNIT_TEST(tempDirTest);
+CPPUNIT_TEST(tempFileTest);
+CPPUNIT_TEST_SUITE_END();
 
-        CPPUNIT_ASSERT(
-            std::filesystem::exists(tempFile)
-            && std::filesystem::is_regular_file(tempFile)
-            && std::filesystem::file_size(tempFile) > 0
-        );
-    }
+public:
 
-    CPPUNIT_ASSERT(!std::filesystem::exists(tempFile));
-}
+    // interface
+    void setUp() override;
+    void tearDown() override;
 
-} // namespace sight::core::memory::ut
+    static void tempDirTest();
+    static void tempFileTest();
+};
+
+} // namespace sight::core::tools::ut

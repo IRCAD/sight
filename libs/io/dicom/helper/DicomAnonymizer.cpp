@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,8 +30,8 @@
 #include <core/base.hpp>
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Observer.hpp>
+#include <core/os/TempPath.hpp>
 #include <core/runtime/path.hpp>
-#include <core/tools/System.hpp>
 
 #include <boost/algorithm/string/join.hpp>
 #include <boost/date_time/gregorian/gregorian.hpp>
@@ -243,8 +243,7 @@ const DicomAnonymizer::TagContainerType& DicomAnonymizer::getActionCodeUTags()
 void DicomAnonymizer::anonymizationProcess(const std::filesystem::path& dirPath)
 {
     // Create temporary directory
-    std::filesystem::path tmpPath = core::tools::System::getTemporaryFolder("DicomAnonymizer");
-    tmpPath /= "tmp";
+    core::os::TempDir tmpPath;
 
     // Doesn't use std::filesystem::rename because of potential issues when moving folders across volumes
     moveDirectory(dirPath, tmpPath);

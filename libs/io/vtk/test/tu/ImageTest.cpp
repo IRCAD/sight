@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ImageTest.hpp"
 
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <data/Image.hpp>
 
@@ -154,8 +154,8 @@ void imageToVTKTest(const core::Type imgtype, const std::set<int>& vtk_types)
 template<typename W, typename R>
 void writerTest(const core::Type imagetype, const std::string& filename)
 {
-    const std::filesystem::path testFile(core::tools::System::getTemporaryFolder()
-                                         / std::filesystem::path(filename));
+    core::os::TempDir tmpDir;
+    const auto& testFile = tmpDir / filename;
 
     data::Image::sptr image = data::Image::New();
     utestData::generator::Image::generateRandomImage(image, imagetype);
@@ -175,8 +175,6 @@ void writerTest(const core::Type imagetype, const std::string& filename)
     reader->setObject(image2);
     reader->setFile(testFile);
     reader->read();
-
-    std::filesystem::remove(testFile);
 
     CPPUNIT_ASSERT_EQUAL_MESSAGE(
         "test on <" + filename + "> of type <" + imagetype.name() + "> Failed ",
@@ -504,16 +502,17 @@ void ImageTest::mhdWriterTest()
         std::filesystem::exists(zRawPath)
     );
 
-    const std::filesystem::path testFile(core::tools::System::getTemporaryFolder() / "BostonTeapot.mhd");
-    const std::filesystem::path testZRawFile(core::tools::System::getTemporaryFolder() / "BostonTeapot.zraw");
+    core::os::TempDir tmpDir;
+    const auto testFile     = tmpDir / "BostonTeapot.mhd";
+    const auto testZRawFile = tmpDir / "BostonTeapot.zraw";
 
-    data::Image::sptr image               = data::Image::New();
-    io::vtk::MetaImageReader::sptr reader = io::vtk::MetaImageReader::New();
+    auto image  = data::Image::New();
+    auto reader = io::vtk::MetaImageReader::New();
     reader->setObject(image);
     reader->setFile(imagePath);
     reader->read();
 
-    io::vtk::MetaImageWriter::sptr writer = io::vtk::MetaImageWriter::New();
+    auto writer = io::vtk::MetaImageWriter::New();
     writer->setObject(image);
     writer->setFile(testFile);
     writer->write();
@@ -524,9 +523,6 @@ void ImageTest::mhdWriterTest()
     CPPUNIT_ASSERT(utestData::File::contentEquals(imagePath, testFile));
     CPPUNIT_ASSERT(utestData::File::contentEquals(zRawPath, testZRawFile));
 
-    std::filesystem::remove(testFile);
-    std::filesystem::remove(testZRawFile);
-
     writerTest<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::Type::INT8, "imageTest.mhd");
     writerTest<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::Type::UINT8, "imageTest.mhd");
     writerTest<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::Type::INT16, "imageTest.mhd");
@@ -535,9 +531,6 @@ void ImageTest::mhdWriterTest()
     writerTest<io::vtk::MetaImageWriter, io::vtk::MetaImageReader>(core::Type::UINT32, "imageTest.mhd");
     // writerTest< io::vtk::MetaImageWriter,::io::vtk::MetaImageReader>("int64", "imageTest.mhd");
     // writerTest< io::vtk::MetaImageWriter,::io::vtk::MetaImageReader>("uint64", "imageTest.mhd");
-
-    const std::filesystem::path zFile(core::tools::System::getTemporaryFolder() / "imagetestfile.zraw");
-    std::filesystem::remove(zFile);
 }
 
 // ------------------------------------------------------------------------------

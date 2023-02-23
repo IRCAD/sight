@@ -22,9 +22,9 @@
 
 #include "IoItkTest.hpp"
 
+#include <core/os/TempPath.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/dateAndTime.hpp>
-#include <core/tools/System.hpp>
 
 #include <data/ImageSeries.hpp>
 #include <data/SeriesSet.hpp>
@@ -97,13 +97,11 @@ void IoItkTest::testImageSeriesWriterJPG()
     utestData::generator::Image::generateRandomImage(imageSeries, core::Type::INT16);
 
     // Create path
-    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageSeriesJPG";
-    std::filesystem::create_directories(path);
+    core::os::TempDir tmpDir;
 
     // Create Config
-
     service::IService::ConfigType srvCfg;
-    srvCfg.add("folder", path.string());
+    srvCfg.add("folder", tmpDir.string());
 
     // Create and execute service
     executeService(
@@ -133,8 +131,8 @@ void IoItkTest::testSaveLoadInr()
     image->setOrigin(origin);
 
     // save image in inr
-    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageInrTest/image.inr.gz";
-    std::filesystem::create_directories(path.parent_path());
+    core::os::TempDir tmpDir;
+    const auto& path = tmpDir / "image.inr.gz";
 
     // Create Config
     service::IService::ConfigType srvCfg;
@@ -179,8 +177,8 @@ void IoItkTest::testSaveLoadNifti()
     image->setOrigin(origin);
 
     // save image in inr
-    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageNiftiTest/image.nii";
-    std::filesystem::create_directories(path.parent_path());
+    core::os::TempDir tmpDir;
+    const auto& path = tmpDir / "image.nii";
 
     // Create Config
     service::IService::ConfigType srvCfg;
@@ -226,8 +224,8 @@ void IoItkTest::ImageSeriesInrTest()
     imageSeries->setOrigin(origin);
 
     // save image in inr
-    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageInrTest/imageseries.inr.gz";
-    std::filesystem::create_directories(path.parent_path());
+    core::os::TempDir tmpDir;
+    const auto& path = tmpDir / "imageseries.inr.gz";
 
     // Create Config
     service::IService::ConfigType srvCfg;
@@ -279,8 +277,8 @@ void IoItkTest::ImageSeriesNiftiTest()
     imageSeries->setOrigin(origin);
 
     // save image in inr
-    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "imageNiftiTest/imageseries.nii";
-    std::filesystem::create_directories(path.parent_path());
+    core::os::TempDir tmpDir;
+    const auto& path = tmpDir / "imageseries.nii";
 
     // Create Config
     service::IService::ConfigType srvCfg;

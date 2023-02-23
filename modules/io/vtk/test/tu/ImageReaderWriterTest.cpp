@@ -22,8 +22,8 @@
 
 #include "ImageReaderWriterTest.hpp"
 
+#include <core/os/TempPath.hpp>
 #include <core/tools/Failed.hpp>
-#include <core/tools/System.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
@@ -265,10 +265,9 @@ void ImageReaderWriterTest::testMhdImageReader()
 
 void ImageReaderWriterTest::testImageReaderExtension()
 {
-    const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "img.xxx";
+    core::os::TempFile tmpFile;
 
-    std::ofstream o_file;
-    o_file.open(file.string().c_str());
+    std::ofstream o_file(tmpFile, std::ios::out | std::ios::trunc | std::ios::binary);
     o_file.close();
 
     data::Image::sptr image = data::Image::New();
@@ -282,14 +281,13 @@ void ImageReaderWriterTest::testImageReaderExtension()
 
         srv->setInOut(image, "data");
 
-        CPPUNIT_ASSERT_NO_THROW(srv->setConfiguration(getIOConfiguration(file)));
+        CPPUNIT_ASSERT_NO_THROW(srv->setConfiguration(getIOConfiguration(tmpFile)));
         CPPUNIT_ASSERT_NO_THROW(srv->configure());
         CPPUNIT_ASSERT_NO_THROW(srv->start().wait());
         CPPUNIT_ASSERT_THROW(srv->update().get(), core::tools::Failed);
         CPPUNIT_ASSERT_NO_THROW(srv->stop().wait());
         service::remove(srv);
     }
-    std::filesystem::remove(file);
 }
 
 //------------------------------------------------------------------------------
@@ -316,15 +314,14 @@ void ImageReaderWriterTest::testVtkImageWriter()
     utestData::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
-    const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "temporaryFile.vtk";
+    core::os::TempDir tmpDir;
+    const auto file = tmpDir / "tempFile.vtk";
 
     runImageSrv("sight::module::io::vtk::SImageWriter", getIOConfiguration(file), image);
 
     // Read image from disk
     data::Image::sptr imageFromDisk = data::Image::New();
     runImageSrv("sight::module::io::vtk::SImageReader", getIOConfiguration(file), imageFromDisk);
-
-    std::filesystem::remove(file);
 
     // Data read
     data::Image::Spacing spacingRead = image->getSpacing();
@@ -365,7 +362,8 @@ void ImageReaderWriterTest::testVtkImageSeriesWriter()
     auto imageSeries = data::ImageSeries::New();
     utestData::generator::Image::generateRandomImage(imageSeries, type);
 
-    const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "imageSeries.vtk";
+    core::os::TempDir tmpDir;
+    const auto file = tmpDir / "imageSeries.vtk";
 
     // Write image series
     runImageSrv("sight::module::io::vtk::SImageSeriesWriter", getIOConfiguration(file), imageSeries);
@@ -405,7 +403,8 @@ void ImageReaderWriterTest::testVtiImageWriter()
     utestData::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
-    const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "temporaryFile.vti";
+    core::os::TempDir tmpDir;
+    const auto file = tmpDir / "tempFile.vti";
 
     runImageSrv("sight::module::io::vtk::SImageWriter", getIOConfiguration(file), image);
 
@@ -469,7 +468,8 @@ void ImageReaderWriterTest::testMhdImageWriter()
     utestData::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
-    const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "temporaryFile.mhd";
+    core::os::TempDir tmpDir;
+    const auto file = tmpDir / "tempFile.mhd";
 
     runImageSrv("sight::module::io::vtk::SImageWriter", getIOConfiguration(file), image);
 
@@ -513,13 +513,10 @@ void ImageReaderWriterTest::testMhdImageWriter()
 void ImageReaderWriterTest::testImageWriterExtension()
 {
     // Data to write
-    core::Type type                      = core::Type::UINT8;
-    const data::Image::Size sizeExpected = {10, 20, 30
-    };
-    const data::Image::Spacing spacingExpected = {0.24, 1.07, 2.21
-    };
-    const data::Image::Origin originExpected = {-5.6, 15.16, 11.11
-    };
+    const auto type = core::Type::UINT8;
+    const data::Image::Size sizeExpected {10, 20, 30};
+    const data::Image::Spacing spacingExpected {0.24, 1.07, 2.21};
+    const data::Image::Origin originExpected {-5.6, 15.16, 11.11};
 
     data::Image::sptr image = data::Image::New();
     utestData::generator::Image::generateImage(
@@ -533,7 +530,8 @@ void ImageReaderWriterTest::testImageWriterExtension()
     utestData::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
-    const std::filesystem::path file = core::tools::System::getTemporaryFolder() / "temporaryFile.xxx";
+    core::os::TempDir tmpDir;
+    const auto file = tmpDir / "tempFile.xxx";
 
     {
         const std::string srvname("sight::module::io::vtk::SImageWriter");
