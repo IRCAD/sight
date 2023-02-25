@@ -51,7 +51,7 @@ lint:sheldon:
       -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
       -DSIGHT_ENABLE_GDB=ON
     # Touch all generated files to improve CCache performance
-    - find . -type f -name '*.?pp' -exec touch -t 197001010000 {} \;
+    - find . -type f -name '*.?pp' -o -name '*.?xx' -exec touch -t 197001010000 {} \;
     # Build
     - ninja -j${RUNNER_THREADS} | tee output.log
     # Generate metrics information
