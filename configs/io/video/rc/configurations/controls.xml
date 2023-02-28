@@ -18,6 +18,9 @@ ui elements:
 
 parameters:
     videoSupport (optional, default="true") : indicates if the "file" video source is allowed or not
+    playShortCut (optional, default="space") : indicates the shortcut to use to play the video
+    pauseShortCut (optional, default="space") : indicates the shortcut to use to pause the video
+    stopShortCut (optional, default="s") : indicates the shortcut to use to stop the video
 
 channels - out (optional):
 
@@ -53,6 +56,9 @@ Usage:
             </inout>
             <parameter replace="TOOLBAR"                        by="..." />
             <parameter replace="videoSupport"                   by="..." />
+            <parameter replace="playShortCut"                   by="..." />
+            <parameter replace="pauseShortCut"                  by="..." />
+            <parameter replace="stopShortCut"                   by="..." />
             <parameter replace="notificationChannel"            by="..." />
             <parameter replace="cameraStartedChannelOut"        by="..." />
             <parameter replace="cameraPausedChannelOut"         by="..." />
@@ -65,7 +71,7 @@ Usage:
             <parameter replace="configuredStreamOut"            by="..." />
             <parameter replace="configuredDeviceOut"            by="..." />
             <parameter replace="addROICenterChannelIn"          by="..." />
-            <parameter replace="removeROICenterChannelIn"       by="..." />
+
         </service>
 -->
 <extension implements="sight::service::extension::AppConfig" >
@@ -76,6 +82,9 @@ Usage:
 
         <param name="TOOLBAR" />
         <param name="videoSupport" default="true" />
+        <param name="playShortCut" default="space" />
+        <param name="pauseShortCut" default="space" />
+        <param name="stopShortCut" default="s" />
 
         <param name="notificationChannel" default="notificationChannel" />
 
@@ -129,10 +138,10 @@ Usage:
             <gui>
                 <layout>
                     <editor/>
-                    <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                    <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="Space" />
-                    <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="Space" />
-                    <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" />
+                    <menuItem name="Start" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="${playShortCut}"/>
+                    <menuItem name="Pause" icon="sight::module::ui::flaticons/OrangePause.svg" shortcut="${pauseShortCut}"/>
+                    <menuItem name="Play" icon="sight::module::ui::flaticons/GreenStart.svg" shortcut="${pauseShortCut}"/>
+                    <menuItem name="Stop" icon="sight::module::ui::flaticons/RedStop.svg" shortcut="${stopShortCut}"/>
                     <menuItem name="Loop" icon="sight::module::ui::flaticons/OrangeLoop.svg" style="check" />
                 </layout>
             </gui>
