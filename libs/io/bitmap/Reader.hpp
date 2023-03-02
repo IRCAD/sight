@@ -28,9 +28,10 @@
 #include <core/location/SingleFile.hpp>
 #include <core/tools/ProgressAdviser.hpp>
 
+#include <data/IContainer.hpp>
 #include <data/Image.hpp>
 
-#include <io/base/writer/GenericObjectWriter.hpp>
+#include <io/base/reader/GenericObjectReader.hpp>
 
 #include <ostream>
 
@@ -39,7 +40,7 @@
 namespace sight::io::bitmap::detail
 {
 
-class WriterImpl;
+class ReaderImpl;
 
 }
 
@@ -47,64 +48,47 @@ namespace sight::io::bitmap
 {
 
 /**
- * @brief Fast generic bitmap writer. It supports JPEG2000, JPEG, PNG and TIFF format.
+ * @brief Fast generic bitmap reader. It supports JPEG2000, JPEG, PNG and TIFF format.
  *
  * If a NVIDIA GPU is available and the support has been compiled in, NVidia nvJPEG / nvJPEG2000 library is used to
- * achieve very fast encoding. Otherwise, libjpeg-turbo, openJPEG, libtiff or libPNG are used as fallback.
+ * achieve very fast decoding. Otherwise, libjpeg-turbo, openJPEG, libtiff or libPNG are used as fallback.
  * The performance should still be better than VTK or even OpenCV because of direct API calls and avoided unneeded
  * buffer copy.
- *
- * Some backends have a FAST and a BEST mode. FAST compress faster and BEST compress better, at the expanse of the
- * speed. For lossy codecs, the configuration will always provide the maximum possible quality, which may reduce
- * compression.
- *
- * For lossless mode, TIFF "BEST" currently provide the best mix between speed and compression ratio (350 FPS), while
- * "FAST" mode is the fastest backend, but does not compress very well data (450 FPS).
- *
- * When a GPU is available, nothing beats the speed of nvJPEG (>1300 FPS) while preserving "visually" lossless quality.
- * On the contrary, nvJPEG2000 is fully lossless and provides a very good compression ratio, but is, of course, slower
- * (still 60 fps guaranteed on nowadays computers).
  */
-class IO_BITMAP_CLASS_API Writer final : public base::writer::GenericObjectWriter<data::Image>,
+class IO_BITMAP_CLASS_API Reader final : public base::reader::GenericObjectReader<data::Image>,
                                          public core::location::SingleFile,
                                          public core::tools::ProgressAdviser
 {
 public:
 
-    enum class Mode : std::uint8_t
-    {
-        FAST = 1,
-        BEST = 2
-    };
-
     SIGHT_DECLARE_CLASS(
-        Writer,
-        base::writer::GenericObjectWriter<data::Image>,
-        base::writer::factory::New<Writer>
+        Reader,
+        base::reader::GenericObjectReader<data::Image>,
+        base::reader::factory::New<Reader>
     );
 
     SIGHT_ALLOW_SHARED_FROM_THIS();
 
     /// Delete default constructors and assignment operators
-    Writer()                         = delete;
-    Writer(const Writer&)            = delete;
-    Writer(Writer&&)                 = delete;
-    Writer& operator=(const Writer&) = delete;
-    Writer& operator=(Writer&&)      = delete;
+    Reader()                         = delete;
+    Reader(const Reader&)            = delete;
+    Reader(Reader&&)                 = delete;
+    Reader& operator=(const Reader&) = delete;
+    Reader& operator=(Reader&&)      = delete;
 
     /// Constructor/Destructor
-    IO_BITMAP_API Writer(io::base::writer::IObjectWriter::Key key);
-    IO_BITMAP_API ~Writer() override;
+    IO_BITMAP_API Reader(io::base::reader::IObjectReader::Key key);
+    IO_BITMAP_API ~Reader() override;
 
-    /// Main writing method from GenericObjectWriter
-    IO_BITMAP_API void write() override;
+    /// Main writing method from GenericObjectReader
+    IO_BITMAP_API void read() override;
 
     /// Specialized writing method that allows to specify the backend and the mode (Fast or Best compression)
     /// @arg backend: the backend to use. Can be LIBJPEG, LIBTIFF, LIBPNG, OPENJPEG or, if available, NVJPEG and
     ///      NVJPEG2K. DEFAULT is LIBTIFF and ANY will guess using the file extension. "*J2K" variant are
     ///      JPEG2000 "stream", without normal meta-data and is only useful for DICOM
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
-    IO_BITMAP_API void write(Backend backend, Mode mode = Mode::FAST);
+    IO_BITMAP_API void read(Backend backend);
 
     /// Specialized writing method that allows to write to a ostream
     /// @arg ostream: the stream to write to. It is up to the user to open it.
@@ -112,10 +96,9 @@ public:
     ///      NVJPEG2K. DEFAULT is LIBTIFF. "*_J2K" variant are
     ///      JPEG2000 "stream", without normal meta-data and is only useful for DICOM
     /// @arg mode: The mode to use. Can be FAST or BEST. FAST emphasise speed and BEST emphasise file size
-    IO_BITMAP_API void write(
-        std::ostream& ostream,
-        Backend backend = Backend::LIBTIFF,
-        Mode mode       = Mode::FAST
+    IO_BITMAP_API void read(
+        std::istream& istream,
+        Backend backend = Backend::LIBTIFF
     );
 
     /// Return the extension to use, by default, or the one from file set by SingleFile::setFile(), if valid
@@ -125,7 +108,7 @@ public:
 private:
 
     /// PImpl
-    std::unique_ptr<detail::WriterImpl> m_pimpl;
+    std::unique_ptr<detail::ReaderImpl> m_pimpl;
 };
 
 } // namespace sight::io::bitmap

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "types.hpp"
 #include "WriterImpl.hxx"
 
 #include <cuda.h>
@@ -56,16 +55,16 @@ namespace sight::io::bitmap::detail
         SIGHT_ERROR(e.what()); \
     }
 
-class NvJPEG final
+class NvJPEGWriter final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    NvJPEG(const NvJPEG&)            = delete;
-    NvJPEG& operator=(const NvJPEG&) = delete;
+    NvJPEGWriter(const NvJPEGWriter&)            = delete;
+    NvJPEGWriter& operator=(const NvJPEGWriter&) = delete;
 
     /// Constructor
-    inline NvJPEG() noexcept
+    inline NvJPEGWriter() noexcept
     {
         try
         {
@@ -99,31 +98,31 @@ public:
     }
 
     /// Destructor
-    inline ~NvJPEG() noexcept
+    inline ~NvJPEGWriter() noexcept
     {
         free();
     }
 
     /// Writing
-    inline void write(const data::Image& image, std::ostream& ostream, ExtendedMode mode)
+    inline void write(const data::Image& image, std::ostream& ostream, Writer::Mode mode, Flag = Flag::NONE)
     {
         const auto& pixel_format = image.getPixelFormat();
         SIGHT_THROW_IF(
-            "Unsupported image pixel format: " << pixel_format,
+            m_name << " - Unsupported image pixel format: " << pixel_format,
             pixel_format != data::Image::PixelFormat::RGB && pixel_format != data::Image::PixelFormat::BGR
         );
 
         const auto& pixel_type = image.getType();
         SIGHT_THROW_IF(
-            "Unsupported image type: " << pixel_type,
-            pixel_type != core::Type::INT8 && pixel_type != core::Type::UINT8
+            m_name << " - Unsupported image type: " << pixel_type,
+            pixel_type != core::Type::UINT8
         );
 
         // Optimize Huffman, normally slower but smaller file size (1)
         CHECK_CUDA(
             nvjpegEncoderParamsSetOptimizedHuffman(
                 m_params,
-                mode == ExtendedMode::BEST || mode == ExtendedMode::J2K_BEST ? 1 : 0,
+                mode == Writer::Mode::BEST ? 1 : 0,
                 m_stream
             ),
             NVJPEG_STATUS_SUCCESS
@@ -267,7 +266,7 @@ private:
 public:
 
     bool m_valid {false};
-    static constexpr std::string_view m_name {"NvJPEG"};
+    static constexpr std::string_view m_name {"NvJPEGWriter"};
 };
 
 } // namespace sight::io::bitmap::detail

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "types.hpp"
 #include "WriterImpl.hxx"
 
 #include <nvjpeg2k.h>
@@ -31,16 +30,16 @@
 namespace sight::io::bitmap::detail
 {
 
-class NvJPEG2K final
+class NvJPEG2KWriter final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    NvJPEG2K(const NvJPEG2K&)            = delete;
-    NvJPEG2K& operator=(const NvJPEG2K&) = delete;
+    NvJPEG2KWriter(const NvJPEG2KWriter&)            = delete;
+    NvJPEG2KWriter& operator=(const NvJPEG2KWriter&) = delete;
 
     /// Constructor
-    inline NvJPEG2K() noexcept
+    inline NvJPEG2KWriter() noexcept
     {
         try
         {
@@ -63,17 +62,17 @@ public:
     }
 
     /// Destructor
-    inline ~NvJPEG2K() noexcept
+    inline ~NvJPEG2KWriter() noexcept
     {
         free();
     }
 
     /// Writing
-    inline void write(const data::Image& image, std::ostream& ostream, ExtendedMode mode)
+    inline void write(const data::Image& image, std::ostream& ostream, Writer::Mode mode, Flag flag = Flag::NONE)
     {
         const auto& pixel_type = image.getType();
         SIGHT_THROW_IF(
-            "Unsupported image type: " << pixel_type,
+            m_name << " - Unsupported image type: " << pixel_type,
             pixel_type != core::Type::INT8
             && pixel_type != core::Type::UINT8
             && pixel_type != core::Type::INT16
@@ -119,7 +118,7 @@ public:
 
         // The bitstream will be in J2K format
         // JP2 have xml meta data which are unsupported for DICOM
-        encode_config.stream_type = mode == ExtendedMode::J2K_BEST || mode == ExtendedMode::J2K_FAST
+        encode_config.stream_type = flag == Flag::J2K_STREAM
                                     ? NVJPEG2K_STREAM_J2K
                                     : NVJPEG2K_STREAM_JP2;
 
@@ -138,8 +137,7 @@ public:
         // Code block size: 64*64 (a bit better compression), 32*32 (almost 2x faster) - in lossless mode
         switch(mode)
         {
-            case ExtendedMode::BEST:
-            case ExtendedMode::J2K_BEST:
+            case Writer::Mode::BEST:
                 encode_config.code_block_w = 64;
                 encode_config.code_block_h = 64;
                 break;
@@ -319,7 +317,7 @@ private:
                 if(num_components == 3)
                 {
                     // NOLINTNEXTLINE modernize-use-auto modernize-avoid-c-arrays
-                    Npp8u* out_buffet[3] = {
+                    Npp8u* out_buffer[3] = {
                         reinterpret_cast<Npp8u*>(m_planar_gpu_buffers[0]),
                         reinterpret_cast<Npp8u*>(m_planar_gpu_buffers[1]),
                         reinterpret_cast<Npp8u*>(m_planar_gpu_buffers[2])
@@ -329,7 +327,7 @@ private:
                         nppiCopy_8u_C3P3R(
                             in_buffer,
                             out_step * int(num_components),
-                            out_buffet,
+                            out_buffer,
                             out_step,
                             nppi_size
                         ),
@@ -339,7 +337,7 @@ private:
                 else
                 {
                     // NOLINTNEXTLINE modernize-use-auto modernize-avoid-c-arrays
-                    Npp8u* out_buffet[4] = {
+                    Npp8u* out_buffer[4] = {
                         reinterpret_cast<Npp8u*>(m_planar_gpu_buffers[0]),
                         reinterpret_cast<Npp8u*>(m_planar_gpu_buffers[1]),
                         reinterpret_cast<Npp8u*>(m_planar_gpu_buffers[2]),
@@ -350,7 +348,7 @@ private:
                         nppiCopy_8u_C4P4R(
                             in_buffer,
                             out_step * int(num_components),
-                            out_buffet,
+                            out_buffer,
                             out_step,
                             nppi_size
                         ),
@@ -366,7 +364,7 @@ private:
                 if(num_components == 3)
                 {
                     // NOLINTNEXTLINE modernize-use-auto modernize-avoid-c-arrays
-                    Npp16u* out_buffet[3] = {
+                    Npp16u* out_buffer[3] = {
                         reinterpret_cast<Npp16u*>(m_planar_gpu_buffers[0]),
                         reinterpret_cast<Npp16u*>(m_planar_gpu_buffers[1]),
                         reinterpret_cast<Npp16u*>(m_planar_gpu_buffers[2])
@@ -376,7 +374,7 @@ private:
                         nppiCopy_16u_C3P3R(
                             in_buffer,
                             out_step * int(num_components),
-                            out_buffet,
+                            out_buffer,
                             out_step,
                             nppi_size
                         ),
@@ -386,7 +384,7 @@ private:
                 else
                 {
                     // NOLINTNEXTLINE modernize-use-auto modernize-avoid-c-arrays
-                    Npp16u* out_buffet[4] = {
+                    Npp16u* out_buffer[4] = {
                         reinterpret_cast<Npp16u*>(m_planar_gpu_buffers[0]),
                         reinterpret_cast<Npp16u*>(m_planar_gpu_buffers[1]),
                         reinterpret_cast<Npp16u*>(m_planar_gpu_buffers[2]),
@@ -397,7 +395,7 @@ private:
                         nppiCopy_16u_C4P4R(
                             in_buffer,
                             out_step * int(num_components),
-                            out_buffet,
+                            out_buffer,
                             out_step,
                             nppi_size
                         ),
@@ -481,7 +479,7 @@ private:
 public:
 
     bool m_valid {false};
-    static constexpr std::string_view m_name {"NvJPEG2K"};
+    static constexpr std::string_view m_name {"NvJPEG2KWriter"};
 };
 
 } // namespace sight::io::bitmap::detail

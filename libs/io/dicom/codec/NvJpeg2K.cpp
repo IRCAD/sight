@@ -147,7 +147,7 @@ bool NvJpeg2K::Code(gdcm::DataElement const& in, gdcm::DataElement& out)
         std::stringstream ss;
         try
         {
-            writer->write(ss, bitmap::Writer::Backend::NVJPEG2K_J2K);
+            writer->write(ss, bitmap::Backend::NVJPEG2K_J2K);
         }
         catch(...)
         {

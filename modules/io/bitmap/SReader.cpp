@@ -19,7 +19,7 @@
  *
  ***********************************************************************/
 
-#include "SWriter.hpp"
+#include "SReader.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/jobs/Aggregator.hpp>
@@ -33,22 +33,22 @@
 
 #include <boost/algorithm/string.hpp>
 
-// cspell:ignore swriter xmlattr NVJPEG LIBJPEG OPENJPEG
+// cspell:ignore sreader xmlattr NVJPEG LIBJPEG OPENJPEG
 
 namespace sight::module::io::bitmap
 {
 
-using sight::io::bitmap::Writer;
+using sight::io::bitmap::Reader;
 
 // Retrieve the backend from the extension
-sight::io::bitmap::Backend SWriter::findBackend(const std::string& extension) const
+sight::io::bitmap::Backend SReader::findBackend(const std::string& extension) const
 {
     const auto& it = std::find_if(
-        m_mode_by_backend.cbegin(),
-        m_mode_by_backend.cend(),
-        [&](const auto& mode_by_backend)
+        m_backends.cbegin(),
+        m_backends.cend(),
+        [&](const auto& backend)
         {
-            const auto& backend_extensions = sight::io::bitmap::extensions(mode_by_backend.first);
+            const auto& backend_extensions = sight::io::bitmap::extensions(backend);
 
             return std::any_of(
                 backend_extensions.cbegin(),
@@ -61,23 +61,23 @@ sight::io::bitmap::Backend SWriter::findBackend(const std::string& extension) co
 
     SIGHT_THROW_IF(
         "No backend found for file extension '" << extension << "'.",
-        it == m_mode_by_backend.cend()
+        it == m_backends.cend()
     );
 
     // Return the backend if found...
-    return it->first;
+    return *it;
 }
 
 //------------------------------------------------------------------------------
 
-sight::io::base::service::IOPathType SWriter::getIOPathType() const
+sight::io::base::service::IOPathType SReader::getIOPathType() const
 {
     return sight::io::base::service::IOPathType::FILE;
 }
 
 //------------------------------------------------------------------------------
 
-void SWriter::openLocationDialog()
+void SReader::openLocationDialog()
 {
     static auto defaultLocation = std::make_shared<core::location::SingleFolder>();
 
@@ -94,16 +94,16 @@ void SWriter::openLocationDialog()
     }
 
     locationDialog.setDefaultLocation(defaultLocation);
-    locationDialog.setOption(ui::base::dialog::ILocationDialog::WRITE);
+    locationDialog.setOption(ui::base::dialog::ILocationDialog::READ);
     locationDialog.setType(ui::base::dialog::ILocationDialog::SINGLE_FILE);
 
     // Will be used later to check if "All supported images" is selected
     std::string all_wildcards;
 
     // If there is at least two backends, add "all" filter
-    if(m_mode_by_backend.size() >= 2)
+    if(m_backends.size() >= 2)
     {
-        for(const auto& [backend, mode] : m_mode_by_backend)
+        for(const auto& backend : m_backends)
         {
             all_wildcards.append(sight::io::bitmap::wildcardFilter(backend).second);
             all_wildcards.append(" ");
@@ -118,7 +118,7 @@ void SWriter::openLocationDialog()
     }
 
     // Add other filters
-    for(const auto& [backend, mode] : m_mode_by_backend)
+    for(const auto& backend : m_backends)
     {
         const auto& [label, wildcard] = sight::io::bitmap::wildcardFilter(backend);
         locationDialog.addFilter(label, wildcard);
@@ -169,21 +169,21 @@ void SWriter::openLocationDialog()
 
 //------------------------------------------------------------------------------
 
-void SWriter::starting()
+void SReader::starting()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SWriter::stopping()
+void SReader::stopping()
 {
 }
 
 //------------------------------------------------------------------------------
 
-void SWriter::configuring()
+void SReader::configuring()
 {
-    sight::io::base::service::IWriter::configuring();
+    sight::io::base::service::IReader::configuring();
 
     if(hasLocationDefined())
     {
@@ -207,64 +207,44 @@ void SWriter::configuring()
     if(const auto& backends_tree = tree.get_child_optional("backends"); backends_tree.is_initialized())
     {
         // Remove default configuration
-        m_mode_by_backend.clear();
-
-        // Lambda to parse "mode" string
-        const auto& string_to_mode =
-            [](const std::string& mode_string)
-            {
-                if(mode_string == "default" || mode_string == "fast")
-                {
-                    return Writer::Mode::FAST;
-                }
-
-                if(mode_string == "best")
-                {
-                    return Writer::Mode::BEST;
-                }
-
-                SIGHT_THROW("Unknown mode: '" << mode_string << "'.");
-            };
-
-        const auto& backends_mode_string = backends_tree->get<std::string>("<xmlattr>.mode", "default");
-        const auto& backends_mode        = string_to_mode(backends_mode_string);
+        m_backends.clear();
 
         if(const auto& enabled = backends_tree->get_optional<std::string>("<xmlattr>.enable");
            enabled.is_initialized() && *enabled == "all")
         {
             // We add everything. Use GPU backend if available
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::LIBPNG, backends_mode);
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::LIBTIFF, backends_mode);
+            m_backends.emplace(sight::io::bitmap::Backend::LIBPNG);
+            m_backends.emplace(sight::io::bitmap::Backend::LIBTIFF);
 
 #if defined(SIGHT_ENABLE_NVJPEG)
             if(sight::io::bitmap::nvJPEG())
             {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::NVJPEG, backends_mode);
+                m_backends.emplace(sight::io::bitmap::Backend::NVJPEG);
             }
             else
  #endif
             {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::LIBJPEG, backends_mode);
+                m_backends.emplace(sight::io::bitmap::Backend::LIBJPEG);
             }
 
 #if defined(SIGHT_ENABLE_NVJPEG2K)
             if(sight::io::bitmap::nvJPEG2K())
             {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::NVJPEG2K, backends_mode);
+                m_backends.emplace(sight::io::bitmap::Backend::NVJPEG2K);
             }
             else
  #endif
             {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::OPENJPEG, backends_mode);
+                m_backends.emplace(sight::io::bitmap::Backend::OPENJPEG);
             }
         }
         else if(enabled.is_initialized() && *enabled == "cpu")
         {
             // We add only cpu backends
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::LIBJPEG, backends_mode);
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::LIBPNG, backends_mode);
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::LIBTIFF, backends_mode);
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::OPENJPEG, backends_mode);
+            m_backends.emplace(sight::io::bitmap::Backend::LIBJPEG);
+            m_backends.emplace(sight::io::bitmap::Backend::LIBPNG);
+            m_backends.emplace(sight::io::bitmap::Backend::LIBTIFF);
+            m_backends.emplace(sight::io::bitmap::Backend::OPENJPEG);
         }
         else if(enabled.is_initialized() && *enabled == "gpu")
         {
@@ -272,14 +252,14 @@ void SWriter::configuring()
 #if defined(SIGHT_ENABLE_NVJPEG)
             if(sight::io::bitmap::nvJPEG())
             {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::NVJPEG, backends_mode);
+                m_backends.emplace(sight::io::bitmap::Backend::NVJPEG);
             }
 #endif
 
 #if defined(SIGHT_ENABLE_NVJPEG2K)
             if(sight::io::bitmap::nvJPEG2K())
             {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::NVJPEG2K, backends_mode);
+                m_backends.emplace(sight::io::bitmap::Backend::NVJPEG2K);
             }
 #endif
 
@@ -289,88 +269,79 @@ void SWriter::configuring()
         // Add hand selected backends
         if(const auto& node = backends_tree->get_child_optional("default"); node.is_initialized())
         {
-            const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::LIBTIFF, mode);
+            m_backends.emplace(sight::io::bitmap::Backend::LIBTIFF);
         }
 
         if(const auto& node = backends_tree->get_child_optional("libjpeg");
            node.is_initialized()
 #if defined(SIGHT_ENABLE_NVJPEG)
-           && !m_mode_by_backend.contains(sight::io::bitmap::Backend::NVJPEG)
+           && !m_backends.contains(sight::io::bitmap::Backend::NVJPEG)
 #endif
         )
         {
-            const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::LIBJPEG, mode);
+            m_backends.emplace(sight::io::bitmap::Backend::LIBJPEG);
         }
 
         if(const auto& node = backends_tree->get_child_optional("libpng"); node.is_initialized())
         {
-            const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::LIBPNG, mode);
+            m_backends.emplace(sight::io::bitmap::Backend::LIBPNG);
         }
 
         if(const auto& node = backends_tree->get_child_optional("libtiff"); node.is_initialized())
         {
-            const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::LIBTIFF, mode);
+            m_backends.emplace(sight::io::bitmap::Backend::LIBTIFF);
         }
 
         if(const auto& node = backends_tree->get_child_optional("openjpeg");
            node.is_initialized()
 #if defined(SIGHT_ENABLE_NVJPEG2K)
-           && !m_mode_by_backend.contains(sight::io::bitmap::Backend::NVJPEG2K)
+           && !m_backends.contains(sight::io::bitmap::Backend::NVJPEG2K)
 #endif
         )
         {
-            const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
-            m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::OPENJPEG, mode);
+            m_backends.emplace(sight::io::bitmap::Backend::OPENJPEG);
         }
 
         if(const auto& node = backends_tree->get_child_optional("nvjpeg"); node.is_initialized())
         {
-            const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
-
 #if defined(SIGHT_ENABLE_NVJPEG)
             if(sight::io::bitmap::nvJPEG())
             {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::NVJPEG, mode);
+                m_backends.emplace(sight::io::bitmap::Backend::NVJPEG);
 
                 // Remove libjpeg since we have a better alternative...
-                m_mode_by_backend.erase(sight::io::bitmap::Backend::LIBJPEG);
+                m_backends.erase(sight::io::bitmap::Backend::LIBJPEG);
             }
             else
 #endif
             {
                 SIGHT_WARN("nvjpeg GPU backend is not available. It will be replaced by libjpeg.");
 
-                if(!m_mode_by_backend.contains(sight::io::bitmap::Backend::LIBJPEG))
+                if(!m_backends.contains(sight::io::bitmap::Backend::LIBJPEG))
                 {
-                    m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::LIBJPEG, mode);
+                    m_backends.emplace(sight::io::bitmap::Backend::LIBJPEG);
                 }
             }
         }
 
         if(const auto& node = backends_tree->get_child_optional("nvjpeg2k"); node.is_initialized())
         {
-            const auto mode = string_to_mode(node->get<std::string>("<xmlattr>.mode", "default"));
-
 #if defined(SIGHT_ENABLE_NVJPEG2K)
             if(sight::io::bitmap::nvJPEG2K())
             {
-                m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::NVJPEG2K, mode);
+                m_backends.emplace(sight::io::bitmap::Backend::NVJPEG2K);
 
                 // Remove openjpeg since we have a better alternative...
-                m_mode_by_backend.erase(sight::io::bitmap::Backend::OPENJPEG);
+                m_backends.erase(sight::io::bitmap::Backend::OPENJPEG);
             }
             else
 #endif
             {
                 SIGHT_WARN("nvjpeg2k GPU backend is not available. It will be replaced by openJPEG.");
 
-                if(!m_mode_by_backend.contains(sight::io::bitmap::Backend::OPENJPEG))
+                if(!m_backends.contains(sight::io::bitmap::Backend::OPENJPEG))
                 {
-                    m_mode_by_backend.insert_or_assign(sight::io::bitmap::Backend::OPENJPEG, mode);
+                    m_backends.emplace(sight::io::bitmap::Backend::OPENJPEG);
                 }
             }
         }
@@ -379,10 +350,10 @@ void SWriter::configuring()
 
 //------------------------------------------------------------------------------
 
-void SWriter::updating()
+void SReader::updating()
 {
     // Set to failed until successful
-    m_writeFailed = true;
+    m_readFailed = true;
 
     // Show the save dialog if the path is empty
     if((!hasLocationDefined() && m_dialog_policy != DialogPolicy::NEVER)
@@ -428,7 +399,7 @@ void SWriter::updating()
         // This could happen if the extension is not supported by any enabled backends
         if(m_selected_backend == sight::io::bitmap::Backend::ANY)
         {
-            m_selected_backend = std::next(m_mode_by_backend.begin())->first;
+            m_selected_backend = *std::next(m_backends.begin());
         }
 
         // If we are there, it means that the file extension is not supported or there is no extension.
@@ -441,7 +412,7 @@ void SWriter::updating()
             )
             + " for the selected format '"
             + sight::io::bitmap::wildcardFilter(m_selected_backend).first
-            + "' and will be adjusted to '"
+            + "' and will be read as '"
             + sight::io::bitmap::extensions(m_selected_backend).front()
             + "'.";
 
@@ -464,9 +435,6 @@ void SWriter::updating()
         {
             SIGHT_WARN(message);
         }
-
-        // Use the correct extension
-        file_path.replace_extension(sight::io::bitmap::extensions(m_selected_backend).front());
     }
 
     SIGHT_THROW_IF("The file '" << file_path << "' is an existing folder.", std::filesystem::is_directory(file_path));
@@ -477,27 +445,27 @@ void SWriter::updating()
         {
             running_job.doneWork(10);
 
-            // Create the session writer
-            auto writer = Writer::New();
+            // Create the session reader
+            auto reader = Reader::New();
             {
                 // The object must be unlocked since it will be locked again when writing
                 auto data = m_data.lock();
-                writer->setObject(data.get_shared());
-                writer->setFile(file_path);
+                reader->setObject(data.get_shared());
+                reader->setFile(file_path);
             }
 
             // Set cursor to busy state. It will be reset to default even if exception occurs
             const sight::ui::base::BusyCursor busyCursor;
 
-            // Write the file
-            writer->write(m_selected_backend, m_mode_by_backend.at(m_selected_backend));
+            // Read the file
+            reader->read(m_selected_backend);
 
             running_job.done();
         },
         this->worker()
     );
 
-    core::jobs::Aggregator::sptr jobs = core::jobs::Aggregator::New(file_path.string() + " writer");
+    core::jobs::Aggregator::sptr jobs = core::jobs::Aggregator::New(file_path.string() + " reader");
     jobs->add(write_job);
     jobs->setCancelable(false);
 
@@ -506,14 +474,14 @@ void SWriter::updating()
     try
     {
         jobs->run().get();
-        m_writeFailed = false;
+        m_readFailed = false;
     }
     catch(std::exception& _e)
     {
         // Handle the error.
         SIGHT_ERROR(_e.what());
         sight::ui::base::dialog::MessageDialog::show(
-            "Bitmap writer failed",
+            "Bitmap reader failed",
             _e.what(),
             sight::ui::base::dialog::IMessageDialog::CRITICAL
         );
@@ -522,8 +490,8 @@ void SWriter::updating()
     {
         // Handle the error.
         sight::ui::base::dialog::MessageDialog::show(
-            "Bitmap writer aborted",
-            "Writing process aborted",
+            "Bitmap reader aborted",
+            "Reading process aborted",
             sight::ui::base::dialog::IMessageDialog::WARNING
         );
     }

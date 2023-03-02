@@ -309,9 +309,9 @@ void ImageReaderWriterTest::testVtkImageWriter()
         spacingExpected,
         originExpected,
         type,
-        data::Image::RGBA
+        data::Image::RGBA,
+        0
     );
-    utestData::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
     core::os::TempDir tmpDir;
@@ -398,9 +398,9 @@ void ImageReaderWriterTest::testVtiImageWriter()
         spacingExpected,
         originExpected,
         type,
-        data::Image::GRAY_SCALE
+        data::Image::GRAY_SCALE,
+        0
     );
-    utestData::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
     core::os::TempDir tmpDir;
@@ -463,9 +463,9 @@ void ImageReaderWriterTest::testMhdImageWriter()
         spacingExpected,
         originExpected,
         type,
-        data::Image::RGB
+        data::Image::RGB,
+        0
     );
-    utestData::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
     core::os::TempDir tmpDir;
@@ -525,9 +525,9 @@ void ImageReaderWriterTest::testImageWriterExtension()
         spacingExpected,
         originExpected,
         type,
-        data::Image::GRAY_SCALE
+        data::Image::GRAY_SCALE,
+        0
     );
-    utestData::generator::Image::randomizeImage(image);
 
     // Write to vtk image.
     core::os::TempDir tmpDir;

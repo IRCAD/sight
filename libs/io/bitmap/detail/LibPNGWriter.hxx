@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "types.hpp"
 #include "WriterImpl.hxx"
 
 #include <png.h>
@@ -31,35 +30,42 @@
 namespace sight::io::bitmap::detail
 {
 
-class LibPNG final
+class LibPNGWriter final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    LibPNG(const LibPNG&)            = delete;
-    LibPNG& operator=(const LibPNG&) = delete;
+    LibPNGWriter(const LibPNGWriter&)            = delete;
+    LibPNGWriter& operator=(const LibPNGWriter&) = delete;
 
     /// Constructor
-    inline LibPNG() noexcept
+    inline LibPNGWriter() noexcept
     {
         m_valid = true;
     }
 
     /// Destructor
-    inline ~LibPNG() noexcept = default;
+    inline ~LibPNGWriter() noexcept = default;
 
     /// Writing
-    inline void write(const data::Image& image, std::ostream& ostream, ExtendedMode mode)
+    inline void write(const data::Image& image, std::ostream& ostream, Writer::Mode mode, Flag = Flag::NONE)
     {
+        const auto& type = image.getType();
+        SIGHT_THROW_IF(
+            m_name << " - Unsupported image type: " << type,
+            type != core::Type::UINT8
+            && type != core::Type::UINT16
+            && type != core::Type::UINT64
+            && type != core::Type::UINT64
+        );
+
         // png_create_write_struct() must be called for each png_write_png() calls
         // Create an RAII to be sure everything is cleaned at exit
-        class Keeper final
+        struct Keeper final
         {
-        public:
-
             Keeper()
             {
-                m_png = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
+                m_png = png_create_write_struct(PNG_LIBPNG_VER_STRING, nullptr, nullptr, nullptr);
                 SIGHT_THROW_IF("png_create_write_struct() failed.", m_png == nullptr);
 
                 // Set error/warning callback because C style setjmp/longjmp error management is dangerous in C++
@@ -99,14 +105,13 @@ public:
                         return PNG_COLOR_TYPE_GRAY;
 
                     default:
-                        SIGHT_THROW("Unsupported pixel format: " << pixelFormat);
+                        SIGHT_THROW(m_name << " - Unsupported pixel format: " << pixelFormat);
                 }
             }();
 
         const auto& sizes        = image.getSize();
         const auto& image_width  = sizes[0];
         const auto& image_height = sizes[1];
-        const auto& type         = image.getType();
 
         png_set_IHDR(
             keeper.m_png,
@@ -125,8 +130,7 @@ public:
 
         switch(mode)
         {
-            case ExtendedMode::BEST:
-            case ExtendedMode::J2K_BEST:
+            case Writer::Mode::BEST:
             {
                 // Best compression
                 png_set_compression_level(keeper.m_png, 9);
@@ -163,12 +167,20 @@ public:
         // Use the row pointers vector
         png_set_rows(keeper.m_png, keeper.m_png_info, &m_rows[0]);
 
-        png_set_write_fn(keeper.m_png, &ostream, writeCallback, NULL);
+        png_set_write_fn(keeper.m_png, &ostream, writeCallback, 0);
 
-        const int transform =
-            pixelFormat == data::Image::PixelFormat::BGR || pixelFormat == data::Image::PixelFormat::BGRA
-            ? PNG_TRANSFORM_BGR
-            : PNG_TRANSFORM_IDENTITY;
+        int transform = PNG_TRANSFORM_IDENTITY;
+
+        if(pixelFormat == data::Image::PixelFormat::BGR || pixelFormat == data::Image::PixelFormat::BGRA)
+        {
+            transform |= PNG_TRANSFORM_BGR;
+        }
+
+        if constexpr(std::endian::native == std::endian::little)
+        {
+            // PNG is big endian
+            transform |= PNG_TRANSFORM_SWAP_ENDIAN;
+        }
 
         png_write_png(keeper.m_png, keeper.m_png_info, transform, NULL);
     }
@@ -202,7 +214,7 @@ private:
 public:
 
     bool m_valid {false};
-    static constexpr std::string_view m_name {"LibPNG"};
+    static constexpr std::string_view m_name {"LibPNGWriter"};
 };
 
 } // namespace sight::io::bitmap::detail

@@ -26,8 +26,10 @@
 #include <core/com/Signal.hpp>
 #include <core/jobs/IJob.hpp>
 
-#include <io/base/service/IWriter.hpp>
-#include <io/bitmap/Writer.hpp>
+#include <io/base/service/IReader.hpp>
+#include <io/bitmap/Reader.hpp>
+
+#include <set>
 
 // cspell:ignore nvjpeg
 
@@ -49,76 +51,67 @@ namespace sight::module::io::bitmap
 {
 
 /**
- * @brief Bitmap Writer
+ * @brief Bitmap Reader
  *
- * Service to write a bitmap to various format using sight::io::bitmap library.
+ * Service to read a bitmap from various format using sight::io::bitmap library.
  *
- * @copydoc sight::io::bitmap::Writer
+ * @copydoc sight::io::bitmap::Reader
  *
  * @section Signals Signals
- * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is written
+ * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is read
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service type="sight::module::io::bitmap::SWriter">
-        <in key="data" uid="..." />
+    <service type="sight::module::io::bitmap::SReader">
+        <inout key="data" uid="..." />
         <file>...</file>
         <dialog>...</dialog>
-        <backends mode="fast">
-            <libtiff mode="best">
-            <libpng mode="fast">
+        <backends>
+            <libtiff>
+            <libpng>
             ...
         <backends/>
     </service>
    @endcode
- * @subsection Input Input
- * - \b data [sight::data::Image]: image to save.
+ * @subsection In-Out In-Out
+ * - \b data [sight::data::Image]: image to read to.
  * @subsection Configuration Configuration
- * - \b file (optional): path of the file to save, if it is not defined, 'openLocationDialog()' should be called to
+ * - \b file (optional): path of the file to read, if it is not defined, 'openLocationDialog()' should be called to
  *           define the path.
  * - \b dialog(optional):
  *      \b description: allows to display a label in the file dialog / confirmation dialog.
  *      \b policy:
- *          - \b "never": never show the file save / extension change dialog. (DEFAULT)
+ *          - \b "never": never show the file load / extension change dialog. (DEFAULT)
  *          - \b "once": show only once, store the location as long as the service is started
  *          - \b "always": always show the location dialog / extension change dialog
  * - \b backends (optional): defines the backend available. If nothing is defined the default (LIBTIFF) backend is used.
- *               @see sight::io::bitmap::Writer
+ *               @see sight::io::bitmap::Reader
  *      \b enable (optional): enable group of backends.
  *          - \b "all": enable everything. GPU backends, if available have precedence over CPU ones.
  *          - \b "cpu": enable all CPU backends.
  *          - \b "gpu": enable all GPU backends.
- *      \b mode (optional): set the mode, which defines the compression/speed ratio
- *          - \b "best": emphasis compression over speed
- *          - \b "fast": emphasis speed over compression (DEFAULT)
  *      - \b libjpeg (optional): enable LibJPEG backend.
- *          \b mode (optional)
  *      - \b libtiff (optional): enable libTIFF backend.
- *          \b mode (optional)
  *      - \b libpng (optional): enable libPNG backend.
- *          \b mode (optional)
  *      - \b openjpeg (optional): enable openJPEG backend.
- *          \b mode (optional)
  *
  * If the support has been compiled in and if a CUDA capable GPU is found:
  *      - \b nvjpeg (optional): enable nvjpeg backend
- *          \b mode (optional)
  *      - \b nvjpeg2k (optional): enable nvjpeg2k backend
- *          \b mode (optional)
  */
-class MODULE_IO_BITMAP_CLASS_API SWriter final : public sight::io::base::service::IWriter
+class MODULE_IO_BITMAP_CLASS_API SReader final : public sight::io::base::service::IReader
 {
 public:
 
-    SIGHT_DECLARE_SERVICE(SWriter, sight::io::base::service::IWriter);
+    SIGHT_DECLARE_SERVICE(SReader, sight::io::base::service::IReader);
 
     using JobCreatedSignal = core::com::Signal<void (core::jobs::IJob::sptr)>;
 
     /// Trivial constructor / destructor
     /// @{
-    MODULE_IO_BITMAP_API SWriter() noexcept           = default;
-    MODULE_IO_BITMAP_API ~SWriter() noexcept override = default;
+    MODULE_IO_BITMAP_API SReader() noexcept           = default;
+    MODULE_IO_BITMAP_API ~SReader() noexcept override = default;
     /// @}
 
     /// Show a file selection dialog
@@ -157,9 +150,7 @@ private:
     sight::io::bitmap::Backend m_selected_backend {sight::io::bitmap::Backend::LIBTIFF};
 
     /// Enabled backends
-    std::map<sight::io::bitmap::Backend, sight::io::bitmap::Writer::Mode> m_mode_by_backend {
-        {sight::io::bitmap::Backend::LIBTIFF, sight::io::bitmap::Writer::Mode::FAST}
-    };
+    std::set<sight::io::bitmap::Backend> m_backends {sight::io::bitmap::Backend::LIBTIFF};
 
     /// Used internally to avoid double dialog display
     bool m_dialog_shown {false};

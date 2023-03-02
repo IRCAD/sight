@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "types.hpp"
 #include "WriterImpl.hxx"
 
 #include <openjpeg.h>
@@ -60,16 +59,16 @@ struct has_alpha : std::false_type {};
 template<typename T>
 struct has_alpha<T, decltype((void) T::a, 0)>: std::true_type {};
 
-class OpenJPEG final
+class OpenJPEGWriter final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    OpenJPEG(const OpenJPEG&)            = delete;
-    OpenJPEG& operator=(const OpenJPEG&) = delete;
+    OpenJPEGWriter(const OpenJPEGWriter&)            = delete;
+    OpenJPEGWriter& operator=(const OpenJPEGWriter&) = delete;
 
     /// Constructor
-    inline OpenJPEG() noexcept
+    inline OpenJPEGWriter() noexcept
     {
         try
         {
@@ -93,10 +92,10 @@ public:
     }
 
     /// Destructor
-    inline ~OpenJPEG() noexcept = default;
+    inline ~OpenJPEGWriter() noexcept = default;
 
     /// Writing
-    inline void write(const data::Image& image, std::ostream& ostream, ExtendedMode mode)
+    inline void write(const data::Image& image, std::ostream& ostream, Writer::Mode, Flag flag = Flag::NONE)
     {
         // Create codec
         /// @warning You cannot reuse the opj_codec, the opj_stream, or the opj_image.
@@ -104,33 +103,11 @@ public:
         /// @warning Doing otherwise leads to strange memory corruption, although most image codecs allows you to do so.
 
         // Create an RAII to be sure everything is cleaned at exit
-        class Keeper final
+        struct Keeper final
         {
-        public:
+            inline Keeper() noexcept = default;
 
-            Keeper(ExtendedMode mode)
-            {
-                CHECK_OPJ(
-                    m_codec = opj_create_compress(
-                        mode == ExtendedMode::J2K_BEST || mode == ExtendedMode::J2K_FAST ? OPJ_CODEC_J2K : OPJ_CODEC_JP2
-                    )
-                );
-
-                // Install info, warning, error handlers
-                CHECK_OPJ(opj_set_info_handler(m_codec, infoCallback, nullptr));
-                CHECK_OPJ(opj_set_warning_handler(m_codec, warningCallback, nullptr));
-                CHECK_OPJ(opj_set_warning_handler(m_codec, errorCallback, nullptr));
-
-                // Create output stream (1MB buffer by default)
-                CHECK_OPJ(m_stream = opj_stream_create(OPJ_J2K_STREAM_CHUNK_SIZE, OPJ_FALSE));
-
-                // Setup stream callback
-                opj_stream_set_write_function(m_stream, writeCallback);
-                opj_stream_set_skip_function(m_stream, skipCallback);
-                opj_stream_set_seek_function(m_stream, seekCallback);
-            }
-
-            ~Keeper()
+            inline ~Keeper()
             {
                 // Cleanup
                 if(m_image)
@@ -155,10 +132,29 @@ public:
             opj_codec_t* m_codec {nullptr};
             opj_stream_t* m_stream {nullptr};
             opj_image_t* m_image {nullptr};
-        } keeper(mode);
+        } keeper;
+
+        CHECK_OPJ(
+            keeper.m_codec = opj_create_compress(
+                flag == Flag::J2K_STREAM ? OPJ_CODEC_J2K : OPJ_CODEC_JP2
+            )
+        );
+
+        // Install info, warning, error handlers
+        CHECK_OPJ(opj_set_info_handler(keeper.m_codec, infoCallback, nullptr));
+        CHECK_OPJ(opj_set_warning_handler(keeper.m_codec, warningCallback, nullptr));
+        CHECK_OPJ(opj_set_warning_handler(keeper.m_codec, errorCallback, nullptr));
+
+        // Create output stream (1MB buffer by default)
+        CHECK_OPJ(keeper.m_stream = opj_stream_create(OPJ_J2K_STREAM_CHUNK_SIZE, OPJ_FALSE));
 
         // Setup OPJ user stream
         opj_stream_set_user_data(keeper.m_stream, &ostream, freeCallback);
+
+        // Setup stream callback
+        opj_stream_set_write_function(keeper.m_stream, writeCallback);
+        opj_stream_set_skip_function(keeper.m_stream, skipCallback);
+        opj_stream_set_seek_function(keeper.m_stream, seekCallback);
 
         // Adjust parameters
         const auto& sizes       = image.getSize();
@@ -166,10 +162,7 @@ public:
         const OPJ_UINT32 height = OPJ_UINT32(sizes[1]);
 
         // Format can .jp2 or .j2k
-        m_parameters.cod_format =
-            mode == ExtendedMode::J2K_BEST || mode == ExtendedMode::J2K_FAST
-            ? OPJ_CODEC_J2K
-            : OPJ_CODEC_JP2;
+        m_parameters.cod_format = flag == Flag::J2K_STREAM ? 0 : 1;
 
         // Wavelet decomposition levels. 6-5 Seems to be a good default, but should be multiple of block size
         m_parameters.numresolution = std::min(
@@ -222,23 +215,47 @@ public:
             keeper.m_image->y0 + (height - 1) * OPJ_UINT32(m_parameters.subsampling_dy) + 1
         );
 
-        // Fill image data
+        // Convert Sight interlaced pixels to planar openJPEG pixels
         switch(prec)
         {
             case 8:
-                fill<std::uint8_t>(*keeper.m_image, image);
+                if(image_type.isSigned())
+                {
+                    toOpenJPEG<std::int8_t>(image, *keeper.m_image);
+                }
+                else
+                {
+                    toOpenJPEG<std::uint8_t>(image, *keeper.m_image);
+                }
+
                 break;
 
             case 16:
-                fill<std::uint16_t>(*keeper.m_image, image);
+                if(image_type.isSigned())
+                {
+                    toOpenJPEG<std::int16_t>(image, *keeper.m_image);
+                }
+                else
+                {
+                    toOpenJPEG<std::uint16_t>(image, *keeper.m_image);
+                }
+
                 break;
 
             case 32:
-                fill<std::uint32_t>(*keeper.m_image, image);
+                if(image_type.isSigned())
+                {
+                    toOpenJPEG<std::uint32_t>(image, *keeper.m_image);
+                }
+                else
+                {
+                    toOpenJPEG<std::uint32_t>(image, *keeper.m_image);
+                }
+
                 break;
 
             default:
-                SIGHT_THROW("Unsupported precision.");
+                SIGHT_THROW(m_name << " - Unsupported precision.");
         }
 
         // Setup the encoder
@@ -329,7 +346,7 @@ private:
     //------------------------------------------------------------------------------
 
     template<typename T>
-    inline static void fill(opj_image_t& opj_image, const data::Image& image)
+    inline static void toOpenJPEG(const data::Image& image, opj_image_t& opj_image)
     {
         switch(image.getPixelFormat())
         {
@@ -340,7 +357,7 @@ private:
                     T a;
                 };
 
-                fillPixel<Pixel>(opj_image, image);
+                toOpenJPEGPixels<Pixel>(image, opj_image);
                 break;
             }
 
@@ -353,7 +370,7 @@ private:
                     T b;
                 };
 
-                fillPixel<Pixel>(opj_image, image);
+                toOpenJPEGPixels<Pixel>(image, opj_image);
                 break;
             }
 
@@ -367,7 +384,7 @@ private:
                     T a;
                 };
 
-                fillPixel<Pixel>(opj_image, image);
+                toOpenJPEGPixels<Pixel>(image, opj_image);
                 break;
             }
 
@@ -380,7 +397,7 @@ private:
                     T r;
                 };
 
-                fillPixel<Pixel>(opj_image, image);
+                toOpenJPEGPixels<Pixel>(image, opj_image);
                 break;
             }
 
@@ -394,7 +411,7 @@ private:
                     T a;
                 };
 
-                fillPixel<Pixel>(opj_image, image);
+                toOpenJPEGPixels<Pixel>(image, opj_image);
                 break;
             }
 
@@ -405,34 +422,34 @@ private:
 
     //------------------------------------------------------------------------------
 
-    template<typename T>
-    inline static void fillPixel(opj_image_t& opj_image, const data::Image& image)
+    template<typename P>
+    inline static void toOpenJPEGPixels(const data::Image& image, opj_image_t& opj_image)
     {
         const auto& sizes = image.getSize();
 
-        auto pixel_it        = image.cbegin<T>();
-        const auto pixel_end = image.cend<T>();
+        auto pixel_it        = image.cbegin<P>();
+        const auto pixel_end = image.cend<P>();
 
         for(std::size_t i = 0, end = sizes[0] * sizes[1] ; i < end && pixel_it != pixel_end ; ++pixel_it)
         {
             std::size_t c = 0;
 
-            if constexpr(has_r<T>::value)
+            if constexpr(has_r<P>::value)
             {
                 opj_image.comps[c++].data[i] = OPJ_INT32(pixel_it->r);
             }
 
-            if constexpr(has_g<T>::value)
+            if constexpr(has_g<P>::value)
             {
                 opj_image.comps[c++].data[i] = OPJ_INT32(pixel_it->g);
             }
 
-            if constexpr(has_b<T>::value)
+            if constexpr(has_b<P>::value)
             {
                 opj_image.comps[c++].data[i] = OPJ_INT32(pixel_it->b);
             }
 
-            if constexpr(has_alpha<T>::value)
+            if constexpr(has_alpha<P>::value)
             {
                 opj_image.comps[c].data[i] = OPJ_INT32(pixel_it->a);
             }
@@ -446,7 +463,7 @@ private:
 public:
 
     bool m_valid {false};
-    static constexpr std::string_view m_name {"OpenJPEG"};
+    static constexpr std::string_view m_name {"OpenJPEGWriter"};
 };
 
 } // namespace sight::io::bitmap::detail

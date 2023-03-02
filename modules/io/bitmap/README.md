@@ -5,6 +5,7 @@ This module contains services for writing bitmap related data.
 ## Services
 
 - **SWriter**: writes a bitmap image from a `sight::data::Image`.
+- **SReader**: reads a bitmap image and output a `sight::data::Image`.
 
 ## How to use it
 

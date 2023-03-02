@@ -670,10 +670,9 @@ inline data::Image::sptr generate<data::Image>(const std::size_t variant)
                 ? data::Image::PixelFormat::BGRA
                 : std::is_same<T, std::int64_t>::value
                 ? data::Image::PixelFormat::RGB
-                : data::Image::PixelFormat::UNDEFINED
+                : data::Image::PixelFormat::UNDEFINED,
+                std::uint32_t(variant)
             );
-
-            utestData::generator::Image::randomizeImage(object);
         };
 
     switch(variant % 5)

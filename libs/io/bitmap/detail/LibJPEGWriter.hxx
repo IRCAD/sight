@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,6 @@
 
 #pragma once
 
-#include "types.hpp"
 #include "WriterImpl.hxx"
 
 #include <jpeglib.h>
@@ -33,21 +32,26 @@
 namespace sight::io::bitmap::detail
 {
 
-class LibJPEG final
+class LibJPEGWriter final
 {
 public:
 
     /// Delete copy constructors and assignment operators
-    LibJPEG(const LibJPEG&)            = delete;
-    LibJPEG& operator=(const LibJPEG&) = delete;
+    LibJPEGWriter(const LibJPEGWriter&)            = delete;
+    LibJPEGWriter& operator=(const LibJPEGWriter&) = delete;
 
     /// Constructor
-    inline LibJPEG() noexcept
+    inline LibJPEGWriter() noexcept
     {
         try
         {
-            m_jerr.error_exit = jpegErrorExit;
-            m_cinfo.err       = jpeg_std_error(&m_jerr);
+            m_cinfo.err = jpeg_std_error(&m_jerr);
+
+            // Do it after jpeg_std_error() which clears the error handlers
+            m_jerr.error_exit     = jpegErrorExit;
+            m_jerr.output_message = jpegOutputMessage;
+
+            // Initialize the JPEG compression object
             jpeg_create_compress(&m_cinfo);
 
             m_valid = true;
@@ -63,23 +67,23 @@ public:
     }
 
     /// Destructor
-    inline ~LibJPEG() noexcept
+    inline ~LibJPEGWriter() noexcept
     {
         free();
     }
 
     /// Writing
-    inline void write(const data::Image& image, std::ostream& ostream, ExtendedMode mode)
+    inline void write(const data::Image& image, std::ostream& ostream, Writer::Mode mode, Flag = Flag::NONE)
     {
         const auto& pixel_format = image.getPixelFormat();
         SIGHT_THROW_IF(
-            "Unsupported image pixel format: " << pixel_format,
+            m_name << " - Unsupported image pixel format: " << pixel_format,
             pixel_format == data::Image::PixelFormat::RG
         );
 
         const auto& pixel_type = image.getType();
         SIGHT_THROW_IF(
-            "Unsupported image type: " << pixel_type,
+            m_name << " - Unsupported image type: " << pixel_type,
             pixel_type.size() * 8 != BITS_IN_JSAMPLE
         );
 
@@ -144,8 +148,7 @@ public:
         // Optimize or not huffman code. 10% slower - 20% smaller
         switch(mode)
         {
-            case ExtendedMode::BEST:
-            case ExtendedMode::J2K_BEST:
+            case Writer::Mode::BEST:
                 m_cinfo.optimize_coding = true;
                 break;
 
@@ -224,7 +227,20 @@ private:
         (*(cinfo->err->format_message))(cinfo, jpegLastErrorMsg);
 
         // Use exception instead of longjmp/setjmp
-        throw std::runtime_error(jpegLastErrorMsg);
+        SIGHT_THROW(jpegLastErrorMsg);
+    }
+
+    //------------------------------------------------------------------------------
+
+    inline static void jpegOutputMessage(j_common_ptr cinfo)
+    {
+        char jpegLastErrorMsg[JMSG_LENGTH_MAX];
+
+        // Create the message
+        (*(cinfo->err->format_message))(cinfo, jpegLastErrorMsg);
+
+        // Log recoverable error
+        SIGHT_WARN(jpegLastErrorMsg);
     }
 
     struct jpeg_error_mgr m_jerr {};
@@ -237,7 +253,7 @@ private:
 public:
 
     bool m_valid {false};
-    static constexpr std::string_view m_name {"LibJPEG"};
+    static constexpr std::string_view m_name {"LibJPEGWriter"};
 };
 
 } // namespace sight::io::bitmap::detail

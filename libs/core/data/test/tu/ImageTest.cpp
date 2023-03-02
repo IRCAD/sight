@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -830,11 +830,7 @@ void ImageTest::imageDeepCopy()
         const auto type   = core::Type::UINT8;
         const auto format = data::Image::PixelFormat::RGB;
 
-        {
-            const auto imgDumpLock = img->dump_lock();
-            utestData::generator::Image::generateImage(img, size, spacing, origin, type, format);
-            utestData::generator::Image::randomizeImage(img);
-        }
+        utestData::generator::Image::generateImage(img, size, spacing, origin, type, format, 0);
 
         const data::Image::sptr imgCopy = data::Image::New();
 
@@ -844,8 +840,7 @@ void ImageTest::imageDeepCopy()
         const auto imgCopyLock = imgCopy->dump_lock();
 
         // Test a bit more image equality operator, which ensure the copy test is really working
-        utestData::generator::Image::generateImage(imgCopy, size, spacing, origin, type, format);
-        utestData::generator::Image::randomizeImage(imgCopy, 1);
+        utestData::generator::Image::generateImage(imgCopy, size, spacing, origin, type, format, 1);
 
         CPPUNIT_ASSERT(*img != *imgCopy);
 
@@ -862,11 +857,7 @@ void ImageTest::imageDeepCopy()
         const auto type   = core::Type::FLOAT;
         const auto format = data::Image::PixelFormat::GRAY_SCALE;
 
-        {
-            const auto imgDumpLock = img->dump_lock();
-            utestData::generator::Image::generateImage(img, size, spacing, origin, type, format);
-            utestData::generator::Image::randomizeImage(img);
-        }
+        utestData::generator::Image::generateImage(img, size, spacing, origin, type, format, 0);
 
         const data::Image::sptr imgCopy = data::Image::New();
 
@@ -875,8 +866,7 @@ void ImageTest::imageDeepCopy()
         const auto imgCopyLock = imgCopy->dump_lock();
 
         // Test a bit more image equality operator, which ensure the copy test is really working
-        utestData::generator::Image::generateImage(imgCopy, size, spacing, origin, type, format);
-        utestData::generator::Image::randomizeImage(imgCopy, 1);
+        utestData::generator::Image::generateImage(imgCopy, size, spacing, origin, type, format, 1);
 
         CPPUNIT_ASSERT(*img != *imgCopy);
 

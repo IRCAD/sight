@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,8 +48,7 @@ void FlipTest::flipAlongXAxisTest()
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
 
-    utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
-    utestData::generator::Image::randomizeImage(imageIn);
+    utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format, 0);
 
     const auto inDumpLock = imageIn->dump_lock();
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
@@ -85,8 +84,7 @@ void FlipTest::flipAlongYAxisTest()
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
 
-    utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
-    utestData::generator::Image::randomizeImage(imageIn);
+    utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format, 0);
 
     const auto inDumpLock = imageIn->dump_lock();
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
@@ -122,8 +120,7 @@ void FlipTest::flipAlongZAxisTest()
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
 
-    utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
-    utestData::generator::Image::randomizeImage(imageIn);
+    utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format, 0);
 
     const auto inDumpLock = imageIn->dump_lock();
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
@@ -160,8 +157,7 @@ void FlipTest::flipAlongMultipleAxesTest()
         data::Image::sptr imageIn  = data::Image::New();
         data::Image::sptr imageOut = data::Image::New();
 
-        utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
-        utestData::generator::Image::randomizeImage(imageIn);
+        utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format, 0);
 
         const auto inDumpLock = imageIn->dump_lock();
         filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
@@ -194,8 +190,7 @@ void FlipTest::flipAlongMultipleAxesTest()
         data::Image::sptr imageIn  = data::Image::New();
         data::Image::sptr imageOut = data::Image::New();
 
-        utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
-        utestData::generator::Image::randomizeImage(imageIn);
+        utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format, 0);
 
         const auto inDumpLock = imageIn->dump_lock();
         filter::image::Flipper::flip(imageIn, imageOut, flipAxes);
@@ -236,8 +231,7 @@ void FlipTest::flipEmptyImageTest()
     data::Image::sptr imageIn  = data::Image::New();
     data::Image::sptr imageOut = data::Image::New();
 
-    utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format);
-    utestData::generator::Image::randomizeImage(imageIn);
+    utestData::generator::Image::generateImage(imageIn, size, spacing, origin, type, format, 0);
 
     const auto inDumpLock = imageIn->dump_lock();
     filter::image::Flipper::flip(imageIn, imageOut, flipAxes);

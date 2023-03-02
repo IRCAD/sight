@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,18 +21,29 @@
 
 #pragma once
 
-#include "io/bitmap/Writer.hpp"
+#include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::io::bitmap::detail
+namespace sight::module::io::bitmap::ut
 {
 
-enum class ExtendedMode : std::uint8_t
+/**
+ * @brief Test the bitmap reader.
+ */
+class SReaderTest : public CPPUNIT_NS::TestFixture
 {
-    DEFAULT  = std::uint8_t(Writer::Mode::DEFAULT),
-    FAST     = std::uint8_t(Writer::Mode::FAST),
-    BEST     = std::uint8_t(Writer::Mode::BEST),
-    J2K_FAST = BEST + 100,
-    J2K_BEST = BEST + 101
+CPPUNIT_TEST_SUITE(SReaderTest);
+CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST(configTest);
+CPPUNIT_TEST_SUITE_END();
+
+public:
+
+    // interface
+    void setUp() override;
+    void tearDown() override;
+
+    static void basicTest();
+    static void configTest();
 };
 
-} // namespace sight::io::bitmap::detail
+} // namespace sight::module::io::bitmap::ut

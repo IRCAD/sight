@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,20 +21,21 @@
 
 #pragma once
 
-#include "types.hpp"
+#include "common.hxx"
+#include "io/bitmap/Writer.hpp"
 
 #ifdef SIGHT_ENABLE_NVJPEG
-#include "NvJPEG.hxx"
+#include "NvJPEGWriter.hxx"
 #endif
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-#include "NvJPEG2K.hxx"
+#include "NvJPEG2KWriter.hxx"
 #endif
 
-#include "LibJPEG.hxx"
-#include "LibTIFF.hxx"
-#include "LibPNG.hxx"
-#include "OpenJPEG.hxx"
+#include "LibJPEGWriter.hxx"
+#include "LibTIFFWriter.hxx"
+#include "LibPNGWriter.hxx"
+#include "OpenJPEGWriter.hxx"
 
 // cspell:ignore nvjpeg LIBJPEG LIBTIFF LIBPNG
 
@@ -62,7 +63,7 @@ public:
     inline ~WriterImpl() noexcept = default;
 
     /// Main write function
-    inline void write(std::ostream& ostream, Writer::Backend backend, Writer::Mode mode)
+    inline void write(std::ostream& ostream, Backend backend, Writer::Mode mode)
     {
         // Get the image pointer
         const auto& image = m_writer->getConcreteObject();
@@ -76,54 +77,70 @@ public:
         const auto dump_lock = image->dump_lock();
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-        if(Writer::nvJPEG2K() && backend == Writer::Backend::NVJPEG2K)
+        if(nvJPEG2K() && backend == Backend::NVJPEG2K)
         {
-            write<NvJPEG2K>(m_nvJPEG2K, *image, ostream, static_cast<ExtendedMode>(mode));
+            try
+            {
+                write<NvJPEG2KWriter>(m_nvJPEG2K, *image, ostream, mode);
+            }
+            catch(const std::exception& e)
+            {
+                // This happens when trying to encode uniform random data which cannot be compressed
+                // This is obviously a bug in the encoder (reported and known by NVidia), although this should not
+                // happen with real data in the real world. To be in the safe side, we fallback to another backend.
+                SIGHT_ERROR("Failed to write image with nvJPEG2K: " << e.what() << ". Fallback to OpenJPEG.");
+                write<OpenJPEGWriter>(m_openJPEG, *image, ostream, mode);
+            }
         }
-        else if(Writer::nvJPEG2K() && backend == Writer::Backend::NVJPEG2K_J2K)
+        else if(nvJPEG2K() && backend == Backend::NVJPEG2K_J2K)
         {
-            write<NvJPEG2K>(
-                m_nvJPEG2K,
-                *image,
-                ostream,
-                mode == Writer::Mode::FAST ? ExtendedMode::J2K_FAST : ExtendedMode::J2K_BEST
-            );
+            try
+            {
+                write<NvJPEG2KWriter>(m_nvJPEG2K, *image, ostream, mode, Flag::J2K_STREAM);
+            }
+            catch(const std::exception& e)
+            {
+                // Same as above...
+                SIGHT_ERROR("Failed to write image with nvJPEG2K: " << e.what() << ". Fallback to OpenJPEG.");
+                write<OpenJPEGWriter>(m_openJPEG, *image, ostream, mode, Flag::J2K_STREAM);
+            }
         }
         else
 #endif
-        if(backend == Writer::Backend::OPENJPEG)
+        if(backend == Backend::OPENJPEG)
         {
-            write<OpenJPEG>(m_openJPEG, *image, ostream, static_cast<ExtendedMode>(mode));
+            write<OpenJPEGWriter>(m_openJPEG, *image, ostream, mode);
         }
-        else if(backend == Writer::Backend::OPENJPEG_J2K)
+        else if(backend == Backend::OPENJPEG_J2K)
         {
-            write<OpenJPEG>(
+            write<OpenJPEGWriter>(
                 m_openJPEG,
                 *image,
                 ostream,
-                mode == Writer::Mode::FAST ? ExtendedMode::J2K_FAST : ExtendedMode::J2K_BEST
+                mode,
+                Flag::J2K_STREAM
             );
         }
         else
 
 #ifdef SIGHT_ENABLE_NVJPEG
-        if(Writer::nvJPEG() && backend == Writer::Backend::NVJPEG)
+        if(nvJPEG() && backend == Backend::NVJPEG)
         {
-            write<NvJPEG>(m_nvJPEG, *image, ostream, static_cast<ExtendedMode>(mode));
+            write<NvJPEGWriter>(m_nvJPEG, *image, ostream, mode);
         }
         else
 #endif
-        if(backend == Writer::Backend::LIBJPEG)
+        if(backend == Backend::LIBJPEG)
         {
-            write<LibJPEG>(m_libJPEG, *image, ostream, static_cast<ExtendedMode>(mode));
+            write<LibJPEGWriter>(m_libJPEG, *image, ostream, mode);
         }
-        else if(backend == Writer::Backend::LIBTIFF)
+        else if(backend == Backend::LIBTIFF)
         {
-            write<LibTIFF>(m_libTIFF, *image, ostream, static_cast<ExtendedMode>(mode));
+            write<LibTIFFWriter>(m_libTIFF, *image, ostream, mode);
         }
-        else if(backend == Writer::Backend::LIBPNG)
+        else if(backend == Backend::LIBPNG)
         {
-            write<LibPNG>(m_libPNG, *image, ostream, static_cast<ExtendedMode>(mode));
+            write<LibPNGWriter>(m_libPNG, *image, ostream, mode);
         }
         else
         {
@@ -140,7 +157,8 @@ private:
         std::unique_ptr<W>& backend,
         const data::Image& image,
         std::ostream& ostream,
-        ExtendedMode mode
+        Writer::Mode mode,
+        Flag flag = Flag::NONE
 )
     {
         if(backend == nullptr)
@@ -149,24 +167,24 @@ private:
             SIGHT_THROW_IF("Failed to initialize" << backend->m_name << " backend.", !backend->m_valid);
         }
 
-        backend->write(image, ostream, mode);
+        backend->write(image, ostream, mode, flag);
     }
 
     /// Pointer to the public interface
     Writer* const m_writer;
 
 #ifdef SIGHT_ENABLE_NVJPEG
-    std::unique_ptr<NvJPEG> m_nvJPEG;
+    std::unique_ptr<NvJPEGWriter> m_nvJPEG;
 #endif
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-    std::unique_ptr<NvJPEG2K> m_nvJPEG2K;
+    std::unique_ptr<NvJPEG2KWriter> m_nvJPEG2K;
 #endif
 
-    std::unique_ptr<LibJPEG> m_libJPEG;
-    std::unique_ptr<LibTIFF> m_libTIFF;
-    std::unique_ptr<LibPNG> m_libPNG;
-    std::unique_ptr<OpenJPEG> m_openJPEG;
+    std::unique_ptr<LibJPEGWriter> m_libJPEG;
+    std::unique_ptr<LibTIFFWriter> m_libTIFF;
+    std::unique_ptr<LibPNGWriter> m_libPNG;
+    std::unique_ptr<OpenJPEGWriter> m_openJPEG;
 };
 
 } // namespace sight::io::bitmap::detail

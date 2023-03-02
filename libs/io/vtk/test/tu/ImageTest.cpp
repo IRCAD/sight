@@ -383,8 +383,7 @@ void fromToTest(data::Image::PixelFormat format)
     const core::Type type              = core::Type::get<TYPE>();
 
     data::Image::sptr image = data::Image::New();
-    utestData::generator::Image::generateImage(image, size, spacing, origin, type, format);
-    utestData::generator::Image::randomizeImage(image);
+    utestData::generator::Image::generateImage(image, size, spacing, origin, type, format, 0);
 
     vtkSmartPointer<vtkImageData> vtkImage = vtkSmartPointer<vtkImageData>::New();
     io::vtk::toVTKImage(image, vtkImage);

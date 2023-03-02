@@ -23,27 +23,45 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-namespace sight::module::io::bitmap::ut
+// cspell:ignore nvjpeg
+
+namespace sight::io::bitmap::ut
 {
 
-/**
- * @brief Test the bitmap writer.
- */
-class SWriterTest : public CPPUNIT_NS::TestFixture
+class ReaderTest : public CPPUNIT_NS::TestFixture
 {
-CPPUNIT_TEST_SUITE(SWriterTest);
-CPPUNIT_TEST(basicTest);
-CPPUNIT_TEST(configTest);
-CPPUNIT_TEST_SUITE_END();
+public:
+
+    CPPUNIT_TEST_SUITE(ReaderTest);
+    CPPUNIT_TEST(basicTest);
+    CPPUNIT_TEST(extensionsTest);
+    CPPUNIT_TEST(wildcardTest);
+    CPPUNIT_TEST(nvJPEGTest);
+    CPPUNIT_TEST(nvJPEG2KTest);
+    CPPUNIT_TEST(libPNGTest);
+    CPPUNIT_TEST(libJPEGTest);
+    CPPUNIT_TEST(openJPEGTest);
+    CPPUNIT_TEST(libTIFFTest);
+    CPPUNIT_TEST(profilingTest);
+    CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    // interface
     void setUp() override;
     void tearDown() override;
 
     static void basicTest();
-    static void configTest();
+    static void extensionsTest();
+    static void wildcardTest();
+
+    static void nvJPEGTest();
+    static void nvJPEG2KTest();
+    static void libPNGTest();
+    static void libJPEGTest();
+    static void openJPEGTest();
+    static void libTIFFTest();
+
+    static void profilingTest();
 };
 
-} // namespace sight::module::io::bitmap::ut
+} // namespace sight::io::bitmap::ut
