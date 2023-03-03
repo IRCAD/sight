@@ -1096,9 +1096,22 @@ macro(fw_manage_warnings PROJECT)
         else()
             message(WARNING "Your version of MSVC is too old to use WARNINGS_AS_ERRORS.")
         endif()
-    elseif(CMAKE_COMPILER_IS_GNUCXX OR "${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-        # deprecated declaration will be displayed as warning and not errors
-        target_compile_options(${PROJECT} PRIVATE "-Werror" "-Wno-error=deprecated-declarations")
+    endif()
+
+    # deprecated declaration will be displayed as warning and not errors
+    target_compile_options(
+        ${PROJECT} PRIVATE "$<$<CXX_COMPILER_ID:GNU,Clang>:-Werror;-Wno-error=deprecated-declarations>"
+    )
+
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" AND CMAKE_CXX_COMPILER_VERSION VERSION_GREATER_EQUAL 12
+       AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS 13
+    )
+        # disable specific buggy warnings with GCC12, see https://gcc.gnu.org/bugzilla/show_bug.cgi?id=105329
+        target_compile_options(
+            ${PROJECT}
+            PRIVATE
+                "$<$<CONFIG:Release,RelWithDebInfo,MinSizeRel>:-Wno-restrict;-Wno-stringop-overflow;-Wno-array-bounds>"
+        )
     endif()
 endmacro()
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,12 +40,8 @@ std::string getDateInXsdFormat(const boost::posix_time::ptime& dateAndTime)
 boost::posix_time::ptime fromIsoExtendedString(const std::string& time_string)
 {
     std::string tmp(time_string);
-    std::string::size_type i = 0;
-    while((i = tmp.find('T', i)) != (std::string::size_type) (-1))
-    {
-        tmp.replace(i++, 1, " ");
-    }
-
+    const auto i = tmp.find('T');
+    tmp[i] = ' ';
     boost::posix_time::ptime t = boost::posix_time::time_from_string(tmp);
     return t;
 }

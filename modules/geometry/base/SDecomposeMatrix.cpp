@@ -70,9 +70,9 @@ void SDecomposeMatrix::updating()
     SIGHT_ASSERT("input matrix '" << s_SOURCE_INPUT << "' is not defined", matrix);
 
     glm::dmat4 glmMatrix = sight::geometry::data::getMatrixFromTF3D(*matrix);
-    glm::dvec3 glmScale;
-    glm::dquat orientation;
-    glm::dvec3 glmTranslation;
+    glm::dvec3 glmScale {};
+    glm::dquat orientation {};
+    glm::dvec3 glmTranslation {};
     glm::dvec3 skew;
     glm::dvec4 perspective;
 

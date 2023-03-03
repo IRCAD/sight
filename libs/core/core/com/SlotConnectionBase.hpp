@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,7 @@ namespace sight::core::com
  * @brief Base class for Slot connection implementation.
  * This class is for internal use purpose.
  */
-struct CORE_CLASS_API SlotConnectionBase : virtual core::BaseObject
+struct CORE_CLASS_API SlotConnectionBase : core::BaseObject
 {
     /**
      * @name Typedefs

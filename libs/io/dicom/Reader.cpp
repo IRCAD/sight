@@ -1185,7 +1185,7 @@ public:
             }
 
             // Start to parse DICOM time
-            std::chrono::hours hours;
+            std::chrono::hours hours {};
             if(value.length() >= 2)
             {
                 try
@@ -1203,7 +1203,7 @@ public:
                 return false;
             }
 
-            std::chrono::minutes minutes;
+            std::chrono::minutes minutes {};
             if(value.length() >= 4)
             {
                 try
@@ -1217,7 +1217,7 @@ public:
                 }
             }
 
-            std::chrono::seconds seconds;
+            std::chrono::seconds seconds {};
             if(value.length() >= 6)
             {
                 try
@@ -1231,7 +1231,7 @@ public:
                 }
             }
 
-            std::chrono::microseconds microseconds;
+            std::chrono::microseconds microseconds {};
             if(value.length() >= 8)
             {
                 try
