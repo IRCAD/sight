@@ -31,6 +31,7 @@
 #include <core/crypto/obfuscated_string.hpp>
 #include <core/crypto/PasswordKeeper.hpp>
 #include <core/crypto/SHA256.hpp>
+#include <core/runtime/path.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
 
@@ -67,6 +68,20 @@ static std::size_t s_max_retry {3};
 
 // current number of retry
 static std::size_t s_password_retry {0};
+
+/// Password dialog configuration
+/// @{
+static std::string s_password_title {"Enter Password"};
+static std::string s_password_message {"Password:"};
+static std::string s_password_error_title {"Invalid password"};
+static std::string s_password_error_message {
+    "Invalid password. The number of tries is exceeded and the application will close."
+};
+static std::string s_password_retry_message {
+    "The provided password is wrong.\n\n"
+    "Retry with a different password ?"
+};
+/// @}
 
 // Guard the preference tree
 std::shared_mutex Preferences::s_preferences_mutex;
@@ -204,8 +219,8 @@ Preferences::Preferences()
                            && password.empty()))
                     {
                         const auto& [new_password, ok] = sight::ui::base::dialog::InputDialog::showInputDialog(
-                            "Enter Password",
-                            "Password:",
+                            s_password_title,
+                            s_password_message,
                             password.c_str(), // NOLINT(readability-redundant-string-cstr)
                             sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
                         );
@@ -285,8 +300,8 @@ Preferences::Preferences()
                         if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
                         {
                             sight::ui::base::dialog::MessageDialog messageDialog;
-                            messageDialog.setTitle("Wrong password");
-                            messageDialog.setMessage("The provided password is wrong and there were too many tries.");
+                            messageDialog.setTitle(s_password_error_title);
+                            messageDialog.setMessage(s_password_error_message);
                             messageDialog.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);
                             messageDialog.addButton(ui::base::dialog::IMessageDialog::OK);
                             messageDialog.show();
@@ -297,11 +312,8 @@ Preferences::Preferences()
                         if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
                         {
                             sight::ui::base::dialog::MessageDialog messageDialog;
-                            messageDialog.setTitle("Wrong password");
-                            messageDialog.setMessage(
-                                "The preference file is password protected and the provided password is wrong.\n\nRetry"
-                                " with a different password ?"
-                            );
+                            messageDialog.setTitle(s_password_error_title);
+                            messageDialog.setMessage(s_password_retry_message);
                             messageDialog.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
                             messageDialog.addButton(ui::base::dialog::IMessageDialog::RETRY);
                             messageDialog.addButton(ui::base::dialog::IMessageDialog::CANCEL);
@@ -488,6 +500,22 @@ void Preferences::exit_on_password_error(bool exit)
 {
     std::unique_lock guard(s_preferences_mutex);
     s_exit_on_password_error = exit;
+}
+
+//------------------------------------------------------------------------------
+
+void Preferences::set_password_dialog_title(const std::string& title)
+{
+    std::unique_lock guard(s_preferences_mutex);
+    s_password_title = title;
+}
+
+//------------------------------------------------------------------------------
+
+void Preferences::set_password_dialog_message(const std::string& message)
+{
+    std::unique_lock guard(s_preferences_mutex);
+    s_password_message = message;
 }
 
 //-----------------------------------------------------------------------------

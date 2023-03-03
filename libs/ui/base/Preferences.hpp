@@ -127,7 +127,7 @@ public:
  * the password.
  *
  * @subsection set_encryption_policy set_encryption_policy
- * Define when the preferences file is encrypted: @see sight::core::crypto::PasswordKeeper::EncryptionPolicy for
+ * Defines when the preferences file is encrypted: @see sight::core::crypto::PasswordKeeper::EncryptionPolicy for
  * possible values. Default is `password`.
  *
  * @note `FORCE` will encrypt the file, even if no password is given. In this case a pseudo random password is used,
@@ -135,7 +135,16 @@ public:
  * EncryptionPolicy::SALTED
  *
  * @subsection preferences_exit_on_password_error preferences_exit_on_password_error
- * Define if canceling or making more than 3 attemps close the application or not. Default is `false`.
+ * Defines if cancelling or making more than 3 attempts close the application or not. Default is `false`.
+ *
+ * @subsection preferences_password_dialog_title preferences_password_dialog_title
+ * Defines the title of the password dialog.
+ *
+ * @subsection preferences_password_dialog_message preferences_password_dialog_message
+ * Defines the message of the password dialog. (will be merged with the icon)
+ *
+ * @subsection preferences_password_dialog_icon preferences_password_dialog_icon
+ * Defines the icon of the password dialog. (will be merged with the message)
  *
  * @section Module  Module Configuration
  * All the above can be configured through the module ui_base parameters ( @see sight::module::ui::base::Plugin )
@@ -151,12 +160,18 @@ public:
             preferences_encryption_policy
             preferences_password
             preferences_exit_on_password_error
+            preferences_password_dialog_title
+            preferences_password_dialog_message
+            preferences_password_dialog_icon
         PARAM_VALUES
             true
             once
             salted
             a_bad_hardcoded_password
             true
+            "Password required"
+            "  Please enter your password: "
+            "sight::module::ui::qt/rename.png"
     )
  * @endcode
  *
@@ -334,6 +349,12 @@ public:
 
     /// If true, the application will be terminated in case of password error
     UI_BASE_API static void exit_on_password_error(bool exit);
+
+    /// Password dialog customization
+    /// @{
+    UI_BASE_API static void set_password_dialog_title(const std::string& title);
+    UI_BASE_API static void set_password_dialog_message(const std::string& message);
+    /// @}
 
 private:
 

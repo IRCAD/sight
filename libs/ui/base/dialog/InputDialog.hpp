@@ -24,7 +24,6 @@
 
 #include "ui/base/config.hpp"
 #include "ui/base/dialog/IInputDialog.hpp"
-#include "ui/base/GuiBaseObject.hpp"
 
 namespace sight::ui::base::dialog
 {
@@ -42,7 +41,7 @@ namespace sight::ui::base::dialog
    std::string inputText = inputDlg.getInput();
    @endcode
  */
-class UI_BASE_CLASS_API InputDialog : public IInputDialog
+class UI_BASE_CLASS_API InputDialog final : public IInputDialog
 {
 public:
 
