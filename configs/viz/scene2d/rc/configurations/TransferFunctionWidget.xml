@@ -1,10 +1,12 @@
 <extension implements="sight::service::extension::AppConfig" >
-    <id>TransferFunctionWidgetCfg</id>
+    <id>sight::config::viz::scene2d::TransferFunctionWidgetCfg</id>
     <parameters>
         <param name="WID_PARENT" />
         <param name="image" />
         <param name="currentTF" />
         <param name="presets" default="emptyPresets" />
+        <param name="USE_DEFAULT_TF" default="true" />
+        <param name="ADDITIONAL_TF_PATH" default="" />
     </parameters>
     <config>
 
@@ -178,7 +180,10 @@
                     renameIcon="sight::module::ui::flaticons/YellowRenameFile.svg"
                     importIcon="sight::module::ui::flaticons/BlueLoad.svg"
                     exportIcon="sight::module::ui::flaticons/BlueSave.svg"
-                    iconWidth="24" iconHeight="24" />
+                    iconWidth="24" iconHeight="24" 
+                    useDefaultPath="${USE_DEFAULT_TF}">
+                    <path>${ADDITIONAL_TF_PATH}</path>
+            </config>
         </service>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

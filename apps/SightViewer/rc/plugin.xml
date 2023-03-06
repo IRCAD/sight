@@ -486,7 +486,7 @@
 
             <!-- TF manager -->
             <service uid="TFManagerCfg"  type="sight::service::SConfigController" >
-                <appConfig id="TransferFunctionWidgetCfg" />
+                <appConfig id="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
                 <parameter replace="WID_PARENT" by="TFCfgParameterView" />
                 <inout group="data">
                     <key name="image" uid="image" />

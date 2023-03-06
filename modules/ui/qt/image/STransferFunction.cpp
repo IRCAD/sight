@@ -91,8 +91,12 @@ void STransferFunction::configuring()
         const auto pathCfg = config->equal_range(s_PATH_CONFIG);
         for(auto itCfg = pathCfg.first ; itCfg != pathCfg.second ; ++itCfg)
         {
-            const auto path = core::runtime::getModuleResourceFilePath(itCfg->second.get_value<std::string>());
-            m_paths.push_back(path);
+            const auto additionalTfPath = itCfg->second.get_value<std::string>();
+            if(!additionalTfPath.empty())
+            {
+                const auto path = core::runtime::getModuleResourceFilePath(additionalTfPath);
+                m_paths.push_back(path);
+            }
         }
 
         const auto configAttr = config->get_child_optional("<xmlattr>");
