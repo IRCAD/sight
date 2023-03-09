@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -64,11 +64,12 @@ bool Shading::isColorTechnique(const Ogre::Technique& _tech)
     const std::string& name = _tech.getName();
     const std::regex regexDualPeelInit("Dual.*/peelInit.*");
 
-    const bool peelTech     = std::regex_match(name, s_PEEL_REGEX);
-    const bool weightPass   = std::regex_match(name, s_WEIGHT_BLEND_REGEX);
-    const bool peelInitPass = std::regex_match(name, regexDualPeelInit);
+    const bool peelTech       = std::regex_match(name, s_PEEL_REGEX);
+    const bool weightPass     = std::regex_match(name, s_WEIGHT_BLEND_REGEX);
+    const bool peelInitPass   = std::regex_match(name, regexDualPeelInit);
+    const bool rayEntryPoints = name == "FrontFacesMin";
 
-    return name.empty() || (peelTech && !peelInitPass) || weightPass;
+    return name.empty() || (peelTech && !peelInitPass) || weightPass || rayEntryPoints;
 }
 
 //-----------------------------------------------------------------------------

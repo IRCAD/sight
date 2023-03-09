@@ -48,7 +48,26 @@ vec4 getFragmentColor()
 // Compute alpha channel
 float getFragmentAlpha()
 {
-    return u_diffuse.a;
+    float value;
+    if (u_orientation == 0) // Sagittal
+    {
+        value = texture(u_texture, vec3(u_slice, uv.y, uv.x)).r;
+    }
+    else if (u_orientation == 1) // Frontal
+    {
+        value = texture(u_texture, vec3(uv.x, u_slice, uv.y)).r;
+    }
+    else if (u_orientation == 2) // Axial
+    {
+        value = texture(u_texture, vec3(uv, u_slice)).r;
+    }
+
+    vec4 windowedColor = sampleTransferFunction(value, u_s2TFTexture, u_f3TFWindow);
+
+    float tfAlpha = (1 - u_enableAlpha) + u_enableAlpha * windowedColor.a;
+    float alpha   = tfAlpha * u_diffuse.a;
+
+    return alpha;
 }
 
 #include "Transparency.inc.glsl"
