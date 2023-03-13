@@ -215,6 +215,7 @@ QToolBar
     border: none;
     background: rgb(62, 68, 83);
     padding: 3px;
+    icon-size: 32px 32px;
 }
 
 QToolBar > QWidget

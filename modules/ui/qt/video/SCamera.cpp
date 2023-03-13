@@ -137,6 +137,7 @@ void SCamera::starting()
         auto path = core::runtime::getModuleResourcePath("sight::module::ui::flaticons");
         // Add preference setting button
         QPointer<QPushButton> setPrefButton = new QPushButton();
+        setPrefButton->setProperty("class", "signal-button");
         setPrefButton->setIcon(QIcon(QString::fromStdString((path / "BlueParametersCamera.svg").string())));
         setPrefButton->setToolTip("Set camera resolution preference");
         layout->addWidget(setPrefButton);

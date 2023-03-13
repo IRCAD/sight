@@ -29,6 +29,7 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
+#include <QVariant>
 #include <QVBoxLayout>
 
 namespace sight::module::ui::qt::com
@@ -115,6 +116,7 @@ void SSignalButton::starting()
     auto* layout = new QVBoxLayout();
     m_button = new QPushButton(QString::fromStdString(m_text));
     m_button->setEnabled(m_enable);
+    m_button->setProperty("class", "signal-button");
     layout->addWidget(m_button);
     qtContainer->setLayout(layout);
 

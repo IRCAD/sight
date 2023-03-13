@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -141,6 +141,8 @@ void SStatus::configuring()
     m_width  = config.get<std::size_t>("size.width", 20);
     m_height = config.get<std::size_t>("size.height", 20);
 
+    m_borderRadius = m_isCircular ? QString::number(std::min(m_width, m_height) / 2) + "px" : "0";
+
     m_count = config.get<std::size_t>("count", 1);
 
     if(m_count == 1)
@@ -221,11 +223,7 @@ void SStatus::changeToGreen()
 {
     for(auto& it : m_indicator)
     {
-        it->setStyleSheet(
-            "background-color: green; border-radius: " + QString(
-                m_isCircular ? "10px;" : "0"
-            ) + ";"
-        );
+        it->setStyleSheet("background-color: green; border-radius: " + m_borderRadius + ";");
         it->setToolTip(QString::fromStdString(m_greenTooltip));
     }
 }
@@ -236,10 +234,7 @@ void SStatus::changeToRed()
 {
     for(auto& it : m_indicator)
     {
-        it->setStyleSheet(
-            "background-color: red; border-radius: " + QString(m_isCircular ? "10px;" : "0")
-            + ";"
-        );
+        it->setStyleSheet("background-color: red; border-radius: " + m_borderRadius + ";");
         it->setToolTip(QString::fromStdString(m_redTooltip));
     }
 }
@@ -250,11 +245,7 @@ void SStatus::changeToOrange()
 {
     for(auto& it : m_indicator)
     {
-        it->setStyleSheet(
-            "background-color: orange; border-radius: " + QString(
-                m_isCircular ? "10px;" : "0"
-            ) + ";"
-        );
+        it->setStyleSheet("background-color: orange; border-radius: " + m_borderRadius + ";");
         it->setToolTip(QString::fromStdString(m_orangeTooltip));
     }
 }
@@ -266,8 +257,7 @@ void SStatus::toggleGreenRed(const bool green)
     for(auto& it : m_indicator)
     {
         it->setStyleSheet(
-            "background-color:" + QString(green ? "green" : "red") + "; border-radius: "
-            + QString(m_isCircular ? "10px;" : "0") + ";"
+            "background-color:" + QString(green ? "green" : "red") + "; border-radius: " + m_borderRadius + ";"
         );
         it->setToolTip(green ? QString::fromStdString(m_greenTooltip) : QString::fromStdString(m_redTooltip));
     }
@@ -284,10 +274,7 @@ void SStatus::changeNthToGreen(const int index)
 
     if(index >= 0 && index < int(m_count))
     {
-        m_indicator.at(index)->setStyleSheet(
-            "background-color: green; border-radius: "
-            + QString(m_isCircular ? "10px;" : "0") + ";"
-        );
+        m_indicator.at(index)->setStyleSheet("background-color: green; border-radius: " + m_borderRadius + ";");
         m_indicator.at(index)->setToolTip(QString::fromStdString(m_greenTooltip));
     }
 }
@@ -303,10 +290,7 @@ void SStatus::changeNthToRed(const int index)
 
     if(index >= 0 && index < int(m_count))
     {
-        m_indicator.at(index)->setStyleSheet(
-            "background-color: red; border-radius: "
-            + QString(m_isCircular ? "10px;" : "0") + ";"
-        );
+        m_indicator.at(index)->setStyleSheet("background-color: red; border-radius: " + m_borderRadius + ";");
         m_indicator.at(index)->setToolTip(QString::fromStdString(m_redTooltip));
     }
 }
@@ -322,10 +306,7 @@ void SStatus::changeNthToOrange(const int index)
 
     if(index >= 0 && index < int(m_count))
     {
-        m_indicator.at(index)->setStyleSheet(
-            "background-color: orange; border-radius: "
-            + QString(m_isCircular ? "10px;" : "0") + ";"
-        );
+        m_indicator.at(index)->setStyleSheet("background-color: orange; border-radius: " + m_borderRadius + ";");
         m_indicator.at(index)->setToolTip(QString::fromStdString(m_orangeTooltip));
     }
 }
@@ -343,7 +324,7 @@ void SStatus::toggleNthGreenRed(const int index, const bool green)
     {
         m_indicator.at(index)->setStyleSheet(
             "background-color:" + QString(green ? "green" : "red")
-            + "; border-radius: " + QString(m_isCircular ? "10px;" : "0") + ";"
+            + "; border-radius: " + m_borderRadius + ";"
         );
         m_indicator.at(index)->setToolTip(
             green ? QString::fromStdString(m_greenTooltip)

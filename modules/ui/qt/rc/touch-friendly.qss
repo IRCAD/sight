@@ -22,11 +22,29 @@ QPushButton {
     min-height: 1.5em;
 }
 
+QPushButton.signal-button {
+    icon-size: 48px 48px;
+}
+
+QSlider {
+    height: 1.5em;
+}
+
 QSlider::handle:horizontal {
-    width: 1.25em;
-    margin: -0.40em 0;
+    width: 1.5em;
+    height: 1.5em;
+    border-radius: 0.74em;
+}
+
+QSlider::groove:horizontal {
+    height: 1.5em;
+    border-radius: 0.74em;
 }
 
 QComboBox {
     height: 1.5em;
+}
+
+QToolBar {
+    icon-size: 48px 48px;
 }

@@ -619,6 +619,7 @@ QToolBar
     border: 1px transparent #393838;
     background: 1px solid #31363b;
     font-weight: bold;
+    icon-size: 32px 32px;
 }
 
 QToolBar::handle:horizontal
