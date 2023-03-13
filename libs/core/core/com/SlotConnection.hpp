@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -61,7 +61,7 @@ struct CORE_CLASS_API SlotConnection<void(A ...)>: SlotConnectionBase
     typedef SlotRun<SignatureType> SlotRunType;
     typedef SPTR(SlotRunType)      SlotRunSptrType;
 
-    typedef std::pair<bool, SlotRunType*> PairType;
+    typedef std::pair<bool, WPTR(SlotRunType)> PairType;
     /**  @} */
 
     /// Build a new connection with the given signal and slot.

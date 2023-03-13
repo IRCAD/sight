@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,7 +63,7 @@ inline SlotConnection<void(A ...)>::SlotConnection(
 ) :
     m_signal(signal),
     m_connectedSlot(slot),
-    m_pair(true, slot.get())
+    m_pair(true, slot)
 {
 }
 
@@ -78,7 +78,7 @@ inline SlotConnection<void(A ...)>::SlotConnection(
     m_signal(signal),
     m_connectedSlot(slot),
     m_slotWrapper(slotWrapper),
-    m_pair(true, slotWrapper.get())
+    m_pair(true, slotWrapper)
 {
 }
 

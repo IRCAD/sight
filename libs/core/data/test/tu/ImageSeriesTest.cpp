@@ -287,7 +287,12 @@ void ImageSeriesTest::resizeTest()
 {
     auto series1 = data::ImageSeries::New();
     series1->setSOPKeyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
-    utestData::generator::Image::generateRandomImage(series1, core::Type::INT8);
+    do
+    {
+        utestData::generator::Image::generateRandomImage(series1, core::Type::INT8);
+    }
+    while(series1->getSize()[2] <= 2);
+
     auto size = series1->getSize();
 
     for(std::size_t i = 0, end = size[2] ; i < end ; ++i)

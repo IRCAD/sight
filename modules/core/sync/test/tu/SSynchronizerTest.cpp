@@ -114,7 +114,11 @@ public:
 
     ~SynchronizerTester()
     {
-        srv->stop().wait();
+        if(srv->isStarted())
+        {
+            srv->stop().wait();
+        }
+
         service::remove(srv);
     }
 
@@ -949,6 +953,8 @@ void SSynchronizerTest::singleMatrixTLConfigTest()
     //The value in the matrix is  timestamp*10 + element_Index
     SynchronizerTester::checkMatrix(matrix0, 61);
     SynchronizerTester::checkMatrix(matrix1, 60);
+
+    tester.srv->stop().wait();
 }
 
 //------------------------------------------------------------------------------
@@ -1036,6 +1042,8 @@ void SSynchronizerTest::mixtMatrixTLConfigTest()
     SynchronizerTester::checkMatrix(matrix2, 20);
     SynchronizerTester::checkMatrix(matrix3, 21);
     SynchronizerTester::checkMatrix(matrix4, 32);
+
+    tester.srv->stop().wait();
 }
 
 //------------------------------------------------------------------------------
@@ -1105,6 +1113,8 @@ void SSynchronizerTest::singleFrameTLConfigTest()
     tester.addFrameToFrameTL(frameTL, 6);
     fwTestWithFailWaitMacro(lastTimestampSynch == 6);
     SynchronizerTester::checkFrame(frame, 6);
+
+    tester.srv->stop().wait();
 }
 
 //------------------------------------------------------------------------------
@@ -1232,6 +1242,8 @@ void SSynchronizerTest::mixtFrameTLConfigTest()
     SynchronizerTester::checkFrame(frame4, 5);
     SynchronizerTester::checkFrame(frame6, 6);
     SynchronizerTester::checkFrame(frame11, 4);
+
+    tester.srv->stop().wait();
 }
 
 //------------------------------------------------------------------------------
@@ -1455,6 +1467,8 @@ void SSynchronizerTest::fullConfigTest()
     SynchronizerTester::checkMatrix(matrix2, 60);
     SynchronizerTester::checkMatrix(matrix3, 61);
     SynchronizerTester::checkMatrix(matrix4, 62);
+
+    tester.srv->stop().wait();
 }
 
 //------------------------------------------------------------------------------

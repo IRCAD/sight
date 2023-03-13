@@ -379,6 +379,9 @@ private:
     /// Timer used for the update
     core::thread::Timer::sptr m_timer;
 
+    /// Timer worker thread
+    core::thread::Worker::sptr m_worker;
+
     /// Time step used for the update, in ms
     unsigned int m_timeStep {15};
 

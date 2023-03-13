@@ -200,7 +200,8 @@ void SSynchronizer::starting()
     SIGHT_ASSERT("No valid worker for timer.", this->worker());
     if(m_legacyAutoSync)
     {
-        m_timer = this->worker()->createTimer();
+        m_worker = sight::core::thread::Worker::New();
+        m_timer  = m_worker->createTimer();
         const auto duration = std::chrono::milliseconds(m_timeStep);
         m_timer->setFunction([this](auto&& ...){synchronize();});
         m_timer->setDuration(duration);
@@ -217,6 +218,19 @@ void SSynchronizer::updating()
     if((m_updateMask & SYNC_REQUESTED) != 0)
     {
         this->synchronize();
+    }
+}
+
+// ----------------------------------------------------------------------------
+
+void SSynchronizer::stopping()
+{
+    if(m_legacyAutoSync)
+    {
+        m_timer->stop();
+        m_timer.reset();
+        m_worker->stop();
+        m_worker.reset();
     }
 }
 
@@ -583,16 +597,6 @@ void SSynchronizer::sendMatrixVarStatus(const std::vector<std::size_t>& synchMat
 void SSynchronizer::resetTimeline()
 {
     m_lastTimeStamp = 0.;
-}
-
-// ----------------------------------------------------------------------------
-
-void SSynchronizer::stopping()
-{
-    if(m_legacyAutoSync)
-    {
-        m_timer->stop();
-    }
 }
 
 //-----------------------------------------------------------------------------

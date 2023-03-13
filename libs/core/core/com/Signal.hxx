@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,7 +113,7 @@ void Signal<R(A ...)>::emit(A ... a) const
     {
         if((*iter)->first)
         {
-            (*iter)->second->run(a ...);
+            (*iter)->second.lock()->run(a ...);
         }
     }
 }
@@ -123,14 +123,23 @@ void Signal<R(A ...)>::emit(A ... a) const
 template<typename R, typename ... A>
 void Signal<R(A ...)>::asyncEmit(A ... a) const
 {
-    core::mt::ReadLock lock(m_connectionsMutex);
-    typename SlotContainerType::const_iterator iter;
-    auto end = m_slots.end();
-    for(iter = m_slots.begin() ; iter != end ; ++iter)
+    // We hold the slots alive in case they are destroyed during the emission
+    // If we don't do this, we could end up with a deadlock on m_connectionsMutex
+    // because of the automatic disconnection from this signal
+    // With this vector, we ensure the potential destruction occurs outside the scope of the mutex
+    std::vector<SPTR(SlotRunType)> keepSlotsAlive;
     {
-        if((*iter)->first)
+        core::mt::ReadLock lock(m_connectionsMutex);
+        typename SlotContainerType::const_iterator iter;
+        auto end = m_slots.end();
+        for(iter = m_slots.begin() ; iter != end ; ++iter)
         {
-            (*iter)->second->asyncRun(a ...);
+            if((*iter)->first)
+            {
+                auto slot = (*iter)->second.lock();
+                keepSlotsAlive.push_back(slot);
+                slot->asyncRun(a ...);
+            }
         }
     }
 }

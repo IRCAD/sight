@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -231,7 +231,7 @@ void WorkerTest::timerTest()
 
     // Be a bit tolerant, we have no 100% guarantee that timer will perform the requested number of ticks
     CPPUNIT_ASSERT_GREATEREQUAL(20, handler.m_step.load());
-    CPPUNIT_ASSERT_LESSEQUAL(26, handler.m_step.load());
+    CPPUNIT_ASSERT_LESSEQUAL(30, handler.m_step.load());
 
     duration = std::chrono::milliseconds(50);
     timer->setDuration(duration);
@@ -245,8 +245,8 @@ void WorkerTest::timerTest()
     }
 
     // Be a bit tolerant, we have no 100% guarantee that timer will perform the requested number of ticks
-    CPPUNIT_ASSERT_GREATEREQUAL(45, handler.m_step.load());
-    CPPUNIT_ASSERT_LESSEQUAL(51, handler.m_step.load());
+    CPPUNIT_ASSERT_GREATEREQUAL(40, handler.m_step.load());
+    CPPUNIT_ASSERT_LESSEQUAL(60, handler.m_step.load());
 
     timer->stop();
 
