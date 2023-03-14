@@ -72,7 +72,7 @@ lint:sheldon:
       else
         TIMEOUT="480"
       fi
-    - ctest --timeout $TIMEOUT --output-on-failure -O ctest.log -j${RUNNER_THREADS}--output-junit junit.xml
+    - ctest --timeout $TIMEOUT --output-on-failure -O ctest.log -j${RUNNER_THREADS} --output-junit junit.xml
     # Build documentation if needed
     - >
       if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
