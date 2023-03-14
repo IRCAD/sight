@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,18 +81,28 @@ public:
 
         /// Frame name.
         std::string m_name;
+
         /// Frame icon.
         std::filesystem::path m_iconPath;
+
         /// Frame minimum size (min width and min height)
         std::pair<int, int> m_minSize;
+
+        /// Frame maximum size (max width and max height)
+        std::pair<int, int> m_maxSize {-1, -1};
+
         /// Frame style
         Style m_style {DEFAULT};
+
         /// Frame size
         std::pair<int, int> m_size;
+
         /// Frame position
         std::pair<int, int> m_position;
+
         /// Frame state (maximize, minized, full screen)
         FrameState m_state {FrameState::UNKNOWN};
+
         /// Frame visibility
         bool m_visibility {true};
     };

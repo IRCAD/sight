@@ -34,7 +34,7 @@
 
 #include <ui/base/dialog/DummyInputDialog.hpp>
 #include <ui/base/dialog/DummyLocationDialog.hpp>
-#include <ui/base/dialog/IMessageDialog.hpp>
+#include <ui/base/dialog/DummyMessageDialog.hpp>
 #include <ui/base/registry/macros.hpp>
 
 // Registers the fixture into the 'registry'
@@ -45,81 +45,10 @@ SIGHT_REGISTER_GUI(
     sight::ui::base::dialog::ILocationDialog::REGISTRY_KEY
 );
 SIGHT_REGISTER_GUI(sight::ui::base::dialog::DummyInputDialog, sight::ui::base::dialog::IInputDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::base::dialog::DummyMessageDialog, sight::ui::base::dialog::IMessageDialog::REGISTRY_KEY);
 
 namespace sight::module::io::session::ut
 {
-
-class DummyMessageDialog : public sight::ui::base::dialog::IMessageDialog
-{
-public:
-
-    explicit DummyMessageDialog(sight::ui::base::factory::Key /*key*/)
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void setTitle(const std::string& /*title*/) override
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void setMessage(const std::string& /*msg*/) override
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void setIcon(Icons /*icon*/) override
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void addButton(Buttons /*button*/) override
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void setDefaultButton(Buttons /*button*/) override
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void addCustomButton(const std::string& /*label*/, std::function<void()> /*clickedFn*/) override
-    {
-    }
-
-    static std::queue<sight::ui::base::dialog::IMessageDialog::Buttons> actions;
-
-    //------------------------------------------------------------------------------
-
-    static void pushAction(sight::ui::base::dialog::IMessageDialog::Buttons action)
-    {
-        actions.push(action);
-    }
-
-    //------------------------------------------------------------------------------
-
-    sight::ui::base::dialog::IMessageDialog::Buttons show() override
-    {
-        sight::ui::base::dialog::IMessageDialog::Buttons res = NOBUTTON;
-        if(!actions.empty())
-        {
-            res = actions.front();
-            actions.pop();
-        }
-
-        return res;
-    }
-};
-
-std::queue<sight::ui::base::dialog::IMessageDialog::Buttons> DummyMessageDialog::actions;
-
-SIGHT_REGISTER_GUI(DummyMessageDialog, sight::ui::base::dialog::IMessageDialog::REGISTRY_KEY);
 
 //------------------------------------------------------------------------------
 
@@ -350,6 +279,8 @@ void SessionTest::fileDialogTest()
 
         // Cleanup
         service::unregisterService(writer);
+
+        CPPUNIT_ASSERT(sight::ui::base::dialog::DummyLocationDialog::clear());
     }
 
     // The file should have been created
@@ -389,6 +320,8 @@ void SessionTest::fileDialogTest()
 
         // Final test
         CPPUNIT_ASSERT_EQUAL(expected, outString->getValue());
+
+        CPPUNIT_ASSERT(sight::ui::base::dialog::DummyLocationDialog::clear());
     }
 }
 
@@ -431,6 +364,8 @@ void SessionTest::passwordTest()
 
         // Cleanup
         service::unregisterService(writer);
+
+        CPPUNIT_ASSERT(sight::ui::base::dialog::DummyInputDialog::clear());
     }
 
     // The file should have been created
@@ -464,11 +399,11 @@ void SessionTest::passwordTest()
         reader->start().wait();
 
         sight::ui::base::dialog::DummyInputDialog::pushInput("Oops");
-        DummyMessageDialog::pushAction(sight::ui::base::dialog::IMessageDialog::RETRY);
+        ui::base::dialog::DummyMessageDialog::pushAction(sight::ui::base::dialog::IMessageDialog::RETRY);
         sight::ui::base::dialog::DummyInputDialog::pushInput("I forgot");
-        DummyMessageDialog::pushAction(sight::ui::base::dialog::IMessageDialog::RETRY);
+        ui::base::dialog::DummyMessageDialog::pushAction(sight::ui::base::dialog::IMessageDialog::RETRY);
         sight::ui::base::dialog::DummyInputDialog::pushInput("Wait I remember");
-        DummyMessageDialog::pushAction(sight::ui::base::dialog::IMessageDialog::RETRY);
+        ui::base::dialog::DummyMessageDialog::pushAction(sight::ui::base::dialog::IMessageDialog::RETRY);
         sight::ui::base::dialog::DummyInputDialog::pushInput("case-sensitive");
 
         reader->update().wait();
@@ -479,6 +414,9 @@ void SessionTest::passwordTest()
 
         // Final test
         CPPUNIT_ASSERT_EQUAL(expected, outString->getValue());
+
+        CPPUNIT_ASSERT(sight::ui::base::dialog::DummyInputDialog::clear());
+        CPPUNIT_ASSERT(ui::base::dialog::DummyMessageDialog::clear());
     }
 }
 

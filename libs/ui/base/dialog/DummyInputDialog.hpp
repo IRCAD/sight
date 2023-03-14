@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -49,6 +49,8 @@ public:
     std::pair<std::string, bool> getInput() override;
 
     UI_BASE_API static void pushInput(const std::string& input);
+
+    UI_BASE_API static bool clear();
 
 private:
 

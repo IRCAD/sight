@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -83,6 +83,8 @@ void SFolderSelectorTest::basicTest()
     CPPUNIT_ASSERT_NO_THROW(m_folderSelector->update().get());
     fwTestWaitMacro(std::filesystem::temp_directory_path() == path);
     CPPUNIT_ASSERT_EQUAL(std::filesystem::temp_directory_path(), path);
+
+    CPPUNIT_ASSERT(sight::ui::base::dialog::DummyLocationDialog::clear());
 }
 
 //------------------------------------------------------------------------------

@@ -21,6 +21,8 @@
 
 #include "ArchiveReader.hpp"
 
+#include "core/crypto/secure_string.hpp"
+
 #include "exception/Read.hpp"
 
 #include "minizip/mz.h"
@@ -34,8 +36,10 @@
 
 #include <boost/iostreams/stream.hpp>
 
+#include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <vector>
 
 namespace sight::io::zip
 {
@@ -74,6 +78,13 @@ public:
     ) override
     {
         return std::make_unique<std::ifstream>(m_root / filePath.relative_path(), std::ios::in | std::ios::binary);
+    }
+
+    //------------------------------------------------------------------------------
+
+    void extractAllTo(const std::filesystem::path& outputPath, const core::crypto::secure_string& /*password*/) override
+    {
+        std::filesystem::copy(m_root, outputPath, std::filesystem::copy_options::recursive);
     }
 
     //------------------------------------------------------------------------------
@@ -336,6 +347,76 @@ public:
         );
 
         return std::make_unique<boost::iostreams::stream<ZipSource> >(zip_file_handle);
+    }
+
+    //------------------------------------------------------------------------------
+
+    inline void extractAllTo(
+        const std::filesystem::path& outputPath,
+        const core::crypto::secure_string& password
+    ) override
+    {
+        mz_zip_reader_set_password(m_zipHandle->m_zip_reader, password.empty() ? nullptr : password.c_str());
+        std::vector<std::filesystem::path> extractedFiles;
+        mz_zip_reader_set_entry_cb(
+            m_zipHandle->m_zip_reader,
+            &extractedFiles,
+            [](void*, void* extractedFilesPtr, mz_zip_file*, const char* path)
+                {
+                    auto* files = reinterpret_cast<std::vector<std::filesystem::path>*>(extractedFilesPtr);
+                    files->emplace_back(path);
+                    return MZ_OK;
+                });
+        if(const auto result = mz_zip_reader_save_all(m_zipHandle->m_zip_reader, outputPath.string().c_str());
+           result == MZ_PASSWORD_ERROR)
+        {
+            SIGHT_THROW_EXCEPTION(
+                exception::BadPassword(
+                    "Archive '"
+                    + m_zipHandle->m_archive_path
+                    + "' is password protected and the provided one does not match. Error code: "
+                    + std::to_string(result),
+                    result
+                )
+            );
+        }
+        else if(result == MZ_DATA_ERROR && password.empty())
+        {
+            throw exception::BadPassword(
+                      "Cannot extract archive '" + m_zipHandle->m_archive_path + "', it is probably password protected. Error code: " + std::to_string(
+                          result
+                      ),
+                      result
+            );
+        }
+        else if(result != MZ_OK)
+        {
+            SIGHT_THROW_EXCEPTION(
+                exception::Read(
+                    "Cannot extract archive '"
+                    + m_zipHandle->m_archive_path
+                    + "'. Error code: "
+                    + std::to_string(result),
+                    result
+                )
+            );
+        }
+
+        mz_zip_reader_set_password(m_zipHandle->m_zip_reader, nullptr);
+        mz_zip_reader_set_entry_cb(m_zipHandle->m_zip_reader, nullptr, nullptr);
+
+        // For some reasons, minizip saves the output files without any permissions.
+        // Set user read and user write at the very least.
+        std::ranges::for_each(
+            extractedFiles,
+            [](const std::filesystem::path& entry)
+                {
+                    std::filesystem::permissions(
+                        entry,
+                        std::filesystem::perms::owner_read | std::filesystem::perms::owner_write,
+                        std::filesystem::perm_options::add
+                    );
+                });
     }
 
     //------------------------------------------------------------------------------

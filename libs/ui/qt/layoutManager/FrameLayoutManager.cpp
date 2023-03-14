@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,6 +69,10 @@ void FrameLayoutManager::createFrame()
 
     m_qtWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
     m_qtWindow->setMinimumSize(std::max(frameInfo.m_minSize.first, 0), std::max(frameInfo.m_minSize.second, 0));
+    m_qtWindow->setMaximumSize(
+        frameInfo.m_maxSize.first == -1 ? QWIDGETSIZE_MAX : frameInfo.m_maxSize.first,
+        frameInfo.m_maxSize.second == -1 ? QWIDGETSIZE_MAX : frameInfo.m_maxSize.second
+    );
 
     if(!frameInfo.m_iconPath.empty())
     {

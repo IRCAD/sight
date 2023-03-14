@@ -19,77 +19,89 @@
  *
  ***********************************************************************/
 
-#include "DummyInputDialog.hpp"
+#include "DummyMessageDialog.hpp"
 
 namespace sight::ui::base::dialog
 {
 
-std::queue<std::string> DummyInputDialog::inputs;
+std::queue<sight::ui::base::dialog::IMessageDialog::Buttons> DummyMessageDialog::actions;
 
-DummyInputDialog::DummyInputDialog(sight::ui::base::GuiBaseObject::Key /*key*/)
+DummyMessageDialog::DummyMessageDialog(sight::ui::base::factory::Key /*key*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void DummyInputDialog::setTitle(const std::string& /*title*/)
+void DummyMessageDialog::setTitle(const std::string& /*title*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void DummyInputDialog::setMessage(const std::string& /*msg*/)
+void DummyMessageDialog::setMessage(const std::string& /*msg*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void DummyInputDialog::setEchoMode(sight::ui::base::dialog::IInputDialog::EchoMode /*echoMode*/)
+void DummyMessageDialog::setIcon(Icons /*icon*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-void DummyInputDialog::setInput(const std::string& /*text*/)
+void DummyMessageDialog::addButton(Buttons /*button*/)
 {
 }
 
 //------------------------------------------------------------------------------
 
-std::pair<std::string, bool> DummyInputDialog::getInput()
+void DummyMessageDialog::setDefaultButton(Buttons /*button*/)
 {
-    std::string res;
-    if(!inputs.empty())
-    {
-        res = inputs.front();
-        inputs.pop();
-    }
-
-    return {res, true};
 }
 
 //------------------------------------------------------------------------------
 
-void DummyInputDialog::pushInput(const std::string& input)
+void DummyMessageDialog::addCustomButton(const std::string& /*label*/, std::function<void()> /*clickedFn*/)
 {
-    inputs.push(input);
 }
 
 //------------------------------------------------------------------------------
 
-bool DummyInputDialog::clear()
+void DummyMessageDialog::pushAction(sight::ui::base::dialog::IMessageDialog::Buttons action)
 {
-    if(inputs.empty())
+    actions.push(action);
+}
+
+//------------------------------------------------------------------------------
+
+bool DummyMessageDialog::clear()
+{
+    if(actions.empty())
     {
         return true;
     }
 
-    while(!inputs.empty())
+    while(actions.empty())
     {
-        inputs.pop();
+        actions.pop();
     }
 
     return false;
+}
+
+//------------------------------------------------------------------------------
+
+sight::ui::base::dialog::IMessageDialog::Buttons DummyMessageDialog::show()
+{
+    sight::ui::base::dialog::IMessageDialog::Buttons res = NOBUTTON;
+    if(!actions.empty())
+    {
+        res = actions.front();
+        actions.pop();
+    }
+
+    return res;
 }
 
 } // namespace sight::ui::base::dialog

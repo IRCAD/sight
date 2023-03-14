@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -28,7 +28,7 @@
 namespace sight::ui::base::dialog
 {
 
-std::vector<std::filesystem::path> DummyLocationDialog::paths;
+std::queue<std::vector<std::filesystem::path> > DummyLocationDialog::pathsList;
 
 DummyLocationDialog::DummyLocationDialog(sight::ui::base::factory::Key /*key*/)
 {
@@ -65,13 +65,39 @@ std::string DummyLocationDialog::getCurrentSelection() const
 
 void DummyLocationDialog::setPaths(const std::vector<std::filesystem::path>& files)
 {
-    paths = files;
+    pushPaths(files);
+}
+
+//------------------------------------------------------------------------------
+
+void DummyLocationDialog::pushPaths(const std::vector<std::filesystem::path>& files)
+{
+    pathsList.push(files);
+}
+
+//------------------------------------------------------------------------------
+
+bool DummyLocationDialog::clear()
+{
+    if(pathsList.empty())
+    {
+        return true;
+    }
+
+    while(!pathsList.empty())
+    {
+        pathsList.pop();
+    }
+
+    return false;
 }
 
 //------------------------------------------------------------------------------
 
 sight::core::location::ILocation::sptr DummyLocationDialog::show()
 {
+    std::vector<std::filesystem::path> paths = pathsList.front();
+    pathsList.pop();
     if(m_type == sight::ui::base::dialog::ILocationDialog::SINGLE_FILE)
     {
         auto singleFile = std::make_shared<sight::core::location::SingleFile>();

@@ -21,40 +21,34 @@
 
 #pragma once
 
-#include <core/location/ILocation.hpp>
-#include <core/location/SingleFile.hpp>
-
-#include <ui/base/dialog/ILocationDialog.hpp>
+#include "IMessageDialog.hpp"
 
 #include <queue>
 
 namespace sight::ui::base::dialog
 {
 
-class DummyLocationDialog : public sight::ui::base::dialog::ILocationDialog
+class DummyMessageDialog : public IMessageDialog
 {
 public:
 
-    UI_BASE_API DummyLocationDialog(sight::ui::base::factory::Key key);
+    UI_BASE_API explicit DummyMessageDialog(sight::ui::base::factory::Key key);
 
-    void setType(Types type) override;
-    sight::ui::base::dialog::ILocationDialog& setOption(Options option) override;
-    void addFilter(const std::string& filterName, const std::string& wildcardList) override;
-    std::string getCurrentSelection() const override;
+    void setTitle(const std::string& title) override;
+    void setMessage(const std::string& msg) override;
+    void setIcon(Icons icon) override;
+    void addButton(Buttons button) override;
+    void setDefaultButton(Buttons button) override;
+    void addCustomButton(const std::string& label, std::function<void()> clickedFn) override;
 
-    sight::core::location::ILocation::sptr show() override;
+    sight::ui::base::dialog::IMessageDialog::Buttons show() override;
 
-    UI_BASE_API static void setPaths(const std::vector<std::filesystem::path>& files);
-
-    UI_BASE_API static void pushPaths(const std::vector<std::filesystem::path>& files);
-
+    UI_BASE_API static void pushAction(sight::ui::base::dialog::IMessageDialog::Buttons action);
     UI_BASE_API static bool clear();
 
 private:
 
-    sight::ui::base::dialog::ILocationDialog::Types m_type {sight::ui::base::dialog::ILocationDialog::SINGLE_FILE};
-
-    static std::queue<std::vector<std::filesystem::path> > pathsList;
+    static std::queue<sight::ui::base::dialog::IMessageDialog::Buttons> actions;
 };
 
 }
