@@ -81,6 +81,12 @@ Ogre::Technique* RayExitDepthListener::handleSchemeNotFound(
             pass->setGpuProgram(Ogre::GPT_FRAGMENT_PROGRAM, program);
 
             pass->setSceneBlendingOperation(Ogre::SBO_MAX);
+
+            auto params = pass->getFragmentProgramParameters();
+            if(auto defs = params->getConstantDefinitions().map; defs.find("u_diffuse") != defs.end())
+            {
+                params->setNamedAutoConstant("u_diffuse", Ogre::GpuProgramParameters::ACT_SURFACE_DIFFUSE_COLOUR);
+            }
         }
 
         newTechnique->setDepthCheckEnabled(true);

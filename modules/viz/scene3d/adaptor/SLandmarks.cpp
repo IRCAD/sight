@@ -161,6 +161,7 @@ void SLandmarks::starting()
     m_transNode = this->getOrCreateTransformNode(rootSceneNode);
 
     m_material = data::Material::New();
+    m_material->setDiffuse(data::Color::New(1.F, 1.F, 1.F, 1.F));
 
     // Register the material adaptor.
     m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
