@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -177,6 +177,21 @@ std::filesystem::path getModuleResourcePath(
 ) noexcept
 {
     return module->getResourcesLocation() / path;
+}
+
+//------------------------------------------------------------------------------
+
+std::set<std::filesystem::path> getBinariesPaths() noexcept
+{
+    std::set<std::filesystem::path> binaries_paths;
+
+    const auto& runtime = core::runtime::detail::Runtime::get();
+    for(const auto& [lib, module] : runtime.getRepositoriesPath())
+    {
+        binaries_paths.emplace(std::filesystem::weakly_canonical(lib / ".." / "bin"));
+    }
+
+    return binaries_paths;
 }
 
 //------------------------------------------------------------------------------

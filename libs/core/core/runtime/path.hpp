@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -115,5 +115,12 @@ CORE_API std::filesystem::path getModuleResourcePath(
     std::shared_ptr<Module> module,
     const std::filesystem::path& path
 ) noexcept;
+
+/**
+ * @brief   Retrieve all valid filesystem binaries paths. These paths contain binaries like sightrun or sightlog.
+ *
+ * @return  set of valid system paths
+ */
+CORE_API std::set<std::filesystem::path> getBinariesPaths() noexcept;
 
 } // namespace sight::core::runtime

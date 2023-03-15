@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,7 +59,7 @@ void Plugin::start()
 
     // Start Ogre Log
     m_logManager = new Ogre::LogManager();
-    m_log        = m_logManager->createLog(ogre_log.string(), true, false, false);
+    m_log        = m_logManager->createLog(ogre_log.string(), true, false, true);
     m_listener   = new SightOgreListener();
     m_log->addListener(m_listener);
     m_log->setLogDetail(Ogre::LL_BOREME);
@@ -110,11 +110,11 @@ void SightOgreListener::messageLogged(
         switch(_lml)
         {
             case Ogre::LML_TRIVIAL:
-                SIGHT_INFO(_message);
+                SIGHT_DEBUG(_message);
                 break;
 
             case Ogre::LML_NORMAL:
-                SIGHT_DEBUG(_message);
+                SIGHT_INFO(_message);
                 break;
 
             case Ogre::LML_WARNING:

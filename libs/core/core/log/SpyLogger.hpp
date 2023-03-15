@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,7 @@
 
 #include <filesystem>
 #include <iostream>
+#include <mutex>
 #include <string>
 
 namespace sight::core::log
@@ -90,8 +91,6 @@ public:
     /// the logging.
     /// @param log_archive The archive name "template".
     /// @param level The minimum level to log.
-    /// @param password The password to use to encrypt the log.
-    /// @param ask_password If true, the password will be asked to the user.
     CORE_API void start_logger(
         const std::filesystem::path& log_archive = LOG_FILE,
         LevelType level                          = SL_TRACE
@@ -105,7 +104,24 @@ public:
     /// log archive name.
     /// Has no effect if the log file is not encrypted.
     /// @param password the new password
-    CORE_API void change_log_password(const core::crypto::secure_string& password);
+    /// @param old_password the old password
+    CORE_API void change_log_password(
+        const core::crypto::secure_string& password,
+        const core::crypto::secure_string& old_password = ""
+    );
+
+    /// Relocate the log to a new path. It will close the current log file and open a new one. If `copy_previous_log` is
+    /// true, the previous log file will be copied to the new path.
+    /// @param[in] new_path the new path of the log file.
+    /// @param[in] password the password used to optionally encrypt the log file.
+    /// @param[in] relocate_previous_logs if true, the previous log files will be merged into a new log in the new path.
+    /// @param[in] old_password the old password, if relevant. This will allow decrypting the previous log files.
+    CORE_API void relocate_log(
+        const std::filesystem::path& new_path,
+        const core::crypto::secure_string& password     = "",
+        bool relocate_previous_logs                     = false,
+        const core::crypto::secure_string& old_password = ""
+    );
 
     /// Returns true if the current log file is encrypted. IE if there is a child sightlog process running.
     CORE_API bool is_log_encrypted() const;
@@ -125,13 +141,11 @@ public:
 
     static CORE_API void fatal(const std::string& mes, const char* file = nullptr, int line = -1);
 
-    //------------------------------------------------------------------------------
+    /// Returns the singleton instance.
+    static CORE_API SpyLogger& get();
 
-    inline static SpyLogger& get()
-    {
-        static SpyLogger s_logger;
-        return s_logger;
-    }
+    /// Returns the path of the current sightlog executable.
+    static CORE_API std::filesystem::path get_logger_path();
 
 private:
 

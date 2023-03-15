@@ -79,8 +79,11 @@ static std::string s_password_error_message {
 };
 static std::string s_password_retry_message {
     "The provided password is wrong.\n\n"
-    "Retry with a different password ?"
+    "You may retry with a different password."
 };
+static std::string s_password_empty_title {"Empty password"};
+static std::string s_password_empty_message {"Password cannot be empty. Please enter a valid password."};
+
 /// @}
 
 // Guard the preference tree
@@ -218,18 +221,32 @@ Preferences::Preferences()
                        || (s_password_keeper_policy == PasswordKeeper::PasswordPolicy::GLOBAL
                            && password.empty()))
                     {
-                        const auto& [new_password, ok] = sight::ui::base::dialog::InputDialog::showInputDialog(
-                            s_password_title,
-                            s_password_message,
-                            password.c_str(), // NOLINT(readability-redundant-string-cstr)
-                            sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
-                        );
+                        secure_string new_password;
+                        bool ok = true;
+
+                        while(ok && new_password.empty())
+                        {
+                            std::tie(new_password, ok) = sight::ui::base::dialog::InputDialog::showInputDialog(
+                                s_password_title,
+                                s_password_message,
+                                password.c_str(), // NOLINT(readability-redundant-string-cstr)
+                                sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
+                            );
+
+                            if(ok && new_password.empty())
+                            {
+                                sight::ui::base::dialog::MessageDialog::show(
+                                    s_password_empty_title,
+                                    s_password_empty_message,
+                                    sight::ui::base::dialog::IMessageDialog::WARNING
+                                );
+                            }
+                        }
 
                         if(ok)
                         {
-                            const secure_string secure_password(new_password);
-                            setPasswordNolock(secure_password);
-                            PasswordKeeper::set_global_password(secure_password);
+                            setPasswordNolock(new_password);
+                            PasswordKeeper::set_global_password(new_password);
                         }
                         else if(s_exit_on_password_error)
                         {
@@ -299,39 +316,30 @@ Preferences::Preferences()
                     {
                         if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
                         {
-                            sight::ui::base::dialog::MessageDialog messageDialog;
-                            messageDialog.setTitle(s_password_error_title);
-                            messageDialog.setMessage(s_password_error_message);
-                            messageDialog.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);
-                            messageDialog.addButton(ui::base::dialog::IMessageDialog::OK);
-                            messageDialog.show();
+                            sight::ui::base::dialog::MessageDialog::show(
+                                s_password_error_title,
+                                s_password_error_message,
+                                sight::ui::base::dialog::IMessageDialog::CRITICAL
+                            );
                         }
                     }
                     else
                     {
                         if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
                         {
-                            sight::ui::base::dialog::MessageDialog messageDialog;
-                            messageDialog.setTitle(s_password_error_title);
-                            messageDialog.setMessage(s_password_retry_message);
-                            messageDialog.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
-                            messageDialog.addButton(ui::base::dialog::IMessageDialog::RETRY);
-                            messageDialog.addButton(ui::base::dialog::IMessageDialog::CANCEL);
+                            sight::ui::base::dialog::MessageDialog::show(
+                                s_password_error_title,
+                                s_password_retry_message,
+                                sight::ui::base::dialog::IMessageDialog::WARNING
+                            );
 
-                            if(messageDialog.show() == sight::ui::base::dialog::IMessageDialog::RETRY)
-                            {
-                                // Retry...
-                                load();
-                                return;
-                            }
+                            // Retry...
+                            load();
+                            return;
+                        }
 
-                            s_password_retry = 0;
-                        }
-                        else
-                        {
-                            // Give a chance to retry with a different password
-                            SIGHT_THROW_EXCEPTION(BadPassword(e.what()));
-                        }
+                        // Give a chance to retry with a different password
+                        SIGHT_THROW_EXCEPTION(BadPassword(e.what()));
                     }
 
                     // Too much retries or canceled
