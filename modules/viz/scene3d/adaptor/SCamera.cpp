@@ -79,6 +79,25 @@ SCamera::~SCamera() noexcept =
 void SCamera::configuring()
 {
     this->configureParams();
+
+    const ConfigType config   = this->getConfiguration();
+    const auto projectionType = config.get<std::string>("config.<xmlattr>.projection", "perspective");
+
+    if(projectionType == "orthographic")
+    {
+        m_useOrthographicProjection = true;
+    }
+    else if(projectionType == "perspective")
+    {
+        m_useOrthographicProjection = false;
+    }
+    else
+    {
+        SIGHT_ERROR(
+            "Projection type '" + projectionType
+            + "' is not managed use either 'perspective'(default) or 'orthographic'"
+        );
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -88,6 +107,13 @@ void SCamera::starting()
     this->initialize();
 
     m_camera = this->getLayer()->getDefaultCamera();
+
+    if(m_useOrthographicProjection)
+    {
+        m_camera->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
+        // inform layer since some computations are a bit different from perspective.
+        this->getLayer()->setOrthographicCamera(true);
+    }
 
     m_cameraNodeListener = new CameraNodeListener(this);
     m_camera->setListener(m_cameraNodeListener);

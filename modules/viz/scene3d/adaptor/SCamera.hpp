@@ -156,6 +156,8 @@ private:
     data::ptr<data::Camera, data::Access::in> m_cameraCalibration {this, s_CALIBRATION_INPUT, true, true};
     data::ptr<data::CameraSet, data::Access::in> m_camera_set {this, s_CAMERA_SET_INPUT, true, true};
     data::ptr<data::Matrix4, data::Access::inout> m_transform {this, s_TRANSFORM_INOUT, true};
+
+    bool m_useOrthographicProjection {false};
 };
 
 //------------------------------------------------------------------------------

@@ -301,6 +301,11 @@ public:
     /// Cancels interaction for all interactors with a lower priority than the one calling this.
     VIZ_SCENE3D_API void cancelFurtherInteraction();
 
+    /// Need to be enable if using SCamera with orthographic mode.
+    VIZ_SCENE3D_API void setOrthographicCamera(bool _ortho);
+    /// Returns value of setOrthographicCamera.
+    VIZ_SCENE3D_API bool isOrthographicCameraForce() const;
+
 private:
 
     /// Slot: interacts with the scene.
@@ -421,6 +426,9 @@ private:
 
     /// Defines the dpi number of the rendering screen.
     float m_dpi {96.F};
+
+    /// True when we are using dedicated SCamera adaptor with orthographic projection.
+    bool m_cameraOrthographic {false};
 };
 
 } // namespace sight::viz::scene3d.

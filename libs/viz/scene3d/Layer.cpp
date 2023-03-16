@@ -819,7 +819,7 @@ void Layer::resetCameraCoordinates()
 {
     const Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
 
-    if((m_camera != nullptr) && m_camera->getProjectionType() == Ogre::PT_PERSPECTIVE)
+    if((m_camera != nullptr))
     {
         // Check if bounding box is valid, otherwise, do nothing.
         if(worldCoordBoundingBox == Ogre::AxisAlignedBox::EXTENT_NULL
@@ -865,7 +865,7 @@ void Layer::computeCameraParameters()
 {
     const Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
 
-    if((m_camera != nullptr) && m_camera->getProjectionType() == Ogre::PT_PERSPECTIVE)
+    if((m_camera != nullptr))
     {
         // Check if bounding box is valid, otherwise, do nothing.
         if(worldCoordBoundingBox != Ogre::AxisAlignedBox::EXTENT_NULL
@@ -902,7 +902,7 @@ void Layer::resetCameraClippingRange() const
 
 void Layer::resetCameraClippingRange(const Ogre::AxisAlignedBox& worldCoordBoundingBox) const
 {
-    if((m_camera != nullptr) && m_camera->getProjectionType() == Ogre::PT_PERSPECTIVE)
+    if((m_camera != nullptr))
     {
         // Check if bounding box is valid, otherwise, do nothing.
         if(worldCoordBoundingBox == Ogre::AxisAlignedBox::EXTENT_NULL
@@ -987,8 +987,20 @@ void Layer::resetCameraClippingRange(const Ogre::AxisAlignedBox& worldCoordBound
             minFar  = 10000;
         }
 
-        m_camera->setNearClipDistance(maxNear);
-        m_camera->setFarClipDistance(minFar);
+        if(m_cameraOrthographic && m_camera->getProjectionType() != Ogre::PT_PERSPECTIVE)
+        {
+            // Use height as the difference on y coordinates.
+            const auto y1     = worldCoordBoundingBox.getMinimum().y;
+            const auto y2     = worldCoordBoundingBox.getMaximum().y;
+            Ogre::Real h      = y2 - y1;
+            Ogre::Real margin = 0.1F;
+            m_camera->setOrthoWindowHeight(h + h * margin);
+        }
+        else
+        {
+            m_camera->setNearClipDistance(maxNear);
+            m_camera->setFarClipDistance(minFar);
+        }
 
         if(maxNear != prevNear || minFar != prevFar)
         {
@@ -1398,6 +1410,20 @@ const Layer::OverlaySetType& Layer::getEnabledOverlays() const
 void Layer::cancelFurtherInteraction()
 {
     m_cancelFurtherInteraction = true;
+}
+
+//-----------------------------------------------------------------------------
+
+void Layer::setOrthographicCamera(bool _ortho)
+{
+    m_cameraOrthographic = _ortho;
+}
+
+//-----------------------------------------------------------------------------
+
+bool Layer::isOrthographicCameraForce() const
+{
+    return m_cameraOrthographic;
 }
 
 //-----------------------------------------------------------------------------

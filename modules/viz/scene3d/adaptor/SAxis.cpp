@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,6 +42,28 @@ namespace sight::module::viz::scene3d::adaptor
 
 //-----------------------------------------------------------------------------
 
+SAxis::SAxis() noexcept
+{
+    newSlot("updateOriginColor", &SAxis::updateOriginColor, this);
+}
+
+//-----------------------------------------------------------------------------
+
+void SAxis::updateOriginColor(sight::data::Color::sptr _newColor)
+{
+    if(m_origin == nullptr)
+    {
+        return;
+    }
+
+    m_originMaterial->setAmbient(_newColor);
+
+    const auto sig = m_originMaterial->signal<core::com::Signal<void()> >(data::Material::s_MODIFIED_SIG);
+    sig->asyncEmit();
+}
+
+//-----------------------------------------------------------------------------
+
 void SAxis::configuring()
 {
     this->configureParams();
@@ -60,6 +82,7 @@ void SAxis::configuring()
     static const std::string s_FONT_SIZE_CONFIG    = s_CONFIG + "fontSize";
     static const std::string s_FONT_SOURCE_CONFIG  = s_CONFIG + "fontSource";
     static const std::string s_ORIGIN_CONFIG       = s_CONFIG + "origin";
+    static const std::string s_AXIS_CONFIG         = s_CONFIG + "axis";
     static const std::string s_ORIGIN_COLOR_CONFIG = s_CONFIG + "originColor";
     static const std::string s_AXIS_NAME           = s_CONFIG + "name";
 
@@ -68,6 +91,7 @@ void SAxis::configuring()
     m_fontSize         = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
     m_fontSource       = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_originVisibility = config.get<bool>(s_ORIGIN_CONFIG, m_originVisibility);
+    m_axisVisibility   = config.get<bool>(s_AXIS_CONFIG, m_axisVisibility);
     m_axisName         = config.get<std::string>(s_AXIS_NAME, m_axisName);
 
     m_originColor = config.get<std::string>(s_ORIGIN_COLOR_CONFIG, m_originColor);
@@ -77,6 +101,9 @@ void SAxis::configuring()
         m_originColor[0] == '#'
         && (m_originColor.length() == 7 || m_originColor.length() == 9)
     );
+
+    // Force disable label if axisVisibility is false.
+    m_enableLabel = m_axisVisibility ? m_enableLabel : false;
 }
 
 //-----------------------------------------------------------------------------
@@ -98,16 +125,20 @@ void SAxis::starting()
         m_origin = sceneMgr->createManualObject(this->getID() + "_origin");
     }
 
-    m_xLine = sceneMgr->createManualObject(this->getID() + "_xLine");
-    m_yLine = sceneMgr->createManualObject(this->getID() + "_yLine");
-    m_zLine = sceneMgr->createManualObject(this->getID() + "_zLine");
+    if(m_axisVisibility)
+    {
+        m_xLine = sceneMgr->createManualObject(this->getID() + "_xLine");
+        m_yLine = sceneMgr->createManualObject(this->getID() + "_yLine");
+        m_zLine = sceneMgr->createManualObject(this->getID() + "_zLine");
 
-    m_xCone = sceneMgr->createManualObject(this->getID() + "_xCone");
-    m_yCone = sceneMgr->createManualObject(this->getID() + "_yCone");
-    m_zCone = sceneMgr->createManualObject(this->getID() + "_zCone");
+        m_xCone = sceneMgr->createManualObject(this->getID() + "_xCone");
+        m_yCone = sceneMgr->createManualObject(this->getID() + "_yCone");
+        m_zCone = sceneMgr->createManualObject(this->getID() + "_zCone");
+    }
 
     // set the material
-    m_material = data::Material::New();
+    m_material       = data::Material::New();
+    m_originMaterial = data::Material::New();
 
     const module::viz::scene3d::adaptor::SMaterial::sptr materialAdaptor =
         this->registerService<module::viz::scene3d::adaptor::SMaterial>(
@@ -125,6 +156,22 @@ void SAxis::starting()
     materialAdaptor->getMaterialFw()->setHasVertexColor(true);
     materialAdaptor->update();
 
+    const module::viz::scene3d::adaptor::SMaterial::sptr originMaterialAdaptor =
+        this->registerService<module::viz::scene3d::adaptor::SMaterial>(
+            "sight::module::viz::scene3d::adaptor::SMaterial",
+            this->getID() + "_originMaterialAdp"
+        );
+    originMaterialAdaptor->setInOut(m_originMaterial, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
+    originMaterialAdaptor->configure(
+        this->getID() + originMaterialAdaptor->getID(),
+        this->getID() + originMaterialAdaptor->getID(),
+        this->getRenderService(),
+        m_layerID,
+        "ambient"
+    );
+    originMaterialAdaptor->start();
+    originMaterialAdaptor->update();
+
     const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
 
     // Sizes
@@ -138,14 +185,20 @@ void SAxis::starting()
     // Draw
 
     // origin
+
     if(m_originVisibility)
     {
         const data::Color::sptr originColor = data::Color::New();
         originColor->setRGBA(m_originColor);
+        m_originMaterial->setAmbient(originColor);
+        m_originMaterial->setDiffuse(data::Color::New(0.F, 0.F, 0.F, 1.F));
+
+        const auto sig = m_originMaterial->signal<core::com::Signal<void()> >(data::Material::s_MODIFIED_SIG);
+        sig->asyncEmit();
 
         sight::viz::scene3d::helper::ManualObject::createSphere(
             m_origin,
-            materialAdaptor->getMaterialName(),
+            originMaterialAdaptor->getMaterialName(),
             Ogre::ColourValue(
                 originColor->red(),
                 originColor->green(),
@@ -159,136 +212,139 @@ void SAxis::starting()
         m_sceneNode->attachObject(m_origin);
     }
 
-    // X axis
-    sight::viz::scene3d::helper::ManualObject::createCylinder(
-        m_xLine,
-        materialAdaptor->getMaterialName(),
-        Ogre::ColourValue(Ogre::ColourValue::Red),
-        cylinderRadius,
-        cylinderLength,
-        sample
-    );
-    Ogre::SceneNode* const xLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_xLine");
-    xLineNode->attachObject(m_xLine);
-    xLineNode->pitch(Ogre::Degree(90));
-
-    // Y axis
-    sight::viz::scene3d::helper::ManualObject::createCylinder(
-        m_yLine,
-        materialAdaptor->getMaterialName(),
-        Ogre::ColourValue(Ogre::ColourValue::Green),
-        cylinderRadius,
-        cylinderLength,
-        sample
-    );
-    Ogre::SceneNode* const yLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_yLine");
-    yLineNode->attachObject(m_yLine);
-    yLineNode->roll(Ogre::Degree(90));
-
-    // Z axis
-    sight::viz::scene3d::helper::ManualObject::createCylinder(
-        m_zLine,
-        materialAdaptor->getMaterialName(),
-        Ogre::ColourValue(Ogre::ColourValue::Blue),
-        cylinderRadius,
-        cylinderLength,
-        sample
-    );
-    Ogre::SceneNode* const zLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_zLine");
-    zLineNode->attachObject(m_zLine);
-    zLineNode->yaw(Ogre::Degree(-90));
-
     Ogre::OverlayContainer* const textContainer = this->getLayer()->getOverlayTextPanel();
     Ogre::Camera* const cam                     = this->getLayer()->getDefaultCamera();
 
-    // X cone
-    sight::viz::scene3d::helper::ManualObject::createCone(
-        m_xCone,
-        materialAdaptor->getMaterialName(),
-        Ogre::ColourValue(Ogre::ColourValue::Red),
-        coneRadius,
-        coneLength,
-        sample
-    );
-    Ogre::SceneNode* const xConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_xCone");
-
-    if(m_enableLabel)
+    if(m_axisVisibility)
     {
-        m_axisLabels[0] = sight::viz::scene3d::Text::New(
-            this->getID() + "_xAxisLabel",
-            sceneMgr,
-            textContainer,
-            m_fontSource,
-            m_fontSize,
-            dpi,
-            cam
+        // X axis
+        sight::viz::scene3d::helper::ManualObject::createCylinder(
+            m_xLine,
+            materialAdaptor->getMaterialName(),
+            Ogre::ColourValue(Ogre::ColourValue::Red),
+            cylinderRadius,
+            cylinderLength,
+            sample
         );
-        m_axisLabels[0]->setText("X");
-        xConeNode->attachObject(m_axisLabels[0]);
-    }
+        Ogre::SceneNode* const xLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_xLine");
+        xLineNode->attachObject(m_xLine);
+        xLineNode->pitch(Ogre::Degree(90));
 
-    xConeNode->attachObject(m_xCone);
-    xConeNode->translate(cylinderLength, 0.F, 0.F);
-
-    // Y cone
-    sight::viz::scene3d::helper::ManualObject::createCone(
-        m_yCone,
-        materialAdaptor->getMaterialName(),
-        Ogre::ColourValue(Ogre::ColourValue::Green),
-        coneRadius,
-        coneLength,
-        sample
-    );
-    Ogre::SceneNode* const yConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_yCone");
-    yConeNode->attachObject(m_yCone);
-
-    if(m_enableLabel)
-    {
-        m_axisLabels[1] = sight::viz::scene3d::Text::New(
-            this->getID() + "_yAxisLabel",
-            sceneMgr,
-            textContainer,
-            m_fontSource,
-            m_fontSize,
-            dpi,
-            cam
+        // Y axis
+        sight::viz::scene3d::helper::ManualObject::createCylinder(
+            m_yLine,
+            materialAdaptor->getMaterialName(),
+            Ogre::ColourValue(Ogre::ColourValue::Green),
+            cylinderRadius,
+            cylinderLength,
+            sample
         );
-        m_axisLabels[1]->setText("Y");
-        yConeNode->attachObject(m_axisLabels[1]);
-    }
+        Ogre::SceneNode* const yLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_yLine");
+        yLineNode->attachObject(m_yLine);
+        yLineNode->roll(Ogre::Degree(90));
 
-    yConeNode->translate(0.F, cylinderLength, 0.F);
-    yConeNode->roll(Ogre::Degree(90));
-
-    // Z cone
-    sight::viz::scene3d::helper::ManualObject::createCone(
-        m_zCone,
-        materialAdaptor->getMaterialName(),
-        Ogre::ColourValue(Ogre::ColourValue::Blue),
-        coneRadius,
-        coneLength,
-        sample
-    );
-    Ogre::SceneNode* const zConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_zCone");
-    zConeNode->attachObject(m_zCone);
-
-    if(m_enableLabel)
-    {
-        m_axisLabels[2] = sight::viz::scene3d::Text::New(
-            this->getID() + "_zAxisLabel",
-            sceneMgr,
-            textContainer,
-            m_fontSource,
-            m_fontSize,
-            dpi,
-            cam
+        // Z axis
+        sight::viz::scene3d::helper::ManualObject::createCylinder(
+            m_zLine,
+            materialAdaptor->getMaterialName(),
+            Ogre::ColourValue(Ogre::ColourValue::Blue),
+            cylinderRadius,
+            cylinderLength,
+            sample
         );
-        m_axisLabels[2]->setText("Z");
-        zConeNode->attachObject(m_axisLabels[2]);
-    }
+        Ogre::SceneNode* const zLineNode = m_sceneNode->createChildSceneNode(this->getID() + "_zLine");
+        zLineNode->attachObject(m_zLine);
+        zLineNode->yaw(Ogre::Degree(-90));
 
-    zConeNode->translate(0.F, 0.F, cylinderLength);
-    zConeNode->yaw(Ogre::Degree(-90));
+        // X cone
+        sight::viz::scene3d::helper::ManualObject::createCone(
+            m_xCone,
+            materialAdaptor->getMaterialName(),
+            Ogre::ColourValue(Ogre::ColourValue::Red),
+            coneRadius,
+            coneLength,
+            sample
+        );
+        Ogre::SceneNode* const xConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_xCone");
+
+        if(m_enableLabel)
+        {
+            m_axisLabels[0] = sight::viz::scene3d::Text::New(
+                this->getID() + "_xAxisLabel",
+                sceneMgr,
+                textContainer,
+                m_fontSource,
+                m_fontSize,
+                dpi,
+                cam
+            );
+            m_axisLabels[0]->setText("X");
+            xConeNode->attachObject(m_axisLabels[0]);
+        }
+
+        xConeNode->attachObject(m_xCone);
+        xConeNode->translate(cylinderLength, 0.F, 0.F);
+
+        // Y cone
+        sight::viz::scene3d::helper::ManualObject::createCone(
+            m_yCone,
+            materialAdaptor->getMaterialName(),
+            Ogre::ColourValue(Ogre::ColourValue::Green),
+            coneRadius,
+            coneLength,
+            sample
+        );
+        Ogre::SceneNode* const yConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_yCone");
+        yConeNode->attachObject(m_yCone);
+
+        if(m_enableLabel)
+        {
+            m_axisLabels[1] = sight::viz::scene3d::Text::New(
+                this->getID() + "_yAxisLabel",
+                sceneMgr,
+                textContainer,
+                m_fontSource,
+                m_fontSize,
+                dpi,
+                cam
+            );
+            m_axisLabels[1]->setText("Y");
+            yConeNode->attachObject(m_axisLabels[1]);
+        }
+
+        yConeNode->translate(0.F, cylinderLength, 0.F);
+        yConeNode->roll(Ogre::Degree(90));
+
+        // Z cone
+        sight::viz::scene3d::helper::ManualObject::createCone(
+            m_zCone,
+            materialAdaptor->getMaterialName(),
+            Ogre::ColourValue(Ogre::ColourValue::Blue),
+            coneRadius,
+            coneLength,
+            sample
+        );
+        Ogre::SceneNode* const zConeNode = m_sceneNode->createChildSceneNode(this->getID() + "_zCone");
+        zConeNode->attachObject(m_zCone);
+
+        if(m_enableLabel)
+        {
+            m_axisLabels[2] = sight::viz::scene3d::Text::New(
+                this->getID() + "_zAxisLabel",
+                sceneMgr,
+                textContainer,
+                m_fontSource,
+                m_fontSize,
+                dpi,
+                cam
+            );
+            m_axisLabels[2]->setText("Z");
+            zConeNode->attachObject(m_axisLabels[2]);
+        }
+
+        zConeNode->translate(0.F, 0.F, cylinderLength);
+        zConeNode->yaw(Ogre::Degree(-90));
+    }
 
     // Display Name if provided.
     if(!m_axisName.empty())
@@ -301,6 +357,17 @@ void SAxis::starting()
             m_fontSize,
             dpi,
             cam
+        );
+
+        const data::Color::sptr txtColor = data::Color::New();
+        txtColor->setRGBA(m_originColor);
+
+        m_axisNameTxt->setTextColor(
+            Ogre::ColourValue(
+                txtColor->red(),
+                txtColor->green(),
+                txtColor->blue()
+            )
         );
         m_axisNameTxt->setText(m_axisName);
         m_sceneNode->attachObject(m_axisNameTxt);
@@ -328,12 +395,15 @@ void SAxis::stopping()
 
     if(m_sceneNode != nullptr)
     {
-        m_sceneNode->removeAndDestroyChild(this->getID() + "_xLine");
-        m_sceneNode->removeAndDestroyChild(this->getID() + "_yLine");
-        m_sceneNode->removeAndDestroyChild(this->getID() + "_zLine");
-        m_sceneNode->removeAndDestroyChild(this->getID() + "_xCone");
-        m_sceneNode->removeAndDestroyChild(this->getID() + "_yCone");
-        m_sceneNode->removeAndDestroyChild(this->getID() + "_zCone");
+        if(m_axisVisibility)
+        {
+            m_sceneNode->removeAndDestroyChild(this->getID() + "_xLine");
+            m_sceneNode->removeAndDestroyChild(this->getID() + "_yLine");
+            m_sceneNode->removeAndDestroyChild(this->getID() + "_zLine");
+            m_sceneNode->removeAndDestroyChild(this->getID() + "_xCone");
+            m_sceneNode->removeAndDestroyChild(this->getID() + "_yCone");
+            m_sceneNode->removeAndDestroyChild(this->getID() + "_zCone");
+        }
     }
 
     if(m_enableLabel)
@@ -359,13 +429,16 @@ void SAxis::stopping()
         sceneMgr->destroyManualObject(m_origin);
     }
 
-    sceneMgr->destroyManualObject(m_xLine);
-    sceneMgr->destroyManualObject(m_yLine);
-    sceneMgr->destroyManualObject(m_zLine);
+    if(m_axisVisibility)
+    {
+        sceneMgr->destroyManualObject(m_xLine);
+        sceneMgr->destroyManualObject(m_yLine);
+        sceneMgr->destroyManualObject(m_zLine);
 
-    sceneMgr->destroyManualObject(m_xCone);
-    sceneMgr->destroyManualObject(m_yCone);
-    sceneMgr->destroyManualObject(m_zCone);
+        sceneMgr->destroyManualObject(m_xCone);
+        sceneMgr->destroyManualObject(m_yCone);
+        sceneMgr->destroyManualObject(m_zCone);
+    }
 
     Ogre::SceneNode* const transformNode = this->getTransformNode();
     if(transformNode != nullptr)

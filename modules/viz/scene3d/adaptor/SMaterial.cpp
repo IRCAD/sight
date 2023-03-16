@@ -81,12 +81,13 @@ void SMaterial::configuring()
     static const std::string s_MATERIAL_NAME_CONFIG          = s_CONFIG + "materialName";
     static const std::string s_TEXTURE_NAME_CONFIG           = s_CONFIG + "textureName";
     static const std::string s_SHADING_MODE_CONFIG           = s_CONFIG + "shadingMode";
+    static const std::string s_REPRESENTATION_MODE_CONFIG    = s_CONFIG + "representationMode";
 
     m_materialTemplateName = config.get(s_MATERIAL_TEMPLATE_NAME_CONFIG, m_materialTemplateName);
     m_materialName         = config.get(s_MATERIAL_NAME_CONFIG, this->getID());
     m_textureName          = config.get(s_TEXTURE_NAME_CONFIG, m_textureName);
     m_shadingMode          = config.get(s_SHADING_MODE_CONFIG, m_shadingMode);
-    m_representationMode   = config.get<std::string>("representationMode", m_representationMode);
+    m_representationMode   = config.get(s_REPRESENTATION_MODE_CONFIG, m_representationMode);
 
     auto it = m_representationDict.find(m_representationMode);
     if(it == m_representationDict.end())
