@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,7 +40,7 @@ namespace sight::ui::qt
 {
 
 /// Creates an auto-movable container.
-class UI_QT_CLASS_API Container : public QWidget
+class UI_QT_CLASS_QT_API Container : public QWidget
 {
 Q_OBJECT
 
@@ -96,7 +96,7 @@ private:
 };
 
 /// Creates a clickable QLabel.
-class UI_QT_CLASS_API ClickableQLabel : public QLabel
+class UI_QT_CLASS_QT_API ClickableQLabel : public QLabel
 {
 Q_OBJECT
 

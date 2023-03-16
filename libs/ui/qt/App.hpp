@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,13 +32,13 @@ namespace sight::ui::qt
 /**
  * @brief   Defines the Qt application.
  */
-class UI_QT_CLASS_API App : public QApplication
+class UI_QT_CLASS_QT_API App : public QApplication
 {
 Q_OBJECT
 
 public:
 
-    UI_QT_API App(int& argc, char** argv, bool guiEnabled);
+    UI_QT_QT_API App(int& argc, char** argv, bool guiEnabled);
 
 public Q_SLOTS:
 

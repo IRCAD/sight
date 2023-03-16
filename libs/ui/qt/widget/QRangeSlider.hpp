@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,7 +32,7 @@
 namespace sight::ui::qt::widget
 {
 
-class UI_QT_CLASS_API QRangeSlider : public QWidget
+class UI_QT_CLASS_QT_API QRangeSlider : public QWidget
 {
 Q_OBJECT
 
@@ -65,8 +65,8 @@ public:
         QPointer<QWidget> m_widget;
     };
 
-    UI_QT_API QRangeSlider(QWidget* parent = nullptr);
-    UI_QT_API ~QRangeSlider() override;
+    UI_QT_QT_API QRangeSlider(QWidget* parent = nullptr);
+    UI_QT_QT_API ~QRangeSlider() override;
 
     //------------------------------------------------------------------------------
 
@@ -84,7 +84,7 @@ public:
 
 public Q_SLOTS:
 
-    UI_QT_API void setPos(double _min, double _max);
+    UI_QT_QT_API void setPos(double _min, double _max);
 
 Q_SIGNALS:
 
