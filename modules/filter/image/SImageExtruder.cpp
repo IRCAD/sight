@@ -81,15 +81,15 @@ void SImageExtruder::updating()
 
     if(data::helper::MedicalImage::checkImageValidity(image.get_shared()))
     {
-        // Copy the image into the output.
+        // Initializes the mask
         {
             const auto imageOut = m_extrudedImage.lock();
             SIGHT_ASSERT("The image must be in 3 dimensions", image->numDimensions() == 3);
 
-            imageOut->deepCopy(image.get_shared());
-
-            const auto sig = imageOut->signal<data::Image::ModifiedSignalType>(data::Image::s_MODIFIED_SIG);
-            sig->asyncEmit();
+            imageOut->resize(image->getSize(), core::Type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
+            imageOut->setSpacing(image->getSpacing());
+            imageOut->setOrigin(image->getOrigin());
+            std::fill(imageOut->begin(), imageOut->end(), std::uint8_t(255));
         }
 
         const auto meshes = m_meshes.lock();
@@ -122,23 +122,17 @@ void SImageExtruder::addReconstructions(data::ModelSeries::ReconstructionVectorT
 
             data::mt::locked_ptr lockedMesh(mesh);
 
-            this->extrudeMesh(lockedMesh.get_shared(), imageOut.get_shared());
+            sight::filter::image::ImageExtruder::extrude(imageOut.get_shared(), lockedMesh.get_shared());
         }
     }
-}
-
-//------------------------------------------------------------------------------
-
-void SImageExtruder::extrudeMesh(const data::Mesh::csptr _mesh, const data::Image::sptr _image) const
-{
-    // Extrude the image.
-    sight::filter::image::ImageExtruder::extrude(_image, _mesh);
 
     // Send signals.
-    const auto sig = _image->signal<data::Image::BufferModifiedSignalType>(data::Image::s_BUFFER_MODIFIED_SIG);
+    const auto sig = imageOut->signal<data::Image::BufferModifiedSignalType>(data::Image::s_MODIFIED_SIG);
     sig->asyncEmit();
 
     m_sigComputed->asyncEmit();
 }
+
+//------------------------------------------------------------------------------
 
 } // namespace sight::module::filter::image.

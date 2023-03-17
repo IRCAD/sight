@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -116,12 +116,17 @@ void ImageExtruderTest::extrudeTriangleMesh()
     }
 
     const data::Image::sptr image = data::Image::New();
-    image->deepCopy(m_image);
+
+    image->resize(m_image->getSize(), core::Type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
+    image->setSpacing(m_image->getSpacing());
+
+    const auto dumpLock = image->dump_lock();
+    std::fill(image->begin(), image->end(), std::uint8_t(255));
 
     filter::image::ImageExtruder::extrude(image, mesh);
 
-    const auto dumpLock       = image->dump_lock();
     const auto dumpOriginLock = m_image->dump_lock();
+
     for(std::size_t z = 0 ; z < m_size[2] ; ++z)
     {
         for(std::size_t y = 0 ; y < m_size[1] ; ++y)
@@ -132,14 +137,11 @@ void ImageExtruderTest::extrudeTriangleMesh()
                    && double(y) >= m_origin[1] + 1 && y < m_size[1] - 1
                    && double(z) >= m_origin[2] + 1 && z < m_size[2] - 1)
                 {
-                    CPPUNIT_ASSERT_EQUAL(
-                        std::numeric_limits<std::int8_t>::lowest(),
-                        image->at<std::int8_t>(x, y, z)
-                    );
+                    CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), image->at<std::uint8_t>(x, y, z));
                 }
                 else
                 {
-                    CPPUNIT_ASSERT_EQUAL(m_image->at<std::int8_t>(x, y, z), image->at<std::int8_t>(x, y, z));
+                    CPPUNIT_ASSERT_EQUAL(std::uint8_t(255), image->at<std::uint8_t>(x, y, z));
                 }
             }
         }
@@ -209,12 +211,16 @@ void ImageExtruderTest::extrudeQuadMesh()
     }
 
     const data::Image::sptr image = data::Image::New();
-    image->deepCopy(m_image);
+    image->resize(m_image->getSize(), core::Type::UINT8, data::Image::PixelFormat::GRAY_SCALE);
+    image->setSpacing(m_image->getSpacing());
+
+    const auto dumpLock = image->dump_lock();
+    std::fill(image->begin(), image->end(), std::uint8_t(255));
 
     filter::image::ImageExtruder::extrude(image, mesh);
 
-    const auto dumpLock       = image->dump_lock();
     const auto dumpOriginLock = m_image->dump_lock();
+
     for(std::size_t z = 0 ; z < m_size[2] ; ++z)
     {
         for(std::size_t y = 0 ; y < m_size[1] ; ++y)
@@ -225,14 +231,11 @@ void ImageExtruderTest::extrudeQuadMesh()
                    && double(y) >= m_origin[1] + 1 && y < m_size[1] - 1
                    && double(z) >= m_origin[2] + 1 && z < m_size[2] - 1)
                 {
-                    CPPUNIT_ASSERT_EQUAL(
-                        std::numeric_limits<std::int8_t>::lowest(),
-                        image->at<std::int8_t>(x, y, z)
-                    );
+                    CPPUNIT_ASSERT_EQUAL(std::uint8_t(0), image->at<std::uint8_t>(x, y, z));
                 }
                 else
                 {
-                    CPPUNIT_ASSERT_EQUAL(m_image->at<std::int8_t>(x, y, z), image->at<std::int8_t>(x, y, z));
+                    CPPUNIT_ASSERT_EQUAL(std::uint8_t(255), image->at<std::uint8_t>(x, y, z));
                 }
             }
         }

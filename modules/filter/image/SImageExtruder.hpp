@@ -53,7 +53,7 @@ namespace sight::module::filter::image
     <service uid="..." type="sight::module::filter::image::SImageExtruder">
         <in key="meshes" uid="..." />
         <in key="image" uid="..." />
-        <inout key="extrudedImage" uid="..." />
+        <inout key="mask" uid="..." />
     </service>
    @endcode
  *
@@ -62,7 +62,7 @@ namespace sight::module::filter::image
  * - \b image [sight::data::Image]: image to extrude, must be in 3 dimensions.
  *
  * @subsection In-Out In-Out
- * - \b extrudedImage [sight::data::Image]: extruded image.
+ * - \b mask [sight::data::Image]: resulting mask. Cropped regions are zeroed and full regions are marked with 255.
  */
 class MODULE_FILTER_IMAGE_CLASS_API SImageExtruder final : public service::IFilter
 {
@@ -106,15 +106,12 @@ private:
     /// SLOT: called when reconstructions are added to the model series.
     void addReconstructions(data::ModelSeries::ReconstructionVectorType _reconstructions) const;
 
-    /// Extrudes one mesh from the image.
-    void extrudeMesh(const data::Mesh::csptr _mesh, const data::Image::sptr _image) const;
-
     static constexpr std::string_view s_MESHES_INPUT = "meshes";
     static constexpr std::string_view s_IMAGE_INPUT  = "image";
-    static constexpr std::string_view s_IMAGE_INOUT  = "extrudedImage";
+    static constexpr std::string_view s_IMAGE_INOUT  = "mask";
 
-    sight::data::ptr<sight::data::ModelSeries, sight::data::Access::in> m_meshes {this, s_MESHES_INPUT};
-    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};
+    sight::data::ptr<sight::data::ModelSeries, sight::data::Access::in> m_meshes {this, s_MESHES_INPUT, true};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT, true};
     sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_extrudedImage {this, s_IMAGE_INOUT};
 };
 

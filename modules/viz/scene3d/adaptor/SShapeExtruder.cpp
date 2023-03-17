@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,6 +41,7 @@ namespace sight::module::viz::scene3d::adaptor
 static const core::com::Slots::SlotKeyType s_ENABLE_TOOL_SLOT       = "enableTool";
 static const core::com::Slots::SlotKeyType s_DELETE_LAST_MESH_SLOT  = "deleteLastMesh";
 static const core::com::Slots::SlotKeyType s_CANCEL_LAST_CLICK_SLOT = "cancelLastClick";
+static const core::com::Slots::SlotKeyType s_RESET_SLOT             = "reset";
 
 static const core::com::Slots::SlotKeyType s_TOOL_DISABLED_SIG = "toolDisabled";
 
@@ -145,6 +146,7 @@ SShapeExtruder::SShapeExtruder() noexcept
     newSlot(s_ENABLE_TOOL_SLOT, &SShapeExtruder::enableTool, this);
     newSlot(s_DELETE_LAST_MESH_SLOT, &SShapeExtruder::deleteLastMesh, this);
     newSlot(s_CANCEL_LAST_CLICK_SLOT, &SShapeExtruder::cancelLastClick, this);
+    newSlot(s_RESET_SLOT, &SShapeExtruder::reset, this);
     m_toolDisabledSig = this->newSignal<core::com::Signal<void()> >(s_TOOL_DISABLED_SIG);
 }
 
@@ -314,6 +316,26 @@ void SShapeExtruder::deleteLastMesh()
 void SShapeExtruder::cancelLastClick()
 {
     modifyLasso(Action::REMOVE);
+}
+
+//------------------------------------------------------------------------------
+
+void SShapeExtruder::reset()
+{
+    // Get the reconstruction list.
+    const auto extrudedMeshes = m_extrudedMeshes.lock();
+
+    data::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
+
+    if(!reconstructions.empty())
+    {
+        reconstructions.clear();
+        extrudedMeshes->setReconstructionDB(reconstructions);
+
+        // Send the signal.
+        auto sig = extrudedMeshes->signal<data::ModelSeries::ModifiedSignalType>(data::ModelSeries::s_MODIFIED_SIG);
+        sig->asyncEmit();
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -121,7 +121,6 @@ void ConfigLauncher::parseConfig(
         parameterCfg.add("<xmlattr>.replace", replace);
 
         const auto by = itCfg.second.get<std::string>("<xmlattr>.by");
-        SIGHT_ASSERT("[" + appCfgId + "] Missing 'by' tag.", !by.empty());
         parameterCfg.add("<xmlattr>.by", by);
 
         newCfg.add_child("parameters.parameter", parameterCfg);

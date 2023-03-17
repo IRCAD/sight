@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,6 +37,7 @@ namespace sight::filter::image
 void ImageExtruder::extrude(const data::Image::sptr& _image, const data::Mesh::csptr& _mesh)
 {
     SIGHT_ASSERT("The image must be in 3 dimensions", _image->numDimensions() == 3);
+    SIGHT_ASSERT("Spacing should be set", _image->getSpacing() != data::Image::Spacing({0., 0., 0.}));
 
     Parameters param;
     param.m_image = _image;
@@ -218,8 +219,8 @@ void ImageExtruder::operator()(Parameters& _param)
             return inside;
         };
 
-    // Check if each voxel are in the mesh and sets them to the lowest value.
-    const IMAGE_TYPE emptyValue = std::numeric_limits<IMAGE_TYPE>::lowest();
+    // Check if each voxel are in the mesh and sets the mask to zero.
+    const IMAGE_TYPE emptyValue = 0;
 
     using IndexType = typename data::Image::IndexType;
 

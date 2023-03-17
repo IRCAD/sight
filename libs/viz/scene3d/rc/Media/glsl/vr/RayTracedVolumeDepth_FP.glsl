@@ -11,6 +11,7 @@
 #define MAX_ITERATIONS 8192
 
 uniform sampler3D u_s3Image;
+uniform sampler3D u_s1Mask;
 uniform sampler2D u_s2TFTexture;
 uniform vec3 u_f3TFWindow;
 
@@ -52,13 +53,17 @@ float modelSpaceToNDC(in vec3 _f3Pos_Ms)
 
 //-----------------------------------------------------------------------------
 
-float firstOpaqueRayDepth(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in float _fRayLen, in float _fSampleDis, in sampler2D _s1TFTexture, in vec3 _f3TFWindow)
+float firstOpaqueRayDepth(in vec3 _f3RayPos_Ms, in vec3 _f3RayDir_Ms, in float _fRayLen, in float _fSampleDis, 
+                          in sampler2D _s1TFTexture, in vec3 _f3TFWindow)
 {
     int iIterCount = 0;
     float t = 0.;
     // Move the ray to the first non transparent voxel.
     for(; iIterCount < MAX_ITERATIONS && t < _fRayLen; iIterCount += 1, t += _fSampleDis)
     {
+        float mask = texture(u_s1Mask, _f3RayPos_Ms).r;
+        if(mask < 0.5 )
+            continue;
         float fIntensity = texture(u_s3Image, _f3RayPos_Ms).r;
         float fTFAlpha = sampleTransferFunction(fIntensity, _s1TFTexture, _f3TFWindow).a;
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -135,6 +135,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(
     Layer::sptr layer,
     Ogre::SceneNode* const parentNode,
     sight::data::Image::csptr image,
+    sight::data::Image::csptr mask,
     sight::data::TransferFunction::csptr tf,
     bool buffer,
     bool preintegration,
@@ -146,6 +147,7 @@ RayTracingVolumeRenderer::RayTracingVolumeRenderer(
                     layer->getSceneManager(),
                     parentNode,
                     image,
+                    mask,
                     tf,
                     buffer,
                     preintegration),
@@ -271,7 +273,7 @@ RayTracingVolumeRenderer::~RayTracingVolumeRenderer()
 
 //-----------------------------------------------------------------------------
 
-void RayTracingVolumeRenderer::imageUpdate(const data::Image::csptr image, const data::TransferFunction::csptr tf)
+void RayTracingVolumeRenderer::updateImage(const data::Image::csptr image, const data::TransferFunction::csptr tf)
 {
     if(!data::helper::MedicalImage::checkImageValidity(image))
     {
@@ -322,6 +324,20 @@ void RayTracingVolumeRenderer::imageUpdate(const data::Image::csptr image, const
     SIGHT_ASSERT("Technique not found", technique);
     const auto* const pass = technique->getPass(0);
     m_gpuVolumeTF->bind(pass, defines::VOLUME_TF_TEXUNIT_NAME, m_RTVSharedParameters);
+}
+
+//-----------------------------------------------------------------------------
+
+void RayTracingVolumeRenderer::updateMask(const data::Image::csptr mask)
+{
+    if(!data::helper::MedicalImage::checkImageValidity(mask))
+    {
+        return;
+    }
+
+    this->loadMask();
+
+    m_proxyGeometry->computeGrid();
 }
 
 //-----------------------------------------------------------------------------
@@ -650,7 +666,7 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
     //Fragment shaders parameters
     Ogre::GpuProgramParametersSharedPtr fpParams = _rayCastingPass->getFragmentProgramParameters();
 
-    //The argument passes to setNamedConstant. Increased each call.
+    // The argument passes to setNamedConstant. Increased each call.
     int numTexUnit = 0;
 
     // Volume data
@@ -658,8 +674,14 @@ void RayTracingVolumeRenderer::setRayCastingPassTextureUnits(Ogre::Pass* const _
         Ogre::TextureUnitState* const texUnitState = _rayCastingPass->createTextureUnitState();
         m_3DOgreTexture->bind(texUnitState, Ogre::TEX_TYPE_3D, Ogre::TFO_BILINEAR, Ogre::TextureUnitState::TAM_CLAMP);
     }
-
     fpParams->setNamedConstant("u_s3Image", numTexUnit++);
+
+    // Crop mask
+    {
+        Ogre::TextureUnitState* const texUnitState = _rayCastingPass->createTextureUnitState();
+        m_maskTexture->bind(texUnitState, Ogre::TEX_TYPE_3D, Ogre::TFO_BILINEAR, Ogre::TextureUnitState::TAM_CLAMP);
+    }
+    fpParams->setNamedConstant("u_s1Mask", numTexUnit++);
 
     // Transfer function
     if(m_options.fragment.find(defines::PREINTEGRATION) != std::string::npos)
@@ -898,6 +920,9 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
 
         //Texture unit state updates
         {
+            //The argument passes to setNamedConstant. Increased each call.
+            int numTexUnit = 0;
+
             Ogre::GpuProgramParametersSharedPtr fpParams = pass->getFragmentProgramParameters();
             //Input texture
             {
@@ -910,8 +935,20 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
                     Ogre::TFO_BILINEAR,
                     Ogre::TextureUnitState::TAM_CLAMP
                 );
-                fpParams->setNamedConstant("u_s3Image", 0);
+                fpParams->setNamedConstant("u_s3Image", numTexUnit++);
             }
+
+            // Crop mask
+            {
+                Ogre::TextureUnitState* const texUnitState = pass->createTextureUnitState();
+                m_maskTexture->bind(
+                    texUnitState,
+                    Ogre::TEX_TYPE_3D,
+                    Ogre::TFO_BILINEAR,
+                    Ogre::TextureUnitState::TAM_CLAMP
+                );
+            }
+            fpParams->setNamedConstant("u_s1Mask", numTexUnit++);
 
             //Transfer function and compositor
             {
@@ -922,7 +959,7 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
                     texUnitState->setTextureFiltering(Ogre::TFO_BILINEAR);
                     texUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
                     m_gpuVolumeTF->bind(pass, texUnitState->getName(), fpParams);
-                    fpParams->setNamedConstant("u_s2TFTexture", 1);
+                    fpParams->setNamedConstant("u_s2TFTexture", numTexUnit++);
                 }
 
                 //Ray compositor
@@ -942,7 +979,7 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
 
                     texUnitState->setTextureFiltering(Ogre::TFO_NONE);
                     texUnitState->setTextureAddressingMode(Ogre::TextureUnitState::TAM_CLAMP);
-                    fpParams->setNamedConstant("u_s2EntryPoints", 2);
+                    fpParams->setNamedConstant("u_s2EntryPoints", numTexUnit++);
                 }
             }
         }
@@ -963,6 +1000,7 @@ void RayTracingVolumeRenderer::updateRayTracingMaterial()
         texUnitState->setTextureName(m_3DOgreTexture->name(), Ogre::TEX_TYPE_3D);
 
         m_proxyGeometry->set3DImageTexture(m_3DOgreTexture);
+        m_proxyGeometry->setMaskTexture(m_maskTexture);
     }
 
     if(static_cast<bool>(m_entryPointGeometry))
@@ -1048,6 +1086,7 @@ void RayTracingVolumeRenderer::initEntryPoints()
                 this->m_parentId + "_GridProxyGeometry",
                 m_sceneManager,
                 m_3DOgreTexture,
+                m_maskTexture,
                 m_gpuVolumeTF,
                 "RayEntryPoints"
             );

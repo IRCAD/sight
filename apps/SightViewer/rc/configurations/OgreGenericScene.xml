@@ -16,6 +16,7 @@
         <param name="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_RECEIVER_CHANNEL" />
+        <param name="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" />
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
         <param name="PICKER_SENDER_CHANNEL" />
@@ -37,7 +38,7 @@
         <object uid="${extrudedModelSeries}" type="sight::data::ModelSeries" src="ref" />
         <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
 
-        <object uid="extrudedImage" type="sight::data::Image" />
+        <object uid="mask" type="sight::data::Image" />
         <object uid="clippingMatrix" type="sight::data::Matrix4" />
         <object uid="identityMatrix" type="sight::data::Matrix4" />
         <object uid="background" type="sight::data::Image" />
@@ -281,7 +282,8 @@
         </service>
 
         <service uid="volumeAdp" type="sight::module::viz::scene3d::adaptor::SVolumeRender">
-            <in key="image" uid="extrudedImage" />
+            <in key="image" uid="${image}" />
+            <in key="mask" uid="mask" />
             <in key="tf" uid="${volumeTF}" />
             <inout key="clippingMatrix" uid="clippingMatrix" />
             <config widgets="false" preintegration="false" autoresetcamera="false" samples="1024" />
@@ -480,13 +482,11 @@
             <backends enable="all" mode="best"/>
         </service>
 
-        <service uid="imageExtruderSrv" type="sight::module::filter::image::SImageExtruder" autoConnect="true" worker="EXTRUSION_THREAD">
+        <service uid="imageExtruderSrv" type="sight::module::filter::image::SImageExtruder" worker="EXTRUSION_THREAD">
             <in key="meshes" uid="${extrudedModelSeries}" />
             <in key="image" uid="${image}" />
-            <inout key="extrudedImage" uid="extrudedImage" />
+            <inout key="mask" uid="mask" />
         </service>
-
-
 
         <!-- ************************************* Action ************************************ -->
 
@@ -568,6 +568,10 @@
 
         <connect channel="${SHAPE_EXTRUDER_CANCEL_LAST_CLICK_RECEIVER_CHANNEL}">
             <slot>shapeExtruderAdp/cancelLastClick</slot>
+        </connect>
+
+        <connect channel="${SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL}">
+            <slot>shapeExtruderAdp/reset</slot>
         </connect>
 
         <connect channel="${AXIS_VISIBILITY_RECEIVER_CHANNEL}">

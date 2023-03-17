@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -131,6 +131,7 @@ public:
         Ogre::SceneManager* sceneManager,
         Ogre::SceneNode* volumeNode,
         sight::data::Image::csptr image,
+        sight::data::Image::csptr mask,
         sight::data::TransferFunction::csptr tf,
         bool with_buffer    = false,
         bool preintegration = false
@@ -143,11 +144,13 @@ public:
     VIZ_SCENE3D_API virtual void update(const data::TransferFunction::csptr& tf) = 0;
 
     /// Called when the image being rendered is modified.
-    VIZ_SCENE3D_API virtual void imageUpdate(data::Image::csptr image, data::TransferFunction::csptr tf) = 0;
+    VIZ_SCENE3D_API virtual void updateImage(data::Image::csptr image, data::TransferFunction::csptr tf) = 0;
 
-    /// @brief Loads the 3D texture from a sight::data::Image.
-    /// @param source: source image
+    /// @brief Loads the 3D texture onto the GPU.
     VIZ_SCENE3D_API virtual void loadImage();
+
+    /// @brief Loads the mask onto the GPU.
+    VIZ_SCENE3D_API virtual void loadMask();
 
     /// Called when the transfer function is updated.
     VIZ_SCENE3D_API virtual void updateVolumeTF(const data::TransferFunction::csptr&) = 0;
@@ -193,6 +196,9 @@ protected:
 
     /// 3D Image texture.
     Texture::sptr m_3DOgreTexture;
+
+    /// Texture used for the mask.
+    Texture::sptr m_maskTexture;
 
     /// TF texture used for rendering.
     TransferFunction::sptr m_gpuVolumeTF;

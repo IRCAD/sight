@@ -19,7 +19,8 @@ fragment_program VolumeBricksGrid_FP glsl
         param_named u_brickSize int3 8 8 8
         param_named u_slice int 0
         param_named u_image int 0
-        param_named u_s2TFTexture int 1
+        param_named u_s1Mask int 1
+        param_named u_s2TFTexture int 2
         param_named u_f3TFWindow float3 0 0
     }
 }
@@ -78,14 +79,18 @@ material VolumeBricksGrid
 
             texture_unit image
             {
-                tex_coord_set 0
+                tex_address_mode clamp
+                filtering none
+            }
+
+            texture_unit mask
+            {
                 tex_address_mode clamp
                 filtering none
             }
 
             texture_unit transferFunction
             {
-                tex_coord_set 1
                 tex_address_mode clamp
                 filtering none
             }

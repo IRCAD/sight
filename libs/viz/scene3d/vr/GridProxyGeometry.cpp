@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,6 +47,7 @@ GridProxyGeometry* GridProxyGeometry::New(
     const std::string& _name,
     Ogre::SceneManager* _sceneManager,
     const viz::scene3d::Texture::sptr& _3DImageTexture,
+    const viz::scene3d::Texture::sptr& _maskTexture,
     const TransferFunction::sptr& _tf,
     const std::string& _mtlName
 )
@@ -59,6 +60,7 @@ GridProxyGeometry* GridProxyGeometry::New(
     instance->m_inputPrimitiveType = data::Mesh::CellType::POINT;
     instance->mParentSceneManager  = _sceneManager;
     instance->m_3DImageTexture     = _3DImageTexture;
+    instance->m_maskTexture        = _maskTexture;
     instance->m_gpuTF              = _tf;
 
     Ogre::MaterialPtr mat =
@@ -363,6 +365,7 @@ void GridProxyGeometry::computeGrid()
     m_gridRenderOp.vertexData->vertexCount = 4;
     m_gridRenderOp.operationType           = Ogre::RenderOperation::OT_TRIANGLE_STRIP;
 
+    m_maskTexture->bind(m_gridComputingPass, "mask", {}, {}, false);
     Ogre::GpuProgramParametersSharedPtr params = m_gridComputingPass->getFragmentProgramParameters();
     m_gpuTF.lock()->bind(m_gridComputingPass, s_TF_TEXUNIT_NAME, params);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -129,6 +129,7 @@ public:
         Layer::sptr layer,
         Ogre::SceneNode* parentNode,
         sight::data::Image::csptr image,
+        sight::data::Image::csptr mask,
         sight::data::TransferFunction::csptr tf,
         bool buffer                                                   = false,
         bool preintegration                                           = false,
@@ -143,10 +144,10 @@ public:
     VIZ_SCENE3D_API void update(const data::TransferFunction::csptr& tf) override;
 
     /// Function called when a new image is being rendered.
-    VIZ_SCENE3D_API void imageUpdate(
-        data::Image::csptr image,
-        data::TransferFunction::csptr tf
-    ) override;
+    VIZ_SCENE3D_API void updateImage(data::Image::csptr image, data::TransferFunction::csptr tf) override;
+
+    /// Function called when the mask is updated.
+    VIZ_SCENE3D_API void updateMask(data::Image::csptr mask);
 
     /// Called when the transfer function is updated.
     VIZ_SCENE3D_API void updateVolumeTF(const data::TransferFunction::csptr& tf) override;

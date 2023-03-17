@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -63,6 +63,7 @@ SVolumeRender::SVolumeRender() noexcept
     newSlot(s_SET_INT_PARAMETER_SLOT, &SVolumeRender::setIntParameter, this);
     newSlot(s_SET_DOUBLE_PARAMETER_SLOT, &SVolumeRender::setDoubleParameter, this);
     newSlot(s_UPDATE_CLIPPING_BOX_SLOT, &SVolumeRender::updateClippingBox, this);
+    newSlot(s_UPDATE_MASK_SLOT, &SVolumeRender::updateMask, this);
     newSlot(s_UPDATE_TF_SLOT, &SVolumeRender::updateVolumeTF, this);
 }
 
@@ -78,6 +79,8 @@ service::IService::KeyConnectionsMap SVolumeRender::getAutoConnections() const
     return {
         {objects::IMAGE_IN, data::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT},
         {objects::IMAGE_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_BUFFER_IMAGE_SLOT},
+        {objects::MASK_IN, data::Image::s_MODIFIED_SIG, s_NEW_IMAGE_SLOT},
+        {objects::MASK_IN, data::Image::s_BUFFER_MODIFIED_SIG, s_UPDATE_MASK_SLOT},
         {objects::CLIPPING_MATRIX_INOUT, data::Matrix4::s_MODIFIED_SIG, s_UPDATE_CLIPPING_BOX_SLOT},
         {objects::VOLUME_TF_IN, data::TransferFunction::s_MODIFIED_SIG, s_UPDATE_TF_SLOT},
         {objects::VOLUME_TF_IN, data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_TF_SLOT},
@@ -168,19 +171,19 @@ void SVolumeRender::starting()
         sight::viz::scene3d::Layer::sptr layer = renderService->getLayer(m_layerID);
 
         const auto image = m_image.lock();
+        const auto mask  = m_mask.lock();
         const auto tf    = m_tf.lock();
         m_volumeRenderer = std::make_unique<sight::viz::scene3d::vr::RayTracingVolumeRenderer>(
-
             this->getID(),
             layer,
             m_volumeSceneNode,
             image.get_shared(),
+            mask.get_shared(),
             tf.get_shared(),
             m_config.dynamic,
             m_config.preintegration,
             m_config.shadows,
             m_config.sat
-
         );
         m_volumeRenderer->update(tf.get_shared());
     }
@@ -254,6 +257,18 @@ void SVolumeRender::updateVolumeTF()
 void SVolumeRender::newImage()
 {
     auto renderService = this->getRenderService();
+
+    {
+        const auto image = m_image.lock();
+        const auto mask  = m_mask.lock();
+
+        // Ignore this update to avoid flickering when loading a new image
+        // We will be signaled later when either the image or the mask will be updated
+        if(image->getSize() != mask->getSize())
+        {
+            return;
+        }
+    }
     {
         if(m_config.dynamic)
         {
@@ -269,6 +284,7 @@ void SVolumeRender::newImage()
             const auto image = m_image.lock();
             m_volumeRenderer->loadImage();
         }
+        this->updateMask();
         this->updateVolumeTF();
     }
 
@@ -316,7 +332,7 @@ void SVolumeRender::updateImage()
 
     {
         const auto volumeTF = m_tf.lock();
-        m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF.get_shared());
+        m_volumeRenderer->updateImage(image.get_shared(), volumeTF.get_shared());
     }
 
     // Create widgets on image update to take the image's size into account.
@@ -329,6 +345,19 @@ void SVolumeRender::updateImage()
     {
         this->getLayer()->computeCameraParameters();
     }
+
+    this->requestRender();
+}
+
+//-----------------------------------------------------------------------------
+
+void SVolumeRender::updateMask()
+{
+    const auto mask = m_mask.lock();
+
+    this->getRenderService()->makeCurrent();
+
+    m_volumeRenderer->updateMask(mask.get_shared());
 
     this->requestRender();
 }
@@ -458,7 +487,7 @@ void SVolumeRender::togglePreintegration(bool _preintegration)
         const auto image    = m_image.lock();
         const auto volumeTF = m_tf.lock();
 
-        m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF.get_shared());
+        m_volumeRenderer->updateImage(image.get_shared(), volumeTF.get_shared());
     }
 
     this->requestRender();
@@ -723,7 +752,7 @@ void SVolumeRender::toggleVREffect(VREffectType _vrEffect, bool _enable)
             const auto image    = m_image.lock();
             const auto volumeTF = m_tf.lock();
 
-            m_volumeRenderer->imageUpdate(image.get_shared(), volumeTF.get_shared());
+            m_volumeRenderer->updateImage(image.get_shared(), volumeTF.get_shared());
         }
 
         this->requestRender();

@@ -6,7 +6,7 @@
         <param name="WINDOW_ICON" />
         <param name="image" />
         <param name="currentTF" />
-        <param name="presets" />
+        <param name="presets" default="emptyPresets" />
         <param name="USE_DEFAULT_TF" default="true" />
         <param name="ADDITIONAL_TF_PATH" default="" />
     </parameters>

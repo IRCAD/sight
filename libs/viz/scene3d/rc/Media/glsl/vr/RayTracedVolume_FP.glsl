@@ -1,5 +1,7 @@
 #version 330
 
+// cspell:ignore vray
+
 #ifdef GLSL_LANG_VALIDATOR
 #extension GL_GOOGLE_include_directive : enable
 #endif // GLSL_LANG_VALIDATOR
@@ -9,6 +11,7 @@
 #include "VolumeRayCompositing.inc.glsl"
 
 uniform sampler3D u_s3Image;
+uniform sampler3D u_s1Mask;
 
 uniform float u_fSampleDis_Ms;
 
@@ -90,8 +93,8 @@ void main(void)
     VolumeRay vray_Ms = VolumeRay(f3RayEntryPos_Ms, f3RayDir_Ms, fRayLen, u_fSampleDis_Ms, 0);
 
     // Compute the ray's screen space depth at the first non transparent voxel.
-    advanceUntilOpaque(vray_Ms, u_s3Image);
+    advanceUntilOpaque(vray_Ms, u_s3Image, u_s1Mask);
     gl_FragDepth = modelSpaceToNDC(vray_Ms.position) * 0.5f + 0.5f;
 
-    f_f4FragCol = compositeAlongRay(vray_Ms, u_s3Image);
+    f_f4FragCol = compositeAlongRay(vray_Ms, u_s3Image, u_s1Mask);
 }

@@ -272,14 +272,14 @@
                         <menuItem name="Volume view" icon="sight::module::ui::flaticons/Volume.svg" />
                         <separator/>
                         <menuItem name="Show/hide mesh" icon="sight::module::ui::flaticons/Stomach.svg" style="check" />
-                        <menuItem name="Show/hide volume" icon="sight::module::ui::flaticons/Volume.svg" style="check" />
-                        <menuItem name="Show/hide negato" icon="sight::module::ui::flaticons/Layers.svg" style="check" />
+                        <menuItem name="Show/hide volume" icon="sight::module::ui::flaticons/showVolume.svg" style="check" />
+                        <menuItem name="Show/hide negato" icon="sight::module::ui::flaticons/showNegato.svg" style="check" />
                         <separator/>
                         <menuItem name="Show/hide cropping box" icon="sight::module::ui::flaticons/CroppingBox.svg" style="check" />
                         <menuItem name="Reset cropping box" icon="sight::module::ui::flaticons/ResetCroppingBox.svg" />
-                        <menuItem name="Shape extruder" icon="sight::module::ui::flaticons/Extrude.svg" style="check" />
-                        <menuItem name="Cancel shape extruder last click" icon="sight::module::ui::flaticons/ExtrudePointRemove.svg" />
-                        <menuItem name="Revert shape extruder" icon="sight::module::ui::flaticons/ExtrudeRevert.svg" />
+                        <menuItem name="Draw a new freehand cropping region" icon="sight::module::ui::flaticons/cutVolume.svg" style="check" />
+                        <menuItem name="Undo last freehand cropping point" icon="sight::module::ui::flaticons/undoCutVolume.svg" />
+                        <menuItem name="Revert last freehand cropping region" icon="sight::module::ui::flaticons/revertCutVolume.svg" />
                         <separator/>
                         <menuItem name="Add distance" icon="sight::module::ui::flaticons/AddDistance.svg" />
                         <menuItem name="Remove distance" icon="sight::module::ui::flaticons/RemoveDistance.svg" />
@@ -471,6 +471,7 @@
                 <parameter replace="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" by="SHAPE_EXTRUDER_TOOL_DISABLED_RECEIVER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_SENDER_CHANNEL" />
+                <parameter replace="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_RESET_SENDER_CHANNEL" />
                 <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="AXIS_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="PICKER_SENDER_CHANNEL" by="PICKER_RECEIVER_CHANNEL" />
                 <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
@@ -612,6 +613,11 @@
 
             <connect channel="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_SENDER_CHANNEL" >
                 <signal>shapeExtruderCancelAct/triggered</signal>
+            </connect>
+
+            <connect channel="SHAPE_EXTRUDER_RESET_SENDER_CHANNEL" >
+                <signal>extractSeriesSrv/imageSelected</signal>
+                <signal>extractPacsImageSrv/updated</signal>
             </connect>
 
             <connect channel="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" >
