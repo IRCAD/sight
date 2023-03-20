@@ -154,6 +154,17 @@ void SRender::configuring()
             const auto uid = it.second.get<std::string>("<xmlattr>.uid");
             adaptorRegistry[uid] = {this->getID(), layerId};
         }
+
+        //create resetcamera_layerID slot
+        const core::com::Slots::SlotKeyType resetcamera_slotkey = "resetCamera_" + layerId;
+        auto resetCameraLayerSlot                               = newSlot(
+            resetcamera_slotkey,
+            [this, layerId]()
+            {
+                this->resetCameraCoordinates(layerId);
+            });
+
+        resetCameraLayerSlot->setWorker(sight::core::thread::getDefaultWorker());
     }
 
     /// Old config

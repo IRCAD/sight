@@ -54,6 +54,8 @@ class Layer;
  * @section Slots Slots
  * - \b computeCameraParameters(): resets the camera position to visualize the whole scene.
  * - \b resetCameras(): resets all layers camera.
+ * - \b resetCamera_LAYER_ID(): "LAYER_ID" needs to be changed with your actual layer id. Resets the camera of the layer
+ * specified by LAYER_ID.
  * - \b computeCameraClipping(): recomputes the camera's clipping range when the scene is updated.
  * - \b requestRender(): request the service to repaint the scene.
  * - \b disableFullscreen(): switches to windowed rendering if fullscreen is enabled.
