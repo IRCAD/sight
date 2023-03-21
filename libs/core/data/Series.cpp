@@ -20,23 +20,6 @@
  *
  ***********************************************************************/
 
-/************************************************************************
- *
- * Copyright (C) 2009-2023 IRCAD France Copyright (C) 2012-2019 IHU Strasbourg
- *
- * This file is part of Sight.
- *
- * Sight is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later
- * version.
- *
- * Sight is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty
- * of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public License along with Sight. If not, see
- * <https://www.gnu.org/licenses/>.
- *
- ***********************************************************************/
 #include "data/ImageSeries.hpp"
 #include "data/ModelSeries.hpp"
 
@@ -64,12 +47,6 @@ SIGHT_REGISTER_DATA(sight::data::Series)
 namespace sight::data
 {
 
-/// @see https://dicom.nema.org/medical/dicom/current/output/html/part05.html#sect_7.8
-static constexpr std::uint16_t PRIVATE_GROUP {0x0099};
-static constexpr std::uint16_t PRIVATE_CREATOR_ELEMENT {0x0099};
-static constexpr std::uint16_t PRIVATE_DATA_ELEMENT {0x9900};
-static const std::string PRIVATE_CREATOR {"Sight"};
-
 // This allows to register private tags in the private dictionary and so to set and get value from them
 static const class GDCMLoader final
 {
@@ -87,7 +64,7 @@ public:
 
         // Add private tags to the private dictionary
         private_dictionary.AddDictEntry(
-            gdcm::PrivateTag(PRIVATE_GROUP, PRIVATE_CREATOR_ELEMENT, PRIVATE_CREATOR.c_str()),
+            gdcm::PrivateTag(detail::PRIVATE_GROUP, detail::PRIVATE_CREATOR_ELEMENT, detail::PRIVATE_CREATOR.c_str()),
             gdcm::DictEntry("Sight Private Data", "SightPrivateData", gdcm::VR::UT, gdcm::VM::VM1)
         );
     }
@@ -861,101 +838,66 @@ void Series::setByteValues(dicom::attribute::Keyword tag, const std::vector<std:
 
 std::optional<std::string> Series::getPrivateValue(std::uint8_t element, std::size_t instance) const
 {
-    if(element < 0x10)
-    {
-        SIGHT_WARN(
-            "The private element " << element << " is lower than 0x10. It will be raised to " << element + 0x10 << "."
-        );
-
-        element += 0x10;
-    }
-
-    const auto& dataset = m_pimpl->getDataSet(instance);
-    const gdcm::Tag tag(PRIVATE_GROUP, PRIVATE_DATA_ELEMENT + element);
-
-    if(!dataset.FindDataElement(tag))
-    {
-        return std::nullopt;
-    }
-
-    const auto& data_element = dataset.GetDataElement(tag);
-
-    if(data_element.IsEmpty())
-    {
-        return std::nullopt;
-    }
-
-    const auto* byte_value = data_element.GetByteValue();
-
-    if(byte_value == nullptr || byte_value->GetPointer() == nullptr)
-    {
-        return std::nullopt;
-    }
-
-    return detail::shrink(gdcm::String<>(byte_value->GetPointer(), byte_value->GetLength()).Trim());
-}
-
-//------------------------------------------------------------------------------
-
-void Series::setPrivateValue(std::uint8_t element, const std::optional<std::string>& value, std::size_t instance)
-{
-    if(element < 0x10)
-    {
-        SIGHT_WARN(
-            "The private element " << element << " is lower than 0x10. It will be raised to " << element + 0x10 << "."
-        );
-
-        element += 0x10;
-    }
+    SIGHT_ASSERT("The private element must be between 0x10 and 0xFF.", element >= 0x10 && element <= 0xFF);
 
     // Get the tag
-    gdcm::Tag data_tag(PRIVATE_GROUP, PRIVATE_DATA_ELEMENT + element);
+    gdcm::Tag tag(detail::PRIVATE_GROUP, detail::PRIVATE_DATA_ELEMENT + element);
 
     // Get the dataset
     auto& dataset = m_pimpl->getDataSet(instance);
 
-    if(!value.has_value())
-    {
-        dataset.Remove(data_tag);
-    }
-    else
-    {
-        // Verify that the creator tag is already there..
-        if(const gdcm::Tag creator_tag(PRIVATE_GROUP, PRIVATE_CREATOR_ELEMENT); !dataset.FindDataElement(creator_tag))
-        {
-            // Add the private creator tag
-            gdcm::DataElement creator_data_element(creator_tag, 0, gdcm::VR::LO);
-            creator_data_element.SetByteValue(PRIVATE_CREATOR.c_str(), std::uint32_t(PRIVATE_CREATOR.size()));
-        }
+    // Get the value
+    return detail::getPrivateStringValue(dataset, tag);
+}
 
-        // Create the data element
-        gdcm::DataElement data_element(data_tag, 0, gdcm::VR::UT);
+//------------------------------------------------------------------------------
 
-        if(!value->empty())
-        {
-            // Get the padding char.
-            const auto [size, fixed, padding] = detail::getVRFormat(gdcm::VR::UT);
+void Series::setPrivateValue(const std::optional<std::string>& value, std::uint8_t element, std::size_t instance)
+{
+    SIGHT_ASSERT("The private element must be between 0x10 and 0xFF.", element >= 0x10 && element <= 0xFF);
 
-            const auto& padded =
-                [&](char padding_char)
-                {
-                    if((value->size() % 2) != 0)
-                    {
-                        std::string padded_value(*value);
-                        padded_value.push_back(padding_char);
-                        return padded_value;
-                    }
+    // Get the tag
+    gdcm::Tag tag(detail::PRIVATE_GROUP, detail::PRIVATE_DATA_ELEMENT + element);
 
-                    return *value;
-                }(padding);
+    // Get the dataset
+    auto& dataset = m_pimpl->getDataSet(instance);
 
-            // Create a new data element and assign the buffer from the string
-            data_element.SetByteValue(padded.c_str(), std::uint32_t(padded.size()));
-        }
+    // Set the value
+    detail::setPrivateValue(dataset, tag, value);
+}
 
-        // Store back the data element to the data set
-        dataset.Replace(data_element);
-    }
+//------------------------------------------------------------------------------
+
+std::optional<std::string> Series::getMultiFramePrivateValue(
+    std::uint8_t element,
+    std::size_t frameIndex
+) const
+{
+    SIGHT_ASSERT("The private element must be between 0x10 and 0xFF.", element >= 0x10 && element <= 0xFF);
+
+    return m_pimpl->getMultiFramePrivateValue<gdcm::Keywords::PerFrameFunctionalGroupsSequence>(
+        element,
+        element + 0x01,
+        frameIndex
+    );
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setMultiFramePrivateValue(
+    const std::optional<std::string>& value,
+    std::uint8_t element,
+    std::size_t frameIndex
+)
+{
+    SIGHT_ASSERT("The private element must be between 0x10 and 0xFF.", element >= 0x10 && element <= 0xFF);
+
+    m_pimpl->setMultiFramePrivateValue<gdcm::Keywords::PerFrameFunctionalGroupsSequence>(
+        value,
+        element,
+        element + 0x01,
+        frameIndex
+    );
 }
 
 //------------------------------------------------------------------------------

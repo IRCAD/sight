@@ -478,7 +478,8 @@ inline data::Series::sptr generate<data::Series>(const std::size_t variant)
     }
 
     // Test private tag...
-    object->setPrivateValue(0x10, UUID::generateUUID());
+    object->setPrivateValue(UUID::generateUUID(), 0x10);
+    object->setMultiFramePrivateValue(UUID::generateUUID(), 0x15, 0);
 
     return object;
 }

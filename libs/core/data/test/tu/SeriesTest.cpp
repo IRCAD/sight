@@ -2478,28 +2478,62 @@ void SeriesTest::privateTagTest()
 
     {
         auto series = data::ImageSeries::New();
-        series->setPrivateValue(0x00, expected1);
-        series->setPrivateValue(0x11, expected2);
+        series->setPrivateValue(expected1, 0x11);
+        series->setPrivateValue(expected2, 0x12);
 
-        const auto& actual1 = series->getPrivateValue(0x0);
+        const auto& actual1 = series->getPrivateValue(0x11);
         CPPUNIT_ASSERT(actual1);
         CPPUNIT_ASSERT_EQUAL(expected1, *actual1);
 
-        const auto& actual2 = series->getPrivateValue(0x11);
+        const auto& actual2 = series->getPrivateValue(0x12);
         CPPUNIT_ASSERT(actual2);
         CPPUNIT_ASSERT_EQUAL(expected2, *actual2);
 
-        // test that setPrivateValue(0x00) == setPrivateValue(0x10)
-        series->setPrivateValue(0x10, expected3);
-        const auto& actual3 = series->getPrivateValue(0x0);
+        // test removing the tag
+        series->setPrivateValue(std::nullopt, 0x11);
+        const auto& actual5 = series->getPrivateValue(0x11);
+        CPPUNIT_ASSERT(!actual5.has_value());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SeriesTest::multiFramePrivateTagTest()
+{
+    const std::string expected1 {UUID::generateUUID()};
+    const std::string expected2 {UUID::generateUUID()};
+    const std::string expected3 {UUID::generateUUID()};
+
+    {
+        auto series = data::ImageSeries::New();
+
+        series->setMultiFramePrivateValue(expected1, 0x11, 0);
+        const auto& actual1 = series->getMultiFramePrivateValue(0x11, 0);
+        CPPUNIT_ASSERT(actual1);
+        CPPUNIT_ASSERT_EQUAL(expected1, *actual1);
+
+        series->setMultiFramePrivateValue(expected2, 0x11, 1);
+        const auto& actual2 = series->getMultiFramePrivateValue(0x11, 1);
+        CPPUNIT_ASSERT(actual2);
+        CPPUNIT_ASSERT_EQUAL(expected2, *actual2);
+
+        series->setMultiFramePrivateValue(expected3, 0x11, 2);
+        const auto& actual3 = series->getMultiFramePrivateValue(0x11, 2);
+        CPPUNIT_ASSERT(actual3);
         CPPUNIT_ASSERT_EQUAL(expected3, *actual3);
-        const auto& actual4 = series->getPrivateValue(0x10);
-        CPPUNIT_ASSERT_EQUAL(expected3, *actual4);
 
         // test removing the tag
-        series->setPrivateValue(0x00, std::nullopt);
-        const auto& actual5 = series->getPrivateValue(0x00);
+        series->setPrivateValue(std::nullopt, 0x11, 0);
+        const auto& actual4 = series->getPrivateValue(0x11, 0);
+        CPPUNIT_ASSERT(!actual4.has_value());
+
+        series->setPrivateValue(std::nullopt, 0x11, 1);
+        const auto& actual5 = series->getPrivateValue(0x11, 1);
         CPPUNIT_ASSERT(!actual5.has_value());
+
+        series->setPrivateValue(std::nullopt, 0x11, 2);
+        const auto& actual6 = series->getPrivateValue(0x11, 2);
+        CPPUNIT_ASSERT(!actual6.has_value());
     }
 }
 

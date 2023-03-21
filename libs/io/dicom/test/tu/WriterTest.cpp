@@ -132,6 +132,13 @@ inline static data::ImageSeries::sptr getUSVolumeImage(
 
             //YYYYMMDDHHMMSS.FFFFFF
             image_series->setFrameAcquisitionDateTime(formatDateTime(now), frame_index);
+
+            // Add a private custom attribute
+            image_series->setMultiFramePrivateValue(
+                formatDateTime(now),
+                0x42,
+                frame_index
+            );
         }
 
         generated[key] = image_series;
@@ -218,6 +225,12 @@ inline static void compareEnhancedUSVolume(
         CPPUNIT_ASSERT_EQUAL(
             *expected->getFrameAcquisitionDateTime(frame_index),
             *actual->getFrameAcquisitionDateTime(frame_index)
+        );
+
+        // Private custom attribute
+        CPPUNIT_ASSERT_EQUAL(
+            *expected->getMultiFramePrivateValue(0x42, frame_index),
+            *actual->getMultiFramePrivateValue(0x42, frame_index)
         );
     }
 

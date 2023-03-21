@@ -26,6 +26,7 @@
 #include "data/dicom/Attribute.hpp"
 #include "data/dicom/Sop.hpp"
 #include "data/factory/new.hpp"
+#include "data/Landmarks.hpp"
 #include "data/Matrix4.hpp"
 #include "data/Object.hpp"
 #include "data/types.hpp"
@@ -541,14 +542,37 @@ public:
 
     /// Private values setter.
     /// @throws data::Exception if the data mismatch the tag type
-    /// @param[in] element private element number in the range of 0x10 to 0xFF
     /// @param[in] value the string to insert. If empty (std::nullopt), the private tag is removed.
+    /// @param[in] element private element number in the range of 0x10 to 0xFF
     /// @param[in] instance the instance index in case multi-frame is not supported by the current IOD.
     ///                     (nullopt means the global common instance, for attributes shared by all instance.)
     DATA_API void setPrivateValue(
-        std::uint8_t element,
         const std::optional<std::string>& value,
+        std::uint8_t element,
         std::size_t instance = 0
+    );
+
+    /// Private value getter for a DICOM Multi-frame Functional Groups Module.
+    /// @throws data::Exception if tag doesn't exist
+    /// @param[in] element private sequence element number in the range of 0x10 to 0xFF.
+    ///                    The corresponding attribute will take element+0x01 as private element number.
+    /// @param[in] frameIndex the frame index where to store the private tag.
+    /// @return the private value as a string
+    DATA_API std::optional<std::string> getMultiFramePrivateValue(
+        std::uint8_t element,
+        std::size_t frameIndex = 0
+    ) const;
+
+    /// Private values setter for a DICOM Multi-frame Functional Groups Module.
+    /// @throws data::Exception if the data mismatch the tag type
+    /// @param[in] value the string to insert. If empty (std::nullopt), the private tag is removed.
+    /// @param[in] element private sequence element number in the range of 0x10 to 0xFF.
+    ///                    The corresponding attribute will take element+0x01 as private element number.
+    /// @param[in] frameIndex the frame index where to store the private tag.
+    DATA_API void setMultiFramePrivateValue(
+        const std::optional<std::string>& value,
+        std::uint8_t element,
+        std::size_t frameIndex = 0
     );
 
     /// Enum that defines the kind of DICOM Series we are
@@ -645,6 +669,9 @@ public:
     /// This is mainly an optimization and a bugfix when using GDCM to write a multi-frame DICOM file.
     /// @param size
     DATA_API void shrinkFrames(std::size_t size);
+
+    DATA_API void setFrameLandmarks(std::vector<data::Landmarks::sptr> landmarks, std::size_t frameIndex);
+    DATA_API std::vector<data::Landmarks::sptr> getFrameLandmarks(std::size_t frameIndex);
 
 protected:
 

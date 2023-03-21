@@ -57,6 +57,12 @@ static constexpr char SPACE_PADDING_CHAR  = ' ';
 static constexpr char NULL_PADDING_CHAR   = '\0';
 static constexpr auto BACKSLASH_SEPARATOR = "\\";
 
+/// @see https://dicom.nema.org/medical/dicom/current/output/html/part05.html#sect_7.8
+static constexpr std::uint16_t PRIVATE_GROUP {0x0099};
+static constexpr std::uint16_t PRIVATE_CREATOR_ELEMENT {0x0099};
+static constexpr std::uint16_t PRIVATE_DATA_ELEMENT {0x9910};
+static const std::string PRIVATE_CREATOR {"Sight"};
+
 /// Allows to check if a VM is fixed (NOT 1..n). Since GDCM Attribute API differs if VM is fixed or not, we need to
 /// check to choose the right gdcm::Attributes::SetValues() version.
 /// @{
@@ -218,6 +224,89 @@ static inline std::string arithmeticToString(const V& value, gdcm::VR::VRType vr
     }
 
     return oss.str();
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::optional<std::string> getPrivateStringValue(const gdcm::DataSet& dataset, const gdcm::Tag& tag)
+{
+    if(!dataset.FindDataElement(tag))
+    {
+        return std::nullopt;
+    }
+
+    const auto& data_element = dataset.GetDataElement(tag);
+
+    if(data_element.IsEmpty())
+    {
+        return std::nullopt;
+    }
+
+    const auto* byte_value = data_element.GetByteValue();
+
+    if(byte_value == nullptr || byte_value->GetPointer() == nullptr)
+    {
+        return std::nullopt;
+    }
+
+    return shrink(gdcm::String<>(byte_value->GetPointer(), byte_value->GetLength()).Trim());
+}
+
+//------------------------------------------------------------------------------
+
+inline static void setPrivateValue(
+    gdcm::DataSet& dataset,
+    const gdcm::Tag& tag,
+    const std::optional<std::string>& value
+)
+{
+    if(!value.has_value())
+    {
+        dataset.Remove(tag);
+    }
+    else
+    {
+        // Verify that the creator tag is already there..
+        if(const gdcm::Tag creator_tag(detail::PRIVATE_GROUP, detail::PRIVATE_CREATOR_ELEMENT);
+           !dataset.FindDataElement(creator_tag))
+        {
+            // Add the private creator tag
+            gdcm::DataElement creator_data_element(creator_tag, 0, gdcm::VR::LO);
+            creator_data_element.SetByteValue(
+                detail::PRIVATE_CREATOR.c_str(),
+                std::uint32_t(detail::PRIVATE_CREATOR.size())
+            );
+            dataset.Replace(creator_data_element);
+        }
+
+        // Create the data element
+        gdcm::DataElement data_element(tag, 0, gdcm::VR::UT);
+
+        if(!value->empty())
+        {
+            // Get the padding char.
+            const auto [size, fixed, padding] = detail::getVRFormat(gdcm::VR::UT);
+
+            const auto& padded =
+                [&](char padding_char)
+                {
+                    if((value->size() % 2) != 0)
+                    {
+                        std::string padded_value(*value);
+                        padded_value.push_back(padding_char);
+                        return padded_value;
+                    }
+
+                    return *value;
+                }(padding);
+
+            // Create a new data element and assign the buffer from the string
+            data_element.SetByteValue(padded.c_str(), std::uint32_t(padded.size()));
+        }
+
+        // Store back the data element to the data set
+        dataset.Replace(data_element);
+    }
 }
 
 /// Private Series implementation
@@ -634,13 +723,13 @@ public:
         return {};
     }
 
-    /// Return the GDCM dataset associated to a sequence attribute of a sequence group like `FrameAcquisitionDateTime`
+    /// Return the GDCM SequenceOfItems associated to a sequence attribute of a sequence group like
+    /// `FrameAcquisitionDateTime`
     /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
-    /// @tparam S Sequence Attribute (like Frame Content Sequence)
     /// @param frameIndex index of the frame
     /// @return GDCM dataset of the attribute
-    template<typename G, typename S>
-    [[nodiscard]] inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFrameSequence(
+    template<typename G>
+    [[nodiscard]] inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFrameGroupSequence(
         std::size_t frameIndex = 0
     ) const
     {
@@ -662,8 +751,29 @@ public:
             return {};
         }
 
+        return frame_sequence;
+    }
+
+    /// Return the GDCM SequenceOfItems associated to a sequence attribute of a sequence group like
+    /// `FrameAcquisitionDateTime`
+    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
+    /// @tparam S Sequence Attribute (like Frame Content Sequence)
+    /// @param frameIndex index of the frame
+    /// @return GDCM dataset of the attribute
+    template<typename G, typename S>
+    [[nodiscard]] inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFrameSequence(
+        std::size_t frameIndex = 0
+    ) const
+    {
+        const auto& group_sequence = getMultiFrameGroupSequence<G>(frameIndex);
+
+        if(!group_sequence || group_sequence->IsEmpty())
+        {
+            return {};
+        }
+
         // Retrieve the frame item and dataset
-        const auto& frame_item    = frame_sequence->GetItem(frameIndex + 1);
+        const auto& frame_item    = group_sequence->GetItem(frameIndex + 1);
         const auto& frame_dataset = frame_item.GetNestedDataSet();
 
         const auto& attribute_sequence_tag = S::GetTag();
@@ -707,14 +817,13 @@ public:
         return attribute.GetValue();
     }
 
-    /// Return the GDCM dataset associated to a sequence attribute of a sequence group like `FrameAcquisitionDateTime`
+    /// Return the GDCM group sequence of a sequence group like `PerFrameFunctionalGroupsSequence`
     /// Construct intermediate DataElements if they don't exist.
     /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
-    /// @tparam S Sequence Attribute (like Frame Content Sequence)
     /// @param frameIndex index of the frame
     /// @return GDCM dataset of the attribute
-    template<typename G, typename S>
-    inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFrameSequence(std::size_t frameIndex = 0)
+    template<typename G>
+    inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFrameGroupSequence(std::size_t frameIndex = 0)
     {
         /// @note We assume that multi-frame dicom have only one instance, IE no instance "Concatenation" here
         /// @note See "Concatenation" related attributes ((0020,9228) and (0020,9162))
@@ -724,7 +833,7 @@ public:
         if(!dataset.FindDataElement(group_tag))
         {
             // No Frame Sequence found, create it
-            gdcm::SmartPointer<gdcm::SequenceOfItems> group_sequence = new gdcm::SequenceOfItems();
+            auto group_sequence = new gdcm::SequenceOfItems();
             group_sequence->SetLengthToUndefined();
 
             gdcm::DataElement group_element(group_tag);
@@ -748,6 +857,21 @@ public:
 
         // Adjust the number of frames
         setValue<gdcm::Keywords::NumberOfFrames>(int(group_sequence->GetNumberOfItems()));
+
+        return group_sequence;
+    }
+
+    /// Return the GDCM SequenceOfItems associated to a sequence attribute of a sequence group like
+    /// `FrameAcquisitionDateTime`
+    /// Construct intermediate DataElements if they don't exist.
+    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
+    /// @tparam S Sequence Attribute (like Frame Content Sequence)
+    /// @param frameIndex index of the frame
+    /// @return GDCM dataset of the attribute
+    template<typename G, typename S>
+    inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFrameSequence(std::size_t frameIndex = 0)
+    {
+        auto group_sequence = getMultiFrameGroupSequence<G>(frameIndex);
 
         // Retrieve the frame item and dataset
         auto& frame_item    = group_sequence->GetItem(frameIndex + 1);
@@ -878,6 +1002,178 @@ public:
 
             attribute_dataset.Replace(attribute.GetAsDataElement());
         }
+    }
+
+    /// Return a private GDCM sequence group associated to a private sequence attribute of a sequence group
+    /// Construct intermediate DataElements if they don't exist.
+    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
+    /// @param[in] element private element number in the range of 0x10 to 0xFF
+    /// @param[in] frameIndex index of the frame
+    /// @return GDCM dataset of the attribute
+    template<typename G>
+    inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFramePrivateSequence(
+        std::uint8_t element,
+        std::size_t frameIndex = 0
+)
+    {
+        SIGHT_ASSERT("The private element must be between 0x10 and 0xFF.", element >= 0x10 && element <= 0xFF);
+
+        auto group_sequence = getMultiFrameGroupSequence<G>(frameIndex);
+
+        // Retrieve the frame item and dataset
+        auto& frame_item    = group_sequence->GetItem(frameIndex + 1);
+        auto& frame_dataset = frame_item.GetNestedDataSet();
+
+        // Verify that the creator tag is already there..
+        if(const gdcm::Tag creator_tag(PRIVATE_GROUP, PRIVATE_CREATOR_ELEMENT);
+           !frame_dataset.FindDataElement(creator_tag))
+        {
+            // Add the private creator tag
+            gdcm::DataElement creator_data_element(creator_tag, 0, gdcm::VR::LO);
+            creator_data_element.SetByteValue(PRIVATE_CREATOR.c_str(), std::uint32_t(PRIVATE_CREATOR.size()));
+            frame_dataset.Replace(creator_data_element);
+        }
+
+        // Get the tag
+        const gdcm::Tag attribute_sequence_tag(PRIVATE_GROUP, PRIVATE_DATA_ELEMENT + element);
+
+        if(!frame_dataset.FindDataElement(attribute_sequence_tag))
+        {
+            // No Attribute Sequence found, create it
+            auto* attribute_sequence = new gdcm::SequenceOfItems();
+            attribute_sequence->SetLengthToUndefined();
+
+            gdcm::DataElement attribute_sequence_element(attribute_sequence_tag);
+            attribute_sequence_element.SetVR(gdcm::VR::SQ);
+            attribute_sequence_element.SetVLToUndefined();
+            attribute_sequence_element.SetValue(*attribute_sequence);
+
+            frame_dataset.Insert(attribute_sequence_element);
+        }
+
+        // Retrieve the attribute sequence
+        auto attribute_sequence = frame_dataset.GetDataElement(attribute_sequence_tag).GetValueAsSQ();
+
+        if(attribute_sequence->GetNumberOfItems() == 0)
+        {
+            // Add the missing item
+            gdcm::Item attribute_item;
+            attribute_item.SetVLToUndefined();
+            attribute_sequence->AddItem(attribute_item);
+        }
+
+        return attribute_sequence;
+    }
+
+    /// Return a private GDCM sequence group associated to a private sequence attribute of a sequence group
+    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
+    /// @param[in] element private element number in the range of 0x10 to 0xFF
+    /// @param[in] frameIndex index of the frame
+    /// @return GDCM dataset of the attribute
+    template<typename G>
+    inline gdcm::SmartPointer<gdcm::SequenceOfItems> getMultiFramePrivateSequence(
+        std::uint8_t element,
+        std::size_t frameIndex = 0
+    ) const
+    {
+        SIGHT_ASSERT("The private element must be between 0x10 and 0xFF.", element >= 0x10 && element <= 0xFF);
+
+        const auto& group_sequence = getMultiFrameGroupSequence<G>(frameIndex);
+
+        // Retrieve the frame item and dataset
+        const auto& frame_item    = group_sequence->GetItem(frameIndex + 1);
+        const auto& frame_dataset = frame_item.GetNestedDataSet();
+
+        // Get the tag
+        const gdcm::Tag attribute_sequence_tag(PRIVATE_GROUP, PRIVATE_DATA_ELEMENT + element);
+
+        if(!frame_dataset.FindDataElement(attribute_sequence_tag))
+        {
+            return {};
+        }
+
+        // Retrieve the attribute sequence
+        auto attribute_sequence = frame_dataset.GetDataElement(attribute_sequence_tag).GetValueAsSQ();
+
+        if(attribute_sequence->GetNumberOfItems() == 0)
+        {
+            return {};
+        }
+
+        return attribute_sequence;
+    }
+
+    /// Retrieve private DICOM tag value from a multi-frame sequence attribute of a sequence group like
+    /// `FrameAcquisitionDateTime`
+    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
+    /// @param frameIndex index of the frame
+    /// @param[in] sequence_element private sequence element number in the range of 0x10 to 0xFF
+    /// @param[in] value_element private value element number in the range of 0x10 to 0xFF
+    ///                          (must be different from sequence_element)
+    /// @return attribute value. If the tag is not found, an empty vector is returned.
+    template<typename G>
+    [[nodiscard]] inline std::optional<std::string> getMultiFramePrivateValue(
+        std::uint8_t sequence_element,
+        std::uint8_t value_element,
+        std::size_t frameIndex = 0
+    ) const
+    {
+        SIGHT_ASSERT(
+            "The private element must be between 0x10 and 0xFF and sequence and value element must be different.",
+            sequence_element >= 0x10 && sequence_element <= 0xFF
+            && value_element >= 0x10 && value_element <= 0xFF
+            && sequence_element != value_element
+        );
+
+        const auto& attribute_sequence = getMultiFramePrivateSequence<G>(sequence_element, frameIndex);
+
+        if(!attribute_sequence || attribute_sequence->IsEmpty())
+        {
+            return std::nullopt;
+        }
+
+        // Finally get the value...
+        // Get the tag
+        gdcm::Tag data_tag(detail::PRIVATE_GROUP, detail::PRIVATE_DATA_ELEMENT + value_element);
+
+        // Get the dataset
+        const auto& nested_dataSet = attribute_sequence->GetItem(1).GetNestedDataSet();
+
+        return getPrivateStringValue(nested_dataSet, data_tag);
+    }
+
+    /// Set a DICOM private tag value to a multi-frame sequence attribute of a sequence group like
+    /// `FrameAcquisitionDateTime`
+    /// Construct intermediate DataElements if they don't exist.
+    /// @tparam G Functional Groups Sequence Attribute (like Per-frame Functional Groups Sequence)
+    /// @param[in] value private string value to set
+    /// @param[in] sequence_element private sequence element number in the range of 0x10 to 0xFF
+    /// @param[in] value_element private value element number in the range of 0x10 to 0xFF
+    ///                          (must be different from sequence_element)
+    /// @param[in] frameIndex index of the frame
+    template<typename G>
+    inline void setMultiFramePrivateValue(
+        const std::optional<std::string>& value,
+        std::uint8_t sequence_element,
+        std::uint8_t value_element,
+        std::size_t frameIndex = 0
+)
+    {
+        SIGHT_ASSERT(
+            "The private element must be between 0x10 and 0xFF and sequence and value element must be different.",
+            sequence_element >= 0x10 && sequence_element <= 0xFF
+            && value_element >= 0x10 && value_element <= 0xFF
+            && sequence_element != value_element
+        );
+
+        auto attribute_sequence = getMultiFramePrivateSequence<G>(sequence_element, frameIndex);
+        auto& attribute_dataset = attribute_sequence->GetItem(1).GetNestedDataSet();
+
+        // Get the tag
+        gdcm::Tag attribute_tag(detail::PRIVATE_GROUP, detail::PRIVATE_DATA_ELEMENT + value_element);
+
+        // Set the value
+        setPrivateValue(attribute_dataset, attribute_tag, value);
     }
 
     //------------------------------------------------------------------------------
