@@ -130,7 +130,7 @@
 
         <service uid="genericSceneViewportSelectorSrv" type="sight::viz::scene2d::SRender">
             <scene>
-                <scene x="-3000" y="-1.1" width="6000" height="1.2" antialiasing="true" background="#36393E" />
+                <scene x="-5000" y="-1.1" width="10000" height="1.2" antialiasing="true" background="#36393E" />
 
                 <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                 <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />

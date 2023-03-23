@@ -282,7 +282,8 @@ void STransferFunction::stopping()
 service::IService::KeyConnectionsMap STransferFunction::getAutoConnections() const
 {
     return {
-        {s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, s_UPDATE_DEFAULT_PRESET_SLOT},
+        {s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_CURRENT_INPUT, data::TransferFunction::s_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_CURRENT_INPUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_CURRENT_INPUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, IService::slots::s_UPDATE}

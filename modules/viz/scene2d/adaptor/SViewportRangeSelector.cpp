@@ -24,6 +24,7 @@
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signal.hxx>
+#include <core/com/Slots.hxx>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -42,7 +43,16 @@ static const std::string s_INITIAL_WIDTH_CONFIG = "initialWidth";
 static const std::string s_INITIAL_POS_CONFIG   = "initialPos";
 static const std::string s_COLOR_CONFIG         = "color";
 
+static const core::com::Slots::SlotKeyType s_UPDATE_VIEWPORT_SLOT = "updateViewport";
+
 //---------------------------------------------------------------------------------------------------------------
+
+SViewportRangeSelector::SViewportRangeSelector()
+{
+    newSlot(s_UPDATE_VIEWPORT_SLOT, [this]{this->updateViewport(false);});
+}
+
+//------------------------------------------------------------------------------
 
 void SViewportRangeSelector::configuring()
 {
@@ -65,7 +75,7 @@ service::IService::KeyConnectionsMap SViewportRangeSelector::getAutoConnections(
         {s_SELECTED_VIEWPORT_INOUT, sight::viz::scene2d::data::Viewport::s_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_IMAGE_INPUT, sight::data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_IMAGE_INPUT, sight::data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_TF_INPUT, sight::data::TransferFunction::s_POINTS_MODIFIED_SIG, IService::slots::s_UPDATE}
+        {s_TF_INPUT, sight::data::TransferFunction::s_POINTS_MODIFIED_SIG, s_UPDATE_VIEWPORT_SLOT}
     };
 }
 
@@ -105,33 +115,6 @@ void SViewportRangeSelector::starting()
         }
     }
 
-    const vec2d_t pair = this->mapSceneToAdaptor(vec2d_t(m_initialX, 1.0));
-
-    QRectF rect(pair.x, 0, m_initialWidth * m_xAxis->getScale(), pair.y);
-    {
-        auto image = m_image.lock();
-        if(image)
-        {
-            sight::data::helper::MedicalImage::getMinMax(image.get_shared(), m_imageMin, m_imageMax);
-            rect.setRect(m_imageMin, rect.y(), m_imageMax - m_imageMin, rect.height());
-        }
-    }
-
-    m_shutter = new QGraphicsRectItem(rect);
-    m_shutter->setBrush(m_color.color());
-    m_shutter->setPen(Qt::NoPen);
-
-    m_layer = new QGraphicsItemGroup();
-    m_layer->addToGroup(m_shutter);
-
-    // Adjust the layer's position and zValue depending on the associated axis
-    m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
-    m_layer->setZValue(m_zValue);
-
-    this->getScene2DRender()->getScene()->addItem(m_layer);
-
-    updateViewportFromShutter(rect.x(), rect.y(), rect.width(), rect.height());
-
     this->updating();
 }
 
@@ -145,12 +128,21 @@ void SViewportRangeSelector::stopping()
 
 void SViewportRangeSelector::updating()
 {
+    this->updateViewport(true);
+}
+
+//---------------------------------------------------------------------------------------------------------------
+
+void SViewportRangeSelector::updateViewport(bool _signalSelectedViewport)
+{
     const auto tf    = m_tf.lock();
     const auto image = m_image.lock();
 
     m_min = (tf || image) ? std::numeric_limits<double>::max() : m_initialX;
     m_max = (tf || image) ? std::numeric_limits<double>::lowest() : m_initialX + m_initialWidth;
 
+    const vec2d_t pair = this->mapSceneToAdaptor(vec2d_t(m_initialX, 1.0));
+    QRectF rect(pair.x, 0, m_initialWidth * m_xAxis->getScale(), pair.y);
     if(tf)
     {
         std::tie(m_min, m_max) = tf->windowMinMax();
@@ -164,6 +156,30 @@ void SViewportRangeSelector::updating()
         m_max = std::max(m_max, m_imageMax);
     }
 
+    // Fit the shutter from the current range
+    rect.setRect(m_min, rect.y(), m_max - m_min, rect.height());
+    if(m_shutter == nullptr)
+    {
+        m_shutter = new QGraphicsRectItem(rect);
+        m_shutter->setBrush(m_color.color());
+        m_shutter->setPen(Qt::NoPen);
+
+        m_layer = new QGraphicsItemGroup();
+        m_layer->addToGroup(m_shutter);
+        // Adjust the layer's position and zValue depending on the associated axis
+        m_layer->setPos(m_xAxis->getOrigin(), m_yAxis->getOrigin());
+        m_layer->setZValue(m_zValue);
+        this->getScene2DRender()->getScene()->addItem(m_layer);
+    }
+    else
+    {
+        m_shutter->setRect(rect);
+        m_layer->removeFromGroup(m_shutter);
+        m_layer->addToGroup(m_shutter);
+    }
+
+    // update the viewports
+    updateViewportFromShutter(rect.x(), rect.y(), rect.width(), rect.height());
     auto viewport = m_viewport.lock();
 
     viewport->setX(m_min);
@@ -176,16 +192,19 @@ void SViewportRangeSelector::updating()
         sig->asyncEmit();
     }
 
+    if(_signalSelectedViewport)
+    {
+        auto selectedViewport = m_selectedViewport.lock();
+        auto sigSelected      = selectedViewport->signal<data::Object::ModifiedSignalType>(
+            data::Object::s_MODIFIED_SIG
+        );
+        {
+            core::com::Connection::Blocker block(sigSelected->getConnection(slot(IService::slots::s_UPDATE)));
+            sigSelected->asyncEmit();
+        }
+    }
+
     m_clickCatchRange = static_cast<int>(m_max - m_min) / 100;
-
-    // Fit the shutter from the current range
-    QRectF rect = m_shutter->rect();
-
-    rect.setX(std::max(rect.x(), m_min));
-    rect.setWidth(std::min(rect.width(), m_max - rect.x()));
-    m_shutter->setRect(rect);
-    m_layer->removeFromGroup(m_shutter);
-    m_layer->addToGroup(m_shutter);
 }
 
 //---------------------------------------------------------------------------------------------------------------
