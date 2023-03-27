@@ -93,8 +93,7 @@ lint:sheldon:
       fi
     - >
       if [ "${SIGHT_ENABLE_COVERAGE}" == "ON" ]; then
-        mkdir -p coverage
-        gcovr -j${RUNNER_THREADS} -r .. --filter ../libs --filter ../modules --exclude ".*test.*" --html --html-details coverage/index.html --xml coverage/cobertura-coverage.xml --print-summary . | grep lines | sed -sE 's/.* \((.*) out of (.*)\)/\1\/\2/' | xargs -i echo 'scale=4;a={}*100;scale=2;a/1' | bc | xargs -i echo "lines: {}%"
+        ninja coverage
       fi
 
   artifacts: &linux_build_artifacts

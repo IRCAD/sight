@@ -133,6 +133,33 @@ if(SIGHT_ENABLE_COVERAGE)
     if(CMAKE_COMPILER_IS_GNUCXX)
         link_libraries(gcov)
     endif()
+
+    string(
+        CONCAT coverage_script
+               "gcovr -j$RUNNER_THREADS -r .. --filter ../libs --filter ../modules --exclude '.*test.*' --html"
+               " --html-details coverage/index.html --xml coverage/cobertura-coverage.xml --print-summary ."
+               "| grep lines"
+               [=[| sed -sE 's/.* \((.*) out of (.*)\)/\1\/\2/']=]
+               "| xargs -i echo 'scale=4;a={}*100;scale=2;a/1'"
+               "| bc"
+               "| xargs -i echo 'lines: {}%'"
+    )
+    add_custom_target(
+        coverage
+        COMMAND mkdir -p coverage
+        COMMAND sh -c "${coverage_script}"
+        COMMENT "Generating coverage reports..."
+        VERBATIM
+    )
+    unset(coverage_script)
+elseif(CMAKE_CXX_COMPILER_ID STREQUAL "GNU" OR CMAKE_CXX_COMPILER_ID STREQUAL "Clang")
+    add_custom_target(
+        coverage
+        COMMAND echo "This build directory isn\\'t configured with coverage instrumentation. Please configure it with"
+                "SIGHT_ENABLE_COVERAGE=ON to be able to generate coverage reports." >&2
+        COMMAND false
+        COMMENT "Generating coverage reports..."
+    )
 endif()
 
 # MSVC need special treatment
