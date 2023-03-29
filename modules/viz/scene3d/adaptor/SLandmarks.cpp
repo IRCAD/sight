@@ -25,6 +25,7 @@
 #include "modules/viz/scene3d/adaptor/STransform.hpp"
 
 #include <core/com/Slots.hxx>
+#include <core/tools/compare.hpp>
 
 #include <service/macros.hpp>
 
@@ -103,6 +104,7 @@ void SLandmarks::configuring()
     static const std::string s_INTERACTIVE_CONFIG     = s_CONFIG + "interactive";
     static const std::string s_PRIORITY_CONFIG        = s_CONFIG + "priority";
     static const std::string s_QUERY_MASK_CONFIG      = s_CONFIG + "queryMask";
+    static const std::string s_VIEW_DISTANCE          = s_CONFIG + "viewDistance";
 
     m_fontSource   = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_fontSize     = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
@@ -147,6 +149,24 @@ void SLandmarks::configuring()
         );
         m_landmarksQueryFlag = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
     }
+
+    const std::string& view_distance = config.get<std::string>(s_VIEW_DISTANCE, "slicesInRange");
+    if(view_distance == "slicesInRange")
+    {
+        m_viewDistance = ViewDistance::SLICES_IN_RANGE;
+    }
+    else if(view_distance == "currentSlice")
+    {
+        m_viewDistance = ViewDistance::CURRENT_SLICE;
+    }
+    else if(view_distance == "allSlices")
+    {
+        m_viewDistance = ViewDistance::ALL_SLICES;
+    }
+    else
+    {
+        SIGHT_ERROR("Unknown view distance, allow values are `slicesInRange`, `currentSlice` and `allSlices`");
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -184,6 +204,9 @@ void SLandmarks::starting()
         auto interactor = std::dynamic_pointer_cast<sight::viz::scene3d::interactor::IInteractor>(this->getSptr());
         this->getLayer()->addInteractor(interactor, m_priority);
     }
+
+    // Set current slice indexes.
+    initializeImage();
 
     // Draw landmarks.
     this->updating();
@@ -563,8 +586,7 @@ void SLandmarks::insertMyPoint(std::string _groupName, std::size_t _index, const
     m_manualObjects.push_back(std::make_shared<Landmark>(node, object, _groupName, _index, text));
 
     // Hide landmarks if an image is given to the service.
-    const auto imageLock = m_image.lock();
-    this->hideMyLandmark(m_manualObjects.back(), (imageLock.operator bool()), _landmarks);
+    this->hideMyLandmark(*m_manualObjects.back(), *_landmarks);
 
     // Request the rendering.
     this->requestRender();
@@ -678,7 +700,33 @@ void SLandmarks::hightlight(std::shared_ptr<SelectedLandmark> _selectedLandmark)
 
 void SLandmarks::initializeImage()
 {
-    this->changeSliceIndex(0, 0, 0);
+    const auto image = m_image.lock();
+
+    if(image)
+    {
+        namespace Helper = sight::data::helper::MedicalImage;
+
+        const auto axial_index = std::max(
+            std::int64_t(0),
+            Helper::getSliceIndex(*image, Helper::orientation_t::AXIAL).value_or(0)
+        );
+
+        const auto frontal_index = std::max(
+            std::int64_t(0),
+            Helper::getSliceIndex(*image, Helper::orientation_t::FRONTAL).value_or(0)
+        );
+
+        const auto m_sagittal_index = std::max(
+            std::int64_t(0),
+            Helper::getSliceIndex(*image, Helper::orientation_t::SAGITTAL).value_or(0)
+        );
+
+        this->changeSliceIndex(int(axial_index), int(frontal_index), int(m_sagittal_index));
+    }
+    else
+    {
+        this->changeSliceIndex(0, 0, 0);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -720,11 +768,12 @@ void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagit
         const auto& imgOrigin  = imageLock->getOrigin();
 
         m_currentSlicePos = {
-            static_cast<float>(_sagittalIndex + 1) * static_cast<float>(imgSpacing[0])
+            static_cast<float>(_sagittalIndex) * static_cast<float>(imgSpacing[0])
             + static_cast<float>(imgOrigin[0]),
-            static_cast<float>(_frontalIndex + 1) * static_cast<float>(imgSpacing[1])
+            static_cast<float>(_frontalIndex) * static_cast<float>(imgSpacing[1])
             + static_cast<float>(imgOrigin[1]),
-            static_cast<float>(_axialIndex + 1) * static_cast<float>(imgSpacing[2]) + static_cast<float>(imgOrigin[2])
+            static_cast<float>(_axialIndex) * static_cast<float>(imgSpacing[2])
+            + static_cast<float>(imgOrigin[2])
         };
 
         this->hideLandmarks();
@@ -761,53 +810,66 @@ void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
     this->getRenderService()->makeCurrent();
 
     // Get image.
-    const auto imageLock = m_image.lock();
     const auto landmarks = m_landmarks.lock();
-    hideMyLandmark(_landmark, (imageLock.operator bool()), landmarks.get_shared());
+    hideMyLandmark(*_landmark, *landmarks);
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::hideMyLandmark(
-    std::shared_ptr<Landmark> _landmark,
-    const bool imageLock,
-    data::Landmarks::csptr _landmarks
-)
+void SLandmarks::hideMyLandmark(Landmark& landmark, const data::Landmarks& landmarks)
 {
     // Retrieve group.
-    const data::Landmarks::LandmarksGroup& group = _landmarks->getGroup(_landmark->m_groupName);
+    const data::Landmarks::LandmarksGroup& group = landmarks.getGroup(landmark.m_groupName);
 
-    // Hide landmarks only if there is an image.
-    bool show = true;
-    if(imageLock)
+    bool show = group.m_visibility && m_isVisible;
+
+    if(show)
     {
-        // Show the landmark only if the slice is inside it.
-        Ogre::SceneNode* node = _landmark->m_node;
-        switch(m_orientation)
+        const auto& image = m_image.const_lock();
+
+        if(image)
         {
-            case OrientationMode::X_AXIS:
-                show = node->getPosition()[0] >= m_currentSlicePos[0] - group.m_size * 0.5
-                       && node->getPosition()[0] <= m_currentSlicePos[0] + group.m_size * 0.5;
-                break;
+            // Show the landmark only if the slice is inside it.
+            const float position       = landmark.m_node->getPosition()[m_orientation];
+            const float slice_position = m_currentSlicePos[m_orientation];
+            const auto spacing         = float(image->getSpacing()[m_orientation]);
 
-            case OrientationMode::Y_AXIS:
-                show = node->getPosition()[1] >= m_currentSlicePos[1] - group.m_size * 0.5
-                       && node->getPosition()[1] <= m_currentSlicePos[1] + group.m_size * 0.5;
-                break;
+            switch(m_viewDistance)
+            {
+                // Use the group size to show the landmark.
+                case ViewDistance::SLICES_IN_RANGE:
+                {
+                    const float group_size = group.m_size * 0.5F;
+                    const float max_size   = std::max(group_size, spacing);
 
-            case OrientationMode::Z_AXIS:
-                show = node->getPosition()[2] >= m_currentSlicePos[2] - group.m_size * 0.5
-                       && node->getPosition()[2] <= m_currentSlicePos[2] + group.m_size * 0.5;
-                break;
+                    show = core::tools::is_greater(position, (slice_position - group_size))
+                           && core::tools::is_less(position, (slice_position + max_size));
 
-            default:
-                SIGHT_ERROR("Unhandled orientation mode");
-                break;
+                    break;
+                }
+
+                case ViewDistance::CURRENT_SLICE:
+                {
+                    // For pickers that return the exact slice position like VoxelPicker
+                    show = core::tools::is_equal(position, slice_position)
+                           // For picker that returns position in between two slices like SPicker
+                           || (core::tools::is_greater(position, slice_position)
+                               && core::tools::is_less(position, (slice_position + spacing)))
+                           // Special case for SPicker which returns the last slice position at end
+                           || (core::tools::is_equal(float(image->getSize()[m_orientation] - 1), position - spacing)
+                               && core::tools::is_equal(slice_position, position - spacing));
+
+                    break;
+                }
+
+                default:
+                    break;
+            }
         }
     }
 
     // Show or hide the landmark.
-    _landmark->m_object->setVisible(show && group.m_visibility && m_isVisible);
+    landmark.m_object->setVisible(show);
 }
 
 //------------------------------------------------------------------------------

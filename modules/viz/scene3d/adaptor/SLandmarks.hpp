@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -90,6 +90,8 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b queryMask (optional, uint32, default=0xFFFFFFFF): mask used to filter out entities when the distance is auto
  *      snapped.
  * - \b landmarksQueryFlags (optional, uint32, default=0x40000000): mask applied to landmarks.
+ * - \b viewDistance (optional, slicesInRange/currentSlice/allSlices, default=slicesInRange): on which slices to display
+ *      the landmarks.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SLandmarks final :
     public sight::viz::scene3d::IAdaptor,
@@ -236,6 +238,14 @@ private:
 
     typedef data::helper::MedicalImage::orientation_t OrientationMode;
 
+    /// Show the landmark at the given index.
+    enum class ViewDistance : std::uint8_t
+    {
+        SLICES_IN_RANGE = 0,
+        CURRENT_SLICE,
+        ALL_SLICES
+    };
+
     /**
      * @brief Gets the normalized camera direction vector.
      * @param _cam camera from which to extract the direction vector.
@@ -357,15 +367,10 @@ private:
 
     /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
-     * @param _landmark the landmark to hide.
-     * @param imageLock boolean to know if the image is present and locked.
-     * @param _landmarks landmarks data in which the landmarks should be hidden.
+     * @param landmark the landmark to hide.
+     * @param landmarks landmarks data in which the landmarks should be hidden.
      */
-    void hideMyLandmark(
-        std::shared_ptr<Landmark> _landmark,
-        bool imageLock,
-        data::Landmarks::csptr _landmarks
-    );
+    void hideMyLandmark(Landmark& landmark, const data::Landmarks& landmarks);
 
     /// Contains the root scene node.
     Ogre::SceneNode* m_transNode {nullptr};
@@ -396,6 +401,9 @@ private:
 
     /// Defines the image orientation.
     OrientationMode m_orientation {OrientationMode::Z_AXIS};
+
+    /// Defines the view distance of the landmarks.
+    ViewDistance m_viewDistance {ViewDistance::SLICES_IN_RANGE};
 
     /// Stores the current position index for each axis.
     std::array<float, 3> m_currentSlicePos {0.F, 0.F, 0.F};
