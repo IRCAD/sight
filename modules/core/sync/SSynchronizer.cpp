@@ -215,6 +215,11 @@ void SSynchronizer::updating()
 {
     m_updateMask |= OBJECT_RECEIVED;
 
+    if(m_legacyAutoSync)
+    {
+        return;
+    }
+
     if((m_updateMask & SYNC_REQUESTED) != 0)
     {
         this->synchronize();
