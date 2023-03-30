@@ -618,12 +618,12 @@ void Window::gestureEvent(QGestureEvent* _e)
         Q_EMIT interacted(info);
         this->requestRender();
     }
-    else if(QGesture* tapGesture = _e->gesture(Qt::TapAndHoldGesture))
+    else if(QGesture* tapAndHoldGesture = _e->gesture(Qt::TapAndHoldGesture))
     {
-        if(tapGesture->state() == Qt::GestureFinished)
+        if(tapAndHoldGesture->state() == Qt::GestureFinished)
         {
-            _e->accept(tapGesture);
-            auto* tap = static_cast<QTapAndHoldGesture*>(tapGesture);
+            _e->accept(tapAndHoldGesture);
+            auto* tap = static_cast<QTapAndHoldGesture*>(tapAndHoldGesture);
             sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
             info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::LONG_TAP_GESTURE;
             QPoint position = mapFromGlobal(tap->position().toPoint());

@@ -1066,7 +1066,7 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _
         bool found = false;
         if(!raySceneQuery->execute().empty())
         {
-            const Ogre::Real scale = 1.15F;
+            const Ogre::Real scale = 1.35F;
 
             const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
             for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
@@ -1239,7 +1239,7 @@ void SLandmarks::buttonDoublePressEvent(MouseButton /*_button*/, Modifier /*_mod
     raySceneQuery->setSortByDistance(false);
     if(!raySceneQuery->execute().empty())
     {
-        const Ogre::Real scale = 1.5F;
+        const Ogre::Real scale = 1.35F;
 
         const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
         for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
