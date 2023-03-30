@@ -882,17 +882,10 @@ void SLandmarks::removeLandmarks()
 
                     case ViewDistance::CURRENT_SLICE:
                     {
-                        // For pickers that return the exact slice position like VoxelPicker
-                        mustDelete = core::tools::is_equal(position, slice_position)
-                                     // For picker that returns position in between two slices like SPicker
-                                     || (core::tools::is_greater(position, slice_position)
-                                         && core::tools::is_less(position, (slice_position + spacing)))
-                                     // Special case for SPicker which returns the last slice position at end
-                                     || (core::tools::is_equal(
-                                             float(image->getSize()[m_orientation] - 1),
-                                             position - spacing
-                                     )
-                                         && core::tools::is_equal(slice_position, position - spacing));
+                        const auto& imgSpacing          = image->getSpacing();
+                        const auto roundedPosition      = std::round(position / imgSpacing[m_orientation]);
+                        const auto roundedSlicePosition = std::round(slice_position / imgSpacing[m_orientation]);
+                        mustDelete = core::tools::is_equal(roundedPosition, roundedSlicePosition);
                         break;
                     }
 
@@ -994,14 +987,10 @@ void SLandmarks::hideMyLandmark(Landmark& landmark, const data::Landmarks& landm
 
                 case ViewDistance::CURRENT_SLICE:
                 {
-                    // For pickers that return the exact slice position like VoxelPicker
-                    show = core::tools::is_equal(position, slice_position)
-                           // For picker that returns position in between two slices like SPicker
-                           || (core::tools::is_greater(position, slice_position)
-                               && core::tools::is_less(position, (slice_position + spacing)))
-                           // Special case for SPicker which returns the last slice position at end
-                           || (core::tools::is_equal(float(image->getSize()[m_orientation] - 1), position - spacing)
-                               && core::tools::is_equal(slice_position, position - spacing));
+                    const auto& imgSpacing          = image->getSpacing();
+                    const auto roundedPosition      = std::round(position / imgSpacing[m_orientation]);
+                    const auto roundedSlicePosition = std::round(slice_position / imgSpacing[m_orientation]);
+                    show = core::tools::is_equal(roundedPosition, roundedSlicePosition);
 
                     break;
                 }

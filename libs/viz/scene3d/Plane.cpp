@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -425,9 +425,9 @@ void Plane::changeSlice(float sliceIndex)
 
 Ogre::MovablePlane Plane::setDimensions(const Ogre::Vector3& _spacing)
 {
-    auto tex_width  = static_cast<Ogre::Real>(m_texture->width());
-    auto tex_height = static_cast<Ogre::Real>(m_texture->height());
-    auto tex_depth  = static_cast<Ogre::Real>(m_texture->depth());
+    auto tex_width  = std::max(static_cast<Ogre::Real>(m_texture->width()) - 1.F, 0.F);
+    auto tex_height = std::max(static_cast<Ogre::Real>(m_texture->height()) - 1.F, 0.F);
+    auto tex_depth  = std::max(static_cast<Ogre::Real>(m_texture->depth()) - 1.F, 0.F);
 
     Ogre::MovablePlane plane(Ogre::Vector3::ZERO, 0);
     switch(m_orientation)
