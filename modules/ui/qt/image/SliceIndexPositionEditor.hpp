@@ -47,6 +47,7 @@ namespace sight::module::ui::qt::image
    <service uid="..." type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
       <inout key="image" uid="..."/>
       <sliceIndex>${orientationValue}</sliceIndex>
+      <displayAxisSelector>true</displayAxisSelector>
    </service>
    @endcode
  * @subsection In-Out In-Out
@@ -54,6 +55,7 @@ namespace sight::module::ui::qt::image
  *
  * @subsection Configuration Configuration
  * - \b sliceIndex : Axis on which the index will be changed, must be "axial", "frontal" or "sagittal".
+ * - \b displayAxisSelector : Allows to change the axis.
  */
 class MODULE_UI_QT_CLASS_API SliceIndexPositionEditor : public sight::ui::base::IEditor
 {
@@ -154,6 +156,8 @@ private:
     std::int64_t m_sagittalIndex {-1};
 
     orientation_t m_orientation {orientation_t::Z_AXIS};
+
+    bool m_displayAxisSelector {true};
 };
 
 } // namespace sight::module::ui::qt::image

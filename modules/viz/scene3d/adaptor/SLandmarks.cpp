@@ -36,18 +36,21 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_REMOVE_GROUP_SLOT     = "removeGroup";
-static const core::com::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup";
-static const core::com::Slots::SlotKeyType s_MODIFY_POINT_SLOT     = "modifyPoint";
-static const core::com::Slots::SlotKeyType s_ADD_POINT_SLOT        = "addPoint";
-static const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT     = "removePoint";
-static const core::com::Slots::SlotKeyType s_INSERT_POINT_SLOT     = "insertPoint";
-static const core::com::Slots::SlotKeyType s_SELECT_POINT_SLOT     = "selectPoint";
-static const core::com::Slots::SlotKeyType s_DESELECT_POINT_SLOT   = "deselectPoint";
-static const core::com::Slots::SlotKeyType s_INITIALIZE_IMAGE_SLOT = "initializeImage";
-static const core::com::Slots::SlotKeyType s_SLICE_TYPE_SLOT       = "sliceType";
-static const core::com::Slots::SlotKeyType s_SLICE_INDEX_SLOT      = "sliceIndex";
-static const core::com::Slots::SlotKeyType s_RENAME_GROUP_SLOT     = "renameGroup";
+static const core::com::Slots::SlotKeyType s_REMOVE_GROUP_SLOT       = "removeGroup";
+static const core::com::Slots::SlotKeyType s_MODIFY_GROUP_SLOT       = "modifyGroup";
+static const core::com::Slots::SlotKeyType s_MODIFY_POINT_SLOT       = "modifyPoint";
+static const core::com::Slots::SlotKeyType s_ADD_POINT_SLOT          = "addPoint";
+static const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT       = "removePoint";
+static const core::com::Slots::SlotKeyType s_INSERT_POINT_SLOT       = "insertPoint";
+static const core::com::Slots::SlotKeyType s_SELECT_POINT_SLOT       = "selectPoint";
+static const core::com::Slots::SlotKeyType s_DESELECT_POINT_SLOT     = "deselectPoint";
+static const core::com::Slots::SlotKeyType s_INITIALIZE_IMAGE_SLOT   = "initializeImage";
+static const core::com::Slots::SlotKeyType s_SLICE_TYPE_SLOT         = "sliceType";
+static const core::com::Slots::SlotKeyType s_SLICE_INDEX_SLOT        = "sliceIndex";
+static const core::com::Slots::SlotKeyType s_RENAME_GROUP_SLOT       = "renameGroup";
+static const core::com::Slots::SlotKeyType s_TOGGLE_ADD_LANDMARKS    = "toggleAddLandmarks";
+static const core::com::Slots::SlotKeyType s_TOGGLE_REMOVE_LANDMARKS = "toggleRemoveLandmarks";
+static const core::com::Slots::SlotKeyType s_REMOVE_LANDMARKS        = "removeLandmarks";
 
 const core::com::Signals::SignalKeyType SLandmarks::s_SEND_WORLD_COORD = "sendWorldCoord";
 
@@ -77,6 +80,9 @@ SLandmarks::SLandmarks() noexcept
     newSlot(s_SLICE_TYPE_SLOT, &SLandmarks::changeSliceType, this);
     newSlot(s_SLICE_INDEX_SLOT, &SLandmarks::changeSliceIndex, this);
     newSlot(s_RENAME_GROUP_SLOT, &SLandmarks::renameGroup, this);
+    newSlot(s_TOGGLE_ADD_LANDMARKS, &SLandmarks::toggleAddLandmarks, this);
+    newSlot(s_TOGGLE_REMOVE_LANDMARKS, &SLandmarks::toggleRemoveLandmarks, this);
+    newSlot(s_REMOVE_LANDMARKS, &SLandmarks::removeLandmarks, this);
 
     newSignal<world_coordinates_signal_t>(s_SEND_WORLD_COORD);
 }
@@ -516,7 +522,11 @@ void SLandmarks::insertPoint(std::string _groupName, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::insertMyPoint(std::string _groupName, std::size_t _index, const data::Landmarks::csptr& _landmarks)
+std::shared_ptr<SLandmarks::Landmark> SLandmarks::insertMyPoint(
+    std::string _groupName,
+    std::size_t _index,
+    const data::Landmarks::csptr& _landmarks
+)
 {
     // Retrieve group.
     const data::Landmarks::LandmarksGroup& group = _landmarks->getGroup(_groupName);
@@ -583,13 +593,16 @@ void SLandmarks::insertMyPoint(std::string _groupName, std::size_t _index, const
     }
 
     // Store the created data.
-    m_manualObjects.push_back(std::make_shared<Landmark>(node, object, _groupName, _index, text));
+    auto newLandmark = std::make_shared<Landmark>(node, object, _groupName, _index, text);
+    m_manualObjects.push_back(newLandmark);
 
     // Hide landmarks if an image is given to the service.
     this->hideMyLandmark(*m_manualObjects.back(), *_landmarks);
 
     // Request the rendering.
     this->requestRender();
+
+    return newLandmark;
 }
 
 //------------------------------------------------------------------------------
@@ -785,6 +798,137 @@ void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagit
 
 //------------------------------------------------------------------------------
 
+void SLandmarks::toggleAddLandmarks(bool toggle)
+{
+    if(toggle)
+    {
+        m_landmarksMode = LandmarksMode::ADD;
+    }
+    else if(m_landmarksMode == LandmarksMode::ADD)
+    {
+        m_landmarksMode = LandmarksMode::NONE;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::toggleRemoveLandmarks(bool toggle)
+{
+    if(toggle)
+    {
+        m_landmarksMode = LandmarksMode::REMOVE;
+    }
+    else if(m_landmarksMode == LandmarksMode::REMOVE)
+    {
+        m_landmarksMode = LandmarksMode::NONE;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::removeLandmarks()
+{
+    auto landmarks = m_landmarks.lock();
+
+    if(!landmarks)
+    {
+        // No need to continue if there is no landmarks
+        return;
+    }
+
+    const auto& image = m_image.const_lock();
+    SIGHT_THROW_IF("Data is null.", !image);
+
+    const auto slice_index = sight::data::helper::MedicalImage::getSliceIndex(
+        *image,
+        sight::data::helper::MedicalImage::orientation_t::AXIAL
+    );
+
+    if(!slice_index)
+    {
+        // No slice selected, early return
+        return;
+    }
+
+    try
+    {
+        for(const auto& name : landmarks->getGroupNames())
+        {
+            auto& group = landmarks->getGroup(name);
+
+            bool hasDeleted = false;
+
+            for(auto it = group.m_points.begin() ; it < group.m_points.end() ; )
+            {
+                const auto& point = *it;
+                // Show the landmark only if the slice is inside it.
+                const auto position        = point[m_orientation];
+                const float slice_position = m_currentSlicePos[m_orientation];
+                const auto spacing         = float(image->getSpacing()[m_orientation]);
+                bool mustDelete            = false;
+
+                switch(m_viewDistance)
+                {
+                    // Use the group size to show the landmark.
+                    case ViewDistance::SLICES_IN_RANGE:
+                    {
+                        const float group_size = group.m_size * 0.5F;
+                        const float max_size   = std::max(group_size, spacing);
+
+                        mustDelete = core::tools::is_greater(position, (slice_position - group_size))
+                                     && core::tools::is_less(position, (slice_position + max_size));
+                        break;
+                    }
+
+                    case ViewDistance::CURRENT_SLICE:
+                    {
+                        // For pickers that return the exact slice position like VoxelPicker
+                        mustDelete = core::tools::is_equal(position, slice_position)
+                                     // For picker that returns position in between two slices like SPicker
+                                     || (core::tools::is_greater(position, slice_position)
+                                         && core::tools::is_less(position, (slice_position + spacing)))
+                                     // Special case for SPicker which returns the last slice position at end
+                                     || (core::tools::is_equal(
+                                             float(image->getSize()[m_orientation] - 1),
+                                             position - spacing
+                                     )
+                                         && core::tools::is_equal(slice_position, position - spacing));
+                        break;
+                    }
+
+                    default:
+                        break;
+                }
+
+                if(mustDelete)
+                {
+                    it         = group.m_points.erase(it);
+                    hasDeleted = true;
+                }
+                else
+                {
+                    ++it;
+                }
+            }
+
+            if(hasDeleted)
+            {
+                const auto& sig = landmarks->signal<sight::data::Landmarks::ModifiedSignalType>(
+                    sight::data::Landmarks::s_MODIFIED_SIG
+                );
+                sig->asyncEmit();
+            }
+        }
+    }
+    catch(...)
+    {
+        // No landmarks group, return
+        return;
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SLandmarks::hideLandmarks()
 {
     // Make the context as current.
@@ -935,17 +1079,19 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _
 
         const Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
 
-        Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_landmarksQueryFlag);
+        const auto raySceneQuery =
+            std::unique_ptr<Ogre::RaySceneQuery>(sceneMgr->createRayQuery(ray, m_landmarksQueryFlag));
         raySceneQuery->setSortByDistance(false);
+        bool found = false;
         if(!raySceneQuery->execute().empty())
         {
-            bool found             = false;
             const Ogre::Real scale = 1.15F;
 
             const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
             for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
             {
                 const Ogre::MovableObject* const object = queryResult[qrIdx].movable;
+
                 for(std::shared_ptr<Landmark>& landmark : m_manualObjects)
                 {
                     if(landmark->m_object == object)
@@ -960,9 +1106,47 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _
                     }
                 }
             }
-        }
 
-        delete raySceneQuery;
+            auto newPos = this->getNearestPickedPosition(_x, _y);
+
+            if(newPos && !found)
+            {
+                // If nothing is picked, we will create a new landmark.
+                const auto landmarks = m_landmarks.lock();
+
+                if(m_landmarksMode == LandmarksMode::ADD)
+                {
+                    if(!landmarks->hasGroup(m_currentGroup))
+                    {
+                        landmarks->addGroup(m_currentGroup, m_currentColor, m_currentSize, m_currentShape);
+                        const auto& sig = landmarks->signal<sight::data::Landmarks::GroupAddedSignalType>(
+                            sight::data::Landmarks::s_GROUP_ADDED_SIG
+                        );
+
+                        sig->asyncEmit(m_currentGroup);
+                    }
+
+                    landmarks->addPoint(m_currentGroup, {(*newPos)[0], (*newPos)[1], (*newPos)[2]});
+
+                    // Get the last index.
+                    const data::Landmarks::LandmarksGroup& group = landmarks->getGroup(m_currentGroup);
+                    std::size_t index                            = group.m_points.size() - 1;
+
+                    // Add the new point.
+                    m_pickedData = this->insertMyPoint(m_currentGroup, index, landmarks.get_shared());
+                    {
+                        const auto& sig = landmarks->signal<sight::data::Landmarks::PointAddedSignalType>(
+                            sight::data::Landmarks::s_POINT_ADDED_SIG
+                        );
+                        sight::core::com::Connection::Blocker blocker(sig->getConnection(this->slot(s_ADD_POINT_SLOT)));
+                        sig->asyncEmit(m_currentGroup);
+                    }
+                }
+                else if(m_landmarksMode == LandmarksMode::REMOVE)
+                {
+                }
+            }
+        }
     }
 }
 
@@ -1074,7 +1258,7 @@ void SLandmarks::buttonDoublePressEvent(MouseButton /*_button*/, Modifier /*_mod
     raySceneQuery->setSortByDistance(false);
     if(!raySceneQuery->execute().empty())
     {
-        const Ogre::Real scale = 1.15F;
+        const Ogre::Real scale = 1.5F;
 
         const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
         for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)

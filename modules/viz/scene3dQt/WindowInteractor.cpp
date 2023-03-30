@@ -33,6 +33,7 @@
 #include <viz/scene3d/registry/macros.hpp>
 #include <viz/scene3d/SRender.hpp>
 
+#include <QDebug>
 #include <QDesktopWidget>
 #include <QEvent>
 #include <QGestureEvent>
@@ -100,8 +101,21 @@ bool TouchToMouseFixFilter::eventFilter(QObject* watched, QEvent* event)
         auto* me = static_cast<QMouseEvent*>(event);
         if(me->source() == Qt::MouseEventSynthesizedByQt)
         {
-            QMouseEvent newEvent(QEvent::MouseButtonPress, me->localPos() - QPointF(49, 5), me->button(), me->buttons(),
-                                 me->modifiers());
+            auto* w               = static_cast<QWindow*>(watched);
+            const QPoint position = w->mapFromGlobal(me->globalPos());
+            QMouseEvent newEvent(QEvent::MouseButtonPress, position, me->button(), me->buttons(), me->modifiers());
+            QCoreApplication::sendEvent(watched, &newEvent);
+            return true;
+        }
+    }
+    else if(event->type() == QEvent::MouseButtonDblClick)
+    {
+        auto* me = static_cast<QMouseEvent*>(event);
+        if(me->source() == Qt::MouseEventSynthesizedByQt)
+        {
+            auto* w               = static_cast<QWindow*>(watched);
+            const QPoint position = w->mapFromGlobal(me->globalPos());
+            QMouseEvent newEvent(QEvent::MouseButtonDblClick, position, me->button(), me->buttons(), me->modifiers());
             QCoreApplication::sendEvent(watched, &newEvent);
             return true;
         }
@@ -192,6 +206,7 @@ void WindowInteractor::createContainer(
     m_windowContainer->grabGesture(Qt::PinchGesture);                                         // For zooming
     m_windowContainer->grabGesture(sight::ui::qt::gestures::QPanGestureRecognizer::get<1>()); // For rotating
     m_windowContainer->grabGesture(Qt::TapAndHoldGesture);                                    // For placing a landmark
+    m_windowContainer->grabGesture(Qt::TapGesture);                                           // For placing a landmark
     m_windowContainer->grabGesture(sight::ui::qt::gestures::QPanGestureRecognizer::get<2>()); // For translating
     m_windowContainer->installEventFilter(new GestureFilter(m_qOgreWidget));                  // Sends the gesture
                                                                                               // events

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,6 +32,7 @@
 
 #include <OGRE/Overlay/OgreOverlay.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
+#include <QDebug>
 
 namespace sight::module::viz::scene3dQt
 {
@@ -459,10 +460,39 @@ Window::InteractionInfo Window::convertMouseEvent(
         info.dy = 0;
     }
 
-    info.modifiers = convertModifiers(_evt->modifiers());
-
     return info;
 }
+
+// ----------------------------------------------------------------------------
+
+// Window::InteractionInfo Window::convertTouchEvent(
+//     const QTouchEvent* const _evt,
+//     InteractionInfo::InteractionEnum _interactionType
+// ) const
+// {
+//     InteractionInfo info;
+//     info.button = sight::viz::scene3d::interactor::IInteractor::LEFT;
+
+//     info.interactionType = _interactionType;
+//     info.x               = static_cast<int>(_evt->pos().x() * this->devicePixelRatio());
+//     info.y               = static_cast<int>(_evt->pos().y() * this->devicePixelRatio());
+
+//     if(m_lastMousePosition)
+//     {
+//         const auto& point = m_lastMousePosition.value();
+//         info.dx = static_cast<int>((point.x() - _evt->pos().x()) * this->devicePixelRatio());
+//         info.dy = static_cast<int>((point.y() - _evt->pos().y()) * this->devicePixelRatio());
+//     }
+//     else
+//     {
+//         info.dx = 0;
+//         info.dy = 0;
+//     }
+
+//     info.modifiers = convertModifiers(_evt->modifiers());
+
+//     return info;
+// }
 
 // ----------------------------------------------------------------------------
 
@@ -626,6 +656,21 @@ void Window::gestureEvent(QGestureEvent* _e)
             auto* tap = static_cast<QTapAndHoldGesture*>(tapGesture);
             sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
             info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::LONG_TAP_GESTURE;
+            QPoint position = mapFromGlobal(tap->position().toPoint());
+            info.x = position.x();
+            info.y = position.y();
+            Q_EMIT interacted(info);
+            this->requestRender();
+        }
+    }
+    else if(QGesture* tapGesture = _e->gesture(Qt::TapGesture))
+    {
+        if(tapGesture->state() == Qt::GestureCanceled)
+        {
+            _e->accept(tapGesture);
+            auto* tap = static_cast<QTapGesture*>(tapGesture);
+            sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
+            info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::BUTTONRELEASE;
             QPoint position = mapFromGlobal(tap->position().toPoint());
             info.x = position.x();
             info.y = position.y();

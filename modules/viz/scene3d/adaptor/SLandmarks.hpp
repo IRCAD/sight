@@ -305,7 +305,11 @@ private:
      * @param _index index of the point relative to the group.
      * @param _landmarks landmarks data in which the point will be inserted.
      */
-    void insertMyPoint(std::string _groupName, std::size_t _index, const data::Landmarks::csptr& _landmarks);
+    std::shared_ptr<Landmark> insertMyPoint(
+        std::string _groupName,
+        std::size_t _index,
+        const data::Landmarks::csptr& _landmarks
+    );
 
     /**
      * @brief SLOT: hightlights the selected landmark.
@@ -344,6 +348,15 @@ private:
      * @param _sagittalIndex new sagittal slice index.
      */
     void changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex);
+
+    /// SLOT: Toggle landmarks addition
+    void toggleAddLandmarks(bool toggle);
+
+    /// SLOT: Toggle landmarks removal
+    void toggleRemoveLandmarks(bool toggle);
+
+    /// SLOT: Toggle landmarks removal
+    void removeLandmarks();
 
     /**
      * @brief Hides landmarks that are not on the current image slice index (if one is given).
@@ -422,6 +435,19 @@ private:
 
     /// Defines the mask used to filter landmarks, it optimizes the ray launched to retrieve the picked distance.
     std::uint32_t m_landmarksQueryFlag {Ogre::SceneManager::ENTITY_TYPE_MASK};
+
+    /// Landmark addition / removal toggle
+    enum class LandmarksMode : uint8_t
+    {
+        NONE = 0,
+        ADD,
+        REMOVE
+    } m_landmarksMode {LandmarksMode::NONE};
+
+    std::string m_currentGroup {"Landmarks"};
+    sight::data::Landmarks::ColorType m_currentColor {1.0F, 1.0F, 0.0F, 1.0F};
+    sight::data::Landmarks::SizeType m_currentSize {32.0F};
+    sight::data::Landmarks::Shape m_currentShape {sight::data::Landmarks::Shape::SPHERE};
 
     static constexpr std::string_view s_LANDMARKS_INPUT = "landmarks";
     static constexpr std::string_view s_IMAGE_INPUT     = "image";

@@ -55,7 +55,7 @@ public:
      * @brief Constructor.
      * @param parent The parent widget.
      */
-    UI_QT_QT_API SliceSelector(QWidget* parent = nullptr) noexcept;
+    UI_QT_QT_API SliceSelector(bool displayAxisSelector, QWidget* parent = nullptr) noexcept;
 
     /// @brief Destructor.
     UI_QT_QT_API ~SliceSelector() noexcept override;
