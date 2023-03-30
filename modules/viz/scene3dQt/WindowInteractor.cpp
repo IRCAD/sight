@@ -33,7 +33,6 @@
 #include <viz/scene3d/registry/macros.hpp>
 #include <viz/scene3d/SRender.hpp>
 
-#include <QDebug>
 #include <QDesktopWidget>
 #include <QEvent>
 #include <QGestureEvent>

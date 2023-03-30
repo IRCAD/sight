@@ -32,7 +32,6 @@
 
 #include <OGRE/Overlay/OgreOverlay.h>
 #include <OGRE/Overlay/OgreOverlayManager.h>
-#include <QDebug>
 
 namespace sight::module::viz::scene3dQt
 {
@@ -460,39 +459,10 @@ Window::InteractionInfo Window::convertMouseEvent(
         info.dy = 0;
     }
 
+    info.modifiers = convertModifiers(_evt->modifiers());
+
     return info;
 }
-
-// ----------------------------------------------------------------------------
-
-// Window::InteractionInfo Window::convertTouchEvent(
-//     const QTouchEvent* const _evt,
-//     InteractionInfo::InteractionEnum _interactionType
-// ) const
-// {
-//     InteractionInfo info;
-//     info.button = sight::viz::scene3d::interactor::IInteractor::LEFT;
-
-//     info.interactionType = _interactionType;
-//     info.x               = static_cast<int>(_evt->pos().x() * this->devicePixelRatio());
-//     info.y               = static_cast<int>(_evt->pos().y() * this->devicePixelRatio());
-
-//     if(m_lastMousePosition)
-//     {
-//         const auto& point = m_lastMousePosition.value();
-//         info.dx = static_cast<int>((point.x() - _evt->pos().x()) * this->devicePixelRatio());
-//         info.dy = static_cast<int>((point.y() - _evt->pos().y()) * this->devicePixelRatio());
-//     }
-//     else
-//     {
-//         info.dx = 0;
-//         info.dy = 0;
-//     }
-
-//     info.modifiers = convertModifiers(_evt->modifiers());
-
-//     return info;
-// }
 
 // ----------------------------------------------------------------------------
 

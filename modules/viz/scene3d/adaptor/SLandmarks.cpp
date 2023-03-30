@@ -841,7 +841,7 @@ void SLandmarks::removeLandmarks()
 
     const auto slice_index = sight::data::helper::MedicalImage::getSliceIndex(
         *image,
-        sight::data::helper::MedicalImage::orientation_t::AXIAL
+        m_orientation
     );
 
     if(!slice_index)
@@ -850,73 +850,65 @@ void SLandmarks::removeLandmarks()
         return;
     }
 
-    try
+    for(const auto& name : landmarks->getGroupNames())
     {
-        for(const auto& name : landmarks->getGroupNames())
+        auto& group = landmarks->getGroup(name);
+
+        bool hasDeleted = false;
+
+        for(auto it = group.m_points.begin() ; it < group.m_points.end() ; )
         {
-            auto& group = landmarks->getGroup(name);
+            const auto& point = *it;
+            // Show the landmark only if the slice is inside it.
+            const auto position        = point[m_orientation];
+            const float slice_position = m_currentSlicePos[m_orientation];
+            const auto spacing         = float(image->getSpacing()[m_orientation]);
+            bool mustDelete            = false;
 
-            bool hasDeleted = false;
-
-            for(auto it = group.m_points.begin() ; it < group.m_points.end() ; )
+            switch(m_viewDistance)
             {
-                const auto& point = *it;
-                // Show the landmark only if the slice is inside it.
-                const auto position        = point[m_orientation];
-                const float slice_position = m_currentSlicePos[m_orientation];
-                const auto spacing         = float(image->getSpacing()[m_orientation]);
-                bool mustDelete            = false;
-
-                switch(m_viewDistance)
+                // Use the group size to show the landmark.
+                case ViewDistance::SLICES_IN_RANGE:
                 {
-                    // Use the group size to show the landmark.
-                    case ViewDistance::SLICES_IN_RANGE:
-                    {
-                        const float group_size = group.m_size * 0.5F;
-                        const float max_size   = std::max(group_size, spacing);
+                    const float group_size = group.m_size * 0.5F;
+                    const float max_size   = std::max(group_size, spacing);
 
-                        mustDelete = core::tools::is_greater(position, (slice_position - group_size))
-                                     && core::tools::is_less(position, (slice_position + max_size));
-                        break;
-                    }
-
-                    case ViewDistance::CURRENT_SLICE:
-                    {
-                        const auto& imgSpacing          = image->getSpacing();
-                        const auto roundedPosition      = std::round(position / imgSpacing[m_orientation]);
-                        const auto roundedSlicePosition = std::round(slice_position / imgSpacing[m_orientation]);
-                        mustDelete = core::tools::is_equal(roundedPosition, roundedSlicePosition);
-                        break;
-                    }
-
-                    default:
-                        break;
+                    mustDelete = core::tools::is_greater(position, (slice_position - group_size))
+                                 && core::tools::is_less(position, (slice_position + max_size));
+                    break;
                 }
 
-                if(mustDelete)
+                case ViewDistance::CURRENT_SLICE:
                 {
-                    it         = group.m_points.erase(it);
-                    hasDeleted = true;
+                    const auto& imgSpacing          = image->getSpacing();
+                    const auto roundedPosition      = std::round(position / imgSpacing[m_orientation]);
+                    const auto roundedSlicePosition = std::round(slice_position / imgSpacing[m_orientation]);
+                    mustDelete = core::tools::is_equal(roundedPosition, roundedSlicePosition);
+                    break;
                 }
-                else
-                {
-                    ++it;
-                }
+
+                default:
+                    break;
             }
 
-            if(hasDeleted)
+            if(mustDelete)
             {
-                const auto& sig = landmarks->signal<sight::data::Landmarks::ModifiedSignalType>(
-                    sight::data::Landmarks::s_MODIFIED_SIG
-                );
-                sig->asyncEmit();
+                it         = group.m_points.erase(it);
+                hasDeleted = true;
+            }
+            else
+            {
+                ++it;
             }
         }
-    }
-    catch(...)
-    {
-        // No landmarks group, return
-        return;
+
+        if(hasDeleted)
+        {
+            const auto& sig = landmarks->signal<sight::data::Landmarks::ModifiedSignalType>(
+                sight::data::Landmarks::s_MODIFIED_SIG
+            );
+            sig->asyncEmit();
+        }
     }
 }
 
