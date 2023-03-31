@@ -1079,6 +1079,10 @@ public:
         SIGHT_ASSERT("The private element must be between 0x10 and 0xFF.", element >= 0x10 && element <= 0xFF);
 
         const auto& group_sequence = getMultiFrameGroupSequence<G>(frameIndex);
+        if(!group_sequence)
+        {
+            return {};
+        }
 
         // Retrieve the frame item and dataset
         const auto& frame_item    = group_sequence->GetItem(frameIndex + 1);
