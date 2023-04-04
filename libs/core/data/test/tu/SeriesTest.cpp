@@ -2507,6 +2507,10 @@ void SeriesTest::multiFramePrivateTagTest()
     {
         auto series = data::ImageSeries::New();
 
+        // test first if nonexisting value is handled
+        const auto& noValue = series->getMultiFramePrivateValue(0x11, 0);
+        CPPUNIT_ASSERT(!noValue.has_value());
+
         series->setMultiFramePrivateValue(expected1, 0x11, 0);
         const auto& actual1 = series->getMultiFramePrivateValue(0x11, 0);
         CPPUNIT_ASSERT(actual1);
