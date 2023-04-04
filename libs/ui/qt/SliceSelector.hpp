@@ -28,6 +28,7 @@
 
 #include <QObject>
 #include <QPointer>
+#include <QProxyStyle>
 #include <QWidget>
 
 #include <functional>
@@ -40,6 +41,33 @@ class QStringList;
 
 namespace sight::ui::qt
 {
+
+// This proxy style class provides a way to set slider positions in an absolute way
+// which is very useful in general and especially for touchscreen input.
+// See: https://stackoverflow.com/questions/11132597/qslider-mouse-direct-jump
+class AbsoluteProxyStyle : public QProxyStyle
+{
+public:
+
+    using QProxyStyle::QProxyStyle;
+
+    //------------------------------------------------------------------------------
+
+    int styleHint(
+        QStyle::StyleHint hint,
+        const QStyleOption* option   = 0,
+        const QWidget* widget        = 0,
+        QStyleHintReturn* returnData = 0
+    ) const
+    {
+        if(hint == QStyle::SH_Slider_AbsoluteSetButtons)
+        {
+            return Qt::LeftButton | Qt::MiddleButton | Qt::RightButton;
+        }
+
+        return QProxyStyle::styleHint(hint, option, widget, returnData);
+    }
+};
 
 /**
  * @brief A Qt panel used to control a VTK 2D Negatoscope view.
@@ -93,6 +121,7 @@ private:
     QPointer<QComboBox> m_sliceType;
 
     /// @brief The slice index slider widget.
+    QPointer<QStyle> m_sliceIndexStyle;
     QPointer<QSlider> m_sliceIndex;
     QPointer<QLineEdit> m_pSliceIndexText;
 

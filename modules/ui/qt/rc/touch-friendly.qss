@@ -27,17 +27,17 @@ QPushButton.signal-button {
 }
 
 QSlider {
-    height: 1.5em;
+    height: 2em;
 }
 
 QSlider::handle:horizontal {
-    width: 1.5em;
-    height: 1.5em;
+    width: 2em;
+    height: 2em;
     border-radius: 0.74em;
 }
 
 QSlider::groove:horizontal {
-    height: 1.5em;
+    height: 2em;
     border-radius: 0.74em;
 }
 

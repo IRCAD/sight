@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,6 +43,8 @@ SliceSelector::SliceSelector(QWidget* const parent) noexcept :
     m_sliceIndex(new QSlider(Qt::Horizontal, this)),
     m_pSliceIndexText(new QLineEdit(this))
 {
+    m_sliceIndexStyle = new AbsoluteProxyStyle(m_sliceIndex->style());
+    m_sliceIndex->setStyle(m_sliceIndexStyle);
     m_fctChangeIndexCallback = [this](auto&& PH1, auto&& ...){printIndex(std::forward<decltype(PH1)>(PH1));};
     m_fctChangeTypeCallback  = [this](auto&& PH1, auto&& ...){printType(std::forward<decltype(PH1)>(PH1));};
 
