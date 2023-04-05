@@ -111,6 +111,12 @@ public:
             png_set_gamma(keeper.m_png, 1.0, gamma);
         }
 
+        // Convert to little endian if needed
+        if constexpr(std::endian::native == std::endian::little)
+        {
+            png_set_swap(keeper.m_png);
+        }
+
         // Update the information struct appropriately
         png_read_update_info(keeper.m_png, keeper.m_png_info);
 

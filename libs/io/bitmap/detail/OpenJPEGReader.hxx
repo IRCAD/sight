@@ -334,6 +334,9 @@ private:
             return OPJ_SIZE_T(-1);
         }
 
+        // If we have read something, we must clear the failbit
+        istream->clear();
+
         return OPJ_SIZE_T(count);
     }
 

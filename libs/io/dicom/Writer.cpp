@@ -27,6 +27,8 @@
 
 #include <data/ImageSeries.hpp>
 
+#include <io/bitmap/Writer.hpp>
+
 #include <gdcmImageChangeTransferSyntax.h>
 #include <gdcmImageWriter.h>
 
@@ -177,10 +179,18 @@ inline static void writeEnhancedUSVolume(
     // Change data as JPEG2000 lossless
     gdcm::ImageChangeTransferSyntax transferSyntaxChanger;
     transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEG2000Lossless);
+
 #ifdef SIGHT_ENABLE_NVJPEG2K
+    SIGHT_THROW_IF(
+        "nvJPEG2000 is not available, but the support has been compiled in. "
+        "Check your nvJPEG2000 library installation",
+        !io::bitmap::nvJPEG2K()
+    );
+
     codec::NvJpeg2K codec;
     transferSyntaxChanger.SetUserCodec(&codec);
 #endif
+
     transferSyntaxChanger.SetInput(gdcm_image);
     transferSyntaxChanger.Change();
     writer.SetImage(transferSyntaxChanger.GetOutput());

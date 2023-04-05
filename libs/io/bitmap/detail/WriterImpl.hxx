@@ -85,6 +85,32 @@ public:
             }
             catch(const std::exception& e)
             {
+                // Check if the rerror is because of unsupported pixel type
+                const auto& pixel_type = image->getType();
+                if(pixel_type != core::Type::UINT8
+                   && pixel_type != core::Type::UINT16)
+                {
+                    throw;
+                }
+
+                // Check if the rerror is because of unsupported pixel format
+                const auto& pixel_format = image->getPixelFormat();
+                if(pixel_format != data::Image::PixelFormat::GRAY_SCALE
+                   && pixel_format != data::Image::PixelFormat::RGB
+                   && pixel_format != data::Image::PixelFormat::RGBA
+                   && pixel_format != data::Image::PixelFormat::BGR
+                   && pixel_format != data::Image::PixelFormat::BGRA)
+                {
+                    throw;
+                }
+
+                /// @todo Check new version of nvjpeg2k (>0.6).
+                if((pixel_format == data::Image::PixelFormat::RGBA || pixel_format == data::Image::PixelFormat::BGRA)
+                   && pixel_type == core::Type::UINT16)
+                {
+                    throw;
+                }
+
                 // This happens when trying to encode uniform random data which cannot be compressed
                 // This is obviously a bug in the encoder (reported and known by NVidia), although this should not
                 // happen with real data in the real world. To be in the safe side, we fallback to another backend.

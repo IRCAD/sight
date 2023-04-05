@@ -121,56 +121,6 @@ inline static std::vector<data::Image::sptr> readDicomImages(std::size_t count =
 
 //------------------------------------------------------------------------------
 
-inline static std::string modeToString(const Writer::Mode& mode)
-{
-    std::string mode_string =
-        mode == Writer::Mode::BEST
-        ? "BEST"
-        : mode == Writer::Mode::FAST
-        ? "FAST"
-        : "DEFAULT";
-
-    return mode_string;
-}
-
-//------------------------------------------------------------------------------
-
-inline static std::pair<std::string, std::string> backendToString(const Backend& backend)
-{
-    auto backend_string =
-        backend == Backend::LIBJPEG
-        ? std::make_pair(std::string("LIBJPEG"), std::string(".jpg"))
-        : backend == Backend::LIBTIFF
-        ? std::make_pair(std::string("LIBTIFF"), std::string(".tiff"))
-        : backend == Backend::LIBPNG
-        ? std::make_pair(std::string("LIBPNG"), std::string(".png"))
-        : backend == Backend::OPENJPEG
-        ? std::make_pair(std::string("OPENJPEG"), std::string(".jp2"))
-        : backend == Backend::OPENJPEG_J2K
-        ? std::make_pair(std::string("OPENJPEG"), std::string(".j2k"))
-        : backend == Backend::NVJPEG
-        ? std::make_pair(std::string("NVJPEG"), std::string(".jpg"))
-        : backend == Backend::NVJPEG2K
-        ? std::make_pair(std::string("NVJPEG2K"), std::string(".jp2"))
-        : backend == Backend::NVJPEG2K_J2K
-        ? std::make_pair(std::string("NVJPEG2K"), std::string(".j2k"))
-        : std::make_pair(std::string("DEFAULT"), std::string(".tiff"));
-
-    return backend_string;
-}
-
-//------------------------------------------------------------------------------
-
-inline static std::string fileSuffix(const Backend& backend, const Writer::Mode& mode)
-{
-    const auto [backend_string, ext_string] = backendToString(backend);
-    const std::string mode_string = modeToString(mode);
-
-    return "_" + backend_string + "_" + mode_string + ext_string;
-}
-
-//------------------------------------------------------------------------------
-
 inline static void profileWriter(
     const std::vector<data::Image::sptr>& images,
     const std::filesystem::path& tmp_folder,
@@ -251,12 +201,7 @@ inline static void profileOpenCVWriter(
     std::vector<std::future<void> >& tasks
 )
 {
-    const std::string MODE =
-        mode == Writer::Mode::BEST
-        ? std::string("BEST")
-        : mode == Writer::Mode::FAST
-        ? std::string("FAST")
-        : std::string("DEFAULT");
+    const std::string MODE = modeToString(mode);
 
     const std::string FILE_SUFFIX = "_OPENCV_" + MODE + "." + ext;
     const std::string LABEL       = "OpenCV (" + ext + " - " + MODE + ")";
@@ -524,8 +469,9 @@ inline static void conformance(
                 CPPUNIT_ASSERT(actual_image_copy);
 
                 CPPUNIT_ASSERT_MESSAGE(
-                    "The image are not equal for backend '" + backend_string + "'",
-                    *actual_image == *actual_image_copy
+                    "The image are not equal for backend '" + backend_string + "', mode '" + modeToString(mode)
+                    + "', format '" + pixelFormatToString(format) + "', type '" + type.name() + "'",
+                    *expected_image == *actual_image
                 );
 
                 // Restore back the original source
@@ -536,7 +482,7 @@ inline static void conformance(
             {
                 CPPUNIT_ASSERT_MESSAGE(
                     "The image are not equal for backend '" + backend_string + "', mode '" + modeToString(mode)
-                    + "', format '" + std::to_string(format) + "', type '" + type.name() + "'",
+                    + "', format '" + pixelFormatToString(format) + "', type '" + type.name() + "'",
                     *expected_image == *actual_image
                 );
             }
@@ -583,137 +529,107 @@ inline static void conformance(
 void WriterTest::conformanceTest()
 {
     // UINT8 RGB
-    if(io::bitmap::nvJPEG2K())
     {
-        conformance(
-            {
-                Backend::LIBJPEG,
-                Backend::LIBPNG,
-                Backend::LIBTIFF,
-                Backend::OPENJPEG,
-                Backend::NVJPEG2K,
-                Backend::NVJPEG
-            },
-            {},
-            core::Type::UINT8,
-            data::Image::PixelFormat::RGB
-        );
-    }
-    else if(io::bitmap::nvJPEG())
-    {
-        conformance(
-            {
-                Backend::LIBJPEG,
-                Backend::LIBPNG,
-                Backend::LIBTIFF,
-                Backend::OPENJPEG,
-                Backend::NVJPEG
-            },
-            {Backend::NVJPEG2K},
-            core::Type::UINT8,
-            data::Image::PixelFormat::RGB
-        );
-    }
-    else
-    {
-        conformance(
-            {
-                Backend::LIBJPEG,
-                Backend::LIBPNG,
-                Backend::LIBTIFF,
-                Backend::OPENJPEG
-            },
-            {Backend::NVJPEG2K, Backend::NVJPEG},
-            core::Type::UINT8,
-            data::Image::PixelFormat::RGB
-        );
+        if(io::bitmap::nvJPEG2K())
+        {
+            conformance(
+                {
+                    Backend::LIBJPEG,
+                    Backend::LIBPNG,
+                    Backend::LIBTIFF,
+                    Backend::OPENJPEG,
+                    Backend::NVJPEG2K,
+                    Backend::NVJPEG
+                },
+                {},
+                core::Type::UINT8,
+                data::Image::PixelFormat::RGB
+            );
+        }
+        else if(io::bitmap::nvJPEG())
+        {
+            conformance(
+                {Backend::LIBJPEG, Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG, Backend::NVJPEG},
+                {Backend::NVJPEG2K},
+                core::Type::UINT8,
+                data::Image::PixelFormat::RGB
+            );
+        }
+        else
+        {
+            conformance(
+                {Backend::LIBJPEG, Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG},
+                {Backend::NVJPEG2K, Backend::NVJPEG},
+                core::Type::UINT8,
+                data::Image::PixelFormat::RGB
+            );
+        }
     }
 
     // UINT8 GRAYSCALE
-    if(io::bitmap::nvJPEG2K())
     {
-        conformance(
-            {
-                Backend::LIBJPEG,
-                Backend::LIBPNG,
-                Backend::LIBTIFF,
-                Backend::OPENJPEG,
-                Backend::NVJPEG2K
-            },
-            {Backend::NVJPEG},
-            core::Type::UINT8,
-            data::Image::PixelFormat::GRAY_SCALE
-        );
-    }
-    else
-    {
-        conformance(
-            {
-                Backend::LIBJPEG,
-                Backend::LIBPNG,
-                Backend::LIBTIFF,
-                Backend::OPENJPEG,
-            },
-            {Backend::NVJPEG2K, Backend::NVJPEG},
-            core::Type::UINT8,
-            data::Image::PixelFormat::GRAY_SCALE
-        );
+        if(io::bitmap::nvJPEG2K())
+        {
+            conformance(
+                {Backend::LIBJPEG, Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG, Backend::NVJPEG2K},
+                {Backend::NVJPEG},
+                core::Type::UINT8,
+                data::Image::PixelFormat::GRAY_SCALE
+            );
+        }
+        else
+        {
+            conformance(
+                {Backend::LIBJPEG, Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG},
+                {Backend::NVJPEG2K, Backend::NVJPEG},
+                core::Type::UINT8,
+                data::Image::PixelFormat::GRAY_SCALE
+            );
+        }
     }
 
     // UINT16 RGB
-    if(io::bitmap::nvJPEG2K())
     {
-        conformance(
-            {
-                Backend::LIBPNG,
-                Backend::LIBTIFF,
-                Backend::OPENJPEG
-            },
-            {Backend::LIBJPEG, Backend::NVJPEG},
-            core::Type::UINT16,
-            data::Image::PixelFormat::RGB
-        );
-    }
-    else
-    {
-        conformance(
-            {
-                Backend::LIBPNG,
-                Backend::LIBTIFF,
-                Backend::OPENJPEG
-            },
-            {Backend::LIBJPEG, Backend::NVJPEG2K, Backend::NVJPEG},
-            core::Type::UINT16,
-            data::Image::PixelFormat::RGB
-        );
+        if(io::bitmap::nvJPEG2K())
+        {
+            conformance(
+                {Backend::LIBTIFF, Backend::OPENJPEG, Backend::NVJPEG2K},
+                {Backend::LIBJPEG, Backend::NVJPEG},
+                core::Type::UINT16,
+                data::Image::PixelFormat::RGB
+            );
+        }
+        else
+        {
+            conformance(
+                {Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG},
+                {Backend::LIBJPEG, Backend::NVJPEG2K, Backend::NVJPEG},
+                core::Type::UINT16,
+                data::Image::PixelFormat::RGB
+            );
+        }
     }
 
     // UINT16 GRAYSCALE
-    if(io::bitmap::nvJPEG2K())
     {
-        conformance(
-            {
-                Backend::LIBPNG,
-                Backend::LIBTIFF,
-                Backend::OPENJPEG
-            },
-            {Backend::LIBJPEG, Backend::NVJPEG},
-            core::Type::UINT16,
-            data::Image::PixelFormat::GRAY_SCALE
-        );
-    }
-    else
-    {
-        conformance(
-            {
-                Backend::LIBPNG,
-                Backend::LIBTIFF,
-                Backend::OPENJPEG
-            },
-            {Backend::LIBJPEG, Backend::NVJPEG2K, Backend::NVJPEG},
-            core::Type::UINT16,
-            data::Image::PixelFormat::GRAY_SCALE
-        );
+        if(io::bitmap::nvJPEG2K())
+        {
+            conformance(
+                {Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG, Backend::NVJPEG2K},
+                {Backend::LIBJPEG, Backend::NVJPEG},
+                core::Type::UINT16,
+                data::Image::PixelFormat::GRAY_SCALE
+            );
+        }
+        else
+        {
+            conformance(
+                {Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG},
+                {Backend::LIBJPEG, Backend::NVJPEG2K, Backend::NVJPEG},
+                core::Type::UINT16,
+                data::Image::PixelFormat::GRAY_SCALE
+            );
+        }
     }
 }
 

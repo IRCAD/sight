@@ -102,6 +102,27 @@ public:
         /// @warning Everything must be re-created and re-destroyed in one shot.
         /// @warning Doing otherwise leads to strange memory corruption, although most image codecs allows you to do so.
 
+        const auto& image_type = image.getType();
+        SIGHT_THROW_IF(
+            m_name << " - Unsupported image type: " << image_type,
+            image_type != core::Type::INT8
+            && image_type != core::Type::UINT8
+            && image_type != core::Type::INT16
+            && image_type != core::Type::UINT16
+            && image_type != core::Type::INT32
+            && image_type != core::Type::UINT32
+        );
+
+        const auto& pixel_format = image.getPixelFormat();
+        SIGHT_THROW_IF(
+            m_name << " - Unsupported image format: " << pixel_format,
+            pixel_format != data::Image::PixelFormat::GRAY_SCALE
+            && pixel_format != data::Image::PixelFormat::RGB
+            && pixel_format != data::Image::PixelFormat::RGBA
+            && pixel_format != data::Image::PixelFormat::BGR
+            && pixel_format != data::Image::PixelFormat::BGRA
+        );
+
         // Create an RAII to be sure everything is cleaned at exit
         struct Keeper final
         {
@@ -176,9 +197,8 @@ public:
         // Build the component param array
         std::vector<opj_image_cmptparm_t> component_params(num_components);
 
-        const auto& image_type = image.getType();
-        const OPJ_UINT32 prec  = OPJ_UINT32(image_type.size() * 8);
-        const OPJ_UINT32 sgnd  = image_type.isSigned() ? 1 : 0;
+        const OPJ_UINT32 prec = OPJ_UINT32(image_type.size() * 8);
+        const OPJ_UINT32 sgnd = image_type.isSigned() ? 1 : 0;
 
         std::ranges::fill(
             component_params,
@@ -195,7 +215,6 @@ public:
             });
 
         // Guess the color space to use
-        const auto& pixel_format          = image.getPixelFormat();
         const OPJ_COLOR_SPACE color_space = pixel_format == data::Image::GRAY_SCALE
                                             ? OPJ_CLRSPC_GRAY
                                             : OPJ_CLRSPC_SRGB;

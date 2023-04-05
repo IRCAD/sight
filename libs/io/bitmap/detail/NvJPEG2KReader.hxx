@@ -174,8 +174,16 @@ public:
         // Allocate destination image
         image.resize(
             {image_info.image_width, image_info.image_height, 0},
-            output_image.pixel_type == NVJPEG2K_UINT16 ? core::Type::UINT16 : core::Type::UINT8,
-            image_info.num_components == 1 ? data::Image::PixelFormat::GRAY_SCALE : data::Image::PixelFormat::RGB
+            output_image.pixel_type == NVJPEG2K_UINT16
+            ? core::Type::UINT16
+            : core::Type::UINT8,
+            image_info.num_components == 2
+            ? data::Image::PixelFormat::RG
+            : image_info.num_components == 3
+            ? data::Image::PixelFormat::RGB
+            : image_info.num_components == 4
+            ? data::Image::PixelFormat::RGBA
+            : data::Image::PixelFormat::GRAY_SCALE
         );
 
         // Synchronize CUDA streams
@@ -220,7 +228,7 @@ public:
 
                 if(image_info.num_components == 3)
                 {
-                    const Npp8u* const in_buffer[3] = {
+                    const std::array in_buffer {
                         reinterpret_cast<const Npp8u*>(m_planar_gpu_buffers[0]),
                         reinterpret_cast<const Npp8u*>(m_planar_gpu_buffers[1]),
                         reinterpret_cast<const Npp8u*>(m_planar_gpu_buffers[2])
@@ -228,7 +236,7 @@ public:
 
                     CHECK_CUDA(
                         nppiCopy_8u_P3C3R(
-                            in_buffer,
+                            in_buffer.data(),
                             in_step,
                             out_buffer,
                             in_step * int(image_info.num_components),
@@ -239,7 +247,7 @@ public:
                 }
                 else
                 {
-                    const Npp8u* const in_buffer[4] = {
+                    const std::array in_buffer {
                         reinterpret_cast<const Npp8u*>(m_planar_gpu_buffers[0]),
                         reinterpret_cast<const Npp8u*>(m_planar_gpu_buffers[1]),
                         reinterpret_cast<const Npp8u*>(m_planar_gpu_buffers[2]),
@@ -248,7 +256,7 @@ public:
 
                     CHECK_CUDA(
                         nppiCopy_8u_P4C4R(
-                            in_buffer,
+                            in_buffer.data(),
                             in_step,
                             out_buffer,
                             in_step * int(image_info.num_components),
@@ -265,7 +273,7 @@ public:
 
                 if(image_info.num_components == 3)
                 {
-                    const Npp16u* const in_buffer[3] = {
+                    const std::array in_buffer {
                         reinterpret_cast<const Npp16u*>(m_planar_gpu_buffers[0]),
                         reinterpret_cast<const Npp16u*>(m_planar_gpu_buffers[1]),
                         reinterpret_cast<const Npp16u*>(m_planar_gpu_buffers[2])
@@ -273,7 +281,7 @@ public:
 
                     CHECK_CUDA(
                         nppiCopy_16u_P3C3R(
-                            in_buffer,
+                            in_buffer.data(),
                             in_step,
                             out_buffer,
                             in_step * int(image_info.num_components),
@@ -284,7 +292,7 @@ public:
                 }
                 else
                 {
-                    const Npp16u* const in_buffer[4] = {
+                    const std::array in_buffer {
                         reinterpret_cast<const Npp16u*>(m_planar_gpu_buffers[0]),
                         reinterpret_cast<const Npp16u*>(m_planar_gpu_buffers[1]),
                         reinterpret_cast<const Npp16u*>(m_planar_gpu_buffers[2]),
@@ -293,7 +301,7 @@ public:
 
                     CHECK_CUDA(
                         nppiCopy_16u_P4C4R(
-                            in_buffer,
+                            in_buffer.data(),
                             in_step,
                             out_buffer,
                             in_step * int(image_info.num_components),

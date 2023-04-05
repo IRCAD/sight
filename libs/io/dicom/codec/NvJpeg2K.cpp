@@ -145,14 +145,8 @@ bool NvJpeg2K::Code(gdcm::DataElement const& in, gdcm::DataElement& out)
         std::copy_n(inputData, inputLength, static_cast<char*>(image->getBufferObject()->getBuffer()));
         writer->setObject(image);
         std::stringstream ss;
-        try
-        {
-            writer->write(ss, bitmap::Backend::NVJPEG2K_J2K);
-        }
-        catch(...)
-        {
-            return false;
-        }
+        writer->write(ss, bitmap::Backend::NVJPEG2K_J2K);
+
         auto* byteValue = new char [ss.str().size()];
         std::copy_n(ss.str().data(), ss.str().size(), byteValue);
         gdcm::Fragment frag;

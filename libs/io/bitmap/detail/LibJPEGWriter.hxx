@@ -75,16 +75,19 @@ public:
     /// Writing
     inline void write(const data::Image& image, std::ostream& ostream, Writer::Mode mode, Flag = Flag::NONE)
     {
+        //  JCS_EXT_RGBA is not yet fully supported by libjpeg-turbo, at least for writing
         const auto& pixel_format = image.getPixelFormat();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image pixel format: " << pixel_format,
             pixel_format == data::Image::PixelFormat::RG
+            || pixel_format == data::Image::PixelFormat::RGBA
+            || pixel_format == data::Image::PixelFormat::BGRA
         );
 
         const auto& pixel_type = image.getType();
         SIGHT_THROW_IF(
             m_name << " - Unsupported image type: " << pixel_type,
-            pixel_type.size() * 8 != BITS_IN_JSAMPLE
+            pixel_type != core::Type::UINT8
         );
 
         // Prepare the output buffers

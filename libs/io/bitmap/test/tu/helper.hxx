@@ -27,6 +27,7 @@
 #include <data/helper/MedicalImage.hpp>
 #include <data/ImageSeries.hpp>
 
+#include <io/bitmap/Writer.hpp>
 #include <io/opencv/Image.hpp>
 #include <io/opencv/Type.hpp>
 
@@ -197,6 +198,88 @@ inline static double computePSNR(const data::Image::sptr& expected, const data::
     const double max_value = std::pow(2, expected->getType().size() * 8) - 1;
 
     return 10.0 * log10(max_value * max_value / cv::mean(compute_mat).val[0]);
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string modeToString(const Writer::Mode& mode)
+{
+    switch(mode)
+    {
+        case Writer::Mode::BEST:
+            return "BEST";
+
+        case Writer::Mode::FAST:
+            return "FAST";
+
+        default:
+            return "DEFAULT";
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string pixelFormatToString(const data::Image::PixelFormat& format)
+{
+    switch(format)
+    {
+        case data::Image::PixelFormat::RGB:
+            return "RGB";
+
+        case data::Image::PixelFormat::RGBA:
+            return "RGBA";
+
+        case data::Image::PixelFormat::BGR:
+            return "BGR";
+
+        case data::Image::PixelFormat::BGRA:
+            return "BGRA";
+
+        case data::Image::PixelFormat::GRAY_SCALE:
+            return "GRAY_SCALE";
+
+        case data::Image::PixelFormat::RG:
+            return "RG";
+
+        default:
+            return "UNDEFINED";
+    }
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::pair<std::string, std::string> backendToString(const Backend& backend)
+{
+    auto backend_string =
+        backend == Backend::LIBJPEG
+        ? std::make_pair(std::string("LIBJPEG"), std::string(".jpg"))
+        : backend == Backend::LIBTIFF
+        ? std::make_pair(std::string("LIBTIFF"), std::string(".tiff"))
+        : backend == Backend::LIBPNG
+        ? std::make_pair(std::string("LIBPNG"), std::string(".png"))
+        : backend == Backend::OPENJPEG
+        ? std::make_pair(std::string("OPENJPEG"), std::string(".jp2"))
+        : backend == Backend::OPENJPEG_J2K
+        ? std::make_pair(std::string("OPENJPEG"), std::string(".j2k"))
+        : backend == Backend::NVJPEG
+        ? std::make_pair(std::string("NVJPEG"), std::string(".jpg"))
+        : backend == Backend::NVJPEG2K
+        ? std::make_pair(std::string("NVJPEG2K"), std::string(".jp2"))
+        : backend == Backend::NVJPEG2K_J2K
+        ? std::make_pair(std::string("NVJPEG2K"), std::string(".j2k"))
+        : std::make_pair(std::string("DEFAULT"), std::string(".tiff"));
+
+    return backend_string;
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::string fileSuffix(const Backend& backend, const Writer::Mode& mode)
+{
+    const auto [backend_string, ext_string] = backendToString(backend);
+    const std::string mode_string = modeToString(mode);
+
+    return "_" + backend_string + "_" + mode_string + ext_string;
 }
 
 } // namespace sight::io
