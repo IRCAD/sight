@@ -21,6 +21,8 @@
 
 #include "SessionTest.hpp"
 
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
 #include <core/os/TempPath.hpp>
 
 #include <data/String.hpp>
@@ -149,6 +151,29 @@ inline static void basicTest(const bool raw = false)
         // Set file input
         reader->setFile(tmpFile);
 
+        // Create slot connections
+        bool sessionLoaded = false;
+        std::filesystem::path sessionLoadedPath;
+        auto sessionLoadedSlot = sight::core::com::newSlot(
+            [&](std::filesystem::path path)
+            {
+                sessionLoaded     = true;
+                sessionLoadedPath = path;
+            });
+        sessionLoadedSlot->setWorker(sight::core::thread::getDefaultWorker());
+        auto conn1 = reader->signal("sessionLoaded")->connect(sessionLoadedSlot);
+
+        bool sessionLoadingFailed = false;
+        std::filesystem::path sessionLoadingFailedPath;
+        auto sessionLoadingFailedSlot = sight::core::com::newSlot(
+            [&sessionLoadingFailed, &sessionLoadingFailedPath](std::filesystem::path path)
+            {
+                sessionLoadingFailed     = true;
+                sessionLoadingFailedPath = path;
+            });
+        sessionLoadingFailedSlot->setWorker(sight::core::thread::getDefaultWorker());
+        auto conn2 = reader->signal("sessionLoadingFailed")->connect(sessionLoadingFailedSlot);
+
         // Configure the reader service
         reader->setConfiguration(getConfiguration(true, raw));
         reader->configure();
@@ -162,6 +187,11 @@ inline static void basicTest(const bool raw = false)
         service::unregisterService(reader);
 
         // Final test
+        CPPUNIT_ASSERT(sessionLoaded);
+        CPPUNIT_ASSERT_EQUAL(sessionLoadedPath, tmpFile);
+        CPPUNIT_ASSERT(!sessionLoadingFailed);
+        CPPUNIT_ASSERT_EQUAL(sessionLoadingFailedPath, std::filesystem::path(""));
+
         CPPUNIT_ASSERT_EQUAL(expected, outString->getValue());
     }
 }
@@ -220,6 +250,71 @@ void SessionTest::readerBadPasswordPolicyTest()
 void SessionTest::readerBadPasswordEncryptionTest()
 {
     badPolicyTest(true, "password.<xmlattr>.encryption", "sweet");
+}
+
+//------------------------------------------------------------------------------
+
+void SessionTest::readerBadFile()
+{
+    // Create a temporary file
+    core::os::TempDir tmpDir;
+    const auto& tmpFile = tmpDir / "powder.perlimpinpin";
+
+    {
+        // Create a reader service
+        auto reader = sight::io::base::service::IReader::dynamicCast(
+            service::add("sight::module::io::session::SReader")
+        );
+        CPPUNIT_ASSERT(reader);
+
+        // Set data output
+        auto outString = data::String::New();
+        reader->setInOut(outString, sight::io::base::service::s_DATA_KEY);
+
+        // Set file input
+        reader->setFile(tmpFile);
+
+        // Create slot connections
+        bool sessionLoaded = false;
+        std::filesystem::path sessionLoadedPath;
+        auto sessionLoadedSlot = sight::core::com::newSlot(
+            [&](std::filesystem::path path)
+            {
+                sessionLoaded     = true;
+                sessionLoadedPath = path;
+            });
+        sessionLoadedSlot->setWorker(sight::core::thread::getDefaultWorker());
+        auto conn1 = reader->signal("sessionLoaded")->connect(sessionLoadedSlot);
+
+        bool sessionLoadingFailed = false;
+        std::filesystem::path sessionLoadingFailedPath;
+        auto sessionLoadingFailedSlot = sight::core::com::newSlot(
+            [&sessionLoadingFailed, &sessionLoadingFailedPath](std::filesystem::path path)
+            {
+                sessionLoadingFailed     = true;
+                sessionLoadingFailedPath = path;
+            });
+        sessionLoadingFailedSlot->setWorker(sight::core::thread::getDefaultWorker());
+        auto conn2 = reader->signal("sessionLoadingFailed")->connect(sessionLoadingFailedSlot);
+
+        // Configure the reader service
+        reader->setConfiguration(getConfiguration(true, false));
+        reader->configure();
+
+        // Execute the writer service
+        reader->start().wait();
+        reader->update().wait();
+        reader->stop().wait();
+
+        // Cleanup
+        service::unregisterService(reader);
+
+        // Final test
+        CPPUNIT_ASSERT(!sessionLoaded);
+        CPPUNIT_ASSERT_EQUAL(sessionLoadedPath, std::filesystem::path(""));
+        CPPUNIT_ASSERT(sessionLoadingFailed);
+        CPPUNIT_ASSERT_EQUAL(sessionLoadingFailedPath, tmpFile);
+    }
 }
 
 //------------------------------------------------------------------------------

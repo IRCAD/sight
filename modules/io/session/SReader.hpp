@@ -102,7 +102,15 @@ public:
 
     SIGHT_DECLARE_SERVICE(SReader, sight::io::base::service::IReader);
 
-    using JobCreatedSignal = core::com::Signal<void (core::jobs::IJob::sptr)>;
+    struct signals
+    {
+        using JobCreatedSignal  = sight::core::com::Signal<void (sight::core::jobs::IJob::sptr)>;
+        using SessionPathSignal = core::com::Signal<void (std::filesystem::path)>;
+
+        using signal_t = sight::core::com::Signals::SignalKeyType;
+        inline static const signal_t SESSION_LOADED         = "sessionLoaded";
+        inline static const signal_t SESSION_LOADING_FAILED = "sessionLoadingFailed";
+    };
 
     MODULE_IO_SESSION_API SReader() noexcept;
 

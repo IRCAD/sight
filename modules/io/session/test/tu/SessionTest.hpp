@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -37,6 +37,7 @@ CPPUNIT_TEST(basicRawTest);
 CPPUNIT_TEST(readerBadDialogPolicyTest);
 CPPUNIT_TEST(readerBadPasswordPolicyTest);
 CPPUNIT_TEST(readerBadPasswordEncryptionTest);
+CPPUNIT_TEST(readerBadFile);
 CPPUNIT_TEST(writerBadDialogPolicyTest);
 CPPUNIT_TEST(writerBadPasswordPolicyTest);
 CPPUNIT_TEST(writerBadPasswordEncryptionTest);
@@ -56,6 +57,7 @@ public:
     static void readerBadDialogPolicyTest();
     static void readerBadPasswordPolicyTest();
     static void readerBadPasswordEncryptionTest();
+    static void readerBadFile();
     static void writerBadDialogPolicyTest();
     static void writerBadPasswordPolicyTest();
     static void writerBadPasswordEncryptionTest();
