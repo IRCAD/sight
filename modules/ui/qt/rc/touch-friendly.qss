@@ -48,3 +48,9 @@ QComboBox {
 QToolBar {
     icon-size: 48px 48px;
 }
+
+QToolButton {
+    min-width: 1.5em;
+    min-height: 1.5em;
+    icon-size: 48px 48px;
+}

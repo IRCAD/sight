@@ -56,6 +56,7 @@ namespace sight::module::ui::qt::image
  * @subsection Configuration Configuration
  * - \b sliceIndex : Axis on which the index will be changed, must be "axial", "frontal" or "sagittal".
  * - \b displayAxisSelector : Allows to change the axis.
+ * - \b displayStepButtons : Allows to change the slice index with step buttons.
  */
 class MODULE_UI_QT_CLASS_API SliceIndexPositionEditor : public sight::ui::base::IEditor
 {
@@ -158,6 +159,8 @@ private:
     orientation_t m_orientation {orientation_t::Z_AXIS};
 
     bool m_displayAxisSelector {true};
+
+    bool m_displayStepButtons {false};
 };
 
 } // namespace sight::module::ui::qt::image

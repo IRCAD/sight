@@ -78,7 +78,7 @@ void SliceIndexPositionEditor::starting()
 
     auto* layout = new QVBoxLayout();
 
-    m_sliceSelectorPanel = new sight::ui::qt::SliceSelector(m_displayAxisSelector);
+    m_sliceSelectorPanel = new sight::ui::qt::SliceSelector(m_displayAxisSelector, m_displayStepButtons);
     m_sliceSelectorPanel->setEnable(false);
     m_sliceSelectorPanel->setObjectName(serviceID);
 
@@ -138,6 +138,8 @@ void SliceIndexPositionEditor::configuring()
     }
 
     m_displayAxisSelector = config.get<bool>("displayAxisSelector", m_displayAxisSelector);
+
+    m_displayStepButtons = config.get<bool>("displayStepButtons", m_displayStepButtons);
 }
 
 //------------------------------------------------------------------------------

@@ -23,12 +23,14 @@
 #include "ui/qt/SliceSelector.hpp"
 
 #include <core/base.hpp>
+#include <core/runtime/path.hpp>
 
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QSlider>
 #include <QStringList>
+#include <QToolButton>
 
 #include <functional>
 
@@ -37,7 +39,7 @@ namespace sight::ui::qt
 
 //------------------------------------------------------------------------------
 
-SliceSelector::SliceSelector(bool displayAxisSelector, QWidget* const parent) noexcept :
+SliceSelector::SliceSelector(bool displayAxisSelector, bool displayStepButtons, QWidget* const parent) noexcept :
     QWidget(parent),
     m_sliceIndex(new QSlider(Qt::Horizontal, this)),
     m_pSliceIndexText(new QLineEdit(this))
@@ -65,6 +67,49 @@ SliceSelector::SliceSelector(bool displayAxisSelector, QWidget* const parent) no
 
     layout->addWidget(m_sliceIndex, 1);
     layout->addWidget(m_pSliceIndexText, 0);
+
+    if(displayStepButtons)
+    {
+        layout->addSpacerItem(new QSpacerItem(16, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
+
+        auto* stepBackward = new QToolButton(this);
+        auto path          = core::runtime::getModuleResourcePath("sight::module::ui::flaticons");
+        stepBackward->setIcon(QIcon(QString::fromStdString((path / "YellowBackwardStep.svg").string())));
+        stepBackward->setToolTip(tr("Step backward"));
+
+        QObject::connect(
+            stepBackward,
+            &QToolButton::clicked,
+            [this]()
+            {
+                m_sliceIndex->setValue(
+                    std::max(m_sliceIndex->minimum(), m_sliceIndex->value() - m_sliceIndex->singleStep())
+                );
+            });
+
+        layout->addWidget(stepBackward, 0);
+
+        layout->addSpacerItem(new QSpacerItem(16, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
+
+        auto* stepForward = new QToolButton(this);
+        stepForward->setIcon(QIcon(QString::fromStdString((path / "YellowForwardStep.svg").string())));
+        stepBackward->setToolTip(tr("Step forward"));
+
+        QObject::connect(
+            stepForward,
+            &QToolButton::clicked,
+            [this]()
+            {
+                m_sliceIndex->setValue(
+                    std::min(m_sliceIndex->maximum(), m_sliceIndex->value() + m_sliceIndex->singleStep())
+                );
+            });
+
+        layout->addWidget(stepForward, 0);
+
+        layout->addSpacerItem(new QSpacerItem(16, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    }
+
     layout->setContentsMargins(0, 0, 0, 0);
 
     QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
