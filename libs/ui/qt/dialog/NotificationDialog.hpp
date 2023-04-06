@@ -64,11 +64,11 @@ public:
 
     //------------------------------------------------------------------------------
 
-    void setPosition(std::function<QPoint(QWidget*)> /*_position*/, QWidget* /*_parent*/)
+    void setPosition(std::function<QPoint(QWidget*)> _position, QWidget* _parent)
     {
         auto* a = new QPropertyAnimation(this, "pos");
         a->setDuration(500);
-        a->setEndValue(m_position(this->parentWidget()));
+        a->setEndValue(_position(_parent));
         a->setEasingCurve(QEasingCurve::OutBack);
         a->start(QPropertyAnimation::DeleteWhenStopped);
     }
