@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -239,11 +239,14 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
                 static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL).value_or(0))
             };
             m_hasMoved = true;
+
+            this->moveBack();
+
             // Send signal.
             auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>(
                 data::Image::s_SLICE_INDEX_MODIFIED_SIG
             );
-            // this->moveBack() will be automatically called due to auto-connection.
+            sight::core::com::Connection::Blocker blocker(sig->getConnection(this->slot(s_MOVE_BACK_SLOT)));
             sig->asyncEmit(idx[2], idx[1], idx[0]);
         }
     }

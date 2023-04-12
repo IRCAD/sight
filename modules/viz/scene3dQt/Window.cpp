@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -618,14 +618,29 @@ void Window::gestureEvent(QGestureEvent* _e)
         Q_EMIT interacted(info);
         this->requestRender();
     }
-    else if(QGesture* tapGesture = _e->gesture(Qt::TapAndHoldGesture))
+    else if(QGesture* tapAndHoldGesture = _e->gesture(Qt::TapAndHoldGesture))
     {
-        if(tapGesture->state() == Qt::GestureFinished)
+        if(tapAndHoldGesture->state() == Qt::GestureFinished)
         {
-            _e->accept(tapGesture);
-            auto* tap = static_cast<QTapAndHoldGesture*>(tapGesture);
+            _e->accept(tapAndHoldGesture);
+            auto* tap = static_cast<QTapAndHoldGesture*>(tapAndHoldGesture);
             sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
             info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::LONG_TAP_GESTURE;
+            QPoint position = mapFromGlobal(tap->position().toPoint());
+            info.x = position.x();
+            info.y = position.y();
+            Q_EMIT interacted(info);
+            this->requestRender();
+        }
+    }
+    else if(QGesture* tapGesture = _e->gesture(Qt::TapGesture))
+    {
+        if(tapGesture->state() == Qt::GestureCanceled && _e->activeGestures().isEmpty())
+        {
+            _e->accept(tapGesture);
+            auto* tap = static_cast<QTapGesture*>(tapGesture);
+            sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
+            info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::BUTTONRELEASE;
             QPoint position = mapFromGlobal(tap->position().toPoint());
             info.x = position.x();
             info.y = position.y();

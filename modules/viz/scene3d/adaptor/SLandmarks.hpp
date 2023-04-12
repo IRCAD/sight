@@ -92,6 +92,10 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b landmarksQueryFlags (optional, uint32, default=0x40000000): mask applied to landmarks.
  * - \b viewDistance (optional, slicesInRange/currentSlice/allSlices, default=slicesInRange): on which slices to display
  *      the landmarks.
+ * - \b initialGroup (optional, string, default="Landmarks"): initial name of the current group.
+ * - \b initialColor (optional, string, default="#FFFF00FF"): initial color of the current group.
+ * - \b initialSize (optional, float, default=32.0): initial size of the current group.
+ * - \b initialShape (optional, sphere/cube, default="sphere): initial shape of the current group.
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SLandmarks final :
     public sight::viz::scene3d::IAdaptor,
@@ -305,7 +309,11 @@ private:
      * @param _index index of the point relative to the group.
      * @param _landmarks landmarks data in which the point will be inserted.
      */
-    void insertMyPoint(std::string _groupName, std::size_t _index, const data::Landmarks::csptr& _landmarks);
+    std::shared_ptr<Landmark> insertMyPoint(
+        std::string _groupName,
+        std::size_t _index,
+        const data::Landmarks::csptr& _landmarks
+    );
 
     /**
      * @brief SLOT: hightlights the selected landmark.
@@ -345,6 +353,33 @@ private:
      */
     void changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex);
 
+    /// SLOT: Toggle landmarks addition
+    void toggleAddLandmarks(bool toggle);
+
+    /// SLOT: Toggle landmarks removal
+    void toggleRemoveLandmarks(bool toggle);
+
+    /// SLOT: Remove all visible landmarks
+    void removeLandmarks();
+
+    /// SLOT: Configure the new landmarks size, shape and color used when adding landmarks ind "ADD" mode.
+    /// @param group the group name of the landmarks to configure.
+    /// @param color the color of the landmarks.
+    /// @param size the size of the landmarks.
+    /// @param shape the shape of the landmarks.
+    void configureNewLandmarks(
+        std::string group,
+        sight::data::Landmarks::ColorType color,
+        sight::data::Landmarks::SizeType size,
+        sight::data::Landmarks::Shape shape
+    );
+
+    /// SLOT: Create a point and insert it in the Landmarks data.
+    void createLandmark(sight::data::Landmarks::PointType point);
+
+    /// Used to create a landmark and pick it. Called by the mouse event (pick) and the slot (no pick).
+    void createAndPickLandmark(const sight::data::Landmarks::PointType& point, bool pick = true);
+
     /**
      * @brief Hides landmarks that are not on the current image slice index (if one is given).
      * @see hideLandmark().
@@ -371,6 +406,8 @@ private:
      * @param landmarks landmarks data in which the landmarks should be hidden.
      */
     void hideMyLandmark(Landmark& landmark, const data::Landmarks& landmarks);
+
+    bool isLandmarkVisible(const data::Landmarks::PointType& point, data::Landmarks::SizeType group_size) const;
 
     /// Contains the root scene node.
     Ogre::SceneNode* m_transNode {nullptr};
@@ -422,6 +459,19 @@ private:
 
     /// Defines the mask used to filter landmarks, it optimizes the ray launched to retrieve the picked distance.
     std::uint32_t m_landmarksQueryFlag {Ogre::SceneManager::ENTITY_TYPE_MASK};
+
+    /// Landmark addition / removal toggle
+    enum class LandmarksMode : uint8_t
+    {
+        NONE = 0,
+        ADD,
+        REMOVE
+    } m_landmarksMode {LandmarksMode::NONE};
+
+    std::string m_currentGroup {"Landmarks"};
+    sight::data::Landmarks::ColorType m_currentColor {1.0F, 1.0F, 0.0F, 1.0F};
+    sight::data::Landmarks::SizeType m_currentSize {32.0F};
+    sight::data::Landmarks::Shape m_currentShape {sight::data::Landmarks::Shape::SPHERE};
 
     static constexpr std::string_view s_LANDMARKS_INPUT = "landmarks";
     static constexpr std::string_view s_IMAGE_INPUT     = "image";

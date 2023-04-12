@@ -30,6 +30,7 @@ class WriterTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(WriterTest);
 CPPUNIT_TEST(writeEnhancedUSVolumeTest);
+CPPUNIT_TEST(forceCPUTest);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -37,8 +38,8 @@ public:
     void setUp();
     void tearDown();
 
-    /// Read Enhanced US Volume Storage
     static void writeEnhancedUSVolumeTest();
+    static void forceCPUTest();
 };
 
 } // namespace sight::io::dicom::ut

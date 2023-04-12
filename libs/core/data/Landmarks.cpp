@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -148,6 +148,13 @@ Landmarks::LandmarksGroup& Landmarks::getGroup(const std::string& name)
 
     Landmarks::LandmarksGroup& group = iter->second;
     return group;
+}
+
+//------------------------------------------------------------------------------
+
+bool Landmarks::hasGroup(const std::string& name) const noexcept
+{
+    return m_landmarks.contains(name);
 }
 
 //------------------------------------------------------------------------------

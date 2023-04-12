@@ -78,7 +78,7 @@ void SliceIndexPositionEditor::starting()
 
     auto* layout = new QVBoxLayout();
 
-    m_sliceSelectorPanel = new sight::ui::qt::SliceSelector();
+    m_sliceSelectorPanel = new sight::ui::qt::SliceSelector(m_displayAxisSelector);
     m_sliceSelectorPanel->setEnable(false);
     m_sliceSelectorPanel->setObjectName(serviceID);
 
@@ -136,6 +136,8 @@ void SliceIndexPositionEditor::configuring()
     {
         SIGHT_FATAL("The value for the xml element \"sliceIndex\" can only be axial, frontal or sagittal.");
     }
+
+    m_displayAxisSelector = config.get<bool>("displayAxisSelector", m_displayAxisSelector);
 }
 
 //------------------------------------------------------------------------------

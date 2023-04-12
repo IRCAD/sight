@@ -72,6 +72,11 @@ public:
     IO_DICOM_API core::jobs::IJob::sptr getJob() const override;
     IO_DICOM_API void setJob(core::jobs::Job::sptr job);
 
+    /// Allow to force the use of a cpu backend, even if SIGHT_ENABLE_NVJPEG2K is set.
+    /// This can be useful in case of an unit test executed on a machine without GPU.
+    /// @arg force: true to force CPU backend, false to use GPU and throw an exception if not available
+    IO_DICOM_API void forceCPU(bool force);
+
 private:
 
     /// PImpl

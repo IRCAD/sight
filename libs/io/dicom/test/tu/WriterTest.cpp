@@ -25,6 +25,7 @@
 
 #include <data/ImageSeries.hpp>
 
+#include <io/bitmap/backend.hpp>
 #include <io/dicom/Reader.hpp>
 #include <io/dicom/Writer.hpp>
 
@@ -455,6 +456,42 @@ void WriterTest::writeEnhancedUSVolumeTest()
 
             compareEnhancedUSVolume(expected, data::ImageSeries::dynamicCast(seriesSet->front()));
         }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void WriterTest::forceCPUTest()
+{
+    core::os::TempDir tmpDir;
+    const auto& expected = getUSVolumeImage(0);
+
+    // Write a single RGB uint8 frame image
+    {
+        auto seriesSet = data::SeriesSet::New();
+        seriesSet->push_back(expected);
+
+        auto writer = io::dicom::Writer::New();
+        writer->setObject(seriesSet);
+        writer->setFolder(tmpDir);
+
+        writer->forceCPU(false);
+
+        if(io::bitmap::nvJPEG2K())
+        {
+            CPPUNIT_ASSERT_NO_THROW(writer->write());
+        }
+
+#ifdef SIGHT_ENABLE_NVJPEG2K
+        else
+        {
+            CPPUNIT_ASSERT_THROW(writer->write(), core::Exception);
+        }
+#endif
+
+        writer->forceCPU(true);
+
+        CPPUNIT_ASSERT_NO_THROW(writer->write());
     }
 }
 

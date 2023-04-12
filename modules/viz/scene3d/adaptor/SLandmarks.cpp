@@ -27,6 +27,8 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/compare.hpp>
 
+#include <data/Color.hpp>
+
 #include <service/macros.hpp>
 
 #include <viz/scene3d/helper/Font.hpp>
@@ -36,20 +38,27 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Slots::SlotKeyType s_REMOVE_GROUP_SLOT     = "removeGroup";
-static const core::com::Slots::SlotKeyType s_MODIFY_GROUP_SLOT     = "modifyGroup";
-static const core::com::Slots::SlotKeyType s_MODIFY_POINT_SLOT     = "modifyPoint";
-static const core::com::Slots::SlotKeyType s_ADD_POINT_SLOT        = "addPoint";
-static const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT     = "removePoint";
-static const core::com::Slots::SlotKeyType s_INSERT_POINT_SLOT     = "insertPoint";
-static const core::com::Slots::SlotKeyType s_SELECT_POINT_SLOT     = "selectPoint";
-static const core::com::Slots::SlotKeyType s_DESELECT_POINT_SLOT   = "deselectPoint";
-static const core::com::Slots::SlotKeyType s_INITIALIZE_IMAGE_SLOT = "initializeImage";
-static const core::com::Slots::SlotKeyType s_SLICE_TYPE_SLOT       = "sliceType";
-static const core::com::Slots::SlotKeyType s_SLICE_INDEX_SLOT      = "sliceIndex";
-static const core::com::Slots::SlotKeyType s_RENAME_GROUP_SLOT     = "renameGroup";
+static const core::com::Slots::SlotKeyType s_REMOVE_GROUP_SLOT       = "removeGroup";
+static const core::com::Slots::SlotKeyType s_MODIFY_GROUP_SLOT       = "modifyGroup";
+static const core::com::Slots::SlotKeyType s_MODIFY_POINT_SLOT       = "modifyPoint";
+static const core::com::Slots::SlotKeyType s_ADD_POINT_SLOT          = "addPoint";
+static const core::com::Slots::SlotKeyType s_REMOVE_POINT_SLOT       = "removePoint";
+static const core::com::Slots::SlotKeyType s_INSERT_POINT_SLOT       = "insertPoint";
+static const core::com::Slots::SlotKeyType s_SELECT_POINT_SLOT       = "selectPoint";
+static const core::com::Slots::SlotKeyType s_DESELECT_POINT_SLOT     = "deselectPoint";
+static const core::com::Slots::SlotKeyType s_INITIALIZE_IMAGE_SLOT   = "initializeImage";
+static const core::com::Slots::SlotKeyType s_SLICE_TYPE_SLOT         = "sliceType";
+static const core::com::Slots::SlotKeyType s_SLICE_INDEX_SLOT        = "sliceIndex";
+static const core::com::Slots::SlotKeyType s_RENAME_GROUP_SLOT       = "renameGroup";
+static const core::com::Slots::SlotKeyType s_TOGGLE_ADD_LANDMARKS    = "toggleAddLandmarks";
+static const core::com::Slots::SlotKeyType s_TOGGLE_REMOVE_LANDMARKS = "toggleRemoveLandmarks";
+static const core::com::Slots::SlotKeyType s_REMOVE_LANDMARKS        = "removeLandmarks";
+static const core::com::Slots::SlotKeyType s_CREATE_LANDMARK         = "createLandmark";
 
 const core::com::Signals::SignalKeyType SLandmarks::s_SEND_WORLD_COORD = "sendWorldCoord";
+
+static constexpr Ogre::Real s_SELECTED_SCALE = 1.35F;
+static constexpr Ogre::Real s_DEFAULT_SCALE  = 1.F;
 
 //------------------------------------------------------------------------------
 
@@ -77,6 +86,10 @@ SLandmarks::SLandmarks() noexcept
     newSlot(s_SLICE_TYPE_SLOT, &SLandmarks::changeSliceType, this);
     newSlot(s_SLICE_INDEX_SLOT, &SLandmarks::changeSliceIndex, this);
     newSlot(s_RENAME_GROUP_SLOT, &SLandmarks::renameGroup, this);
+    newSlot(s_TOGGLE_ADD_LANDMARKS, &SLandmarks::toggleAddLandmarks, this);
+    newSlot(s_TOGGLE_REMOVE_LANDMARKS, &SLandmarks::toggleRemoveLandmarks, this);
+    newSlot(s_REMOVE_LANDMARKS, &SLandmarks::removeLandmarks, this);
+    newSlot(s_CREATE_LANDMARK, &SLandmarks::createLandmark, this);
 
     newSignal<world_coordinates_signal_t>(s_SEND_WORLD_COORD);
 }
@@ -105,6 +118,10 @@ void SLandmarks::configuring()
     static const std::string s_PRIORITY_CONFIG        = s_CONFIG + "priority";
     static const std::string s_QUERY_MASK_CONFIG      = s_CONFIG + "queryMask";
     static const std::string s_VIEW_DISTANCE          = s_CONFIG + "viewDistance";
+    static const std::string s_INITIAL_GROUP          = s_CONFIG + "initialGroup";
+    static const std::string s_INITIAL_COLOR          = s_CONFIG + "initialColor";
+    static const std::string s_INITIAL_SIZE           = s_CONFIG + "initialSize";
+    static const std::string s_INITIAL_SHAPE          = s_CONFIG + "initialShape";
 
     m_fontSource   = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_fontSize     = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
@@ -150,6 +167,7 @@ void SLandmarks::configuring()
         m_landmarksQueryFlag = static_cast<std::uint32_t>(std::stoul(hexaMask, nullptr, 16));
     }
 
+    // View distance
     const std::string& view_distance = config.get<std::string>(s_VIEW_DISTANCE, "slicesInRange");
     if(view_distance == "slicesInRange")
     {
@@ -165,7 +183,33 @@ void SLandmarks::configuring()
     }
     else
     {
-        SIGHT_ERROR("Unknown view distance, allow values are `slicesInRange`, `currentSlice` and `allSlices`");
+        SIGHT_ERROR("Unknown view distance, allowed values are `slicesInRange`, `currentSlice` and `allSlices`");
+    }
+
+    // Initial group
+    m_currentGroup = config.get<std::string>(s_INITIAL_GROUP, m_currentGroup);
+
+    // Initial color
+    auto color = sight::data::Color::New();
+    color->setRGBA(config.get<std::string>(s_INITIAL_COLOR, "#FFFF00FF"));
+    m_currentColor = {color->red(), color->green(), color->blue(), color->alpha()};
+
+    // Initial size
+    m_currentSize = config.get<float>(s_INITIAL_SIZE, m_currentSize);
+
+    // Initial shape
+    const std::string& initialShape = config.get<std::string>(s_INITIAL_SHAPE, "sphere");
+    if(initialShape == "sphere")
+    {
+        m_currentShape = sight::data::Landmarks::Shape::SPHERE;
+    }
+    else if(initialShape == "cube")
+    {
+        m_currentShape = sight::data::Landmarks::Shape::CUBE;
+    }
+    else
+    {
+        SIGHT_ERROR("Unknown shape, allowed values are `sphere` and `cube`");
     }
 }
 
@@ -516,7 +560,11 @@ void SLandmarks::insertPoint(std::string _groupName, std::size_t _index)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::insertMyPoint(std::string _groupName, std::size_t _index, const data::Landmarks::csptr& _landmarks)
+std::shared_ptr<SLandmarks::Landmark> SLandmarks::insertMyPoint(
+    std::string _groupName,
+    std::size_t _index,
+    const data::Landmarks::csptr& _landmarks
+)
 {
     // Retrieve group.
     const data::Landmarks::LandmarksGroup& group = _landmarks->getGroup(_groupName);
@@ -583,13 +631,16 @@ void SLandmarks::insertMyPoint(std::string _groupName, std::size_t _index, const
     }
 
     // Store the created data.
-    m_manualObjects.push_back(std::make_shared<Landmark>(node, object, _groupName, _index, text));
+    auto newLandmark = std::make_shared<Landmark>(node, object, _groupName, _index, text);
+    m_manualObjects.push_back(newLandmark);
 
     // Hide landmarks if an image is given to the service.
     this->hideMyLandmark(*m_manualObjects.back(), *_landmarks);
 
     // Request the rendering.
     this->requestRender();
+
+    return newLandmark;
 }
 
 //------------------------------------------------------------------------------
@@ -785,6 +836,155 @@ void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagit
 
 //------------------------------------------------------------------------------
 
+void SLandmarks::toggleAddLandmarks(bool toggle)
+{
+    if(toggle)
+    {
+        m_landmarksMode = LandmarksMode::ADD;
+    }
+    else if(m_landmarksMode == LandmarksMode::ADD)
+    {
+        m_landmarksMode = LandmarksMode::NONE;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::toggleRemoveLandmarks(bool toggle)
+{
+    if(toggle)
+    {
+        m_landmarksMode = LandmarksMode::REMOVE;
+    }
+    else if(m_landmarksMode == LandmarksMode::REMOVE)
+    {
+        m_landmarksMode = LandmarksMode::NONE;
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::removeLandmarks()
+{
+    auto landmarks = m_landmarks.lock();
+
+    if(!landmarks)
+    {
+        // No need to continue if there is no landmarks
+        return;
+    }
+
+    const auto& image = m_image.const_lock();
+    SIGHT_THROW_IF("Data is null.", !image);
+
+    const auto slice_index = sight::data::helper::MedicalImage::getSliceIndex(
+        *image,
+        m_orientation
+    );
+
+    if(!slice_index)
+    {
+        // No slice selected, early return
+        return;
+    }
+
+    for(const auto& name : landmarks->getGroupNames())
+    {
+        auto& group = landmarks->getGroup(name);
+
+        bool hasDeleted = false;
+
+        for(auto it = group.m_points.begin() ; it < group.m_points.end() ; )
+        {
+            if(isLandmarkVisible(*it, group.m_size))
+            {
+                it         = group.m_points.erase(it);
+                hasDeleted = true;
+            }
+            else
+            {
+                ++it;
+            }
+        }
+
+        if(hasDeleted)
+        {
+            const auto& sig = landmarks->signal<sight::data::Landmarks::ModifiedSignalType>(
+                sight::data::Landmarks::s_MODIFIED_SIG
+            );
+            sig->asyncEmit();
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::configureNewLandmarks(
+    std::string group,
+    sight::data::Landmarks::ColorType color,
+    sight::data::Landmarks::SizeType size,
+    sight::data::Landmarks::Shape shape
+)
+{
+    m_currentGroup = group;
+    m_currentColor = color;
+    m_currentSize  = size;
+    m_currentShape = shape;
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::createLandmark(sight::data::Landmarks::PointType point)
+{
+    createAndPickLandmark(point, false);
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::createAndPickLandmark(const sight::data::Landmarks::PointType& point, bool pick)
+{
+    auto landmarks = m_landmarks.lock();
+
+    // If the group does not exist, we create it.
+    if(!landmarks->hasGroup(m_currentGroup))
+    {
+        landmarks->addGroup(m_currentGroup, m_currentColor, m_currentSize, m_currentShape);
+        const auto& sig = landmarks->signal<sight::data::Landmarks::GroupAddedSignalType>(
+            sight::data::Landmarks::s_GROUP_ADDED_SIG
+        );
+
+        sig->asyncEmit(m_currentGroup);
+    }
+
+    landmarks->addPoint(m_currentGroup, point);
+
+    // Get the last index.
+    const auto& group = landmarks->getGroup(m_currentGroup);
+
+    // Add the new point.
+    const auto& new_landmark = insertMyPoint(m_currentGroup, group.m_points.size() - 1, landmarks.get_shared());
+
+    if(pick)
+    {
+        m_pickedData = new_landmark;
+        m_pickedData->m_node->setScale(s_SELECTED_SCALE, s_SELECTED_SCALE, s_SELECTED_SCALE);
+    }
+    else
+    {
+        m_pickedData = nullptr;
+    }
+
+    // Block the signal to avoid being called back.
+    const auto& sig = landmarks->signal<sight::data::Landmarks::PointAddedSignalType>(
+        sight::data::Landmarks::s_POINT_ADDED_SIG
+    );
+
+    sight::core::com::Connection::Blocker blocker(sig->getConnection(this->slot(s_ADD_POINT_SLOT)));
+    sig->asyncEmit(m_currentGroup);
+}
+
+//------------------------------------------------------------------------------
+
 void SLandmarks::hideLandmarks()
 {
     // Make the context as current.
@@ -818,58 +1018,74 @@ void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
 
 void SLandmarks::hideMyLandmark(Landmark& landmark, const data::Landmarks& landmarks)
 {
-    // Retrieve group.
-    const data::Landmarks::LandmarksGroup& group = landmarks.getGroup(landmark.m_groupName);
-
-    bool show = group.m_visibility && m_isVisible;
-
-    if(show)
-    {
-        const auto& image = m_image.const_lock();
-
-        if(image)
+    const bool must_show =
+        [&]
         {
-            // Show the landmark only if the slice is inside it.
-            const float position       = landmark.m_node->getPosition()[m_orientation];
-            const float slice_position = m_currentSlicePos[m_orientation];
-            const auto spacing         = float(image->getSpacing()[m_orientation]);
-
-            switch(m_viewDistance)
+            // Retrieve group
+            if(!landmarks.hasGroup(landmark.m_groupName))
             {
-                // Use the group size to show the landmark.
-                case ViewDistance::SLICES_IN_RANGE:
-                {
-                    const float group_size = group.m_size * 0.5F;
-                    const float max_size   = std::max(group_size, spacing);
-
-                    show = core::tools::is_greater(position, (slice_position - group_size))
-                           && core::tools::is_less(position, (slice_position + max_size));
-
-                    break;
-                }
-
-                case ViewDistance::CURRENT_SLICE:
-                {
-                    // For pickers that return the exact slice position like VoxelPicker
-                    show = core::tools::is_equal(position, slice_position)
-                           // For picker that returns position in between two slices like SPicker
-                           || (core::tools::is_greater(position, slice_position)
-                               && core::tools::is_less(position, (slice_position + spacing)))
-                           // Special case for SPicker which returns the last slice position at end
-                           || (core::tools::is_equal(float(image->getSize()[m_orientation] - 1), position - spacing)
-                               && core::tools::is_equal(slice_position, position - spacing));
-
-                    break;
-                }
-
-                default:
-                    break;
+                return false;
             }
+
+            const auto& group = landmarks.getGroup(landmark.m_groupName);
+
+            if(!group.m_visibility)
+            {
+                return false;
+            }
+
+            if(const auto& image = m_image.const_lock(); image)
+            {
+                const auto& position = landmark.m_node->getPosition();
+                return isLandmarkVisible({position[0], position[1], position[2]}, group.m_size);
+            }
+
+            return true;
+        }();
+
+    // Show or hide the landmark.
+    landmark.m_object->setVisible(must_show);
+}
+
+//------------------------------------------------------------------------------
+
+bool SLandmarks::isLandmarkVisible(
+    const data::Landmarks::PointType& point,
+    data::Landmarks::SizeType group_size
+) const
+{
+    if(const auto& image = m_image.const_lock(); image)
+    {
+        const auto position       = point[m_orientation];
+        const auto slice_position = m_currentSlicePos[m_orientation];
+        const auto spacing        = image->getSpacing()[m_orientation];
+
+        switch(m_viewDistance)
+        {
+            case ViewDistance::SLICES_IN_RANGE:
+            {
+                // Check if the position is the same than slice position
+                const auto group_half_size = group_size * 0.5;
+                const auto max_size        = std::max(group_half_size, spacing);
+
+                return core::tools::is_greater(position, (slice_position - group_size))
+                       && core::tools::is_less(position, (slice_position + max_size));
+            }
+
+            case ViewDistance::CURRENT_SLICE:
+            {
+                // Check if the position is the same than slice position
+                const auto roundedPosition      = std::round(position / spacing);
+                const auto roundedSlicePosition = std::round(slice_position / spacing);
+                return core::tools::is_equal(roundedPosition, roundedSlicePosition);
+            }
+
+            default:
+                break;
         }
     }
 
-    // Show or hide the landmark.
-    landmark.m_object->setVisible(show);
+    return true;
 }
 
 //------------------------------------------------------------------------------
@@ -921,48 +1137,101 @@ std::optional<Ogre::Vector3> SLandmarks::getNearestPickedPosition(int _x, int _y
 
 void SLandmarks::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
 {
-    if(_button == LEFT)
+    if(_button != LEFT)
     {
-        const auto layer = this->getLayer();
+        // We only manage left click.
+        return;
+    }
 
-        Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
+    const auto layer = this->getLayer();
 
-        const Ogre::Camera* const cam = layer->getDefaultCamera();
-        const auto* const vp          = cam->getViewport();
+    Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
 
-        const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
-        const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
+    const Ogre::Camera* const cam = layer->getDefaultCamera();
+    const auto* const vp          = cam->getViewport();
 
-        const Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
+    const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
+    const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
 
-        Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_landmarksQueryFlag);
-        raySceneQuery->setSortByDistance(false);
-        if(!raySceneQuery->execute().empty())
+    const Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
+
+    const auto raySceneQuery = std::unique_ptr<Ogre::RaySceneQuery>(
+        sceneMgr->createRayQuery(ray, m_landmarksQueryFlag)
+    );
+
+    raySceneQuery->setSortByDistance(true);
+    const auto& queryResult = raySceneQuery->execute();
+
+    if(queryResult.empty())
+    {
+        // Nothing found.
+        return;
+    }
+
+    // Find the ogre landmark and apply a scale.
+    bool found = false;
+
+    // The plane is always intercepted, if a landmark is found
+    for(std::size_t index = 0 ; !found && index < queryResult.size() ; ++index)
+    {
+        // The landmark should be the nearest object found.
+        const auto* const object = queryResult[index].movable;
+
+        auto landmarks = m_landmarks.lock();
+
+        for(auto& landmark : m_manualObjects)
         {
-            bool found             = false;
-            const Ogre::Real scale = 1.15F;
-
-            const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
-            for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
+            if(landmark->m_object == object)
             {
-                const Ogre::MovableObject* const object = queryResult[qrIdx].movable;
-                for(std::shared_ptr<Landmark>& landmark : m_manualObjects)
+                try
                 {
-                    if(landmark->m_object == object)
+                    if(const auto& group = landmarks->getGroup(landmark->m_groupName);
+                       group.m_visibility && isLandmarkVisible(group.m_points[landmark->m_index], group.m_size))
                     {
-                        const auto landmarks = m_landmarks.lock();
-
+                        found        = true;
                         m_pickedData = landmark;
-                        landmark->m_node->setScale(scale, scale, scale);
+                        m_pickedData->m_node->setScale(s_SELECTED_SCALE, s_SELECTED_SCALE, s_SELECTED_SCALE);
 
-                        found = true;
+                        // If we are in remove mode, we will remove the picked landmark.
+                        if(m_landmarksMode == LandmarksMode::REMOVE)
+                        {
+                            // Remove the picked landmark
+                            landmarks->removePoint(landmark->m_groupName, landmark->m_index);
+                            removePoint(landmark->m_groupName, landmark->m_index);
+
+                            const auto& sig = landmarks->signal<sight::data::Landmarks::PointRemovedSignalType>(
+                                sight::data::Landmarks::s_POINT_REMOVED_SIG
+                            );
+
+                            // Block the signal to avoid a being called back.
+                            sight::core::com::Connection::Blocker blocker(
+                                sig->getConnection(this->slot(s_REMOVE_POINT_SLOT))
+                            );
+
+                            sig->asyncEmit(m_currentGroup, landmark->m_index);
+                        }
+
                         break;
                     }
                 }
+                catch(...)
+                {
+                    SIGHT_ERROR("Landmark group '" + landmark->m_groupName + "' not found.");
+
+                    // No point found, we can't select it.
+                    continue;
+                }
             }
         }
+    }
 
-        delete raySceneQuery;
+    // If nothing is picked, we will create a new landmark.
+    if(!found && m_landmarksMode == LandmarksMode::ADD)
+    {
+        if(auto newPos = this->getNearestPickedPosition(_x, _y); newPos)
+        {
+            createAndPickLandmark({(*newPos)[0], (*newPos)[1], (*newPos)[2]});
+        }
     }
 }
 
@@ -1045,8 +1314,7 @@ void SLandmarks::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/,
 {
     if(m_pickedData != nullptr)
     {
-        const Ogre::Real scale = 1.F;
-        m_pickedData->m_node->setScale(scale, scale, scale);
+        m_pickedData->m_node->setScale(s_DEFAULT_SCALE, s_DEFAULT_SCALE, s_DEFAULT_SCALE);
         m_pickedData = nullptr;
 
         this->getLayer()->requestRender();
@@ -1069,34 +1337,37 @@ void SLandmarks::buttonDoublePressEvent(MouseButton /*_button*/, Modifier /*_mod
 
     const Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
 
-    bool found                               = false;
-    Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_landmarksQueryFlag);
-    raySceneQuery->setSortByDistance(false);
-    if(!raySceneQuery->execute().empty())
+    const auto raySceneQuery = std::unique_ptr<Ogre::RaySceneQuery>(
+        sceneMgr->createRayQuery(ray, m_landmarksQueryFlag)
+    );
+
+    raySceneQuery->setSortByDistance(true);
+    const auto& queryResult = raySceneQuery->execute();
+
+    if(queryResult.empty())
     {
-        const Ogre::Real scale = 1.15F;
+        return;
+    }
 
-        const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
-        for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
+    bool found = false;
+
+    for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
+    {
+        const Ogre::MovableObject* const object = queryResult[qrIdx].movable;
+        for(std::shared_ptr<Landmark>& landmark : m_manualObjects)
         {
-            const Ogre::MovableObject* const object = queryResult[qrIdx].movable;
-            for(std::shared_ptr<Landmark>& landmark : m_manualObjects)
+            if(landmark->m_object == object)
             {
-                if(landmark->m_object == object)
-                {
-                    const auto landmarks = m_landmarks.lock();
+                const auto landmarks = m_landmarks.lock();
 
-                    m_pickedData = landmark;
-                    landmark->m_node->setScale(scale, scale, scale);
+                m_pickedData = landmark;
+                m_pickedData->m_node->setScale(s_SELECTED_SCALE, s_SELECTED_SCALE, s_SELECTED_SCALE);
 
-                    found = true;
-                    break;
-                }
+                found = true;
+                break;
             }
         }
     }
-
-    delete raySceneQuery;
 
     if(found)
     {

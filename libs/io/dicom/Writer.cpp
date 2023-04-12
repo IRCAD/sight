@@ -42,7 +42,8 @@ namespace sight::io::dicom
 
 inline static void writeEnhancedUSVolume(
     const data::ImageSeries& image_series,
-    const std::string& filepath
+    const std::string& filepath,
+    [[maybe_unused]] bool force_cpu
 )
 {
     // Create the writer
@@ -166,14 +167,19 @@ inline static void writeEnhancedUSVolume(
     // Dump the image data to GDCM
     /// @note This seems to be sub-optimal as we are going to recompress the data in JPEG2000
     /// @todo Find a way to avoid this double copying of possibly huge image data
-    const auto image_locked = image_series.dump_lock();
+    const auto image_locked  = image_series.dump_lock();
+    const auto size_in_bytes = image_series.getSizeInBytes();
+
+    SIGHT_THROW_IF("Size in Bytes is greater than 4GB", image_series.getSizeInBytes() > 0xFFFFFFFF);
 
     using PIXEL_DATA = data::dicom::attribute::Attribute<data::dicom::attribute::Keyword::PixelData>;
     gdcm::DataElement pixeldata(gdcm::Tag(PIXEL_DATA::s_group, PIXEL_DATA::s_element));
+
     pixeldata.SetByteValue(
         reinterpret_cast<const char*>(image_series.getBuffer()),
-        std::uint32_t(image_series.getSizeInBytes())
+        std::uint32_t(size_in_bytes)
     );
+
     gdcm_image.SetDataElement(pixeldata);
 
     // Change data as JPEG2000 lossless
@@ -181,14 +187,19 @@ inline static void writeEnhancedUSVolume(
     transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEG2000Lossless);
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-    SIGHT_THROW_IF(
-        "nvJPEG2000 is not available, but the support has been compiled in. "
-        "Check your nvJPEG2000 library installation",
-        !io::bitmap::nvJPEG2K()
-    );
-
+    // The code must be in the same scope as the transferSyntaxChanger
     codec::NvJpeg2K codec;
-    transferSyntaxChanger.SetUserCodec(&codec);
+
+    if(!force_cpu)
+    {
+        SIGHT_THROW_IF(
+            "nvJPEG2000 is not available, but the support has been compiled in. "
+            "Check your nvJPEG2000 library installation",
+            !io::bitmap::nvJPEG2K()
+        );
+
+        transferSyntaxChanger.SetUserCodec(&codec);
+    }
 #endif
 
     transferSyntaxChanger.SetInput(gdcm_image);
@@ -243,6 +254,9 @@ public:
 
     /// The default job. Allows to watch for cancellation and report progress.
     core::jobs::Job::sptr m_job;
+
+    /// the overriden backend
+    bool m_force_cpu {false};
 };
 
 Writer::Writer(io::base::writer::IObjectWriter::Key /*unused*/) :
@@ -329,7 +343,7 @@ void Writer::write()
                 !image_series
             );
 
-            writeEnhancedUSVolume(*image_series, filepath.string());
+            writeEnhancedUSVolume(*image_series, filepath.string(), m_pimpl->m_force_cpu);
         }
         else
         {
@@ -365,6 +379,13 @@ void Writer::setJob(core::jobs::Job::sptr job)
     m_pimpl->m_job = job;
     m_pimpl->m_job->setTotalWorkUnits(100);
     m_pimpl->m_job->doneWork(10);
+}
+
+//------------------------------------------------------------------------------
+
+void Writer::forceCPU(bool force)
+{
+    m_pimpl->m_force_cpu = force;
 }
 
 } // namespace sight::io::dicom
