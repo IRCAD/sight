@@ -29,6 +29,7 @@ lint:sheldon:
     SIGHT_BUILD_PACKAGES: "OFF"
     SIGHT_BUILD_SDK: "OFF"
     SIGHT_ENABLE_REALSENSE: "OFF"
+    SIGHT_ENABLE_GDB: "OFF"
   script:
     # Reset the modified time of all files to improve ccache performance
     - /usr/lib/git-core/git-restore-mtime --force --skip-missing --commit-time
@@ -49,7 +50,7 @@ lint:sheldon:
       -DSIGHT_ENABLE_OPENVSLAM=ON
       -DSIGHT_ENABLE_REALSENSE=${SIGHT_ENABLE_REALSENSE}
       -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
-      -DSIGHT_ENABLE_GDB=ON
+      -DSIGHT_ENABLE_GDB=${SIGHT_ENABLE_GDB}
     # Touch all generated files to improve CCache performance
     - find . -type f -name '*.?pp' -o -name '*.?xx' -exec touch -t 197001010000 {} \;
     # Build
@@ -147,6 +148,7 @@ build:linux-22.04-debug-gcc:
   variables:
     BUILD_TYPE: "Debug"
     SIGHT_BUILD_SDK: "ON"
+    SIGHT_ENABLE_GDB: "ON"
     CC: "/usr/lib/ccache/gcc"
     CXX: "/usr/lib/ccache/g++"
   rules:
@@ -173,6 +175,7 @@ build:linux-22.04-RelWithDebInfo-clang:
   variables:
     BUILD_TYPE: "RelWithDebInfo"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
+    SIGHT_ENABLE_GDB: "ON"
     CC: "/usr/lib/ccache/clang"
     CXX: "/usr/lib/ccache/clang++"
   rules:
