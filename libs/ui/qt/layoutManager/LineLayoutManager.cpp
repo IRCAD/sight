@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -77,7 +77,7 @@ void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr pare
     }
 
     const std::list<ViewInfo>& views = this->getViewsInfo();
-    for(const ViewInfo& viewInfo : views)
+    for(std::size_t idx = 0 ; const ViewInfo& viewInfo : views)
     {
         if(viewInfo.m_isSpacer)
         {
@@ -122,6 +122,7 @@ void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr pare
             else
             {
                 panel = new QWidget();
+                panel->setObjectName(qId + '/' + QString("%1").arg(idx));
             }
 
             panel->setMinimumSize(std::max(viewInfo.m_minSize.first, 0), std::max(viewInfo.m_minSize.second, 0));
@@ -184,6 +185,8 @@ void LineLayoutManager::createLayout(ui::base::container::fwContainer::sptr pare
                 subContainer->setVisible(false);
             }
         }
+
+        idx++;
     }
 }
 

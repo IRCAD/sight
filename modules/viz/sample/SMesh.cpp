@@ -121,10 +121,10 @@ void SMesh::starting()
     m_cameraSrv->setID(this->getID() + "cameraAdaptor");
     m_cameraSrv->configure();
 
-    m_renderSrv->slot("start")->asyncRun();
-    m_interactorSrv->slot("start")->asyncRun();
-    m_meshSrv->slot("start")->asyncRun();
-    m_cameraSrv->slot("start")->asyncRun();
+    m_renderSrv->start().wait();
+    m_interactorSrv->start().wait();
+    m_meshSrv->start().wait();
+    m_cameraSrv->start().wait();
 }
 
 //------------------------------------------------------------------------------

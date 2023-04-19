@@ -26,12 +26,18 @@
 #include <core/Profiling.hpp>
 
 #include <ui/qt/gestures/QPanGestureRecognizer.hpp>
+#include <modules/viz/scene3dQt/init.hpp>
 
 #include <viz/scene3d/Utils.hpp>
 #include <viz/scene3d/WindowManager.hpp>
+#include <viz/scene3d/ogre.hpp>
 
-#include <OGRE/Overlay/OgreOverlay.h>
-#include <OGRE/Overlay/OgreOverlayManager.h>
+#include <OgreTextureManager.h>
+#include <OgreRenderTarget.h>
+#include <OgreRenderTexture.h>
+#include <OgreHardwarePixelBuffer.h>
+#include <OgreMeshManager.h>
+#include <QOpenGLFunctions>
 
 namespace sight::module::viz::scene3dQt
 {
@@ -52,7 +58,7 @@ static inline sight::viz::scene3d::interactor::IInteractor::Modifier convertModi
 
 // ----------------------------------------------------------------------------
 
-static inline QPoint getCursorPosition(const QWindow* const _w)
+static inline QPoint getCursorPosition(const QWidget* const _w)
 {
     const auto globalCursorPosition = QCursor::pos();
     const auto widgetCursorPosition = _w->mapFromGlobal(globalCursorPosition);
@@ -71,110 +77,39 @@ int Window::m_counter = 0;
 
 // ----------------------------------------------------------------------------
 
-Window::Window(QWindow* _parent) :
-    QWindow(_parent),
+Window::Window() :
+    QOpenGLWidget(nullptr),
     m_id(Window::m_counter++)
 {
-    connect(this, &Window::screenChanged, this, &Window::onScreenChanged);
-
-    auto* nvPrime   = std::getenv("__NV_PRIME_RENDER_OFFLOAD");
-    auto* glxVendor = std::getenv("__GLX_VENDOR_LIBRARY_NAME");
-
-    if((nvPrime != nullptr) && (glxVendor != nullptr)
-       && (std::strcmp(nvPrime, "1") == 0) && (std::strcmp(glxVendor, "nvidia") == 0))
-    {
-        SIGHT_INFO("NVidia Prime detected, switching to internal GL control.");
-        m_externalGLControl = false;
-    }
+    this->setUpdateBehavior(QOpenGLWidget::NoPartialUpdate);
+    this->setFocusPolicy(Qt::ClickFocus);
 }
 
 // ----------------------------------------------------------------------------
 
 Window::~Window()
 {
-    this->QWindow::destroy();
+    auto& textureMgr = Ogre::TextureManager::getSingleton();
+    auto& matMgr     = Ogre::MaterialManager::getSingleton();
+
+    for(auto& renderTarget : m_renderTargets)
+    {
+        if(renderTarget.texture)
+        {
+            textureMgr.remove(renderTarget.texture);
+            renderTarget.texture.reset();
+
+            matMgr.remove(renderTarget.material);
+            renderTarget.material.reset();
+        }
+    }
 }
 
-// ----------------------------------------------------------------------------
+//------------------------------------------------------------------------------
 
-void Window::render(QPainter* /*unused*/)
+void Window::registerLayer(sight::viz::scene3d::Layer::wptr _layer)
 {
-}
-
-// ----------------------------------------------------------------------------
-
-void Window::initialize()
-{
-    m_ogreRoot = sight::viz::scene3d::Utils::getOgreRoot();
-
-    SIGHT_ASSERT(
-        "OpenGL RenderSystem not found",
-        m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos
-    );
-
-    Ogre::NameValuePairList parameters;
-
-    // We share the OpenGL context on all windows. The first window will create the context, the other ones will
-    // reuse the current context.
-    parameters["currentGLContext"] = "true";
-    if(m_externalGLControl)
-    {
-        parameters["externalGLControl"] = "true"; // Let us handle buffer swapping and vsync.
-    }
-
-    // parameters["vsync"]  = "true";
-
-    /*
-       We need to supply the low level OS window handle to this QWindow so that Ogre3D knows where to draw
-       the scene. Below is a cross-platform method on how to do this.
-     */
-#if defined(Q_OS_WIN)
-    {
-        const std::size_t winId = static_cast<std::size_t>(this->winId());
-        parameters["externalWindowHandle"] = Ogre::StringConverter::toString(winId);
-        parameters["parentWindowHandle"]   = Ogre::StringConverter::toString(winId);
-    }
-#else
-    {
-        const auto winId = static_cast<std::uint64_t>(this->winId());
-        parameters["externalWindowHandle"] = Ogre::StringConverter::toString(winId);
-    }
-#endif
-
-    m_glContext = module::viz::scene3dQt::OpenGLContext::getGlobalOgreOpenGLContext();
-    this->makeCurrent();
-
-    const int width  = static_cast<int>(this->width() * this->devicePixelRatio());
-    const int height = static_cast<int>(this->height() * this->devicePixelRatio());
-
-    m_ogreRenderWindow = m_ogreRoot->createRenderWindow(
-        "Widget-RenderWindow_" + std::to_string(m_id),
-        static_cast<unsigned int>(width),
-        static_cast<unsigned int>(height),
-        false,
-        &parameters
-    );
-
-    m_ogreRenderWindow->setVisible(true);
-    m_ogreRenderWindow->setAutoUpdated(false);
-
-    sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
-    mgr->add(m_ogreRenderWindow);
-
-    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
-    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::RESIZE;
-    info.x               = width;
-    info.y               = height;
-    info.dx              = 0;
-    info.dy              = 0;
-    Q_EMIT interacted(info);
-}
-
-// ----------------------------------------------------------------------------
-
-Ogre::RenderWindow* Window::getOgreRenderWindow() const
-{
-    return m_ogreRenderWindow;
+    m_renderTargets.push_back({_layer, nullptr, nullptr});
 }
 
 // ----------------------------------------------------------------------------
@@ -195,79 +130,15 @@ void Window::requestRender()
 
 void Window::makeCurrent()
 {
-    if(m_glContext)
-    {
-        m_glContext->makeCurrent(this);
-        if(m_ogreRenderWindow != nullptr)
-        {
-            Ogre::RenderSystem* renderSystem = m_ogreRoot->getRenderSystem();
-            SIGHT_ASSERT("RenderSystem is null", renderSystem);
-
-            // glXMakeCurrent needs the current GL context, but also the current drawable
-            // This trick allows to set the current OpenGL drawable in Ogre internal state
-            // Not doing this gives errors with multiple windows opened, like the following:
-            //
-            // Exception occurred during Ogre renderingInternalErrorException: failed to lock 48 bytes at 0 of
-            // total 48 bytes in lockImpl at XXX/RenderSystems/GL3Plus/src/OgreGL3PlusHardwareBuffer.cpp
-            //
-            renderSystem->_setRenderTarget(m_ogreRenderWindow);
-        }
-    }
+    QOpenGLWidget::makeCurrent();
 }
 
 // ----------------------------------------------------------------------------
 
 void Window::destroyWindow()
 {
-    if(m_ogreRenderWindow != nullptr)
-    {
-        m_ogreRenderWindow->removeListener(this);
-        sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
-        mgr->remove(m_ogreRenderWindow);
-        m_ogreRenderWindow = nullptr;
-    }
-}
-
-// ----------------------------------------------------------------------------
-
-void Window::render()
-{
-    if(m_ogreRenderWindow == nullptr)
-    {
-        return;
-    }
-
-    ++m_frameId;
-    /*
-       How we tied in the render function for OGre3D with QWindow's render function. This is what gets call
-       repeatedly. Note that we don't call this function directly; rather we use the renderNow() function
-       to call this method as we don't want to render the Ogre3D scene unless everything is set up first.
-       That is what renderNow() does.
-
-       Theoretically you can have one function that does this check but from my experience it seems better
-       to keep things separate and keep the render function as simple as possible.
-     */
-
-    FW_PROFILE_FRAME_AVG("Ogre", 3);
-    FW_PROFILE_AVG("Ogre", 3);
-    this->makeCurrent();
-
-    try
-    {
-        m_ogreRoot->_fireFrameStarted();
-        m_ogreRenderWindow->update();
-        m_ogreRoot->_fireFrameRenderingQueued();
-        m_ogreRoot->_fireFrameEnded();
-
-        if(m_externalGLControl)
-        {
-            m_glContext->swapBuffers(this);
-        }
-    }
-    catch(const std::exception& e)
-    {
-        SIGHT_ERROR("Exception occurred during Ogre rendering" << e.what());
-    }
+    m_init = false;
+    m_renderTargets.clear();
 }
 
 // ----------------------------------------------------------------------------
@@ -282,63 +153,7 @@ void Window::renderLater()
     if(!m_update_pending)
     {
         m_update_pending = true;
-        QApplication::postEvent(this, new QEvent(QEvent::UpdateRequest));
-    }
-}
-
-// ----------------------------------------------------------------------------
-
-bool Window::event(QEvent* _event)
-{
-    /*
-       QWindow's "message pump". The base method that handles all QWindow events. As you will see there
-       are other methods that actually process the keyboard/other events of Qt and the underlying OS.
-
-       Note that we call the renderNow() function which checks to see if everything is initialized, etc.
-       before calling the render() function.
-     */
-
-    switch(_event->type())
-    {
-        case QEvent::UpdateRequest:
-            m_update_pending = false;
-            renderNow();
-            return true;
-
-        case QEvent::Resize:
-        {
-            bool result = QWindow::event(_event);
-
-            if(m_ogreRenderWindow != nullptr && m_ogreSize != this->size())
-            {
-                this->ogreResize(this->size());
-            }
-
-            return result;
-        }
-
-        default:
-            break;
-    }
-
-    return QWindow::event(_event);
-}
-
-// ----------------------------------------------------------------------------
-
-void Window::exposeEvent(QExposeEvent* /*unused*/)
-{
-    // Force rendering
-    this->renderNow();
-}
-
-// ----------------------------------------------------------------------------
-
-void Window::moveEvent(QMoveEvent* /*unused*/)
-{
-    if(m_ogreRenderWindow != nullptr)
-    {
-        m_ogreRenderWindow->reposition(x(), y());
+        update();
     }
 }
 
@@ -346,19 +161,7 @@ void Window::moveEvent(QMoveEvent* /*unused*/)
 
 void Window::renderNow()
 {
-    // Small optimization to not render when not visible
-    if(!this->isExposed())
-    {
-        return;
-    }
-
-    if(m_ogreSize != this->size())
-    {
-        this->ogreResize(this->size());
-        return;
-    }
-
-    this->render();
+    this->update();
 }
 
 // ----------------------------------------------------------------------------
@@ -658,51 +461,17 @@ void Window::gestureEvent(QGestureEvent* _e)
 
 void Window::ogreResize(const QSize& _newSize)
 {
-    if(!_newSize.isValid())
+    if(!_newSize.isValid() || !m_init)
     {
         return;
     }
 
     m_ogreSize = _newSize;
 
-    const int newWidth  = static_cast<int>(this->devicePixelRatio() * m_ogreSize.width());
-    const int newHeight = static_cast<int>(this->devicePixelRatio() * m_ogreSize.height());
+    const int newWidth  = static_cast<int>(this->devicePixelRatio() * _newSize.width());
+    const int newHeight = static_cast<int>(this->devicePixelRatio() * _newSize.height());
 
-    this->makeCurrent();
-
-#if defined(__unix__)
-    m_ogreRenderWindow->resize(static_cast<unsigned int>(newWidth), static_cast<unsigned int>(newHeight));
-#endif
-    m_ogreRenderWindow->windowMovedOrResized();
-
-    const auto numViewports = m_ogreRenderWindow->getNumViewports();
-
-    Ogre::Viewport* viewport = nullptr;
-    for(std::uint16_t i = 0 ; i < numViewports ; i++)
-    {
-        viewport = m_ogreRenderWindow->getViewport(i);
-
-        const auto vpWidth  = static_cast<float>(viewport->getActualWidth());
-        const auto vpHeight = static_cast<float>(viewport->getActualHeight());
-
-        viewport->getCamera()->setAspectRatio(vpWidth / vpHeight);
-    }
-
-    if((viewport != nullptr) && Ogre::CompositorManager::getSingleton().hasCompositorChain(viewport))
-    {
-        Ogre::CompositorChain* chain = Ogre::CompositorManager::getSingleton().getCompositorChain(
-            viewport
-        );
-
-        for(auto* instance : chain->getCompositorInstances())
-        {
-            if(instance->getEnabled())
-            {
-                instance->setEnabled(false);
-                instance->setEnabled(true);
-            }
-        }
-    }
+    createRenderTextures(newWidth, newHeight);
 
     sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
     info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::RESIZE;
@@ -711,18 +480,236 @@ void Window::ogreResize(const QSize& _newSize)
     info.dx              = 0;
     info.dy              = 0;
     Q_EMIT interacted(info);
-
-    this->requestRender();
 }
 
 // ----------------------------------------------------------------------------
 
-void Window::onScreenChanged(QScreen* /*unused*/)
+void Window::createRenderTextures(int w, int h)
 {
-    if(m_ogreRenderWindow != nullptr)
+    FW_PROFILE("createRenderTextures");
+    auto& mgr = Ogre::TextureManager::getSingleton();
+
+    unsigned i = 0;
+    for(auto& renderTarget : m_renderTargets)
     {
-        this->ogreResize(this->size());
+        const auto layer = renderTarget.layer.lock();
+        if(renderTarget.texture)
+        {
+            mgr.remove(renderTarget.texture);
+            renderTarget.texture.reset();
+        }
+
+        renderTarget.texture = mgr.createManual(
+            "RttTex" + std::to_string(m_id) + "_" + std::to_string(i++),
+            Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+            Ogre::TEX_TYPE_2D,
+            static_cast<uint>(w),
+            static_cast<uint>(h),
+            0,
+            Ogre::PF_BYTE_RGBA,
+            Ogre::TU_RENDERTARGET
+        );
+
+        auto* rt = renderTarget.texture->getBuffer()->getRenderTarget();
+        layer->setRenderTarget(rt);
+
+        if(!layer->initialized())
+        {
+            layer->createScene();
+        }
+        else
+        {
+            // This will be skipped on initialisation
+            Ogre::Camera* camera = layer->getDefaultCamera();
+            // Save last viewport and current aspect ratio
+            Ogre::Viewport* oldViewport = camera->getViewport();
+            Ogre::Real aspectRatio      = camera->getAspectRatio();
+
+            // If the layer viewport is smaller than the widget size, then only the viewport is cleared.
+            // This lefts all other areas uninitialized, which work on some platforms (NVidia) but not on others (Intel)
+            // To overcome this, we add a fullscreen viewport to clear the whole frame
+            if(oldViewport->getLeft() != 0.F || oldViewport->getTop() != 0.F
+               || oldViewport->getWidth() != 1.F || oldViewport->getHeight() != 1.F)
+            {
+                Ogre::Viewport* clearVp = rt->addViewport(camera, oldViewport->getZOrder() - 1, 0.F, 0.F, 1.F, 1.F);
+                clearVp->setBackgroundColour(Ogre::ColourValue(0, 0, 0, 0));
+                clearVp->setVisibilityMask(0); // Exclude all objects, only keep the clear
+            }
+
+            Ogre::Viewport* vp = rt->addViewport(
+                camera,
+                oldViewport->getZOrder(),
+                oldViewport->getLeft(),
+                oldViewport->getTop(),
+                oldViewport->getWidth(),
+                oldViewport->getHeight()
+            );
+
+            // Should restore aspect ratio, in case of auto aspect ratio
+            // enabled, it'll changed when add new viewport.
+            camera->setAspectRatio(aspectRatio);
+            // Should restore last viewport, i.e. never disturb user code
+            // which might based on that.
+            camera->_notifyViewport(oldViewport);
+            if(layer->getOrder() != 0)
+            {
+                vp->setBackgroundColour(Ogre::ColourValue(0, 0, 0, 0));
+            }
+
+            Ogre::CompositorManager& compositorManager = Ogre::CompositorManager::getSingleton();
+            if((vp != nullptr) && compositorManager.hasCompositorChain(oldViewport))
+            {
+                Ogre::CompositorChain* oldChain = compositorManager.getCompositorChain(oldViewport);
+
+                std::vector<std::string> compositors;
+                std::ranges::for_each(
+                    oldChain->getCompositorInstances(),
+                    [&compositors, &compositorManager, vp](auto& x)
+                    {
+                        const std::string name = x->getCompositor()->getName();
+                        compositors.push_back(name);
+                        compositorManager.addCompositor(vp, name);
+                        compositorManager.setCompositorEnabled(vp, name, x->getEnabled());
+                    });
+                std::ranges::for_each(
+                    compositors,
+                    [&compositorManager, oldViewport](auto& name)
+                    {
+                        compositorManager.setCompositorEnabled(oldViewport, name, false);
+                        compositorManager.removeCompositor(oldViewport, name);
+                    });
+            }
+        }
+
+        const Ogre::Material::Techniques& techniques = renderTarget.material->getTechniques();
+
+        for(const auto* const tech : techniques)
+        {
+            Ogre::Pass* const pass          = tech->getPass(0);
+            Ogre::TextureUnitState* texUnit = pass->getTextureUnitState("RT");
+            texUnit->setTexture(renderTarget.texture);
+        }
+
+        const auto numViewports = rt->getNumViewports();
+        for(std::uint16_t v = 0 ; v < numViewports ; v++)
+        {
+            auto* viewport = rt->getViewport(v);
+
+            const auto vpWidth  = static_cast<float>(viewport->getActualWidth());
+            const auto vpHeight = static_cast<float>(viewport->getActualHeight());
+
+            viewport->getCamera()->setAspectRatio(vpWidth / vpHeight);
+        }
     }
+}
+
+//------------------------------------------------------------------------------
+
+void Window::initializeGL()
+{
+    m_ogreRoot = sight::viz::scene3d::Utils::getOgreRoot();
+
+    SIGHT_ASSERT(
+        "OpenGL RenderSystem not found",
+        m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos
+    );
+
+    initResources();
+
+    const int width  = static_cast<int>(this->width() * this->devicePixelRatio());
+    const int height = static_cast<int>(this->height() * this->devicePixelRatio());
+
+    Ogre::MeshManager& meshManager = Ogre::MeshManager::getSingleton();
+    Ogre::MovablePlane p(Ogre::Vector3::UNIT_Z, 0);
+    m_fsQuadPlane =
+        meshManager.createPlane("plane" + std::to_string(m_id), sight::viz::scene3d::RESOURCE_GROUP, p, 2, 2);
+
+    unsigned int i = 0;
+    for(auto& renderTarget : m_renderTargets)
+    {
+        auto material = Ogre::MaterialManager::getSingleton().getByName("Blit", sight::viz::scene3d::RESOURCE_GROUP);
+        renderTarget.material = material->clone("mat" + std::to_string(m_id) + "_" + std::to_string(i++));
+    }
+
+    createRenderTextures(width, height);
+
+    m_init = true;
+
+    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
+    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::RESIZE;
+    info.x               = width;
+    info.y               = height;
+    info.dx              = 0;
+    info.dy              = 0;
+    Q_EMIT interacted(info);
+}
+
+// ----------------------------------------------------------------------------
+
+void Window::paintGL()
+{
+    if(!m_init)
+    {
+        return;
+    }
+
+    m_update_pending = false;
+    ++m_frameId;
+
+    FW_PROFILE("paintGL");
+
+    try
+    {
+        for(auto& renderTarget : m_renderTargets)
+        {
+            auto* rt = renderTarget.texture->getBuffer()->getRenderTarget();
+            rt->update(false);
+
+            this->makeCurrent();
+
+            const Ogre::Material::Techniques& techniques = renderTarget.material->getTechniques();
+            SIGHT_ASSERT("Can't find any technique", !techniques.empty());
+
+            const auto* const tech          = techniques[0];
+            Ogre::Pass* const pass          = tech->getPass(0);
+            Ogre::TextureUnitState* texUnit = pass->getTextureUnitState("RT");
+            texUnit->setTexture(renderTarget.texture);
+
+            Ogre::RenderOperation op;
+            m_fsQuadPlane->getSubMesh(0)->_getRenderOperation(op);
+
+            this->context()->functions()->glViewport(
+                0,
+                0,
+                this->devicePixelRatio() * this->width(),
+                this->devicePixelRatio() * this->height()
+            );
+
+            auto* scene = renderTarget.layer.lock()->getSceneManager();
+            // Somehow this variable is set to true when compositors are run, and this messes things up here
+            // We just reset it here and Ogre will reset it when it needs it
+            scene->setLateMaterialResolving(false);
+            scene->manualRender(
+                &op,
+                pass,
+                nullptr,
+                Ogre::Affine3::IDENTITY,
+                Ogre::Affine3::IDENTITY,
+                Ogre::Matrix4::IDENTITY
+            );
+        }
+    }
+    catch(const std::exception& e)
+    {
+        SIGHT_ERROR("Exception occurred during Ogre rendering" << e.what());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void Window::resizeGL(int w, int h)
+{
+    ogreResize(QSize(w, h));
 }
 
 // ----------------------------------------------------------------------------

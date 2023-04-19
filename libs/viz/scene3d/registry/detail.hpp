@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,6 +35,8 @@ namespace sight::viz::scene3d
 class IWindowInteractor;
 class ICamera;
 class ILight;
+class IText;
+class Layer;
 
 namespace interactor
 {
@@ -54,12 +56,15 @@ typedef core::FactoryRegistry<SPTR(viz::scene3d::IWindowInteractor)(std::pair<un
 typedef core::FactoryRegistry<SPTR(viz::scene3d::interactor::IInteractor)(), KeyType> InteractorFactoryType;
 typedef core::FactoryRegistry<SPTR(viz::scene3d::ICamera)(), KeyType> CameraFactoryType;
 typedef core::FactoryRegistry<SPTR(viz::scene3d::ILight)(), KeyType> LightFactoryType;
+typedef core::FactoryRegistry<SPTR(viz::scene3d::IText)(const SPTR(sight::viz::scene3d::Layer)& _layer),
+                              KeyType> TextFactoryType;
 
 VIZ_SCENE3D_API SPTR(Type) get();
 VIZ_SCENE3D_API SPTR(OffscreenMgrType) getOffscreenMgr();
 VIZ_SCENE3D_API SPTR(InteractorFactoryType) getInteractorRegistry();
 VIZ_SCENE3D_API SPTR(CameraFactoryType) getCameraRegistry();
 VIZ_SCENE3D_API SPTR(LightFactoryType) getLightRegistry();
+VIZ_SCENE3D_API SPTR(TextFactoryType) getTextRegistry();
 
 } // namespace registry
 

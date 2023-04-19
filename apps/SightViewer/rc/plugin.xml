@@ -3,13 +3,9 @@
 <plugin id="SightViewer" >
 
     <requirement id="sight::module::ui::base" />
-    <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
-    <requirement id="sight::module::viz::scene2d" />
     <requirement id="sight::module::io::session" />
-
-    <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="sight::service::extension::Config">
         <id>SightViewer_SightData_SrvCfg</id>
@@ -52,7 +48,7 @@
             <filterType>sight::filter::dicom::custom::DefaultDicomFilter</filterType>
         </config>
     </extension>
-    
+
     <!-- Service config used for writing Snapshot -->
     <extension implements="sight::service::extension::Config">
         <id>SightViewer_snapshot_SrvCfg</id>
@@ -129,7 +125,7 @@
                 </gui>
                 <registry>
                     <toolBar sid="toolBarView" start="true" />
-                    <view wid="ogreSceneView" start="true" />
+                    <view wid="sceneView" start="true" />
                     <view sid="parameterView" start="true" />
                     <slideView sid="rightToolbarSliderView" start="true" />
                 </registry>
@@ -179,7 +175,6 @@
                     <view wid="organsParameterView" />
                     <view sid="landmarksParameterView" start="true" />
                     <view sid="lightParameterView" start="true" />
-                    <view wid="extrudedMeshesParameterView" />
                 </registry>
             </service>
 
@@ -338,7 +333,6 @@
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
-                    <hide wid="extrudedMeshesParameterView" />
                 </config>
             </service>
 
@@ -349,7 +343,6 @@
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
-                    <hide wid="extrudedMeshesParameterView" />
                 </config>
             </service>
 
@@ -360,7 +353,6 @@
                     <show wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
-                    <hide wid="extrudedMeshesParameterView" />
                 </config>
             </service>
 
@@ -371,7 +363,6 @@
                     <hide wid="organsParameterView" />
                     <show sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
-                    <hide wid="extrudedMeshesParameterView" />
                 </config>
             </service>
 
@@ -382,7 +373,6 @@
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <show sid="lightParameterView" />
-                    <hide wid="extrudedMeshesParameterView" />
                 </config>
             </service>
 
@@ -454,14 +444,14 @@
             <!-- ************************ Configuration launchers ********************************* -->
 
             <service uid="ogreGenericSceneCfg" type="sight::service::SConfigController" >
-                <appConfig id="SightViewer_GenericScene_AppCfg" />
-                <parameter replace="WID_PARENT" by="ogreSceneView" />
+                <appConfig id="sight::config::viz::scene3d::imageSplitViews" />
+                <parameter replace="WID_PARENT" by="sceneView" />
                 <parameter replace="NEGATO_VIEW_RECEIVE_CHANNEL" by="NEGATO_VIEW_SENDER_CHANNEL" />
                 <parameter replace="VOLUME_VIEW_RECEIVE_CHANNEL" by="VOLUME_VIEW_SENDER_CHANNEL" />
                 <parameter replace="NEGATO_VOLUME_VIEW_TOGGLE_SENDER_CHANNEL" by="NEGATO_VOLUME_VIEW_TOGGLE_RECEIVER_CHANNEL" />
-                <parameter replace="VR_BASIC_BOOL_PARAM_RECEIVER_CHANNEL" by="VOLUME_BASIC_BOOL_SENDER_CHANNEL" />
-                <parameter replace="VR_BASIC_INT_PARAM_RECEIVER_CHANNEL" by="VOLUME_BASIC_INT_SENDER_CHANNEL" />
-                <parameter replace="VR_BASIC_DOUBLE_PARAM_RECEIVER_CHANNEL" by="VOLUME_BASIC_DOUBLE_SENDER_CHANNEL" />
+                <parameter replace="VR_BOOL_PARAM_RECEIVER_CHANNEL" by="VOLUME_BOOL_SENDER_CHANNEL" />
+                <parameter replace="VR_INT_PARAM_RECEIVER_CHANNEL" by="VOLUME_INT_SENDER_CHANNEL" />
+                <parameter replace="VR_DOUBLE_PARAM_RECEIVER_CHANNEL" by="VOLUME_DOUBLE_SENDER_CHANNEL" />
                 <parameter replace="VR_VISIBILITY_RECEIVER_CHANNEL" by="VR_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="3DNEGATO_VISIBILITY_RECEIVER_CHANNEL" by="3DNEGATO_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="MESHES_VISIBILITY_RECEIVER_CHANNEL" by="MESHES_VISIBILITY_SENDER_CHANNEL" />
@@ -496,20 +486,11 @@
             </service>
 
             <service uid="organManagerCfg"  type="sight::service::SConfigController" >
-                <appConfig id="OgreOrganManager" />
+                <appConfig id="sight::config::viz::scene3d::organManager" />
                 <parameter replace="WID_PARENT" by="organsParameterView" />
                 <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
                 <inout group="data">
                     <key name="organManagerModelSeries" uid="modelSeries" />
-                </inout>
-            </service>
-
-            <service uid="extrudedMeshesManagerCfg"  type="sight::service::SConfigController" >
-                <appConfig id="OgreOrganManager" />
-                <parameter replace="WID_PARENT" by="extrudedMeshesParameterView" />
-                <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
-                <inout group="data">
-                    <key name="organManagerModelSeries" uid="extrudedModelSeries" />
                 </inout>
             </service>
 
@@ -680,15 +661,15 @@
                 <slot>hideDistanceAct/enable</slot>
             </connect>
 
-            <connect channel="VOLUME_BASIC_BOOL_SENDER_CHANNEL" >
+            <connect channel="VOLUME_BOOL_SENDER_CHANNEL" >
                 <signal>volumeParameterSrv/boolChanged</signal>
             </connect>
 
-            <connect channel="VOLUME_BASIC_INT_SENDER_CHANNEL" >
+            <connect channel="VOLUME_INT_SENDER_CHANNEL" >
                 <signal>volumeParameterSrv/intChanged</signal>
             </connect>
 
-            <connect channel="VOLUME_BASIC_DOUBLE_SENDER_CHANNEL" >
+            <connect channel="VOLUME_DOUBLE_SENDER_CHANNEL" >
                 <signal>volumeParameterSrv/doubleChanged</signal>
             </connect>
 
@@ -766,7 +747,6 @@
             <start uid="ogreGenericSceneCfg" />
             <start uid="TFManagerCfg" />
             <start uid="organManagerCfg" />
-            <start uid="extrudedMeshesManagerCfg" />
             <start uid="extractSeriesSrv" />
             <start uid="extractPacsImageSrv" />
             <start uid="lightSelectorSrv" />

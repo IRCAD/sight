@@ -234,34 +234,34 @@ bool IParameter::setParameter(Ogre::Technique& technique)
 
     bool updateTexture = false;
     {
-        auto obj = m_parameter.lock();
+        auto obj = m_parameter.const_lock();
 
         // Set shader parameters
         std::string objClass = obj->getClassname();
         if(objClass == "sight::data::Integer")
         {
-            data::Integer::sptr intValue = data::Integer::dynamicCast(obj.get_shared());
+            const auto intValue = data::Integer::dynamicCast(obj.get_shared());
             SIGHT_ASSERT("The given integer object is null", intValue);
 
             params->setNamedConstant(m_paramName, static_cast<int>(intValue->value()));
         }
         else if(objClass == "sight::data::Float")
         {
-            data::Float::sptr floatValue = data::Float::dynamicCast(obj.get_shared());
+            const auto floatValue = data::Float::dynamicCast(obj.get_shared());
             SIGHT_ASSERT("The given float object is null", floatValue);
 
             params->setNamedConstant(m_paramName, floatValue->value());
         }
         else if(objClass == "sight::data::Boolean")
         {
-            data::Boolean::sptr booleanValue = data::Boolean::dynamicCast(obj.get_shared());
+            const auto booleanValue = data::Boolean::dynamicCast(obj.get_shared());
             SIGHT_ASSERT("The given boolean object is null", booleanValue);
 
             params->setNamedConstant(m_paramName, static_cast<int>(booleanValue->value()));
         }
         else if(objClass == "sight::data::Color")
         {
-            data::Color::sptr colorValue = data::Color::dynamicCast(obj.get_shared());
+            const auto colorValue = data::Color::dynamicCast(obj.get_shared());
             SIGHT_ASSERT("The given color object is null", colorValue);
 
             std::array<float, 4> paramValues {};
@@ -277,7 +277,7 @@ bool IParameter::setParameter(Ogre::Technique& technique)
         }
         else if(objClass == "sight::data::PointList")
         {
-            data::PointList::sptr pointListValue = data::PointList::dynamicCast(obj.get_shared());
+            const auto pointListValue = data::PointList::dynamicCast(obj.get_shared());
             SIGHT_ASSERT("The given pointList object is null", pointListValue);
 
             std::vector<data::Point::sptr> points = pointListValue->getPoints();
@@ -303,7 +303,7 @@ bool IParameter::setParameter(Ogre::Technique& technique)
         }
         else if(objClass == "sight::data::Matrix4")
         {
-            data::Matrix4::sptr transValue = data::Matrix4::dynamicCast(obj.get_shared());
+            const auto transValue = data::Matrix4::dynamicCast(obj.get_shared());
             SIGHT_ASSERT("The given Matrix4 object is null", transValue);
 
             std::array<float, 16> paramValues {};
@@ -322,7 +322,7 @@ bool IParameter::setParameter(Ogre::Technique& technique)
         }
         else if(objClass == "sight::data::Array")
         {
-            data::Array::sptr arrayObject = data::Array::dynamicCast(obj.get_shared());
+            const auto arrayObject = data::Array::dynamicCast(obj.get_shared());
             SIGHT_ASSERT("The object is nullptr", arrayObject);
 
             const std::size_t numComponents = arrayObject->getSize()[0];
@@ -357,7 +357,7 @@ bool IParameter::setParameter(Ogre::Technique& technique)
         }
         else if(objClass == "sight::data::Image")
         {
-            data::Image::sptr image = data::Image::dynamicCast(obj.get_shared());
+            const auto image = data::Image::dynamicCast(obj.get_shared());
             SIGHT_ASSERT("The object is nullptr", image);
 
             if(!m_texture)
@@ -387,7 +387,6 @@ bool IParameter::setParameter(Ogre::Technique& technique)
 
         Ogre::TextureUnitState* texState = pass->getTextureUnitState(m_paramName);
         texState->setTexture(m_texture->get());
-
         auto texUnitIndex = pass->getTextureUnitStateIndex(texState);
         params->setNamedConstant(m_paramName, texUnitIndex);
     }
@@ -399,7 +398,11 @@ bool IParameter::setParameter(Ogre::Technique& technique)
 
 void IParameter::setMaterial(const Ogre::MaterialPtr& material)
 {
-    m_material = material;
+    if(m_material != material)
+    {
+        this->setDirty();
+        m_material = material;
+    }
 }
 
 //------------------------------------------------------------------------------

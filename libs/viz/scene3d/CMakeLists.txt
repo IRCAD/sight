@@ -1,6 +1,6 @@
 sight_add_target(viz_scene3d TYPE LIBRARY FAST_DEBUG ON)
 
-target_link_libraries(viz_scene3d PUBLIC OgreOverlay)
+target_link_libraries(viz_scene3d PUBLIC OgreMain)
 
 find_package(OpenGL QUIET REQUIRED)
 target_link_libraries(viz_scene3d PRIVATE ${OPENGL_LIBRARIES})

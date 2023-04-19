@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "viz/scene3d/ILight.hpp"
+#include "viz/scene3d/IText.hpp"
 #include "viz/scene3d/IWindowInteractor.hpp"
 #include "viz/scene3d/registry/detail.hpp"
 
@@ -46,6 +47,10 @@ namespace sight::viz::scene3d::registry
 
 #define SIGHT_REGISTER_SCENE3D_LIGHT(OgreLightClassname, FunctorKey) \
     static sight::viz::scene3d::ILight::Registry<OgreLightClassname> \
+    BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
+
+#define SIGHT_REGISTER_SCENE3D_TEXT(OgreTextClassname, FunctorKey) \
+    static sight::viz::scene3d::IText::Registry<OgreTextClassname> \
     BOOST_PP_CAT(s__factory__record__, __LINE__)(FunctorKey);
 
 } // namespace sight::viz::scene3d::registry

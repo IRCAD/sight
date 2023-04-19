@@ -69,6 +69,8 @@ const core::com::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "c
 const core::com::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT          = "requestRender";
 const core::com::Slots::SlotKeyType SRender::s_DISABLE_FULLSCREEN           = "disableFullscreen";
 const core::com::Slots::SlotKeyType SRender::s_ENABLE_FULLSCREEN            = "enableFullscreen";
+const core::com::Slots::SlotKeyType SRender::s_SET_MANUAL_MODE              = "setManualMode";
+const core::com::Slots::SlotKeyType SRender::s_SET_AUTO_MODE                = "setAutoMode";
 
 static const core::com::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
 static const core::com::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
@@ -88,6 +90,8 @@ SRender::SRender() noexcept :
     newSlot(s_REQUEST_RENDER_SLOT, &SRender::requestRender, this);
     newSlot(s_DISABLE_FULLSCREEN, &SRender::disableFullscreen, this);
     newSlot(s_ENABLE_FULLSCREEN, &SRender::enableFullscreen, this);
+    newSlot(s_SET_MANUAL_MODE, [this](){this->m_renderMode = RenderMode::MANUAL;});
+    newSlot(s_SET_AUTO_MODE, [this](){this->m_renderMode = RenderMode::AUTO;});
 }
 
 //-----------------------------------------------------------------------------
@@ -132,9 +136,9 @@ void SRender::configuring()
     {
         m_renderMode = RenderMode::AUTO;
     }
-    else if(renderMode == "sync")
+    else if(renderMode == "manual" || renderMode == "sync") /* Keep sync for backwards compatibility */
     {
-        m_renderMode = RenderMode::SYNC;
+        m_renderMode = RenderMode::MANUAL;
     }
     else
     {
@@ -249,21 +253,6 @@ void SRender::starting()
         m_interactorManager->createContainer(this->getContainer(), m_fullscreen, serviceID);
     }
 
-    // Initialize resources to load overlay scripts.
-    Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
-
-    m_interactorManager->getRenderTarget()->addListener(&m_viewportListener);
-
-    for(const auto& it : m_layers)
-    {
-        viz::scene3d::Layer::sptr layer = it.second;
-        layer->setRenderTarget(m_interactorManager->getRenderTarget());
-        layer->createScene();
-
-        auto* vp = layer->getViewport();
-        m_viewportOverlaysMap.emplace(vp, layer->getEnabledOverlays());
-    }
-
     // Everything is started now, we can safely create connections and thus receive interactions from the widget
     m_interactorManager->connectToContainer();
 }
@@ -273,9 +262,6 @@ void SRender::starting()
 void SRender::stopping()
 {
     this->makeCurrent();
-
-    m_interactorManager->getRenderTarget()->removeAllListeners();
-    m_viewportOverlaysMap.clear();
 
     for(const auto& it : m_layers)
     {
@@ -314,7 +300,7 @@ void SRender::configureLayer(const ConfigType& _cfg)
     const ConfigType attributes             = _cfg.get_child("<xmlattr>");
     const std::string id                    = attributes.get<std::string>("id", "");
     const std::string compositors           = attributes.get<std::string>("compositors", "");
-    const std::string transparencyTechnique = attributes.get<std::string>("transparency", "HybridTransparency");
+    const std::string transparencyTechnique = attributes.get<std::string>("transparency", "");
     const std::string numPeels              = attributes.get<std::string>("numPeels", "4");
     const std::string stereoMode            = attributes.get<std::string>("stereoMode", "");
     const std::string defaultLight          = attributes.get<std::string>("defaultLight", "");
@@ -364,7 +350,6 @@ void SRender::configureLayer(const ConfigType& _cfg)
     ogreLayer->setCoreCompositorEnabled(true, transparencyTechnique, numPeels, layerStereoMode);
     ogreLayer->setCompositorChainEnabled(compositors);
     ogreLayer->setViewportConfig(viewportConfig);
-    ogreLayer->setEnabledOverlays(enabledOverlays);
 
     if(!defaultLight.empty() && defaultLight == "false")
     {
@@ -461,7 +446,7 @@ Layer::ViewportConfigType SRender::configureLayerViewport(const service::IServic
 
 void SRender::requestRender()
 {
-    if(m_renderMode == RenderMode::SYNC)
+    if(m_renderMode == RenderMode::MANUAL)
     {
         m_interactorManager->renderNow();
     }

@@ -123,7 +123,7 @@ void ImageExtruderTest::extrudeTriangleMesh()
     const auto dumpLock = image->dump_lock();
     std::fill(image->begin(), image->end(), std::uint8_t(255));
 
-    filter::image::ImageExtruder::extrude(image, mesh);
+    filter::image::ImageExtruder::extrude(image, mesh, nullptr);
 
     const auto dumpOriginLock = m_image->dump_lock();
 
@@ -217,7 +217,7 @@ void ImageExtruderTest::extrudeQuadMesh()
     const auto dumpLock = image->dump_lock();
     std::fill(image->begin(), image->end(), std::uint8_t(255));
 
-    filter::image::ImageExtruder::extrude(image, mesh);
+    filter::image::ImageExtruder::extrude(image, mesh, nullptr);
 
     const auto dumpOriginLock = m_image->dump_lock();
 

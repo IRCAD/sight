@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,7 @@
 
 #include <core/Profiling.hpp>
 
+#include <QApplication>
 #include <QRunnable>
 #include <QThreadPool>
 
@@ -58,15 +59,17 @@ struct OpenGLRunner final : public QRunnable
     // Pulls the GL context if it is not owned by the thread and runs the task.
     void run() final
     {
-        QOpenGLContext* workerContext = m_worker->m_glContext.get();
+        QOpenGLContext* workerContext = m_worker->m_glWidget->context();
         if(workerContext->thread() == nullptr)
         {
             QThread* currentThread = QThread::currentThread();
             workerContext->moveToThread(currentThread);
-            workerContext->makeCurrent(m_worker->m_surface);
+            m_worker->m_glWidget->makeCurrent();
         }
 
         m_task();
+        workerContext->moveToThread(qApp->thread());
+        m_worker->m_glWidget->update();
     }
 
     private:
@@ -80,8 +83,8 @@ struct OpenGLRunner final : public QRunnable
 
 //------------------------------------------------------------------------------
 
-OpenGLWorker::OpenGLWorker(QSurface* _surface) :
-    m_surface(_surface)
+OpenGLWorker::OpenGLWorker(QOpenGLWidget* _glWidget) :
+    m_glWidget(_glWidget)
 {
     m_threadPool = std::make_unique<QThreadPool>();
 
@@ -93,8 +96,8 @@ OpenGLWorker::OpenGLWorker(QSurface* _surface) :
     m_glContext = std::unique_ptr<QOpenGLContext>(OpenGLContext::createOgreGLContext(globalGLContext.get()));
 
     // Remove thread affinity so it can be pulled by the worker.
-    m_glContext->doneCurrent();
-    m_glContext->moveToThread(nullptr);
+    m_glWidget->context()->doneCurrent();
+    m_glWidget->context()->moveToThread(nullptr);
 }
 
 //------------------------------------------------------------------------------

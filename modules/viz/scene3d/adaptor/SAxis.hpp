@@ -28,8 +28,8 @@
 #include <core/com/Slot.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/IText.hpp>
 #include <viz/scene3d/ITransformable.hpp>
-#include <viz/scene3d/Text.hpp>
 
 #include <Ogre.h>
 
@@ -157,15 +157,12 @@ private:
     Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Stores labels attached to each axis.
-    std::array<sight::viz::scene3d::Text*, 3> m_axisLabels {{nullptr, nullptr, nullptr}};
+    std::array<sight::viz::scene3d::IText::sptr, 3> m_axisLabels {{nullptr, nullptr, nullptr}};
 
-    sight::viz::scene3d::Text* m_axisNameTxt {nullptr};
+    sight::viz::scene3d::IText::sptr m_axisNameTxt {nullptr};
 
     /// Defines labels font size in points.
-    std::size_t m_fontSize {16};
-
-    /// Defines the TrueType font source file.
-    std::string m_fontSource {"DejaVuSans.ttf"};
+    std::size_t m_fontSize {12};
 
     /// Axis name, default empty.
     std::string m_axisName;

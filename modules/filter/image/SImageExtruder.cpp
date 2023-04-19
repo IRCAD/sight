@@ -69,6 +69,7 @@ service::IService::KeyConnectionsMap SImageExtruder::getAutoConnections() const
 
     connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
     connections.push(s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_TRANSFORM_INPUT, data::Matrix4::s_MODIFIED_SIG, IService::slots::s_UPDATE);
 
     return connections;
 }
@@ -122,7 +123,13 @@ void SImageExtruder::addReconstructions(data::ModelSeries::ReconstructionVectorT
 
             data::mt::locked_ptr lockedMesh(mesh);
 
-            sight::filter::image::ImageExtruder::extrude(imageOut.get_shared(), lockedMesh.get_shared());
+            const auto transform = m_transform.lock();
+
+            sight::filter::image::ImageExtruder::extrude(
+                imageOut.get_shared(),
+                lockedMesh.get_shared(),
+                transform.get_shared()
+            );
         }
     }
 

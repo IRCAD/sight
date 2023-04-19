@@ -58,7 +58,7 @@ void LoadDicom::test()
             helper::Button::push(tester, "toolBarView/Show/hide volume");
 
             // The image appears small, zoom in with the mouse to make it bigger
-            helper::Scene3d::zoom(tester, "mainSceneSrv", 10);
+            helper::Scene3d::zoom(tester, "sceneSrv", 10);
 
             saveSnapshot(tester, snapshotPath);
 

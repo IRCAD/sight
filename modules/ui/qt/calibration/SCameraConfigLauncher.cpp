@@ -105,7 +105,7 @@ void SCameraConfigLauncher::starting()
     QIcon importIcon(QString::fromStdString(
                          core::runtime::getModuleResourceFilePath(
                              "sight::module::ui::icons",
-                             "CameraSet.svg"
+                             "CameraSeries.svg"
                          )
                          .string()
     ));

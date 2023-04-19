@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -78,7 +78,7 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
 
     [[maybe_unused]] bool hasCentral = false;
 
-    for(const ViewInfo& viewInfo : views)
+    for(std::size_t idx = 0 ; const ViewInfo& viewInfo : views)
     {
         QWidget* insideWidget   = nullptr;
         QScrollArea* scrollArea = nullptr;
@@ -95,6 +95,7 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
             else
             {
                 insideWidget = new QWidget(m_qtWindow);
+                insideWidget->setObjectName(qId + '/' + QString("%1").arg(idx));
             }
 
             QWidget* widget = insideWidget;
@@ -201,6 +202,7 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
                 anotherLayout->setMargin(0);
 
                 auto* widget = new QWidget;
+                widget->setObjectName(qId + '/' + QString("%1").arg(idx));
                 widget->setLayout(anotherLayout);
 
                 dockWidget->setMinimumSize(
@@ -266,6 +268,8 @@ void CardinalLayoutManager::createLayout(ui::base::container::fwContainer::sptr 
                 std::min(viewInfo.m_maxSize.second, QWIDGETSIZE_MAX)
             );
         }
+
+        idx++;
 
         //TODO
         // - viewInfo.m_position

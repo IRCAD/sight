@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -207,6 +207,7 @@ WorkerQt::WorkerQt() :
 void WorkerQt::init(int& argc, char** argv)
 {
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication::setAttribute(Qt::AA_ShareOpenGLContexts);
 
 #ifdef WIN32
     // To get Qt initialized properly, we need to find its plugins

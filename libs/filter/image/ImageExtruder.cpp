@@ -24,7 +24,11 @@
 
 #include <core/tools/Dispatcher.hpp>
 
+#include <geometry/data/Matrix4.hpp>
+
+#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/intersect.hpp>
+#include <glm/matrix.hpp>
 #include <glm/vec2.hpp>
 
 #include <cmath>
@@ -34,14 +38,20 @@ namespace sight::filter::image
 
 //------------------------------------------------------------------------------
 
-void ImageExtruder::extrude(const data::Image::sptr& _image, const data::Mesh::csptr& _mesh)
+void ImageExtruder::extrude(
+    const data::Image::sptr& _image,
+    const data::Mesh::csptr& _mesh,
+    const data::Matrix4::csptr& _transform
+)
 {
     SIGHT_ASSERT("The image must be in 3 dimensions", _image->numDimensions() == 3);
     SIGHT_ASSERT("Spacing should be set", _image->getSpacing() != data::Image::Spacing({0., 0., 0.}));
 
     Parameters param;
-    param.m_image = _image;
-    param.m_mesh  = _mesh;
+    param.m_image     = _image;
+    param.m_mesh      = _mesh;
+    param.m_mesh      = _mesh;
+    param.m_transform = _transform;
 
     // We use a dispatcher because we can't retrieve the image type without a DynamicType.
     core::Type type = _image->getType();
@@ -53,6 +63,14 @@ void ImageExtruder::extrude(const data::Image::sptr& _image, const data::Mesh::c
 template<typename IMAGE_TYPE>
 void ImageExtruder::operator()(Parameters& _param)
 {
+    auto transform = glm::identity<glm::mat4>();
+    if(_param.m_transform)
+    {
+        // Apply the inverse matrix of the image to each point of the mesh
+        const glm::dmat4x4 mat = sight::geometry::data::getMatrixFromTF3D(*_param.m_transform);
+        transform = glm::inverse(mat);
+    }
+
     // Creates triangles and bounding box of the mesh.
     const float min = std::numeric_limits<float>::lowest();
     const float max = std::numeric_limits<float>::max();
@@ -64,7 +82,8 @@ void ImageExtruder::operator()(Parameters& _param)
     const auto addTriangle =
         [&](const data::iterator::point::xyz& _pa,
             const data::iterator::point::xyz& _pb,
-            const data::iterator::point::xyz& _pc)
+            const data::iterator::point::xyz& _pc,
+            const glm::mat4 _transform)
         {
             const float ax = _pa.x;
             const float ay = _pa.y;
@@ -78,19 +97,19 @@ void ImageExtruder::operator()(Parameters& _param)
             const float cy = _pc.y;
             const float cz = _pc.z;
 
-            const glm::vec3 triA(ax, ay, az);
-            const glm::vec3 triB(bx, by, bz);
-            const glm::vec3 triC(cx, cy, cz);
+            const glm::vec4 triA = _transform * glm::vec4(ax, ay, az, 1.0);
+            const glm::vec4 triB = _transform * glm::vec4(bx, by, bz, 1.0);
+            const glm::vec4 triC = _transform * glm::vec4(cx, cy, cz, 1.0);
 
             triangles.push_back(Triangle {triA, triB, triC});
 
-            minBound.x = std::min(std::min(std::min(minBound.x, ax), bx), cx);
-            minBound.y = std::min(std::min(std::min(minBound.y, ay), by), cy);
-            minBound.z = std::min(std::min(std::min(minBound.z, az), bz), cz);
+            minBound.x = std::min(std::min(std::min(minBound.x, triA.x), triB.x), triC.x);
+            minBound.y = std::min(std::min(std::min(minBound.y, triA.y), triB.y), triC.y);
+            minBound.z = std::min(std::min(std::min(minBound.z, triA.z), triB.z), triC.z);
 
-            maxBound.x = std::max(std::max(std::max(maxBound.x, ax), bx), cx);
-            maxBound.y = std::max(std::max(std::max(maxBound.y, ay), by), cy);
-            maxBound.z = std::max(std::max(std::max(maxBound.z, az), bz), cz);
+            maxBound.x = std::max(std::max(std::max(maxBound.x, triA.x), triB.x), triC.x);
+            maxBound.y = std::max(std::max(std::max(maxBound.y, triA.y), triB.y), triC.y);
+            maxBound.z = std::max(std::max(std::max(maxBound.z, triA.z), triB.z), triC.z);
         };
 
     auto itPoint = _param.m_mesh->cbegin<data::iterator::point::xyz>();
@@ -107,7 +126,7 @@ void ImageExtruder::operator()(Parameters& _param)
             const auto& pointA = itPoint + cell.pt[0];
             const auto& pointB = itPoint + cell.pt[1];
             const auto& pointC = itPoint + cell.pt[2];
-            addTriangle(*pointA, *pointB, *pointC);
+            addTriangle(*pointA, *pointB, *pointC, transform);
         }
     }
     else if(cellSize == 4)
@@ -119,8 +138,8 @@ void ImageExtruder::operator()(Parameters& _param)
             const auto& pointC = itPoint + cell.pt[2];
             const auto& pointD = itPoint + cell.pt[3];
 
-            addTriangle(*pointA, *pointB, *pointC);
-            addTriangle(*pointC, *pointD, *pointA);
+            addTriangle(*pointA, *pointB, *pointC, transform);
+            addTriangle(*pointC, *pointD, *pointA, transform);
         }
     }
     else

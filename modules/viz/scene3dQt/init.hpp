@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
- * Copyright (C) 2018-2021 IHU Strasbourg
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,25 +21,33 @@
 
 #pragma once
 
-#include <cppunit/extensions/HelperMacros.h>
+#include <viz/scene3d/Utils.hpp>
 
+#include <OgreRenderWindow.h>
 #include <OgreRoot.h>
 
-namespace sight::viz::scene3d::ut
+namespace sight::module::viz::scene3dQt
 {
 
-class TextTest : public CPPUNIT_NS::TestFixture
+static inline Ogre::RenderWindow* s_renderWindow {};
+
+//------------------------------------------------------------------------------
+
+inline void initResources()
 {
-CPPUNIT_TEST_SUITE(TextTest);
-CPPUNIT_TEST(factoryTest);
-CPPUNIT_TEST_SUITE_END();
+    if(s_renderWindow == nullptr)
+    {
+        Ogre::NameValuePairList const params {
+            {"hidden", "true"},
+            {"currentGLContext", "true"}
+        };
 
-public:
+        auto* ogreRoot = sight::viz::scene3d::Utils::getOgreRoot();
+        s_renderWindow = ogreRoot->createRenderWindow("Dummy", 1, 1, false, &params);
+        s_renderWindow->setVisible(false);
+        s_renderWindow->setAutoUpdated(false);
+        Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
+    }
+}
 
-    void setUp() override;
-    void tearDown() override;
-
-    static void factoryTest();
-};
-
-} // namespace sight::viz::scene3d::ut
+} // namespace sight::module::viz::scene3dQt

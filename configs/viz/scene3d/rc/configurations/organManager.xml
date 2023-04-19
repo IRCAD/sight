@@ -1,5 +1,5 @@
 <extension implements="sight::service::extension::AppConfig">
-    <id>OgreOrganManager</id>
+    <id>sight::config::viz::scene3d::organManager</id>
     <parameters>
         <param name="WID_PARENT" />
         <param name="MODELSERIESLIST_ENABLE_DELETE_CONFIG" default="false" />

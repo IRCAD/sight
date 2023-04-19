@@ -64,7 +64,11 @@ void AxialNegato::test()
             resetNegatos(tester);
 
             // We want to move the negato, we must click in the negato slider to do that
-            helper::Slider::set(tester, "axialNegatoSlicerSrv", 133);
+            helper::Slider::set(
+                tester,
+                helper::Select::fromParent("topScenesView/1", "negatoSlicerSrv"),
+                133
+            );
 
             saveSnapshot(tester, snapshotPath);
 

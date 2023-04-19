@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -282,6 +282,61 @@ void CameraTest::convertPixelToWorldSpace()
             viz::scene3d::helper::Camera::convertScreenSpaceToViewSpace(*camera, point);
 
         comparePoint(standardPoint, unprojectedPoint);
+    }
+    renderWindow->removeViewport(0);
+    root->destroySceneManager(sceneManager);
+}
+
+//------------------------------------------------------------------------------
+
+void CameraTest::convertWorldSpaceToScreenSpace()
+{
+    auto* const root         = viz::scene3d::Utils::getOgreRoot();
+    auto* const sceneManager = root->createSceneManager("DefaultSceneManager", "TestSceneManager");
+
+    sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
+    Ogre::RenderWindow* renderWindow             = mgr->get("test");
+    auto* const camera                           = sceneManager->createCamera("TestCamera");
+    renderWindow->addViewport(camera, 0);
+
+    camera->setNearClipDistance(1);
+    camera->setFarClipDistance(10);
+    camera->setAutoAspectRatio(true);
+    camera->setOrthoWindowWidth(1920);
+    camera->setOrthoWindowHeight(1080);
+
+    auto* cameraNode = sceneManager->createSceneNode();
+    const Ogre::Quaternion rotateX(Ogre::Degree(65), Ogre::Vector3(1, 0, 0));
+    const Ogre::Quaternion rotateY(Ogre::Degree(-176), Ogre::Vector3(0, 1, 0));
+    cameraNode->setOrientation(rotateX * rotateY);
+    cameraNode->setPosition(-12.F, 5.F, 234.F);
+
+    camera->setProjectionType(Ogre::ProjectionType::PT_PERSPECTIVE);
+    {
+        const Ogre::Vector3 standardPoint(-4.F, 4.F, 3.F);
+        const Ogre::Vector2 projectedPoint = viz::scene3d::helper::Camera::convertWorldSpaceToScreenSpace(
+            *camera,
+            standardPoint
+        );
+
+        const Ogre::Vector2 point(341.4213F, 421.8951F);
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(point[0], projectedPoint[0], 0.0001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(point[1], projectedPoint[1], 0.0001);
+    }
+
+    camera->setProjectionType(Ogre::ProjectionType::PT_ORTHOGRAPHIC);
+    {
+        const Ogre::Vector3 standardPoint(-4.F, 87.F, 3.F);
+        const Ogre::Vector2 projectedPoint = viz::scene3d::helper::Camera::convertWorldSpaceToScreenSpace(
+            *camera,
+            standardPoint
+        );
+
+        const Ogre::Vector2 point(99.4444F, 83.8888F);
+
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(point[0], projectedPoint[0], 0.0001);
+        CPPUNIT_ASSERT_DOUBLES_EQUAL(point[1], projectedPoint[1], 0.0001);
     }
     renderWindow->removeViewport(0);
     root->destroySceneManager(sceneManager);

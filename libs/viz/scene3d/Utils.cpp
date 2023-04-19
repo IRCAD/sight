@@ -27,7 +27,6 @@
 #include "viz/scene3d/compositor/MaterialMgrListener.hpp"
 #include "viz/scene3d/detail/CollisionTools.hpp"
 #include "viz/scene3d/factory/R2VBRenderable.hpp"
-#include "viz/scene3d/factory/Text.hpp"
 #include "viz/scene3d/helper/Camera.hpp"
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/vr/GridProxyGeometry.hpp"
@@ -64,9 +63,7 @@ static std::list<std::string> s_moduleWithResourcesNames;
 
 static std::set<std::string> s_ogrePlugins;
 
-Ogre::OverlaySystem* Utils::s_overlaySystem                                   = nullptr;
 viz::scene3d::factory::R2VBRenderable* Utils::s_R2VBRenderableFactory         = nullptr;
-viz::scene3d::factory::Text* Utils::s_textFactory                             = nullptr;
 viz::scene3d::vr::GridProxyGeometryFactory* Utils::s_gridProxyGeometryFactory = nullptr;
 viz::scene3d::compositor::MaterialMgrListener* Utils::s_oitMaterialListener   = nullptr;
 
@@ -163,13 +160,6 @@ void Utils::addResourcesPath(const std::string& moduleName)
     SIGHT_ASSERT("Empty resource path", !moduleName.empty());
 
     s_moduleWithResourcesNames.push_front(moduleName);
-}
-
-//------------------------------------------------------------------------------
-
-Ogre::OverlaySystem* Utils::getOverlaySystem()
-{
-    return s_overlaySystem;
 }
 
 //------------------------------------------------------------------------------
@@ -282,8 +272,6 @@ Ogre::Root* Utils::getOgreRoot()
 
         root = new Ogre::Root(tmpPluginCfg.string());
 
-        s_overlaySystem = new Ogre::OverlaySystem();
-
         const Ogre::RenderSystemList& rsList = root->getAvailableRenderers();
 
         Ogre::RenderSystem* rs = nullptr;
@@ -329,10 +317,6 @@ Ogre::Root* Utils::getOgreRoot()
 
         loadResources();
 
-        // Register factory for Text objects
-        s_textFactory = OGRE_NEW viz::scene3d::factory::Text();
-        Ogre::Root::getSingleton().addMovableObjectFactory(s_textFactory);
-
         // Register factory for R2VB renderables objects
         s_R2VBRenderableFactory = OGRE_NEW viz::scene3d::factory::R2VBRenderable();
         Ogre::Root::getSingleton().addMovableObjectFactory(s_R2VBRenderableFactory);
@@ -356,9 +340,6 @@ void Utils::destroyOgreRoot()
     Ogre::MaterialManager::getSingleton().removeListener(s_oitMaterialListener);
     delete s_oitMaterialListener;
 
-    Ogre::Root::getSingleton().removeMovableObjectFactory(s_textFactory);
-    delete s_textFactory;
-
     Ogre::Root::getSingleton().removeMovableObjectFactory(s_gridProxyGeometryFactory);
     delete s_gridProxyGeometryFactory;
 
@@ -367,8 +348,6 @@ void Utils::destroyOgreRoot()
 
     Ogre::Root* root = viz::scene3d::Utils::getOgreRoot();
     Ogre::ResourceGroupManager::getSingleton().shutdownAll();
-
-    delete s_overlaySystem;
 
     // Processes all dirty and pending deletion passes, needs to be done before the root deletion.
     //

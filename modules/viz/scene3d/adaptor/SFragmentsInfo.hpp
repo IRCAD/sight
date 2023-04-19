@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -58,7 +58,6 @@ namespace sight::module::viz::scene3d::adaptor
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SFragmentsInfo final :
     public sight::viz::scene3d::IAdaptor,
-    public Ogre::Viewport::Listener,
     public Ogre::RenderTargetListener
 {
 public:
@@ -67,21 +66,13 @@ public:
     SIGHT_DECLARE_SERVICE(SFragmentsInfo, sight::viz::scene3d::IAdaptor);
 
     /// Initializes the adaptor.
-    MODULE_VIZ_SCENE3D_API SFragmentsInfo() noexcept = default;
+    MODULE_VIZ_SCENE3D_API SFragmentsInfo() noexcept;
 
     /// Destroys the adaptor.
     MODULE_VIZ_SCENE3D_API ~SFragmentsInfo() noexcept override = default;
 
-    /**
-     * @brief Resizes the global render target, called by the related viewport since this adaptor is a listener.
-     *
-     * Call @ref module::viz::scene3d::adaptor::destroyCompositor() and
-     * module::viz::scene3d::adaptor::createCompositor(int,
-     * int).
-     *
-     * @param _viewport related layer's viewport.
-     */
-    MODULE_VIZ_SCENE3D_API void viewportDimensionsChanged(Ogre::Viewport* _viewport) override;
+    /// Resizes the global render target
+    MODULE_VIZ_SCENE3D_API void resizeViewport();
 
     /// Calls updating(). This is called right after the layer render target has been rendered.
     MODULE_VIZ_SCENE3D_API void postRenderTargetUpdate(const Ogre::RenderTargetEvent& /*evt*/) override;
@@ -137,6 +128,9 @@ private:
 
     /// Flips Ogre texture when converting to sight, can be useful when using VTK to save images.
     bool m_flipImage {false};
+
+    /// Handles connection with the layer.
+    core::com::helper::SigSlotConnection m_resizeConnection;
 
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     data::ptr<data::Image, data::Access::inout> m_image {this, s_IMAGE_INOUT};

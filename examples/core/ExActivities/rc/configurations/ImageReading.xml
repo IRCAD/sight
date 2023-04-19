@@ -16,26 +16,15 @@
 
         <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="sight::ui::base::CardinalLayoutManager">
-                    <view align="center" />
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
                 </layout>
                 <toolBar />
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
                 <view sid="imageScene" />
-                <toolBar sid="toolBarView" />
-            </registry>
-        </service>
-
-        <service uid="toolBarView" type="sight::module::ui::base::SToolBar">
-            <gui>
-                <layout>
-                    <menuItem name="Import image" icon="sight::module::ui::flaticons/BlueLoad.svg" />
-                </layout>
-            </gui>
-            <registry>
-                <menuItem sid="importAct" />
             </registry>
         </service>
 
@@ -64,7 +53,7 @@
         <!-- ******************************* Start services ***************************************** -->
 
         <start uid="mainView" />
-        <start uid="toolBarView" />
+        <!-- <start uid="toolBarView" /> -->
         <start uid="imageScene" />
         <start uid="importAct" />
     </config>

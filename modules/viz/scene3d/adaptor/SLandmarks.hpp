@@ -32,8 +32,8 @@
 #include <data/Landmarks.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/IText.hpp>
 #include <viz/scene3d/ITransformable.hpp>
-#include <viz/scene3d/Text.hpp>
 
 namespace sight::module::viz::scene3d::adaptor
 {
@@ -80,7 +80,6 @@ namespace sight::module::viz::scene3d::adaptor
  * @subsection Configuration Configuration:
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the mesh, as it
  *      was specified
- * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
  * - \b fontSize (optional, unsigned int, default=16): font size in points.
  * - \b label (optional, bool, default=true): display label.
  * - \b orientation (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
@@ -209,7 +208,7 @@ private:
             Ogre::ManualObject* _object,
             std::string _groupName,
             std::size_t _index,
-            sight::viz::scene3d::Text* _label
+            sight::viz::scene3d::IText::sptr _label
         ) :
             m_node(_node),
             m_object(_object),
@@ -219,11 +218,11 @@ private:
         {
         }
 
-        Ogre::SceneNode* m_node {nullptr};            /*!< Contains the node of the landmark */
-        Ogre::ManualObject* m_object {nullptr};       /*!< Contains the manual object that represent the landmark */
-        std::string m_groupName;                      /*!< Defines the group name of the landmark */
-        std::size_t m_index {0};                      /*!< Defines the index of the landmark */
-        sight::viz::scene3d::Text* m_label {nullptr}; /*!< Defines the text label of the landmark (can be nullptr) */
+        Ogre::SceneNode* m_node {nullptr};        /*!< Contains the node of the landmark */
+        Ogre::ManualObject* m_object {nullptr};   /*!< Contains the manual object that represent the landmark */
+        std::string m_groupName;                  /*!< Defines the group name of the landmark */
+        std::size_t m_index {0};                  /*!< Defines the index of the landmark */
+        sight::viz::scene3d::IText::sptr m_label; /*!< Defines the text label of the landmark (can be nullptr) */
     };
 
     /// Stores data used to hightlight the selected landmark.
@@ -425,10 +424,7 @@ private:
     bool m_enableLabels {true};
 
     /// Defines the label font size in points.
-    std::size_t m_fontSize {16};
-
-    /// Defines the TrueType font source file.
-    std::string m_fontSource {"DejaVuSans.ttf"};
+    std::size_t m_fontSize {12};
 
     /// Stores informations about the selected landmark.
     std::list<std::shared_ptr<SelectedLandmark> > m_selectedLandmarks;

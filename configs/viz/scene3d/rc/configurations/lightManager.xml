@@ -1,5 +1,5 @@
 <extension implements="sight::service::extension::AppConfig">
-    <id>OgreLightManager</id>
+    <id>sight::config::viz::scene3d::lightManager</id>
     <parameters>
         <param name="WID_PARENT" />
     </parameters>

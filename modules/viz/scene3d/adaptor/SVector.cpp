@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,6 @@
 
 #include <service/macros.hpp>
 
-#include <viz/scene3d/helper/Font.hpp>
 #include <viz/scene3d/helper/ManualObject.hpp>
 #include <viz/scene3d/helper/Scene.hpp>
 #include <viz/scene3d/SRender.hpp>

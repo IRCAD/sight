@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,13 +26,11 @@
 #include "modules/viz/scene3dQt/OpenGLContext.hpp"
 
 #include <viz/scene3d/IWindowInteractor.hpp>
+#include <viz/scene3d/Layer.hpp>
 
 #include <Ogre.h>
-
-#include <Overlay/OgreOverlay.h>
-#include <Overlay/OgreOverlaySystem.h>
-
 #include <QGestureEvent>
+#include <QOpenGLWidget>
 #include <QPoint>
 #include <QScreen>
 
@@ -46,9 +44,7 @@
 namespace sight::module::viz::scene3dQt
 {
 
-class Window final :
-    public QWindow,
-    public Ogre::RenderTargetListener
+class Window final : public QOpenGLWidget
 {
 Q_OBJECT
 
@@ -56,26 +52,14 @@ public:
 
     /**
      * @brief Initializes members and connect screenChanged to onScreenChanged.
-     * @param _parent the parent container of the widget.
      */
-    Window(QWindow* _parent = nullptr);
+    Window();
 
     /// Destroys associated pointers by calling @ref destroy().
     ~Window() override;
 
-    /**
-     * @brief Does nothing.
-     * In case any drawing surface backing stores (QRasterWindow or QOpenGLWindow) of Qt are supplied to this
-     * class in any way we inform Qt that they will be unused.
-     */
-    void render(QPainter* /*unused*/);
-
-    /// Creates the Ogre render window associated to this window,
-    /// called by renderNow() once the window is first exposed.
-    void initialize();
-
-    /// Returns the Ogre render window.
-    [[nodiscard]] Ogre::RenderWindow* getOgreRenderWindow() const;
+    void registerLayer(sight::viz::scene3d::Layer::wptr _layer);
+    void createRenderTextures(int w, int h);
 
     /// Gets this window ID.
     [[nodiscard]] int getId() const;
@@ -129,15 +113,6 @@ private:
     /// Manages mouse click on release.
     void mouseReleaseEvent(QMouseEvent* _e) override;
 
-    /// Manages when window visibility in the windowing system changes.
-    void exposeEvent(QExposeEvent* /*unused*/) override;
-
-    /// Manages when window is moved.
-    void moveEvent(QMoveEvent* /*unused*/) override;
-
-    /// Manages generic events.
-    bool event(QEvent* _event) override;
-
     using InteractionInfo = sight::viz::scene3d::IWindowInteractor::InteractionInfo;
 
     /// Converts the mouse event to be able to handle it with ogre.
@@ -146,12 +121,11 @@ private:
         InteractionInfo::InteractionEnum _interactionType
     ) const;
 
-    /**
-     * @brief Renders immediately the frame.
-     * Calls OgreRoot renderOneFrame to update the current renderWindow.
-     * If you want to update this window, call requestRender().
-     */
-    void render();
+    /// Creates the Ogre render window associated to this window,
+    /// called by renderNow() once the window is first exposed.
+    void initializeGL() override;
+    void resizeGL(int w, int h) override;
+    void paintGL() override;
 
     /// Renders the frame as soon as possible.
     void renderLater();
@@ -169,9 +143,6 @@ private:
     /// Contains the Ogre root.
     Ogre::Root* m_ogreRoot {nullptr};
 
-    /// Contains the Ogre render window.
-    Ogre::RenderWindow* m_ogreRenderWindow {nullptr};
-
     /// Tells if an update is requested
     bool m_update_pending {false};
 
@@ -182,18 +153,23 @@ private:
     int m_frameId {0};
 
     /// Contains the OpenGL context used for offscreen rendering.
-    std::shared_ptr<QOpenGLContext> m_glContext;
+    // std::shared_ptr<QOpenGLContext> m_glContext;
 
     /// Defines the last size sent to Ogre. In hidpi
     QSize m_ogreSize;
 
     /// Workaround to fix multiple scenes rendering with NVidia Prime
-    bool m_externalGLControl {true};
+    bool m_init {false};
 
-private Q_SLOTS:
+    Ogre::MeshPtr m_fsQuadPlane {};
 
-    /// Called when the screen changes.
-    void onScreenChanged(QScreen* /*unused*/);
+    struct RenderTarget
+    {
+        sight::viz::scene3d::Layer::wptr layer;
+        Ogre::MaterialPtr material;
+        Ogre::TexturePtr texture;
+    };
+    std::vector<RenderTarget> m_renderTargets;
 };
 
 //-----------------------------------------------------------------------------

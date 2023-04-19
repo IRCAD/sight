@@ -63,7 +63,7 @@ void DoubleClickOnScene::test()
             // Double click on the main scene
             tester.take(
                 "ogre scene",
-                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("mainSceneSrv");});
+                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
             tester.interact(std::make_unique<sight::ui::testCore::MouseDoubleClick>());
 
             // Now, the negato view button should be visible and the volume view button shouldn't
@@ -93,7 +93,7 @@ void DoubleClickOnScene::test()
             // Double click again on the main scene
             tester.take(
                 "ogre scene",
-                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("mainSceneSrv");});
+                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
             tester.interact(std::make_unique<sight::ui::testCore::MouseDoubleClick>());
 
             // We should return to the initial situation
@@ -123,7 +123,7 @@ void DoubleClickOnScene::test()
             // Simple click on the main scene
             tester.take(
                 "ogre scene",
-                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("mainSceneSrv");});
+                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("sceneSrv");});
             tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
 
             // It's a no-op; we should stay in the same situation

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,7 +25,7 @@
 #include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/Text.hpp>
+#include <viz/scene3d/IText.hpp>
 
 #include <OGRE/OgreColourValue.h>
 
@@ -87,16 +87,13 @@ private:
     std::unique_ptr<PostWindowRenderListener> m_listener;
 
     /// Contains the displays stats in the overlay.
-    sight::viz::scene3d::Text* m_statsText {nullptr};
+    sight::viz::scene3d::IText::sptr m_statsText;
 
     /// Defines the text's color.
     Ogre::ColourValue m_textColor;
 
     /// Defines the text's font height in points.
     std::size_t m_fontSize {12};
-
-    /// Defines the TrueType font source file.
-    std::string m_fontSource {"DejaVuSans.ttf"};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

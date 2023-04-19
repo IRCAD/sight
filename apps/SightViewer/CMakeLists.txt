@@ -5,7 +5,6 @@ add_dependencies(
     sightrun
     module_appXml
     module_ui_base
-    module_viz_scene3d
     module_ui_qt
     module_viz_scene3dQt
     module_service
@@ -14,14 +13,11 @@ add_dependencies(
     module_ui_base
     module_ui_viz
     module_ui_flaticons
-    module_io_bitmap
     module_io_itk
     module_io_vtk
     module_io_dicom
     module_io_session
-    module_viz_scene2d
-    module_data
-    module_filter_image
+    config_viz_scene2d
     config_viz_scene3d
     config_io_dimse
 )

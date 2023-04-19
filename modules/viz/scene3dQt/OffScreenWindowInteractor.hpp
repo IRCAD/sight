@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,11 +23,11 @@
 #pragma once
 
 #include "modules/viz/scene3dQt/config.hpp"
-#include "modules/viz/scene3dQt/OpenGLContext.hpp"
 
 #include <viz/scene3d/IWindowInteractor.hpp>
 
 #include <QOffscreenSurface>
+#include <QOpenGLContext>
 
 #include <memory>
 
@@ -83,7 +83,7 @@ public:
     MODULE_VIZ_SCENE3DQT_API void makeCurrent() override;
 
     /// Gets the Ogre render target.
-    MODULE_VIZ_SCENE3DQT_API Ogre::RenderTarget* getRenderTarget() override;
+    MODULE_VIZ_SCENE3DQT_API Ogre::RenderTarget* getRenderTarget();
 
     /// Gets the Ogre render texture attached to the render target.
     MODULE_VIZ_SCENE3DQT_API Ogre::TexturePtr getRenderTexture() override;
@@ -117,17 +117,11 @@ private:
     /// Contains the Ogre root.
     Ogre::Root* m_ogreRoot {nullptr};
 
-    /// Contains the Ogre render window.
-    Ogre::RenderWindow* m_ogreRenderWindow {nullptr};
-
     /// Contains the Ogre render target.
     Ogre::RenderTarget* m_ogreRenderTarget {nullptr};
 
     /// Contains the Ogre render texture attached to the render target
     Ogre::TexturePtr m_ogreTexture;
-
-    /// Contains the OpenGL context used for offscreen rendering.
-    std::shared_ptr<QOpenGLContext> m_glContext;
 
     /// Defines the window width.
     unsigned int m_width {0};

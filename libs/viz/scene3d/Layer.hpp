@@ -22,13 +22,7 @@
 
 #pragma once
 
-#include "viz/scene3d/compositor/ChainManager.hpp"
-#include "viz/scene3d/compositor/Core.hpp"
-#include "viz/scene3d/compositor/listener/AutoStereo.hpp"
-#include "viz/scene3d/compositor/types.hpp"
 #include "viz/scene3d/config.hpp"
-#include "viz/scene3d/interactor/IInteractor.hpp"
-#include "viz/scene3d/IWindowInteractor.hpp"
 
 #include <core/com/HasSignals.hpp>
 #include <core/com/HasSlots.hpp>
@@ -36,12 +30,18 @@
 #include <core/com/Slot.hpp>
 #include <core/thread/Worker.hpp>
 
+#include <viz/scene3d/compositor/ChainManager.hpp>
+#include <viz/scene3d/compositor/Core.hpp>
+#include <viz/scene3d/compositor/listener/AutoStereo.hpp>
+#include <viz/scene3d/compositor/types.hpp>
+#include <viz/scene3d/interactor/IInteractor.hpp>
+#include <viz/scene3d/IWindowInteractor.hpp>
+
 #include <OGRE/Ogre.h>
 #include <OGRE/OgreAxisAlignedBox.h>
 #include <OGRE/OgreRenderWindow.h>
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreViewport.h>
-#include <OGRE/Overlay/OgreOverlay.h>
 
 #include <cstdint>
 #include <map>
@@ -91,9 +91,6 @@ public:
     /// Defines the extrinsic x Intrinsic camera calibrations.
     using CameraCalibrationsType = std::vector<Ogre::Matrix4>;
 
-    /// Defines the set of overlays enabled on a layer.
-    using OverlaySetType = std::vector<Ogre::Overlay*>;
-
     /// Defines the viewport parameters relatively to the screen: left, top, width ,height.
     using ViewportConfigType = std::tuple<float, float, float, float>;
 
@@ -133,6 +130,9 @@ public:
     /// Destoyres Ogre resources.
     VIZ_SCENE3D_API ~Layer() override = default;
 
+    /// Gets the render window containing this layer.
+    VIZ_SCENE3D_API Ogre::RenderTarget* getRenderTarget() const;
+
     /// Sets the render window containing this layer.
     VIZ_SCENE3D_API void setRenderTarget(Ogre::RenderTarget* _renderTarget);
 
@@ -145,7 +145,7 @@ public:
     /// @returns the ID of this layer.
     VIZ_SCENE3D_API const std::string& getLayerID() const;
 
-    /// @returns the scene manager associated to this viewport.
+    /// @returns the scene manager associated to this viewport. Creates if it does not exists.
     VIZ_SCENE3D_API Ogre::SceneManager* getSceneManager() const;
 
     /// Creates the scene.
@@ -235,6 +235,9 @@ public:
     /// @returns true if stereoscopic rendering is enabled.
     VIZ_SCENE3D_API bool is3D() const;
 
+    /// @returns true if the layer is initialized.
+    VIZ_SCENE3D_API bool initialized() const;
+
     /// @returns the stereoscopic mode.
     VIZ_SCENE3D_API compositor::Core::StereoModeType getStereoMode() const;
 
@@ -289,15 +292,6 @@ public:
     /// Removes the default light in the layer.
     VIZ_SCENE3D_API void removeDefaultLight();
 
-    /// @returns or create the overlay panel in which adaptors can render 2D text.
-    VIZ_SCENE3D_API Ogre::OverlayContainer* getOverlayTextPanel();
-
-    /// Defines the overlay scripts to enable on this layer's viewport.
-    VIZ_SCENE3D_API void setEnabledOverlays(const std::vector<std::string>& _overlayScripts);
-
-    /// @returns the overlays enabled on this layer's viewport.
-    VIZ_SCENE3D_API const OverlaySetType& getEnabledOverlays() const;
-
     /// Cancels interaction for all interactors with a lower priority than the one calling this.
     VIZ_SCENE3D_API void cancelFurtherInteraction();
 
@@ -325,12 +319,6 @@ private:
 
     /// Contains the Ogre render window containing this viewport.
     Ogre::RenderTarget* m_renderTarget {nullptr};
-
-    /// Contains the Ogre viewport representing this layer.
-    Ogre::Viewport* m_viewport {nullptr};
-
-    /// Contains the overlay panel to which all the UI's text is attached.
-    Ogre::OverlayContainer* m_overlayTextPanel {nullptr};
 
     /// Defines stereoscopic rendering mode.
     compositor::Core::StereoModeType m_stereoMode {compositor::Core::StereoModeType::NONE};
@@ -415,17 +403,8 @@ private:
     /// Holds pairs of intrinsic/extrinsic calibrations for stereo cameras.
     CameraCalibrationsType m_stereoCameraCalibration;
 
-    /// Stores names of the enabled overlay scripts.
-    std::vector<std::string> m_overlayScripts;
-
-    /// Overlays enabled on this layer's viewport.
-    OverlaySetType m_enabledOverlays;
-
     /// Defines viewport parameters: left, top, width, height.
     ViewportConfigType m_viewportCfg {0.F, 0.F, 1.F, 1.F};
-
-    /// Defines the dpi number of the rendering screen.
-    float m_dpi {96.F};
 
     /// True when we are using dedicated SCamera adaptor with orthographic projection.
     bool m_cameraOrthographic {false};

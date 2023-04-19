@@ -254,10 +254,10 @@ void SCompositorSelector::checkEnabledCompositors()
                 auto layerCompositor = std::find_if(
                     m_layerCompositorChain.begin(),
                     m_layerCompositorChain.end(),
-                    sight::viz::scene3d::compositor::ChainManager::FindCompositorByName(
-                        currentCompositorName
-                    )
-                );
+                    [&currentCompositorName](const auto& _compositor)
+                    {
+                        return _compositor.first == currentCompositorName;
+                    });
 
                 if(layerCompositor != m_layerCompositorChain.end())
                 {
@@ -290,10 +290,10 @@ bool SCompositorSelector::isEnabledCompositor(const std::string& compositorName)
     auto layerCompositor = std::find_if(
         m_layerCompositorChain.begin(),
         m_layerCompositorChain.end(),
-        sight::viz::scene3d::compositor::ChainManager::FindCompositorByName(
-            compositorName
-        )
-    );
+        [&compositorName](const auto& _compositor)
+        {
+            return _compositor.first == compositorName;
+        });
 
     if(layerCompositor != m_layerCompositorChain.end())
     {

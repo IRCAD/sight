@@ -210,12 +210,12 @@
                 <scene renderMode="sync">
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="video" order="1" compositors="Remap" transparency="">
+                    <layer id="video" order="1" compositors="Remap" >
                         <adaptor uid="videoAdp" />
                         <adaptor uid="undistortAdp" />
                     </layer>
 
-                    <layer id="default" order="3" compositors="Remap" transparency="">
+                    <layer id="default" order="3" compositors="Remap" >
                         <adaptor uid="axisAdp" />
                         <adaptor uid="cameraAdp" />
                         <adaptor uid="materialAdp" />

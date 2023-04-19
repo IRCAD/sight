@@ -141,7 +141,6 @@ void SImageMultiDistances::configuring()
 
     const ConfigType config = this->getConfiguration();
 
-    static const std::string s_FONT_SOURCE_CONFIG = s_CONFIG + "fontSource";
     static const std::string s_FONT_SIZE_CONFIG   = s_CONFIG + "fontSize";
     static const std::string s_RADIUS_CONFIG      = s_CONFIG + "radius";
     static const std::string s_INTERACTIVE_CONFIG = s_CONFIG + "interactive";
@@ -149,7 +148,6 @@ void SImageMultiDistances::configuring()
     static const std::string s_QUERY_MASK_CONFIG  = s_CONFIG + "queryMask";
     static const std::string s_QUERY_FLAGS_CONFIG = s_CONFIG + "distanceQueryFlags";
 
-    m_fontSource           = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_fontSize             = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
     m_distanceSphereRadius = config.get<float>(s_RADIUS_CONFIG, m_distanceSphereRadius);
     m_interactive          = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
@@ -262,6 +260,8 @@ service::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() 
 
 void SImageMultiDistances::updating()
 {
+    this->getRenderService()->makeCurrent();
+
     const sight::viz::scene3d::Layer::csptr layer = this->getLayer();
 
     m_sphereMaterial->updateShadingMode(data::Material::PHONG, layer->getLightsNumber(), false, false);
@@ -451,7 +451,7 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier /*_mod
 {
     if(_button == LEFT)
     {
-        const sight::viz::scene3d::Layer::csptr layer = this->getLayer();
+        const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
 
         Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
 
@@ -519,6 +519,8 @@ void SImageMultiDistances::mouseMoveEvent(
     int /*_dy*/
 )
 {
+    this->getRenderService()->makeCurrent();
+
     if(m_pickedData.m_data != nullptr)
     {
         // Discard the current distance to launch the ray over the scene without picking this one.
@@ -700,28 +702,17 @@ void SImageMultiDistances::createDistance(data::PointList::sptr _pl)
 
     // Label.
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
-    Ogre::OverlayContainer* const textContainer  = layer->getOverlayTextPanel();
-    Ogre::Camera* const cam                      = layer->getDefaultCamera();
-    const float dpi                              =
-        this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
-    sight::viz::scene3d::Text* label = sight::viz::scene3d::Text::New(
-        this->getID() + "_label_" + id,
-        sceneMgr,
-        textContainer,
-        m_fontSource,
-        m_fontSize,
-        dpi,
-        cam
-    );
+
+    sight::viz::scene3d::IText::sptr label = sight::viz::scene3d::IText::New(layer);
+
     // NOLINTNEXTLINE(readability-suspicious-call-argument)
     const std::string length = SImageMultiDistances::getLength(end, begin);
     label->setText(length);
     label->setTextColor(colour);
-    label->setQueryFlags(0x0);
-    Ogre::SceneNode* const labelNode =
-        rootNode->createChildSceneNode(this->getID() + "_labelNode_" + id, end);
+    label->setFontSize(m_fontSize);
+    Ogre::SceneNode* const labelNode = rootNode->createChildSceneNode(this->getID() + "_labelNode_" + id, end);
     SIGHT_ASSERT("Can't create the label node", labelNode);
-    labelNode->attachObject(label);
+    label->attachToNode(labelNode, this->getLayer()->getDefaultCamera());
 
     // Set the visibility.
     sphere1->setVisible(m_isVisible);
@@ -790,9 +781,11 @@ void SImageMultiDistances::destroyDistance(core::tools::fwID::IDType _id)
     SIGHT_ASSERT("The distance is not found", it != m_distances.end());
 
     // Destroy Ogre resource.
-    const DistanceData distanceData    = it->second;
+    DistanceData distanceData          = it->second;
     Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 
+    distanceData.m_label->detachFromNode();
+    distanceData.m_label.reset();
     sceneMgr->destroySceneNode(distanceData.m_node1);
     sceneMgr->destroyManualObject(distanceData.m_sphere1);
     sceneMgr->destroySceneNode(distanceData.m_node2);
@@ -800,7 +793,6 @@ void SImageMultiDistances::destroyDistance(core::tools::fwID::IDType _id)
     sceneMgr->destroyManualObject(distanceData.m_line);
     sceneMgr->destroyManualObject(distanceData.m_dashedLine);
     sceneMgr->destroySceneNode(distanceData.m_labelNode);
-    sceneMgr->destroyMovableObject(distanceData.m_label);
 
     const auto& sigModified = distanceData.m_pointList->signal<data::PointList::ModifiedSignalType>(
         data::PointList::s_MODIFIED_SIG

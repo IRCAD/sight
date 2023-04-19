@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -42,7 +42,7 @@ PickingCross::PickingCross(const std::string& _name, Ogre::SceneManager& _sceneM
         sight::viz::scene3d::RESOURCE_GROUP
     );
     auto crossMat = basicAmbientMat->clone(_name + "_CrossMaterial");
-    const Ogre::ColourValue yellow(1.F, .75F, 0.F);
+    const Ogre::ColourValue yellow(1.F, .75F, 0.F, 1.F);
     crossMat->setAmbient(yellow);
     crossMat->setDiffuse(yellow);
     crossMat->setDepthCheckEnabled(false);

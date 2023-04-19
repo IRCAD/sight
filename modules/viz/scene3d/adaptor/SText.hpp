@@ -25,7 +25,7 @@
 #include "modules/viz/scene3d/config.hpp"
 
 #include <viz/scene3d/IAdaptor.hpp>
-#include <viz/scene3d/Text.hpp>
+#include <viz/scene3d/IText.hpp>
 
 #include <OGRE/OgreColourValue.h>
 #include <OGRE/OgreVector.h>
@@ -46,8 +46,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SText">
         <in key="object" uid="..." />
-        <config fontSource="DejaVuSans.ttf" fontSize="32"
-                hAlign="right" vAlign="bottom" color="#ff3396" />
+        <config fontSize="32" hAlign="right" vAlign="bottom" color="#ff3396" />
     </service>
    @endcode
  *
@@ -56,8 +55,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SText">
         <text>Hello World!</text>
-        <config fontSource="DejaVuSans.ttf" fontSize="32"
-                hAlign="right" vAlign="bottom" color="#ff3396" />
+        <config fontSize="32" hAlign="right" vAlign="bottom" color="#ff3396" />
     </service>
    @endcode
  *
@@ -117,17 +115,14 @@ private:
     /// Updates the displayed text from the input object.
     void updateText();
 
-    /// Computes the position of text object relatively to the screen according to the alignment.
-    void updatePositionFromAlignment();
-
     /// Contains the displayed stats in the overlay.
-    sight::viz::scene3d::Text* m_text {nullptr};
+    sight::viz::scene3d::IText::sptr m_text;
 
     /// Defines the text's color.
-    Ogre::ColourValue m_textColor;
+    std::string m_textColor;
 
     /// Defines the font size in points.
-    std::size_t m_fontSize {16};
+    std::size_t m_fontSize {12};
 
     /// Defines the position of the text.
     Ogre::Vector2 m_position {0.F, 0.F};

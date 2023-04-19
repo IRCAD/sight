@@ -27,11 +27,6 @@
 #include <core/com/Slots.hxx>
 #include <core/tools/compare.hpp>
 
-#include <data/Color.hpp>
-
-#include <service/macros.hpp>
-
-#include <viz/scene3d/helper/Font.hpp>
 #include <viz/scene3d/helper/ManualObject.hpp>
 #include <viz/scene3d/helper/Scene.hpp>
 
@@ -110,7 +105,6 @@ void SLandmarks::configuring()
     );
 
     static const std::string s_FONT_SIZE_CONFIG       = s_CONFIG + "fontSize";
-    static const std::string s_FONT_SOURCE_CONFIG     = s_CONFIG + "fontSource";
     static const std::string s_LABEL_CONFIG           = s_CONFIG + "label";
     static const std::string s_ORIENTATION_CONFIG     = s_CONFIG + "orientation";
     static const std::string s_LANDMARKS_FLAGS_CONFIG = s_CONFIG + "landmarksQueryFlags";
@@ -123,7 +117,6 @@ void SLandmarks::configuring()
     static const std::string s_INITIAL_SIZE           = s_CONFIG + "initialSize";
     static const std::string s_INITIAL_SHAPE          = s_CONFIG + "initialShape";
 
-    m_fontSource   = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_fontSize     = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
     m_enableLabels = config.get<bool>(s_LABEL_CONFIG, m_enableLabels);
     m_interactive  = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
@@ -356,12 +349,13 @@ void SLandmarks::removeGroup(std::string _groupName)
             // Stop the thread if it already run since we are deleting data.
             this->deselectPoint(_groupName, (*objectIt)->m_index);
 
-            m_transNode->removeAndDestroyChild((*objectIt)->m_node);
-            sceneMgr->destroyManualObject((*objectIt)->m_object);
             if(m_enableLabels)
             {
-                sceneMgr->destroyMovableObject((*objectIt)->m_label);
+                (*objectIt)->m_label->detachFromNode();
             }
+
+            m_transNode->removeAndDestroyChild((*objectIt)->m_node);
+            sceneMgr->destroyManualObject((*objectIt)->m_object);
 
             objectIt = m_manualObjects.erase(objectIt);
         }
@@ -455,9 +449,6 @@ void SLandmarks::renameGroup(std::string _oldGroupName, std::string _newGroupNam
 
 void SLandmarks::modifyPoint(std::string _groupName, std::size_t _index)
 {
-    // Make the context as current.
-    this->getRenderService()->makeCurrent();
-
     const auto landmarks                    = m_landmarks.lock();
     const data::Landmarks::PointType& point = landmarks->getPoint(_groupName, _index);
 
@@ -473,6 +464,8 @@ void SLandmarks::modifyPoint(std::string _groupName, std::size_t _index)
             break;
         }
     }
+
+    this->getRenderService()->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -517,13 +510,13 @@ void SLandmarks::removePoint(std::string _groupName, std::size_t _index)
             // Stop the thread if it already run since we are deleting data.
             this->deselectPoint(_groupName, _index);
 
-            m_transNode->removeAndDestroyChild((*objectIt)->m_node);
-            sceneMgr->destroyManualObject((*objectIt)->m_object);
             if(m_enableLabels)
             {
-                sceneMgr->destroyMovableObject((*objectIt)->m_label);
+                (*objectIt)->m_label->detachFromNode();
             }
 
+            m_transNode->removeAndDestroyChild((*objectIt)->m_node);
+            sceneMgr->destroyManualObject((*objectIt)->m_object);
             objectIt = m_manualObjects.erase(objectIt);
             break;
         }
@@ -611,23 +604,18 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::insertMyPoint(
     node->attachObject(object);
 
     // Create the label.
-    sight::viz::scene3d::Text* text = nullptr;
+    sight::viz::scene3d::IText::sptr text;
     if(m_enableLabels)
     {
-        // Get necessary data.
-        const float dpi                 = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
-        Ogre::Camera* cam               = this->getLayer()->getDefaultCamera();
-        const std::string textName      = this->getID() + "_" + pointName + "_text";
-        Ogre::OverlayContainer* overlay = this->getLayer()->getOverlayTextPanel();
-
         // Create the label.
-        text = sight::viz::scene3d::Text::New(textName, sceneMgr, overlay, m_fontSource, m_fontSize, dpi, cam);
+        text = sight::viz::scene3d::IText::New(this->getLayer());
+        text->setFontSize(m_fontSize);
         text->setText(pointName);
         text->setTextColor(color);
         text->setVisible(group.m_visibility && m_isVisible);
 
         // Attach data.
-        node->attachObject(text);
+        text->attachToNode(node, this->getLayer()->getDefaultCamera());
     }
 
     // Store the created data.
@@ -1304,7 +1292,6 @@ void SLandmarks::mouseMoveEvent(MouseButton /*_button*/, Modifier /*_mods*/, int
         sig->asyncEmit(m_pickedData->m_groupName, m_pickedData->m_index);
 
         this->requestRender();
-        this->getLayer()->cancelFurtherInteraction();
     }
 }
 

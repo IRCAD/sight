@@ -39,6 +39,7 @@
 #include <QGuiApplication>
 #include <QRect>
 #include <QShortcut>
+#include <QTimer>
 #include <QVBoxLayout>
 #include <QWidget>
 
@@ -139,9 +140,9 @@ WindowInteractor::~WindowInteractor()
 {
     // Delete the window container if it is not attached to the parent container.
     // i.e. it is shown in fullscreen.
-    if((m_windowContainer != nullptr) && m_windowContainer->parent() == nullptr)
+    if((m_qOgreWidget != nullptr) && m_qOgreWidget->parent() == nullptr)
     {
-        delete m_windowContainer;
+        delete m_qOgreWidget;
     }
 }
 
@@ -175,54 +176,45 @@ void WindowInteractor::createContainer(
     layout->setContentsMargins(0, 0, 0, 0);
 
     m_qOgreWidget = new module::viz::scene3dQt::Window();
-#ifdef __linux
-    // When using qt on linux we need to allocate the window resources before being able to use openGL.
-    // This is because the underlying X API requires a drawable surface to draw on when calling
-    // 'glXMakeCurrent' (see https://www.khronos.org/registry/OpenGL-Refpages/gl2.1/xhtml/glXMakeCurrent.xml)
-    // which is does not exist before 'QWindow::create' is called.
-    //
-    // This is not required for Windows and macOS and will actually break the app on these platforms.
-    // (see https://developer.apple.com/documentation/appkit/nsopenglcontext/1436212-makecurrentcontext
-    //  and https://docs.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-wglmakecurrent).
-    m_qOgreWidget->create();
-#endif
 
-    m_windowContainer = QWidget::createWindowContainer(m_qOgreWidget);
-    m_windowContainer->setObjectName(QString::fromStdString(id));
-    m_windowContainer->installEventFilter(
-        new EventDispatcher(
-            m_qOgreWidget,
-            {QEvent::MouseButtonPress, QEvent::MouseButtonRelease, QEvent::Enter, QEvent::MouseMove, QEvent::Leave,
-             QEvent::Wheel, QEvent::MouseButtonDblClick
-            })
-    );
-    layout->addWidget(m_windowContainer);
-    m_windowContainer->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-    m_windowContainer->setMouseTracking(true);
+    m_qOgreWidget->setObjectName(QString::fromStdString(id));
 
-    m_windowContainer->grabGesture(Qt::PinchGesture);                                         // For zooming
-    m_windowContainer->grabGesture(sight::ui::qt::gestures::QPanGestureRecognizer::get<1>()); // For rotating
-    m_windowContainer->grabGesture(Qt::TapAndHoldGesture);                                    // For placing a landmark
-    m_windowContainer->grabGesture(Qt::TapGesture);                                           // For placing a landmark
-    m_windowContainer->grabGesture(sight::ui::qt::gestures::QPanGestureRecognizer::get<2>()); // For translating
-    m_windowContainer->installEventFilter(new GestureFilter(m_qOgreWidget));                  // Sends the gesture
-                                                                                              // events
-                                                                                              // to window
-    m_qOgreWidget->installEventFilter(
-        new EventDispatcher(
-            m_windowContainer,
-            {QEvent::TouchBegin, QEvent::TouchCancel, QEvent::TouchEnd, QEvent::TouchUpdate
-            })
-    );
+    layout->addWidget(m_qOgreWidget);
+    m_qOgreWidget->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+    m_qOgreWidget->setMouseTracking(true);
+
+    m_qOgreWidget->grabGesture(Qt::PinchGesture);                                         // For zooming
+    m_qOgreWidget->grabGesture(sight::ui::qt::gestures::QPanGestureRecognizer::get<1>()); // For rotating
+    m_qOgreWidget->grabGesture(Qt::TapAndHoldGesture);                                    // For placing a landmark
+    m_qOgreWidget->grabGesture(Qt::TapGesture);                                           // For placing a landmark
+    m_qOgreWidget->grabGesture(sight::ui::qt::gestures::QPanGestureRecognizer::get<2>()); // For translating
+    m_qOgreWidget->installEventFilter(new GestureFilter(m_qOgreWidget));                  // Sends the gesture
+                                                                                          // events
+                                                                                          // to window
     m_qOgreWidget->installEventFilter(new TouchToMouseFixFilter);
 
     this->setFullscreen(_fullscreen, -1);
 
     auto disableFullscreen = [this]{this->disableFullscreen();};
-    auto* disableShortcut  = new QShortcut(QString("Escape"), m_windowContainer);
+    auto* disableShortcut  = new QShortcut(QString("Escape"), m_qOgreWidget);
     QObject::connect(disableShortcut, &QShortcut::activated, disableFullscreen);
 
-    m_qOgreWidget->initialize();
+    const auto renderService = sight::viz::scene3d::SRender::dynamicCast(m_renderService.lock());
+    SIGHT_ASSERT("RenderService wrongly instantiated. ", renderService);
+
+    std::map<int, sight::viz::scene3d::Layer::wptr> orderedLayers;
+    for(auto& layer : renderService->getLayers())
+    {
+        orderedLayers[layer.second->getOrder()] = layer.second;
+    }
+
+    for(auto& layer : orderedLayers)
+    {
+        m_qOgreWidget->registerLayer(layer.second);
+    }
+
+    QCoreApplication::postEvent(m_qOgreWidget, new QShowEvent());
+    QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
 }
 
 //-----------------------------------------------------------------------------
@@ -230,13 +222,8 @@ void WindowInteractor::createContainer(
 void WindowInteractor::connectToContainer()
 {
     // Connect widget window render to render service start adaptors
-    service::IService::sptr renderService                = m_renderService.lock();
-    sight::viz::scene3d::SRender::sptr ogreRenderService = sight::viz::scene3d::SRender::dynamicCast(renderService);
-
-    if(!ogreRenderService)
-    {
-        SIGHT_ERROR("RenderService wrongly instantiated. ");
-    }
+    const auto renderService = sight::viz::scene3d::SRender::dynamicCast(m_renderService.lock());
+    SIGHT_ASSERT("RenderService wrongly instantiated. ", renderService);
 
     QObject::connect(m_qOgreWidget, SIGNAL(cameraClippingComputation()), this, SLOT(onCameraClippingComputation()));
     QObject::connect(
@@ -294,13 +281,6 @@ int WindowInteractor::getFrameId() const
 
 //-----------------------------------------------------------------------------
 
-Ogre::RenderTarget* WindowInteractor::getRenderTarget()
-{
-    return m_qOgreWidget->getOgreRenderWindow();
-}
-
-//-----------------------------------------------------------------------------
-
 float WindowInteractor::getLogicalDotsPerInch() const
 {
     SIGHT_ASSERT("Trying to query dots per inch on a non-existing windows.", m_qOgreWidget);
@@ -349,7 +329,7 @@ void WindowInteractor::setFullscreen(bool _fullscreen, int _screenNumber)
 
     if(_fullscreen)
     {
-        container->layout()->removeWidget(m_windowContainer);
+        container->layout()->removeWidget(m_qOgreWidget);
 
         const QDesktopWidget* desktop = QApplication::desktop();
 
@@ -368,13 +348,13 @@ void WindowInteractor::setFullscreen(bool _fullscreen, int _screenNumber)
             screenres = QGuiApplication::screens()[_screenNumber]->geometry();
         }
 
-        m_windowContainer->setParent(nullptr);
-        m_windowContainer->showFullScreen();
-        m_windowContainer->setGeometry(screenres);
+        m_qOgreWidget->setParent(nullptr);
+        m_qOgreWidget->showFullScreen();
+        m_qOgreWidget->setGeometry(screenres);
     }
     else if(container->layout()->isEmpty())
     {
-        container->layout()->addWidget(m_windowContainer);
+        container->layout()->addWidget(m_qOgreWidget);
     }
 }
 

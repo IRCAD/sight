@@ -496,6 +496,7 @@ void Plane::setRenderQueuerGroupAndPriority(std::uint8_t _groupId, std::uint16_t
 }
 
 //-----------------------------------------------------------------------------
+
 std::array<Ogre::Vector3, 4> Plane::computeCross(const Ogre::Vector3& _center, const Ogre::Vector3& _imageOrigin) const
 {
     std::array<Ogre::Vector3, 4> crossLines;

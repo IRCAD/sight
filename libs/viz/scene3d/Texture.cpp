@@ -51,6 +51,16 @@ void Texture::update()
     m_window = viz::scene3d::detail::TextureManager::get()->load(m_resource).second;
 }
 
+//-----------------------------------------------------------------------------
+
+void Texture::setDirty()
+{
+    if(m_resource)
+    {
+        m_resource->touch();
+    }
+}
+
 //------------------------------------------------------------------------------
 
 void Texture::bind(
@@ -103,6 +113,42 @@ void Texture::bind(
     {
         fpParams->setNamedConstant("u_window", this->window());
     }
+}
+
+//------------------------------------------------------------------------------
+
+void Texture::bind(
+    Ogre::Pass* _pass,
+    const std::string& _samplerName,
+    const std::string& uniformName,
+    std::optional<Ogre::TextureFilterOptions> _filterType,
+    std::optional<Ogre::TextureAddressingMode> _addressMode
+) const
+{
+    SIGHT_ASSERT("The pass is null.", _pass);
+
+    Ogre::TextureUnitState* texUnit = _pass->getTextureUnitState(_samplerName);
+    SIGHT_ASSERT("The sampler '" + _samplerName + "' cannot be retrieved.", texUnit);
+
+    if(_filterType != std::nullopt)
+    {
+        texUnit->setTextureFiltering(_filterType.value());
+    }
+
+    if(_addressMode != std::nullopt)
+    {
+        texUnit->setTextureAddressingMode(_addressMode.value());
+    }
+
+    if(m_resource)
+    {
+        texUnit->setTexture(m_resource);
+        texUnit->setTextureName(m_resource->getName(), m_resource->getTextureType());
+    }
+
+    auto fpParams     = _pass->getFragmentProgramParameters();
+    auto texUnitIndex = _pass->getTextureUnitStateIndex(texUnit);
+    fpParams->setNamedConstant(uniformName, texUnitIndex);
 }
 
 //-----------------------------------------------------------------------------

@@ -38,7 +38,6 @@ namespace sight::module::viz::scene3d::adaptor
 static const core::com::Slots::SlotKeyType s_RESET_CAMERA_SLOT       = "resetCamera";
 static const core::com::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT    = "resizeViewport";
 static const core::com::Slots::SlotKeyType s_CHANGE_ORIENTATION_SLOT = "changeOrientation";
-static const core::com::Slots::SlotKeyType s_MOVE_BACK_SLOT          = "moveBack";
 
 //-----------------------------------------------------------------------------
 
@@ -47,7 +46,6 @@ SNegato2DCamera::SNegato2DCamera() noexcept
     newSlot(s_RESET_CAMERA_SLOT, &SNegato2DCamera::resetCamera, this);
     newSlot(s_RESIZE_VIEWPORT_SLOT, &SNegato2DCamera::resizeViewport, this);
     newSlot(s_CHANGE_ORIENTATION_SLOT, &SNegato2DCamera::changeOrientation, this);
-    newSlot(s_MOVE_BACK_SLOT, &SNegato2DCamera::moveBack, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -131,8 +129,7 @@ service::IService::KeyConnectionsMap SNegato2DCamera::getAutoConnections() const
 {
     return {
         {s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_RESET_CAMERA_SLOT},
-        {s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_CHANGE_ORIENTATION_SLOT},
-        {s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_MOVE_BACK_SLOT}
+        {s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_CHANGE_ORIENTATION_SLOT}
     };
 }
 
@@ -240,13 +237,10 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
             };
             m_hasMoved = true;
 
-            this->moveBack();
-
             // Send signal.
             auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>(
                 data::Image::s_SLICE_INDEX_MODIFIED_SIG
             );
-            sight::core::com::Connection::Blocker blocker(sig->getConnection(this->slot(s_MOVE_BACK_SLOT)));
             sig->asyncEmit(idx[2], idx[1], idx[0]);
         }
     }
@@ -468,31 +462,6 @@ void SNegato2DCamera::changeOrientation(int _from, int _to)
     {
         m_currentNegatoOrientation = toOrientation;
         this->resetCamera();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SNegato2DCamera::moveBack()
-{
-    const auto layer    = this->getLayer();
-    auto* const camera  = layer->getDefaultCamera();
-    auto* const camNode = camera->getParentNode();
-
-    const auto worldBoundingBox = layer->computeWorldBoundingBox();
-
-    if(worldBoundingBox.isFinite())
-    {
-        const auto orientation = static_cast<std::size_t>(m_currentNegatoOrientation);
-
-        auto camPos = camNode->getPosition();
-
-        const float backupPos = worldBoundingBox.getMinimum()[orientation] - 1.F;
-        camPos[orientation] = std::min(camPos[orientation], backupPos);
-
-        camNode->setPosition(camPos);
-
-        this->requestRender();
     }
 }
 

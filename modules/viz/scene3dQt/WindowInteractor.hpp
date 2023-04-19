@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -139,9 +139,6 @@ public:
     /// Makes the OpenGL context as current one on this thread against this window.
     MODULE_VIZ_SCENE3DQT_API void makeCurrent() final;
 
-    /// Gets the Ogre render target.
-    MODULE_VIZ_SCENE3DQT_API Ogre::RenderTarget* getRenderTarget() final;
-
     /// Returns a nullptr. This is due to the fact that this manager doesn't write to a texture.
     MODULE_VIZ_SCENE3DQT_API Ogre::TexturePtr getRenderTexture() final;
 
@@ -158,6 +155,8 @@ public:
      * @param _screenNumber index of the screen on which to render in fullscreen mode.
      */
     MODULE_VIZ_SCENE3DQT_API void setFullscreen(bool _fullscreen, int _screenNumber) final;
+
+    QWidget* getQtWidget() const;
 
 private Q_SLOTS:
 
@@ -177,9 +176,6 @@ private:
 
     /// Contains the parent of the widget.
     SPTR(ui::qt::container::QtContainer) m_parentContainer;
-
-    /// Contains the window container.
-    QWidget* m_windowContainer {nullptr};
 };
 
 //-----------------------------------------------------------------------------
@@ -188,6 +184,13 @@ inline Ogre::TexturePtr WindowInteractor::getRenderTexture()
 {
     SIGHT_ERROR("'WindowInteractor' doesn't render in a texture.");
     return {};
+}
+
+//-----------------------------------------------------------------------------
+
+inline QWidget* WindowInteractor::getQtWidget() const
+{
+    return m_qOgreWidget;
 }
 
 } // namespace sight::module::viz::scene3dQt.

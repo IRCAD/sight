@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,11 +33,6 @@ namespace sight::viz::scene3d
 
 void WindowManager::add(Ogre::RenderWindow* _window)
 {
-    if(m_windows.empty())
-    {
-        m_firstWindow = _window;
-    }
-
     m_windows.insert(_window);
 }
 
@@ -46,22 +41,6 @@ void WindowManager::add(Ogre::RenderWindow* _window)
 void WindowManager::remove(Ogre::RenderWindow* _window)
 {
     m_windows.erase(_window);
-
-    if(_window != m_firstWindow)
-    {
-        Ogre::Root* root = viz::scene3d::Utils::getOgreRoot();
-        SIGHT_ASSERT("Ogre root not found", root);
-        root->destroyRenderTarget(_window);
-    }
-
-    // If we are the last opened window, we shutdown Ogre completely.
-    if(m_windows.empty())
-    {
-        // We don't need to destroy the ogre target, it is done when shutting down ogre.
-        // Destroying the render target actually results in a double free segfault.
-        viz::scene3d::Utils::destroyOgreRoot();
-        m_firstWindow = nullptr;
-    }
 }
 
 // ----------------------------------------------------------------------------

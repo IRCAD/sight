@@ -25,7 +25,6 @@
 #include "viz/scene3d/config.hpp"
 #include "viz/scene3d/IWindowInteractor.hpp"
 #include "viz/scene3d/Layer.hpp"
-#include "viz/scene3d/overlay/ViewportListener.hpp"
 #include "viz/scene3d/Utils.hpp"
 
 #include <data/Image.hpp>
@@ -33,7 +32,6 @@
 #include <viz/base/IRender.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
-#include <OGRE/Overlay/OgreOverlay.h>
 
 #include <map>
 #include <tuple>
@@ -60,6 +58,8 @@ class Layer;
  * - \b requestRender(): request the service to repaint the scene.
  * - \b disableFullscreen(): switches to windowed rendering if fullscreen is enabled.
  * - \b enableFullscreen(int): switches fullscreen rendering on the given screen.
+ * - \b setManualMode(): switches to manual mode, the scene is rendered whenever the requestRender() slot is called.
+ * - \b setAutoMode(): switches to auto mode, the scene is rendered whenever an adaptor decides it.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -84,8 +84,9 @@ class Layer;
  *
  * @subsection Configuration Configuration
  *  - \b scene (mandatory)
- *      - \b renderMode (optional, auto/sync, default=auto): 'auto' (only when something has changed), or 'sync'
- *           (only when the slot "requestRender" is called).
+ *      - \b renderMode (optional, auto/manual, default=auto): 'auto' (when any of the adaptor calls "requestRender",
+ *           i.e. when its data has changed), or 'manual' (only when the slot "requestRender" is called). This can also
+ *           be changed at runtime with setManualMode and setAutoMode slots.
  *      - \b width (optional, int, default=1280): width for off-screen rendering.
  *      - \b height (optional, int, default=720): height for off-screen rendering.
  *  - \b background (optional): defines the scene background color.
@@ -130,10 +131,10 @@ public:
     SIGHT_DECLARE_SERVICE(SRender, viz::base::IRender);
 
     /// Represents all possible render modes.
-    enum class RenderMode
+    enum class RenderMode : std::uint8_t
     {
         AUTO,
-        SYNC
+        MANUAL
     };
 
     /// Defines the type of adaptors ID.
@@ -176,6 +177,12 @@ public:
 
     /// Contains the slot name that enables fullscreen rendering on a specific screen.
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_ENABLE_FULLSCREEN;
+
+    /// Contains the slot name that enables the manual rendering mode.
+    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SET_MANUAL_MODE;
+
+    /// Contains the slot name that enables the automatic rendering mode.
+    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SET_AUTO_MODE;
 
     /// Defines the layer ID of the background.
     VIZ_SCENE3D_API static const std::string s_OGREBACKGROUNDID;
@@ -267,12 +274,6 @@ private:
 
     /// Contains the Ogre window interactor manager.
     viz::scene3d::IWindowInteractor::sptr m_interactorManager;
-
-    /// Maps viewports to their overlays. Needed by the viewport listener.
-    overlay::ViewportListener::ViewportOverlaysMapType m_viewportOverlaysMap;
-
-    /// Listens for render target updates for all viewports and enables the required overlays.
-    overlay::ViewportListener m_viewportListener {m_viewportOverlaysMap};
 
     /// Contains the Ogre root.
     Ogre::Root* m_ogreRoot {nullptr};

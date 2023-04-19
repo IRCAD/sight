@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,6 @@
 
 #include <ui/base/IAction.hpp>
 
-#include <boost/logic/tribool.hpp>
-
 #include <vector>
 
 namespace sight::module::ui::base
@@ -47,24 +45,21 @@ public:
     /**
      * @brief Constructor. Do nothing.
      */
-    MODULE_UI_BASE_API SModifyLayout() noexcept;
+    MODULE_UI_BASE_API SModifyLayout() noexcept = default;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    MODULE_UI_BASE_API ~SModifyLayout() noexcept override;
+    MODULE_UI_BASE_API ~SModifyLayout() noexcept override = default;
 
 protected:
 
-    enum ActionType
+    enum class visibility_t : std::uint8_t
     {
-        MOVE,
         SHOW,
         HIDE,
         SHOW_OR_HIDE,
-        ENABLE,
-        DISABLE,
-        DO_NOTHING
+        TOGGLE
     };
 
     /**
@@ -84,8 +79,9 @@ protected:
        <config>
          <move uid="srv_uid" wid="new_view_wid" />
          <show wid="view_to_show" />
-         <hide wid="view_to_hide />
-         <show_or_hide wid="view_to_show_or_hide />
+         <hide wid="view_to_hide" />
+         <show_or_hide wid="view_to_show_or_hide" />
+         <toggle wid="view_to_toggle_visibility" />
          <enable uid="action_to_enabled" />
          <disable uid="action_to_disabled" />
        </config>
@@ -95,8 +91,10 @@ protected:
      * - \b hide configures the element to hide
      * - \b show_or_hide configures the element to show or hide.
      *      If action is activated, element is shown else it is hidden.
+     * - \b toggle configures the element to show or hide.
+     *      If the element is visible, element is hidden else it is show.
      *
-     * \<show\>, \<hide\> and \<show_or_hide\> tags can have 2 type of attribute :
+     * \<show\>, \<hide\>, \<show_or_hide\> and \<toggle\> tags can have 2 type of attribute :
      * - wid to show  or hide windows container (view)
      * - sid  to show or hide a gui container service (IEditor, IView, IRender...)
      *
@@ -116,7 +114,7 @@ private:
     MoveSrvVectType m_moveSrv;
 
     /// < wid, showState>
-    typedef std::vector<std::pair<std::string, boost::logic::tribool> > ShowSrvVectType;
+    typedef std::vector<std::pair<std::string, visibility_t> > ShowSrvVectType;
     /// map representing wid container and show state
     ShowSrvVectType m_showSrvWid;
 

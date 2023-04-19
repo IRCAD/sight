@@ -57,7 +57,7 @@ void ZoomOut::test()
             );
 
             // Drag the mouse to zoom out
-            helper::Scene3d::zoom(tester, "mainSceneSrv", -7);
+            helper::Scene3d::zoom(tester, "sceneSrv", -7);
 
             saveSnapshot(tester, snapshotPath);
 

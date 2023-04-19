@@ -31,9 +31,8 @@
 #include <QApplication>
 #include <QGuiApplication>
 #include <QIcon>
-#include <QLayout>
-#include <QMainWindow>
 #include <QScreen>
+#include <QStyle>
 
 SIGHT_REGISTER_GUI(
     sight::ui::qt::FrameLayoutManager,
@@ -67,6 +66,7 @@ void FrameLayoutManager::createFrame()
     ui::qt::QtMainFrame::CloseCallback fct = [this](auto&& ...){onCloseFrame();};
     mainframe->setCloseCallback(fct);
 
+    // cspell: ignore QWIDGETSIZE
     m_qtWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
     m_qtWindow->setMinimumSize(std::max(frameInfo.m_minSize.first, 0), std::max(frameInfo.m_minSize.second, 0));
     m_qtWindow->setMaximumSize(

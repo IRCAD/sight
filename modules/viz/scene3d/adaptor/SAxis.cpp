@@ -30,7 +30,6 @@
 
 #include <service/macros.hpp>
 
-#include <viz/scene3d/helper/Font.hpp>
 #include <viz/scene3d/helper/ManualObject.hpp>
 #include <viz/scene3d/helper/Scene.hpp>
 #include <viz/scene3d/SRender.hpp>
@@ -80,7 +79,6 @@ void SAxis::configuring()
     static const std::string s_LENGTH_CONFIG       = s_CONFIG + "length";
     static const std::string s_LABEL_CONFIG        = s_CONFIG + "label";
     static const std::string s_FONT_SIZE_CONFIG    = s_CONFIG + "fontSize";
-    static const std::string s_FONT_SOURCE_CONFIG  = s_CONFIG + "fontSource";
     static const std::string s_ORIGIN_CONFIG       = s_CONFIG + "origin";
     static const std::string s_AXIS_CONFIG         = s_CONFIG + "axis";
     static const std::string s_ORIGIN_COLOR_CONFIG = s_CONFIG + "originColor";
@@ -89,7 +87,6 @@ void SAxis::configuring()
     m_length           = config.get<float>(s_LENGTH_CONFIG, m_length);
     m_enableLabel      = config.get<bool>(s_LABEL_CONFIG, m_enableLabel);
     m_fontSize         = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
-    m_fontSource       = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_originVisibility = config.get<bool>(s_ORIGIN_CONFIG, m_originVisibility);
     m_axisVisibility   = config.get<bool>(s_AXIS_CONFIG, m_axisVisibility);
     m_axisName         = config.get<std::string>(s_AXIS_NAME, m_axisName);
@@ -172,8 +169,6 @@ void SAxis::starting()
     originMaterialAdaptor->start();
     originMaterialAdaptor->update();
 
-    const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
-
     // Sizes
     const float originRadius   = m_length * 0.1F;
     const float cylinderLength = m_length * 0.85F;
@@ -212,8 +207,7 @@ void SAxis::starting()
         m_sceneNode->attachObject(m_origin);
     }
 
-    Ogre::OverlayContainer* const textContainer = this->getLayer()->getOverlayTextPanel();
-    Ogre::Camera* const cam                     = this->getLayer()->getDefaultCamera();
+    Ogre::Camera* const cam = this->getLayer()->getDefaultCamera();
 
     if(m_axisVisibility)
     {
@@ -269,17 +263,10 @@ void SAxis::starting()
 
         if(m_enableLabel)
         {
-            m_axisLabels[0] = sight::viz::scene3d::Text::New(
-                this->getID() + "_xAxisLabel",
-                sceneMgr,
-                textContainer,
-                m_fontSource,
-                m_fontSize,
-                dpi,
-                cam
-            );
+            m_axisLabels[0] = sight::viz::scene3d::IText::New(this->getLayer());
             m_axisLabels[0]->setText("X");
-            xConeNode->attachObject(m_axisLabels[0]);
+            m_axisLabels[0]->setFontSize(m_fontSize);
+            m_axisLabels[0]->attachToNode(xConeNode, this->getLayer()->getDefaultCamera());
         }
 
         xConeNode->attachObject(m_xCone);
@@ -299,17 +286,10 @@ void SAxis::starting()
 
         if(m_enableLabel)
         {
-            m_axisLabels[1] = sight::viz::scene3d::Text::New(
-                this->getID() + "_yAxisLabel",
-                sceneMgr,
-                textContainer,
-                m_fontSource,
-                m_fontSize,
-                dpi,
-                cam
-            );
+            m_axisLabels[1] = sight::viz::scene3d::IText::New(this->getLayer());
             m_axisLabels[1]->setText("Y");
-            yConeNode->attachObject(m_axisLabels[1]);
+            m_axisLabels[1]->setFontSize(m_fontSize);
+            m_axisLabels[1]->attachToNode(yConeNode, cam);
         }
 
         yConeNode->translate(0.F, cylinderLength, 0.F);
@@ -329,53 +309,37 @@ void SAxis::starting()
 
         if(m_enableLabel)
         {
-            m_axisLabels[2] = sight::viz::scene3d::Text::New(
-                this->getID() + "_zAxisLabel",
-                sceneMgr,
-                textContainer,
-                m_fontSource,
-                m_fontSize,
-                dpi,
-                cam
-            );
+            m_axisLabels[2] = sight::viz::scene3d::IText::New(this->getLayer());
             m_axisLabels[2]->setText("Z");
-            zConeNode->attachObject(m_axisLabels[2]);
+            m_axisLabels[2]->setFontSize(m_fontSize);
+            m_axisLabels[2]->attachToNode(zConeNode, this->getLayer()->getDefaultCamera());
         }
 
         zConeNode->translate(0.F, 0.F, cylinderLength);
         zConeNode->yaw(Ogre::Degree(-90));
+
+        // Display Name if provided.
+        if(!m_axisName.empty())
+        {
+            m_axisNameTxt = sight::viz::scene3d::IText::New(this->getLayer());
+            m_axisNameTxt->setText(m_axisName);
+            m_axisNameTxt->setFontSize(m_fontSize);
+            m_axisNameTxt->attachToNode(xConeNode, cam);
+            const data::Color::sptr txtColor = data::Color::New();
+            txtColor->setRGBA(m_originColor);
+            m_axisNameTxt->setTextColor(
+                Ogre::ColourValue(
+                    txtColor->red(),
+                    txtColor->green(),
+                    txtColor->blue()
+                )
+            );
+        }
+
+        this->updateVisibility(m_isVisible);
+
+        this->requestRender();
     }
-
-    // Display Name if provided.
-    if(!m_axisName.empty())
-    {
-        m_axisNameTxt = sight::viz::scene3d::Text::New(
-            this->getID() + "_Name",
-            sceneMgr,
-            textContainer,
-            m_fontSource,
-            m_fontSize,
-            dpi,
-            cam
-        );
-
-        const data::Color::sptr txtColor = data::Color::New();
-        txtColor->setRGBA(m_originColor);
-
-        m_axisNameTxt->setTextColor(
-            Ogre::ColourValue(
-                txtColor->red(),
-                txtColor->green(),
-                txtColor->blue()
-            )
-        );
-        m_axisNameTxt->setText(m_axisName);
-        m_sceneNode->attachObject(m_axisNameTxt);
-    }
-
-    this->updateVisibility(m_isVisible);
-
-    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------
@@ -408,20 +372,18 @@ void SAxis::stopping()
 
     if(m_enableLabel)
     {
-        for(sight::viz::scene3d::Text* label : m_axisLabels)
+        for(auto& label : m_axisLabels)
         {
             SIGHT_ASSERT("label should not be null", label);
-            label->detachFromParent();
-            sceneMgr->destroyMovableObject(label);
-            label = nullptr;
+            label->detachFromNode();
+            label.reset();
         }
     }
 
     if(m_axisNameTxt != nullptr)
     {
-        m_axisNameTxt->detachFromParent();
-        sceneMgr->destroyMovableObject(m_axisNameTxt);
-        m_axisNameTxt = nullptr;
+        m_axisNameTxt->detachFromNode();
+        m_axisNameTxt.reset();
     }
 
     if(m_originVisibility)
@@ -459,7 +421,7 @@ void SAxis::setVisible(bool _visible)
         m_sceneNode->setVisible(_visible);
         if(m_enableLabel)
         {
-            for(sight::viz::scene3d::Text* const label : m_axisLabels)
+            for(auto& label : m_axisLabels)
             {
                 SIGHT_ASSERT("label should not be null", label);
                 label->setVisible(_visible);

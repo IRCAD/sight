@@ -56,7 +56,7 @@ void SagittalNegato::test()
             );
 
             // Firstly, we must drag the mouse in the 3D scene so that the camera is "next to" the image
-            helper::Scene3d::rotate(tester, "mainSceneSrv", {1 / 2., 0});
+            helper::Scene3d::rotate(tester, "sceneSrv", {1 / 2., 0});
 
             // We want to hide the volume, we must click on the Show/hide volume button to achieve this
             helper::Button::push(tester, "toolBarView/Show/hide volume");
@@ -68,7 +68,11 @@ void SagittalNegato::test()
             resetNegatos(tester);
 
             // We want to move the negato, we must click in the negato slider to do that
-            helper::Slider::set(tester, "sagittalNegatoSlicerSrv", 250);
+            helper::Slider::set(
+                tester,
+                helper::Select::fromParent("bottomScenesView/0", "negatoSlicerSrv"),
+                250
+            );
 
             saveSnapshot(tester, snapshotPath);
 

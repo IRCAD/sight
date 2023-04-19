@@ -26,6 +26,7 @@
 
 #include <ui/testCore/helper/Button.hpp>
 #include <ui/testCore/helper/FileDialog.hpp>
+#include <ui/testCore/helper/Select.hpp>
 #include <ui/testCore/helper/SelectorDialog.hpp>
 #include <ui/testCore/helper/Slider.hpp>
 
@@ -101,10 +102,10 @@ void ITest::saveSnapshot(sight::ui::testCore::Tester& tester, const std::filesys
 
 void ITest::resetNegatos(sight::ui::testCore::Tester& tester)
 {
-    const std::array negatos {"axial", "frontal", "sagittal"};
-    for(std::string negato : negatos)
+    const std::array negatos {"topScenesView/1", "bottomScenesView/0", "bottomScenesView/1"};
+    for(std::string parent : negatos)
     {
-        helper::Slider::set(tester, negato + "NegatoSlicerSrv", 0);
+        helper::Slider::set(tester, helper::Select::fromParent(parent, "negatoSlicerSrv"), 0);
     }
 }
 

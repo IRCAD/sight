@@ -28,8 +28,8 @@
 
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/interactor/IInteractor.hpp>
+#include <viz/scene3d/IText.hpp>
 #include <viz/scene3d/Material.hpp>
-#include <viz/scene3d/Text.hpp>
 
 #include <Ogre.h>
 
@@ -55,7 +55,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
         <in key="image" uid="..." />
-        <config fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="2" />
+        <config fontSize="32" radius="4.5" priority="2" />
     </service>
    @endcode
  *
@@ -63,7 +63,6 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b image [sight::data::Image]: image containing the distance field.
  *
  * @subsection Configuration Configuration:
- * - \b fontSource (optional, string, default=DejaVuSans.ttf): TrueType font (*.ttf) source file.
  * - \b fontSize (optional, int, default=16): font size in points.
  * - \b radius (optional, float, default=4.5): size of the distances spheres.
  * - \b interactive (optional, bool, default=true): enables interactions with distances.
@@ -164,7 +163,7 @@ private:
         Ogre::ManualObject* m_line {};
         Ogre::ManualObject* m_dashedLine {};
         Ogre::SceneNode* m_labelNode {};
-        sight::viz::scene3d::Text* m_label {};
+        sight::viz::scene3d::IText::sptr m_label;
     };
 
     /// Stores picking informations.
@@ -250,11 +249,8 @@ private:
     /// Defines the radius of distances spheres.
     float m_distanceSphereRadius {3.5F};
 
-    /// Defines the TrueType font source file.
-    std::string m_fontSource {"DejaVuSans.ttf"};
-
     /// Defines the font size in points.
-    std::size_t m_fontSize {16};
+    std::size_t m_fontSize {12};
 
     /// Defines whether or not interactions are enabled with distances.
     bool m_interactive {true};

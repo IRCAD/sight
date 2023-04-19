@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,6 +57,24 @@ void Image::createConfig(core::tools::Object::sptr _obj)
             itr->g = color[1];
             itr->b = color[2];
             itr->a = color[3];
+        }
+    }
+    else if(m_cfg.count("gray") != 0U)
+    {
+        const auto value = m_cfg.get<std::uint8_t>("gray", 0);
+
+        // Initialize with a dummy 4x4 black image
+        image->setSpacing({1, 1, 1});
+        image->setOrigin({0, 0, 0});
+        image->resize({4, 4, 1}, core::Type::UINT8, data::Image::GRAY_SCALE);
+
+        const auto dumpLock = image->dump_lock();
+        auto itr            = image->begin<std::uint8_t>();
+        const auto itrEnd   = image->end<std::uint8_t>();
+
+        for( ; itr != itrEnd ; ++itr)
+        {
+            *itr = value;
         }
     }
 }

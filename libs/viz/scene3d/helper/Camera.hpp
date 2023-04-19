@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -84,6 +84,17 @@ public:
     static VIZ_SCENE3D_API Ogre::Vector3 convertNDCToViewSpace(
         const Ogre::Camera& _camera,
         const Ogre::Vector3& _ndcPos
+    );
+
+    /**
+     * @brief Converts from world space (x, y, z) to screen space (u, v, w).
+     * @param _camera ogre camera.
+     * @param _worldPos world position (x, y, z).
+     * @return screen space coordinates in pixels (x, y).
+     */
+    static VIZ_SCENE3D_API Ogre::Vector2 convertWorldSpaceToScreenSpace(
+        const Ogre::Camera& _camera,
+        const Ogre::Vector3& _worldPos
     );
 };
 

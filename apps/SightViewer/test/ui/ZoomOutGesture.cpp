@@ -56,7 +56,7 @@ void ZoomOutGesture::test()
 
             /* Pinch the fingers to zoom out */
             // Firstly, we need the 3D scene
-            tester.take("ogre scene", "mainSceneSrv");
+            tester.take("ogre scene", "sceneSrv");
             // We need to a reference to it for later
             auto* ogreScene = tester.get<QWidget*>();
             tester.interact(

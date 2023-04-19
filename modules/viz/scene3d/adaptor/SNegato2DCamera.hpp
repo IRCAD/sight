@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,7 +48,6 @@ namespace sight::module::viz::scene3d::adaptor
  * @section Slots Slots
  * - \b resetCamera(): zooms out the camera to see the whole scene.
  * - \b changeOrientation(int,int): sets the camera's orientation to one of the image's axes.
- * - \b moveBack(): moves the camera backwards outside the scene's bounding box.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -199,9 +198,6 @@ private:
      * @param _to destination of the orientation.
      */
     void changeOrientation(int _from, int _to);
-
-    /// SLOT: moves the camera backwards outside the scene's bounding box.
-    void moveBack();
 
     /// Updates the transfer function window and level by adding the input values.
     void updateWindowing(double _dw, double _dl);

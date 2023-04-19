@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,7 @@
 #include <viz/scene3d/IGraphicsWorker.hpp>
 
 #include <QOpenGLContext>
+#include <QOpenGLWidget>
 #include <QPointer>
 #include <QSurface>
 #include <QThreadPool>
@@ -47,7 +48,7 @@ class OpenGLWorker final : public sight::viz::scene3d::IGraphicsWorker
 public:
 
     /// Builds a graphic worker able to handle resources for the given surface.
-    OpenGLWorker(QSurface* _surface);
+    OpenGLWorker(QOpenGLWidget* glWidget);
 
     /// Clears all waiting tasks and waits for the one being executed.
     ~OpenGLWorker() final;
@@ -67,7 +68,8 @@ private:
     std::unique_ptr<QThreadPool> m_threadPool;
 
     /// Contains the surface on which the thread's context is enabled.
-    QSurface* m_surface;
+//     QSurface* m_surface;
+    QOpenGLWidget* m_glWidget;
 };
 
 } // namespace sight::module::viz::scene3dQt.

@@ -11,6 +11,9 @@
 
         <object uid="${imageSeries}" type="sight::data::ImageSeries" src="ref" />
         <object uid="tf" type="sight::data::TransferFunction" />
+        <object uid="mask" type="sight::data::Image">
+            <gray>255</gray>
+        </object>
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -70,6 +73,7 @@
         <service uid="volumeRender" type="sight::module::viz::scene3d::adaptor::SVolumeRender">
             <in key="image" uid="${imageSeries}" />
             <in key="tf" uid="tf" />
+            <in key="mask" uid="mask" />
             <config widgets="false" preintegration="false" autoresetcamera="true" />
         </service>
 

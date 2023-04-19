@@ -337,6 +337,7 @@ void SVolumeRender::updateImage()
 
     // Create widgets on image update to take the image's size into account.
     this->createWidget();
+
     if(m_config.camera_autoreset)
     {
         this->getRenderService()->resetCameraCoordinates(m_layerID);

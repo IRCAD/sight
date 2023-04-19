@@ -112,7 +112,7 @@
                 <scene>
                     <background topColor="#36393E" bottomColor="#36393E" />
 
-                    <layer id="default" order="1">
+                    <layer id="default" order="1" transparency="DepthPeeling">
                         <adaptor uid="trackballInteractorAdp" />
                         <adaptor uid="textureAdp" />
                         <adaptor uid="meshAdp" />
