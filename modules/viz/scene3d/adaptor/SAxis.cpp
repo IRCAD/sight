@@ -317,29 +317,29 @@ void SAxis::starting()
 
         zConeNode->translate(0.F, 0.F, cylinderLength);
         zConeNode->yaw(Ogre::Degree(-90));
-
-        // Display Name if provided.
-        if(!m_axisName.empty())
-        {
-            m_axisNameTxt = sight::viz::scene3d::IText::New(this->getLayer());
-            m_axisNameTxt->setText(m_axisName);
-            m_axisNameTxt->setFontSize(m_fontSize);
-            m_axisNameTxt->attachToNode(xConeNode, cam);
-            const data::Color::sptr txtColor = data::Color::New();
-            txtColor->setRGBA(m_originColor);
-            m_axisNameTxt->setTextColor(
-                Ogre::ColourValue(
-                    txtColor->red(),
-                    txtColor->green(),
-                    txtColor->blue()
-                )
-            );
-        }
-
-        this->updateVisibility(m_isVisible);
-
-        this->requestRender();
     }
+
+    // Display Name if provided.
+    if(!m_axisName.empty())
+    {
+        m_axisNameTxt = sight::viz::scene3d::IText::New(this->getLayer());
+        m_axisNameTxt->setText(m_axisName);
+        m_axisNameTxt->setFontSize(m_fontSize);
+        m_axisNameTxt->attachToNode(m_sceneNode, cam);
+        const data::Color::sptr txtColor = data::Color::New();
+        txtColor->setRGBA(m_originColor);
+        m_axisNameTxt->setTextColor(
+            Ogre::ColourValue(
+                txtColor->red(),
+                txtColor->green(),
+                txtColor->blue()
+            )
+        );
+    }
+
+    this->updateVisibility(m_isVisible);
+
+    this->requestRender();
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -186,15 +186,14 @@ void TrackballInteractor::keyPressEvent(int key, Modifier /*_mods*/, int _mouseX
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::resizeEvent(int /*_width*/, int /*_height*/)
+void TrackballInteractor::resizeEvent(int _width, int _height)
 {
     const Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
     Ogre::Camera* const camera                   =
         sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
-    const auto width  = static_cast<float>(camera->getViewport()->getActualWidth());
-    const auto height = static_cast<float>(camera->getViewport()->getActualHeight());
 
-    const float aspectRatio = width / height;
+    SIGHT_ASSERT("Width and height should be strictly positive", _width > 0 && _height > 0);
+    const float aspectRatio = static_cast<float>(_width) / static_cast<float>(_height);
     camera->setAspectRatio(aspectRatio);
 }
 
