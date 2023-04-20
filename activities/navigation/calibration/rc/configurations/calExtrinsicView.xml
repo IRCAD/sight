@@ -156,23 +156,14 @@
 
         <service uid="videoView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
+                <layout type="sight::ui::base::OverlayLayoutManager">
+                    <view />
+                    <view x="0" y="-1" height="35" width="100%" />
                 </layout>
-                <slideView opacity="1" hAlign="left" vAlign="bottom" height="35" >
-                    <styleSheet>
-                        <![CDATA[
-                        #SlideBar QWidget {
-                            background-color: none;
-                        }
-                        ]]>
-                    </styleSheet>
-                </slideView>
             </gui>
             <registry>
                 <view sid="genericSceneSrv" start="true" />
-                <slideView sid="videoSliderView" start="true" />
+                <view sid="videoSliderView" start="true" />
             </registry>
         </service>
 

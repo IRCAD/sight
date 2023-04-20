@@ -46,24 +46,15 @@
 
         <service uid="sceneView" type="sight::module::ui::base::SView">
             <gui>
-                <slideView opacity="1" hAlign="left" vAlign="top" height="55" width="100">
-                    <styleSheet>
-                        <![CDATA[
-                        #SlideBar QWidget {
-                            background-color: none;
-                        }
-                        ]]>
-                    </styleSheet>
-                </slideView>
-                <layout type="sight::ui::base::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="0" />
+                <layout type="sight::ui::base::OverlayLayoutManager">
+                    <view />
+                    <view x="0" y="0" minWidth="55" minHeight="100" />
                 </layout>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <slideView sid="topToolbarSliderView" start="true" />
                 <view sid="sceneSrv" start="true" />
+                <view sid="topToolbarSliderView" start="true" />
             </registry>
         </service>
 

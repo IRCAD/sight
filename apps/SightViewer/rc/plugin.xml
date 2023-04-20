@@ -104,30 +104,29 @@
             <service uid="containerView" type="sight::module::ui::base::SView" >
                 <gui>
                     <toolBar align="left" />
+                    <layout type="sight::ui::base::OverlayLayoutManager" >
+                        <view />
+                        <view x="-1" y="0" width="50" height="55" visible="false" />
+                    </layout>
+                </gui>
+                <registry>
+                    <toolBar sid="toolBarView" start="true" />
+                    <view sid="sceneParameterView" start="true" />
+                    <view sid="rightToolbarSliderView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="sceneParameterView" type="sight::module::ui::base::SView" >
+                <gui>
                     <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" minWidth="500" backgroundColor="#36393E" />
                     </layout>
-                    <slideView opacity="1" hAlign="right" vAlign="top" width="50" height="55" >
-                        <styleSheet>
-                            <![CDATA[
-                            #SlideBar QWidget {
-                                background-color: none;
-                            }
-                            #SlideBar QToolBar {
-                                border-top-left-radius: 4px;
-                                border-bottom-left-radius: 4px;
-                            }
-                            ]]>
-                        </styleSheet>
-                    </slideView>
                 </gui>
                 <registry>
-                    <toolBar sid="toolBarView" start="true" />
                     <view wid="sceneView" start="true" />
                     <view sid="parameterView" start="true" />
-                    <slideView sid="rightToolbarSliderView" start="true" />
                 </registry>
             </service>
 

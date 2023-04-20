@@ -28,6 +28,22 @@
 
         <service uid="containerView" type="sight::module::ui::base::SView">
             <gui>
+                <layout type="sight::ui::base::OverlayLayoutManager">
+                    <view />
+                    <view x="-50%" y="45" width="400" height="300" />
+                    <view x="-1" y="45" width="400" height="300" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="containerBackgroundView" start="true" />
+                <view sid="advancedQueryEditorSliderView" start="true" />
+                <view sid="configurePACSSliderView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="containerBackgroundView" type="sight::module::ui::base::SView">
+            <gui>
                 <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" backgroundColor="#3E4453" />
@@ -35,7 +51,6 @@
                 </layout>
             </gui>
             <registry>
-                <parent wid="${WID_PARENT}" />
                 <view sid="queryView" start="true" />
                 <view sid="selectorsView" start="true" />
             </registry>
@@ -64,8 +79,6 @@
 
         <service uid="selectorsView" type="sight::module::ui::base::SView">
             <gui>
-                <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="300" vOffset="-6" hOffset="50%" />
-                <slideView opacity="1" hAlign="right" vAlign="top" width="400" height="300" vOffset="-6" />
                 <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
@@ -73,8 +86,6 @@
                 </layout>
             </gui>
             <registry>
-                <slideView sid="advancedQueryEditorSliderView" start="true" />
-                <slideView sid="configurePACSSliderView" start="true" />
                 <view sid="previewView" start="true" />
                 <view sid="localView" start="true" />
             </registry>
@@ -122,15 +133,14 @@
 
         <service uid="previewSceneView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
-                    <orientation value="horizontal" />
-                    <view proportion="1" />
+                <layout type="sight::ui::base::OverlayLayoutManager">
+                    <view />
+                    <view x="0" y="-1" height="50" width="100%" />
                 </layout>
-                <slideView opacity="1" hAlign="left" vAlign="bottom" height="50" />
             </gui>
             <registry>
                 <view sid="genericScenePreviewSrv" start="true" />
-                <slideView sid="previewSceneSliderView" start="true" />
+                <view sid="previewSceneSliderView" start="true" />
             </registry>
         </service>
 
@@ -179,15 +189,14 @@
 
         <service uid="localSceneView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="sight::ui::base::LineLayoutManager">
-                    <orientation value="horizontal" />
-                    <view proportion="1" />
+                <layout type="sight::ui::base::OverlayLayoutManager">
+                    <view />
+                    <view x="0" y="-1" height="50" width="100%" />
                 </layout>
-                <slideView opacity="1" hAlign="left" vAlign="bottom" height="50" />
             </gui>
             <registry>
                 <view sid="genericSceneLocalSrv" start="true" />
-                <slideView sid="localSceneSliderView" start="true" />
+                <view sid="localSceneSliderView" start="true" />
             </registry>
         </service>
 
