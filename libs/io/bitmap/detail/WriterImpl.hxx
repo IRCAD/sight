@@ -63,7 +63,8 @@ public:
     inline ~WriterImpl() noexcept = default;
 
     /// Main write function
-    inline void write(std::ostream& ostream, Backend backend, Writer::Mode mode)
+    template<typename O>
+    inline std::size_t write(O& output, Backend backend, Writer::Mode mode)
     {
         // Get the image pointer
         const auto& image = m_writer->getConcreteObject();
@@ -81,7 +82,7 @@ public:
         {
             try
             {
-                write<NvJPEG2KWriter>(m_nvJPEG2K, *image, ostream, mode);
+                return write<NvJPEG2KWriter>(m_nvJPEG2K, *image, output, mode);
             }
             catch(const std::exception& e)
             {
@@ -115,34 +116,34 @@ public:
                 // This is obviously a bug in the encoder (reported and known by NVidia), although this should not
                 // happen with real data in the real world. To be in the safe side, we fallback to another backend.
                 SIGHT_ERROR("Failed to write image with nvJPEG2K: " << e.what() << ". Fallback to OpenJPEG.");
-                write<OpenJPEGWriter>(m_openJPEG, *image, ostream, mode);
+                return write<OpenJPEGWriter>(m_openJPEG, *image, output, mode);
             }
         }
         else if(nvJPEG2K() && backend == Backend::NVJPEG2K_J2K)
         {
             try
             {
-                write<NvJPEG2KWriter>(m_nvJPEG2K, *image, ostream, mode, Flag::J2K_STREAM);
+                return write<NvJPEG2KWriter>(m_nvJPEG2K, *image, output, mode, Flag::J2K_STREAM);
             }
             catch(const std::exception& e)
             {
                 // Same as above...
                 SIGHT_ERROR("Failed to write image with nvJPEG2K: " << e.what() << ". Fallback to OpenJPEG.");
-                write<OpenJPEGWriter>(m_openJPEG, *image, ostream, mode, Flag::J2K_STREAM);
+                return write<OpenJPEGWriter>(m_openJPEG, *image, output, mode, Flag::J2K_STREAM);
             }
         }
         else
 #endif
         if(backend == Backend::OPENJPEG)
         {
-            write<OpenJPEGWriter>(m_openJPEG, *image, ostream, mode);
+            return write<OpenJPEGWriter>(m_openJPEG, *image, output, mode);
         }
         else if(backend == Backend::OPENJPEG_J2K)
         {
-            write<OpenJPEGWriter>(
+            return write<OpenJPEGWriter>(
                 m_openJPEG,
                 *image,
-                ostream,
+                output,
                 mode,
                 Flag::J2K_STREAM
             );
@@ -152,21 +153,21 @@ public:
 #ifdef SIGHT_ENABLE_NVJPEG
         if(nvJPEG() && backend == Backend::NVJPEG)
         {
-            write<NvJPEGWriter>(m_nvJPEG, *image, ostream, mode);
+            return write<NvJPEGWriter>(m_nvJPEG, *image, output, mode);
         }
         else
 #endif
         if(backend == Backend::LIBJPEG)
         {
-            write<LibJPEGWriter>(m_libJPEG, *image, ostream, mode);
+            return write<LibJPEGWriter>(m_libJPEG, *image, output, mode);
         }
         else if(backend == Backend::LIBTIFF)
         {
-            write<LibTIFFWriter>(m_libTIFF, *image, ostream, mode);
+            return write<LibTIFFWriter>(m_libTIFF, *image, output, mode);
         }
         else if(backend == Backend::LIBPNG)
         {
-            write<LibPNGWriter>(m_libPNG, *image, ostream, mode);
+            return write<LibPNGWriter>(m_libPNG, *image, output, mode);
         }
         else
         {
@@ -178,11 +179,11 @@ private:
 
     //------------------------------------------------------------------------------
 
-    template<typename W>
-    inline static void write(
+    template<typename W, typename O>
+    inline static std::size_t write(
         std::unique_ptr<W>& backend,
         const data::Image& image,
-        std::ostream& ostream,
+        O& output,
         Writer::Mode mode,
         Flag flag = Flag::NONE
 )
@@ -193,7 +194,7 @@ private:
             SIGHT_THROW_IF("Failed to initialize" << backend->m_name << " backend.", !backend->m_valid);
         }
 
-        backend->write(image, ostream, mode, flag);
+        return backend->write(image, output, mode, flag);
     }
 
     /// Pointer to the public interface

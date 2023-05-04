@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -69,6 +69,12 @@ public:
 
     SIGHT_DECLARE_CLASS(BufferObject, core::BaseObject, new BufferObject);
     SIGHT_ALLOW_SHARED_FROM_THIS();
+
+    /// Returns a auto-deleted BufferObject
+    static sptr New(bool autoDelete)
+    {
+        return std::make_shared<BufferObject>(autoDelete);
+    }
 
     /// return the sub class classname : an alias of this->getClassname
     std::string className() const
@@ -171,7 +177,7 @@ public:
      *
      * Register the buffer to an existing buffer manager.
      */
-    CORE_API BufferObject();
+    CORE_API BufferObject(bool autoDelete = false);
 
     /**
      * @brief BufferObject destructor
@@ -231,7 +237,8 @@ public:
         core::memory::BufferManager::BufferType buffer,
         SizeType size,
         const core::memory::BufferAllocationPolicy::sptr& policy =
-        core::memory::BufferMallocPolicy::New()
+        core::memory::BufferMallocPolicy::New(),
+        bool autoDelete = false
     );
 
     /**
@@ -338,6 +345,8 @@ protected:
     core::memory::BufferManager::sptr m_bufferManager;
 
     core::memory::BufferAllocationPolicy::sptr m_allocPolicy;
+
+    bool m_autoDelete {false};
 };
 
 } // namespace sight::core::memory

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,10 +25,10 @@
 namespace sight::core::memory
 {
 
-BufferObject::BufferObject() :
-
+BufferObject::BufferObject(bool autoDelete) :
     m_bufferManager(core::memory::BufferManager::getDefault()),
-    m_allocPolicy(core::memory::BufferNoAllocPolicy::New())
+    m_allocPolicy(core::memory::BufferNoAllocPolicy::New()),
+    m_autoDelete(autoDelete)
 {
     m_bufferManager->registerBuffer(&m_buffer).get();
 }
@@ -37,6 +37,13 @@ BufferObject::BufferObject() :
 
 BufferObject::~BufferObject()
 {
+    // If the buffer is not owned like in sight::data::Array, we must destroy it by ourselves
+    ///@todo remove this when sight::data::DicomSeries will be removed
+    if(m_autoDelete)
+    {
+        m_bufferManager->destroyBuffer(&m_buffer).get();
+    }
+
     // In the past we asserted that m_count was expired, but it can not be ensured because the unlock is asynchronous
     // So we simply unregister the buffer and we will check the counter value on the buffer manager thread instead
     m_bufferManager->unregisterBuffer(&m_buffer).get();
@@ -73,12 +80,14 @@ void BufferObject::destroy()
 void BufferObject::setBuffer(
     core::memory::BufferManager::BufferType buffer,
     SizeType size,
-    const core::memory::BufferAllocationPolicy::sptr& policy
+    const core::memory::BufferAllocationPolicy::sptr& policy,
+    bool autoDelete
 )
 {
     m_bufferManager->setBuffer(&m_buffer, buffer, size, policy).get();
     m_allocPolicy = policy;
     m_size        = size;
+    m_autoDelete  = autoDelete;
 }
 
 //------------------------------------------------------------------------------

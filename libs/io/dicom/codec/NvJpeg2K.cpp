@@ -30,7 +30,7 @@ namespace sight::io::dicom::codec
 
 //------------------------------------------------------------------------------
 
-core::Type gdcmToSightPf(const gdcm::PixelFormat& pf)
+static inline core::Type gdcmToSightPf(const gdcm::PixelFormat& pf)
 {
     switch(pf.GetScalarType())
     {
@@ -72,7 +72,7 @@ core::Type gdcmToSightPf(const gdcm::PixelFormat& pf)
 
 //------------------------------------------------------------------------------
 
-data::Image::PixelFormat gdcmToSightPi(
+static inline data::Image::PixelFormat gdcmToSightPi(
     const gdcm::PhotometricInterpretation& pi,
     const gdcm::PixelFormat& pf
 )
@@ -101,15 +101,6 @@ data::Image::PixelFormat gdcmToSightPi(
         return data::Image::PixelFormat::RGB;
     }
 
-    SIGHT_THROW_IF(
-        "Retired photometric interpretation used in DICOM file.",
-        pi == gdcm::PhotometricInterpretation::ARGB
-        || pi == gdcm::PhotometricInterpretation::CMYK
-        || pi == gdcm::PhotometricInterpretation::HSV
-        || pi == gdcm::PhotometricInterpretation::YBR_PARTIAL_420
-        || pi == gdcm::PhotometricInterpretation::YBR_PARTIAL_422
-    );
-
     // Unsupported...
     return data::Image::PixelFormat::UNDEFINED;
 }
@@ -122,35 +113,56 @@ bool NvJpeg2K::Code(gdcm::DataElement const& in, gdcm::DataElement& out)
 
     gdcm::SmartPointer<gdcm::SequenceOfFragments> sq = new gdcm::SequenceOfFragments;
 
-    const unsigned int* dims = this->GetDimensions();
+    const auto* dims = this->GetDimensions();
 
-    const gdcm::ByteValue* bv = in.GetByteValue();
-    const char* input         = bv->GetPointer();
-    std::uint64_t length      = bv->GetLength();
-    std::uint64_t imageLength = length / dims[2];
-    size_t inputLength        = imageLength;
+    const auto* in_byte_value = in.GetByteValue();
+    const auto* in_pointer    = in_byte_value->GetPointer();
+    const auto in_length      = in_byte_value->GetLength();
+    const auto frame_size     = in_length / dims[2];
 
-    for(unsigned int dim = 0 ; dim < dims[2] ; ++dim)
+    // Create the image used as input buffer
+    auto image           = data::Image::New();
+    const auto dump_lock = image->dump_lock();
+
+    // Create the writer
+    auto writer = bitmap::Writer::New();
+    writer->setObject(image);
+
+    // The output buffer is resized by the writer if not big enough
+    std::vector<std::uint8_t> output_buffer(frame_size);
+
+    const auto& sight_type   = gdcmToSightPf(this->GetPixelFormat());
+    const auto& sight_size   = sight::data::Image::Size {dims[0], dims[1], 1};
+    const auto& sight_format = gdcmToSightPi(this->GetPhotometricInterpretation(), this->GetPixelFormat());
+
+    for(std::size_t z = 0, end = dims[2] ; z < end ; ++z)
     {
-        const char* inputData = input + dim * imageLength;
+        // Compute the address of the current frame
+        const char* in_frame = in_pointer + (z * std::size_t(frame_size));
 
-        auto writer = bitmap::Writer::New();
-        auto image  = data::Image::New();
-        std::array<std::size_t, 3> size {dims[0], dims[1], 1};
-        image->resize(
-            size,
-            gdcmToSightPf(this->GetPixelFormat()),
-            gdcmToSightPi(this->GetPhotometricInterpretation(), this->GetPixelFormat())
+        // We change the buffer address of the image to avoid unneeded copy
+        image->setBuffer(
+            // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+            const_cast<char*>(in_frame),
+            false,
+            sight_type,
+            sight_size,
+            sight_format,
+            core::memory::BufferNoAllocPolicy::New()
         );
-        std::copy_n(inputData, inputLength, static_cast<char*>(image->getBufferObject()->getBuffer()));
-        writer->setObject(image);
-        std::stringstream ss;
-        writer->write(ss, bitmap::Backend::NVJPEG2K_J2K);
 
-        auto* byteValue = new char [ss.str().size()];
-        std::copy_n(ss.str().data(), ss.str().size(), byteValue);
+        // Encode the frame
+        const auto output_size = writer->write(
+            output_buffer,
+            bitmap::Backend::NVJPEG2K_J2K,
+            bitmap::Writer::Mode::FAST
+        );
+
+        SIGHT_THROW_IF("Output size is greater than 4GB", output_size > 0xFFFFFFFF);
+
+        // Add the encoded frame to the sequence
         gdcm::Fragment frag;
-        frag.SetByteValue(byteValue, static_cast<std::uint32_t>(ss.str().size()));
+        frag.SetByteValue(reinterpret_cast<char*>(output_buffer.data()), std::uint32_t(output_size));
         sq->AddFragment(frag);
     }
 

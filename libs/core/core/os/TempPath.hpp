@@ -142,8 +142,12 @@ class CORE_CLASS_API TempDir final : public TempPath
 {
 public:
 
-    /// Constructors, destructor
-    CORE_API TempDir();
+    /// Constructor
+    /// @param[in] path Allows to specify a path, that will be deleted when the instance is destroyed.
+    ///                 It is up to the user to ensure that the path is unique and not used elsewhere.
+    CORE_API TempDir(const std::optional<std::filesystem::path>& path = std::nullopt);
+
+    /// Destructor
     CORE_API ~TempDir() noexcept override = default;
 
     /// Convenience operator
@@ -167,13 +171,18 @@ class CORE_CLASS_API TempFile final : public TempPath
 {
 public:
 
-    /// Constructors, destructor
-    /// @{
+    /// Constructor
     /// @param[in] openmode If provided, an ofstream will be opened with the given parameters.
     ///                     This is the safest way to avoid race conditions and possible security problems.
-    CORE_API TempFile(const std::optional<std::ios_base::openmode>& openmode = std::nullopt);
+    /// @param[in] path Allows to specify a path, that will be deleted when the instance is destroyed.
+    ///                 It is up to the user to ensure that the path is unique and not used elsewhere.
+    CORE_API TempFile(
+        const std::optional<std::ios_base::openmode>& openmode = std::nullopt,
+        const std::optional<std::filesystem::path>& path       = std::nullopt
+    );
+
+    /// Destructor
     CORE_API ~TempFile() noexcept override = default;
-    /// @}
 
     /// Conversion operator
     inline operator std::ostream& ();

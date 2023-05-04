@@ -68,7 +68,22 @@ public:
     }
 
     /// Writing
-    inline void write(const data::Image& image, std::ostream& ostream, Writer::Mode mode, Flag flag = Flag::NONE)
+    template<
+        typename O,
+        std::enable_if_t<
+            std::is_base_of_v<std::ostream, O>
+            || std::is_same_v<std::uint8_t*, O>
+            || std::is_same_v<std::uint8_t**, O>
+            || std::is_same_v<std::vector<uint8_t>, O>,
+            bool
+        > = true
+    >
+    inline std::size_t write(
+        const data::Image& image,
+        O& output,
+        Writer::Mode mode,
+        Flag flag = Flag::NONE
+)
     {
         const auto& pixel_type = image.getType();
         SIGHT_THROW_IF(
@@ -218,27 +233,91 @@ public:
 
         CHECK_CUDA(cudaStreamSynchronize(m_stream), cudaSuccess);
 
-        if(m_output_buffer.size() < encoded_size)
+        if constexpr(std::is_base_of_v<std::ostream, O>)
         {
-            m_output_buffer.resize(encoded_size);
+            if(m_output_buffer.size() < encoded_size)
+            {
+                m_output_buffer.resize(encoded_size);
+            }
+
+            // Retrieve the buffer from GPU
+            CHECK_CUDA(
+                nvjpeg2kEncodeRetrieveBitstream(
+                    m_handle,
+                    m_state,
+                    m_output_buffer.data(),
+                    &encoded_size,
+                    m_stream
+                ),
+                NVJPEG2K_STATUS_SUCCESS
+            );
+
+            CHECK_CUDA(cudaStreamSynchronize(m_stream), cudaSuccess);
+
+            // Write to disk...
+            output.write(reinterpret_cast<char*>(m_output_buffer.data()), std::streamsize(encoded_size));
+        }
+        else if constexpr(std::is_same_v<std::uint8_t**, O>)
+        {
+            (*output) = new std::uint8_t[encoded_size];
+
+            // Retrieve the buffer from GPU
+            CHECK_CUDA(
+                nvjpeg2kEncodeRetrieveBitstream(
+                    m_handle,
+                    m_state,
+                    (*output),
+                    &encoded_size,
+                    m_stream
+                ),
+                NVJPEG2K_STATUS_SUCCESS
+            );
+
+            CHECK_CUDA(cudaStreamSynchronize(m_stream), cudaSuccess);
+        }
+        else if constexpr(std::is_same_v<std::uint8_t*, O>)
+        {
+            // Retrieve the buffer from GPU
+            CHECK_CUDA(
+                nvjpeg2kEncodeRetrieveBitstream(
+                    m_handle,
+                    m_state,
+                    output,
+                    &encoded_size,
+                    m_stream
+                ),
+                NVJPEG2K_STATUS_SUCCESS
+            );
+
+            CHECK_CUDA(cudaStreamSynchronize(m_stream), cudaSuccess);
+        }
+        else if constexpr(std::is_same_v<std::vector<std::uint8_t>, O>)
+        {
+            if(output.size() < encoded_size)
+            {
+                output.resize(encoded_size);
+            }
+
+            // Retrieve the buffer from GPU
+            CHECK_CUDA(
+                nvjpeg2kEncodeRetrieveBitstream(
+                    m_handle,
+                    m_state,
+                    output.data(),
+                    &encoded_size,
+                    m_stream
+                ),
+                NVJPEG2K_STATUS_SUCCESS
+            );
+
+            CHECK_CUDA(cudaStreamSynchronize(m_stream), cudaSuccess);
+        }
+        else
+        {
+            SIGHT_THROW("No output stream or buffer provided.");
         }
 
-        // Retrieve the buffer from GPU
-        CHECK_CUDA(
-            nvjpeg2kEncodeRetrieveBitstream(
-                m_handle,
-                m_state,
-                m_output_buffer.data(),
-                &encoded_size,
-                m_stream
-            ),
-            NVJPEG2K_STATUS_SUCCESS
-        );
-
-        CHECK_CUDA(cudaStreamSynchronize(m_stream), cudaSuccess);
-
-        // Write to disk...
-        ostream.write(reinterpret_cast<char*>(m_output_buffer.data()), std::streamsize(encoded_size));
+        return encoded_size;
     }
 
 private:

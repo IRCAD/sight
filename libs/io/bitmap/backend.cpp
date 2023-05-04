@@ -25,6 +25,7 @@
 
 #ifdef SIGHT_ENABLE_NVJPEG
 #include <cuda.h>
+#include <cuda_runtime_api.h>
 #endif
 
 namespace sight::io::bitmap
@@ -61,66 +62,75 @@ data::sequenced_set<std::string> extensions(Backend backend)
 
 //------------------------------------------------------------------------------
 
+#ifdef SIGHT_ENABLE_NVJPEG
+static const bool NVJPEG_AVAILABLE =
+    []
+    {
+        try
+        {
+            int count                    = 0;
+            auto cuDeviceGetCount_result = cuDeviceGetCount(&count);
+
+            // cspell:ignore deinitialized
+            if(cuDeviceGetCount_result == CUDA_ERROR_DEINITIALIZED
+               || cuDeviceGetCount_result == CUDA_ERROR_NOT_INITIALIZED)
+            {
+                // The cuda driver is not yet initialized, we try to initialize it
+                if(const auto cuInit_result = cuInit(0); cuInit_result != CUDA_SUCCESS)
+                {
+                    SIGHT_ERROR("cuInit failed: " << cuInit_result);
+                    return false;
+                }
+
+                // Retry
+                cuDeviceGetCount_result = cuDeviceGetCount(&count);
+            }
+
+            if(cuDeviceGetCount_result != CUDA_SUCCESS)
+            {
+                SIGHT_ERROR("cuDeviceGetCount failed: " << cuDeviceGetCount_result);
+                return false;
+            }
+
+            if(count == 0)
+            {
+                SIGHT_ERROR("No CUDA device available.");
+                return false;
+            }
+
+            return true;
+        }
+        catch(const std::exception& e)
+        {
+            SIGHT_ERROR("Exception occurred while checking for CUDA: " << e.what());
+        }
+        catch(...)
+        {
+            SIGHT_ERROR("Unknown exception occurred while checking for CUDA");
+        }
+
+        return false;
+    }();
+#else
+static const bool NVJPEG_AVAILABLE = false;
+#endif
+
+//------------------------------------------------------------------------------
+
 bool nvJPEG()
 {
-    // This will returns true if SIGHT_ENABLE_NVJPEG CMake option is set, which means CUDA libraries has
-    // been found during configure
-    static const bool available =
-        []
-        {
-#ifdef SIGHT_ENABLE_NVJPEG
-            try
-            {
-                if(const auto result = cuInit(0); result != CUDA_SUCCESS)
-                {
-                    SIGHT_ERROR("cuInit failed: " << result);
-                    return false;
-                }
-
-                int count = 0;
-
-                if(const auto result = cuDeviceGetCount(&count); result != CUDA_SUCCESS)
-                {
-                    SIGHT_ERROR("cuDeviceGetCount failed: " << result);
-                    return false;
-                }
-
-                if(count == 0)
-                {
-                    SIGHT_ERROR("No CUDA device available.");
-                    return false;
-                }
-
-                return true;
-            }
-            catch(const std::exception& e)
-            {
-                SIGHT_ERROR("Exception occurred while checking for CUDA: " << e.what());
-            }
-#endif
-            return false;
-        }();
-
-    return available;
+    return NVJPEG_AVAILABLE;
 }
 
 //------------------------------------------------------------------------------
 
 bool nvJPEG2K()
 {
-    // This will returns true if SIGHT_ENABLE_NVJPEG2K CMake option is set, which means CUDA AND nvJPEG200 libraries has
-    // been found during configure
-    static const bool available =
-        []
-        {
 #ifdef SIGHT_ENABLE_NVJPEG2K
-            return nvJPEG();
+    return nvJPEG();
 #else
-            return false;
+    return false;
 #endif
-        }();
-
-    return available;
 }
 
 //------------------------------------------------------------------------------
@@ -151,5 +161,17 @@ std::pair<std::string, std::string> wildcardFilter(Backend backend)
             SIGHT_THROW("Unsupported backend: " << uint8_t(backend));
     }
 }
+
+#ifdef SIGHT_ENABLE_NVJPEG
+/// Ensure the CUDA context and all associated memory are frees when the application exits.
+/// This allows to proper memory leak detection using tools like valgrind and cuda-memcheck.
+static const struct CudaResetter
+{
+    ~CudaResetter()
+    {
+        cudaDeviceReset();
+    }
+} s_CUDA_RESETTER;
+#endif
 
 } // namespace sight::io::bitmap

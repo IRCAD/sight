@@ -272,11 +272,7 @@ void BufferManager::destroyBufferImpl(BufferManager::BufferPtrType bufferPtr)
     SIGHT_ASSERT("Buffer must be allocated or dumped", (*bufferPtr != nullptr) || !info.loaded);
 
     m_dumpPolicy->destroyRequest(info, bufferPtr);
-
-    if(info.loaded)
-    {
-        info.bufferPolicy->destroy(*bufferPtr);
-    }
+    info.bufferPolicy->destroy(*bufferPtr);
 
     info.clear();
     info.lastAccess.modified();
@@ -475,7 +471,14 @@ bool BufferManager::restoreBuffer(
     allocSize = ((allocSize) != 0U ? allocSize : info.size);
     if(!info.loaded)
     {
-        info.bufferPolicy->allocate(*bufferPtr, allocSize);
+        if(*bufferPtr == nullptr)
+        {
+            info.bufferPolicy->allocate(*bufferPtr, allocSize);
+        }
+        else
+        {
+            info.bufferPolicy->reallocate(*bufferPtr, allocSize);
+        }
 
         char* charBuf  = static_cast<char*>(*bufferPtr);
         SizeType size  = std::min(allocSize, info.size);

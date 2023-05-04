@@ -67,7 +67,7 @@ void Writer::write()
 
 //------------------------------------------------------------------------------
 
-void Writer::write(Backend backend, Mode mode)
+std::size_t Writer::write(Backend backend, Mode mode)
 {
     auto file = getFile();
 
@@ -111,7 +111,7 @@ void Writer::write(Backend backend, Mode mode)
         std::ofstream output;
         output.open(file.string(), std::ios::out | std::ios::binary | std::ios::trunc);
 
-        write(output, backend_to_use, mode);
+        return write(output, backend_to_use, mode);
     }
     catch(...)
     {
@@ -123,9 +123,30 @@ void Writer::write(Backend backend, Mode mode)
 
 //------------------------------------------------------------------------------
 
-void Writer::write(std::ostream& ostream, Backend backend, Mode mode)
+std::size_t Writer::write(std::ostream& ostream, Backend backend, Mode mode)
 {
-    m_pimpl->write(ostream, backend, mode);
+    return m_pimpl->write(ostream, backend, mode);
+}
+
+//------------------------------------------------------------------------------
+
+std::size_t Writer::write(std::uint8_t** buffer, Backend backend, Mode mode)
+{
+    return m_pimpl->write(buffer, backend, mode);
+}
+
+//------------------------------------------------------------------------------
+
+std::size_t Writer::write(std::uint8_t* buffer, Backend backend, Mode mode)
+{
+    return m_pimpl->write(buffer, backend, mode);
+}
+
+//------------------------------------------------------------------------------
+
+std::size_t Writer::write(std::vector<uint8_t>& buffer, Backend backend, Mode mode)
+{
+    return m_pimpl->write(buffer, backend, mode);
 }
 
 } // namespace sight::io::bitmap

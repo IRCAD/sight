@@ -66,13 +66,11 @@ inline static std::filesystem::path generateTempDir(
     const std::string& prefix = std::string()
 )
 {
-    // Protect the static variable and std::tmpnam()
+    // Protect the static variables
     std::unique_lock guard(s_mutex);
 
-    SIGHT_THROW_IF(
-        "'" + root.string() + "' is not an existing directory.",
-        !std::filesystem::exists(root) || !std::filesystem::is_directory(root)
-    );
+    // Create root, if needed
+    std::filesystem::create_directories(root);
 
     // Start with 4 random characters, ut we don't more than 64 characters
     for(std::string random_name = prefix + randomName(4) ; random_name.size() < 64 ; random_name += randomName(2))
@@ -97,11 +95,35 @@ inline static std::filesystem::path generateTempDir(
 
 //------------------------------------------------------------------------------
 
-inline static std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > generateTempFile(
+inline static std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > openTempFile(
+    const std::filesystem::path& path,
     const std::optional<std::ios_base::openmode>& openmode = std::nullopt
 )
 {
-    // Protect the static variable and std::tmpnam()
+    std::shared_ptr<std::ofstream> ofstream = std::make_shared<std::ofstream>();
+    ofstream->open(path.string(), openmode.value_or(std::ios_base::out | std::ios_base::trunc));
+
+    if(ofstream->is_open() && ofstream->good())
+    {
+        return std::make_pair(path, openmode ? ofstream : nullptr);
+    }
+
+    SIGHT_THROW("Failed to create a temporary file in '" + path.string() + "'");
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > generateTempFile(
+    const std::optional<std::ios_base::openmode>& openmode = std::nullopt,
+    const std::optional<std::filesystem::path>& path       = std::nullopt
+)
+{
+    if(path)
+    {
+        return openTempFile(*path, openmode);
+    }
+
+    // Protect the static variables
     std::unique_lock guard(s_mutex);
 
     const std::filesystem::path& root = TempPath::sharedDirectory();
@@ -114,13 +136,7 @@ inline static std::pair<std::filesystem::path, std::shared_ptr<std::ofstream> > 
         {
             try
             {
-                std::shared_ptr<std::ofstream> ofstream = std::make_shared<std::ofstream>();
-                ofstream->open(random_path.string(), openmode.value_or(std::ios_base::out | std::ios_base::trunc));
-
-                if(ofstream->is_open() && ofstream->good())
-                {
-                    return std::make_pair(random_path, openmode ? ofstream : nullptr);
-                }
+                return openTempFile(random_path, openmode);
             }
             catch(...)
             {
@@ -175,13 +191,16 @@ std::filesystem::path TempPath::sharedDirectory(const std::string& subdirectory_
     return generateTempDir(s_root, subdirectory_prefix);
 }
 
-TempDir::TempDir() :
-    TempPath(std::make_pair(generateTempDir(TempPath::sharedDirectory()), nullptr))
+TempDir::TempDir(const std::optional<std::filesystem::path>& path) :
+    TempPath(std::make_pair(path ? *path : generateTempDir(TempPath::sharedDirectory()), nullptr))
 {
 }
 
-TempFile::TempFile(const std::optional<std::ios_base::openmode>& openmode) :
-    TempPath(generateTempFile(openmode))
+TempFile::TempFile(
+    const std::optional<std::ios_base::openmode>& openmode,
+    const std::optional<std::filesystem::path>& path
+) :
+    TempPath(generateTempFile(openmode, path))
 {
 }
 

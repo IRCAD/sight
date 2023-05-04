@@ -48,7 +48,22 @@ public:
     inline ~LibPNGWriter() noexcept = default;
 
     /// Writing
-    inline void write(const data::Image& image, std::ostream& ostream, Writer::Mode mode, Flag = Flag::NONE)
+    template<
+        typename O,
+        std::enable_if_t<
+            std::is_base_of_v<std::ostream, O>
+            || std::is_same_v<std::uint8_t*, O>
+            || std::is_same_v<std::uint8_t**, O>
+            || std::is_same_v<std::vector<uint8_t>, O>,
+            bool
+        > = true
+    >
+    inline std::size_t write(
+        const data::Image& image,
+        O& output,
+        Writer::Mode mode,
+        Flag = Flag::NONE
+)
     {
         const auto& type = image.getType();
         SIGHT_THROW_IF(
@@ -167,8 +182,6 @@ public:
         // Use the row pointers vector
         png_set_rows(keeper.m_png, keeper.m_png_info, &m_rows[0]);
 
-        png_set_write_fn(keeper.m_png, &ostream, writeCallback, 0);
-
         int transform = PNG_TRANSFORM_IDENTITY;
 
         if(pixelFormat == data::Image::PixelFormat::BGR || pixelFormat == data::Image::PixelFormat::BGRA)
@@ -182,7 +195,51 @@ public:
             transform |= PNG_TRANSFORM_SWAP_ENDIAN;
         }
 
-        png_write_png(keeper.m_png, keeper.m_png_info, transform, NULL);
+        if constexpr(std::is_base_of_v<std::ostream, O>)
+        {
+            png_set_write_fn(keeper.m_png, &output, writeCallback, 0);
+            png_write_png(keeper.m_png, keeper.m_png_info, transform, NULL);
+        }
+        else if constexpr(std::is_same_v<std::uint8_t*, O>
+                          || std::is_same_v<std::uint8_t**, O>
+                          || std::is_same_v<std::vector<std::uint8_t>, O>)
+        {
+            std::stringstream ss;
+
+            png_set_write_fn(keeper.m_png, &ss, 0, 0);
+            png_write_png(keeper.m_png, keeper.m_png_info, transform, NULL);
+
+            // Zero copy string conversion, work only with C++20
+            const std::string output_buffer = std::move(ss).str();
+            const auto output_buffer_size   = output_buffer.size();
+
+            if constexpr(std::is_same_v<std::uint8_t**, O>)
+            {
+                (*output) = new std::uint8_t[output_buffer_size];
+                std::memcpy((*output), output_buffer.data(), output_buffer_size);
+            }
+            else if constexpr(std::is_same_v<std::uint8_t*, O>)
+            {
+                std::memcpy(output, output_buffer.data(), output_buffer_size);
+            }
+            else if constexpr(std::is_same_v<std::vector<std::uint8_t>, O>)
+            {
+                if(output.size() < output_buffer_size)
+                {
+                    output.resize(output_buffer_size);
+                }
+
+                std::memcpy(output.data(), output_buffer.data(), output_buffer_size);
+            }
+
+            return output_buffer_size;
+        }
+        else
+        {
+            SIGHT_THROW("No output stream or buffer provided.");
+        }
+
+        return 1;
     }
 
 private:

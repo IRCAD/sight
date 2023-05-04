@@ -49,7 +49,22 @@ public:
     inline ~LibTIFFWriter() noexcept = default;
 
     /// Writing
-    inline void write(const data::Image& image, std::ostream& ostream, Writer::Mode mode, Flag = Flag::NONE)
+    template<
+        typename O,
+        std::enable_if_t<
+            std::is_base_of_v<std::ostream, O>
+            || std::is_same_v<std::uint8_t*, O>
+            || std::is_same_v<std::uint8_t**, O>
+            || std::is_same_v<std::vector<uint8_t>, O>,
+            bool
+        > = true
+    >
+    inline std::size_t write(
+        const data::Image& image,
+        O& output,
+        Writer::Mode mode,
+        Flag = Flag::NONE
+)
     {
         const auto& pixel_format = image.getPixelFormat();
         SIGHT_THROW_IF(
@@ -81,10 +96,21 @@ public:
             }
 
             TIFF* m_tiff {nullptr};
+
+            // For buffer mode
+            std::stringstream m_buffer;
         } keeper;
 
-        // Open the tiff file for writing
-        keeper.m_tiff = tiffStreamOpen(ostream);
+        // Open the stream for writing
+        if constexpr(std::is_base_of_v<std::ostream, O>)
+        {
+            keeper.m_tiff = tiffStreamOpen(output);
+        }
+        else
+        {
+            keeper.m_tiff = tiffStreamOpen(keeper.m_buffer);
+        }
+
         SIGHT_THROW_IF("TIFFOpen() failed.", keeper.m_tiff == nullptr);
 
         // Set the configuration
@@ -191,6 +217,42 @@ public:
                 TIFFWriteScanline(keeper.m_tiff, m_row_buffer.data(), row) < 0
             );
         }
+
+        if constexpr(std::is_same_v<std::uint8_t*, O>
+                     || std::is_same_v<std::uint8_t**, O>
+                     || std::is_same_v<std::vector<std::uint8_t>, O>)
+        {
+            // Zero copy string conversion, work only with C++20
+            const std::string output_buffer = std::move(keeper.m_buffer).str();
+            const auto output_buffer_size   = output_buffer.size();
+
+            if constexpr(std::is_same_v<std::uint8_t**, O>)
+            {
+                (*output) = new std::uint8_t[output_buffer_size];
+                std::memcpy((*output), output_buffer.data(), output_buffer_size);
+            }
+            else if constexpr(std::is_same_v<std::uint8_t*, O>)
+            {
+                std::memcpy(output, output_buffer.data(), output_buffer_size);
+            }
+            else if constexpr(std::is_same_v<std::vector<std::uint8_t>, O>)
+            {
+                if(output.size() < output_buffer_size)
+                {
+                    output.resize(output_buffer_size);
+                }
+
+                std::memcpy(output.data(), output_buffer.data(), output_buffer_size);
+            }
+
+            return output_buffer_size;
+        }
+        else if constexpr(!std::is_base_of_v<std::ostream, O>)
+        {
+            SIGHT_THROW("No output stream or buffer provided.");
+        }
+
+        return 1;
     }
 
 private:

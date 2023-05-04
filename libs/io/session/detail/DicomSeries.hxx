@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -175,7 +175,7 @@ inline static data::DicomSeries::sptr read(
             size == 0
         );
 
-        auto bufferObject = core::memory::BufferObject::New();
+        auto bufferObject = core::memory::BufferObject::New(true);
         core::memory::BufferObject::Lock lockerSource(bufferObject);
         bufferObject->allocate(size);
 

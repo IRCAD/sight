@@ -35,6 +35,8 @@
 #include <iomanip>
 #include <sstream>
 
+// cspell:ignore JPEGLS NEARLOSSLESS
+
 namespace sight::io::dicom
 {
 
@@ -43,6 +45,7 @@ namespace sight::io::dicom
 inline static void writeEnhancedUSVolume(
     const data::ImageSeries& image_series,
     const std::string& filepath,
+    Writer::TransferSyntax transfer_syntax,
     [[maybe_unused]] bool force_cpu
 )
 {
@@ -182,29 +185,95 @@ inline static void writeEnhancedUSVolume(
 
     gdcm_image.SetDataElement(pixeldata);
 
-    // Change data as JPEG2000 lossless
+    std::unique_ptr<codec::NvJpeg2K> nvjpeg2k_codec;
     gdcm::ImageChangeTransferSyntax transferSyntaxChanger;
-    transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEG2000Lossless);
+
+    switch(transfer_syntax)
+    {
+        case Writer::TransferSyntax::RAW:
+            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::ExplicitVRLittleEndian);
+            break;
+
+        case Writer::TransferSyntax::RLE:
+            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::RLELossless);
+            break;
+
+        case Writer::TransferSyntax::JPEG:
+            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEGBaselineProcess1);
+            break;
+
+        case Writer::TransferSyntax::JPEG_LOSSLESS:
+            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEGLosslessProcess14_1);
+            break;
+
+        case Writer::TransferSyntax::JPEG_LS_NEARLOSSLESS:
+            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEGLSNearLossless);
+            break;
+
+        case Writer::TransferSyntax::JPEG_LS_LOSSLESS:
+            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEGLSLossless);
+            break;
+
+        case Writer::TransferSyntax::JPEG2000:
+            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEG2000);
+            break;
+
+        default:
+        {
+            // Default is JPEG2000 lossless
+            transferSyntaxChanger.SetTransferSyntax(gdcm::TransferSyntax::JPEG2000Lossless);
 
 #ifdef SIGHT_ENABLE_NVJPEG2K
-    // The code must be in the same scope as the transferSyntaxChanger
-    codec::NvJpeg2K codec;
+            if(!force_cpu)
+            {
+                SIGHT_THROW_IF(
+                    "nvJPEG2000 is not available, but the support has been compiled in. "
+                    "Check your nvJPEG2000 library installation",
+                    !io::bitmap::nvJPEG2K()
+                );
 
-    if(!force_cpu)
-    {
-        SIGHT_THROW_IF(
-            "nvJPEG2000 is not available, but the support has been compiled in. "
-            "Check your nvJPEG2000 library installation",
-            !io::bitmap::nvJPEG2K()
-        );
-
-        transferSyntaxChanger.SetUserCodec(&codec);
-    }
+                nvjpeg2k_codec = std::make_unique<codec::NvJpeg2K>();
+                transferSyntaxChanger.SetUserCodec(nvjpeg2k_codec.get());
+            }
 #endif
+            break;
+        }
+    }
 
     transferSyntaxChanger.SetInput(gdcm_image);
     transferSyntaxChanger.Change();
-    writer.SetImage(transferSyntaxChanger.GetOutput());
+
+    // This is hackish, but the only way to get the correct Photometric Interpretation without having to deep copying
+    // the whole image. Anyway, this should have been done in gdcm::ImageChangeTransferSyntax.
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-const-cast)
+    auto& changed_gdcm_image = const_cast<gdcm::Image&>(transferSyntaxChanger.GetOutput());
+
+    // Correct the Photometric Interpretation (This avoid a warning when GDCM decodes back the image)
+    if(image_series.getPixelFormat() != data::Image::PixelFormat::GRAY_SCALE)
+    {
+        switch(transfer_syntax)
+        {
+            case Writer::TransferSyntax::JPEG:
+            case Writer::TransferSyntax::JPEG_LS_NEARLOSSLESS:
+                changed_gdcm_image.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::YBR_FULL_422);
+                break;
+
+            case Writer::TransferSyntax::JPEG2000:
+                changed_gdcm_image.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::YBR_ICT);
+                break;
+
+            case Writer::TransferSyntax::JPEG2000_LOSSLESS:
+            case Writer::TransferSyntax::SOP_DEFAULT:
+                changed_gdcm_image.SetPhotometricInterpretation(gdcm::PhotometricInterpretation::YBR_RCT);
+                break;
+
+            default:
+                // Nothing to do
+                break;
+        }
+    }
+
+    writer.SetImage(changed_gdcm_image);
 
     // Finally write the file
     writer.Write();
@@ -255,8 +324,11 @@ public:
     /// The default job. Allows to watch for cancellation and report progress.
     core::jobs::Job::sptr m_job;
 
-    /// the overriden backend
+    /// True to disable GPU codec
     bool m_force_cpu {false};
+
+    /// The overriden transfer syntax
+    TransferSyntax m_transfer_syntax {TransferSyntax::SOP_DEFAULT};
 };
 
 Writer::Writer(io::base::writer::IObjectWriter::Key /*unused*/) :
@@ -343,7 +415,7 @@ void Writer::write()
                 !image_series
             );
 
-            writeEnhancedUSVolume(*image_series, filepath.string(), m_pimpl->m_force_cpu);
+            writeEnhancedUSVolume(*image_series, filepath.string(), m_pimpl->m_transfer_syntax, m_pimpl->m_force_cpu);
         }
         else
         {
@@ -386,6 +458,13 @@ void Writer::setJob(core::jobs::Job::sptr job)
 void Writer::forceCPU(bool force)
 {
     m_pimpl->m_force_cpu = force;
+}
+
+//------------------------------------------------------------------------------
+
+void Writer::setTransferSyntax(Writer::TransferSyntax transferSyntax)
+{
+    m_pimpl->m_transfer_syntax = transferSyntax;
 }
 
 } // namespace sight::io::dicom

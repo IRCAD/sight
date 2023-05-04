@@ -73,7 +73,22 @@ public:
     }
 
     /// Writing
-    inline void write(const data::Image& image, std::ostream& ostream, Writer::Mode mode, Flag = Flag::NONE)
+    template<
+        typename O,
+        std::enable_if_t<
+            std::is_base_of_v<std::ostream, O>
+            || std::is_same_v<std::uint8_t*, O>
+            || std::is_same_v<std::uint8_t**, O>
+            || std::is_same_v<std::vector<uint8_t>, O>,
+            bool
+        > = true
+    >
+    inline std::size_t write(
+        const data::Image& image,
+        O& output,
+        Writer::Mode mode,
+        Flag = Flag::NONE
+)
     {
         //  JCS_EXT_RGBA is not yet fully supported by libjpeg-turbo, at least for writing
         const auto& pixel_format = image.getPixelFormat();
@@ -185,8 +200,35 @@ public:
         // End compression
         jpeg_finish_compress(&m_cinfo);
 
-        // Write to disk...
-        ostream.write(reinterpret_cast<char*>(m_output_buffer), std::streamsize(m_output_buffer_size));
+        // Write to stream or buffer...
+        if constexpr(std::is_base_of_v<std::ostream, O>)
+        {
+            output.write(reinterpret_cast<char*>(m_output_buffer), std::streamsize(m_output_buffer_size));
+        }
+        else if constexpr(std::is_same_v<std::uint8_t**, O>)
+        {
+            (*output) = new std::uint8_t[m_output_buffer_size];
+            std::memcpy(*output, m_output_buffer, m_output_buffer_size);
+        }
+        else if constexpr(std::is_same_v<std::uint8_t*, O>)
+        {
+            std::memcpy(output, m_output_buffer, m_output_buffer_size);
+        }
+        else if constexpr(std::is_same_v<std::vector<std::uint8_t>, O>)
+        {
+            if(output.size() < m_output_buffer_size)
+            {
+                output.resize(m_output_buffer_size);
+            }
+
+            std::memcpy(output.data(), m_output_buffer, m_output_buffer_size);
+        }
+        else
+        {
+            SIGHT_THROW("No output stream or buffer provided.");
+        }
+
+        return m_output_buffer_size;
     }
 
 private:

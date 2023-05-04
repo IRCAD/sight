@@ -95,7 +95,22 @@ public:
     inline ~OpenJPEGWriter() noexcept = default;
 
     /// Writing
-    inline void write(const data::Image& image, std::ostream& ostream, Writer::Mode, Flag flag = Flag::NONE)
+    template<
+        typename O,
+        std::enable_if_t<
+            std::is_base_of_v<std::ostream, O>
+            || std::is_same_v<std::uint8_t*, O>
+            || std::is_same_v<std::uint8_t**, O>
+            || std::is_same_v<std::vector<uint8_t>, O>,
+            bool
+        > = true
+    >
+    inline std::size_t write(
+        const data::Image& image,
+        O& output,
+        Writer::Mode,
+        Flag flag = Flag::NONE
+)
     {
         // Create codec
         /// @warning You cannot reuse the opj_codec, the opj_stream, or the opj_image.
@@ -153,6 +168,9 @@ public:
             opj_codec_t* m_codec {nullptr};
             opj_stream_t* m_stream {nullptr};
             opj_image_t* m_image {nullptr};
+
+            // For buffer mode
+            std::stringstream m_buffer;
         } keeper;
 
         CHECK_OPJ(
@@ -166,11 +184,18 @@ public:
         CHECK_OPJ(opj_set_warning_handler(keeper.m_codec, warningCallback, nullptr));
         CHECK_OPJ(opj_set_warning_handler(keeper.m_codec, errorCallback, nullptr));
 
-        // Create output stream (1MB buffer by default)
-        CHECK_OPJ(keeper.m_stream = opj_stream_create(OPJ_J2K_STREAM_CHUNK_SIZE, OPJ_FALSE));
+        // Create output stream (10 MB buffer by default)
+        CHECK_OPJ(keeper.m_stream = opj_stream_create(OPJ_J2K_STREAM_CHUNK_SIZE * 10, OPJ_FALSE));
 
         // Setup OPJ user stream
-        opj_stream_set_user_data(keeper.m_stream, &ostream, freeCallback);
+        if constexpr(std::is_base_of_v<std::ostream, O>)
+        {
+            opj_stream_set_user_data(keeper.m_stream, &output, freeCallback);
+        }
+        else
+        {
+            opj_stream_set_user_data(keeper.m_stream, &keeper.m_buffer, freeCallback);
+        }
 
         // Setup stream callback
         opj_stream_set_write_function(keeper.m_stream, writeCallback);
@@ -288,6 +313,31 @@ public:
 
         // End compress
         CHECK_OPJ(opj_end_compress(keeper.m_codec, keeper.m_stream));
+
+        if constexpr(std::is_same_v<std::uint8_t*, O>|| std::is_same_v<std::uint8_t**, O>)
+        {
+            // Zero copy string conversion, work only with C++20
+            const std::string output_buffer = std::move(keeper.m_buffer).str();
+            const auto output_buffer_size   = output_buffer.size();
+
+            if constexpr(std::is_same_v<std::uint8_t**, O>)
+            {
+                (*output) = new std::uint8_t[output_buffer_size];
+                std::memcpy((*output), output_buffer.data(), output_buffer_size);
+            }
+            else
+            {
+                std::memcpy(output, output_buffer.data(), output_buffer_size);
+            }
+
+            return output_buffer_size;
+        }
+        else if constexpr(!std::is_base_of_v<std::ostream, O>)
+        {
+            SIGHT_THROW("No output stream or buffer provided.");
+        }
+
+        return 1;
     }
 
 private:
