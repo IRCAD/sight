@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,10 +34,12 @@ namespace sight::io::base::service
 {
 
 // Public signal
-const core::com::Signals::SignalKeyType IWriter::s_PREFIX_SET_SIG = "prefixSet";
+const core::com::Signals::SignalKeyType IWriter::s_PREFIX_SET_SIG      = "prefixSet";
+const core::com::Signals::SignalKeyType IWriter::s_BASE_FOLDER_SET_SIG = "baseFolderSet";
 
 // Public slot
-const core::com::Slots::SlotKeyType IWriter::s_SET_PREFIX = "setPrefix";
+const core::com::Slots::SlotKeyType IWriter::s_SET_PREFIX      = "setPrefix";
+const core::com::Slots::SlotKeyType IWriter::s_SET_BASE_FOLDER = "setBaseFolder";
 
 // Private slot
 static const core::com::Slots::SlotKeyType s_OPEN_LOCATION_DIALOG = "openLocationDialog";
@@ -46,10 +48,12 @@ static const core::com::Slots::SlotKeyType s_OPEN_LOCATION_DIALOG = "openLocatio
 
 IWriter::IWriter() noexcept
 {
-    newSignal<PrefixSetSignalType>(s_PREFIX_SET_SIG);
+    newSignal<VoidSignalType>(s_PREFIX_SET_SIG);
+    newSignal<VoidSignalType>(s_BASE_FOLDER_SET_SIG);
 
     newSlot(s_OPEN_LOCATION_DIALOG, &IWriter::openLocationDialog, this);
     newSlot(s_SET_PREFIX, &IWriter::setPrefix, this);
+    newSlot(s_SET_BASE_FOLDER, &IWriter::setBaseFolder, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -157,7 +161,18 @@ void IWriter::setPrefix(std::string prefix)
     // Record the current prefix
     m_currentPrefix = prefix;
 
-    auto sig = this->signal<PrefixSetSignalType>(s_PREFIX_SET_SIG);
+    auto sig = this->signal<VoidSignalType>(s_PREFIX_SET_SIG);
+    sig->asyncEmit();
+}
+
+//------------------------------------------------------------------------------
+
+void IWriter::setBaseFolder(std::string path)
+{
+    // Record the current prefix
+    m_baseFolder = path;
+
+    auto sig = this->signal<VoidSignalType>(s_BASE_FOLDER_SET_SIG);
     sig->asyncEmit();
 }
 
@@ -245,7 +260,12 @@ void IWriter::updateBaseFolder(std::string& outBaseFolder) const
 {
     const sight::service::IService::ConfigType config = this->getConfiguration();
 
-    const auto baseFolderCfg = config.get<std::string>("baseFolder", "");
+    std::string baseFolderCfg = m_baseFolder;
+
+    if(baseFolderCfg.empty())
+    {
+        baseFolderCfg = config.get<std::string>("baseFolder", m_baseFolder);
+    }
 
     if(!baseFolderCfg.empty())
     {
