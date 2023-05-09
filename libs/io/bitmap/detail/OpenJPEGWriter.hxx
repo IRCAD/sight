@@ -314,7 +314,9 @@ public:
         // End compress
         CHECK_OPJ(opj_end_compress(keeper.m_codec, keeper.m_stream));
 
-        if constexpr(std::is_same_v<std::uint8_t*, O>|| std::is_same_v<std::uint8_t**, O>)
+        if constexpr(std::is_same_v<std::uint8_t*, O>
+                     || std::is_same_v<std::uint8_t**, O>
+                     || std::is_same_v<std::vector<std::uint8_t>, O>)
         {
             // Zero copy string conversion, work only with C++20
             const std::string output_buffer = std::move(keeper.m_buffer).str();
@@ -325,9 +327,18 @@ public:
                 (*output) = new std::uint8_t[output_buffer_size];
                 std::memcpy((*output), output_buffer.data(), output_buffer_size);
             }
-            else
+            else if constexpr(std::is_same_v<std::uint8_t*, O>)
             {
                 std::memcpy(output, output_buffer.data(), output_buffer_size);
+            }
+            else if constexpr(std::is_same_v<std::vector<std::uint8_t>, O>)
+            {
+                if(output.size() < output_buffer_size)
+                {
+                    output.resize(output_buffer_size);
+                }
+
+                std::memcpy(output.data(), output_buffer.data(), output_buffer_size);
             }
 
             return output_buffer_size;
