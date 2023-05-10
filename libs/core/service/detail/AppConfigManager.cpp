@@ -612,7 +612,8 @@ void AppConfigManager::createServices(const core::runtime::config_t& cfgElem)
                 uids.push_back(objectCfg.m_uid);
                 m_deferredServices.insert(srvConfig.m_uid);
 
-                if(!objectCfg.m_optional)
+                // Do not start the service if any non-optional object is not yet present
+                if(!objectCfg.m_optional && !core::tools::fwID::exist(objectCfg.m_uid))
                 {
                     createService = false;
                 }
