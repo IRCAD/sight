@@ -35,11 +35,13 @@ public:
      * used, it checks if the modal window has the good type first. Fails if there is no modal window. @see Tester::take
      * @param tester The current tester
      * @param desc The description of the window
+     * @param childName The objectName of a child the dialog must have. Useful to disambiguate if multiple dialogs might
+     *                  appear in a row
      * @{
      */
     template<typename T>
-    static void take(Tester& tester, const std::string& desc);
-    GUITEST_API static void take(Tester& tester, const std::string& desc);
+    static void take(Tester& tester, const std::string& desc, const std::string& childName             = "");
+    GUITEST_API static void take(Tester& tester, const std::string& desc, const std::string& childName = "");
     /// @}
 
     /**
@@ -48,11 +50,13 @@ public:
      * @see Tester::maybeTake
      * @param tester The current tester
      * @param desc The description of the window
+     * @param childName The objectName of a child the dialog must have. Useful to disambiguate if multiple dialogs might
+     *                  appear in a row
      * @{
      */
     template<typename T>
-    static void maybeTake(Tester& tester, const std::string& desc);
-    GUITEST_API static void maybeTake(Tester& tester, const std::string& desc);
+    static void maybeTake(Tester& tester, const std::string& desc, const std::string& childName             = "");
+    GUITEST_API static void maybeTake(Tester& tester, const std::string& desc, const std::string& childName = "");
     /// @}
 };
 

@@ -34,6 +34,18 @@ class Select
 {
 public:
 
+    enum class Type
+    {
+        FROM_MAIN,
+        FROM_DIALOG,
+        FROM_PARENT,
+        FROM_CURRENT,
+        CURRENT,
+        DIALOG
+    };
+
+    using Data = std::variant<std::string, std::pair<std::string, std::string> >;
+
     /**
      * Implicit constructor from a string. Equivalent to Select::fromMain. @see fromMain
      *
@@ -120,19 +132,21 @@ public:
      */
     GUITEST_API std::string getDescription(const Tester& tester) const;
 
-private:
+    //------------------------------------------------------------------------------
 
-    enum class Type
+    GUITEST_API Type type() const
     {
-        FROM_MAIN,
-        FROM_DIALOG,
-        FROM_PARENT,
-        FROM_CURRENT,
-        CURRENT,
-        DIALOG
-    };
+        return m_type;
+    }
 
-    using Data = std::variant<std::string, std::pair<std::string, std::string> >;
+    //------------------------------------------------------------------------------
+
+    GUITEST_API Data data() const
+    {
+        return m_data;
+    }
+
+private:
 
     Select(Type type, Data data);
 

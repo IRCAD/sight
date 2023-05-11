@@ -118,9 +118,12 @@ void Select::select(Tester& tester) const
             break;
 
         case Type::FROM_DIALOG:
-            Dialog::take(tester, "dialog");
-            tester.yields(std::get<std::string>(m_data), std::get<std::string>(m_data), verifyConditions, m_timeout);
+        {
+            std::string childName = std::get<std::string>(m_data);
+            Dialog::take(tester, "dialog", childName);
+            tester.yields(std::get<std::string>(m_data), childName, verifyConditions, m_timeout);
             break;
+        }
 
         case Type::FROM_PARENT:
         {

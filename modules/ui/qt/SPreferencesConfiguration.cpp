@@ -244,7 +244,8 @@ void SPreferencesConfiguration::updating()
 {
     const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
 
-    QPointer<QDialog> dialog     = new QDialog();
+    QPointer<QDialog> dialog = new QDialog();
+    dialog->setObjectName("SPreferencesConfiguration");
     QPointer<QGridLayout> layout = new QGridLayout();
 
     int index = 0;

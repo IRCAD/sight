@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -18,6 +18,7 @@
  * License along with Sight. If not, see <https://www.gnu.org/licenses/>.
  *
  ***********************************************************************/
+// cspell:ignore modif
 
 #pragma once
 
@@ -25,20 +26,30 @@
 
 #include <QEvent>
 #include <QList>
+#include <qnamespace.h>
 #include <QObject>
 #include <QPoint>
 #include <QString>
 #include <QVector>
 #include <QWidget>
 
+#include <ui/testCore/helper/Select.hpp>
+
+#include <cstdint>
+#include <optional>
+
 /// An enumeration which represents the type of a user interaction
 enum InteractionType
 {
     MOUSE_CLICK,
+    MOUSE_DOUBLE_CLICK,
     MOUSE_DRAG,
+    MOUSE_WHEEL,
     KEYBOARD_CLICK,
     KEYBOARD_SEQUENCE,
-    LIST_WIDGET_CLICK
+    MODEL_VIEW_SELECT,
+    NUMBER_INPUT_MODIFICATION,
+    HELPER_API
 };
 
 /// An enumeration which represents how to find a widget, @see FindStrategy
@@ -46,12 +57,19 @@ enum class FindStrategyType
 {
     ROOT,                // The object to be found is root
     ACTIVE_MODAL_WIDGET, // The object to be found is the active modal widget
-    OBJECT_NAME,         // Find an object using its object name (we assume object names are unique)
+    OBJECT_NAME,         // Find an object using its object name
     GLOBAL_TYPE,         // Find an object using its type from the root
     ACTION,              // Find an object via of its action, requires to find the action
     LOCAL_TYPE,          // Find an object using its type from the parent, requires to find the parent
     NTH_CHILD,           // Find an object using its index in its parent children list, requires to find the parent
     CANT_BE_FOUND        // Error: the object can't be found
+};
+
+enum class ModificationType
+{
+    INCREMENT,
+    DECREMENT,
+    SET
 };
 
 /// A structure which represents a strategy to find a specific widget
@@ -72,9 +90,9 @@ struct MacroInteraction
         Qt::KeyboardModifiers modifiers
     );
 
-    const intptr_t receiverId;
-    const QVector<FindStrategy> howToFindReceiver;
-    const Qt::KeyboardModifiers modifiers;
+    intptr_t receiverId;
+    QVector<FindStrategy> howToFindReceiver;
+    Qt::KeyboardModifiers modifiers;
 };
 
 /// An interaction before the preprocessing (that is, directly caught from Qt)
@@ -87,7 +105,7 @@ struct PreInteraction : public MacroInteraction
         QEvent::Type type
     );
 
-    const QEvent::Type type;
+    QEvent::Type type;
 };
 
 /// An interaction after the preprocessing (ready to be translated into C++)
@@ -100,7 +118,7 @@ struct PostInteraction : public MacroInteraction
         InteractionType type
     );
 
-    const InteractionType type;
+    InteractionType type;
 };
 
 /// A mouse interaction (mouse click, mouse drag...)
@@ -108,9 +126,18 @@ struct InteractionMouse
 {
     InteractionMouse(QPoint from, QPoint to, Qt::MouseButton button);
 
-    const QPoint from;
-    const QPoint to;
-    const Qt::MouseButton button;
+    QPoint from;
+    QPoint to;
+    Qt::MouseButton button;
+};
+
+/// A mouse wheel interaction
+struct InteractionMouseWheel
+{
+    InteractionMouseWheel(QPoint angleDelta, QPoint pos);
+
+    QPoint angleDelta;
+    QPoint pos;
 };
 
 /// A keyboard interaction (key press, key sequence...)
@@ -118,18 +145,26 @@ struct InteractionKeyboard
 {
     InteractionKeyboard(Qt::Key key, QString sequence);
 
-    bool isPrintable();
+    [[nodiscard]] bool isPrintable() const;
 
-    const Qt::Key key;
-    const QString sequence;
+    Qt::Key key;
+    QString sequence;
 };
 
-/// An interaction when clicking on a list widget (it's a special case because it's a model-based widget)
-struct InteractionListWidgetClick
+/// An interaction when selecting an item on a model-based widget
+struct InteractionModelViewSelect
 {
-    InteractionListWidgetClick(QString name);
+    explicit InteractionModelViewSelect(QString name);
 
-    const QString name;
+    QString name;
+};
+
+struct NumberInputModification
+{
+    explicit NumberInputModification(ModificationType type, double number);
+
+    ModificationType modifType;
+    double modifNumber;
 };
 
 /// A mouse interaction before the preprocessing
@@ -144,6 +179,20 @@ struct PreInteractionMouse : public PreInteraction,
         QPoint from,
         QPoint to,
         Qt::MouseButton button
+    );
+};
+
+/// A mouse wheel interaction before the preprocessing
+struct PreInteractionMouseWheel : public PreInteraction,
+                                  public InteractionMouseWheel
+{
+    PreInteractionMouseWheel(
+        intptr_t receiverId,
+        const QVector<FindStrategy>& howToFindReceiver,
+        Qt::KeyboardModifiers modifiers,
+        QEvent::Type type,
+        QPoint angleDelta,
+        QPoint pos
     );
 };
 
@@ -162,15 +211,28 @@ struct PreInteractionKeyboard : public PreInteraction,
 };
 
 /// A list widget click interaction before the preprocessing
-struct PreInteractionListWidgetClick : public PreInteraction,
-                                       public InteractionListWidgetClick
+struct PreInteractionModelViewSelect : public PreInteraction,
+                                       public InteractionModelViewSelect
 {
-    PreInteractionListWidgetClick(
+    PreInteractionModelViewSelect(
         intptr_t receiverId,
         const QVector<FindStrategy>& howToFindReceiver,
         Qt::KeyboardModifiers modifiers,
         QEvent::Type type,
         const QString& name
+    );
+};
+
+struct PreInteractionNumberInputModification : public PreInteraction,
+                                               public NumberInputModification
+{
+    PreInteractionNumberInputModification(
+        intptr_t receiverId,
+        const QVector<FindStrategy>& howToFindReceiver,
+        Qt::KeyboardModifiers modifiers,
+        QEvent::Type type,
+        ModificationType modifType,
+        double modifNumber
     );
 };
 
@@ -189,6 +251,20 @@ struct PostInteractionMouse : public PostInteraction,
     );
 };
 
+/// A mouse wheel interaction after the preprocessing
+struct PostInteractionMouseWheel : public PostInteraction,
+                                   public InteractionMouseWheel
+{
+    PostInteractionMouseWheel(
+        intptr_t receiverId,
+        const QVector<FindStrategy>& howToFindReceiver,
+        Qt::KeyboardModifiers modifiers,
+        InteractionType type,
+        QPoint angleDelta,
+        QPoint pos
+    );
+};
+
 /// A keyboard interaction after the preprocessing
 struct PostInteractionKeyboard : public PostInteraction,
                                  public InteractionKeyboard
@@ -204,16 +280,43 @@ struct PostInteractionKeyboard : public PostInteraction,
 };
 
 /// A list widget click interaction after the preprocessing
-struct PostInteractionListWidgetClick : public PostInteraction,
-                                        public InteractionListWidgetClick
+struct PostInteractionModelViewSelect : public PostInteraction,
+                                        public InteractionModelViewSelect
 {
-    PostInteractionListWidgetClick(
+    PostInteractionModelViewSelect(
         intptr_t receiverId,
         const QVector<FindStrategy>& howToFindReceiver,
         Qt::KeyboardModifiers modifiers,
         InteractionType type,
         const QString& name
     );
+};
+
+struct PostInteractionNumberInputModification : public PostInteraction,
+                                                public NumberInputModification
+{
+    PostInteractionNumberInputModification(
+        intptr_t receiverId,
+        const QVector<FindStrategy>& howToFindReceiver,
+        Qt::KeyboardModifiers modifiers,
+        InteractionType type,
+        ModificationType modifType,
+        double modifNumber
+    );
+};
+
+struct InteractionHelperAPI : public PostInteraction
+{
+    InteractionHelperAPI(
+        intptr_t receiverId,
+        const QVector<FindStrategy>& howToFindReceiver,
+        QString methodName,
+        std::optional<sight::ui::testCore::helper::Select> select,
+        QStringList args = {});
+
+    QString methodName;
+    std::optional<sight::ui::testCore::helper::Select> select;
+    QStringList args;
 };
 
 /// Class which captures interactions to save them as a GuiTester-compatible GUI test C++ source file
@@ -250,7 +353,7 @@ public:
 
 private:
 
-    std::shared_ptr<PreInteraction> createInteraction(QObject* target, QEvent* e);
+    std::unique_ptr<PreInteraction> createInteraction(QObject* target, QEvent* e);
     QVector<FindStrategy> find(QObject* o);
 
     static QObject* findChild(
@@ -266,6 +369,7 @@ private:
         Qt::FindChildOptions options = Qt::FindChildrenRecursively
     );
 
-    std::vector<std::shared_ptr<PreInteraction> > m_interactions;
+    std::vector<std::unique_ptr<PreInteraction> > m_interactions;
     QWidget* m_mainWindow = nullptr;
+    bool m_dragInProgress = false;
 };

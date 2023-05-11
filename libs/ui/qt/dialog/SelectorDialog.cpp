@@ -70,6 +70,7 @@ std::string SelectorDialog::show()
 
     auto* dialog = new QDialog(parent);
     dialog->setWindowTitle(QString::fromStdString(m_title));
+    dialog->setObjectName("SelectorDialog");
 
     auto* selectionList = new QListWidget(dialog);
     selectionList->setObjectName("selectionList");

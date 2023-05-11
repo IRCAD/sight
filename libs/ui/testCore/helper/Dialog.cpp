@@ -26,17 +26,17 @@ namespace sight::ui::testCore::helper
 
 //------------------------------------------------------------------------------
 
-void Dialog::take(Tester& tester, const std::string& desc)
+void Dialog::take(Tester& tester, const std::string& desc, const std::string& childName)
 {
     auto bt = tester.addInBacktrace("take " + desc + " dialog");
-    take<QWidget*>(tester, desc);
+    take<QWidget*>(tester, desc, childName);
 }
 
 //------------------------------------------------------------------------------
 
-void Dialog::maybeTake(Tester& tester, const std::string& desc)
+void Dialog::maybeTake(Tester& tester, const std::string& desc, const std::string& childName)
 {
-    maybeTake<QWidget*>(tester, desc);
+    maybeTake<QWidget*>(tester, desc, childName);
 }
 
 } // namespace sight::ui::testCore::helper

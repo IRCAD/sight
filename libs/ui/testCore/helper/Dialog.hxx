@@ -21,24 +21,40 @@
 
 #pragma once
 
+#include <QObject>
+
 namespace sight::ui::testCore::helper
 {
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-void Dialog::take(Tester& tester, const std::string& desc)
+void Dialog::take(Tester& tester, const std::string& desc, const std::string& childName)
 {
     auto bt = tester.addInBacktrace("take " + desc + " dialog");
-    tester.take<T>(desc, []{return qobject_cast<T>(qApp->activeModalWidget());}, [](T o){return o->isVisible();});
+    tester.take<T>(
+        desc,
+        []{return qobject_cast<T>(qApp->activeModalWidget());},
+        [&childName](T o)
+        {
+            return o->isVisible()
+            && (childName.empty() || o->template findChild<QObject*>(QString::fromStdString(childName)) != nullptr);
+        });
 }
 
 //------------------------------------------------------------------------------
 
 template<typename T>
-void Dialog::maybeTake(Tester& tester, const std::string& desc)
+void Dialog::maybeTake(Tester& tester, const std::string& desc, const std::string& childName)
 {
-    tester.maybeTake<T>(desc, []{return qobject_cast<T>(qApp->activeModalWidget());}, [](T o){return o->isVisible();});
+    tester.maybeTake<T>(
+        desc,
+        []{return qobject_cast<T>(qApp->activeModalWidget());},
+        [&childName](T o)
+        {
+            return o->isVisible()
+            && (childName.empty() || o->template findChild<QObject*>(QString::fromStdString(childName)) != nullptr);
+        });
 }
 
 } // namespace sight::ui::testCore::helper
