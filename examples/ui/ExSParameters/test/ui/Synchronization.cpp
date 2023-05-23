@@ -25,6 +25,8 @@
 
 #include <core/runtime/path.hpp>
 
+#include <QToolButton>
+
 #include <ui/testCore/helper/Button.hpp>
 #include <ui/testCore/helper/CheckBox.hpp>
 #include <ui/testCore/helper/ColorParameter.hpp>
@@ -217,6 +219,19 @@ void Synchronization::test()
                 helper::ComboBox::select(tester, Select::fromParent("parameters2Srv", "nonlin"), "50");
                 helper::ComboBox::valueEquals(tester, Select::current(), "50");
                 helper::Label::exactlyMatch(tester, Select::fromParent("parameters1Srv", "nonlin/valueLabel"), "50");
+            }
+
+            {
+                auto bt = tester.addInBacktrace("Check synchronization button bar enum to button bar enum");
+                helper::Button::push(tester, Select::fromParent("parameters1Srv", "buttonRaw_button1"));
+
+                Select::fromParent("parameters2Srv", "buttonRaw_button1").select(tester);
+                tester.doubt<QToolButton*>(
+                    "buttonRaw_button1 should be checked",
+                    [](QToolButton* obj)
+                {
+                    return obj->isChecked();
+                });
             }
         },
         true

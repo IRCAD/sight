@@ -26,6 +26,10 @@ QPushButton.signal-button {
     icon-size: 48px 48px;
 }
 
+QPushButton.buttonBarTouchFriendly {
+    icon-size: 48px 48px;
+}
+
 QSlider {
     height: 2em;
 }
