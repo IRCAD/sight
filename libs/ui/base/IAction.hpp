@@ -50,6 +50,7 @@ namespace sight::ui::base
  * - \b hide(): make the action invisible.
  * - \b toggleVisibility(): make the action visible if it was invisible or invisible if it was visible
  * - \b setEnabled(bool): sets whether the action can be interacted with.
+ * - \b setDisabled(bool): opposite of setEnabled(bool).
  * - \b enable(): make the action interactive.
  * - \b disable(): make the action not interactive.
  * - \b setIsActive(bool): deprecated, synonym of setChecked().
@@ -162,6 +163,9 @@ public:
 
     /// Slot to enable or disable the action
     static const core::com::Slots::SlotKeyType s_SET_ENABLED_SLOT;
+
+    /// Slot to enable or disable the action
+    static const core::com::Slots::SlotKeyType s_SET_DISABLED_SLOT;
 
     /// Slot to enable the action
     static const core::com::Slots::SlotKeyType s_ENABLE_SLOT;

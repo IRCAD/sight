@@ -42,18 +42,6 @@ namespace sight::module::ui::qt::activity
 
 //------------------------------------------------------------------------------
 
-const core::com::Signals::SignalKeyType s_ACTIVITY_CREATED_SIG = "activityCreated";
-const core::com::Signals::SignalKeyType s_DATA_REQUIRED_SIG    = "dataRequired";
-const core::com::Signals::SignalKeyType s_HAS_PREVIOUS_SIG     = "hasPrevious";
-const core::com::Signals::SignalKeyType s_HAS_NEXT_SIG         = "hasNext";
-const core::com::Signals::SignalKeyType s_NEXT_ENABLED_SIG     = "nextEnabled";
-
-const core::com::Slots::SlotKeyType s_GO_TO_SLOT      = "goTo";
-const core::com::Slots::SlotKeyType s_CHECK_NEXT_SLOT = "checkNext";
-const core::com::Slots::SlotKeyType s_NEXT_SLOT       = "next";
-const core::com::Slots::SlotKeyType s_PREVIOUS_SLOT   = "previous";
-const core::com::Slots::SlotKeyType s_SEND_INFO_SLOT  = "sendInfo";
-
 static const std::string s_CLEAR_ACTIVITIES_CONFIG = "clearActivities";
 static const std::string s_THEME_CONFIG            = "theme";
 static const std::string s_CLEAR_CONFIG            = "clear";
@@ -65,24 +53,15 @@ static const std::string s_ELEVATION_CONFIG        = "elevation";
 
 //------------------------------------------------------------------------------
 
-SSequencer::SSequencer() noexcept :
-    m_sigActivityCreated(newSignal<ActivityCreatedSignalType>(s_ACTIVITY_CREATED_SIG)),
-    m_sigDataRequired(newSignal<DataRequiredSignalType>(s_DATA_REQUIRED_SIG)),
-    m_sigHasPrevious(newSignal<BoolSignalType>(s_HAS_PREVIOUS_SIG)),
-    m_sigHasNext(newSignal<BoolSignalType>(s_HAS_NEXT_SIG)),
-    m_sigNextEnabled(newSignal<BoolSignalType>(s_NEXT_ENABLED_SIG))
+SSequencer::SSequencer() noexcept
 {
-    newSlot(s_GO_TO_SLOT, &SSequencer::goTo, this);
-    newSlot(s_CHECK_NEXT_SLOT, &SSequencer::checkNext, this);
-    newSlot(s_NEXT_SLOT, &SSequencer::next, this);
-    newSlot(s_PREVIOUS_SLOT, &SSequencer::previous, this);
-    newSlot(s_SEND_INFO_SLOT, &SSequencer::sendInfo, this);
+    newSlot(Slots::GO_TO, &SSequencer::goTo, this);
+    newSlot(Slots::CHECK_NEXT, &SSequencer::checkNext, this);
+    newSlot(Slots::VALIDATE_NEXT, &SSequencer::validateNext, this);
+    newSlot(Slots::NEXT, &SSequencer::next, this);
+    newSlot(Slots::PREVIOUS, &SSequencer::previous, this);
+    newSlot(Slots::SEND_INFO, &SSequencer::sendInfo, this);
 }
-
-//------------------------------------------------------------------------------
-
-SSequencer::~SSequencer() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -321,7 +300,7 @@ void SSequencer::goTo(int index)
     std::tie(ok, errorMsg) = sight::module::ui::qt::activity::SSequencer::validateActivity(activity);
     if(ok)
     {
-        m_sigActivityCreated->asyncEmit(activity);
+        m_activity_created->asyncEmit(activity);
 
         m_currentActivity = index;
         QObject* object = m_widget->rootObject();
@@ -331,7 +310,7 @@ void SSequencer::goTo(int index)
     else
     {
         sight::ui::base::dialog::MessageDialog::show("Activity not valid", errorMsg);
-        m_sigDataRequired->asyncEmit(activity);
+        m_data_required->asyncEmit(activity);
     }
 }
 
@@ -346,27 +325,123 @@ void SSequencer::checkNext()
     // new data can be added in the current activity during the process.
     if(m_currentActivity >= 0)
     {
-        this->storeActivityData(*activity_set, std::size_t(m_currentActivity));
+        storeActivityData(*activity_set, std::size_t(m_currentActivity));
     }
 
-    const auto nextIdx = static_cast<std::size_t>(m_currentActivity) + 1;
-    if(nextIdx < m_activityIds.size())
+    // Check if the next activity is valid (creates the activity if needed)
+    // NOLINTNEXTLINE(bugprone-misplaced-widening-cast)
+    const auto next_index = std::size_t(m_currentActivity + 1);
+    if(next_index < m_activityIds.size())
     {
-        data::Activity::sptr nextActivity = this->getActivity(*activity_set, nextIdx, slot(IService::slots::s_UPDATE));
+        const auto& next_activity = this->getActivity(*activity_set, next_index, slot(IService::slots::s_UPDATE));
+        const auto& [ok, error] = SSequencer::validateActivity(next_activity);
 
-        bool ok = true;
-        std::string errorMsg;
-
-        std::tie(ok, errorMsg) = sight::module::ui::qt::activity::SSequencer::validateActivity(nextActivity);
         if(ok)
         {
-            this->enableActivity(m_currentActivity + 1);
-            m_sigNextEnabled->asyncEmit(true);
+            enableActivity(int(next_index));
         }
         else
         {
-            m_sigNextEnabled->asyncEmit(false);
-            SIGHT_DEBUG(errorMsg);
+            disableActivity(int(next_index));
+            SIGHT_DEBUG(error);
+        }
+
+        m_next_enabled->asyncEmit(ok);
+
+        // Refresh next activities validity
+        std::size_t last_valid = next_index;
+
+        if(ok)
+        {
+            // Find the last valid activity
+            while(++last_valid < activity_set->size())
+            {
+                const auto& activity = activity_set->at(last_valid);
+                const auto& [next_ok, next_error] = SSequencer::validateActivity(activity);
+
+                if(next_ok)
+                {
+                    enableActivity(int(last_valid));
+                }
+                else
+                {
+                    disableActivity(int(last_valid));
+                    SIGHT_DEBUG(next_error);
+
+                    break;
+                }
+            }
+        }
+
+        // Disable all next activities
+        while(++last_valid < activity_set->size())
+        {
+            disableActivity(int(last_valid));
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SSequencer::validateNext()
+{
+    auto activity_set = m_activity_set.lock();
+    SIGHT_ASSERT("Missing '" << s_ACTIVITY_SET_INOUT << "' activity_set", activity_set);
+
+    // Store current activity data before checking the next one,
+    // new data can be added in the current activity during the process.
+    if(m_currentActivity >= 0)
+    {
+        storeActivityData(*activity_set, std::size_t(m_currentActivity));
+    }
+
+    // Check if the next activity is valid (creates the activity if needed)
+    // NOLINTNEXTLINE(bugprone-misplaced-widening-cast)
+    const auto next_index = std::size_t(m_currentActivity + 1);
+    if(next_index < m_activityIds.size())
+    {
+        const auto& next_activity = this->getActivity(*activity_set, next_index, slot(IService::slots::s_UPDATE));
+        const auto& [ok, error] = sight::module::ui::qt::activity::SSequencer::validateActivity(next_activity);
+
+        if(ok)
+        {
+            m_next_valid->asyncEmit();
+        }
+        else
+        {
+            disableActivity(int(next_index));
+            SIGHT_DEBUG(error);
+
+            m_next_invalid->asyncEmit();
+        }
+
+        m_next_validated->asyncEmit(ok);
+
+        // Refresh next activities validity
+        std::size_t last_valid = next_index;
+
+        if(ok)
+        {
+            // Find the last valid activity
+            while(++last_valid < activity_set->size())
+            {
+                const auto& activity = activity_set->at(last_valid);
+                const auto& [next_ok, next_error] = SSequencer::validateActivity(activity);
+
+                if(!next_ok)
+                {
+                    disableActivity(int(last_valid));
+                    SIGHT_DEBUG(next_error);
+
+                    break;
+                }
+            }
+        }
+
+        // Disable all next activities
+        while(++last_valid < activity_set->size())
+        {
+            disableActivity(int(last_valid));
         }
     }
 }
@@ -375,7 +450,12 @@ void SSequencer::checkNext()
 
 void SSequencer::next()
 {
-    this->goTo(m_currentActivity + 1);
+    const auto next_index = m_currentActivity + 1;
+
+    // Reset requirements created by next activities
+    cleanRequirements(std::size_t(next_index));
+
+    goTo(next_index);
 }
 
 //------------------------------------------------------------------------------
@@ -390,10 +470,10 @@ void SSequencer::previous()
 void SSequencer::sendInfo() const
 {
     const bool previousEnabled = (m_currentActivity > 0);
-    m_sigHasPrevious->asyncEmit(previousEnabled);
+    m_has_previous->asyncEmit(previousEnabled);
 
     const bool nextEnabled = (m_currentActivity < static_cast<int>(m_activityIds.size()) - 1);
-    m_sigHasNext->asyncEmit(nextEnabled);
+    m_has_next->asyncEmit(nextEnabled);
 }
 
 //------------------------------------------------------------------------------

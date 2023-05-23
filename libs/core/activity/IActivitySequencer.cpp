@@ -23,8 +23,9 @@
 #include "activity/IActivitySequencer.hpp"
 
 #include "activity/builder/data.hpp"
+#include "activity/IBuilder.hpp"
 
-#include <activity/IBuilder.hpp>
+#include <data/mt/locked_ptr.hpp>
 
 namespace sight::activity
 {
@@ -180,6 +181,43 @@ void IActivitySequencer::removeLastActivities(data::ActivitySet& activity_set, s
         // clear the requirements and parse the remaining activities to regereate the requirements
         m_requirements.clear();
         this->parseActivities(activity_set);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void IActivitySequencer::cleanRequirements(std::size_t index)
+{
+    // For all registered activities at index and after
+    for(auto i = index, end = m_activityIds.size() ; i < end ; ++i)
+    {
+        // Get the information about the activity
+        const auto& id   = m_activityIds[i];
+        const auto& info = extension::Activity::getDefault()->getInfo(id);
+
+        // For all registered requirements of the current activity
+        for(const auto& requirement : info.requirements)
+        {
+            // Only reset the requirements that are resettable
+            if(requirement.reset && m_requirements.contains(requirement.name))
+            {
+                // Get the data object and lock it
+                const auto& object = m_requirements[requirement.name];
+                data::mt::locked_ptr locked_object(object);
+
+                // Reset the data object
+                if(requirement.create || (requirement.minOccurs == 0 && requirement.maxOccurs == 0))
+                {
+                    const auto& clean_object = detail::data::create(requirement.type, requirement.objectConfig);
+                    object->shallowCopy(clean_object);
+                }
+                else if(requirement.minOccurs == 0)
+                {
+                    const auto& composite = data::Composite::New();
+                    object->shallowCopy(composite);
+                }
+            }
+        }
     }
 }
 

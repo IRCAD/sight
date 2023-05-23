@@ -76,6 +76,9 @@ public:
     DATA_API std::string getSOPInstanceUID() const noexcept;
     DATA_API void setSOPInstanceUID(const std::string& sopInstanceUID);
 
+    DATA_API std::string getSOPClassUID() const noexcept;
+    DATA_API void setSOPClassUID(const std::string& sopClassUID);
+
     DATA_API std::string getSpecificCharacterSet() const noexcept;
     DATA_API void setSpecificCharacterSet(const std::string& specificCharacterSet);
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,8 @@
 
 #include "ui/qt/Application.hpp"
 
+#include <core/runtime/ExitException.hpp>
+
 #include <ui/base/dialog/IMessageDialog.hpp>
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/registry/macros.hpp>
@@ -35,26 +37,30 @@ namespace sight::ui::qt
 
 //-----------------------------------------------------------------------------
 
-void Application::exit(int returncode)
+void Application::exit(int returnCode, bool async)
 {
-    if(m_confirm)
-    {
-        ui::base::dialog::MessageDialog dlg;
-        dlg.setTitle("Confirm exit");
-        dlg.setMessage("Do you really want to exit?");
-        dlg.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
-        dlg.addButton(ui::base::dialog::IMessageDialog::YES_NO);
-
-        ui::base::dialog::IMessageDialog::Buttons res = dlg.show();
-
-        if(res == ui::base::dialog::IMessageDialog::YES)
+    const auto& confirm =
+        []
         {
-            QCoreApplication::exit(returncode);
-        }
-    }
-    else
+            ui::base::dialog::MessageDialog dlg;
+            dlg.setTitle("Confirm exit");
+            dlg.setMessage("Do you really want to exit?");
+            dlg.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
+            dlg.addButton(ui::base::dialog::IMessageDialog::YES_NO);
+
+            return dlg.show() == ui::base::dialog::IMessageDialog::YES;
+        };
+
+    if(!m_confirm || confirm())
     {
-        QCoreApplication::exit(returncode);
+        if(async)
+        {
+            QCoreApplication::exit(returnCode);
+        }
+        else
+        {
+            SIGHT_THROW_EXCEPTION(core::runtime::ExitException(returnCode));
+        }
     }
 }
 

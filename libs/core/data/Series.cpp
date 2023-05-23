@@ -1045,18 +1045,18 @@ bool Series::sort(const std::vector<std::size_t>& sorted)
 
 dicom::sop::Keyword Series::getSOPKeyword() const noexcept
 {
-    if(const auto& sop_class_uid = m_pimpl->getValue<gdcm::Keywords::SOPClassUID>(); sop_class_uid)
+    if(const auto& sop_class_uid = getSOPClassUID(); !sop_class_uid.empty())
     {
         try
         {
-            const auto& sop_class = dicom::sop::get(*sop_class_uid);
+            const auto& sop_class = dicom::sop::get(sop_class_uid);
             return sop_class.m_keyword;
         }
         catch(...)
         {
-            if(sop_class_uid)
+            if(!sop_class_uid.empty())
             {
-                SIGHT_ERROR("Unable to find SOP class name for SOP class UID '" << *sop_class_uid << "'.");
+                SIGHT_ERROR("Unable to find SOP class name for SOP class UID '" << sop_class_uid << "'.");
             }
             else
             {
@@ -1103,6 +1103,20 @@ std::string Series::getSOPInstanceUID() const noexcept
 void Series::setSOPInstanceUID(const std::string& sopInstanceUID)
 {
     m_pimpl->setValue<gdcm::Keywords::SOPInstanceUID>(sopInstanceUID);
+}
+
+//------------------------------------------------------------------------------
+
+std::string Series::getSOPClassUID() const noexcept
+{
+    return m_pimpl->getStringValue<gdcm::Keywords::SOPClassUID>();
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setSOPClassUID(const std::string& sopClassUID)
+{
+    m_pimpl->setValue<gdcm::Keywords::SOPClassUID>(sopClassUID);
 }
 
 //------------------------------------------------------------------------------
@@ -1844,9 +1858,9 @@ Series::DicomType Series::getDicomType() const noexcept
     }
 
     // Then try with the SOPClassUID
-    if(const auto& sop_class_uid = m_pimpl->getValue<gdcm::Keywords::SOPClassUID>(); sop_class_uid)
+    if(const auto& sop_class_uid = getSOPClassUID(); !sop_class_uid.empty())
     {
-        if(const DicomType result = getDicomType(*sop_class_uid); result != DicomType::UNKNOWN)
+        if(const DicomType result = getDicomType(sop_class_uid); result != DicomType::UNKNOWN)
         {
             return result;
         }

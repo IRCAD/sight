@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -67,8 +67,8 @@ public:
      * @{
      * @brief Get/Set value of the coefficient in the given position (matrix[l][c])
      */
-    [[nodiscard]] Matrix4::value_type& operator()(std::size_t l, std::size_t c) noexcept;
-    [[nodiscard]] const Matrix4::value_type& operator()(std::size_t l, std::size_t c) const noexcept;
+    [[nodiscard]] constexpr Matrix4::value_type& operator()(std::size_t l, std::size_t c) noexcept;
+    [[nodiscard]] constexpr const Matrix4::value_type& operator()(std::size_t l, std::size_t c) const noexcept;
     /// @}
 
     /// maximum size of the matrix (MATRIX_SIZE x MATRIX_SIZE)
@@ -104,31 +104,39 @@ public:
         const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
     ) override;
 
+    [[nodiscard]] static constexpr container_type identity() noexcept;
+
 protected:
 
-    static constexpr container_type s_IDENTITY = {1., 0., 0., 0.,
-                                                  0., 1., 0., 0.,
-                                                  0., 0., 1., 0.,
-                                                  0., 0., 0., 1.
+    static constexpr container_type s_IDENTITY = {
+        1., 0., 0., 0.,
+        0., 1., 0., 0.,
+        0., 0., 1., 0.,
+        0., 0., 0., 1.
     };
 };
 
 //------------------------------------------------------------------------------
 
-inline Matrix4::value_type& Matrix4::operator()(std::size_t l, std::size_t c) noexcept
+constexpr Matrix4::value_type& Matrix4::operator()(std::size_t l, std::size_t c) noexcept
 {
-    std::size_t pos = l * MATRIX_SIZE + c;
+    const std::size_t pos = l * MATRIX_SIZE + c;
     return this->at(pos);
 }
 
 //------------------------------------------------------------------------------
 
-inline const Matrix4::value_type& Matrix4::operator()(std::size_t l, std::size_t c) const noexcept
+constexpr const Matrix4::value_type& Matrix4::operator()(std::size_t l, std::size_t c) const noexcept
 {
-    std::size_t pos = l * MATRIX_SIZE + c;
+    const std::size_t pos = l * MATRIX_SIZE + c;
     return this->at(pos);
 }
 
 //-----------------------------------------------------------------------------
+
+constexpr Matrix4::container_type Matrix4::identity() noexcept
+{
+    return Matrix4::s_IDENTITY;
+}
 
 } // namespace sight::data

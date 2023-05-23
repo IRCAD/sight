@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2023 IRCAD France
- * Copyright (C) 2019-2020 IHU Strasbourg
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,30 +21,35 @@
 
 #pragma once
 
-#include "ui/qml/config.hpp"
+#include "core/config.hpp"
+#include "core/Exception.hpp"
 
-#include <QGuiApplication>
-
-namespace sight::ui::qml
+namespace sight::core::runtime
 {
 
-/**
- * @brief   Defines the Qml application.
- */
-class UI_QML_CLASS_API App : public QGuiApplication
+/// Exception thrown when the application is exiting
+class CORE_CLASS_API ExitException : public core::Exception
 {
-Q_OBJECT
-
 public:
 
-    UI_QML_API App(int& argc, char** argv);
+    inline explicit ExitException(int exit_code) noexcept :
+        core::Exception(std::to_string(exit_code)),
+        m_exit_code(exit_code)
+    {
+    }
 
-    UI_QML_API bool notify(QObject* receiver, QEvent* e) override;
+    ~ExitException() override = default;
 
-public Q_SLOTS:
+    //------------------------------------------------------------------------------
 
-    void aboutToQuit();
-    static void onExit();
+    constexpr int exitCode() const noexcept
+    {
+        return m_exit_code;
+    }
+
+private:
+
+    int m_exit_code {0};
 };
 
-} // namespace sight::ui::qml
+} // namespace sight::core::runtime

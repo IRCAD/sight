@@ -40,6 +40,8 @@ public:
 
     UI_QT_QT_API App(int& argc, char** argv, bool guiEnabled);
 
+    UI_QT_QT_API bool notify(QObject* receiver, QEvent* e) override;
+
 public Q_SLOTS:
 
     void aboutToQuit();

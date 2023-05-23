@@ -252,7 +252,7 @@ Preferences::Preferences()
                         {
                             SIGHT_WARN("User canceled. Exiting.");
                             sight::ui::base::BusyCursor cursor;
-                            sight::ui::base::Application::New()->exit(0);
+                            sight::ui::base::Application::New()->exit(0, false);
                         }
                         else
                         {
@@ -349,7 +349,7 @@ Preferences::Preferences()
                     {
                         SIGHT_WARN("The provided password is wrong. Exiting.");
                         sight::ui::base::BusyCursor cursor;
-                        sight::ui::base::Application::New()->exit(0);
+                        sight::ui::base::Application::New()->exit(0, false);
                     }
                     else
                     {

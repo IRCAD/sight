@@ -105,17 +105,38 @@ struct ACTIVITY_CLASS_API ActivityRequirement
 
     typedef std::vector<ActivityRequirementKey> KeyType;
 
-    std::string name;          /// parameter name
-    std::string type;          /// parameter type (ie. data::ImageSeries)
-    std::string container;     /// data container if maxOccurs > 1 ("vector" or "composite", default: "composite")
-    std::string description;   /// parameter description
-    std::string validator;     /// Implementation of data validator
-    unsigned int minOccurs {}; /// minimum number of data required
-    unsigned int maxOccurs {}; /// maximum number of data required
-    bool create {};            /// True if the data must be created if it is not present (only if minOccurs = 0 and
-                               /// maxOccurs = 1)
-    KeyType keys;              /// Parameter key if the container == "composite"
-    ConfigType objectConfig;   /// Child configuration, used for instance when invoking object parsers
+    /// parameter name
+    std::string name;
+
+    /// parameter type (ie. data::ImageSeries)
+    std::string type;
+
+    /// data container if maxOccurs > 1 ("vector" or "composite", default: "composite")
+    std::string container;
+
+    /// parameter description
+    std::string description;
+
+    /// Implementation of data validator
+    std::string validator;
+
+    /// minimum number of data required
+    unsigned int minOccurs {};
+
+    /// maximum number of data required
+    unsigned int maxOccurs {};
+
+    /// True if the data must be created if it is not present (only if minOccurs = 0 and maxOccurs = 1)
+    bool create {};
+
+    /// True if data must be reset before activity launch (only if the data has been created by the activity)
+    bool reset {};
+
+    /// Parameter key if the container == "composite"
+    KeyType keys;
+
+    /// Child configuration, used for instance when invoking object parsers
+    ConfigType objectConfig;
 };
 
 /**
@@ -137,6 +158,9 @@ struct ACTIVITY_CLASS_API ActivityRequirement
  *     - \b container (optional, default value = composite) : container type (vector or composite) to store required
  *       parameters
  *     - \b create (optional) : true if the data must be created if it is not present (only available if minOccurs = 0
+ *       and maxOccurs = 1)
+ *     - \b reset (optional) : true if the data must be reset if the activity is reloaded (only available if
+ *                             create = true or minOccurs = 0)
  *       and maxOccurs = 1)
  *     - \b desc (optional) : description of the requirement
  *     - \b validator (optional) : validate the current data

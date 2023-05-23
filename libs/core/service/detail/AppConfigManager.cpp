@@ -24,16 +24,17 @@
 
 #include "service/detail/AppConfigManager.hpp"
 
+#include "service/detail/Service.hpp"
+#include "service/extension/Config.hpp"
+#include "service/extension/Factory.hpp"
 #include "service/helper/Config.hpp"
 #include "service/op/Get.hpp"
-#include <core/runtime/runtime.hpp>
-#include <core/com/Proxy.hpp>
-#include <service/extension/Config.hpp>
-#include <service/extension/Factory.hpp>
-#include <service/registry.hpp>
-#include <service/detail/Service.hpp>
+#include "service/registry.hpp"
 
+#include <core/com/Proxy.hpp>
 #include <core/com/Slots.hxx>
+#include <core/runtime/ExitException.hpp>
+#include <core/runtime/runtime.hpp>
 
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
@@ -86,10 +87,20 @@ void AppConfigManager::launch()
 {
     FW_PROFILE("launch");
 
-    this->startModule();
-    this->create();
-    this->start();
-    this->update();
+    try
+    {
+        this->startModule();
+        this->create();
+        this->start();
+        this->update();
+    }
+    catch(const core::runtime::ExitException& e)
+    {
+        SIGHT_DEBUG("Exit exception caught. Exit code:" << e.what());
+
+        // To ensure proper destruction of the manager
+        m_state = STATE_STARTED;
+    }
 }
 
 // ------------------------------------------------------------------------

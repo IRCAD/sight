@@ -41,6 +41,7 @@ const core::com::Slots::SlotKeyType IAction::s_SHOW_SLOT              = "show";
 const core::com::Slots::SlotKeyType IAction::s_HIDE_SLOT              = "hide";
 const core::com::Slots::SlotKeyType IAction::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
 const core::com::Slots::SlotKeyType IAction::s_SET_ENABLED_SLOT       = "setEnabled";
+const core::com::Slots::SlotKeyType IAction::s_SET_DISABLED_SLOT      = "setDisabled";
 const core::com::Slots::SlotKeyType IAction::s_ENABLE_SLOT            = "enable";
 const core::com::Slots::SlotKeyType IAction::s_DISABLE_SLOT           = "disable";
 
@@ -67,6 +68,7 @@ IAction::IAction()
     newSlot(s_UNCHECK_SLOT, [this](){this->setChecked(false);});
 
     newSlot(s_SET_ENABLED_SLOT, &IAction::setEnabled, this);
+    newSlot(s_SET_DISABLED_SLOT, [this](bool disabled){this->setEnabled(!disabled);});
     newSlot(s_ENABLE_SLOT, [this](){this->setEnabled(true);});
     newSlot(s_DISABLE_SLOT, [this](){this->setEnabled(false);});
 
