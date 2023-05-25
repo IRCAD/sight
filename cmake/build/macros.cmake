@@ -132,8 +132,12 @@ macro(init_project PRJ_NAME PRJ_TYPE)
     set(${SIGHT_TARGET}_HEADERS)
     set(${SIGHT_TARGET}_SOURCES)
 
-    file(GLOB_RECURSE HEADERS "${PRJ_SOURCE_DIR}/*.hpp" "${PRJ_SOURCE_DIR}/*.h" "${PRJ_SOURCE_DIR}/*.hxx")
-    file(GLOB_RECURSE SOURCES "${PRJ_SOURCE_DIR}/*.cpp" "${PRJ_SOURCE_DIR}/*.c" "${PRJ_SOURCE_DIR}/*.cxx")
+    file(GLOB_RECURSE HEADERS "${PRJ_SOURCE_DIR}/*.hpp" "${PRJ_SOURCE_DIR}/*.h" "${PRJ_SOURCE_DIR}/*.hxx"
+         "${PRJ_SOURCE_DIR}/*.cuh"
+    )
+    file(GLOB_RECURSE SOURCES "${PRJ_SOURCE_DIR}/*.cpp" "${PRJ_SOURCE_DIR}/*.c" "${PRJ_SOURCE_DIR}/*.cxx"
+         "${PRJ_SOURCE_DIR}/*.cu"
+    )
 
     if(NOT "${PRJ_TYPE}" STREQUAL "TEST" AND NOT "${PRJ_TYPE}" STREQUAL "GUI_TEST")
         list(FILTER SOURCES EXCLUDE REGEX "/test/api")
@@ -647,6 +651,7 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
                 PATTERN "*.h"
                 PATTERN "*.hpp"
                 PATTERN "*.hxx"
+                PATTERN "*.cuh" # CUDA
                 PATTERN "test/*" EXCLUDE
             )
         endif()

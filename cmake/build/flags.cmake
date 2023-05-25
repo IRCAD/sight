@@ -51,15 +51,19 @@ add_compile_definitions(SIGHT_SOURCE_DIR="${CMAKE_SOURCE_DIR}")
 # On MSVC, we also use absolute path for __FILE__ macro (/FC), otherwise paths in log are not stripped.
 add_compile_options(
     "$<$<CXX_COMPILER_ID:GNU,Clang>:-march=${SIGHT_ARCH};-mtune=generic;-mfpmath=sse>"
-    "$<$<AND:$<CXX_COMPILER_ID:Clang>,$<CONFIG:Debug>>:-fno-limit-debug-info>" # Needed to debug STL classes
     "$<$<CXX_COMPILER_ID:MSVC>:/favor:blend;/fp:precise;/Qfast_transcendentals;/arch:${SIGHT_ARCH};/bigobj;/FC>"
     "$<$<CONFIG:Debug>:-DDEBUG;-D_DEBUG>"
 )
 
+# Needed to debug STL classes with Clang
+add_compile_options("$<$<AND:$<COMPILE_LANG_AND_ID:C,Clang>,$<CONFIG:Debug>>:-fno-limit-debug-info>")
+add_compile_options("$<$<AND:$<COMPILE_LANG_AND_ID:CXX,Clang>,$<CONFIG:Debug>>:-fno-limit-debug-info>")
+
 find_package(OpenMP QUIET REQUIRED)
 
 if(OPENMP_CXX_FOUND)
-    add_compile_options(${OpenMP_CXX_FLAGS})
+    add_compile_options("$<$<COMPILE_LANGUAGE:C>:${OpenMP_CXX_FLAGS}>")
+    add_compile_options("$<$<COMPILE_LANGUAGE:CXX>:${OpenMP_CXX_FLAGS}>")
 endif()
 
 add_compile_definitions("$<$<CXX_COMPILER_ID:MSVC>:_ENABLE_EXTENDED_ALIGNED_STORAGE>")
@@ -210,9 +214,10 @@ endif()
 
 # Color for ninja and Clang on Linux and OSX
 if(CMAKE_GENERATOR STREQUAL "Ninja")
-    add_compile_options(
-        "$<$<CXX_COMPILER_ID:Clang>:-fcolor-diagnostics>" "$<$<CXX_COMPILER_ID:GNU>:-fdiagnostics-color>"
-    )
+    add_compile_options("$<$<COMPILE_LANG_AND_ID:C,Clang>:-fcolor-diagnostics>")
+    add_compile_options("$<$<COMPILE_LANG_AND_ID:CXX,Clang>:-fcolor-diagnostics>")
+    add_compile_options("$<$<COMPILE_LANG_AND_ID:C,GNU>:-fdiagnostics-color>")
+    add_compile_options("$<$<COMPILE_LANG_AND_ID:CXX,GNU>:-fdiagnostics-color>")
 endif()
 
 # Restore default compiler flags

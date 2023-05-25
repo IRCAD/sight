@@ -22,7 +22,6 @@
 
 #pragma once
 
-#include "core/BaseObject.hpp"
 #include "core/config.hpp"
 #include "core/crypto/secure_string.hpp"
 
@@ -48,7 +47,7 @@ constexpr static auto ENCRYPTED_LOG_FILE = "sight.log.zip";
  * When using `start_encrypted_logger()`, the log file is encrypted using a separated detached child process, that will
  * produce a ZSTD compressed ZIP file with an encrypted SLM.log file inside.
  */
-class SpyLogger : public core::BaseObject
+class SpyLogger
 {
 public:
 
@@ -150,7 +149,7 @@ public:
 private:
 
     CORE_API SpyLogger();
-    CORE_API ~SpyLogger() override;
+    CORE_API ~SpyLogger();
 
     class SpyLoggerImpl;
     std::unique_ptr<SpyLoggerImpl> m_pimpl;
