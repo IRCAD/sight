@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,22 +32,6 @@
 
 namespace sight::core::memory
 {
-
-const std::uint64_t ByteSize::Bytes = 1;
-
-// SI units
-const std::uint64_t ByteSize::KB = 1000LL;
-const std::uint64_t ByteSize::MB = 1000000LL;
-const std::uint64_t ByteSize::GB = 1000000000LL;
-const std::uint64_t ByteSize::TB = 1000000000000LL;
-const std::uint64_t ByteSize::PB = 1000000000000000LL;
-
-// IEC units
-const std::uint64_t ByteSize::KiB = 1LL << 10;
-const std::uint64_t ByteSize::MiB = 1LL << 20;
-const std::uint64_t ByteSize::GiB = 1LL << 30;
-const std::uint64_t ByteSize::TiB = 1LL << 40;
-const std::uint64_t ByteSize::PiB = 1LL << 50;
 
 ByteSize::ByteSize()
 = default;
@@ -183,6 +167,9 @@ std::string ByteSize::unitToString(ByteSize::UnitType unit)
         case TB:
             return "TB";
 
+        case PB:
+            return "PB";
+
         case KiB:
             return "KiB";
 
@@ -194,6 +181,9 @@ std::string ByteSize::unitToString(ByteSize::UnitType unit)
 
         case TiB:
             return "TiB";
+
+        case PiB:
+            return "PiB";
 
         default:
             SIGHT_ASSERT("Bad Unit", false);
