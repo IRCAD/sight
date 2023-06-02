@@ -99,6 +99,8 @@ CPPUNIT_TEST(updateConfigTest);
 CPPUNIT_TEST(sendStatusTest);
 CPPUNIT_TEST(delayTest);
 CPPUNIT_TEST(toleranceTest);
+CPPUNIT_TEST(imageSeriesTimeTaggingTest);
+CPPUNIT_TEST(singleImageSeriesTLPopulation);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -160,6 +162,14 @@ public:
 
     /// The classical tolerance is 5. Make one TL or the other out of range
     static void toleranceTest();
+
+    /// When the output is an ImageSeries object, instead of an image
+    /// Checks that we write the acquisition time as a dicom attribute
+    static void imageSeriesTimeTaggingTest();
+
+    /// Test with an ImageSeries and matrices to ensure timestamp data is written in the ImageSeries
+    /// assuming a more complex context
+    static void singleImageSeriesTLPopulation();
 };
 
 } // namespace sight::module::sync::ut

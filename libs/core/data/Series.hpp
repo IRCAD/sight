@@ -364,6 +364,11 @@ public:
         std::size_t frameIndex                                                = 0
     );
 
+    DATA_API void setFrameAcquisitionTimePoint(
+        sight::core::HiResClock::HiResClockType timePoint,
+        std::size_t frameIndex = 0
+    );
+
     DATA_API std::optional<std::string> getFrameComments(std::size_t frameIndex = 0) const;
 
     DATA_API void setFrameComments(

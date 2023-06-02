@@ -24,6 +24,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
+#include <data/ImageSeries.hpp>
 #include <data/TimeLine.hpp>
 
 namespace sight::module::sync
@@ -409,7 +410,9 @@ void SSynchronizer::copyFrameFromTLtoOutput(
     const auto frameTL = m_frameTLs[frameTLIndex].lock();
     CSPTR(data::FrameTL::BufferType) buffer =
         frameTL->getClosestBuffer(synchronizationTimestamp - m_frameTLDelay[frameTLIndex]);
-    data::Image::Size frameTLsize                 = {frameTL->getWidth(), frameTL->getHeight(), 0};
+
+    data::Image::Size frameTLsize = {frameTL->getWidth(), frameTL->getHeight(), 0};
+
     std::size_t frameTlNumComponents              = frameTL->numComponents();
     core::Type frameTlType                        = frameTL->getType();
     data::FrameTL::PixelFormat frameTlPixelFormat = frameTL->getPixelFormat();
@@ -462,6 +465,15 @@ void SSynchronizer::copyFrameFromTLtoOutput(
                 frame->setSpacing(spacing);
                 frame->setWindowWidth({1.0});
                 frame->setWindowCenter({0.0});
+            }
+
+            // Set the time stamp on the image, if we set dicom image as output.
+            // The value must be set after the previous `if`, in order to prevent the data
+            // from being erased in case of resize (frameTLSize has a 0 value as 3 dimension)
+            // and thus prevent the timestamp to be lost
+            if(auto imageSeries = sight::data::ImageSeries::dynamicCast(frame.get_shared()); imageSeries)
+            {
+                imageSeries->setFrameAcquisitionTimePoint(synchronizationTimestamp);
             }
 
             const std::uint8_t* frameBuff = &buffer->getElement(frameTlElementIndex);

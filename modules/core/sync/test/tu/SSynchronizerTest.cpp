@@ -30,6 +30,7 @@
 
 #include <data/FrameTL.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/Matrix4.hpp>
 #include <data/MatrixTL.hpp>
 #include <data/mt/weak_ptr.hpp>
@@ -1901,5 +1902,231 @@ void SSynchronizerTest::toleranceTest()
     SynchronizerTester::checkFrame(tester.frame2, 110);
     SynchronizerTester::checkMatrix(tester.matrix1, 111);
 }
+
+//------------------------------------------------------------------------------
+
+void SSynchronizerTest::imageSeriesTimeTaggingTest()
+{
+    const data::Image::Size frameSize {2, 2, 1};
+
+    std::stringstream config_string;
+    config_string
+    << "<in group=\"frameTL\">"
+       "    <key uid=\"frameTL1\" />"
+       "</in>"
+       "<inout group=\"frames\">"
+       "    <key uid=\"frame1\" />"
+       "</inout>";
+    // service::IService::ConfigType config;
+    // boost::property_tree::read_xml(config_string, config);
+
+    SynchronizerTester tester(config_string);
+
+    tester.srv->start().wait();
+    tester.srv->update().wait();
+
+    // create and set the input TL
+    data::FrameTL::sptr frameTL1 = data::FrameTL::New();
+    frameTL1->initPoolSize(
+        frameSize[0],
+        frameSize[1],
+        core::Type::UINT8,
+        sight::data::FrameTL::PixelFormat::GRAY_SCALE
+    );
+
+    tester.srv->setInput(frameTL1, "frameTL", true, false, 0);
+
+    // create and set the inout which will be filled in the synchronization process
+    sight::data::ImageSeries::sptr frame1 = sight::data::ImageSeries::New();
+
+    frame1->setSOPKeyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+    frame1->resize(
+        frameSize,
+        core::Type::UINT8,
+        data::Image::PixelFormat::GRAY_SCALE
+    );
+    {
+        auto dump_lock_frame1 = frame1->dump_lock();
+        std::fill(frame1->begin<std::uint8_t>(), frame1->end<std::uint8_t>(), std::uint8_t(0));
+    }
+
+    tester.srv->setInOut(frame1, "frames", false, false, 0);
+
+    core::HiResClock::HiResClockType lastTimestampSynch = 0;
+    auto slotSynchronizationDone                        =
+        sight::core::com::newSlot(
+            [&lastTimestampSynch](core::HiResClock::HiResClockType timestamp)
+        {
+            lastTimestampSynch = timestamp;
+        });
+    slotSynchronizationDone->setWorker(sight::core::thread::getDefaultWorker());
+    auto synchDoneConnection =
+        tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
+
+    // This is done just to handle automatic synch at first data push
+    const std::uint64_t timestamp = 13;
+
+    const SPTR(data::FrameTL::BufferType) data = frameTL1->createBuffer(timestamp);
+    std::uint8_t* eltBuffer = data->addElement(0);
+    memset(eltBuffer, timestamp, frameSize[0] * frameSize[1]);
+
+    frameTL1->pushObject(data);
+
+    tester.srv->update().wait();
+
+    fwTestWithFailWaitMacro(lastTimestampSynch == timestamp);
+
+    const auto dt = frame1->getFrameAcquisitionDateTime();
+    CPPUNIT_ASSERT(dt.has_value());
+
+    const auto timePoint = frame1->getFrameAcquisitionTimePoint();
+    CPPUNIT_ASSERT(timePoint.has_value());
+
+    std::int64_t ts = std::chrono::duration_cast<std::chrono::milliseconds>(timePoint->time_since_epoch()).count();
+    CPPUNIT_ASSERT(ts == timestamp);
+
+    tester.srv->stop().wait();
+}
+
+//------------------------------------------------------------------------------
+
+void SSynchronizerTest::singleImageSeriesTLPopulation()
+{
+    const data::Image::Size frameSize {2, 2, 1};
+
+    /// Service setup
+    std::stringstream config_string;
+    config_string
+    << "<in group=\"frameTL\">"
+       "    <key uid=\"frameTL1\" />"
+       "    <key uid=\"frameTL2\" />"
+       "</in>"
+       "<inout group=\"frames\">"
+       "    <key uid=\"frame1\" tl=\"0\"/>"
+       "    <key uid=\"frame2\" tl=\"1\" />"
+       "</inout>"
+       "<in group=\"matrixTL\">"
+       "    <key uid=\"matrixTL1\" />"
+       "</in>"
+       "<inout group=\"matrix\">"
+       "    <key uid=\"matrix1\" tl=\"0\"/>"
+       "</inout>"
+       "<tolerance>5</tolerance>";
+
+    SynchronizerTester tester(config_string);
+
+    tester.srv->start().wait();
+    tester.srv->update().wait();
+
+    /// Input/output setup
+    // create and set the input TL
+    data::FrameTL::sptr frameTL1 = data::FrameTL::New();
+    frameTL1->initPoolSize(
+        frameSize[0],
+        frameSize[1],
+        core::Type::UINT8,
+        sight::data::FrameTL::PixelFormat::GRAY_SCALE
+    );
+    data::FrameTL::sptr frameTL2 = data::FrameTL::New();
+    frameTL2->initPoolSize(
+        frameSize[0],
+        frameSize[1],
+        core::Type::UINT8,
+        sight::data::FrameTL::PixelFormat::GRAY_SCALE
+    );
+
+    data::MatrixTL::sptr matrixTL1 = data::MatrixTL::New();
+    matrixTL1->initPoolSize(4);
+
+    tester.srv->setInput(frameTL1, "frameTL", true, false, 0);
+    tester.srv->setInput(frameTL2, "frameTL", true, false, 1);
+    tester.srv->setInput(matrixTL1, "matrixTL", true, false, 0);
+
+    // create and set the inout which will be filled in the synchronization process
+    sight::data::ImageSeries::sptr frame1 = sight::data::ImageSeries::New();
+
+    frame1->setSOPKeyword(data::dicom::sop::Keyword::EnhancedUSVolumeStorage);
+    frame1->resize(
+        frameSize,
+        core::Type::UINT8,
+        data::Image::PixelFormat::GRAY_SCALE
+    );
+    {
+        auto dump_lock_frame1 = frame1->dump_lock();
+        std::fill(frame1->begin<std::uint8_t>(), frame1->end<std::uint8_t>(), std::uint8_t(0));
+    }
+
+    data::Image::sptr frame2 = data::Image::New();
+    frame2->resize(
+        frameSize,
+        core::Type::UINT8,
+        data::Image::PixelFormat::GRAY_SCALE
+    );
+    {
+        auto dump_lock_frame2 = frame2->dump_lock();
+        std::fill(frame2->begin<std::uint8_t>(), frame2->end<std::uint8_t>(), std::uint8_t(0));
+    }
+
+    /// Processing
+    data::Matrix4::sptr matrix1 = data::Matrix4::New();
+    (*matrix1)(0, 0) = 0.; // init the first value a 0. This will be filled with the timestamp in the tests.
+
+    tester.srv->setInOut(frame1, "frames", false, false, 0);
+    tester.srv->setInOut(frame2, "frames", false, false, 1);
+    tester.srv->setInOut(matrix1, "matrix", false, false, 0);
+
+    core::HiResClock::HiResClockType lastTimestampSynch = 0;
+    auto slotSynchronizationDone                        =
+        sight::core::com::newSlot(
+            [&lastTimestampSynch](core::HiResClock::HiResClockType timestamp)
+        {
+            lastTimestampSynch = timestamp;
+        });
+    slotSynchronizationDone->setWorker(sight::core::thread::getDefaultWorker());
+    auto synchDoneConnection = tester.srv->signal("synchronizationDone")->connect(slotSynchronizationDone);
+
+    // populate the TLs
+    tester.addFrameToFrameTL(frameTL1, 1);
+    tester.addFrameToFrameTL(frameTL1, 2);
+    tester.srv->slot("synchronize")->run();
+    fwTestWithFailWaitMacro(lastTimestampSynch == 2);
+    //test the output
+    SynchronizerTester::checkFrame(frame1, 2);
+    SynchronizerTester::checkFrame(frame2, 0);
+    SynchronizerTester::checkMatrix(matrix1, 0);
+
+    std::optional<std::string> dt;
+    std::optional<std::chrono::system_clock::time_point> timePoint;
+    std::int64_t ts = 0;
+
+    // Check that the ImageSeries timestamp was written
+    dt = frame1->getFrameAcquisitionDateTime();
+    CPPUNIT_ASSERT(dt.has_value());
+    timePoint = frame1->getFrameAcquisitionTimePoint();
+    CPPUNIT_ASSERT(timePoint.has_value());
+    ts = std::chrono::duration_cast<std::chrono::milliseconds>(timePoint->time_since_epoch()).count();
+    CPPUNIT_ASSERT(ts == 2);
+
+    // populate the TL
+    tester.addFrameToFrameTL(frameTL1, 3);
+    tester.srv->slot("synchronize")->run();
+    fwTestWithFailWaitMacro(lastTimestampSynch == 3);
+    //test the output
+    SynchronizerTester::checkFrame(frame1, 3);
+    SynchronizerTester::checkFrame(frame2, 0);
+    SynchronizerTester::checkMatrix(matrix1, 0);
+
+    // Check that the ImageSeries timestamp was written
+    dt = frame1->getFrameAcquisitionDateTime();
+    CPPUNIT_ASSERT(dt.has_value());
+    timePoint = frame1->getFrameAcquisitionTimePoint();
+    CPPUNIT_ASSERT(timePoint.has_value());
+    ts = std::chrono::duration_cast<std::chrono::milliseconds>(timePoint->time_since_epoch()).count();
+    CPPUNIT_ASSERT(ts == 3);
+
+    tester.srv->stop().wait();
+}
+
+//------------------------------------------------------------------------------
 
 } // namespace sight::module::sync::ut

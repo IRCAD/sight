@@ -399,7 +399,7 @@ private:
     /// Contains the input matrix timelines.
     data::ptr_vector<data::MatrixTL, data::Access::in> m_matrixTLs {this, configKey::s_MATRIXTL_INPUT, true};
 
-    /// Contains the input matrix timelines.
+    /// Contains the output matrices.
     data::ptr_vector<data::Matrix4, data::Access::inout> m_matrix {this, configKey::s_MATRIX_INOUT, false};
 };
 

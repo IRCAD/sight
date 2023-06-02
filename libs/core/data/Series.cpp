@@ -28,6 +28,7 @@
 #include "data/Exception.hpp"
 #include "data/registry/macros.hpp"
 
+#include <core/HiResClock.hpp>
 #include <core/tools/compare.hpp>
 
 #include <gdcmDict.h>
@@ -2645,16 +2646,39 @@ std::optional<std::chrono::system_clock::time_point> Series::getFrameAcquisition
     try
     {
         // Get the acquisition date time.
-        const auto& optional = getFrameAcquisitionDateTime(frameIndex);
+        // Need to ensure that the value is set, as it might not.
+        if(const auto& optional = getFrameAcquisitionDateTime(frameIndex); optional.has_value())
+        {
+            // Convert from YYYYMMDDHHMMSS.FFFFFF
+            /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
+            return dateTimeToTimePoint(*optional);
+        }
 
-        // Convert from YYYYMMDDHHMMSS.FFFFFF
-        /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
-        return dateTimeToTimePoint(*optional);
+        return std::nullopt;
     }
     catch(...)
     {
         return std::nullopt;
     }
+}
+
+//------------------------------------------------------------------------------
+
+void Series::setFrameAcquisitionTimePoint(
+    sight::core::HiResClock::HiResClockType timePoint,
+    std::size_t frameIndex
+)
+{
+    const auto tp = std::chrono::system_clock::time_point()
+                    + std::chrono::duration_cast<std::chrono::system_clock::duration>(
+        std::chrono::duration<double, std::milli>(timePoint)
+                    );
+
+    // Convert HiResClockType to time point
+    // Convert to YYYYMMDDHHMMSS.FFFFFF
+    /// @see @link https://dicom.nema.org/medical/dicom/current/output/chtml/part05/sect_6.2.html
+    const auto& dateTime = timePointToDateTime(tp);
+    setFrameAcquisitionDateTime(dateTime, frameIndex);
 }
 
 //------------------------------------------------------------------------------
