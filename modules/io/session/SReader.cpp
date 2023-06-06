@@ -116,7 +116,10 @@ void SReader::starting()
 void SReader::stopping()
 {
     m_pimpl->m_password_retry = 0;
-    clearLocations();
+    if(m_pimpl->m_dialog_policy != DialogPolicy::NEVER)
+    {
+        clearLocations();
+    }
 }
 
 //-----------------------------------------------------------------------------
