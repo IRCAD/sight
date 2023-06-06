@@ -137,7 +137,21 @@ void TrackballInteractor::wheelEvent(Modifier /*_mods*/, double delta, int x, in
 
 void TrackballInteractor::pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY)
 {
-    wheelEvent({}, _scaleFactor * 8, _centerX, _centerY);
+    // The pinch gesture is converted to a wheel event
+    wheelEvent({}, _scaleFactor * 12, _centerX, _centerY);
+}
+
+//------------------------------------------------------------------------------
+
+void TrackballInteractor::panGestureMoveEvent(int _x, int _y, int _dx, int _dy)
+{
+    if(auto layer = m_layer.lock(); layer)
+    {
+        if(isInLayer(_x, _y, layer, m_layerOrderDependant))
+        {
+            cameraTranslate(_dx, _dy);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------

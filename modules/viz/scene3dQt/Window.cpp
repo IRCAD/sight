@@ -21,12 +21,12 @@
  ***********************************************************************/
 
 #include "modules/viz/scene3dQt/Window.hpp"
+#include "modules/viz/scene3dQt/init.hpp"
 
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
 
-#include <ui/qt/gestures/QPanGestureRecognizer.hpp>
-#include <modules/viz/scene3dQt/init.hpp>
+#include <core/tools/compare.hpp>
 
 #include <viz/scene3d/Utils.hpp>
 #include <viz/scene3d/WindowManager.hpp>
@@ -37,7 +37,9 @@
 #include <OgreRenderTexture.h>
 #include <OgreHardwarePixelBuffer.h>
 #include <OgreMeshManager.h>
+
 #include <QOpenGLFunctions>
+#include <QDebug>
 
 namespace sight::module::viz::scene3dQt
 {
@@ -164,6 +166,36 @@ void Window::renderNow()
     this->update();
 }
 
+//------------------------------------------------------------------------------
+
+bool Window::event(QEvent* _e)
+{
+    switch(_e->type())
+    {
+        case QEvent::Gesture:
+            // Filter gesture events
+            gestureEvent(static_cast<QGestureEvent*>(_e));
+            return true;
+
+        case QEvent::MouseButtonDblClick:
+        case QEvent::MouseButtonPress:
+        case QEvent::MouseButtonRelease:
+        case QEvent::MouseMove:
+            // If we are currently in a gesture, filter mouse events
+            if(m_gestureState != GestureState::NoGesture)
+            {
+                return true;
+            }
+
+            break;
+
+        default:
+            break;
+    }
+
+    return QOpenGLWidget::event(_e);
+}
+
 // ----------------------------------------------------------------------------
 
 void Window::keyPressEvent(QKeyEvent* _e)
@@ -174,10 +206,12 @@ void Window::keyPressEvent(QKeyEvent* _e)
     info.key             = _e->key();
 
     auto cursorPosition = getCursorPosition(this);
-    info.x = static_cast<int>(cursorPosition.x() * this->devicePixelRatio());
-    info.y = static_cast<int>(cursorPosition.y() * this->devicePixelRatio());
+    const auto ratio    = devicePixelRatioF();
+    info.x = static_cast<int>(cursorPosition.x() * ratio);
+    info.y = static_cast<int>(cursorPosition.y() * ratio);
 
     Q_EMIT interacted(info);
+    requestRender();
 }
 
 // ----------------------------------------------------------------------------
@@ -189,11 +223,13 @@ void Window::keyReleaseEvent(QKeyEvent* _e)
     info.modifiers       = convertModifiers(QApplication::keyboardModifiers());
     info.key             = _e->key();
 
-    auto cursorPosition = getCursorPosition(this);
-    info.x = static_cast<int>(cursorPosition.x() * this->devicePixelRatio());
-    info.y = static_cast<int>(cursorPosition.y() * this->devicePixelRatio());
+    const auto cursorPosition = getCursorPosition(this);
+    const auto ratio          = devicePixelRatioF();
+    info.x = static_cast<int>(cursorPosition.x() * ratio);
+    info.y = static_cast<int>(cursorPosition.y() * ratio);
 
     Q_EMIT interacted(info);
+    requestRender();
 }
 
 // ----------------------------------------------------------------------------
@@ -246,15 +282,16 @@ Window::InteractionInfo Window::convertMouseEvent(
             break;
     }
 
+    const auto ratio = devicePixelRatioF();
     info.interactionType = _interactionType;
-    info.x               = static_cast<int>(_evt->x() * this->devicePixelRatio());
-    info.y               = static_cast<int>(_evt->y() * this->devicePixelRatio());
+    info.x               = static_cast<int>(_evt->x() * ratio);
+    info.y               = static_cast<int>(_evt->y() * ratio);
 
     if(m_lastMousePosition)
     {
         const auto& point = m_lastMousePosition.value();
-        info.dx = static_cast<int>((point.x() - _evt->x()) * this->devicePixelRatio());
-        info.dy = static_cast<int>((point.y() - _evt->y()) * this->devicePixelRatio());
+        info.dx = static_cast<int>((point.x() - _evt->x()) * ratio);
+        info.dy = static_cast<int>((point.y() - _evt->y()) * ratio);
     }
     else
     {
@@ -271,6 +308,11 @@ Window::InteractionInfo Window::convertMouseEvent(
 
 void Window::mouseMoveEvent(QMouseEvent* _e)
 {
+    if(m_gestureState != GestureState::NoGesture)
+    {
+        return;
+    }
+
     const auto info = this->convertMouseEvent(_e, InteractionInfo::MOUSEMOVE);
 
     if(m_lastMousePosition)
@@ -291,10 +333,11 @@ void Window::wheelEvent(QWheelEvent* _e)
     info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::WHEELMOVE;
 
     // Only manage vertical wheel scroll.
-    info.delta = static_cast<int>(_e->angleDelta().y() * this->devicePixelRatio());
+    const auto ratio = devicePixelRatioF();
+    info.delta = static_cast<int>(_e->angleDelta().y() * ratio);
 
-    info.x         = static_cast<int>(_e->position().x() * this->devicePixelRatio());
-    info.y         = static_cast<int>(_e->position().y() * this->devicePixelRatio());
+    info.x         = static_cast<int>(_e->position().x() * ratio);
+    info.y         = static_cast<int>(_e->position().y() * ratio);
     info.dx        = 0;
     info.dy        = 0;
     info.modifiers = convertModifiers(_e->modifiers());
@@ -308,6 +351,11 @@ void Window::wheelEvent(QWheelEvent* _e)
 
 void Window::mousePressEvent(QMouseEvent* _e)
 {
+    if(m_gestureState != GestureState::NoGesture)
+    {
+        return;
+    }
+
     m_lastMousePosition = _e->pos();
 
     const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONPRESS);
@@ -320,6 +368,11 @@ void Window::mousePressEvent(QMouseEvent* _e)
 
 void Window::mouseDoubleClickEvent(QMouseEvent* _e)
 {
+    if(m_gestureState != GestureState::NoGesture)
+    {
+        return;
+    }
+
     const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONDOUBLEPRESS);
     Q_EMIT interacted(info);
 
@@ -330,6 +383,11 @@ void Window::mouseDoubleClickEvent(QMouseEvent* _e)
 
 void Window::mouseReleaseEvent(QMouseEvent* _e)
 {
+    if(m_gestureState != GestureState::NoGesture)
+    {
+        return;
+    }
+
     m_lastMousePosition.reset();
 
     const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONRELEASE);
@@ -342,119 +400,114 @@ void Window::mouseReleaseEvent(QMouseEvent* _e)
 
 void Window::gestureEvent(QGestureEvent* _e)
 {
-    // QWindow doesn't support gestures by itself; gesture events are sent by the event filter in WindowInteractor
-    // thanks to GestureFilter.
-    _e->accept();
-    if(QGesture* pinchGesture = _e->gesture(Qt::PinchGesture),
-       *pan2Gesture = _e->gesture(sight::ui::qt::gestures::QPanGestureRecognizer::get<2>());
-       pinchGesture != nullptr || pan2Gesture != nullptr)
+    /// @note Both event could be triggered at the same time.
+    auto* const panGesture   = static_cast<QPanGesture*>(_e->gesture(Qt::PanGesture));
+    auto* const pinchGesture = static_cast<QPinchGesture*>(_e->gesture(Qt::PinchGesture));
+
+    // If no managed gesture
+    if(panGesture == nullptr && pinchGesture == nullptr)
     {
-        if(pan2Gesture != nullptr)
+        // Early return
+        m_gestureState = GestureState::NoGesture;
+        _e->ignore();
+        return;
+    }
+
+    // Get the pixel ratio
+    const auto ratio = devicePixelRatioF();
+
+    // If pan gesture
+    if(panGesture != nullptr)
+    {
+        switch(panGesture->state())
         {
-            _e->accept(pan2Gesture);
-            auto* pan = static_cast<sight::ui::qt::gestures::PanGesture*>(pan2Gesture);
-            sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
-            info.interactionType =
-                (pan2Gesture->state()
-                 == Qt::GestureFinished ? sight::viz::scene3d::IWindowInteractor::InteractionInfo::PAN2_GESTURE_RELEASE
-                                        : sight::viz::scene3d::IWindowInteractor::InteractionInfo::PAN2_GESTURE_MOVE);
-            QPoint position = mapFromGlobal(pan->position().toPoint());
-            info.x = position.x();
-            info.y = position.y();
-            QPoint deltaPoint = pan->delta().toPoint();
-            info.dx = -deltaPoint.x();
-            info.dy = -deltaPoint.y();
-            Q_EMIT interacted(info);
-            this->requestRender();
+            case Qt::GestureStarted:
+            case Qt::GestureUpdated:
+                m_gestureState = GestureState::PanGesture;
+                break;
+
+            default:
+                m_gestureState = GestureState::NoGesture;
+                break;
         }
 
-        if(pinchGesture != nullptr)
+        if(const auto& delta = panGesture->delta();
+           core::tools::is_greater(std::abs(delta.x()), 0.0F) || core::tools::is_greater(std::abs(delta.y()), 0.0F))
         {
-            auto* pinch = static_cast<QPinchGesture*>(pinchGesture);
             sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
-            info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::PINCH_GESTURE;
-            double delta = pinch->scaleFactor();
-            if(delta == 0)
+
+            switch(panGesture->state())
             {
-                _e->ignore();
-                return;
+                case Qt::GestureStarted:
+                case Qt::GestureUpdated:
+                    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::PAN_GESTURE_MOVE;
+                    break;
+
+                default:
+                    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::PAN_GESTURE_RELEASE;
+                    break;
             }
 
+            const auto& position = pinchGesture != nullptr
+                                   ? pinchGesture->centerPoint()
+                                   : panGesture->hotSpot() + panGesture->offset();
+
+            const auto& mapped = mapFromGlobal(position.toPoint());
+
+            info.x = int(mapped.x() * ratio);
+            info.y = int(mapped.y() * ratio);
+
+            info.dx = int(-delta.x() * ratio);
+            info.dy = int(-delta.y() * ratio);
+
+            Q_EMIT interacted(info);
+        }
+    }
+
+    if(pinchGesture != nullptr)
+    {
+        switch(pinchGesture->state())
+        {
+            case Qt::GestureStarted:
+            case Qt::GestureUpdated:
+                m_gestureState = GestureState::PinchGesture;
+                break;
+
+            default:
+                m_gestureState = GestureState::NoGesture;
+                break;
+        }
+
+        // Ignore the gesture if the scale factor is 0 or too near 1.0
+        if(const auto scale = pinchGesture->scaleFactor();
+           !core::tools::is_equal(scale, 0) && !core::tools::is_less(std::abs(scale - 1.0F), 0.01F))
+        {
+            sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
+            info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::PINCH_GESTURE;
+
             // scaleFactor is a positive number, where a number inferior to 1 means that the distance between the
-            // fingers
-            // increases, and a number superior to 1 means that the distance between the fingers decreases. In order to
-            // interface with the mouse wheel methods, where angleDelta is positive if the wheel is rotated away from
-            // the
-            // user and negative if the wheel is rotated toward the user, the following transformation is done.
-            if(delta < 1)
+            // fingers increases, and a number superior to 1 means that the distance between the fingers decreases.
+            // In order to interface with the mouse wheel methods, where angleDelta is positive if the wheel is
+            // rotated away from the user and negative if the wheel is rotated toward the user, the following
+            // transformation is done.
+            if(core::tools::is_less(scale, 1.0F))
             {
-                info.delta = -1 / delta;
+                info.delta = -1 / scale;
             }
             else
             {
-                info.delta = delta;
+                info.delta = scale;
             }
 
-            _e->accept(pinchGesture);
-            QPoint localCenterPoint = mapFromGlobal(pinch->centerPoint().toPoint());
-            info.x = localCenterPoint.x();
-            info.y = localCenterPoint.y();
+            const auto& center = mapFromGlobal(pinchGesture->centerPoint().toPoint());
+            info.x = int(center.x() * ratio);
+            info.y = int(center.y() * ratio);
+
             Q_EMIT interacted(info);
-            this->requestRender();
         }
     }
-    else if(QGesture* panGesture = _e->gesture(sight::ui::qt::gestures::QPanGestureRecognizer::get<1>()))
-    {
-        _e->accept(panGesture);
-        auto* pan = static_cast<sight::ui::qt::gestures::PanGesture*>(panGesture);
-        sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
-        info.interactionType =
-            (panGesture->state()
-             == Qt::GestureFinished ? sight::viz::scene3d::IWindowInteractor::InteractionInfo::PAN_GESTURE_RELEASE
-                                    : sight::viz::scene3d::IWindowInteractor::InteractionInfo::PAN_GESTURE_MOVE);
-        QPoint position = mapFromGlobal(pan->position().toPoint());
-        info.x = position.x();
-        info.y = position.y();
-        QPoint deltaPoint = pan->delta().toPoint();
-        info.dx = -deltaPoint.x();
-        info.dy = -deltaPoint.y();
-        Q_EMIT interacted(info);
-        this->requestRender();
-    }
-    else if(QGesture* tapAndHoldGesture = _e->gesture(Qt::TapAndHoldGesture))
-    {
-        if(tapAndHoldGesture->state() == Qt::GestureFinished)
-        {
-            _e->accept(tapAndHoldGesture);
-            auto* tap = static_cast<QTapAndHoldGesture*>(tapAndHoldGesture);
-            sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
-            info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::LONG_TAP_GESTURE;
-            QPoint position = mapFromGlobal(tap->position().toPoint());
-            info.x = position.x();
-            info.y = position.y();
-            Q_EMIT interacted(info);
-            this->requestRender();
-        }
-    }
-    else if(QGesture* tapGesture = _e->gesture(Qt::TapGesture))
-    {
-        if(tapGesture->state() == Qt::GestureCanceled && _e->activeGestures().isEmpty())
-        {
-            _e->accept(tapGesture);
-            auto* tap = static_cast<QTapGesture*>(tapGesture);
-            sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
-            info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::BUTTONRELEASE;
-            QPoint position = mapFromGlobal(tap->position().toPoint());
-            info.x = position.x();
-            info.y = position.y();
-            Q_EMIT interacted(info);
-            this->requestRender();
-        }
-    }
-    else
-    {
-        _e->ignore();
-    }
+
+    requestRender();
 }
 
 // ----------------------------------------------------------------------------
@@ -468,8 +521,9 @@ void Window::ogreResize(const QSize& _newSize)
 
     m_ogreSize = _newSize;
 
-    const int newWidth  = static_cast<int>(this->devicePixelRatio() * _newSize.width());
-    const int newHeight = static_cast<int>(this->devicePixelRatio() * _newSize.height());
+    const auto ratio    = devicePixelRatioF();
+    const int newWidth  = static_cast<int>(ratio * _newSize.width());
+    const int newHeight = static_cast<int>(ratio * _newSize.height());
 
     createRenderTextures(newWidth, newHeight);
 
@@ -479,6 +533,7 @@ void Window::ogreResize(const QSize& _newSize)
     info.y               = newHeight;
     info.dx              = 0;
     info.dy              = 0;
+
     Q_EMIT interacted(info);
 }
 
@@ -616,8 +671,9 @@ void Window::initializeGL()
 
     initResources();
 
-    const int width  = static_cast<int>(this->width() * this->devicePixelRatio());
-    const int height = static_cast<int>(this->height() * this->devicePixelRatio());
+    const auto ratio = devicePixelRatioF();
+    const int width  = static_cast<int>(this->width() * ratio);
+    const int height = static_cast<int>(this->height() * ratio);
 
     Ogre::MeshManager& meshManager = Ogre::MeshManager::getSingleton();
     Ogre::MovablePlane p(Ogre::Vector3::UNIT_Z, 0);
@@ -641,6 +697,7 @@ void Window::initializeGL()
     info.y               = height;
     info.dx              = 0;
     info.dy              = 0;
+
     Q_EMIT interacted(info);
 }
 
@@ -678,11 +735,12 @@ void Window::paintGL()
             Ogre::RenderOperation op;
             m_fsQuadPlane->getSubMesh(0)->_getRenderOperation(op);
 
+            const auto ratio = devicePixelRatioF();
             this->context()->functions()->glViewport(
                 0,
                 0,
-                this->devicePixelRatio() * this->width(),
-                this->devicePixelRatio() * this->height()
+                int(ratio * this->width()),
+                int(ratio * this->height())
             );
 
             auto* scene = renderTarget.layer.lock()->getSceneManager();

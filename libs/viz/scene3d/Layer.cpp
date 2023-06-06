@@ -536,22 +536,6 @@ void Layer::interaction(viz::scene3d::IWindowInteractor::InteractionInfo info)
                 _i->longTapGestureEvent(info.x, info.y);
             });
             break;
-
-        case viz::scene3d::IWindowInteractor::InteractionInfo::PAN2_GESTURE_MOVE:
-            this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
-            {
-                _i->pan2GestureMoveEvent(info.x, info.y, info.dx, info.dy);
-            });
-            break;
-
-        case viz::scene3d::IWindowInteractor::InteractionInfo::PAN2_GESTURE_RELEASE:
-            this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
-            {
-                _i->pan2GestureReleaseEvent(info.x, info.y, info.dx, info.dy);
-            });
-            break;
     }
 
     m_cancelFurtherInteraction = false;

@@ -250,9 +250,24 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
 
 void SNegato2DCamera::pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY)
 {
-    // 120 here refers to the units of delta needed to do one increment of mouse wheel. Check the method above for a
-    // more detailed explanation.
-    wheelEvent({}, _scaleFactor * 120, _centerX, _centerY);
+    // * 42 / 0.05 is a magic number to get a similar behavior as the mouse wheel
+    wheelEvent(Modifier::CONTROL, (_scaleFactor * 42) / 0.05, _centerX, _centerY);
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2DCamera::panGestureMoveEvent(int _x, int _y, int _dx, int _dy)
+{
+    m_isInteracting = true;
+
+    mouseMoveEvent(MouseButton::MIDDLE, {}, _x, _y, _dx, _dy);
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2DCamera::panGestureReleaseEvent(int /*_x*/, int /*_y*/, int /*_dx*/, int /*_dy*/)
+{
+    m_isInteracting = false;
 }
 
 // ----------------------------------------------------------------------------

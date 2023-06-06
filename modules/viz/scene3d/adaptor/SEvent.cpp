@@ -324,40 +324,6 @@ void SEvent::longTapGestureEvent(int x, int y)
 
 //------------------------------------------------------------------------------
 
-void SEvent::pan2GestureMoveEvent(int x, int y, int dx, int dy)
-{
-    InteractionInfo::InteractionEnum interactionType = InteractionInfo::InteractionEnum::PAN2_GESTURE_MOVE;
-    if(check(interactionType, {}, {}, {}))
-    {
-        InteractionInfo info;
-        info.interactionType = interactionType;
-        info.x               = x;
-        info.y               = y;
-        info.dx              = dx;
-        info.dy              = dy;
-        signal<TriggeredSignal>(s_TRIGGERED)->asyncEmit(info);
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SEvent::pan2GestureReleaseEvent(int x, int y, int dx, int dy)
-{
-    InteractionInfo::InteractionEnum interactionType = InteractionInfo::InteractionEnum::PAN2_GESTURE_RELEASE;
-    if(check(interactionType, {}, {}, {}))
-    {
-        InteractionInfo info;
-        info.interactionType = interactionType;
-        info.x               = x;
-        info.y               = y;
-        info.dx              = dx;
-        info.dy              = dy;
-        signal<TriggeredSignal>(s_TRIGGERED)->asyncEmit(info);
-    }
-}
-
-//------------------------------------------------------------------------------
-
 static InteractionInfo::InteractionEnum stringToInteractionEnum(const std::string& s)
 {
     if(s == "mouseMove")
@@ -413,21 +379,6 @@ static InteractionInfo::InteractionEnum stringToInteractionEnum(const std::strin
     if(s == "panGestureRelease")
     {
         return InteractionInfo::InteractionEnum::PAN_GESTURE_RELEASE;
-    }
-
-    if(s == "longTapGesture")
-    {
-        return InteractionInfo::InteractionEnum::LONG_TAP_GESTURE;
-    }
-
-    if(s == "pan2GestureMove")
-    {
-        return InteractionInfo::InteractionEnum::PAN2_GESTURE_MOVE;
-    }
-
-    if(s == "pan2GestureRelease")
-    {
-        return InteractionInfo::InteractionEnum::PAN2_GESTURE_RELEASE;
     }
 
     SIGHT_THROW("Unknown interaction: " + s);

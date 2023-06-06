@@ -80,8 +80,6 @@ public:
     MODULE_VIZ_SCENE3D_API void panGestureMoveEvent(int x, int y, int dx, int dy) final;
     MODULE_VIZ_SCENE3D_API void panGestureReleaseEvent(int x, int y, int dx, int dy) final;
     MODULE_VIZ_SCENE3D_API void longTapGestureEvent(int x, int y) final;
-    MODULE_VIZ_SCENE3D_API void pan2GestureMoveEvent(int x, int y, int dx, int dy) final;
-    MODULE_VIZ_SCENE3D_API void pan2GestureReleaseEvent(int x, int y, int dx, int dy) final;
 
     MODULE_VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_TRIGGERED;
     typedef core::com::Signal<void (sight::viz::scene3d::IWindowInteractor::InteractionInfo)> TriggeredSignal;

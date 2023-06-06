@@ -79,9 +79,6 @@ public:
     /// Renders the frame as soon as possible.
     void requestRender();
 
-    /// Manages gestures.
-    void gestureEvent(QGestureEvent* _e);
-
 Q_SIGNALS:
 
     /// Emits when the user interacts with the scene using the mouse and keyboard.
@@ -91,6 +88,9 @@ Q_SIGNALS:
     void cameraClippingComputation();
 
 private:
+
+    /// Manages events
+    bool event(QEvent* e) override;
 
     /// Manages keyboard action.
     void keyPressEvent(QKeyEvent* _e) override;
@@ -113,6 +113,9 @@ private:
     /// Manages mouse click on release.
     void mouseReleaseEvent(QMouseEvent* _e) override;
 
+    /// Manages gestures.
+    void gestureEvent(QGestureEvent* _e);
+
     using InteractionInfo = sight::viz::scene3d::IWindowInteractor::InteractionInfo;
 
     /// Converts the mouse event to be able to handle it with ogre.
@@ -131,7 +134,7 @@ private:
     void renderLater();
 
     /// Forwards the resize event.
-    /// @param _newSize size in hidpi, you must multiplicate with devicePixelRatio to get the real pixel value
+    /// @param _newSize size in hidpi, you must multiplicate with devicePixelRatioF to get the real pixel value
     void ogreResize(const QSize& _newSize);
 
     /// Defines a counter to get the widget ID.
@@ -170,6 +173,15 @@ private:
         Ogre::TexturePtr texture;
     };
     std::vector<RenderTarget> m_renderTargets;
+
+    enum class GestureState : std::uint8_t
+    {
+        NoGesture = 0,
+        PanGesture,
+        PinchGesture
+    };
+
+    GestureState m_gestureState {GestureState::NoGesture};
 };
 
 //-----------------------------------------------------------------------------

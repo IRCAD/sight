@@ -314,7 +314,7 @@ void Text::adjustSize()
     QPoint origin;
     if(m_nodeListener != nullptr)
     {
-        origin = QPoint(static_cast<int>(m_position.x), static_cast<int>(m_position.y)) / m_text->devicePixelRatio();
+        origin = QPoint(static_cast<int>(m_position.x), static_cast<int>(m_position.y)) / m_text->devicePixelRatioF();
     }
     else
     {

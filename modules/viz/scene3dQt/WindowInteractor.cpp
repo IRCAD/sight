@@ -28,7 +28,6 @@
 #include <core/com/Slots.hxx>
 
 #include <ui/qt/container/QtContainer.hpp>
-#include <ui/qt/gestures/QPanGestureRecognizer.hpp>
 
 #include <viz/scene3d/registry/macros.hpp>
 #include <viz/scene3d/SRender.hpp>
@@ -51,76 +50,6 @@ SIGHT_REGISTER_SCENE3D(
     sight::module::viz::scene3dQt::WindowInteractor,
     sight::viz::scene3d::IWindowInteractor::REGISTRY_KEY
 );
-
-//-----------------------------------------------------------------------------
-
-EventDispatcher::EventDispatcher(QObject* dispatchedTo, const QList<QEvent::Type>& eventsToDispatch) :
-    m_dispatchedTo(dispatchedTo),
-    m_eventsToDispatch(eventsToDispatch)
-{
-}
-
-//------------------------------------------------------------------------------
-
-bool EventDispatcher::eventFilter(QObject* /*watched*/, QEvent* event)
-{
-    if(m_eventsToDispatch.contains(event->type()))
-    {
-        QCoreApplication::sendEvent(m_dispatchedTo, event);
-        return true;
-    }
-
-    return false;
-}
-
-GestureFilter::GestureFilter(QPointer<sight::module::viz::scene3dQt::Window> target) :
-    m_target(std::move(target))
-{
-}
-
-//------------------------------------------------------------------------------
-
-bool GestureFilter::eventFilter(QObject* /*watched*/, QEvent* event)
-{
-    if(event->type() == QEvent::Gesture)
-    {
-        auto* ge = static_cast<QGestureEvent*>(event);
-        m_target->gestureEvent(ge);
-        return true;
-    }
-
-    return false;
-}
-
-//------------------------------------------------------------------------------
-
-bool TouchToMouseFixFilter::eventFilter(QObject* watched, QEvent* event)
-{
-    switch(event->type())
-    {
-        case QEvent::MouseButtonPress:
-        case QEvent::MouseButtonRelease:
-        case QEvent::MouseButtonDblClick:
-        case QEvent::MouseMove:
-            if(const auto* me = static_cast<QMouseEvent*>(event); me->source() == Qt::MouseEventSynthesizedByQt)
-            {
-                if(const auto* windows = qobject_cast<QWindow*>(watched); windows != nullptr)
-                {
-                    const QPoint& position = windows->mapFromGlobal(me->globalPos());
-                    QMouseEvent newEvent(event->type(), position, me->button(), me->buttons(), me->modifiers());
-                    QCoreApplication::sendEvent(watched, &newEvent);
-                    return true;
-                }
-            }
-
-            break;
-
-        default:
-            break;
-    }
-
-    return false;
-}
 
 namespace sight::module::viz::scene3dQt
 {
@@ -183,15 +112,8 @@ void WindowInteractor::createContainer(
     m_qOgreWidget->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
     m_qOgreWidget->setMouseTracking(true);
 
-    m_qOgreWidget->grabGesture(Qt::PinchGesture);                                         // For zooming
-    m_qOgreWidget->grabGesture(sight::ui::qt::gestures::QPanGestureRecognizer::get<1>()); // For rotating
-    m_qOgreWidget->grabGesture(Qt::TapAndHoldGesture);                                    // For placing a landmark
-    m_qOgreWidget->grabGesture(Qt::TapGesture);                                           // For placing a landmark
-    m_qOgreWidget->grabGesture(sight::ui::qt::gestures::QPanGestureRecognizer::get<2>()); // For translating
-    m_qOgreWidget->installEventFilter(new GestureFilter(m_qOgreWidget));                  // Sends the gesture
-                                                                                          // events
-                                                                                          // to window
-    m_qOgreWidget->installEventFilter(new TouchToMouseFixFilter);
+    m_qOgreWidget->grabGesture(Qt::PinchGesture); // For zooming
+    m_qOgreWidget->grabGesture(Qt::PanGesture);   // For translating
 
     this->setFullscreen(_fullscreen, -1);
 

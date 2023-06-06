@@ -61,9 +61,7 @@ public:
             PINCH_GESTURE,
             PAN_GESTURE_MOVE,
             PAN_GESTURE_RELEASE,
-            LONG_TAP_GESTURE,
-            PAN2_GESTURE_MOVE,
-            PAN2_GESTURE_RELEASE
+            LONG_TAP_GESTURE
         } InteractionEnumType;
 
         /**

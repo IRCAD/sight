@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -116,36 +116,20 @@ void IInteractor::pinchGestureEvent(double /*_scaleFactor*/, int /*_centerX*/, i
 
 //------------------------------------------------------------------------------
 
-void IInteractor::panGestureMoveEvent(int _x, int _y, int _dx, int _dy)
+void IInteractor::panGestureMoveEvent(int /*_x*/, int /*_y*/, int /*_dx*/, int /*_dy*/)
 {
-    mouseMoveEvent(LEFT, {}, _x, _y, _dx, _dy);
 }
 
 //------------------------------------------------------------------------------
 
-void IInteractor::panGestureReleaseEvent(int _x, int _y, int /*_dx*/, int /*_dy*/)
+void IInteractor::panGestureReleaseEvent(int /*_x*/, int /*_y*/, int /*_dx*/, int /*_dy*/)
 {
-    buttonReleaseEvent(LEFT, {}, _x, _y);
 }
 
 //------------------------------------------------------------------------------
 
 void IInteractor::longTapGestureEvent(int /*_x*/, int /*_y*/)
 {
-}
-
-//------------------------------------------------------------------------------
-
-void IInteractor::pan2GestureMoveEvent(int _x, int _y, int _dx, int _dy)
-{
-    mouseMoveEvent(MIDDLE, {}, _x, _y, _dx, _dy);
-}
-
-//------------------------------------------------------------------------------
-
-void IInteractor::pan2GestureReleaseEvent(int _x, int _y, int /*_dx*/, int /*_dy*/)
-{
-    buttonReleaseEvent(MIDDLE, {}, _x, _y);
 }
 
 // ----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -133,13 +133,6 @@ void MeshPickerInteractor::buttonPressEvent(MouseButton _button, Modifier _mod, 
 void MeshPickerInteractor::buttonReleaseEvent(MouseButton _button, Modifier _mod, int _x, int _y)
 {
     this->pick(_button, _mod, _x, _y, false);
-}
-
-//------------------------------------------------------------------------------
-
-void MeshPickerInteractor::longTapGestureEvent(int _x, int _y)
-{
-    this->pick(LEFT, Modifier::CONTROL, _x, _y, false);
 }
 
 //------------------------------------------------------------------------------

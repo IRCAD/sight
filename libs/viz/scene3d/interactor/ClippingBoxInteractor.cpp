@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -133,6 +133,51 @@ void ClippingBoxInteractor::buttonPressEvent(MouseButton button, Modifier /*_mod
         {
             this->cancelFurtherLayerInteractions();
         }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ClippingBoxInteractor::pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY)
+{
+    if(m_widget.getVisibility())
+    {
+        // Convert back the scale from "delta"
+        if(_scaleFactor < 0)
+        {
+            _scaleFactor = -1.0 / _scaleFactor;
+        }
+
+        const auto dy = int(((_centerY * _scaleFactor) - _centerY) * 0.5);
+
+        if(m_widget.scaleClippingBox(_centerX, _centerY, dy) || m_pickedObject != nullptr)
+        {
+            cancelFurtherLayerInteractions();
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ClippingBoxInteractor::panGestureMoveEvent(int _x, int _y, int _dx, int _dy)
+{
+    if(m_widget.getVisibility())
+    {
+        if(m_widget.moveClippingBox(_x, _y, -_dx, -_dy) || m_pickedObject != nullptr)
+        {
+            cancelFurtherLayerInteractions();
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void ClippingBoxInteractor::panGestureReleaseEvent(int /*_x*/, int /*_y*/, int /*_dx*/, int /*_dy*/)
+{
+    if(m_widget.getVisibility())
+    {
+        m_widget.widgetReleased();
+        m_pickedObject = nullptr;
     }
 }
 

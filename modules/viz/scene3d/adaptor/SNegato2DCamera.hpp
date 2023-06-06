@@ -87,20 +87,38 @@ public:
     MODULE_VIZ_SCENE3D_API ~SNegato2DCamera() noexcept override = default;
 
     /**
-     * @brief Zooms in the scene at the current cursor position.
+     * @brief Moving along slices (SHIFT to speed-up) or Zooms in the scene at the current cursor position.
      * @param _delta distance that the wheel is rotated.
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void wheelEvent(Modifier /*_modifier*/, double _delta, int _x, int _y) override;
+    MODULE_VIZ_SCENE3D_API void wheelEvent(Modifier /*_modifier*/, double _delta, int _x, int _y) final;
 
     /**
-     * @brief Zooms in the scene at the center of the pinch.
+     * @brief Zooms in the scene at the current cursor position.
      * @param _scalingFactor distance of the fingers
      * @param _centerX the width coordinate of the center of the pinch
      * @param _centerY the height coordinate of the center of the pinch
      */
-    MODULE_VIZ_SCENE3D_API virtual void pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY) override;
+    MODULE_VIZ_SCENE3D_API void pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY) final;
+
+    /**
+     * @brief Moves the camera along the projection plane.
+     * @param _x the last width coordinate of the finger
+     * @param _y the last height coordinate of the finger
+     * @param _dx width displacement of the finger since the last event.
+     * @param _dy height displacement of the finger since the last event.
+     */
+    MODULE_VIZ_SCENE3D_API void panGestureMoveEvent(int _x, int _y, int _dx, int _dy) final;
+
+    /**
+     * @brief Ends Moving the camera along the projection plane.
+     * @param _x the last width coordinate of the finger
+     * @param _y the last height coordinate of the finger
+     * @param _dx width displacement of the finger since the last event.
+     * @param _dy height displacement of the finger since the last event.
+     */
+    MODULE_VIZ_SCENE3D_API void panGestureReleaseEvent(int _x, int _y, int _dx, int _dy) final;
 
     /**
      * @brief Interacts with the negato if it was picked by pressing any mouse button.
@@ -121,7 +139,7 @@ public:
         int _y,
         int _dx,
         int _dy
-    ) override;
+    ) final;
 
     /**
      * @brief Verifies if the button is pressed within the camera's viewport and enables mouse movements if that is the
@@ -135,7 +153,7 @@ public:
         Modifier /*_mods*/,
         int _x,
         int _y
-    ) override;
+    ) final;
 
     /**
      * @brief Disables mouse movements.
@@ -148,7 +166,7 @@ public:
         Modifier /*_mods*/,
         int _x,
         int _y
-    ) override;
+    ) final;
 
     /**
      * @brief Resets the camera when the 'R' key is pressed.
@@ -156,15 +174,15 @@ public:
      * @param _x current width coordinate of the mouse cursor.
      * @param _y current height coordinate of the mouse cursor.
      */
-    MODULE_VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int _x, int _y) override;
+    MODULE_VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int _x, int _y) final;
 
 protected:
 
     /// Configures the layer, interaction priority and camera orientation.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3D_API void configuring() final;
 
     /// Adds negato camera interactions to the layer.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3D_API void starting() final;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -174,13 +192,13 @@ protected:
      * Connect data::Image::s_SLICE_TYPE_MODIFIED_SIG of s_IMAGE_INPUT to s_CHANGE_ORIENTATION_SLOT
      * Connect data::Image::s_SLICE_INDEX_MODIFIED_SIG of s_IMAGE_INPUT to s_MOVE_BACK_SLOT
      */
-    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3D_API service::IService::KeyConnectionsMap getAutoConnections() const final;
 
     /// Does nothing.
-    MODULE_VIZ_SCENE3D_API void updating() noexcept override;
+    MODULE_VIZ_SCENE3D_API void updating() noexcept final;
 
     /// Removes negato camera interactions from the layer.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3D_API void stopping() final;
 
 private:
 
