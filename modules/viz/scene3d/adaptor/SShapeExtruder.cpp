@@ -530,7 +530,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, i
 
 //-----------------------------------------------------------------------------
 
-void SShapeExtruder::buttonDoublePressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
+void SShapeExtruder::buttonDoublePressEvent(MouseButton _button, Modifier /*_mods*/, int /*_x*/, int /*_y*/)
 {
     if(m_interactionEnableState && _button == MouseButton::LEFT)
     {
@@ -540,34 +540,24 @@ void SShapeExtruder::buttonDoublePressEvent(MouseButton _button, Modifier /*_mod
         const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
         layer->cancelFurtherInteraction();
 
-        // Get the clicked point in the world space.
-        const auto toolNearFarPos = this->getNearFarRayPositions(_x, _y);
-
-        // Check the interactions.
-        if(_button == MouseButton::LEFT)
+        // When coming from touch, mouseReleaseEvent is not always called.
+        if(m_leftButtonMoveState)
         {
-            // Check if the point can be added.
-            bool near = false;
-            for(const Ogre::Vector3 pos : m_lassoEdgePositions)
-            {
-                if((std::get<0>(toolNearFarPos) - pos).length() < m_lassoEdgeSize)
-                {
-                    near = true;
-                    break;
-                }
-            }
+            // Add a new point to the lasso edge list.
+            m_lassoEdgePositions.push_back(m_lassoToolPositions.back());
+            this->drawLasso();
 
-            if(near)
-            {
-                this->triangulatePoints();
-
-                this->enableTool(false);
-                m_toolDisabledSig->asyncEmit();
-
-                // Send a render request.
-                this->requestRender();
-            }
+            // Cancel the left button move state.
+            m_leftButtonMoveState = false;
         }
+
+        this->triangulatePoints();
+
+        this->enableTool(false);
+        m_toolDisabledSig->asyncEmit();
+
+        // Send a render request.
+        this->requestRender();
     }
 }
 
@@ -575,44 +565,53 @@ void SShapeExtruder::buttonDoublePressEvent(MouseButton _button, Modifier /*_mod
 
 void SShapeExtruder::mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/)
 {
-    if(m_interactionEnableState)
+    if(!m_interactionEnableState)
     {
-        this->getRenderService()->makeCurrent();
-
-        // Cancel others interactions.
-        const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
-        layer->cancelFurtherInteraction();
-
-        // Get the clicked point in the world space.
-        const auto toolNearFarPos = this->getNearFarRayPositions(_x, _y);
-
-        // Check the interactions.
-        if(_button == MouseButton::LEFT)
-        {
-            // Add a new position and draws the lasso.
-            m_lassoToolPositions.push_back(std::get<0>(toolNearFarPos));
-            m_lassoNearPositions.push_back(std::get<1>(toolNearFarPos));
-            m_lassoFarPositions.push_back(std::get<2>(toolNearFarPos));
-            this->drawLasso();
-
-            // Enable the left button move state.
-            m_leftButtonMoveState = true;
-        }
-
-        // Draw the last lasso line.
-        SIGHT_ASSERT("Lasso positions must have at east one point", !m_lassoToolPositions.empty());
-
-        m_lastLassoLine->beginUpdate(0);
-
-        m_lastLassoLine->colour(m_lineColor);
-        m_lastLassoLine->position(m_lassoToolPositions.back());
-        m_lastLassoLine->position(std::get<0>(toolNearFarPos));
-
-        m_lastLassoLine->end();
-
-        // Send a render request.
-        this->requestRender();
+        return;
     }
+
+    getRenderService()->makeCurrent();
+
+    // Cancel others interactions.
+    getLayer()->cancelFurtherInteraction();
+
+    // Get the clicked point in the world space.
+    const auto& [toolPosition, nearPosition, farPosition] = getNearFarRayPositions(_x, _y);
+
+    // Check if the mouse is still on the last point.
+    // This should not happen but it's better to check, since adding the same points twice will break everything.
+    if(!m_lassoToolPositions.empty() && m_lassoToolPositions.back() == toolPosition
+       && !m_lassoNearPositions.empty() && m_lassoNearPositions.back() == nearPosition
+       && !m_lassoFarPositions.empty() && m_lassoFarPositions.back() == farPosition)
+    {
+        return;
+    }
+
+    if(_button == MouseButton::LEFT)
+    {
+        // Add a new position and draws the lasso.
+        m_lassoToolPositions.push_back(toolPosition);
+        m_lassoNearPositions.push_back(nearPosition);
+        m_lassoFarPositions.push_back(farPosition);
+        drawLasso();
+
+        // Enable the left button move state.
+        m_leftButtonMoveState = true;
+    }
+
+    // Draw the last lasso line.
+    SIGHT_ASSERT("Lasso positions must have at east one point", !m_lassoToolPositions.empty());
+
+    m_lastLassoLine->beginUpdate(0);
+
+    m_lastLassoLine->colour(m_lineColor);
+    m_lastLassoLine->position(m_lassoToolPositions.back());
+    m_lastLassoLine->position(toolPosition);
+
+    m_lastLassoLine->end();
+
+    // Send a render request.
+    requestRender();
 }
 
 //-----------------------------------------------------------------------------
