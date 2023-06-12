@@ -75,6 +75,8 @@ void TrackballInteractor::mouseMoveEvent(MouseButton button, Modifier /*_mods*/,
 
             camera->getParentNode()->translate(transVec, Ogre::Node::TS_LOCAL);
         }
+
+        m_layer.lock()->requestRender();
     }
 }
 
@@ -85,6 +87,7 @@ void TrackballInteractor::buttonPressEvent(IInteractor::MouseButton /*_button*/,
     if(auto layer = m_layer.lock())
     {
         m_mouseMove = isInLayer(_x, _y, layer, m_layerOrderDependant);
+        layer->requestRender();
     }
 }
 
@@ -129,6 +132,7 @@ void TrackballInteractor::wheelEvent(Modifier /*_mods*/, double delta, int x, in
             camNode->translate(Ogre::Vector3(0, 0, -1) * z, Ogre::Node::TS_LOCAL);
 
             layer->resetCameraClippingRange();
+            layer->requestRender();
         }
     }
 }
@@ -165,6 +169,7 @@ void TrackballInteractor::keyPressEvent(int key, Modifier /*_mods*/, int _mouseX
             if(key == 'R' || key == 'r')
             {
                 layer->resetCameraCoordinates();
+                layer->requestRender();
             }
 
             if(key == 'A' || key == 'a')
@@ -209,6 +214,7 @@ void TrackballInteractor::resizeEvent(int _width, int _height)
     SIGHT_ASSERT("Width and height should be strictly positive", _width > 0 && _height > 0);
     const float aspectRatio = static_cast<float>(_width) / static_cast<float>(_height);
     camera->setAspectRatio(aspectRatio);
+    m_layer.lock()->requestRender();
 }
 
 // ----------------------------------------------------------------------------

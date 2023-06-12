@@ -321,8 +321,6 @@ void Window::mouseMoveEvent(QMouseEvent* _e)
     }
 
     Q_EMIT interacted(info);
-
-    this->requestRender();
 }
 
 // ----------------------------------------------------------------------------
@@ -343,8 +341,6 @@ void Window::wheelEvent(QWheelEvent* _e)
     info.modifiers = convertModifiers(_e->modifiers());
 
     Q_EMIT interacted(info);
-
-    this->requestRender();
 }
 
 // ----------------------------------------------------------------------------
@@ -360,8 +356,6 @@ void Window::mousePressEvent(QMouseEvent* _e)
 
     const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONPRESS);
     Q_EMIT interacted(info);
-
-    this->requestRender();
 }
 
 // ----------------------------------------------------------------------------
@@ -375,8 +369,6 @@ void Window::mouseDoubleClickEvent(QMouseEvent* _e)
 
     const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONDOUBLEPRESS);
     Q_EMIT interacted(info);
-
-    this->requestRender();
 }
 
 // ----------------------------------------------------------------------------
@@ -392,8 +384,6 @@ void Window::mouseReleaseEvent(QMouseEvent* _e)
 
     const auto info = this->convertMouseEvent(_e, InteractionInfo::BUTTONRELEASE);
     Q_EMIT interacted(info);
-
-    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

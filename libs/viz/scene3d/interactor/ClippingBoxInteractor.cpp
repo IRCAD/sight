@@ -84,6 +84,7 @@ void ClippingBoxInteractor::mouseMoveEvent(MouseButton button, Modifier /*_mods*
         if(interacted)
         {
             this->cancelFurtherLayerInteractions();
+            m_layer.lock()->requestRender();
         }
     }
 }
@@ -96,6 +97,7 @@ void ClippingBoxInteractor::buttonReleaseEvent(MouseButton /*_button*/, Modifier
     {
         m_widget.widgetReleased();
         m_pickedObject = nullptr;
+        m_layer.lock()->requestRender();
     }
 }
 
@@ -132,6 +134,7 @@ void ClippingBoxInteractor::buttonPressEvent(MouseButton button, Modifier /*_mod
         if(interacted)
         {
             this->cancelFurtherLayerInteractions();
+            m_layer.lock()->requestRender();
         }
     }
 }
@@ -186,6 +189,7 @@ void ClippingBoxInteractor::panGestureReleaseEvent(int /*_x*/, int /*_y*/, int /
 void ClippingBoxInteractor::setBoxVisibility(bool _visibility)
 {
     m_widget.setVisibility(_visibility);
+    m_layer.lock()->requestRender();
 }
 
 //------------------------------------------------------------------------------
