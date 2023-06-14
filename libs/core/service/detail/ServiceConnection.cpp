@@ -51,16 +51,57 @@ void ServiceConnection::connect(const service::IService& _service)
             catch(const std::exception& e)
             {
                 SIGHT_ERROR(
-                    "Signal '" + signalCfg.second + "' from '" + signalCfg.first + "' can not be connected to the"
-                                                                                   " channel '" + proxyCfg.second.m_channel + "': " + std::string(
-                        e.what()
-                                                                                   )
+                    "Signal '" + signalCfg.second + "' from '" + signalCfg.first
+                    + "' can not be connected to the channel '" + proxyCfg.second.m_channel
+                    + "': " + std::string(e.what())
                 );
             }
         }
 
         for(const auto& slotCfg : proxyCfg.second.m_slots)
         {
+            // The start slot is connected before the start stage in connectStartSlot(), skip it
+            if(slotCfg.second == IService::slots::s_START)
+            {
+                continue;
+            }
+
+            SIGHT_ASSERT("Invalid slot destination", slotCfg.first == _service.getID());
+
+            core::com::SlotBase::sptr slot = _service.slot(slotCfg.second);
+            SIGHT_ASSERT("Slot '" + slotCfg.second + "' not found in source '" + slotCfg.first + "'.", slot);
+
+            try
+            {
+                proxy->connect(proxyCfg.second.m_channel, slot);
+            }
+            catch(const std::exception& e)
+            {
+                SIGHT_ERROR(
+                    "Slot '" + slotCfg.second + "' from '" + slotCfg.first
+                    + "' can not be connected to the channel '" + proxyCfg.second.m_channel
+                    + "': " + std::string(e.what())
+                );
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void ServiceConnection::connectStartSlot(const service::IService& _service)
+{
+    core::com::Proxy::sptr proxy = core::com::Proxy::get();
+
+    for(const auto& proxyCfg : m_proxies)
+    {
+        for(const auto& slotCfg : proxyCfg.second.m_slots)
+        {
+            if(slotCfg.second != IService::slots::s_START)
+            {
+                continue;
+            }
+
             SIGHT_ASSERT("Invalid slot destination", slotCfg.first == _service.getID());
 
             core::com::SlotBase::sptr slot = _service.slot(slotCfg.second);
@@ -115,6 +156,47 @@ void ServiceConnection::disconnect(const service::IService& _service)
         for(const auto& slotCfg : proxyCfg.second.m_slots)
         {
             SIGHT_ASSERT("Invalid slot destination", slotCfg.first == _service.getID());
+
+            // The start slot is disconnected after the stop stage in disconnectStartSlot(), skip it
+            if(slotCfg.second == IService::slots::s_START)
+            {
+                continue;
+            }
+
+            core::com::SlotBase::sptr slot = _service.slot(slotCfg.second);
+            try
+            {
+                proxy->disconnect(proxyCfg.second.m_channel, slot);
+            }
+            catch(const std::exception& e)
+            {
+                SIGHT_ERROR(
+                    "Slot '" + slotCfg.second + "' from '" + slotCfg.first + "' can not be disconnected from the "
+                                                                             "channel '" + proxyCfg.second.m_channel + "': " + std::string(
+                        e.what()
+                                                                             )
+                );
+            }
+        }
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void ServiceConnection::disconnectStartSlot(const service::IService& _service)
+{
+    core::com::Proxy::sptr proxy = core::com::Proxy::get();
+
+    for(const auto& proxyCfg : m_proxies)
+    {
+        for(const auto& slotCfg : proxyCfg.second.m_slots)
+        {
+            SIGHT_ASSERT("Invalid slot destination", slotCfg.first == _service.getID());
+
+            if(slotCfg.second != IService::slots::s_START)
+            {
+                continue;
+            }
 
             core::com::SlotBase::sptr slot = _service.slot(slotCfg.second);
             try

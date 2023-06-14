@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -80,6 +80,7 @@ Slot<Slot<R(A ...)> >::Slot(SPTR(SlotRun<F>)slot) :
 {
     static_assert(std::is_same<void, R>::value);
     this->setWorker(slot->getWorker());
+    this->m_sourceSlot = slot;
 }
 
 //-----------------------------------------------------------------------------
@@ -94,6 +95,7 @@ Slot<Slot<R(A ...)> >::Slot(SPTR(Slot<F>)slot) :
         >::wrap(&Slot<F>::call, slot.get()))
 {
     this->setWorker(slot->getWorker());
+    this->m_sourceSlot = slot;
 }
 
 //-----------------------------------------------------------------------------

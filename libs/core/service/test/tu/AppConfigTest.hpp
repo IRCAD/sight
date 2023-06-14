@@ -41,9 +41,10 @@ CPPUNIT_TEST(parametersConfigTest);
 CPPUNIT_TEST(startStopTest);
 CPPUNIT_TEST(autoConnectTest);
 CPPUNIT_TEST(connectionTest);
+CPPUNIT_TEST(startStopConnectionTest);
 CPPUNIT_TEST(optionalKeyTest);
 CPPUNIT_TEST(keyGroupTest);
-CPPUNIT_TEST(concurentAccessToAppConfigTest);
+CPPUNIT_TEST(concurrentAccessToAppConfigTest);
 CPPUNIT_TEST(parameterReplaceTest);
 CPPUNIT_TEST(objectConfigTest);
 CPPUNIT_TEST_SUITE_END();
@@ -59,9 +60,10 @@ public:
     void startStopTest();
     void autoConnectTest();
     void connectionTest();
+    void startStopConnectionTest();
     void optionalKeyTest();
     void keyGroupTest();
-    static void concurentAccessToAppConfigTest();
+    static void concurrentAccessToAppConfigTest();
     void parameterReplaceTest();
     void objectConfigTest();
 

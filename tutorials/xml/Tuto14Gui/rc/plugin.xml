@@ -361,20 +361,11 @@
             <state checked="true" visible="false" />
         </service>
 
-        <service uid="item16Act" type="sight::module::ui::base::com::SStarter" >
+        <service uid="item16Act" type="sight::module::ui::base::SAction" >
             <state checked="true" />
-            <start uid="item2Act" />
-            <start uid="item3Act" />
-            <stop uid="item4Act" />
-            <stop uid="item5Act" />
         </service>
 
-        <service uid="item17Act" type="sight::module::ui::base::com::SStarter" >
-            <stop uid="item2Act" />
-            <stop uid="item3Act" />
-            <start uid="item4Act" />
-            <start uid="item5Act" />
-        </service>
+        <service uid="item17Act" type="sight::module::ui::base::SAction" />
 
         <!-- ******************************* Services ***************************************** -->
 
@@ -459,6 +450,22 @@
         <connect>
             <signal>hideShowToolbar/triggered</signal>
             <slot>toolbar2View/setVisible</slot>
+        </connect>
+
+        <connect>
+            <signal>item16Act/checked</signal>
+            <slot>item2Act/start</slot>
+            <slot>item3Act/start</slot>
+            <slot>item4Act/stop</slot>
+            <slot>item5Act/stop</slot>
+        </connect>
+
+        <connect>
+            <signal>item17Act/checked</signal>
+            <slot>item2Act/stop</slot>
+            <slot>item3Act/stop</slot>
+            <slot>item4Act/start</slot>
+            <slot>item5Act/start</slot>
         </connect>
 
         <!-- ******************************* Start services ***************************************** -->

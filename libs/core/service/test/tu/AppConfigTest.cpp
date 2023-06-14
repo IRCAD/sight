@@ -676,6 +676,7 @@ void AppConfigTest::connectionTest()
 
     // Remove one data
     genDataSrv->setOutput("out3", nullptr);
+
     fwTestWaitMacro(core::tools::fwID::exist("TestService3Uid") == false);
 
     // Service 3 should be removed
@@ -773,6 +774,89 @@ void AppConfigTest::connectionTest()
 
         CPPUNIT_ASSERT(srv2->getIsUpdated());
         CPPUNIT_ASSERT(srv3->getIsUpdated());
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void AppConfigTest::startStopConnectionTest()
+{
+    {
+        m_appConfigMgr = this->launchAppConfigMgr("startStopConnectionTest");
+
+        // Check TestService5 starts TestService6
+        // Check TestService5 stops TestService6
+        {
+            core::tools::Object::sptr gn_srv5 = core::tools::fwID::getObject("TestService5Uid");
+            auto srv5                         = service::ut::TestService::dynamicCast(gn_srv5);
+            CPPUNIT_ASSERT(srv5 != nullptr);
+            CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv5->getStatus());
+
+            {
+                core::tools::Object::sptr gn_srv6 = core::tools::fwID::getObject("TestService6Uid");
+                auto srv6                         = service::ut::TestService::dynamicCast(gn_srv6);
+                CPPUNIT_ASSERT(srv6 != nullptr);
+                CPPUNIT_ASSERT_EQUAL(service::IService::STOPPED, srv6->getStatus());
+
+                srv5->update().wait();
+                fwTestWaitMacro(srv6->isStarted());
+                CPPUNIT_ASSERT_EQUAL(true, srv6->isStarted());
+
+                auto sig =
+                    srv5->signal<service::ut::ISTest::signals::int_sent_t>(service::ut::ISTest::signals::s_SIG_1);
+                sig->asyncEmit(0);
+
+                fwTestWaitMacro(srv6->isStopped());
+                CPPUNIT_ASSERT_EQUAL(true, srv6->isStopped());
+            }
+        }
+        m_appConfigMgr->stopAndDestroy();
+        m_appConfigMgr.reset();
+    }
+
+    {
+        m_appConfigMgr = this->launchAppConfigMgr("startStopConnectionTest");
+
+        // Check TestService5 starts TestService6
+        // Check TestService5 stops TestService6
+        // Check TestService6 is well stopped by the AppConfigManager
+        // Check TestService6 stops TestService7
+        {
+            core::tools::Object::sptr gn_srv5 = core::tools::fwID::getObject("TestService5Uid");
+            auto srv5                         = service::ut::TestService::dynamicCast(gn_srv5);
+            CPPUNIT_ASSERT(srv5 != nullptr);
+            CPPUNIT_ASSERT_EQUAL(service::IService::STARTED, srv5->getStatus());
+
+            {
+                core::tools::Object::sptr gn_srv6 = core::tools::fwID::getObject("TestService6Uid");
+                auto srv6                         = service::ut::TestService::dynamicCast(gn_srv6);
+                CPPUNIT_ASSERT(srv6 != nullptr);
+                CPPUNIT_ASSERT_EQUAL(service::IService::STOPPED, srv6->getStatus());
+
+                srv5->update().wait();
+                fwTestWaitMacro(srv6->isStarted());
+                CPPUNIT_ASSERT_EQUAL(true, srv6->isStarted());
+
+                auto sig =
+                    srv5->signal<service::ut::ISTest::signals::int_sent_t>(service::ut::ISTest::signals::s_SIG_1);
+                sig->asyncEmit(0);
+
+                fwTestWaitMacro(srv6->isStopped());
+                CPPUNIT_ASSERT_EQUAL(true, srv6->isStopped());
+
+                srv5->update().wait();
+                fwTestWaitMacro(srv6->isStarted());
+                CPPUNIT_ASSERT_EQUAL(true, srv6->isStarted());
+
+                core::tools::Object::sptr gn_srv7 = core::tools::fwID::getObject("TestService7Uid");
+                auto srv7                         = service::ut::TestService::dynamicCast(gn_srv7);
+                srv6->update().wait();
+                fwTestWaitMacro(srv7->isStopped());
+                CPPUNIT_ASSERT_EQUAL(true, srv7->isStopped());
+            }
+        }
+        m_appConfigMgr->stopAndDestroy();
+        m_appConfigMgr.reset();
     }
 }
 
@@ -1260,7 +1344,7 @@ void AppConfigTest::keyGroupTest()
 
 //-----------------------------------------------------------------------------
 
-void AppConfigTest::concurentAccessToAppConfigTest()
+void AppConfigTest::concurrentAccessToAppConfigTest()
 {
     std::vector<std::future<void> > futures;
     for(unsigned int i = 0 ; i < 20 ; ++i)

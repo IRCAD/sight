@@ -154,18 +154,19 @@ public:
 
     SIGHT_DECLARE_CLASS(ISTest, TestService);
 
-    /// Keys to register Signal
-    static const core::com::Signals::SignalKeyType s_MSG_SENT_SIG;
-    /// Keys to register Slot
-    static const core::com::Slots::SlotKeyType s_UPDATE2_SLOT;
+    struct signals
+    {
+        static inline const core::com::Signals::SignalKeyType s_SIG_1    = "signal1";
+        static inline const core::com::Signals::SignalKeyType s_MSG_SENT = "msgSent";
 
-    /// Type of signal
-    typedef core::com::Signal<void (const std::string&)> MsgSentSignalType;
-
-    /// Keys to register Signal
-    static const core::com::Signals::SignalKeyType s_SIG_1;
-    /// Keys to register Slot
-    static const core::com::Slots::SlotKeyType s_SLOT_1;
+        using int_sent_t = core::com::Signal<void (int)>;
+        using msg_sent_t = core::com::Signal<void (const std::string&)>;
+    };
+    struct slots
+    {
+        static inline const core::com::Slots::SlotKeyType s_UPDATE2 = "update2";
+        static inline const core::com::Slots::SlotKeyType s_SLOT_1  = "slot1";
+    };
 
     /// Type of signal
     typedef core::com::Signal<void (int)> IntSentSignalType;
@@ -174,10 +175,10 @@ public:
 
     ISTest() noexcept
     {
-        newSignal<IntSentSignalType>(s_SIG_1);
-        newSignal<MsgSentSignalType>(s_MSG_SENT_SIG);
-        newSlot(s_SLOT_1, &ISTest::receiveSlot, this);
-        newSlot(s_UPDATE2_SLOT, &ISTest::update2, this);
+        newSignal<signals::int_sent_t>(signals::s_SIG_1);
+        newSignal<signals::msg_sent_t>(signals::s_MSG_SENT);
+        newSlot(slots::s_SLOT_1, &ISTest::receiveSlot, this);
+        newSlot(slots::s_UPDATE2, &ISTest::update2, this);
     }
 
     //-------------------------------------------------------------------------
@@ -250,15 +251,15 @@ public:
     IService::KeyConnectionsMap getAutoConnections() const override
     {
         return {
-            {"data", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
-            {"data1", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
-            {"data2", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
-            {"data3", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
-            {"data4", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
-            {"data5", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
-            {"dataGroup", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
-            {"dataGroup0", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
-            {"dataGroup1", data::Image::s_BUFFER_MODIFIED_SIG, slots::s_UPDATE}
+            {"data", data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+            {"data1", data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+            {"data2", data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+            {"data3", data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+            {"data4", data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+            {"data5", data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+            {"dataGroup", data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+            {"dataGroup0", data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+            {"dataGroup1", data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE}
         };
     }
 
@@ -330,8 +331,8 @@ public:
     IService::KeyConnectionsMap getAutoConnections() const override
     {
         return {
-            {"data1", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
-            {"data2", data::Object::s_MODIFIED_SIG, s_SLOT_1},
+            {"data1", data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+            {"data2", data::Object::s_MODIFIED_SIG, slots::s_SLOT_1},
         };
     }
 
@@ -390,9 +391,9 @@ public:
     IService::KeyConnectionsMap getAutoConnections() const override
     {
         return {
-            {"data1", data::Object::s_MODIFIED_SIG, slots::s_UPDATE},
-            {"data2", data::Object::s_MODIFIED_SIG, s_SLOT_1},
-            {"data3", data::Object::s_MODIFIED_SIG, s_SLOT_1},
+            {"data1", data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE},
+            {"data2", data::Object::s_MODIFIED_SIG, slots::s_SLOT_1},
+            {"data3", data::Object::s_MODIFIED_SIG, slots::s_SLOT_1},
         };
     }
 
@@ -427,9 +428,9 @@ public:
     IService::KeyConnectionsMap getAutoConnections() const override
     {
         KeyConnectionsMap connections;
-        connections.push("data1", data::Object::s_MODIFIED_SIG, slots::s_UPDATE);
-        connections.push("data2", data::Object::s_MODIFIED_SIG, s_SLOT_1);
-        connections.push("data3", data::Object::s_MODIFIED_SIG, s_SLOT_1);
+        connections.push("data1", data::Object::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+        connections.push("data2", data::Object::s_MODIFIED_SIG, slots::s_SLOT_1);
+        connections.push("data3", data::Object::s_MODIFIED_SIG, slots::s_SLOT_1);
         return connections;
     }
 

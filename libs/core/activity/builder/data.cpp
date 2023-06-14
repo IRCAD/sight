@@ -51,6 +51,7 @@ sight::data::Object::sptr create(const std::string& _type, const activity::exten
     objParser->startConfig();
     objParser->updateConfig();
     objParser->stopConfig();
+    objParser->destroyConfig();
 
     return object;
 }

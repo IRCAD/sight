@@ -122,7 +122,7 @@ struct CORE_CLASS_API SlotConnection<void(A ...)>: SlotConnectionBase
         WPTR(SlotBase) m_connectedSlot;
 
         /// Slot wrapper.
-        SlotWrapperSptrType m_slotWrapper;
+        SPTR(SlotBase) m_slotWrapper;
 
         /**
          * @brief Associates state of this connection to related Slot.

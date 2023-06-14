@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,6 +31,7 @@ namespace sight::module::ui::base::com
 
 /**
  * @brief   Action that sends a signal when it is triggered
+ * * @deprecated Replaced by sight::module::ui::base::SAction since Sight 22.0, will be removed in Sight 24.0
  *
  * @section Signals Signals
  * - \b triggered(bool) : Emitted when the action is triggered, with the state of the action as parameter.

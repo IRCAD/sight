@@ -149,10 +149,10 @@ public:
 
     struct signals
     {
-        using started_t      = core::com::Signal<void ()>;
-        using stopped_t      = core::com::Signal<void ()>;
-        using updated_t      = core::com::Signal<void ()>;
-        using swapped_t      = core::com::Signal<void ()>;
+        using started_t      = core::com::Signal<void (IService::wptr)>;
+        using stopped_t      = core::com::Signal<void (IService::wptr)>;
+        using updated_t      = core::com::Signal<void (IService::wptr)>;
+        using swapped_t      = core::com::Signal<void (IService::wptr)>;
         using notification_t = core::com::Signal<void (NotificationType, std::string)>;
 
         static inline const core::com::Signals::key_t s_STARTED  = "started";

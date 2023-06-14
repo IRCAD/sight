@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,12 +48,6 @@ SIGHT_REGISTER_SERVICE(sight::service::IService, sight::service::ut::TestService
 
 namespace sight::service::ut
 {
-
-const core::com::Signals::SignalKeyType ISTest::s_MSG_SENT_SIG = "msgSent";
-const core::com::Slots::SlotKeyType ISTest::s_UPDATE2_SLOT     = "update2";
-
-const core::com::Signals::SignalKeyType ISTest::s_SIG_1 = "signal1";
-const core::com::Slots::SlotKeyType ISTest::s_SLOT_1    = "slot1";
 
 unsigned int TestService::s_START_COUNTER  = 0;
 unsigned int TestService::s_UPDATE_COUNTER = 0;

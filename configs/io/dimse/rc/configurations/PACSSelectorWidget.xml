@@ -374,14 +374,6 @@
             <mode>copyOnUpdate</mode>
         </service>
 
-        <service uid="previewNegatoStopperSrv" type="sight::module::ui::base::com::SStarter">
-            <stop uid="pNegatoAdp" />
-        </service>
-
-        <service uid="previewNegatoStarterSrv" type="sight::module::ui::base::com::SStarter">
-            <start uid="pNegatoAdp" />
-        </service>
-
         <service uid="configurePACSInitializerSrv" type="sight::module::io::dimse::SPacsConfigurationInitializer">
             <inout key="config" uid="pacsConfiguration" autoConnect="true" />
             <config localApplicationTitle="SightViewer" pacsHostName="localhost" pacsApplicationTitle="PACSNAME" pacsApplicationPort="4242" moveApplicationTitle="SightViewer" moveApplicationPort="104" retrieveMethod="MOVE" preferenceKey="SIGHTVIEWER_PACS_CONFIGURATION" />
@@ -485,19 +477,15 @@
         <connect>
             <signal>previewSelections/addedObjects</signal>
             <signal>previewSelections/removedObjects</signal>
-            <slot>previewNegatoStopperSrv/update</slot>
+            <slot>pNegatoAdp/stop</slot>
             <slot>hideAdvancedQueryEditorSrv/update</slot>
             <slot>hidePACSConfigurationSrv/update</slot>
-        </connect>
-
-        <connect>
-            <signal>previewNegatoStopperSrv/updated</signal>
             <slot>resetPreviewSrv/update</slot>
         </connect>
 
         <connect>
             <signal>resetPreviewSrv/updated</signal>
-            <slot>previewNegatoStarterSrv/update</slot>
+            <slot>pNegatoAdp/start</slot>
             <slot>extractPreviewSrv/update</slot>
         </connect>
 
@@ -576,8 +564,6 @@
         <start uid="leftNotifierSrv" />
         <start uid="rightNotifierSrv" />
         <start uid="resetPreviewSrv" />
-        <start uid="previewNegatoStopperSrv" />
-        <start uid="previewNegatoStarterSrv" />
         <start uid="extractPreviewSrv" />
         <start uid="extractLocalImageSeriesSrv" />
         <start uid="seriesPullerSrv" />

@@ -50,6 +50,7 @@ public:
     using PackagedTaskType = std::packaged_task<void ()>;
 
     Service(sight::service::IService& service);
+    ~Service();
 
     /**
      * @brief Affect the configuration, using a boost property tree

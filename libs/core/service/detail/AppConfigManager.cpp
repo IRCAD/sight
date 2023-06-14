@@ -50,8 +50,10 @@ namespace sight::service::detail
 
 // ------------------------------------------------------------------------
 
-static const core::com::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
-static const core::com::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
+static const core::com::Slots::SlotKeyType s_ADD_OBJECTS_SLOT        = "addObject";
+static const core::com::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT     = "removeObjects";
+static const core::com::Slots::SlotKeyType s_ADD_STARTED_SRV_SLOT    = "addStartedService";
+static const core::com::Slots::SlotKeyType s_REMOVE_STARTED_SRV_SLOT = "removeStartedService";
 
 // ------------------------------------------------------------------------
 
@@ -59,6 +61,31 @@ AppConfigManager::AppConfigManager()
 {
     newSlot(s_ADD_OBJECTS_SLOT, &AppConfigManager::addObjects, this);
     newSlot(s_REMOVE_OBJECTS_SLOT, &AppConfigManager::removeObjects, this);
+    newSlot(
+        s_ADD_STARTED_SRV_SLOT,
+        [this](IService::wptr _srv)
+        {
+            core::mt::ScopedLock lock(m_mutex);
+            if(auto srv = _srv.lock(); srv)
+            {
+                m_startedSrv.push_back(srv);
+            }
+        });
+    newSlot(
+        s_REMOVE_STARTED_SRV_SLOT,
+        [this](IService::wptr _srv)
+        {
+            core::mt::ScopedLock lock(m_mutex);
+            if(auto srv = _srv.lock(); srv)
+            {
+                std::erase_if(
+                    m_startedSrv,
+                    [&srv](auto& x)
+                {
+                    return srv == x.lock();
+                });
+            }
+        });
 }
 
 // ------------------------------------------------------------------------
@@ -143,6 +170,8 @@ void AppConfigManager::create()
 
 void AppConfigManager::start()
 {
+    core::mt::ScopedLock lock(m_mutex);
+
     SIGHT_ASSERT("Manager must be created first.", m_state == STATE_CREATED || m_state == STATE_STOPPED);
 
     core::com::HasSlots::m_slots.setWorker(core::thread::getDefaultWorker());
@@ -182,18 +211,42 @@ void AppConfigManager::stop()
     m_addObjectConnection.disconnect();
     m_removeObjectConnection.disconnect();
 
-    // Disconnect configuration connections
-    this->destroyProxies();
-
-    for(auto& createdObject : m_createdObjects)
+    std::vector<service::IService::SharedFutureType> futures;
     {
-        if(createdObject.second.second)
-        {
-            createdObject.second.second->stopConfig();
-        }
-    }
+        core::mt::ScopedLock lock(m_mutex);
 
-    this->stopStartedServices();
+        // Disconnect configuration connections
+        this->destroyProxies();
+
+        for(auto& createdObject : m_createdObjects)
+        {
+            if(createdObject.second.second)
+            {
+                createdObject.second.second->stopConfig();
+            }
+        }
+
+        // NOLINTNEXTLINE(bugprone-branch-clone)
+        BOOST_REVERSE_FOREACH(service::IService::wptr w_srv, m_startedSrv)
+        {
+            const service::IService::sptr srv = w_srv.lock();
+            SIGHT_ASSERT("Service expired.", srv);
+
+            // The service can have been stopped just before...
+            // This is a rare case, but nothing can really prevent that. So we just warn the developer, because if it
+            // was not expected, at least he has a notice in the log
+            if(srv->isStopped())
+            {
+                SIGHT_WARN("Service " << srv->getID() << " already stopped.");
+            }
+            else
+            {
+                futures.emplace_back(srv->stop());
+            }
+        }
+        m_startedSrv.clear();
+    }
+    std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 
     service::helper::Config::clearProps();
     m_state = STATE_STOPPED;
@@ -363,25 +416,6 @@ service::IService::sptr AppConfigManager::getNewService(const std::string& uid, 
     }
 
     return srv;
-}
-
-// ------------------------------------------------------------------------
-
-void AppConfigManager::stopStartedServices()
-{
-    std::vector<service::IService::SharedFutureType> futures;
-
-    // NOLINTNEXTLINE(bugprone-branch-clone)
-    BOOST_REVERSE_FOREACH(service::IService::wptr w_srv, m_startedSrv)
-    {
-        SIGHT_ASSERT("Service expired.", !w_srv.expired());
-
-        const service::IService::sptr srv = w_srv.lock();
-        SIGHT_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
-        futures.emplace_back(srv->stop());
-    }
-    m_startedSrv.clear();
-    std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 }
 
 // ------------------------------------------------------------------------
@@ -715,6 +749,8 @@ service::IService::sptr AppConfigManager::createService(const detail::ServiceCon
         }
     }
 
+    bool hasStartConnection = false;
+    bool hasStopConnection  = false;
     // Set the proxies
     const auto& itSrvProxy = m_servicesProxies.find(srvConfig.m_uid);
     if(itSrvProxy != m_servicesProxies.end())
@@ -722,11 +758,40 @@ service::IService::sptr AppConfigManager::createService(const detail::ServiceCon
         for(const auto& itProxy : itSrvProxy->second.m_proxyCnt)
         {
             srv->m_pimpl->m_connections.add(itProxy.second);
+
+            // Check if we need to monitor the start/stop state because of connections
+            for(const auto& slot : itProxy.second.m_slots)
+            {
+                if(slot.first == srvConfig.m_uid)
+                {
+                    if(slot.second == IService::slots::s_START)
+                    {
+                        hasStartConnection = true;
+                        break;
+                    }
+                    // NOLINTNEXTLINE(llvm-else-after-return,readability-else-after-return)
+                    else if(slot.second == IService::slots::s_STOP)
+                    {
+                        hasStopConnection = true;
+                        break;
+                    }
+                }
+            }
         }
     }
 
     // Configure
     srv->configure();
+
+    if(hasStartConnection)
+    {
+        srv->signal(IService::signals::s_STARTED)->connect(this->slot(s_ADD_STARTED_SRV_SLOT));
+    }
+
+    if(hasStopConnection)
+    {
+        srv->signal(IService::signals::s_STOPPED)->connect(this->slot(s_REMOVE_STARTED_SRV_SLOT));
+    }
 
     return srv;
 }
@@ -915,6 +980,8 @@ void AppConfigManager::destroyProxies()
 
 void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _id)
 {
+    core::mt::ScopedLock lock(m_mutex);
+
     FW_PROFILE("addObjects");
 
     // Local map used to process services only once
@@ -1087,6 +1154,8 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
 
 void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string& _id)
 {
+    core::mt::ScopedLock lock(m_mutex);
+
     FW_PROFILE("removeObjects");
 
     // Are there services that were connected with this object ?
@@ -1137,17 +1206,10 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
                     service::IService::sptr srv = service::get(srvCfg.m_uid);
                     SIGHT_ASSERT(this->msgHead() + "No service registered with UID \"" << srvCfg.m_uid << "\".", srv);
 
+                    std::erase_if(m_startedSrv, [&srv](auto& x){return srv == x.lock();});
+
                     SIGHT_ASSERT("Service " << srv->getID() << " already stopped.", !srv->isStopped());
                     srv->stop().wait();
-
-                    for(auto it = m_startedSrv.begin() ; it != m_startedSrv.end() ; ++it)
-                    {
-                        if(it->lock() == srv)
-                        {
-                            m_startedSrv.erase(it);
-                            break;
-                        }
-                    }
 
                     // 2. Destroy the service
                     SIGHT_ASSERT(
@@ -1156,14 +1218,7 @@ void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string&
                     );
                     service::unregisterService(srv);
 
-                    for(auto it = m_createdSrv.begin() ; it != m_createdSrv.end() ; ++it)
-                    {
-                        if(it->lock() == srv)
-                        {
-                            m_createdSrv.erase(it);
-                            break;
-                        }
-                    }
+                    std::erase_if(m_createdSrv, [&srv](auto& x){return srv == x.lock();});
 
                     service::IService::wptr checkSrv = srv;
                     srv.reset();
