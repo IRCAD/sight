@@ -58,12 +58,14 @@ static const std::string s_CONTEXT_TF = "TF_PRESET";
 static const std::string s_VERSION_TF = "V1";
 
 const core::com::Slots::SlotKeyType s_UPDATE_DEFAULT_PRESET_SLOT = "updateDefaultPreset";
+const core::com::Slots::SlotKeyType s_UPDATE_PRESETS_SLOT        = "updatePresets";
 
 //------------------------------------------------------------------------------
 
 STransferFunction::STransferFunction()
 {
     newSlot(s_UPDATE_DEFAULT_PRESET_SLOT, &STransferFunction::updateDefaultPreset, this);
+    newSlot(s_UPDATE_PRESETS_SLOT, [this](){STransferFunction::initializePresets();});
 
     const std::filesystem::path modulePath = core::runtime::getModuleResourcePath(std::string("sight::module::ui::qt"));
 
@@ -287,7 +289,11 @@ service::IService::KeyConnectionsMap STransferFunction::getAutoConnections() con
         {s_IMAGE_INPUT, data::Image::s_BUFFER_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_CURRENT_INPUT, data::TransferFunction::s_MODIFIED_SIG, IService::slots::s_UPDATE},
         {s_CURRENT_INPUT, data::TransferFunction::s_POINTS_MODIFIED_SIG, IService::slots::s_UPDATE},
-        {s_CURRENT_INPUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, IService::slots::s_UPDATE}
+        {s_CURRENT_INPUT, data::TransferFunction::s_WINDOWING_MODIFIED_SIG, IService::slots::s_UPDATE},
+        {s_PRESETS_INOUT, data::Composite::s_MODIFIED_SIG, s_UPDATE_PRESETS_SLOT},
+        {s_PRESETS_INOUT, data::Composite::s_ADDED_OBJECTS_SIG, s_UPDATE_PRESETS_SLOT},
+        {s_PRESETS_INOUT, data::Composite::s_CHANGED_OBJECTS_SIG, s_UPDATE_PRESETS_SLOT},
+        {s_PRESETS_INOUT, data::Composite::s_REMOVED_OBJECTS_SIG, s_UPDATE_PRESETS_SLOT}
     };
 }
 
@@ -322,10 +328,10 @@ std::string STransferFunction::createPresetName(
 
 //------------------------------------------------------------------------------
 
-void STransferFunction::initializePresets()
+void STransferFunction::initializePresets(const std::string& _currentPresetName)
 {
     m_tfPresets = sight::data::Composite::New();
-    std::string currentPresetName = data::TransferFunction::s_DEFAULT_TF_NAME;
+    std::string currentPresetName = _currentPresetName;
 
     {
         const auto optPresets           = m_optPresets.lock();
@@ -335,7 +341,10 @@ void STransferFunction::initializePresets()
             // If we specify the presets, use the internal map to save initial state
             m_tfPresets->deepCopy(optPresets.get_shared());
 
-            currentPresetName = presets.begin()->first;
+            if(presets.find(currentPresetName) == presets.end())
+            {
+                currentPresetName = presets.begin()->first;
+            }
         }
         else
         {
@@ -351,6 +360,7 @@ void STransferFunction::initializePresets()
                         data::TransferFunction::createDefaultTF(image->getType());
 
                     const auto scoped_emitter = presets.scoped_emit();
+                    scoped_emitter->block(slot(s_UPDATE_PRESETS_SLOT));
                     presets[defaultTFName] = defaultTf;
                 }
             }
@@ -424,7 +434,7 @@ void STransferFunction::initializePresets()
             {
                 for(const auto& elt : presets)
                 {
-                    if(elt.second == currentTfPreset.get_shared())
+                    if(sight::data::TransferFunction::dynamicCast(elt.second)->name() == currentTfPreset->name())
                     {
                         currentPresetName = elt.first;
                         break;
@@ -434,7 +444,12 @@ void STransferFunction::initializePresets()
         }
     }
 
-    const int index = m_presetComboBox->findText(QString::fromStdString(currentPresetName));
+    int index = m_presetComboBox->findText(QString::fromStdString(currentPresetName));
+    if(index == 1)
+    {
+        // Fallback if the previously selected TF no longer exists
+        index = m_presetComboBox->findText(QString::fromStdString(data::TransferFunction::s_DEFAULT_TF_NAME));
+    }
 
     // Set the current composite
     this->presetChoice(index);
@@ -528,6 +543,7 @@ void STransferFunction::deletePreset()
             sight::data::Composite& presets       = (optPresets != nullptr) ? *optPresets : *m_tfPresets;
 
             const auto scoped_emitter = presets.scoped_emit();
+            scoped_emitter->block(slot(s_UPDATE_PRESETS_SLOT));
 
             presets.erase(selectedTFPresetKey);
 
@@ -573,6 +589,7 @@ void STransferFunction::createPreset()
                 defaultTf->setName(newName);
 
                 const auto scoped_emitter = presets.scoped_emit();
+                scoped_emitter->block(slot(s_UPDATE_PRESETS_SLOT));
                 presets[newName] = defaultTf;
 
                 // Recreates presets.
@@ -641,6 +658,7 @@ void STransferFunction::copyPreset()
             tf->setName(newName);
 
             const auto scoped_emitter = presets.scoped_emit();
+            scoped_emitter->block(slot(s_UPDATE_PRESETS_SLOT));
             presets[newName] = tf;
 
             // Recreates presets.
@@ -677,6 +695,7 @@ void STransferFunction::reinitializePresets()
         {
             // If we specify the presets, restore the initial state from the internal map
             const auto scoped_emitter = optPresets->scoped_emit();
+            scoped_emitter->block(slot(s_UPDATE_PRESETS_SLOT));
             optPresets->deepCopy(m_tfPresets);
         }
     }
@@ -778,6 +797,7 @@ void STransferFunction::importPreset()
             }
 
             const auto scoped_emitter = presets.scoped_emit();
+            scoped_emitter->block(slot(s_UPDATE_PRESETS_SLOT));
             presets[presetName] = newTF;
             newTF->setName(presetName);
 

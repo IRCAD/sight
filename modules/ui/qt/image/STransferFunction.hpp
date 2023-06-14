@@ -146,7 +146,7 @@ private:
      * Add their names to m_presetComboBox. If the composite does not contain any TF (or only the default grey level TF,
      * the service creates a few from the resources of the module.
      */
-    void initializePresets();
+    void initializePresets(const std::string& _currentPresetName = sight::data::TransferFunction::s_DEFAULT_TF_NAME);
 
     /// Sets the current TF preset to the output of this service.
     void setCurrentPreset();
@@ -243,7 +243,7 @@ private:
     static constexpr std::string_view s_IMAGE_INPUT   = "image";
     static constexpr std::string_view s_PRESETS_INOUT = "presets";
     data::ptr<data::TransferFunction, data::Access::inout> m_currentTF {this, s_CURRENT_INPUT, true};
-    data::ptr<data::Composite, data::Access::inout> m_optPresets {this, s_PRESETS_INOUT, false, true};
+    data::ptr<data::Composite, data::Access::inout> m_optPresets {this, s_PRESETS_INOUT, true, true};
     data::ptr<data::Image, data::Access::in> m_image {this, s_IMAGE_INPUT, true, true};
 };
 
