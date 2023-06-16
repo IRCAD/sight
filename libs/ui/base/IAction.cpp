@@ -51,6 +51,7 @@ const core::com::Signals::SignalKeyType IAction::s_DISABLED_SIG   = "disabled";
 const core::com::Signals::SignalKeyType IAction::s_IS_CHECKED_SIG = "isChecked";
 const core::com::Signals::SignalKeyType IAction::s_CHECKED_SIG    = "checked";
 const core::com::Signals::SignalKeyType IAction::s_UNCHECKED_SIG  = "unchecked";
+const core::com::Signals::SignalKeyType IAction::s_IS_VISIBLE_SIG = "isVisible";
 
 // Deprecated in Sight 22.0 and removed in Sight 23.0
 const core::com::Slots::SlotKeyType IAction::s_SET_IS_ACTIVE_SLOT = "setIsActive";
@@ -91,6 +92,7 @@ IAction::IAction()
     newSignal<bool_signal_t>(s_IS_CHECKED_SIG);
     newSignal<void_signal_t>(s_CHECKED_SIG);
     newSignal<void_signal_t>(s_UNCHECKED_SIG);
+    newSignal<bool_signal_t>(s_IS_VISIBLE_SIG);
 }
 
 //-----------------------------------------------------------------------------
@@ -259,6 +261,7 @@ void IAction::setVisible(bool visible)
 {
     m_visible = visible;
     this->m_registry->actionServiceSetVisible(visible);
+    signal<bool_signal_t>(s_IS_VISIBLE_SIG)->asyncEmit(visible);
 }
 
 //-----------------------------------------------------------------------------

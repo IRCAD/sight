@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   id="Layer"
+   width="130"
+   height="130"
+   enable-background="new 0 0 512 512"
+   version="1.1"
+   viewBox="0 0 130 130"
+   sodipodi:docname="BlueFileMesh.svg"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:dc="http://purl.org/dc/elements/1.1/">
+  <defs
+     id="defs134" />
+  <sodipodi:namedview
+     id="namedview132"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     showgrid="false"
+     inkscape:zoom="6.2307692"
+     inkscape:cx="48.950617"
+     inkscape:cy="65"
+     inkscape:window-width="1920"
+     inkscape:window-height="1015"
+     inkscape:window-x="1920"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="Layer" />
+  <metadata
+     id="metadata123">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     transform="matrix(.98 0 0 .98 -15.544 -13.4)"
+     fill="#6997bb"
+     stroke="#2e4d64"
+     id="g129">
+    <path
+       d="m104.06 30.979v18.357c0 0.53926 0.4373 0.97656 0.97656 0.97656h18.357c0.86992 0 1.3057-1.052 0.69062-1.6672l-18.357-18.357c-0.61523-0.61504-1.6672-0.17949-1.6672 0.69062z"
+       stroke-width="2.0408"
+       id="path125" />
+    <path
+       d="m99.375 59.688c-2.5889 0-4.6875-2.0986-4.6875-4.6875v-25h-44.141c-5.8154 0-10.547 4.7312-10.547 10.547v78.906c0 5.8156 4.7314 10.547 10.547 10.547h63.281c5.8154 0 10.547-4.7312 10.547-10.547v-59.766z"
+       stroke-width="2.0408"
+       id="path127" />
+  </g>
+  <text
+     xml:space="preserve"
+     style="font-style:normal;font-weight:normal;font-size:29.3333px;line-height:1.25;font-family:sans-serif;fill:#2e4d64;fill-opacity:1;stroke:none;stroke-width:1;stroke-miterlimit:4;stroke-dasharray:none"
+     x="25.163776"
+     y="89.596046"
+     id="text4860"><tspan
+       sodipodi:role="line"
+       id="tspan4858"
+       x="25.163776"
+       y="89.596046">MESH</tspan></text>
+</svg>

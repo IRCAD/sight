@@ -31,10 +31,8 @@
                         <icon>Tuto07GenericScene/tuto.ico</icon>
                         <minSize width="720" height="480" />
                     </frame>
-                    <menuBar />
                 </gui>
                 <registry>
-                    <menuBar sid="menuBarView" start="true" />
                     <view sid="containerView" start="true" />
                 </registry>
             </service>
@@ -42,37 +40,21 @@
             <!-- Status bar used to display the progress bar for reading -->
             <service uid="progressBarView" type="sight::module::ui::base::SJobBar" />
 
-            <service uid="menuBarView" type="sight::module::ui::base::SMenuBar">
-                <gui>
-                    <layout>
-                        <menu name="File" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menu sid="menuFileView" start="true" />
-                </registry>
-            </service>
-
-            <service uid="menuFileView" type="sight::module::ui::base::SMenu">
-                <gui>
-                    <layout>
-                        <menuItem name="Open image" shortcut="Ctrl+I" />
-                        <menuItem name="Open mesh" shortcut="Ctrl+M" />
-                        <menuItem name="Open texture" shortcut="Ctrl+T" />
-                        <separator />
-                        <menuItem name="Quit" specialAction="QUIT" shortcut="Ctrl+Q" />
-                    </layout>
-                </gui>
-                <registry>
-                    <menuItem sid="openImageAct" start="true" />
-                    <menuItem sid="openMeshAct" start="true" />
-                    <menuItem sid="openTextureAct" start="true" />
-                    <menuItem sid="quitAct" start="true" />
-                </registry>
-            </service>
-
             <!-- main view -->
             <service uid="containerView" type="sight::module::ui::base::SView">
+                <gui>
+                    <layout type="sight::ui::base::OverlayLayoutManager">
+                        <view />
+                        <view x="0" y="0" width="50" height="50" />
+                    </layout>
+                </gui>
+                <registry>
+                    <view sid="containerBackgroundView" start="true" />
+                    <view sid="speedDialSrv" start="true" />
+                </registry>
+            </service>
+
+            <service uid="containerBackgroundView" type="sight::module::ui::base::SView">
                 <gui>
                     <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="vertical" />
@@ -84,6 +66,15 @@
                     <view sid="genericSceneSrv" start="true" />
                     <view sid="editorsView" start="true" />
                 </registry>
+            </service>
+
+            <service uid="speedDialSrv" type="sight::module::ui::qt::SIconSpeedDial">
+                <config direction="right" icon="sight::module::ui::flaticons/BlueLoad.svg" unfoldedIcon="sight::module::ui::flaticons/RedRightArrow.svg"/>
+                <actions>
+                    <action sid="openImageAct" name="Open image" icon="sight::module::ui::flaticons/BlueFileImg.svg" shortcut="Ctrl+I" />
+                    <action sid="openMeshAct" name="Open mesh" icon="sight::module::ui::flaticons/BlueFileMesh.svg" shortcut="Ctrl+M" />
+                    <action sid="openTextureAct" name="Open texture" icon="sight::module::ui::flaticons/BlueFileTex.svg" shortcut="Ctrl+T" />
+                </actions>
             </service>
 
             <!-- View for editors to update image visualization -->
@@ -163,9 +154,6 @@
             <service uid="openTextureAct" type="sight::module::ui::base::com::SStarter">
                 <start uid="textureReaderSrv" />
             </service>
-
-            <!-- Quit action -->
-            <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
             <!-- ******************************* Services ***************************************** -->
 
@@ -255,6 +243,13 @@
             <connect>
                 <signal>showNegatoSrv/toggled</signal>
                 <slot>negatoAdp/updateVisibility</slot>
+            </connect>
+
+            <connect>
+                <signal>openImageAct/updated</signal>
+                <signal>openMeshAct/updated</signal>
+                <signal>openTextureAct/updated</signal>
+                <slot>speedDialSrv/fold</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

@@ -40,6 +40,7 @@ namespace sight::ui::base
  * - \b isEnabled(bool): Emitted when the action is enabled or disabled.
  * - \b enabled(): Emitted when the action is enabled.
  * - \b disabled(): Emitted when the action is disabled.
+ * - \b isVisible(bool): Emitted when the action is visible or invisible
  *
  * @section Slots Slots
  * - \b setChecked(bool): sets whether the action is checked.
@@ -113,6 +114,9 @@ public:
 
     /// Signal emitted when action is unchecked
     static const core::com::Signals::SignalKeyType s_UNCHECKED_SIG;
+
+    /// Signal emitted when action is visible/invisible
+    static const core::com::Signals::SignalKeyType s_IS_VISIBLE_SIG;
     /**
      * @}
      */
