@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -275,7 +275,15 @@ inline IContainer<C>::ScopedEmitter::~ScopedEmitter() noexcept
 //------------------------------------------------------------------------------
 
 template<class C>
-constexpr void IContainer<C>::ScopedEmitter::emit() noexcept
+constexpr void IContainer<C>::ScopedEmitter::block(const core::com::SlotBase::sptr& slot) noexcept
+{
+    m_blockedSlots.push_back(slot);
+}
+
+//------------------------------------------------------------------------------
+
+template<class C>
+void IContainer<C>::ScopedEmitter::emit() noexcept
 {
     IContainer<C>::container_type added;
     IContainer<C>::container_type before;
@@ -335,6 +343,12 @@ constexpr void IContainer<C>::ScopedEmitter::emit() noexcept
     if(!added.empty())
     {
         auto signal = m_container.template signal<IContainer<C>::added_signal_t>(IContainer<C>::s_ADDED_OBJECTS_SIG);
+        std::vector<core::com::Connection::Blocker> blockers;
+        for(auto& slot : m_blockedSlots)
+        {
+            blockers.emplace_back(core::com::Connection::Blocker(signal->getConnection(slot)));
+        }
+
         signal->asyncEmit(added);
     }
 
@@ -342,6 +356,13 @@ constexpr void IContainer<C>::ScopedEmitter::emit() noexcept
     {
         auto signal =
             m_container.template signal<IContainer<C>::changed_signal_t>(IContainer<C>::s_CHANGED_OBJECTS_SIG);
+
+        std::vector<core::com::Connection::Blocker> blockers;
+        for(auto& slot : m_blockedSlots)
+        {
+            blockers.emplace_back(core::com::Connection::Blocker(signal->getConnection(slot)));
+        }
+
         signal->asyncEmit(before, after);
     }
 
@@ -349,6 +370,13 @@ constexpr void IContainer<C>::ScopedEmitter::emit() noexcept
     {
         auto signal =
             m_container.template signal<IContainer<C>::removed_signal_t>(IContainer<C>::s_REMOVED_OBJECTS_SIG);
+
+        std::vector<core::com::Connection::Blocker> blockers;
+        for(auto& slot : m_blockedSlots)
+        {
+            blockers.emplace_back(core::com::Connection::Blocker(signal->getConnection(slot)));
+        }
+
         signal->asyncEmit(removed);
     }
 

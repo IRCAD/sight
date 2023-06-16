@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -107,8 +107,24 @@ inline static void containerNotifierTest()
         auto added_sig = container->template signal<typename T::added_signal_t>(T::s_ADDED_OBJECTS_SIG);
         added_sig->connect(added_slot);
 
+        bool blocked_add_called           = false;
+        std::function<void()> blocked_add =
+            [&]()
+            {
+                {
+                    std::unique_lock lock(mutex);
+                    blocked_add_called = true;
+                }
+                condition_variable.notify_one();
+            };
+
+        auto blocked_added_slot = core::com::newSlot(blocked_add);
+        blocked_added_slot->setWorker(worker);
+        added_sig->connect(blocked_added_slot);
+
         {
             const auto scoped_emitter = container->scoped_emit();
+            scoped_emitter->block(blocked_added_slot);
 
             if constexpr(std::is_same_v<CameraSet, T>)
             {
@@ -144,14 +160,17 @@ inline static void containerNotifierTest()
 
         // Check results
         {
-            std::unique_lock lock(mutex);
-            condition_variable.wait(lock, [&]{return add_call_count == 1;});
+            {
+                std::unique_lock lock(mutex);
+                condition_variable.wait(lock, [&]{return add_call_count == 1;});
+            }
 
             // Stop the worker here, to not interfere in case of CPPUNIT_ASSERT faillure.
             worker->stop();
 
             CPPUNIT_ASSERT(added_from_slot.size() == 3);
             CPPUNIT_ASSERT(add_call_count == 1);
+            CPPUNIT_ASSERT(blocked_add_called == false);
 
             if constexpr(std::is_same<CameraSet, T>::value)
             {
@@ -196,8 +215,28 @@ inline static void containerNotifierTest()
         auto removed_sig = container->template signal<typename T::removed_signal_t>(T::s_REMOVED_OBJECTS_SIG);
         removed_sig->connect(removed_slot);
 
+        bool blocked_remove_called           = false;
+        std::function<void()> blocked_remove =
+            [&]()
+            {
+                {
+                    std::unique_lock lock(mutex);
+                    blocked_remove_called = true;
+                }
+                condition_variable.notify_one();
+            };
+
+        auto blocked_removed_slot1 = core::com::newSlot(blocked_remove);
+        auto blocked_removed_slot2 = core::com::newSlot(blocked_remove);
+        blocked_removed_slot1->setWorker(worker);
+        blocked_removed_slot2->setWorker(worker);
+        removed_sig->connect(blocked_removed_slot1);
+        removed_sig->connect(blocked_removed_slot2);
+
         {
             const auto scoped_emitter = container->scoped_emit();
+            scoped_emitter->block(blocked_removed_slot1);
+            scoped_emitter->block(blocked_removed_slot2);
 
             // Erase the first element
             if constexpr(std::is_same<CameraSet, T>::value)
@@ -216,14 +255,17 @@ inline static void containerNotifierTest()
 
         // Check results
         {
-            std::unique_lock lock(mutex);
-            condition_variable.wait(lock, [&]{return remove_call_count == 1;});
+            {
+                std::unique_lock lock(mutex);
+                condition_variable.wait(lock, [&]{return remove_call_count == 1;});
+            }
 
             // Stop the worker here, to not interfere in case of CPPUNIT_ASSERT faillure.
             worker->stop();
 
             CPPUNIT_ASSERT(removed_from_slot.size() == 1);
             CPPUNIT_ASSERT(remove_call_count == 1);
+            CPPUNIT_ASSERT(blocked_remove_called == false);
 
             if constexpr(std::is_same<CameraSet, T>::value)
             {
@@ -265,6 +307,21 @@ inline static void containerNotifierTest()
         auto changed_sig = container->template signal<typename T::changed_signal_t>(T::s_CHANGED_OBJECTS_SIG);
         changed_sig->connect(changed_slot);
 
+        bool blocked_change_called           = false;
+        std::function<void()> blocked_change =
+            [&]()
+            {
+                {
+                    std::unique_lock lock(mutex);
+                    blocked_change_called = true;
+                }
+                condition_variable.notify_one();
+            };
+
+        auto blocked_changed_slot = core::com::newSlot(blocked_change);
+        blocked_changed_slot->setWorker(worker);
+        changed_sig->connect(blocked_changed_slot);
+
         {
             // Insert value before creating a notifier
             container->insert({description1, object1});
@@ -272,13 +329,16 @@ inline static void containerNotifierTest()
 
             // Change one element
             const auto scoped_emitter = container->scoped_emit();
+            scoped_emitter->block(blocked_changed_slot);
             container->insert_or_assign(description2, object3);
         }
 
         // Check results
         {
-            std::unique_lock lock(mutex);
-            condition_variable.wait(lock, [&]{return change_call_count == 1;});
+            {
+                std::unique_lock lock(mutex);
+                condition_variable.wait(lock, [&]{return change_call_count == 1;});
+            }
 
             // Stop the worker here, to not interfere in case of CPPUNIT_ASSERT faillure.
             worker->stop();
@@ -286,6 +346,7 @@ inline static void containerNotifierTest()
             CPPUNIT_ASSERT(old_from_slot.size() == 1);
             CPPUNIT_ASSERT(new_from_slot.size() == 1);
             CPPUNIT_ASSERT(change_call_count == 1);
+            CPPUNIT_ASSERT(blocked_change_called == false);
 
             CPPUNIT_ASSERT(old_from_slot[description2] == object2);
             CPPUNIT_ASSERT(new_from_slot[description2] == object3);
