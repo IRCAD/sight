@@ -214,7 +214,6 @@ void TrackballInteractor::resizeEvent(int _width, int _height)
     SIGHT_ASSERT("Width and height should be strictly positive", _width > 0 && _height > 0);
     const float aspectRatio = static_cast<float>(_width) / static_cast<float>(_height);
     camera->setAspectRatio(aspectRatio);
-    m_layer.lock()->requestRender();
 }
 
 // ----------------------------------------------------------------------------

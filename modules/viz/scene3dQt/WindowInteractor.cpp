@@ -157,8 +157,8 @@ void WindowInteractor::createContainer(
         m_qOgreWidget->registerLayer(layer.second);
     }
 
-    QCoreApplication::postEvent(m_qOgreWidget, new QShowEvent());
-    QCoreApplication::processEvents(QEventLoop::ExcludeUserInputEvents);
+    QShowEvent showEvent;
+    QCoreApplication::sendEvent(m_qOgreWidget, &showEvent);
 }
 
 //-----------------------------------------------------------------------------
@@ -197,8 +197,10 @@ void WindowInteractor::disconnectInteractor()
         this,
         SLOT(onInteracted(sight::viz::scene3d::IWindowInteractor::InteractionInfo))
     );
-
+    QWidget* const container = m_parentContainer->getQtContainer();
+    container->layout()->removeWidget(m_qOgreWidget);
     m_qOgreWidget->destroyWindow();
+    delete m_qOgreWidget;
     m_qOgreWidget = nullptr;
 }
 

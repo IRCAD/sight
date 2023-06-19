@@ -282,6 +282,10 @@ void Layer::createScene()
     }
 
     // Alter the camera aspect ratio to match the viewport
+    SIGHT_ASSERT(
+        "Width and height should be strictly positive",
+        viewport->getActualWidth() > 0 && viewport->getActualHeight() > 0
+    );
     m_camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
     // Creating Camera Scene Node

@@ -167,6 +167,7 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
             const auto vpWidth  = static_cast<float>(viewport->getActualWidth());
             const auto vpHeight = static_cast<float>(viewport->getActualHeight());
 
+            SIGHT_ASSERT("Width and height should be strictly positive", vpWidth > 0 && vpHeight > 0);
             camera->setAspectRatio(vpWidth / vpHeight);
             camera->setOrthoWindowHeight(clampedHeight);
 
@@ -177,6 +178,8 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
             // Translate the camera back to the cursor's previous position.
             camNode->translate(mousePosView - newMousePosView);
             m_hasMoved = true;
+
+            this->requestRender();
         }
         // Wheel alone or other modifier -> moving along slices (SHIFT to speed-up)
         else
@@ -370,6 +373,7 @@ void SNegato2DCamera::resetCamera()
 
     const auto vpWidth  = static_cast<float>(viewport->getActualWidth());
     const auto vpHeight = static_cast<float>(viewport->getActualHeight());
+    SIGHT_ASSERT("Width and height should be strictly positive", vpWidth > 0 && vpHeight > 0);
     const float vpRatio = vpWidth / vpHeight;
     camera->setAspectRatio(vpRatio);
 

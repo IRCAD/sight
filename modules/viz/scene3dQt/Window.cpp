@@ -39,7 +39,6 @@
 #include <OgreMeshManager.h>
 
 #include <QOpenGLFunctions>
-#include <QDebug>
 
 namespace sight::module::viz::scene3dQt
 {
@@ -87,26 +86,6 @@ Window::Window() :
     this->setFocusPolicy(Qt::ClickFocus);
 }
 
-// ----------------------------------------------------------------------------
-
-Window::~Window()
-{
-    auto& textureMgr = Ogre::TextureManager::getSingleton();
-    auto& matMgr     = Ogre::MaterialManager::getSingleton();
-
-    for(auto& renderTarget : m_renderTargets)
-    {
-        if(renderTarget.texture)
-        {
-            textureMgr.remove(renderTarget.texture);
-            renderTarget.texture.reset();
-
-            matMgr.remove(renderTarget.material);
-            renderTarget.material.reset();
-        }
-    }
-}
-
 //------------------------------------------------------------------------------
 
 void Window::registerLayer(sight::viz::scene3d::Layer::wptr _layer)
@@ -125,7 +104,14 @@ int Window::getId() const
 
 void Window::requestRender()
 {
-    this->renderLater();
+    if(not isVisible())
+    {
+        m_update_pending = true;
+    }
+    else
+    {
+        update();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -140,30 +126,41 @@ void Window::makeCurrent()
 void Window::destroyWindow()
 {
     m_init = false;
-    m_renderTargets.clear();
-}
 
-// ----------------------------------------------------------------------------
+    auto& textureMgr = Ogre::TextureManager::getSingleton();
+    auto& matMgr     = Ogre::MaterialManager::getSingleton();
 
-void Window::renderLater()
-{
-    /*
-       This function forces QWindow to keep rendering. Omitting this causes the renderNow() function to
-       only get called when the window is resized, moved, etc. as opposed to all of the time; which is
-       generally what we need.
-     */
-    if(!m_update_pending)
+    for(auto& renderTarget : m_renderTargets)
     {
-        m_update_pending = true;
-        update();
+        if(renderTarget.texture)
+        {
+            textureMgr.remove(renderTarget.texture);
+            renderTarget.texture.reset();
+
+            matMgr.remove(renderTarget.material);
+            renderTarget.material.reset();
+        }
     }
+
+    m_renderTargets.clear();
+
+    Ogre::MeshManager& meshManager = Ogre::MeshManager::getSingleton();
+    meshManager.remove(m_fsQuadPlane);
+    m_fsQuadPlane.reset();
 }
 
 // ----------------------------------------------------------------------------
 
 void Window::renderNow()
 {
-    this->update();
+    if(not isVisible())
+    {
+        m_update_pending = true;
+    }
+    else
+    {
+        update();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -185,6 +182,15 @@ bool Window::event(QEvent* _e)
             if(m_gestureState != GestureState::NoGesture)
             {
                 return true;
+            }
+
+            break;
+
+        case QEvent::Show:
+            if(m_update_pending)
+            {
+                update();
+                m_update_pending = false;
             }
 
             break;
@@ -524,7 +530,7 @@ void Window::gestureEvent(QGestureEvent* _e)
 
 void Window::ogreResize(const QSize& _newSize)
 {
-    if(!_newSize.isValid() || !m_init)
+    if(!_newSize.isValid() || !m_init || _newSize == m_ogreSize)
     {
         return;
     }
@@ -574,6 +580,7 @@ void Window::createRenderTextures(int w, int h)
             Ogre::PF_BYTE_RGBA,
             Ogre::TU_RENDERTARGET
         );
+        SIGHT_ASSERT("Texture could not be created", renderTarget.texture);
 
         auto* rt = renderTarget.texture->getBuffer()->getRenderTarget();
         layer->setRenderTarget(rt);
@@ -612,6 +619,7 @@ void Window::createRenderTextures(int w, int h)
 
             // Should restore aspect ratio, in case of auto aspect ratio
             // enabled, it'll changed when add new viewport.
+            SIGHT_ASSERT("Width and height should be strictly positive", !std::isnan(aspectRatio));
             camera->setAspectRatio(aspectRatio);
             // Should restore last viewport, i.e. never disturb user code
             // which might based on that.
@@ -662,6 +670,7 @@ void Window::createRenderTextures(int w, int h)
 
             const auto vpWidth  = static_cast<float>(viewport->getActualWidth());
             const auto vpHeight = static_cast<float>(viewport->getActualHeight());
+            SIGHT_ASSERT("Width and height should be strictly positive", vpWidth > 0 && vpHeight > 0);
 
             viewport->getCamera()->setAspectRatio(vpWidth / vpHeight);
         }

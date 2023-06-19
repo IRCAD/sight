@@ -302,6 +302,7 @@ void SCamera::setAspectRatio(Ogre::Real _ratio)
     SIGHT_ASSERT("The associated camera doesn't exist.", m_camera);
 
     m_aspectRatio = _ratio;
+    SIGHT_ASSERT("Width and height should be strictly positive", !std::isnan(_ratio));
     m_camera->setAspectRatio(m_aspectRatio);
 }
 
@@ -330,6 +331,7 @@ void SCamera::calibrate()
     {
         const auto width  = static_cast<float>(m_camera->getViewport()->getActualWidth());
         const auto height = static_cast<float>(m_camera->getViewport()->getActualHeight());
+        SIGHT_ASSERT("Width and height should be strictly positive", width > 0 && height > 0);
 
         const float aspectRatio = width / height;
         m_camera->setAspectRatio(aspectRatio);

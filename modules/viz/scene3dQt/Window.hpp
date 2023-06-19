@@ -56,7 +56,7 @@ public:
     Window();
 
     /// Destroys associated pointers by calling @ref destroy().
-    ~Window() override;
+    ~Window() override = default;
 
     void registerLayer(sight::viz::scene3d::Layer::wptr _layer);
     void createRenderTextures(int w, int h);
@@ -135,9 +135,6 @@ private:
     void initializeGL() override;
     void resizeGL(int w, int h) override;
     void paintGL() override;
-
-    /// Renders the frame as soon as possible.
-    void renderLater();
 
     /// Forwards the resize event.
     /// @param _newSize size in hidpi, you must multiplicate with devicePixelRatioF to get the real pixel value
