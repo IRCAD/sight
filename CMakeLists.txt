@@ -15,8 +15,10 @@ cmake_policy(SET CMP0067 NEW)
 # Use old policy for Documentation to add cache variables and find VTK documentation dependent packages.
 # (Needed for doxygen..)
 cmake_policy(SET CMP0106 OLD)
+# Use new policy for CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
+cmake_policy(SET CMP0141 NEW)
 
-if(${CMAKE_VERSION} VERSION_GREATER "3.20.0")
+if(${CMAKE_VERSION} VERSION_GREATER "3.25.0")
     # Transform the ``DEPFILE`` after running the custom command for Ninja generator.
     cmake_policy(SET CMP0116 OLD)
 endif()
