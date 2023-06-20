@@ -1356,8 +1356,8 @@ void SSynchronizerTest::fullConfigTest()
     }
 
     tester.srv->setInOut(frame1, "frames", false, false, 0);
-    tester.srv->setInOut(frame4, "frames", false, false, 1);
-    tester.srv->setInOut(frame6, "frames", false, false, 2);
+    tester.srv->setInOut(frame6, "frames", false, false, 1);
+    tester.srv->setInOut(frame4, "frames", false, false, 2);
     tester.srv->setInOut(frame11, "frames", false, false, 3);
 
     auto matrix0 = data::Matrix4::New();
@@ -1438,12 +1438,11 @@ void SSynchronizerTest::fullConfigTest()
 
     tester.addFrameToFrameTL(frameTL1, 5);
     tester.addMatrixToMatrixTL(matrixTL1, {0, 1, 2}, 5);
-    fwTestWithFailWaitMacro(synchronizationSkippedReceived == true);
-    synchronizationSkippedReceived = false;
+    fwTestWithFailWaitMacro(lastTimestampSynch == 3);
 
     SynchronizerTester::checkFrame(frame1, 2);
-    SynchronizerTester::checkFrame(frame4, 4);
-    SynchronizerTester::checkFrame(frame6, 3);
+    SynchronizerTester::checkFrame(frame4, 3);
+    SynchronizerTester::checkFrame(frame6, 4);
     SynchronizerTester::checkFrame(frame11, 2);
     SynchronizerTester::checkMatrix(matrix0, 21);
     SynchronizerTester::checkMatrix(matrix1, 20);
