@@ -153,6 +153,7 @@ Text::Text(sight::viz::scene3d::IText::Key /*unused*/, const sight::viz::scene3d
     auto* parentWidget = qtInteractor->getQtWidget();
 
     m_text = new QLabel("", parentWidget);
+    m_text->setAttribute(Qt::WA_TransparentForMouseEvents);
     m_text->show();
 }
 

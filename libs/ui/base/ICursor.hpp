@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,9 @@ public:
         DEFAULT,
         BUSY,
         WAIT,
-        CROSS
+        CROSS,
+        OPEN_HAND,
+        CLOSED_HAND
     } CursorType;
 
     /// Constructor. Do nothing.
@@ -55,7 +57,7 @@ public:
     UI_BASE_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
     /// Set the cursor
-    UI_BASE_API virtual void setCursor(CursorType cursor) = 0;
+    UI_BASE_API virtual void setCursor(CursorType cursor, bool setOverridenAsDefault = true) = 0;
 
     /// Set the default cursor
     UI_BASE_API virtual void setDefaultCursor() = 0;

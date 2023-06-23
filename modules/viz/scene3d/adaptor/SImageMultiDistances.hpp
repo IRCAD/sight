@@ -26,6 +26,8 @@
 
 #include <data/PointList.hpp>
 
+#include <geometry/data/PointList.hpp>
+
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/interactor/IInteractor.hpp>
 #include <viz/scene3d/IText.hpp>
@@ -42,20 +44,12 @@ namespace sight::module::viz::scene3d::adaptor
 /**
  * @brief This adaptor displays distances retrieved from the image fields.
  *
- * @section Slots Slots
- * - \b addDistance(): adds distances contained in the image from the scene manager.
- * - \b removeDistance(): removes distances contained in the image from the scene manager.
- * - \b updateVisibilityFromField(): updates the visibility of distances from the field status.
- * - \b updateVisibility(bool): sets whether distances are shown or not.
- * - \b toggleVisibility(): toggles whether distances are shown or not.
- * - \b show(): shows distance.
- * - \b hide(): hides distance.
- *
+
  * @section XML XML Configuration
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true" >
-        <in key="image" uid="..." />
-        <config fontSize="32" radius="4.5" priority="2" />
+        <inout key="image" uid="..." />
+        <config fontSource="DejaVuSans.ttf" fontSize="32" radius="4.5" priority="2" />
     </service>
    @endcode
  *
@@ -70,12 +64,34 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b queryMask (optional, uint32, default=0xFFFFFFFF): mask used to filter out entities when the distance is auto
  *      snapped.
  * - \b distanceQueryFlags (optional, uint32, default=0x40000000): mask apply to distances spheres.
+ *
+ * @section Slots Slots
+ * - \b removeDistance(): removes distances contained in the image from the scene manager.
+ * - \b updateVisibilityFromField(): updates the visibility of distances from the field status.
+ * - \b updateVisibility(bool): sets whether distances are shown or not.
+ * - \b updateModifiedDistance(data::PointList::sptr): renders distances in other negato2d and negato3d adaptors.
+ * - \b toggleVisibility(): toggles whether distances are shown or not.
+ * - \b show(): shows distance.
+ * - \b hide(): hides distance.
+ *
+ * @section Signals Signals
+ * - \b toolDeactivate(): signal set when the tool is deactivated.
+ *
+ *
  */
 class SImageMultiDistances final :
     public sight::viz::scene3d::IAdaptor,
     public sight::viz::scene3d::interactor::IInteractor
 {
 public:
+
+    struct signals
+    {
+        using key_t = sight::core::com::Signals::SignalKeyType;
+        static inline const key_t s_DEACTIVATE_DISTANCE_TOOL = "deactivateDistanceTool";
+
+        using void_signal_t = sight::core::com::Signal<void ()>;
+    };
 
     /// Generates default methods as New, dynamicCast, ...
     SIGHT_DECLARE_SERVICE(SImageMultiDistances, sight::viz::scene3d::IAdaptor);
@@ -110,11 +126,20 @@ public:
 
     /// Resets m_pickedData.
     MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(
-        MouseButton /*_button*/,
+        MouseButton _button,
         Modifier _mod,
-        int /*_x*/,
-        int /*_y*/
+        int _x,
+        int _y
     ) override;
+
+    /// catch escape to go out of add distance mode
+    MODULE_VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/) final;
+
+    /// catch the mouse leaving the widget
+    MODULE_VIZ_SCENE3D_API void leaveEvent() final;
+
+    /// catch the mouse entering the widget
+    MODULE_VIZ_SCENE3D_API void enterEvent() final;
 
 protected:
 
@@ -127,7 +152,6 @@ protected:
     /**
      * @brief Proposals to connect service slots to associated object signals.
      *
-     * Connect data::Image::s_DISTANCE_ADDED_SIG to s_ADD_DISTANCE_SLOT
      * Connect data::Image::s_DISTANCE_REMOVED_SIG to s_REMOVE_DISTANCE_SLOT
      * Connect data::Image::s_DISTANCE_DISPLAYED_SIG to s_UPDATE_VISIBILITY_SLOT
      * Connect data::Image::s_MODIFIED_SIG to IService::slots::s_UPDATE
@@ -166,7 +190,7 @@ private:
         sight::viz::scene3d::IText::sptr m_label;
     };
 
-    /// Stores picking informations.
+    /// Stores picking information.
     struct PickedData
     {
         DistanceData* m_data;
@@ -174,14 +198,14 @@ private:
     };
 
     /// Map each distances to there related list ID.
-    typedef std::map<core::tools::fwID::IDType, DistanceData> DistanceMap;
+    using DistanceMap = std::map<core::tools::fwID::IDType, DistanceData>;
 
     /**
      * @brief Generates a color from a distance ID.
      * @param _id ID of the distance.
      * @return The generated color.
      */
-    static Ogre::ColourValue generateColor(core::tools::fwID::IDType _id);
+    Ogre::ColourValue generateColor();
 
     /**
      * @brief Generates a dashed line in a Ogre::ManualObject.
@@ -198,8 +222,8 @@ private:
     );
 
     /**
-     * @brief Gets the formated string used to display the length of a distance.
-     * @return The formated string.
+     * @brief Gets the formatted string used to display the length of a distance.
+     * @return The formatted string.
      */
     static std::string getLength(const Ogre::Vector3& /*_begin*/, const Ogre::Vector3& /*_end*/);
 
@@ -209,14 +233,17 @@ private:
      */
     static Ogre::Vector3 getCamDirection(const Ogre::Camera* /*_cam*/);
 
-    /// Retrieves distances from the image and adds them to the scene.
-    void addDistances();
+    /// Saves the created distances to image's field
+    void updateImageDistanceField(data::PointList::sptr _pl);
 
     /// Retrieves distances from the image and remove them from the scene.
     void removeDistances();
 
     /// Updates distances visibility from the image field.
     void updateVisibilityFromField();
+
+    /// Activates the distance tool by changing the cursor and updating a boolean
+    void activateDistanceTool(bool _activate);
 
     /**
      * @brief Gets the nearest picked position if there is one.
@@ -230,7 +257,7 @@ private:
      * @brief Creates a distance and add it into m_distances.
      * @param _pl The point list used to create the distance.
      */
-    void createDistance(data::PointList::sptr _pl);
+    void createDistance(data::PointList::sptr& _pl);
 
     /**
      * @brief Updates a distance.
@@ -246,6 +273,10 @@ private:
      */
     void destroyDistance(core::tools::fwID::IDType _id);
 
+    /// Slot: Allows visualizing the creation and/or modification of distances field of an Image in multiple
+    /// adaptors(Negato2d/Negato3d) by displaying the distances synchronously.
+    void updateModifiedDistance(data::PointList::sptr _pl);
+
     /// Defines the radius of distances spheres.
     float m_distanceSphereRadius {3.5F};
 
@@ -255,8 +286,20 @@ private:
     /// Defines whether or not interactions are enabled with distances.
     bool m_interactive {true};
 
+    /// Defines whether to start using the distance creation tool or not.
+    bool m_toolActivated {false};
+
+    /// Defines whether a distance is in creation or not.
+    bool m_creationMode {false};
+
+    /// @brief  indicates if is over a distance
+    bool m_isOverDistance {false};
+
     /// Defines the priority of the interactor.
     int m_priority {2};
+
+    /// Counter to swap color at each new distance
+    int m_colorIndex {0};
 
     /// Defines the current picked data, reset by buttonReleaseEvent(MouseButton, int, int).
     PickedData m_pickedData {nullptr, true};
@@ -285,11 +328,12 @@ private:
     /// Contains the material with no depth check for dashed lines.
     sight::viz::scene3d::Material::uptr m_dashedLineMaterial {nullptr};
 
-    /// Stores all generatesd distances.
+    /// Stores all generated distances.
     DistanceMap m_distances;
+    std::vector<data::Point::sptr> m_points;
 
-    static constexpr std::string_view s_IMAGE_IN = "image";
-    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_IN};
+    static constexpr std::string_view s_IMAGE_INOUT = "image";
+    sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
 };
 
 } // namespace sight::module::viz::scene3d::adaptor.

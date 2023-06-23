@@ -117,9 +117,31 @@ void WindowInteractor::createContainer(
 
     this->setFullscreen(_fullscreen, -1);
 
-    auto disableFullscreen = [this]{this->disableFullscreen();};
-    auto* disableShortcut  = new QShortcut(QString("Escape"), m_qOgreWidget);
-    QObject::connect(disableShortcut, &QShortcut::activated, disableFullscreen);
+    auto toggleFullscreen = [this]
+                            {
+                                this->setFullscreen(!m_isFullScreen, -1);
+
+                                service::IService::sptr renderService                = m_renderService.lock();
+                                sight::viz::scene3d::SRender::sptr ogreRenderService =
+                                    sight::viz::scene3d::SRender::dynamicCast(renderService);
+                                if(m_isFullScreen)
+                                {
+                                    auto enableFullScreenSlot = ogreRenderService->slot(
+                                        sight::viz::scene3d::SRender::s_ENABLE_FULLSCREEN
+                                    );
+                                    enableFullScreenSlot->run(0);
+                                }
+                                else
+                                {
+                                    auto disableFullScreenSlot = ogreRenderService->slot(
+                                        sight::viz::scene3d::SRender::s_DISABLE_FULLSCREEN
+                                    );
+                                    disableFullScreenSlot->run();
+                                }
+                            };
+
+    auto* toggleFullscreenShortcut = new QShortcut(QString("F11"), m_qOgreWidget);
+    QObject::connect(toggleFullscreenShortcut, &QShortcut::activated, toggleFullscreen);
 
     const auto renderService = sight::viz::scene3d::SRender::dynamicCast(m_renderService.lock());
     SIGHT_ASSERT("RenderService wrongly instantiated. ", renderService);
@@ -248,7 +270,7 @@ sight::viz::scene3d::IGraphicsWorker* WindowInteractor::createGraphicsWorker()
 void WindowInteractor::setFullscreen(bool _fullscreen, int _screenNumber)
 {
     QWidget* const container = m_parentContainer->getQtContainer();
-
+    m_isFullScreen = _fullscreen;
     if(_fullscreen)
     {
         container->layout()->removeWidget(m_qOgreWidget);
@@ -277,23 +299,6 @@ void WindowInteractor::setFullscreen(bool _fullscreen, int _screenNumber)
     else if(container->layout()->isEmpty())
     {
         container->layout()->addWidget(m_qOgreWidget);
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void WindowInteractor::disableFullscreen()
-{
-    QWidget* const container = m_parentContainer->getQtContainer();
-
-    if(container->layout()->isEmpty())
-    {
-        service::IService::sptr renderService                = m_renderService.lock();
-        sight::viz::scene3d::SRender::sptr ogreRenderService =
-            sight::viz::scene3d::SRender::dynamicCast(renderService);
-
-        auto toggleSlot = ogreRenderService->slot(sight::viz::scene3d::SRender::s_DISABLE_FULLSCREEN);
-        toggleSlot->run();
     }
 }
 

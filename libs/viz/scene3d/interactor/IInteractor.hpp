@@ -155,6 +155,16 @@ public:
     VIZ_SCENE3D_API virtual void keyReleaseEvent(int _key, Modifier _mods, int _mouseX, int _mouseY);
 
     /**
+     * @brief Called when the mouse leaves the widget
+     */
+    VIZ_SCENE3D_API virtual void leaveEvent();
+
+    /**
+     * @brief Called when the mouse enters the widget
+     */
+    VIZ_SCENE3D_API virtual void enterEvent();
+
+    /**
      * @brief Checks if the cursor is inside a layer's viewport.
      * @param mouseX width coordinate of the mouse in pixels.
      * @param mouseY height coordinate of the mouse in pixels.

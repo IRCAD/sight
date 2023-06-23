@@ -22,6 +22,8 @@
         <param name="PICKER_SENDER_CHANNEL" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
+        <param name="DISTANCE_ACTIVATION_CHANNEL" />
+        <param name="DISTANCE_DEACTIVATION_CHANNEL" />
         <param name="modelSeries" />
         <param name="image" />
         <param name="volumeTF" />
@@ -60,8 +62,8 @@
             <gui>
               <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
-                    <view proportion="0" minWidth="0" />
-                    <view proportion="0" minWidth="0" visible="false" />
+                    <view proportion="1" minWidth="0" />
+                    <view proportion="1" minWidth="0" visible="false" />
                </layout>
            </gui>
            <registry>
@@ -74,8 +76,8 @@
             <gui>
               <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
-                    <view proportion="0" minWidth="0" visible="false" />
-                    <view proportion="0" minWidth="0" visible="false" />
+                    <view proportion="1" minWidth="0" visible="false" />
+                    <view proportion="1" minWidth="0" visible="false" />
                </layout>
            </gui>
            <registry>
@@ -107,6 +109,8 @@
             <parameter replace="PICKER_SENDER_CHANNEL" by="${PICKER_SENDER_CHANNEL}" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="${WORLD_COORDS_LANDMARKS_CHANNEL}" />
             <parameter replace="NEGATO3D_TRANSPARENCY_CHANNEL" by="${NEGATO3D_TRANSPARENCY_CHANNEL}" />
+            <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
+            <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
             <inout group="data">
                 <key name="modelSeries" uid="${modelSeries}" optional="true"/>
                 <key name="image" uid="${image}" optional="true"/>
@@ -124,6 +128,8 @@
             <parameter replace="PICKER_SENDER_CHANNEL" by="${PICKER_SENDER_CHANNEL}" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_AXIAL_VISIBILITY_RECEIVER_CHANNEL" />
+            <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
+            <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
             <parameter replace="sliceIndex" by="axial" />
             <inout group="data">
                 <key name="image" uid="${image}" optional="true"/>
@@ -138,6 +144,8 @@
             <parameter replace="PICKER_SENDER_CHANNEL" by="${PICKER_SENDER_CHANNEL}" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_SAGITTAL_VISIBILITY_RECEIVER_CHANNEL" />
+            <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
+            <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
             <parameter replace="sliceIndex" by="sagittal" />
             <inout group="data">
                 <key name="image" uid="${image}" optional="true"/>
@@ -152,6 +160,8 @@
             <parameter replace="PICKER_SENDER_CHANNEL" by="${PICKER_SENDER_CHANNEL}" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_FRONTAL_VISIBILITY_RECEIVER_CHANNEL" />
+            <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
+            <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
             <parameter replace="sliceIndex" by="frontal" />
             <inout group="data">
                 <key name="image" uid="${image}" optional="true"/>

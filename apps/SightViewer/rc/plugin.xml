@@ -275,7 +275,7 @@
                         <menuItem name="Undo last freehand cropping point" icon="sight::module::ui::flaticons/undoCutVolume.svg" />
                         <menuItem name="Revert last freehand cropping region" icon="sight::module::ui::flaticons/revertCutVolume.svg" />
                         <separator/>
-                        <menuItem name="Add distance" icon="sight::module::ui::flaticons/AddDistance.svg" />
+                        <menuItem name="Add/Edit distance" icon="sight::module::ui::flaticons/AddDistance.svg" style="check" />
                         <menuItem name="Remove distance" icon="sight::module::ui::flaticons/RemoveDistance.svg" />
                         <menuItem name="Hide/show distance" icon="sight::module::ui::flaticons/Distance.svg" style="check" />
                         <separator/>
@@ -295,7 +295,7 @@
                     <menuItem sid="shapeExtruderAct" start="true" />
                     <menuItem sid="shapeExtruderCancelAct" start="true" />
                     <menuItem sid="shapeExtruderRevertAct" start="true" />
-                    <menuItem sid="addDistanceAct" start="false" />
+                    <menuItem sid="addDistanceAct" start="true" />
                     <menuItem sid="removeDistanceAct" start="false" />
                     <menuItem sid="hideDistanceAct" start="false" />
                     <menuItem sid="axisVisibilityAct" start="true" />
@@ -428,8 +428,8 @@
             <service uid="axisVisibilityAct" type="sight::module::ui::base::com::SSignal" />
 
             <!-- Manage distance -->
-            <service uid="addDistanceAct" type="sight::module::ui::base::metrics::SAddDistance">
-                <inout key="image" uid="image" />
+            <service uid="addDistanceAct" type="sight::module::ui::base::com::SSignal">
+                <state enabled="false" checked="false"/>
             </service>
 
             <service uid="removeDistanceAct" type="sight::module::ui::base::metrics::SRemoveDistance">
@@ -465,6 +465,8 @@
                 <parameter replace="PICKER_SENDER_CHANNEL" by="PICKER_RECEIVER_CHANNEL" />
                 <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
                 <parameter replace="NEGATO3D_TRANSPARENCY_CHANNEL" by="NEGATO3D_TRANSPARENCY_CHANNEL" />
+                <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="DISTANCE_ACTIVATION_CHANNEL"/>
+                <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="DISTANCE_DEACTIVATION_CHANNEL"/>
                 <inout group="data">
                     <key name="modelSeries" uid="modelSeries" optional="true"/>
                     <key name="image" uid="image" optional="true"/>
@@ -624,6 +626,14 @@
                 <slot>rightToolbarSliderView/hide</slot>
             </connect>
 
+            <connect channel="DISTANCE_ACTIVATION_CHANNEL">
+                <signal>addDistanceAct/isChecked</signal>
+            </connect>
+
+            <connect channel="DISTANCE_DEACTIVATION_CHANNEL">
+                <slot>addDistanceAct/uncheck</slot>
+            </connect>
+
             <connect>
                 <signal>seriesSet/modified</signal>
                 <slot>extractSeriesSrv/update</slot>
@@ -750,7 +760,6 @@
             <start uid="extractPacsImageSrv" />
             <start uid="lightSelectorSrv" />
             <start uid="lightEditorSrv" />
-            <start uid="addDistanceAct" />
             <start uid="removeDistanceAct" />
             <start uid="hideDistanceAct" />
 

@@ -20,6 +20,8 @@
         <param name="PICKER_SENDER_CHANNEL" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
+        <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL"/>
+        <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL"/>
         <param name="modelSeries" />
         <param name="image" />
         <param name="volumeTF" />
@@ -74,7 +76,7 @@
             <gui>
                 <layout>
                     <menuItem name="Fullscreen" icon="sight::module::ui::flaticons/YellowFullscreen.svg" />
-                    <menuItem name="Windowed" icon="sight::module::ui::flaticons/YellowMinimize.svg" shortcut="Escape" />
+                    <menuItem name="Windowed" icon="sight::module::ui::flaticons/YellowMinimize.svg" shortcut="1" />
                     <menuItem name="Snapshot" icon="sight::module::ui::flaticons/YellowPhoto.svg" shortcut="CTRL+S" />
                     <spacer />
                 </layout>
@@ -153,7 +155,7 @@
         </service>
 
         <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true">
-            <in key="image" uid="${image}" />
+            <inout key="image" uid="${image}" />
             <config fontSize="16" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
 
@@ -307,18 +309,23 @@
         <!-- Manage full screen -->
         <connect>
             <signal>fullscreenAct/screenSelected</signal>
-            <slot>fullscreenAct/hide</slot>
             <slot>sceneSrv/enableFullscreen</slot>
         </connect>
 
         <connect>
             <signal>sceneSrv/fullscreenSet</signal>
-            <slot>windowedAct/setVisible</slot>
-            <slot>windowedAct/setEnabled</slot>
+            <slot>windowedAct/show</slot>
+            <slot>fullscreenAct/hide</slot>
         </connect>
 
         <connect>
-            <signal>windowedAct/disabled</signal>
+            <signal>windowedAct/clicked</signal>
+            <slot>sceneSrv/disableFullscreen</slot>
+        </connect>
+
+        <connect>
+            <signal>sceneSrv/fullscreenUnset</signal>
+            <slot>windowedAct/hide</slot>
             <slot>fullscreenAct/show</slot>
         </connect>
 
@@ -339,11 +346,6 @@
             <slot>3DNegatoAdp/updateSlicesFromWorld</slot>
         </connect>
 
-        <connect>
-            <signal>windowedAct/clicked</signal>
-            <slot>sceneSrv/disableFullscreen</slot>
-            <slot>fullscreenAct/show</slot>
-        </connect>
 
         <connect>
             <signal>snapshotAct/clicked</signal>
@@ -354,6 +356,16 @@
 
         <connect channel="${TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL}">
             <signal>eventAdp/triggered</signal>
+        </connect>
+
+        <!-- distance channels -->
+
+        <connect channel="${DISTANCE_ACTIVATION_CHANNEL}">
+            <slot>multiDistancesAdp/activateDistanceTool</slot>
+        </connect>
+
+        <connect channel="${DISTANCE_DEACTIVATION_CHANNEL}">
+            <signal>multiDistancesAdp/deactivateDistanceTool</signal>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

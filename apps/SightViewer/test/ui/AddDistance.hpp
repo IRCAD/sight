@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -20,30 +20,20 @@
  ***********************************************************************/
 
 #pragma once
+#include "ITest.hpp"
 
-#include <service/IService.hpp>
-
-#include <cppunit/extensions/HelperMacros.h>
-
-namespace sight::module::ui::base::metrics::ut
+namespace sight::sightviewer::test::ui
 {
 
-class SAddDistanceTest : public CPPUNIT_NS::TestFixture
+class AddDistance : public ITest
 {
-CPPUNIT_TEST_SUITE(SAddDistanceTest);
-CPPUNIT_TEST(basicTest);
+CPPUNIT_TEST_SUITE(AddDistance);
+CPPUNIT_TEST(test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
 
-    void setUp() override;
-    void tearDown() override;
-
-    void basicTest();
-
-private:
-
-    service::IService::sptr m_addDistance;
+    void test();
 };
 
-} // namespace sight::module::ui::base::metrics::ut
+} // namespace sight::sightviewer::test::ui

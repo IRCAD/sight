@@ -58,11 +58,6 @@ const std::string SRender::s_OGREBACKGROUNDID = "ogreBackground";
 
 //-----------------------------------------------------------------------------
 
-const core::com::Signals::SignalKeyType SRender::s_COMPOSITOR_UPDATED_SIG = "compositorUpdated";
-const core::com::Signals::SignalKeyType SRender::s_FULLSCREEN_SET_SIG     = "fullscreenSet";
-
-//-----------------------------------------------------------------------------
-
 const core::com::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT     = "computeCameraParameters";
 const core::com::Slots::SlotKeyType SRender::s_RESET_CAMERAS_SLOT           = "resetCameras";
 const core::com::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "computeCameraClipping";
@@ -81,8 +76,9 @@ static const core::com::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObject
 SRender::SRender() noexcept :
     m_ogreRoot(viz::scene3d::Utils::getOgreRoot())
 {
-    newSignal<CompositorUpdatedSignalType>(s_COMPOSITOR_UPDATED_SIG);
-    m_fullscreenSetSig = newSignal<FullscreenSetSignalType>(s_FULLSCREEN_SET_SIG);
+    newSignal<signals::compositorUpdated_signal_t>(signals::COMPOSITOR_UPDATED);
+    newSignal<signals::void_signal_t>(signals::FULLSCREEN_SET);
+    newSignal<signals::void_signal_t>(signals::FULLSCREEN_UNSET);
 
     newSlot(s_COMPUTE_CAMERA_ORIG_SLOT, &SRender::resetCameraCoordinates, this);
     newSlot(s_RESET_CAMERAS_SLOT, &SRender::resetCameras, this);
@@ -563,8 +559,7 @@ void SRender::disableFullscreen()
 {
     m_fullscreen = false;
     m_interactorManager->setFullscreen(m_fullscreen, -1);
-
-    m_fullscreenSetSig->asyncEmit(false);
+    this->signal<signals::void_signal_t>(signals::FULLSCREEN_UNSET)->asyncEmit();
 }
 
 // ----------------------------------------------------------------------------
@@ -573,8 +568,7 @@ void SRender::enableFullscreen(int _screen)
 {
     m_fullscreen = true;
     m_interactorManager->setFullscreen(m_fullscreen, _screen);
-
-    m_fullscreenSetSig->asyncEmit(true);
+    this->signal<signals::void_signal_t>(signals::FULLSCREEN_SET)->asyncEmit();
 }
 
 // ----------------------------------------------------------------------------

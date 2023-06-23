@@ -308,6 +308,10 @@ public:
     typedef core::com::Signal<void (SPTR(PointList))> DistanceAddedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_DISTANCE_ADDED_SIG;
 
+    /// Type of signal when a distance is modified
+    using DistanceModifiedSignalType = core::com::Signal<void (SPTR(PointList))>;
+    DATA_API static const core::com::Signals::SignalKeyType s_DISTANCE_MODIFIED_SIG;
+
     /// Type of signal when a distance is removed
     typedef core::com::Signal<void (CSPTR(PointList))> DistanceRemovedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_DISTANCE_REMOVED_SIG;

@@ -132,6 +132,18 @@ void IInteractor::longTapGestureEvent(int /*_x*/, int /*_y*/)
 {
 }
 
+//------------------------------------------------------------------------------
+
+void IInteractor::leaveEvent()
+{
+}
+
+//------------------------------------------------------------------------------
+
+void IInteractor::enterEvent()
+{
+}
+
 // ----------------------------------------------------------------------------
 
 bool IInteractor::isInLayer(int _mouseX, int _mouseY, Layer::sptr _layer, bool _layerOrderDependant)

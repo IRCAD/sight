@@ -536,6 +536,22 @@ void Layer::interaction(viz::scene3d::IWindowInteractor::InteractionInfo info)
                 _i->longTapGestureEvent(info.x, info.y);
             });
             break;
+
+        case viz::scene3d::IWindowInteractor::InteractionInfo::LEAVE:
+            this->forAllInteractors(
+                [](const interactor::IInteractor::sptr& _i)
+            {
+                _i->leaveEvent();
+            });
+            break;
+
+        case viz::scene3d::IWindowInteractor::InteractionInfo::ENTER:
+            this->forAllInteractors(
+                [](const interactor::IInteractor::sptr& _i)
+            {
+                _i->enterEvent();
+            });
+            break;
     }
 
     m_cancelFurtherInteraction = false;

@@ -386,6 +386,26 @@ void Window::mouseReleaseEvent(QMouseEvent* _e)
     Q_EMIT interacted(info);
 }
 
+// ----------------------------------------------------------------------------
+
+void Window::leaveEvent(QEvent* /*_e*/)
+{
+    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
+    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::LEAVE;
+
+    Q_EMIT interacted(info);
+}
+
+// ----------------------------------------------------------------------------
+
+void Window::enterEvent(QEvent* /*_e*/)
+{
+    sight::viz::scene3d::IWindowInteractor::InteractionInfo info {};
+    info.interactionType = sight::viz::scene3d::IWindowInteractor::InteractionInfo::ENTER;
+
+    Q_EMIT interacted(info);
+}
+
 //------------------------------------------------------------------------------
 
 void Window::gestureEvent(QGestureEvent* _e)

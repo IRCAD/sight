@@ -122,9 +122,7 @@ private Q_SLOTS:
 
 private:
 
-    /// Disables fullscreen rendering.
-    void disableFullscreen();
-
+    bool m_isFullScreen {false};
     /// Contains Qt element of the Widget.
     QPointer<module::viz::scene3dQt::Window> m_qOgreWidget;
 

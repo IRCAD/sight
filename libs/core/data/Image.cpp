@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -60,6 +60,7 @@ const core::com::Signals::SignalKeyType Image::s_LANDMARK_ADDED_SIG       = "lan
 const core::com::Signals::SignalKeyType Image::s_LANDMARK_REMOVED_SIG     = "landmarkRemoved";
 const core::com::Signals::SignalKeyType Image::s_LANDMARK_DISPLAYED_SIG   = "landmarkDisplayed";
 const core::com::Signals::SignalKeyType Image::s_DISTANCE_ADDED_SIG       = "distanceAdded";
+const core::com::Signals::SignalKeyType Image::s_DISTANCE_MODIFIED_SIG    = "distanceModified";
 const core::com::Signals::SignalKeyType Image::s_DISTANCE_REMOVED_SIG     = "distanceRemoved";
 const core::com::Signals::SignalKeyType Image::s_DISTANCE_DISPLAYED_SIG   = "distanceDisplayed";
 const core::com::Signals::SignalKeyType Image::s_SLICE_INDEX_MODIFIED_SIG = "sliceIndexModified";
@@ -76,6 +77,7 @@ Image::Image(data::Object::Key /*unused*/) :
     newSignal<LandmarkDisplayedSignalType>(s_LANDMARK_DISPLAYED_SIG);
     newSignal<DistanceDisplayedSignalType>(s_DISTANCE_DISPLAYED_SIG);
     newSignal<DistanceAddedSignalType>(s_DISTANCE_ADDED_SIG);
+    newSignal<DistanceModifiedSignalType>(s_DISTANCE_MODIFIED_SIG);
     newSignal<DistanceRemovedSignalType>(s_DISTANCE_REMOVED_SIG);
     newSignal<SliceIndexModifiedSignalType>(s_SLICE_INDEX_MODIFIED_SIG);
     newSignal<SliceTypeModifiedSignalType>(s_SLICE_TYPE_MODIFIED_SIG);

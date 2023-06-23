@@ -136,8 +136,8 @@ void ChainManager::updateCompositorState(CompositorIdType _compositorName, bool 
 
             // Send a signal, i.e. to update editors in user interfaces
             auto renderService = layer->getRenderService();
-            auto sig           = renderService->signal<SRender::CompositorUpdatedSignalType>(
-                SRender::s_COMPOSITOR_UPDATED_SIG
+            auto sig           = renderService->signal<SRender::signals::compositorUpdated_signal_t>(
+                SRender::signals::COMPOSITOR_UPDATED
             );
             sig->asyncEmit(_compositorName, _isEnabled, layer);
         }
@@ -173,8 +173,8 @@ void ChainManager::setCompositorChain(const std::vector<CompositorIdType>& _comp
 
             // Send a signal, i.e. to update editors in user interfaces
             auto renderService = layer->getRenderService();
-            auto sig           = renderService->signal<SRender::CompositorUpdatedSignalType>(
-                SRender::s_COMPOSITOR_UPDATED_SIG
+            auto sig           = renderService->signal<SRender::signals::compositorUpdated_signal_t>(
+                SRender::signals::COMPOSITOR_UPDATED
             );
             sig->asyncEmit(compositorName, true, layer);
         }

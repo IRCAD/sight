@@ -9,6 +9,8 @@
         <param name="PICKER_SENDER_CHANNEL" default="PICKER_SENDER_CHANNEL"/>
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" default="WORLD_COORDS_LANDMARKS_CHANNEL"/>
         <param name="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" default="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL"/>
+        <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL"/>
+        <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL"/>
     </parameters>
     <config>
 
@@ -58,7 +60,7 @@
         </service>
 
         <service uid="negatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true">
-            <in key="image" uid="${image}" />
+            <inout key="image" uid="${image}" />
             <config fontSize="16" radius="3" queryFlags="0x40000000" />
         </service>
 
@@ -113,6 +115,16 @@
 
         <connect channel="${TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL}">
             <signal>eventAdp/triggered</signal>
+        </connect>
+
+        <!-- distance channels -->
+
+        <connect channel="${DISTANCE_ACTIVATION_CHANNEL}">
+            <slot>negatoMultiDistancesAdp/activateDistanceTool</slot>
+        </connect>
+
+        <connect channel="${DISTANCE_DEACTIVATION_CHANNEL}">
+            <signal>negatoMultiDistancesAdp/deactivateDistanceTool</signal>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

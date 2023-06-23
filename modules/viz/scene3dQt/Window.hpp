@@ -113,6 +113,12 @@ private:
     /// Manages mouse click on release.
     void mouseReleaseEvent(QMouseEvent* _e) override;
 
+    /// Manages mouse leaving the widget
+    void leaveEvent(QEvent* _e) override;
+
+    /// Manages mouse entering the widget
+    void enterEvent(QEvent* _e) override;
+
     /// Manages gestures.
     void gestureEvent(QGestureEvent* _e);
 

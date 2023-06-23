@@ -137,6 +137,17 @@ public:
         MANUAL
     };
 
+    struct signals
+    {
+        using key_t                      = sight::core::com::Signals::SignalKeyType;
+        using void_signal_t              = sight::core::com::Signal<void ()>;
+        using compositorUpdated_signal_t = core::com::Signal<void (std::string, bool, viz::scene3d::Layer::sptr)>;
+
+        static inline const key_t FULLSCREEN_SET     = "fullscreenSet";
+        static inline const key_t FULLSCREEN_UNSET   = "fullscreenUnset";
+        static inline const key_t COMPOSITOR_UPDATED = "compositorUpdated";
+    };
+
     /// Defines the type of adaptors ID.
     typedef std::string AdaptorIdType;
 
@@ -148,14 +159,6 @@ public:
 
     /// Defines actives layouts in the scene.
     typedef std::map<SceneIdType, SPTR(viz::scene3d::Layer)> LayerMapType;
-
-    /// Contains the signal sent when the compositor chain has been modified.
-    VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
-    typedef core::com::Signal<void (std::string, bool, viz::scene3d::Layer::sptr)> CompositorUpdatedSignalType;
-
-    /// Contains the signal sent when fullscreen was enabled/disabled.
-    VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_FULLSCREEN_SET_SIG;
-    using FullscreenSetSignalType = core::com::Signal<void (bool)>;
 
     /// Contains the slot name that computes the parameters to reset the camera.
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_COMPUTE_CAMERA_ORIG_SLOT;
@@ -268,9 +271,6 @@ private:
 
     /// Contains all the layers of the scene.
     LayerMapType m_layers;
-
-    /// Contains the signal sent when fullscreen is enabled/disabled.
-    FullscreenSetSignalType::sptr m_fullscreenSetSig;
 
     /// Contains the Ogre window interactor manager.
     viz::scene3d::IWindowInteractor::sptr m_interactorManager;

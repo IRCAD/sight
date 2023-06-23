@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -98,8 +98,8 @@ void SRemoveDistance::updating()
             data::PointList::sptr backupDistance = image->getField<data::PointList>("m_imageDistancesId");
 
             image->removeField("m_imageDistancesId");
-            const auto sig = image->signal<data::Image::DistanceAddedSignalType>(
-                data::Image::s_DISTANCE_ADDED_SIG
+            const auto sig = image->signal<data::Image::DistanceRemovedSignalType>(
+                data::Image::s_DISTANCE_REMOVED_SIG
             );
             sig->asyncEmit(backupDistance);
         }
