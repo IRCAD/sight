@@ -131,7 +131,7 @@ void MouseClick::interactWith(T thing) const
             if(auto* pushButton = qobject_cast<QAbstractButton*>(thing);
                m_modifiers == Qt::NoModifier && pushButton != nullptr)
             {
-                QTimer::singleShot(0, pushButton, &QAbstractButton::click);
+                pushButton->click();
             }
             else
             {

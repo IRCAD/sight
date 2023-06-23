@@ -549,7 +549,7 @@ public:
     static QTouchDevice* getDummyTouchScreen();
 
     /// The default timeout as used in the methods @ref take, @ref doubt, @ref yields and @ref maybeTake
-    static const int DEFAULT_TIMEOUT = 5000;
+    static const int DEFAULT_TIMEOUT = 10000;
 
 private:
 

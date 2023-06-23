@@ -34,6 +34,9 @@ namespace sight::ui::testCore::helper
 
 void VideoControls::load(Tester& tester, const std::string& controlsName, const std::filesystem::path& path)
 {
+    // Some activity takes time to load and the control is not always there
+    QTest::qWait(1000);
+
     tester.take("controls", controlsName);
     helper::ComboBox::select(tester, Select::fromParent(controlsName, "videoSelectorSrv"), "File...");
     helper::FileDialog::fill(tester, path);
