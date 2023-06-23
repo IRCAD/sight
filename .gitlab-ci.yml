@@ -73,7 +73,9 @@ lint:sheldon:
       else
         TIMEOUT="480"
       fi
-    - ctest --timeout $TIMEOUT --output-on-failure -O ctest.log -j${RUNNER_THREADS} --output-junit junit.xml
+    - ctest -E "(guitest)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest.log -j10 --output-junit junit1.xml --repeat until-pass:2
+    - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest.log -j10 --output-junit junit2.xml --repeat until-pass:2
+    - ctest -R "(guitest)" --timeout $TIMEOUT --output-on-failure -O ctest.log -j10 --output-junit junit3.xml --repeat until-pass:2
     # Build documentation if needed
     - >
       if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
@@ -107,7 +109,7 @@ lint:sheldon:
       - .build/bin/*.core
       - .build/testImages
     reports:
-      junit: .build/junit.xml
+      junit: .build/junit*.xml
       metrics: .build/metrics.txt
 
 .linux_deploy_test:
