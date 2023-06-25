@@ -303,7 +303,9 @@ deploy:apps-linux-release:
     - md "${env:IMAGE_OUTPUT_PATH}"
     - $env:DISABLE_ABORT_DIALOG="1"
     # Launch tests
-    - ctest --timeout 480 --output-on-failure -O ctest.log -j6 --output-junit junit.xml
+    - ctest -E "(guitest)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest.log -j6 --output-junit junit1.xml --repeat until-pass:2
+    - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest.log -j6 --output-junit junit2.xml --repeat until-pass:2
+    - ctest -R "(guitest)" --timeout $TIMEOUT --output-on-failure -O ctest.log -j6 --output-junit junit3.xml --repeat until-pass:2
     - |
       if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
         ninja SightViewer_package

@@ -117,8 +117,12 @@ void AppConfigManager::launch()
     try
     {
         this->startModule();
-        this->create();
-        this->start();
+
+        {
+            core::mt::ScopedLock lock(m_mutex);
+            this->create();
+            this->start();
+        }
         this->update();
     }
     catch(const core::runtime::ExitException& e)
@@ -170,8 +174,6 @@ void AppConfigManager::create()
 
 void AppConfigManager::start()
 {
-    core::mt::ScopedLock lock(m_mutex);
-
     SIGHT_ASSERT("Manager must be created first.", m_state == STATE_CREATED || m_state == STATE_STOPPED);
 
     core::com::HasSlots::m_slots.setWorker(core::thread::getDefaultWorker());
@@ -245,11 +247,11 @@ void AppConfigManager::stop()
             }
         }
         m_startedSrv.clear();
+        m_state = STATE_STOPPED;
     }
     std::ranges::for_each(futures, std::mem_fn(&std::shared_future<void>::wait));
 
     service::helper::Config::clearProps();
-    m_state = STATE_STOPPED;
 }
 
 // ------------------------------------------------------------------------
@@ -981,6 +983,11 @@ void AppConfigManager::destroyProxies()
 void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _id)
 {
     core::mt::ScopedLock lock(m_mutex);
+    if(m_state != STATE_STARTED)
+    {
+        SIGHT_INFO("Skip processing of a new object since the AppConfig is not running.");
+        return;
+    }
 
     FW_PROFILE("addObjects");
 
@@ -1155,6 +1162,11 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
 void AppConfigManager::removeObjects(data::Object::sptr _obj, const std::string& _id)
 {
     core::mt::ScopedLock lock(m_mutex);
+    if(m_state != STATE_STARTED)
+    {
+        SIGHT_INFO("Skip processing of a new object since the AppConfig is not running.");
+        return;
+    }
 
     FW_PROFILE("removeObjects");
 
