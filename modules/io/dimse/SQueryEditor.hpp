@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,6 +30,8 @@
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
+
+#include <service/INotifier.hpp>
 
 #include <ui/base/IEditor.hpp>
 
@@ -70,7 +72,8 @@ namespace sight::module::io::dimse
  */
 class MODULE_IO_DIMSE_CLASS_API SQueryEditor final :
     public QObject,
-    public sight::ui::base::IEditor
+    public sight::ui::base::IEditor,
+    private sight::service::INotifier
 {
 Q_OBJECT;
 
@@ -83,7 +86,7 @@ public:
     MODULE_IO_DIMSE_API SQueryEditor() noexcept;
 
     /// Destroyes the service.
-    MODULE_IO_DIMSE_API ~SQueryEditor() noexcept override;
+    MODULE_IO_DIMSE_API ~SQueryEditor() noexcept override = default;
 
 protected:
 

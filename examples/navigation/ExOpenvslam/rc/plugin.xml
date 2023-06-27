@@ -379,10 +379,10 @@
 
             <service uid="notifierSrv" type="sight::module::ui::qt::SNotifier">
                 <message>Default Message</message>
-                <maxNotifications>3</maxNotifications>
-                <position>BOTTOM_LEFT</position>
-                <duration>3000</duration>
                 <parent uid="genericSceneSrv" />
+                <channels>
+                    <channel position="BOTTOM_LEFT" duration="3000" max="3" />
+                </channels>
             </service>
 
             <!-- ******************************* Connections ***************************************** -->

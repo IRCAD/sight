@@ -29,6 +29,7 @@
 #include <io/base/service/IGrabber.hpp>
 
 #include <service/IHasServices.hpp>
+#include <service/INotifier.hpp>
 
 namespace sight::data
 {
@@ -237,7 +238,7 @@ private:
     void fwdCreateJob(sight::core::jobs::IJob::sptr job);
 
     // Forwards notifications
-    void fwdNotify(IService::NotificationType, const std::string message);
+    void fwdNotify(service::Notification notification);
     /** @} */
 
     /// Forward FPS data

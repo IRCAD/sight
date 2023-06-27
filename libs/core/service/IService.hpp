@@ -138,28 +138,17 @@ public:
 
     //@}
 
-    /// Defines Notification type, default is INFO.
-    enum class NotificationType
-    {
-        SUCCESS,
-        INFO,
-        FAILURE,
-        DEFAULT = INFO
-    };
-
     struct signals
     {
-        using started_t      = core::com::Signal<void (IService::wptr)>;
-        using stopped_t      = core::com::Signal<void (IService::wptr)>;
-        using updated_t      = core::com::Signal<void (IService::wptr)>;
-        using swapped_t      = core::com::Signal<void (IService::wptr)>;
-        using notification_t = core::com::Signal<void (NotificationType, std::string)>;
+        using started_t = core::com::Signal<void (IService::wptr)>;
+        using stopped_t = core::com::Signal<void (IService::wptr)>;
+        using updated_t = core::com::Signal<void (IService::wptr)>;
+        using swapped_t = core::com::Signal<void (IService::wptr)>;
 
-        static inline const core::com::Signals::key_t s_STARTED  = "started";
-        static inline const core::com::Signals::key_t s_UPDATED  = "updated";
-        static inline const core::com::Signals::key_t s_SWAPPED  = "swapped";
-        static inline const core::com::Signals::key_t s_STOPPED  = "stopped";
-        static inline const core::com::Signals::key_t s_NOTIFIED = "notified";
+        static inline const core::com::Signals::key_t s_STARTED = "started";
+        static inline const core::com::Signals::key_t s_UPDATED = "updated";
+        static inline const core::com::Signals::key_t s_SWAPPED = "swapped";
+        static inline const core::com::Signals::key_t s_STOPPED = "stopped";
     };
 
     struct slots
@@ -285,14 +274,6 @@ public:
      * @note Invoke IService::info( std::ostream )
      */
     SERVICE_API friend std::ostream& operator<<(std::ostream& _sstream, IService& _service);
-
-    /**
-     * @brief Emits notification signal with 'message' and Notification 'type' provided
-     *
-     * @param[in] type type of the notification to emit @see Notification enum class.
-     * @param[in] message message as std::string.
-     */
-    SERVICE_API void notify(NotificationType type, const std::string& message) const;
     //@}
 
 protected:

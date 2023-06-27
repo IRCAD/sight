@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -59,13 +59,10 @@ static const service::IService::KeyType s_SERIES_SET_INOUT = "seriesSet";
 
 //------------------------------------------------------------------------------
 
-SQueryEditor::SQueryEditor() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
-SQueryEditor::~SQueryEditor() noexcept =
-    default;
+SQueryEditor::SQueryEditor() noexcept :
+    service::INotifier(m_signals)
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -267,7 +264,7 @@ void SQueryEditor::executeQueryAsync()
     }
     else
     {
-        this->notify(NotificationType::INFO, "Already querying");
+        this->INotifier::info("Already querying");
         return;
     }
 }
@@ -296,7 +293,7 @@ void SQueryEditor::executeQuery()
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Can't establish a connection with the PACS: " + std::string(_e.what()));
-        this->notify(NotificationType::FAILURE, "Can't connect to the PACS");
+        this->INotifier::failure("Can't connect to the PACS");
         m_isQuerying = false;
         return;
     }
@@ -520,7 +517,7 @@ void SQueryEditor::executeQuery()
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Can't execute query to the PACS: " + std::string(_e.what()));
-        this->notify(NotificationType::FAILURE, "Can't execute query");
+        this->INotifier::failure("Can't execute query");
     }
 
     if(seriesEnquirer->isConnectedToPacs())

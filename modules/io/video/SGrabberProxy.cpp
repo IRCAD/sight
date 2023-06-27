@@ -509,7 +509,7 @@ void SGrabberProxy::startTargetCamera(std::string impl)
                 m_connections.connect(srv, IGrabber::s_CAMERA_STOPPED_SIG, this->getSptr(), slots::FWD_STOP_CAMERA);
                 m_connections.connect(srv, IGrabber::s_FRAME_PRESENTED_SIG, this->getSptr(), slots::FWD_PRESENT_FRAME);
 
-                m_connections.connect(srv, IService::signals::s_NOTIFIED, this->getSptr(), slots::FWD_NOTIFY);
+                m_connections.connect(srv, INotifier::signals::s_NOTIFIED, this->getSptr(), slots::FWD_NOTIFY);
 
                 m_connections.connect(
                     srv,
@@ -762,10 +762,9 @@ void SGrabberProxy::fwdPresentFrame()
 
 //-----------------------------------------------------------------------------
 
-void SGrabberProxy::fwdNotify(IService::NotificationType type, const std::string message)
+void SGrabberProxy::fwdNotify(service::Notification notification)
 {
-    auto sig = this->signal<IService::signals::notification_t>(IService::signals::s_NOTIFIED);
-    sig->asyncEmit(type, message);
+    INotifier::m_notified_sig->asyncEmit(std::move(notification));
 }
 
 //------------------------------------------------------------------------------

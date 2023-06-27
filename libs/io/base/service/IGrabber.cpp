@@ -62,7 +62,8 @@ const std::string IGrabber::s_REMOVE_ROI_CENTER_SLOT = "removeROICenter";
 
 // ----------------------------------------------------------------------------
 
-IGrabber::IGrabber() noexcept
+IGrabber::IGrabber() noexcept :
+    INotifier(m_signals)
 {
     //Declare all signals
     newSignal<PositionModifiedSignalType>(s_POSITION_MODIFIED_SIG);
@@ -95,11 +96,6 @@ IGrabber::IGrabber() noexcept
 
     newSlot(s_FORWARD_FPS_CHANGED_SLOT, &IGrabber::forwardFPSChanged, this);
 }
-
-// ----------------------------------------------------------------------------
-
-IGrabber::~IGrabber() noexcept =
-    default;
 
 // ----------------------------------------------------------------------------
 

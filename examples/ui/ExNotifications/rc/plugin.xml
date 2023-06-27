@@ -15,26 +15,26 @@ are already displayed and where they are displayed on screen.
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::ui::base" />
 
-    <extension implements="sight::service::extension::Factory" >
+    <extension implements="sight::service::extension::Factory">
         <type>sight::ui::base::IAction</type>
         <service>ExNotifications::SDisplayTestNotifications</service>
         <object>sight::data::Object</object>
     </extension>
 
-    <extension implements="sight::service::extension::AppConfig" >
+    <extension implements="sight::service::extension::AppConfig">
         <id>ExNotifications_AppCfg</id>
         <config>
 
             <!-- ******************************* UI declaration *********************************** -->
 
-            <service uid="mainFrame" type="sight::module::ui::base::SFrame" >
+            <service uid="mainFrame" type="sight::module::ui::base::SFrame">
                 <gui>
                     <frame>
                         <name>ExNotifications</name>
                         <icon>ExNotifications/app.ico</icon>
                         <minSize width="800" height="600" />
                     </frame>
-                    <toolBar/>
+                    <toolBar />
                 </gui>
                 <registry>
                     <toolBar sid="toolbarView" start="true" />
@@ -42,33 +42,39 @@ are already displayed and where they are displayed on screen.
                 </registry>
             </service>
 
-           <service uid="toolbarView" type="sight::module::ui::base::SToolBar" >
+            <service uid="toolbarView" type="sight::module::ui::base::SToolBar">
                 <gui>
                     <layout>
-                        <editor/>
-                        <editor/>
-                        <editor/>
-                        <editor/>
-                        <separator/>
+                        <editor />
+                        <editor />
+                        <editor />
+                        <editor />
+                        <editor />
+                        <editor />
+                        <separator />
                         <menuItem name="NOTIFY" />
+                        <menuItem name="Close CHANNEL1" />
                         <spacer />
-                        <separator/>
+                        <separator />
                         <menuItem name="Color Theme" />
                     </layout>
                 </gui>
                 <registry>
                     <editor sid="useNotifierAct" start="true" />
                     <editor sid="maxChar" start="true" />
+                    <editor sid="durationAct" start="true" />
                     <editor sid="typeAct" start="true" />
                     <editor sid="positionAct" start="true" />
+                    <editor sid="channelAct" start="true" />
                     <menuItem sid="notifyAct" start="true" />
-                    <menuItem sid="changeThemeAct" start ="true" />
+                    <menuItem sid="closeAct" start="true" />
+                    <menuItem sid="changeThemeAct" start="true" />
                 </registry>
             </service>
 
-            <service uid="mainview" type="sight::module::ui::base::SView" >
+            <service uid="mainview" type="sight::module::ui::base::SView">
                 <gui>
-                    <layout type="sight::ui::base::LineLayoutManager" >
+                    <layout type="sight::ui::base::LineLayoutManager">
                         <orientation value="vertical" />
                     </layout>
                 </gui>
@@ -76,34 +82,48 @@ are already displayed and where they are displayed on screen.
 
             <!-- ************************************* Action ************************************ -->
 
-            <service uid="useNotifierAct" type="sight::module::ui::qt::SParameters" >
+            <service uid="useNotifierAct" type="sight::module::ui::qt::SParameters">
                 <parameters>
                     <param type="bool" name="Use SNotifier to centralize." key="useSNotifier" defaultValue="true" />
                 </parameters>
             </service>
 
-            <service uid="maxChar" type="sight::module::ui::qt::SParameters" >
+            <service uid="maxChar" type="sight::module::ui::qt::SParameters">
                 <parameters>
                     <param type="bool" name="Reach max. characters" key="reachMaxCharacters" defaultValue="false" />
                 </parameters>
             </service>
 
-            <service uid="typeAct" type="sight::module::ui::qt::SParameters" >
+            <service uid="durationAct" type="sight::module::ui::qt::SParameters">
+                <parameters>
+                    <param type="enum" name="Duration" key="duration" defaultValue="3000" values="3000,1000,infinite" />
+                </parameters>
+            </service>
+
+            <service uid="typeAct" type="sight::module::ui::qt::SParameters">
                 <parameters>
                     <param type="enum" name="Type" key="type" defaultValue="INFO" values="INFO,SUCCESS,FAILURE" />
                 </parameters>
             </service>
 
-            <service uid="positionAct" type="sight::module::ui::qt::SParameters" >
+            <service uid="positionAct" type="sight::module::ui::qt::SParameters">
                 <parameters>
                     <param type="enum" name="Position" key="position" defaultValue="TOP_RIGHT" values="ALL,TOP_LEFT,TOP_RIGHT,CENTERED_TOP,CENTERED,BOTTOM_LEFT,BOTTOM_RIGHT,CENTERED_BOTTOM" />
                 </parameters>
             </service>
 
+            <service uid="channelAct" type="sight::module::ui::qt::SParameters">
+                <parameters>
+                    <param type="enum" name="Channel" key="channel" defaultValue="GLOBAL" values="GLOBAL,CHANNEL1,CHANNEL2" />
+                </parameters>
+            </service>
+
             <service uid="notifyAct" type="sight::module::ui::base::SAction" />
 
+            <service uid="closeAct" type="sight::module::ui::base::SAction" />
+
             <!-- preference to apply new theme on app -->
-            <service uid="changeThemeAct" type="sight::module::ui::qt::SPreferencesConfiguration" >
+            <service uid="changeThemeAct" type="sight::module::ui::qt::SPreferencesConfiguration">
                 <preference>
                     <type>combobox</type>
                     <name>Color Theme</name>
@@ -116,15 +136,23 @@ are already displayed and where they are displayed on screen.
             <!-- ******************************* Services ******************************* -->
 
             <!-- Dummy service only used to test notifications -->
-            <service uid="testNotifierSrv" type="ExNotifications::SDisplayTestNotifications" />
+            <service uid="testNotifierSrv" type="ExNotifications::SDisplayTestNotifications">
+                <notification>
+                    <channel key="CHANNEL1" uid="CHANNEL1" />
+                    <channel key="CHANNEL2" uid="CHANNEL2" />
+                </notification>
+            </service>
 
             <!-- SNotifier listen to all the connected service & display queued notification at the same place (here TOP_RIGHT)-->
-            <service uid="notifierSrv" type="sight::module::ui::qt::SNotifier" >
+            <service uid="notifierSrv" type="sight::module::ui::qt::SNotifier">
                 <parent uid="mainview" /> <!-- Parent container where notifications will be displayed, use the xmlattr uid hack to generate the generic_uid prefix of "maiview" -->
                 <message>Default Message</message><!-- Default message printed if empty string is emitted in notify* signals -->
-                <position>TOP_RIGHT</position><!-- Default position for ALL notifications (overriden by setEnumParameter slot) -->
-                <maxNotifications>3</maxNotifications> <!-- Maximum number of queued notifications -->
-                <duration>3000</duration><!-- Time the notifications are displayed on screen ( + 1sec for fade in & fade out effects) -->
+                <channels>
+                    <!-- Channel without uid configures default for all notification. It can be changed using enumParameters -->
+                    <channel position="TOP_RIGHT" duration="3000" max="3" size="200x60" />
+                    <!-- CHANNEL2 configuration is fixd here. It cannot be changed -->
+                    <channel uid="CHANNEL2" position="TOP_LEFT" duration="5000" max="3" size="800x120" closable="false" />
+                </channels>
             </service>
 
             <service uid="sight::module::ui::qtChangerSrv" type="sight::module::ui::qt::SStyleSelector" />
@@ -137,6 +165,11 @@ are already displayed and where they are displayed on screen.
                 <slot>notifierSrv/pop</slot>
             </connect>
 
+            <connect>
+                <signal>testNotifierSrv/notificationClosed</signal>
+                <slot>notifierSrv/closeNotification</slot>
+            </connect>
+
             <!-- Others connections -->
             <connect>
                 <signal>positionAct/enumChanged</signal>
@@ -145,7 +178,18 @@ are already displayed and where they are displayed on screen.
             </connect>
 
             <connect>
+                <signal>durationAct/enumChanged</signal>
+                <slot>testNotifierSrv/setEnumParameter</slot>
+                <slot>notifierSrv/setEnumParameter</slot>
+            </connect>
+
+            <connect>
                 <signal>typeAct/enumChanged</signal>
+                <slot>testNotifierSrv/setEnumParameter</slot>
+            </connect>
+
+            <connect>
+                <signal>channelAct/enumChanged</signal>
                 <slot>testNotifierSrv/setEnumParameter</slot>
             </connect>
 
@@ -163,6 +207,11 @@ are already displayed and where they are displayed on screen.
             <connect>
                 <signal>notifyAct/clicked</signal>
                 <slot>testNotifierSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>closeAct/clicked</signal>
+                <slot>testNotifierSrv/closeChannel1</slot>
             </connect>
 
             <!-- ******************************* Start services ***************************************** -->

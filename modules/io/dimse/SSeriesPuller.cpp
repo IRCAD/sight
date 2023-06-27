@@ -48,7 +48,8 @@ static const core::com::Slots::SlotKeyType s_REMOVE_SERIES_SLOT = "removeSeries"
 static const std::string s_DICOM_READER_CONFIG = "dicomReader";
 static const std::string s_READER_CONFIG       = "readerConfig";
 
-SSeriesPuller::SSeriesPuller() noexcept
+SSeriesPuller::SSeriesPuller() noexcept :
+    service::INotifier(m_signals)
 {
     m_slotStoreInstance = this->newSlot(
         sight::io::dimse::SeriesRetriever::s_PROGRESS_CALLBACK_SLOT,
@@ -62,11 +63,6 @@ SSeriesPuller::SSeriesPuller() noexcept
 
     newSlot(s_REMOVE_SERIES_SLOT, &SSeriesPuller::removeSeries, this);
 }
-
-//------------------------------------------------------------------------------
-
-SSeriesPuller::~SSeriesPuller() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -123,7 +119,7 @@ void SSeriesPuller::updating()
 
     if(selectedSeries->empty())
     {
-        this->notify(NotificationType::INFO, "No series selected");
+        this->INotifier::info("No series selected");
     }
     else
     {
@@ -187,7 +183,7 @@ void SSeriesPuller::pullSeries()
     // Pull series.
     if(!pullSeriesVector.empty())
     {
-        this->notify(NotificationType::INFO, "Downloading series...");
+        this->INotifier::info("Downloading series...");
 
         // Notify Progress Dialog.
         m_sigProgressStarted->asyncEmit(m_progressbarId);
@@ -212,7 +208,7 @@ void SSeriesPuller::pullSeries()
         catch(const sight::io::dimse::exceptions::Base& _e)
         {
             SIGHT_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
-            this->notify(NotificationType::FAILURE, "Unable to connect to the PACS");
+            this->INotifier::failure("Unable to connect to the PACS");
             return;
         }
 
@@ -263,7 +259,7 @@ void SSeriesPuller::pullSeries()
         catch(const sight::io::dimse::exceptions::Base& _e)
         {
             SIGHT_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
-            this->notify(NotificationType::FAILURE, "Unable to execute query");
+            this->INotifier::failure("Unable to execute query");
             success = false;
         }
 
@@ -279,19 +275,19 @@ void SSeriesPuller::pullSeries()
     }
     else
     {
-        this->notify(NotificationType::INFO, "Series already downloaded");
+        this->INotifier::info("Series already downloaded");
         return;
     }
 
     // Read series if there is no error.
     if(success)
     {
-        this->notify(NotificationType::SUCCESS, "Series downloaded");
+        this->INotifier::success("Series downloaded");
         this->readLocalSeries(selectedSeriesVector);
     }
     else
     {
-        this->notify(NotificationType::FAILURE, "Series download failed");
+        this->INotifier::failure("Series download failed");
     }
 
     // Notify Progress Dialog.
@@ -314,7 +310,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
         const std::string& modality = series->getModality();
         if(modality != "CT" && modality != "MR" && modality != "XA")
         {
-            notify(NotificationType::INFO, "Unable to read the modality '" + modality + "'");
+            this->INotifier::info("Unable to read the modality '" + modality + "'");
             return;
         }
 
@@ -329,7 +325,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
                 return already_loaded_series->getSeriesInstanceUID() == selectedSeriesUID;
             }) == dest_series_set->cend())
         {
-            notify(NotificationType::INFO, "Reading series...");
+            this->INotifier::info("Reading series...");
 
             // Clear temporary series.
             m_series_set->clear();
@@ -341,7 +337,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
             // Merge series.
             if(!m_dicomReader->hasFailed() && !m_series_set->empty())
             {
-                notify(NotificationType::SUCCESS, "Series read");
+                this->INotifier::success("Series read");
 
                 // Add the series to the local series vector.
                 m_localSeries.insert(selectedSeriesUID);
@@ -351,7 +347,7 @@ void SSeriesPuller::readLocalSeries(DicomSeriesContainerType _selectedSeries)
             }
             else
             {
-                notify(NotificationType::FAILURE, "Failed to read series");
+                this->INotifier::failure("Failed to read series");
             }
         }
     }
@@ -368,7 +364,7 @@ void SSeriesPuller::removeSeries(data::SeriesSet::container_type _removedSeries)
         {
             if(m_localSeries.erase(series->getSeriesInstanceUID()) > 0)
             {
-                notify(NotificationType::INFO, "Local series deleted");
+                this->INotifier::info("Local series deleted");
             }
         }
     }

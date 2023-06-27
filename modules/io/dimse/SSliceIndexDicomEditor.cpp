@@ -47,13 +47,10 @@ static const std::string s_READER_CONFIG       = "readerConfig";
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
-SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept =
-    default;
+SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept :
+    service::INotifier(m_signals)
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -260,7 +257,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
-        this->notify(NotificationType::FAILURE, "Unable to connect to PACS");
+        this->INotifier::failure("Unable to connect to PACS");
     }
 
     const auto dicomSeries = m_series.lock();
@@ -301,13 +298,13 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
         }
         else
         {
-            this->notify(NotificationType::FAILURE, "No instance found");
+            this->INotifier::failure("No instance found");
         }
     }
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
-        this->notify(NotificationType::FAILURE, "Unable to execute query");
+        this->INotifier::failure("Unable to execute query");
     }
     catch(const std::filesystem::filesystem_error& _e)
     {
@@ -337,7 +334,7 @@ void SSliceIndexDicomEditor::readSlice(
     const std::string modality = _dicomSeries->getModality();
     if(modality != "CT" && modality != "MR" && modality != "XA")
     {
-        this->notify(NotificationType::INFO, "Unable to read the modality '" + modality + "'");
+        this->INotifier::info("Unable to read the modality '" + modality + "'");
         return;
     }
 
@@ -405,7 +402,7 @@ void SSliceIndexDicomEditor::readSlice(
     else
     {
         SIGHT_ERROR("Unable to read the image");
-        this->notify(NotificationType::FAILURE, "Unable to read the image");
+        this->INotifier::failure("Unable to read the image");
     }
 }
 

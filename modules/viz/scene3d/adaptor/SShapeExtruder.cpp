@@ -141,7 +141,8 @@ Ogre::Vector3 SShapeExtruder::getCamDirection(const Ogre::Camera* const _cam)
 
 //-----------------------------------------------------------------------------
 
-SShapeExtruder::SShapeExtruder() noexcept
+SShapeExtruder::SShapeExtruder() noexcept :
+    service::INotifier(m_signals)
 {
     newSlot(s_ENABLE_TOOL_SLOT, &SShapeExtruder::enableTool, this);
     newSlot(s_DELETE_LAST_MESH_SLOT, &SShapeExtruder::deleteLastMesh, this);
@@ -186,7 +187,7 @@ void SShapeExtruder::configuring()
 
 void SShapeExtruder::starting()
 {
-    this->initialize();
+    this->IAdaptor::initialize();
 
     this->getRenderService()->makeCurrent();
 
@@ -297,7 +298,7 @@ void SShapeExtruder::deleteLastMesh()
         extrudedMeshes->setReconstructionDB(reconstructions);
 
         // Send notification
-        this->notify(NotificationType::INFO, "Last extrusion deleted.");
+        this->INotifier::info("Last extrusion deleted.");
 
         // Send the signal.
         auto sig = extrudedMeshes->signal<data::ModelSeries::ReconstructionsRemovedSignalType>(
@@ -307,7 +308,7 @@ void SShapeExtruder::deleteLastMesh()
     }
     else
     {
-        this->notify(NotificationType::FAILURE, "No extrusion to delete.");
+        this->INotifier::failure("No extrusion to delete.");
     }
 }
 

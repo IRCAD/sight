@@ -94,6 +94,7 @@ const core::com::Slots::SlotKeyType s_INTERNAL_DOWNLOAD_VOC_FILE_SLOT = "Interna
 //------------------------------------------------------------------------------
 
 SOpenvslam::SOpenvslam() noexcept :
+    INotifier(m_signals),
     m_sigTrackingInitialized(newSignal<SignalType>(s_TRACKING_INITIALIZED_SIG)),
     m_sigTrackingNotInitialized(newSignal<SignalType>(s_TRACKING_NOT_INITIALIZED_SIG)),
     m_sigTracked(newSignal<SignalType>(s_TRACKED_SIG)),
@@ -126,8 +127,9 @@ SOpenvslam::SOpenvslam() noexcept :
         {
             SIGHT_INFO("Downloading orb_vocab.dbow2...");
 
-            this->notify(sight::service::IService::NotificationType::INFO, "Downloading Vocabulary");
+            this->INotifier::info("Downloading Vocabulary");
             m_sigVocFileLoadingStarted->asyncEmit();
+
             try
             {
                 std::string url;
@@ -151,7 +153,8 @@ SOpenvslam::SOpenvslam() noexcept :
                 SIGHT_FATAL("orb_vocab.dbow2 file hasn't been downloaded: " + std::string(_e.what()));
                 m_sigVocFileUnloaded->asyncEmit();
             }
-            this->notify(sight::service::IService::NotificationType::SUCCESS, "Vocabulary downloaded");
+
+            this->INotifier::success("Vocabulary downloaded");
         });
 }
 

@@ -48,15 +48,11 @@ static const service::IService::KeyType s_SHOW_DIALOG_CONFIG = "showDialog";
 
 //------------------------------------------------------------------------------
 
-SPacsConfigurationEditor::SPacsConfigurationEditor() noexcept
+SPacsConfigurationEditor::SPacsConfigurationEditor() noexcept :
+    service::INotifier(m_signals)
 {
     m_slotShowDialog = this->newSlot(s_SHOW_DIALOG_SLOT, &SPacsConfigurationEditor::showDialog);
 }
-
-//------------------------------------------------------------------------------
-
-SPacsConfigurationEditor::~SPacsConfigurationEditor() noexcept =
-    default;
 
 //------------------------------------------------------------------------------
 
@@ -307,12 +303,12 @@ void SPacsConfigurationEditor::pingPACS()
 
             if(success)
             {
-                this->notify(NotificationType::INFO,"Ping succeeded!");
+                this->INotifier::info("Ping succeeded!");
                 SIGHT_INFO("Ping succeeded")
             }
             else
             {
-                this->notify(NotificationType::FAILURE,"Ping failed!");
+                this->INotifier::failure("Ping failed!");
                 SIGHT_INFO("Ping failed")
             }
         });

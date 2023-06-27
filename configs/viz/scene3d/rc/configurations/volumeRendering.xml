@@ -199,10 +199,9 @@
 
         <service uid="notifierSrv" type="sight::module::ui::qt::SNotifier">
             <parent uid="mainview" />
-            <message>Default message</message>
-            <maxNotifications>3</maxNotifications>
-            <position>BOTTOM_LEFT</position>
-            <duration>3000</duration>
+            <channels>
+                <channel position="BOTTOM_LEFT" duration="3000" max="3" />
+            </channels>
         </service>
 
         <!-- Write the snapshot image -->

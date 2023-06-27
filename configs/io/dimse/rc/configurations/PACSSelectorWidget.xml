@@ -355,17 +355,17 @@
         <service uid="leftNotifierSrv" type="sight::module::ui::qt::SNotifier">
             <parent uid="mainview" />
             <message>Default Message</message>
-            <position>BOTTOM_LEFT</position>
-            <maxNotifications>10</maxNotifications>
-            <duration>5000</duration>
+            <channels>
+                <channel position="BOTTOM_LEFT" duration="5000" max="10" />
+            </channels>
         </service>
 
         <service uid="rightNotifierSrv" type="sight::module::ui::qt::SNotifier">
             <parent uid="mainview" />
             <message>Default Message</message>
-            <position>BOTTOM_RIGHT</position>
-            <maxNotifications>10</maxNotifications>
-            <duration>5000</duration>
+            <channels>
+                <channel position="BOTTOM_RIGHT" duration="5000" max="10" />
+            </channels>
         </service>
 
         <service uid="resetPreviewSrv" type="sight::module::data::SCopy">
@@ -495,7 +495,7 @@
             <slot>extractLocalImageSeriesSrv/update</slot>
             <slot>hideAdvancedQueryEditorSrv/update</slot>
             <slot>hidePACSConfigurationSrv/update</slot>
-            
+
         </connect>
 
         <connect>

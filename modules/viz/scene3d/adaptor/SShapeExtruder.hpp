@@ -30,6 +30,8 @@
 #include <data/Material.hpp>
 #include <data/ModelSeries.hpp>
 
+#include <service/INotifier.hpp>
+
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/interactor/IInteractor.hpp>
 
@@ -77,7 +79,8 @@ namespace sight::module::viz::scene3d::adaptor
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SShapeExtruder final :
     public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::interactor::IInteractor
+    public sight::viz::scene3d::interactor::IInteractor,
+    private service::INotifier
 {
 public:
 

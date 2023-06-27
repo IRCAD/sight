@@ -30,6 +30,7 @@
 #include <data/FrameTL.hpp>
 #include <data/Point.hpp>
 
+#include <service/INotifier.hpp>
 #include <service/IService.hpp>
 
 #include <ui/base/parameter.hpp>
@@ -67,7 +68,8 @@ namespace sight::io::base::service
  * - \b addROICenter(sight::data::Point::sptr): Adds a new region fo interest center.
  * - \b removeROICenter(sight::data::Point::sptr): Removes a region of interest via its center.
  */
-class IO_BASE_CLASS_API IGrabber : public sight::service::IService
+class IO_BASE_CLASS_API IGrabber : public sight::service::IService,
+                                   public sight::service::INotifier
 {
 public:
 
@@ -140,7 +142,7 @@ public:
     /**
      * @brief Destructor.
      */
-    IO_BASE_API ~IGrabber() noexcept override;
+    IO_BASE_API ~IGrabber() noexcept override = default;
 
     /**
      * @brief API for starting a camera. Needs to be reimplemented in child classes.

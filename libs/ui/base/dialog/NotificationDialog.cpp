@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,13 +31,9 @@ namespace sight::ui::base::dialog
 
 //-----------------------------------------------------------------------------
 
-void NotificationDialog::show(
-    const std::string& _message,
-    INotificationDialog::Type _type,
-    INotificationDialog::Position _pos
-)
+void NotificationDialog::show(service::Notification notification)
 {
-    ui::base::dialog::NotificationDialog notif(_message, _type, _pos);
+    ui::base::dialog::NotificationDialog notif(std::move(notification));
     notif.show();
 }
 
@@ -46,71 +42,56 @@ void NotificationDialog::show(
 NotificationDialog::NotificationDialog()
 {
     core::thread::getDefaultWorker()->postTask<void>(
-        std::function<void()>(
-            [&]
+        [&]
         {
             ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(INotificationDialog::REGISTRY_KEY);
             m_implementation                     = ui::base::dialog::INotificationDialog::dynamicCast(guiObj);
-        })
-    ).wait();
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-NotificationDialog::NotificationDialog(
-    const std::string& _message,
-    INotificationDialog::Type _type,
-    INotificationDialog::Position _pos
-)
+NotificationDialog::NotificationDialog(service::Notification notification)
 {
     core::thread::getDefaultWorker()->postTask<void>(
-        std::function<void()>(
-            [&]
+        [&]
         {
             ui::base::GuiBaseObject::sptr guiObj = ui::base::factory::New(INotificationDialog::REGISTRY_KEY);
             m_implementation                     = ui::base::dialog::INotificationDialog::dynamicCast(guiObj);
 
             if(m_implementation)
             {
-                m_implementation->setMessage(_message);
-                m_implementation->setType(_type);
-                m_implementation->setPosition(_pos);
+                m_implementation->setNotification(std::move(notification));
             }
-        })
-    ).wait();
+        }).wait();
 }
-
-//-----------------------------------------------------------------------------
-
-NotificationDialog::~NotificationDialog()
-= default;
 
 //-----------------------------------------------------------------------------
 
 void NotificationDialog::show()
 {
-    if(m_implementation)
-    {
-        std::function<void()> func = [this](auto&& ...){m_implementation->show();};
-        std::shared_future<void> f = core::thread::getDefaultWorker()->postTask<void>(func);
-        f.wait();
-    }
+    core::thread::getDefaultWorker()->postTask<void>(
+        [&]
+        {
+            if(m_implementation)
+            {
+                m_implementation->show();
+            }
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void NotificationDialog::setMessage(const std::string& _msg)
+void NotificationDialog::setMessage(std::string _msg)
 {
     core::thread::getDefaultWorker()->postTask<void>(
-        std::function<void()>(
-            [&]
+        [&]
         {
             if(m_implementation)
             {
-                m_implementation->setMessage(_msg);
+                m_implementation->setMessage(std::move(_msg));
             }
-        })
-    ).wait();
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -118,15 +99,13 @@ void NotificationDialog::setMessage(const std::string& _msg)
 void NotificationDialog::setType(INotificationDialog::Type _type)
 {
     core::thread::getDefaultWorker()->postTask<void>(
-        std::function<void()>(
-            [&]
+        [&]
         {
             if(m_implementation)
             {
                 m_implementation->setType(_type);
             }
-        })
-    ).wait();
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -134,31 +113,39 @@ void NotificationDialog::setType(INotificationDialog::Type _type)
 void NotificationDialog::setPosition(INotificationDialog::Position _position)
 {
     core::thread::getDefaultWorker()->postTask<void>(
-        std::function<void()>(
-            [&]
+        [&]
         {
             if(m_implementation)
             {
                 m_implementation->setPosition(_position);
             }
-        })
-    ).wait();
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void NotificationDialog::setSize(unsigned int _width, unsigned int _height)
+void NotificationDialog::setSize(std::array<int, 2> _size)
 {
     core::thread::getDefaultWorker()->postTask<void>(
-        std::function<void()>(
-            [&]
+        [&]
         {
             if(m_implementation)
             {
-                m_implementation->setSize(_width, _height);
+                m_implementation->setSize(_size);
             }
-        })
-    ).wait();
+        }).wait();
+}
+
+//------------------------------------------------------------------------------
+
+std::array<int, 2> NotificationDialog::getSize() const
+{
+    if(m_implementation)
+    {
+        return m_implementation->getSize();
+    }
+
+    return INotificationDialog::getSize();
 }
 
 //-----------------------------------------------------------------------------
@@ -166,31 +153,93 @@ void NotificationDialog::setSize(unsigned int _width, unsigned int _height)
 void NotificationDialog::setIndex(unsigned int _index)
 {
     core::thread::getDefaultWorker()->postTask<void>(
-        std::function<void()>(
-            [&]
+        [&]
         {
             if(m_implementation)
             {
                 m_implementation->setIndex(_index);
             }
-        })
-    ).wait();
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
-void NotificationDialog::setDuration(int _durationInMs)
+void NotificationDialog::setDuration(std::optional<std::chrono::milliseconds> _durationInMs)
 {
     core::thread::getDefaultWorker()->postTask<void>(
-        std::function<void()>(
-            [&]
+        [&]
         {
             if(m_implementation)
             {
                 m_implementation->setDuration(_durationInMs);
             }
-        })
-    ).wait();
+        }).wait();
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::chrono::milliseconds> NotificationDialog::getDuration() const
+{
+    if(m_implementation)
+    {
+        return m_implementation->getDuration();
+    }
+
+    return INotificationDialog::getDuration();
+}
+
+//------------------------------------------------------------------------------
+
+void NotificationDialog::setChannel(std::string _channel)
+{
+    std::string channel(_channel);
+    core::thread::getDefaultWorker()->postTask<void>(
+        [&]
+        {
+            if(m_implementation)
+            {
+                m_implementation->setChannel(std::move(_channel));
+            }
+        }).wait();
+}
+
+//------------------------------------------------------------------------------
+
+std::string NotificationDialog::getChannel() const
+{
+    if(m_implementation)
+    {
+        return m_implementation->getChannel();
+    }
+
+    return INotificationDialog::getChannel();
+}
+
+//------------------------------------------------------------------------------
+
+void NotificationDialog::setClosable(std::optional<bool> _closable)
+{
+    std::optional<bool> is_closable(_closable);
+    core::thread::getDefaultWorker()->postTask<void>(
+        [&]
+        {
+            if(m_implementation)
+            {
+                m_implementation->setClosable(is_closable);
+            }
+        }).wait();
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<bool> NotificationDialog::isClosable() const
+{
+    if(m_implementation)
+    {
+        return m_implementation->isClosable();
+    }
+
+    return INotificationDialog::isClosable();
 }
 
 //-----------------------------------------------------------------------------
@@ -199,15 +248,13 @@ bool NotificationDialog::isVisible() const
 {
     bool visible = false;
     core::thread::getDefaultWorker()->postTask<void>(
-        std::function<void()>(
-            [&]
+        [&]
         {
             if(m_implementation)
             {
                 visible = m_implementation->isVisible();
             }
-        })
-    ).wait();
+        }).wait();
 
     return visible;
 }
@@ -217,27 +264,27 @@ bool NotificationDialog::isVisible() const
 void NotificationDialog::close() const
 {
     core::thread::getDefaultWorker()->postTask<void>(
-        std::function<void()>(
-            [&]
+        [&]
         {
             if(m_implementation)
             {
                 m_implementation->close();
             }
-        })
-    ).wait();
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
 
 void NotificationDialog::moveDown()
 {
-    if(m_implementation)
-    {
-        std::function<void()> func = [this](auto&& ...){m_implementation->moveDown();};
-        std::shared_future<void> f = core::thread::getDefaultWorker()->postTask<void>(func);
-        f.wait();
-    }
+    core::thread::getDefaultWorker()->postTask<void>(
+        [&]
+        {
+            if(m_implementation)
+            {
+                m_implementation->moveDown();
+            }
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -245,15 +292,13 @@ void NotificationDialog::moveDown()
 void NotificationDialog::setContainer(container::fwContainer::csptr _container)
 {
     core::thread::getDefaultWorker()->postTask<void>(
-        std::function<void()>(
-            [&]
+        [&]
         {
             if(m_implementation)
             {
                 m_implementation->setContainer(_container);
             }
-        })
-    ).wait();
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
@@ -261,15 +306,13 @@ void NotificationDialog::setContainer(container::fwContainer::csptr _container)
 void NotificationDialog::setClosedCallback(std::function<void()> f)
 {
     core::thread::getDefaultWorker()->postTask<void>(
-        std::function<void()>(
-            [&]
+        [&]
         {
             if(m_implementation)
             {
                 m_implementation->setClosedCallback(f);
             }
-        })
-    ).wait();
+        }).wait();
 }
 
 //-----------------------------------------------------------------------------
