@@ -314,7 +314,7 @@ void SNotifier::pop(service::Notification notification)
 
     const auto& closable = channel_configured && channel_configuration.closable
                            ? *channel_configuration.closable
-                           : (channel_configured && !channel_configuration.duration) || !default_configuration.duration
+                           : (channel_configured && !channel_configuration.closable) || !default_configuration.closable
                            ? notification.closable
                            : *default_configuration.closable;
 
