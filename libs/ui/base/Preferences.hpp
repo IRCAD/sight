@@ -33,6 +33,7 @@
 
 #include <filesystem>
 #include <mutex>
+#include <optional>
 #include <shared_mutex>
 
 namespace sight::ui::base
@@ -352,9 +353,29 @@ public:
 
     /// Password dialog customization
     /// @{
-    UI_BASE_API static void set_password_dialog_title(const std::string& title);
-    UI_BASE_API static void set_password_dialog_message(const std::string& message);
+    struct UI_BASE_CLASS_API PasswordDialogStrings final
+    {
+        std::optional<std::string> title {std::nullopt};
+        std::optional<std::string> message {std::nullopt};
+        std::optional<std::string> new_title {std::nullopt};
+        std::optional<std::string> new_message {std::nullopt};
+        std::optional<std::string> weak_title {std::nullopt};
+        std::optional<std::string> error_title {std::nullopt};
+        std::optional<std::string> error_message {std::nullopt};
+        std::optional<std::string> fatal_message {std::nullopt};
+        std::optional<std::string> retry_message {std::nullopt};
+        std::optional<std::string> cancel_title {std::nullopt};
+        std::optional<std::string> cancel_message {std::nullopt};
+        std::optional<std::string> cancel_fatal_message {std::nullopt};
+    };
+
+    UI_BASE_API static void set_password_dialog_strings(const PasswordDialogStrings& strings);
     /// @}
+
+    /// Set a custom password validator
+    UI_BASE_API static void set_password_validator(
+        std::function<std::pair<bool, std::string>(const sight::core::crypto::secure_string&)> validator
+    );
 
 private:
 

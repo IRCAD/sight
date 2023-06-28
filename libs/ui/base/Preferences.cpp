@@ -66,23 +66,97 @@ static bool s_exit_on_password_error {false};
 // max number of retry
 static std::size_t s_max_retry {3};
 
-// current number of retry
-static std::size_t s_password_retry {0};
+// The strings to use for the password dialog
+static Preferences::PasswordDialogStrings s_password_strings {
+    .title         = std::string("Enter Password"),
+    .message       = std::string("Password:"),
+    .new_title     = std::string("Enter a new password"),
+    .new_message   = std::string("New password:"),
+    .weak_title    = std::string("Password is too weak"),
+    .error_title   = std::string("Wrong password"),
+    .error_message = std::string(
+        "The provided password is wrong.\n\n"
+        "The number of tries is exceeded. Some functionalities will be disabled."
+                     ),
+    .fatal_message = std::string(
+        "The provided password is wrong.\n\n"
+        "The number of tries is exceeded. The application will close."
+                     ),
+    .retry_message = std::string(
+        "The provided password is wrong.\n\n"
+        "You may retry with a different password."
+                     ),
+    .cancel_title         = std::string("Canceled"),
+    .cancel_message       = std::string("User canceled. Some functionalities will be disabled."),
+    .cancel_fatal_message = std::string("User canceled. The application will close.")
+};
 
-/// Password dialog configuration
-/// @{
-static std::string s_password_title {"Enter Password"};
-static std::string s_password_message {"Password:"};
-static std::string s_password_error_title {"Invalid password"};
-static std::string s_password_error_message {
-    "Invalid password. The number of tries is exceeded and the application will close."
+/// Password validator with default implementation
+static std::function<std::pair<bool, std::string>(const sight::core::crypto::secure_string&)> s_password_validator {
+    [](const sight::core::crypto::secure_string& password)
+    {
+        static const std::string message(
+            "The password is too weak. "
+            "Please, use at least 8 characters, with one special, one uppercase and one lowercase.\n\n"
+            "Reason:\n"
+        );
+
+        if(password.length() < 8)
+        {
+            return std::make_pair(false, message + std::string("- Password is shorter than 8 characters long."));
+        }
+
+        bool has_special = false;
+        bool has_upper   = false;
+        bool has_lower   = false;
+
+        for(const auto& c : password)
+        {
+            // Convert to unsigned char to avoid undefined behavior with std::isupper/lower/isalnum
+            // @see https://en.cppreference.com/w/cpp/string/byte/islower
+            const auto uc = static_cast<unsigned char>(c);
+
+            if(!has_upper && std::isupper(uc) != 0)
+            {
+                has_upper = true;
+            }
+
+            if(!has_lower && std::islower(uc) != 0)
+            {
+                has_lower = true;
+            }
+
+            if(!has_special && std::isalnum(uc) == 0)
+            {
+                has_special = true;
+            }
+
+            if(has_special && has_upper && has_lower)
+            {
+                return std::make_pair(true, std::string());
+            }
+        }
+
+        std::string reason;
+
+        if(!has_upper)
+        {
+            reason += " - Password is missing one uppercase character\n";
+        }
+
+        if(!has_lower)
+        {
+            reason += " - Password is missing one lowercase character\n";
+        }
+
+        if(!has_special)
+        {
+            reason += " - Password is missing one special character\n";
+        }
+
+        return std::make_pair(false, message + reason);
+    }
 };
-static std::string s_password_retry_message {
-    "The provided password is wrong.\n\n"
-    "You may retry with a different password."
-};
-static std::string s_password_empty_title {"Empty password"};
-static std::string s_password_empty_message {"Password cannot be empty. Please enter a valid password."};
 
 /// @}
 
@@ -194,63 +268,93 @@ Preferences::Preferences()
     // Protect preferences for writing
     std::unique_lock guard(s_preferences_mutex);
 
+    // current number of retry
+    std::size_t password_retry {0};
+
     const std::function<void(void)> load =
         [&]
         {
-            // Create and load the preferences file if not already done
-            if(s_is_enabled && !s_preferences)
+            // Not enabled, simply return
+            if(!s_is_enabled)
             {
-                if(s_ignoreFilesystem)
-                {
-                    // Don't read a preference file, simply create an empty preferences
-                    s_preferences = std::make_unique<boost::property_tree::ptree>();
-                    return;
-                }
+                return;
+            }
 
-                // Set the password to use
-                // NEVER policy means we never ask for a password and only rely on manually set
-                if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
+            // Already loaded, simply return
+            if(s_preferences)
+            {
+                return;
+            }
+
+            // Don't read a preference file, simply create an empty preferences
+            if(s_ignoreFilesystem)
+            {
+                s_preferences = std::make_unique<boost::property_tree::ptree>();
+                return;
+            }
+
+            try
+            {
+                // Check if we can open the preferences file
+                const auto& preferences_filepath = computePreferencesFilepath();
+                if(!std::filesystem::exists(preferences_filepath))
                 {
+                    // Create an empty preferences
+                    s_preferences = std::make_unique<boost::property_tree::ptree>();
+
+                    // Get the password to use
                     const secure_string& password =
                         s_password_keeper
                         ? s_password_keeper->get_password()
                         : PasswordKeeper::get_global_password();
 
-                    if(s_password_retry != 0
-                       || (s_password_keeper_policy == PasswordKeeper::PasswordPolicy::ALWAYS)
-                       || (s_password_keeper_policy == PasswordKeeper::PasswordPolicy::GLOBAL
-                           && password.empty()))
+                    // We may have to enter a new password
+                    if(s_password_keeper_policy == PasswordKeeper::PasswordPolicy::ALWAYS
+                       || (s_password_keeper_policy == PasswordKeeper::PasswordPolicy::GLOBAL && password.empty()))
                     {
                         secure_string new_password;
-                        bool ok = true;
+                        bool valid    = false;
+                        bool accepted = true;
 
-                        while(ok && new_password.empty())
+                        while(!valid && accepted)
                         {
-                            std::tie(new_password, ok) = sight::ui::base::dialog::InputDialog::showInputDialog(
-                                s_password_title,
-                                s_password_message,
+                            // Get the new password from user
+                            std::tie(new_password, accepted) = sight::ui::base::dialog::InputDialog::showInputDialog(
+                                s_password_strings.new_title.value_or(s_password_strings.title.value_or("")),
+                                s_password_strings.new_message.value_or(s_password_strings.message.value_or("")),
                                 password.c_str(), // NOLINT(readability-redundant-string-cstr)
                                 sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
                             );
 
-                            if(ok && new_password.empty())
+                            // If user didn't accept, we stop here
+                            if(!accepted)
+                            {
+                                break;
+                            }
+
+                            // Test validity of the password
+                            SIGHT_ASSERT("No password validator defined", s_password_validator);
+                            std::string message;
+                            std::tie(valid, message) = s_password_validator(new_password);
+
+                            if(!valid)
                             {
                                 sight::ui::base::dialog::MessageDialog::show(
-                                    s_password_empty_title,
-                                    s_password_empty_message,
+                                    s_password_strings.weak_title.value_or(""),
+                                    message,
                                     sight::ui::base::dialog::IMessageDialog::WARNING
                                 );
                             }
                         }
 
-                        if(ok)
+                        if(accepted)
                         {
                             setPasswordNolock(new_password);
                             PasswordKeeper::set_global_password(new_password);
                         }
                         else if(s_exit_on_password_error)
                         {
-                            SIGHT_WARN("User canceled. Exiting.");
+                            SIGHT_INFO("User canceled. Exiting.");
                             sight::ui::base::BusyCursor cursor;
                             sight::ui::base::Application::New()->exit(0, false);
                         }
@@ -258,120 +362,160 @@ Preferences::Preferences()
                         {
                             s_is_enabled = false;
                             SIGHT_WARN("Preferences has been disabled because no password was entered.");
-                            return;
-                        }
-                    }
-                    else if(!s_password_keeper)
-                    {
-                        setPasswordNolock(password);
-                    }
-                }
-
-                try
-                {
-                    s_preferences = std::make_unique<boost::property_tree::ptree>();
-
-                    const auto& preferences_filepath = computePreferencesFilepath();
-
-                    if(std::filesystem::exists(preferences_filepath))
-                    {
-                        // If a password has been set or if the encryption is "forced" open as an encrypted file
-                        if(mustEncrypt())
-                        {
-                            // Open the archive that holds the property tree
-                            auto archive = io::zip::ArchiveReader::get(preferences_filepath);
-
-                            // Create the input stream, with a password, allowing decoding an encrypted file
-                            auto istream = archive->openFile(
-                                s_preferences_file,
-                                computePassword()
-                            );
-
-                            // Read the property tree from the archive
-                            boost::property_tree::read_json(*istream, *s_preferences);
-                        }
-                        else
-                        {
-                            boost::property_tree::read_json(preferences_filepath.string(), *s_preferences);
-                        }
-
-                        // Preferences has been read from disk
-                        s_is_preferences_modified = false;
-                    }
-                    else
-                    {
-                        // Create an empty preferences
-                        s_is_preferences_modified = true;
-                    }
-
-                    // Reset the retry counter if the password was correct
-                    s_password_retry = 0;
-                }
-                catch(const io::zip::exception::BadPassword& e)
-                {
-                    s_preferences.reset();
-                    ++s_password_retry;
-
-                    if(s_password_retry > s_max_retry)
-                    {
-                        if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
-                        {
                             sight::ui::base::dialog::MessageDialog::show(
-                                s_password_error_title,
-                                s_password_error_message,
-                                sight::ui::base::dialog::IMessageDialog::CRITICAL
-                            );
-                        }
-                    }
-                    else
-                    {
-                        if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
-                        {
-                            sight::ui::base::dialog::MessageDialog::show(
-                                s_password_error_title,
-                                s_password_retry_message,
+                                s_password_strings.cancel_title.value_or(""),
+                                s_password_strings.cancel_message.value_or(""),
                                 sight::ui::base::dialog::IMessageDialog::WARNING
                             );
-
-                            // Retry...
-                            load();
                             return;
                         }
-
-                        // Give a chance to retry with a different password
-                        SIGHT_THROW_EXCEPTION(BadPassword(e.what()));
                     }
 
-                    // Too much retries or canceled
-                    s_is_enabled = false;
+                    s_is_preferences_modified = true;
+                    return;
+                }
 
-                    if(s_exit_on_password_error)
+                // Try to open the preferences file.
+                s_preferences = std::make_unique<boost::property_tree::ptree>();
+
+                // If a password has been set or if the encryption is "forced" open as an encrypted file
+                if(mustEncrypt())
+                {
+                    // Open the archive that holds the property tree
+                    auto archive = io::zip::ArchiveReader::get(preferences_filepath);
+
+                    // Create the input stream, with a password, allowing decoding an encrypted file
+                    auto istream = archive->openFile(
+                        s_preferences_file,
+                        computePassword()
+                    );
+
+                    // Read the property tree from the archive
+                    boost::property_tree::read_json(*istream, *s_preferences);
+                }
+                else
+                {
+                    boost::property_tree::read_json(preferences_filepath.string(), *s_preferences);
+                }
+
+                // Preferences has been read from disk
+                s_is_preferences_modified = false;
+                s_is_enabled              = true;
+
+                // Reset the retry counter if the password was correct
+                password_retry = 0;
+            }
+            catch(const io::zip::exception::BadPassword& e)
+            {
+                s_preferences.reset();
+
+                bool accepted = true;
+
+                if(s_password_keeper_policy == PasswordKeeper::PasswordPolicy::NEVER)
+                {
+                    // Give a chance to retry with a different password
+                    SIGHT_THROW_EXCEPTION(BadPassword(e.what()));
+                }
+
+                // Check the number of try (0 means first try)
+                if(password_retry <= s_max_retry)
+                {
+                    // Only display a warning the second time
+                    if(password_retry++ > 0)
+                    {
+                        sight::ui::base::dialog::MessageDialog::show(
+                            s_password_strings.error_title.value_or(""),
+                            s_password_strings.retry_message.value_or(""),
+                            sight::ui::base::dialog::IMessageDialog::WARNING
+                        );
+                    }
+
+                    // Initialize the new password with the previous
+                    secure_string new_password =
+                        s_password_keeper
+                        ? s_password_keeper->get_password()
+                        : PasswordKeeper::get_global_password();
+
+                    // Get the new password from user
+                    std::tie(new_password, accepted) = sight::ui::base::dialog::InputDialog::showInputDialog(
+                        s_password_strings.title.value_or(""),
+                        s_password_strings.message.value_or(""),
+                        new_password.c_str(), // NOLINT(readability-redundant-string-cstr)
+                        sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
+                    );
+
+                    // If user accept, we check the new password again
+                    if(accepted)
+                    {
+                        // Save the new password
+                        setPasswordNolock(new_password);
+                        PasswordKeeper::set_global_password(new_password);
+
+                        // Retry...
+                        load();
+                        return;
+                    }
+                }
+
+                // Too much retries or canceled
+                s_is_enabled = false;
+
+                if(s_exit_on_password_error)
+                {
+                    if(accepted)
                     {
                         SIGHT_WARN("The provided password is wrong. Exiting.");
-                        sight::ui::base::BusyCursor cursor;
-                        sight::ui::base::Application::New()->exit(0, false);
+                        sight::ui::base::dialog::MessageDialog::show(
+                            s_password_strings.error_title.value_or(""),
+                            s_password_strings.fatal_message.value_or(""),
+                            sight::ui::base::dialog::IMessageDialog::CRITICAL
+                        );
                     }
                     else
                     {
-                        SIGHT_WARN("Preferences has been disabled because the password is wrong.");
-                        SIGHT_THROW_EXCEPTION(BadPassword(e.what()));
+                        SIGHT_INFO("The user canceled. Exiting.");
                     }
+
+                    sight::ui::base::BusyCursor cursor;
+                    sight::ui::base::Application::New()->exit(0, false);
                 }
-                catch(const std::exception& e)
+                else
                 {
-                    // We simply print an error and disable preferences management
-                    s_is_enabled = false;
-                    SIGHT_ERROR(e.what());
+                    if(accepted)
+                    {
+                        SIGHT_WARN("Preferences has been disabled because the provided password is wrong.");
+                        sight::ui::base::dialog::MessageDialog::show(
+                            s_password_strings.error_title.value_or(""),
+                            s_password_strings.error_message.value_or(""),
+                            sight::ui::base::dialog::IMessageDialog::WARNING
+                        );
+                    }
+                    else
+                    {
+                        SIGHT_INFO("Preferences has been disabled because the user canceled.");
+                        sight::ui::base::dialog::MessageDialog::show(
+                            s_password_strings.cancel_title.value_or(""),
+                            s_password_strings.cancel_message.value_or(""),
+                            sight::ui::base::dialog::IMessageDialog::WARNING
+                        );
+                    }
+
+                    SIGHT_THROW_EXCEPTION(BadPassword(e.what()));
                 }
-                catch(...)
-                {
-                    // We disable preferences management
-                    s_is_enabled = false;
-                }
+            }
+            catch(const std::exception& e)
+            {
+                // We simply print an error and disable preferences management
+                s_is_enabled = false;
+                SIGHT_ERROR(e.what());
+            }
+            catch(...)
+            {
+                // We disable preferences management
+                s_is_enabled = false;
             }
         };
 
-    // Call the lambda !
     load();
 
     throw_if_disabled();
@@ -512,18 +656,79 @@ void Preferences::exit_on_password_error(bool exit)
 
 //------------------------------------------------------------------------------
 
-void Preferences::set_password_dialog_title(const std::string& title)
+void Preferences::set_password_dialog_strings(const PasswordDialogStrings& strings)
 {
     std::unique_lock guard(s_preferences_mutex);
-    s_password_title = title;
+
+    if(strings.title)
+    {
+        s_password_strings.title = strings.title;
+    }
+
+    if(strings.message)
+    {
+        s_password_strings.message = strings.message;
+    }
+
+    if(strings.new_title)
+    {
+        s_password_strings.new_title = strings.new_title;
+    }
+
+    if(strings.new_message)
+    {
+        s_password_strings.new_message = strings.new_message;
+    }
+
+    if(strings.weak_title)
+    {
+        s_password_strings.weak_title = strings.weak_title;
+    }
+
+    if(strings.error_title)
+    {
+        s_password_strings.error_title = strings.error_title;
+    }
+
+    if(strings.error_message)
+    {
+        s_password_strings.error_message = strings.error_message;
+    }
+
+    if(strings.fatal_message)
+    {
+        s_password_strings.fatal_message = strings.fatal_message;
+    }
+
+    if(strings.retry_message)
+    {
+        s_password_strings.retry_message = strings.retry_message;
+    }
+
+    if(strings.cancel_title)
+    {
+        s_password_strings.cancel_title = strings.cancel_title;
+    }
+
+    if(strings.cancel_message)
+    {
+        s_password_strings.cancel_message = strings.cancel_message;
+    }
+
+    if(strings.cancel_fatal_message)
+    {
+        s_password_strings.cancel_fatal_message = strings.cancel_fatal_message;
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void Preferences::set_password_dialog_message(const std::string& message)
+void Preferences::set_password_validator(
+    std::function<std::pair<bool, std::string>(const sight::core::crypto::secure_string&)> validator
+)
 {
     std::unique_lock guard(s_preferences_mutex);
-    s_password_message = message;
+    s_password_validator = std::move(validator);
 }
 
 //-----------------------------------------------------------------------------

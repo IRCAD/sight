@@ -39,14 +39,17 @@ using sight::core::crypto::secure_string;
 using sight::core::crypto::PasswordKeeper;
 using sight::ui::base::Preferences;
 
-constexpr static auto s_PREFERENCES_ENABLED                 = "preferences_enabled";
-constexpr static auto s_PREFERENCES_PASSWORD_POLICY         = "preferences_password_policy";
-constexpr static auto s_PREFERENCES_ENCRYPTION_POLICY       = "preferences_encryption_policy";
-constexpr static auto s_PREFERENCES_PASSWORD                = "preferences_password";
-constexpr static auto s_PREFERENCES_EXIT_ON_PASSWORD_ERROR  = "preferences_exit_on_password_error";
-constexpr static auto S_PREFERENCES_PASSWORD_DIALOG_TITLE   = "preferences_password_dialog_title";
-constexpr static auto S_PREFERENCES_PASSWORD_DIALOG_MESSAGE = "preferences_password_dialog_message";
-constexpr static auto S_PREFERENCES_PASSWORD_DIALOG_ICON    = "preferences_password_dialog_icon";
+constexpr static auto s_PREFERENCES_ENABLED                     = "preferences_enabled";
+constexpr static auto s_PREFERENCES_PASSWORD_POLICY             = "preferences_password_policy";
+constexpr static auto s_PREFERENCES_ENCRYPTION_POLICY           = "preferences_encryption_policy";
+constexpr static auto s_PREFERENCES_PASSWORD                    = "preferences_password";
+constexpr static auto s_PREFERENCES_EXIT_ON_PASSWORD_ERROR      = "preferences_exit_on_password_error";
+constexpr static auto S_PREFERENCES_PASSWORD_DIALOG_TITLE       = "preferences_password_dialog_title";
+constexpr static auto S_PREFERENCES_PASSWORD_DIALOG_MESSAGE     = "preferences_password_dialog_message";
+constexpr static auto S_PREFERENCES_PASSWORD_DIALOG_ICON        = "preferences_password_dialog_icon";
+constexpr static auto S_PREFERENCES_NEW_PASSWORD_DIALOG_TITLE   = "preferences_new_password_dialog_title";
+constexpr static auto S_PREFERENCES_NEW_PASSWORD_DIALOG_MESSAGE = "preferences_new_password_dialog_message";
+constexpr static auto S_PREFERENCES_NEW_PASSWORD_DIALOG_ICON    = "preferences_new_password_dialog_icon";
 
 SIGHT_REGISTER_PLUGIN("sight::module::ui::base::Plugin");
 
@@ -94,7 +97,16 @@ void Plugin::start()
 
     if(module->hasParameter(S_PREFERENCES_PASSWORD_DIALOG_TITLE))
     {
-        Preferences::set_password_dialog_title(module->getParameterValue(S_PREFERENCES_PASSWORD_DIALOG_TITLE));
+        Preferences::set_password_dialog_strings(
+            {.title = module->getParameterValue(S_PREFERENCES_PASSWORD_DIALOG_TITLE)
+            });
+    }
+
+    if(module->hasParameter(S_PREFERENCES_NEW_PASSWORD_DIALOG_TITLE))
+    {
+        Preferences::set_password_dialog_strings(
+            {.new_title = module->getParameterValue(S_PREFERENCES_NEW_PASSWORD_DIALOG_TITLE)
+            });
     }
 
     if(module->hasParameter(S_PREFERENCES_PASSWORD_DIALOG_ICON))
@@ -110,11 +122,37 @@ void Plugin::start()
             message += "<br><strong>" + module->getParameterValue(S_PREFERENCES_PASSWORD_DIALOG_MESSAGE) + "</strong>";
         }
 
-        Preferences::set_password_dialog_message(message);
+        Preferences::set_password_dialog_strings({.message = message});
     }
     else if(module->hasParameter(S_PREFERENCES_PASSWORD_DIALOG_MESSAGE))
     {
-        Preferences::set_password_dialog_message(module->getParameterValue(S_PREFERENCES_PASSWORD_DIALOG_MESSAGE));
+        Preferences::set_password_dialog_strings(
+            {.message = module->getParameterValue(S_PREFERENCES_PASSWORD_DIALOG_MESSAGE)
+            });
+    }
+
+    if(module->hasParameter(S_PREFERENCES_NEW_PASSWORD_DIALOG_ICON))
+    {
+        const auto& icon_path = core::runtime::getModuleResourceFilePath(
+            module->getParameterValue(S_PREFERENCES_NEW_PASSWORD_DIALOG_ICON)
+        );
+
+        std::string message = "<img src='" + icon_path.string() + "' />";
+
+        if(module->hasParameter(S_PREFERENCES_NEW_PASSWORD_DIALOG_MESSAGE))
+        {
+            message += "<br><strong>"
+                       + module->getParameterValue(S_PREFERENCES_NEW_PASSWORD_DIALOG_MESSAGE)
+                       + "</strong>";
+        }
+
+        Preferences::set_password_dialog_strings({.new_message = message});
+    }
+    else if(module->hasParameter(S_PREFERENCES_NEW_PASSWORD_DIALOG_MESSAGE))
+    {
+        Preferences::set_password_dialog_strings(
+            {.new_message = module->getParameterValue(S_PREFERENCES_NEW_PASSWORD_DIALOG_MESSAGE)
+            });
     }
 }
 
