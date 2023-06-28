@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,8 @@
 #include "data/Reconstruction.hpp"
 #include "data/Series.hpp"
 #include "data/types.hpp"
+
+#include "FiducialsSeries.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
@@ -104,6 +106,10 @@ public:
         const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
     ) override;
 
+    DATA_API FiducialsSeries::csptr getFiducials() const;
+    DATA_API FiducialsSeries::sptr getFiducials();
+    DATA_API bool hasFiducials() const;
+
 protected:
 
     /// Stores models.
@@ -113,6 +119,9 @@ protected:
     DicomSeries::sptr m_dicomReference;
 
 private:
+
+    /// Contains the associated Spatial Fiducials file
+    FiducialsSeries::sptr m_fiducialsSeries {FiducialsSeries::New()};
 
     /// Stores the signal emitted when reconstructions are added.
     ReconstructionsAddedSignalType::sptr m_sigReconstructionsAdded;

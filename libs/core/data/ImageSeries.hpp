@@ -29,6 +29,8 @@
 #include "data/Series.hpp"
 #include "data/types.hpp"
 
+#include "FiducialsSeries.hpp"
+
 namespace sight::data
 {
 
@@ -120,10 +122,17 @@ public:
     DATA_API std::size_t resize(const Size& size, const core::Type& type, PixelFormat format) override;
     /// @}
 
+    DATA_API FiducialsSeries::csptr getFiducials() const;
+    DATA_API FiducialsSeries::sptr getFiducials();
+    DATA_API bool hasFiducials() const;
+
 private:
 
     /// Contains the DICOM reference used to generate a valid DICOM Segmentation.
     DicomSeries::sptr m_dicomReference;
+
+    /// Contains the associated Spatial Fiducials file
+    FiducialsSeries::sptr m_fiducialsSeries {FiducialsSeries::New()};
 };
 
 //-----------------------------------------------------------------------------

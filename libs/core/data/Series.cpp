@@ -2190,7 +2190,7 @@ void Series::setContrastBolusTotalDose(const std::optional<double>& contrastBolu
 
 std::vector<double> Series::getContrastFlowRates() const noexcept
 {
-    return m_pimpl->getValues<gdcm::Keywords::ContrastFlowRate>();
+    return m_pimpl->getValues<gdcm::Keywords::ContrastFlowRate>().value_or(std::vector<double> {});
 }
 
 //------------------------------------------------------------------------------
@@ -2218,7 +2218,7 @@ void Series::setContrastFlowRate(const std::string& contrastFlowRates)
 
 std::vector<double> Series::getContrastFlowDurations() const noexcept
 {
-    return m_pimpl->getValues<gdcm::Keywords::ContrastFlowDuration>();
+    return m_pimpl->getValues<gdcm::Keywords::ContrastFlowDuration>().value_or(std::vector<double> {});
 }
 
 //------------------------------------------------------------------------------
@@ -2276,7 +2276,7 @@ void Series::setContrastBolusIngredientConcentration(
 
 std::vector<double> Series::getWindowCenter() const noexcept
 {
-    return m_pimpl->getValues<gdcm::Keywords::WindowCenter>();
+    return m_pimpl->getValues<gdcm::Keywords::WindowCenter>().value_or(std::vector<double> {});
 }
 
 //------------------------------------------------------------------------------
@@ -2290,7 +2290,7 @@ void Series::setWindowCenter(const std::vector<double>& windowCenters)
 
 std::vector<double> Series::getWindowWidth() const noexcept
 {
-    return m_pimpl->getValues<gdcm::Keywords::WindowWidth>();
+    return m_pimpl->getValues<gdcm::Keywords::WindowWidth>().value_or(std::vector<double> {});
 }
 
 //------------------------------------------------------------------------------
@@ -2362,7 +2362,7 @@ std::vector<double> Series::getImagePositionPatient(std::size_t instance) const
     }
 
     // Default case use simple ImagePositionPatient tag values.
-    return m_pimpl->getValues<gdcm::Keywords::ImagePositionPatient>(instance);
+    return m_pimpl->getValues<gdcm::Keywords::ImagePositionPatient>(instance).value_or(std::vector<double> {});
 }
 
 //------------------------------------------------------------------------------
@@ -2436,7 +2436,7 @@ std::vector<double> Series::getImageOrientationPatient(std::size_t instance) con
         >(instance);
     }
 
-    return m_pimpl->getValues<gdcm::Keywords::ImageOrientationPatient>(instance);
+    return m_pimpl->getValues<gdcm::Keywords::ImageOrientationPatient>(instance).value_or(std::vector<double> {});
 }
 
 //------------------------------------------------------------------------------

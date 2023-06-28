@@ -175,4 +175,25 @@ std::size_t ImageSeries::resize(const Size& size, const core::Type& type, PixelF
     return Image::resize(size, type, format);
 }
 
+//------------------------------------------------------------------------------
+
+FiducialsSeries::csptr ImageSeries::getFiducials() const
+{
+    return m_fiducialsSeries;
+}
+
+//------------------------------------------------------------------------------
+
+FiducialsSeries::sptr ImageSeries::getFiducials()
+{
+    return m_fiducialsSeries;
+}
+
+//------------------------------------------------------------------------------
+
+bool ImageSeries::hasFiducials() const
+{
+    return !m_fiducialsSeries->getFiducialSets().empty();
+}
+
 } // namespace sight::data

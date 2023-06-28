@@ -27,6 +27,11 @@
 #include <boost/algorithm/string/join.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
+#include <functional>
+#include <gdcmDataElement.h>
+#include <gdcmSequenceOfItems.h>
+#include <gdcmSmartPointer.h>
+#include <utility>
 
 #ifdef WIN32
 #pragma warning( push )
@@ -380,55 +385,56 @@ public:
     }
 
     /// Retrieve a DICOM tag value. If the tag is not found, an null optional is returned.
+    /// @{
     template<typename A>
-    [[nodiscard]] constexpr std::conditional_t<
-        std::is_base_of_v<std::string, typename A::ArrayType>,
-        std::optional<std::string>,
-        std::optional<typename A::ArrayType>
-    > getValue(std::size_t instance = 0) const
+    auto getValue(std::optional<gdcm::DataElement> element) const
     {
-        if(instance >= m_frame_datasets.size())
+        using ReturnType = std::conditional_t<std::is_base_of_v<std::string, typename A::ArrayType>, std::string,
+                                              typename A::ArrayType>;
+        if(!element)
         {
-            return {};
+            return std::optional<ReturnType> {};
         }
 
-        const auto& dataset = getDataSet(instance);
-
-        // Unfortunately with GDCM, all non pure string attributes (Integer String, Decimal String, ...) will always
-        // be found with a random value, despite the underlying string is "". For example, if the attribute
-        // "SeriesNumber" is a "" string, gdcm::Attribute<NULL_CHAR20, NULL_CHAR11>::GetNumberOfValues() will return 1
-        // (as 1 is anyway the minimum multiplicity), but with a random integer/decimal value, and there is no way to
-        // know if the value is "" (which is valid, it means "unknown") or not.
-        //
-        // Therefore, we need to access to the underlying data to know if the attribute is empty or not, which is not
-        // very efficient or elegant.
-        if(dataset.FindDataElement(A::GetTag()))
+        gdcm::DataElement dataElement = *element;
+        if(!dataElement.IsEmpty())
         {
-            if(const auto& data_element = dataset.GetDataElement(A::GetTag()); !data_element.IsEmpty())
+            if(const auto* byte_value = dataElement.GetByteValue();
+               byte_value != nullptr && byte_value->GetPointer() != nullptr && byte_value->GetLength() > 0)
             {
-                if(const auto byte_value = data_element.GetByteValue();
-                   byte_value != nullptr && byte_value->GetPointer() != nullptr && byte_value->GetLength() > 0)
+                // Now, we know that we have a non empty value, so we can safely return it.
+                A attribute {};
+
+                attribute.SetFromDataElement(dataElement);
+
+                if constexpr(std::is_base_of_v<std::string, typename A::ArrayType>)
                 {
-                    // Now, we know that we have a non empty value, so we can safely return it.
-                    A attribute {};
-
-                    attribute.SetFromDataSet(dataset);
-
-                    if constexpr(std::is_base_of_v<std::string, typename A::ArrayType>)
-                    {
-                        // Use trimmed string, as we don't care about DICOM string padding with space
-                        return shrink(attribute.GetValue().Trim());
-                    }
-                    else
-                    {
-                        return attribute.GetValue();
-                    }
+                    // Use trimmed string, as we don't care about DICOM string padding with space
+                    return std::optional<ReturnType> {shrink(attribute.GetValue().Trim())};
+                }
+                else
+                {
+                    return std::optional<ReturnType> {attribute.GetValue()};
                 }
             }
         }
 
-        return std::nullopt;
+        return std::optional<ReturnType> {};
     }
+
+    template<typename A>
+    auto getValue(const gdcm::DataSet& outerDataSet, std::vector<std::pair<gdcm::Tag, std::size_t> > indices = {}) const
+    {
+        return getValue<A>(getElement(A::GetTag(), outerDataSet, indices));
+    }
+
+    template<typename A>
+    auto getValue(std::size_t instance = 0, std::vector<std::pair<gdcm::Tag, std::size_t> > indices = {}) const
+    {
+        return getValue<A>(getDataSet(instance), indices);
+    }
+
+    /// @}
 
     /// Retrieve a string DICOM tag value. If the tag is not found, an empty string is returned.
     template<typename A>
@@ -460,49 +466,64 @@ public:
     }
 
     /// Retrieve multi-value DICOM tag. If the tag is not found, an empty vector is returned.
+    /// @{
     template<typename A>
-    [[nodiscard]] constexpr std::vector<typename A::ArrayType> getValues(std::size_t instance = 0) const
+    auto getValues(std::optional<gdcm::DataElement> element) const
     {
-        if(instance >= m_frame_datasets.size())
+        using ReturnType = std::conditional_t<std::is_base_of_v<std::string, typename A::ArrayType>, std::string,
+                                              std::vector<typename A::ArrayType> >;
+        if(!element)
         {
-            return {};
+            return std::optional<ReturnType> {};
         }
 
-        A attribute {};
-        attribute.SetFromDataSet(getDataSet(instance));
-
-        const auto count = attribute.GetNumberOfValues();
-
-        if(count > 0)
+        gdcm::DataElement dataElement = *element;
+        if(!dataElement.IsEmpty())
         {
-            auto* values_pointer = attribute.GetValues();
-
-            if constexpr(std::is_base_of_v<std::string, typename A::ArrayType>)
+            if(const auto* byte_value = dataElement.GetByteValue();
+               byte_value != nullptr && byte_value->GetPointer() != nullptr && byte_value->GetLength() > 0)
             {
-                std::vector<typename A::ArrayType> vector;
-                vector.reserve(count);
+                // Now, we know that we have a non empty value, so we can safely return it.
+                A attribute;
 
-                // Use trimmed string, as we don't care about DICOM string padding with space
-                std::transform(
-                    values_pointer,
-                    values_pointer + count,
-                    std::back_inserter(vector),
-                    [](const auto& value){return shrink(value.Trim());});
+                attribute.SetFromDataElement(dataElement);
 
-                return vector;
-            }
-            else
-            {
-                // Pointer can be treated as iterator ;)
-                return std::vector<typename A::ArrayType>(
-                    values_pointer,
-                    values_pointer + count
-                );
+                if constexpr(std::is_base_of_v<std::string, typename A::ArrayType>)
+                {
+                    // Use trimmed string, as we don't care about DICOM string padding with space
+                    return std::optional<ReturnType> {shrink(attribute.GetValue().Trim())};
+                }
+                else
+                {
+                    return std::optional<ReturnType> {std::vector<typename A::ArrayType> {attribute.GetValues(),
+                                                                                          attribute.GetValues()
+                                                                                          + attribute.GetNumberOfValues()
+                                                      }
+                    };
+                }
             }
         }
 
-        return {};
+        return std::optional<ReturnType> {};
     }
+
+    //------------------------------------------------------------------------------
+
+    template<typename A>
+    auto getValues(
+        const gdcm::DataSet& outerDataSet,
+        std::vector<std::pair<gdcm::Tag, std::size_t> > indices = {}) const
+    {
+        return getValues<A>(getElement(A::GetTag(), outerDataSet, indices));
+    }
+
+    template<typename A>
+    auto getValues(std::size_t instance = 0, std::vector<std::pair<gdcm::Tag, std::size_t> > indices = {}) const
+    {
+        return getValues<A>(getDataSet(instance), indices);
+    }
+
+    /// @}
 
     /// Retrieve multi-value DICOM tag as a single joined string. Use '\' as separator.
     template<typename A>
@@ -545,6 +566,20 @@ public:
         return vector;
     }
 
+    //------------------------------------------------------------------------------
+
+    template<typename A>
+    [[nodiscard]] gdcm::SmartPointer<gdcm::SequenceOfItems> getSequence(std::size_t instance = 0) const noexcept
+    {
+        gdcm::DataSet dataSet = getDataSet(instance);
+        if(!dataSet.FindDataElement(A::GetTag()))
+        {
+            return nullptr;
+        }
+
+        return dataSet.GetDataElement(A::GetTag()).GetValueAsSQ();
+    }
+
     /// Set a DICOM tag value. If the value is null, the tag is replaced by and empty element.
     template<typename A>
     constexpr void setValue(const std::optional<typename A::ArrayType>& value, std::size_t instance = 0)
@@ -565,13 +600,14 @@ public:
     }
 
     /// Set a string DICOM tag value. If the value is null, the tag is replaced by and empty element.
+    /// @{
     template<typename A>
-    constexpr void setStringValue(const std::string& value, std::size_t instance = 0)
+    constexpr void setStringValue(const std::string& value, gdcm::DataSet& dataSet)
     {
         if(value.empty())
         {
             // Force a real emtpy value..
-            getDataSet(instance).Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
+            dataSet.Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
         }
         else
         {
@@ -592,9 +628,39 @@ public:
                 attribute.SetValue(value);
             }
 
-            getDataSet(instance).Replace(attribute.GetAsDataElement());
+            dataSet.Replace(attribute.GetAsDataElement());
         }
     }
+
+    //------------------------------------------------------------------------------
+
+    template<typename A>
+    void setStringValue(
+        const std::string& value,
+        gdcm::DataSet& outerDataSet,
+        std::vector<std::pair<gdcm::Tag,
+                              std::size_t> > indices
+)
+    {
+        setStringValue<A>(
+            value,
+            getOrCreateDataSet(outerDataSet, indices)
+        );
+    }
+
+    //------------------------------------------------------------------------------
+
+    template<typename A>
+    void setStringValue(
+        const std::string& value,
+        std::size_t instance = 0,
+        std::vector<std::pair<gdcm::Tag,
+                              std::size_t> > indices = {})
+    {
+        setStringValue<A>(value, getDataSet(instance), indices);
+    }
+
+    /// @}
 
     /// Set a multi-value DICOM tag. If the vector is empty, the tag is replaced by and empty element.
     template<typename A>
@@ -607,7 +673,7 @@ public:
         }
         else
         {
-            A attribute {};
+            A attribute;
 
             if constexpr(HasFixedMultiplicity<A>::value)
             {
@@ -1177,7 +1243,357 @@ public:
         gdcm::Tag attribute_tag(detail::PRIVATE_GROUP, detail::PRIVATE_DATA_ELEMENT + value_element);
 
         // Set the value
-        setPrivateValue(attribute_dataset, attribute_tag, value);
+        detail::setPrivateValue(attribute_dataset, attribute_tag, value);
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] static std::optional<gdcm::DataElement> getElement(
+        gdcm::Tag finalTag,
+        const gdcm::DataSet& dataSet,
+        const std::vector<std::pair<gdcm::Tag, std::size_t> >& indices = {})
+    {
+        const gdcm::DataSet* currentDataSet = &dataSet;
+        for(const auto& [tag, index] : indices)
+        {
+            if(!currentDataSet->FindDataElement(tag))
+            {
+                return std::nullopt;
+            }
+
+            const gdcm::DataElement& dataElement               = currentDataSet->GetDataElement(tag);
+            gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = dataElement.GetValueAsSQ();
+            SIGHT_ASSERT("Tried to subscript an item which isn't a sequence", sequence);
+            if(sequence->GetNumberOfItems() <= index)
+            {
+                return std::nullopt;
+            }
+
+            currentDataSet = &sequence->GetItem(index + 1).GetNestedDataSet(); // GDCM SequenceOfItems are 1-indexed...
+        }
+
+        if(!currentDataSet->FindDataElement(finalTag))
+        {
+            return std::nullopt;
+        }
+
+        return currentDataSet->GetDataElement(finalTag);
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] std::optional<gdcm::DataElement> getElement(
+        gdcm::Tag finalTag,
+        std::size_t instance,
+        const std::vector<std::pair<gdcm::Tag, std::size_t> >& indices
+    ) const
+    {
+        return getElement(
+            finalTag,
+            getDataSet(instance),
+            indices
+        );
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] static std::optional<gdcm::DataSet> getDataSet(
+        const gdcm::DataSet& dataSet,
+        const std::vector<std::pair<gdcm::Tag,
+                                    std::size_t> >& indices = {})
+    {
+        const gdcm::DataSet* currentDataSet = &dataSet;
+        for(const auto& [tag, index] : indices)
+        {
+            if(!currentDataSet->FindDataElement(tag))
+            {
+                return std::nullopt;
+            }
+
+            const gdcm::DataElement& dataElement               = currentDataSet->GetDataElement(tag);
+            gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = dataElement.GetValueAsSQ();
+            SIGHT_ASSERT("Tried to subscript an item which isn't a sequence", sequence);
+            if(sequence->GetNumberOfItems() <= index)
+            {
+                return std::nullopt;
+            }
+
+            currentDataSet = &sequence->GetItem(index + 1).GetNestedDataSet(); // GDCM SequenceOfItems are 1-indexed...
+        }
+
+        return *currentDataSet;
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] std::optional<gdcm::DataSet> getDataSet(
+        std::size_t instance,
+        const std::vector<std::pair<gdcm::Tag,
+                                    std::size_t> >& indices
+    ) const
+    {
+        return getDataSet(getDataSet(instance), indices);
+    }
+
+    //------------------------------------------------------------------------------
+
+    static gdcm::DataSet& getOrCreateDataSet(
+        gdcm::DataSet& dataSet,
+        const std::vector<std::pair<gdcm::Tag, std::size_t> >& indices = {})
+    {
+        gdcm::DataSet* currentDataSet = &dataSet;
+        for(const auto& [tag, index] : indices)
+        {
+            if(!currentDataSet->FindDataElement(tag))
+            {
+                auto* sequence = new gdcm::SequenceOfItems();
+                sequence->SetLengthToUndefined();
+
+                gdcm::DataElement element(tag);
+                element.SetVR(gdcm::VR::SQ);
+                element.SetVLToUndefined();
+                element.SetValue(*sequence);
+
+                currentDataSet->Insert(element);
+            }
+
+            const gdcm::DataElement& dataElement               = currentDataSet->GetDataElement(tag);
+            gdcm::SmartPointer<gdcm::SequenceOfItems> sequence = dataElement.GetValueAsSQ();
+            SIGHT_ASSERT("Tried to subscript an item which isn't a sequence", sequence);
+            while(sequence->GetNumberOfItems() <= index)
+            {
+                sequence->AddItem(gdcm::Item {});
+            }
+
+            currentDataSet = &sequence->GetItem(index + 1).GetNestedDataSet(); // GDCM SequenceOfItems are 1-indexed...
+        }
+
+        return *currentDataSet;
+    }
+
+    //------------------------------------------------------------------------------
+
+    gdcm::DataSet& getOrCreateDataSet(
+        std::size_t instance                                           = 0,
+        const std::vector<std::pair<gdcm::Tag, std::size_t> >& indices = {})
+    {
+        return getOrCreateDataSet(getDataSet(instance), indices);
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] static gdcm::SmartPointer<gdcm::SequenceOfItems> getSequence(
+        gdcm::Tag finalTag,
+        const gdcm::DataSet& outerDataSet,
+        std::vector<std::pair<gdcm::Tag, std::size_t> > indices = {})
+    {
+        if(std::optional<gdcm::DataElement> dataElement = getElement(finalTag, outerDataSet, indices))
+        {
+            return *dataElement->GetValueAsSQ();
+        }
+
+        return nullptr;
+    }
+
+    //------------------------------------------------------------------------------
+
+    [[nodiscard]] gdcm::SmartPointer<gdcm::SequenceOfItems> getSequence(
+        gdcm::Tag finalTag,
+        std::size_t instance                                    = 0,
+        std::vector<std::pair<gdcm::Tag, std::size_t> > indices = {})
+    {
+        return getSequence(finalTag, getDataSet(instance), indices);
+    }
+
+    //------------------------------------------------------------------------------
+
+    static std::optional<std::string> getPrivateValue(
+        std::uint8_t valueElement,
+        const gdcm::DataSet& outerDataSet,
+        std::vector<std::pair<gdcm::Tag, std::size_t> > indices = {})
+    {
+        std::optional<gdcm::DataSet> dataSet = getDataSet(outerDataSet, indices);
+        if(!dataSet)
+        {
+            return std::nullopt;
+        }
+
+        return getPrivateStringValue(
+            *dataSet,
+            gdcm::Tag(PRIVATE_GROUP, PRIVATE_DATA_ELEMENT + valueElement)
+        );
+    }
+
+    //------------------------------------------------------------------------------
+
+    std::optional<std::string> getPrivateValue(
+        std::uint8_t valueElement,
+        std::size_t instance                                    = 0,
+        std::vector<std::pair<gdcm::Tag, std::size_t> > indices = {})
+    {
+        return getPrivateValue(valueElement, getDataSet(instance), indices);
+    }
+
+    //------------------------------------------------------------------------------
+
+    template<typename A>
+    constexpr void setValue(const std::optional<typename A::ArrayType>& value, gdcm::DataSet& dataSet)
+    {
+        if(value)
+        {
+            A attribute {};
+            attribute.SetValue(*value);
+            dataSet.Replace(attribute.GetAsDataElement());
+        }
+        else
+        {
+            // We need to put an "empty" value. Since GDCM doesn't allow us to do it with non string values, we need to
+            // hack the system. Sorry GDCM, but an Integer String definitively could be "unknown" and an empty string
+            // **IS** valid..
+            dataSet.Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    template<typename A>
+    void setValue(
+        const auto& value,
+        gdcm::DataSet& outerDataSet,
+        std::vector<std::pair<gdcm::Tag, std::size_t> > indices
+)
+    {
+        setValue<A>(value, getOrCreateDataSet(outerDataSet, indices));
+    }
+
+    //------------------------------------------------------------------------------
+
+    template<typename A>
+    void setValue(
+        const auto& value,
+        std::size_t instance                                    = 0,
+        std::vector<std::pair<gdcm::Tag, std::size_t> > indices = {})
+    {
+        setValue<A>(value, getDataSet(instance), indices);
+    }
+
+    //------------------------------------------------------------------------------
+
+    template<typename A>
+    constexpr void setValues(const std::vector<typename A::ArrayType>& values, gdcm::DataSet& dataSet)
+    {
+        if(values.empty())
+        {
+            // Force a real emtpy value..
+            dataSet.Replace(gdcm::DataElement(A::GetTag(), 0, A::GetVR()));
+        }
+        else
+        {
+            A attribute;
+
+            if constexpr(HasFixedMultiplicity<A>::value)
+            {
+                attribute.SetValues(values.data(), std::uint32_t(values.size()));
+            }
+            else
+            {
+                attribute.SetValues(values.data(), std::uint32_t(values.size()), true);
+            }
+
+            dataSet.Replace(attribute.GetAsDataElement());
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    template<typename A>
+    void setValues(
+        const auto& values,
+        gdcm::DataSet& outerDataSet,
+        std::vector<std::pair<gdcm::Tag, std::size_t> > indices
+)
+    {
+        setValues<A>(values, getOrCreateDataSet(outerDataSet, indices));
+    }
+
+    //------------------------------------------------------------------------------
+
+    template<typename A>
+    void setValues(
+        const auto& values,
+        std::size_t instance                                    = 0,
+        std::vector<std::pair<gdcm::Tag, std::size_t> > indices = {})
+    {
+        setValues<A>(values, getDataSet(instance), indices);
+    }
+
+    //------------------------------------------------------------------------------
+
+    static void setSequence(gdcm::Tag tag, gdcm::SmartPointer<gdcm::SequenceOfItems> value, gdcm::DataSet& dataSet)
+    {
+        if(value != nullptr)
+        {
+            gdcm::DataElement dataElement;
+            dataElement.SetTag(tag);
+            dataElement.SetVR(gdcm::VR::SQ);
+            dataElement.SetVLToUndefined();
+            dataElement.SetValue(*value);
+            dataSet.Replace(dataElement);
+        }
+        else
+        {
+            // Force a real empty value.
+            dataSet.Replace(gdcm::DataElement(tag, 0, gdcm::VR::SQ));
+        }
+    }
+
+    //------------------------------------------------------------------------------
+
+    static void setSequence(
+        gdcm::Tag finalTag,
+        gdcm::SmartPointer<gdcm::SequenceOfItems> value,
+        gdcm::DataSet& outerDataSet,
+        std::vector<std::pair<gdcm::Tag, std::size_t> > indices
+)
+    {
+        setSequence(finalTag, value, getOrCreateDataSet(outerDataSet, indices));
+    }
+
+    //------------------------------------------------------------------------------
+
+    void setSequence(
+        gdcm::Tag finalTag,
+        gdcm::SmartPointer<gdcm::SequenceOfItems> value,
+        std::size_t instance                                    = 0,
+        std::vector<std::pair<gdcm::Tag, std::size_t> > indices = {})
+    {
+        setSequence(finalTag, value, getDataSet(instance), indices);
+    }
+
+    //------------------------------------------------------------------------------
+
+    static void setPrivateValue(
+        std::uint8_t valueElement,
+        const std::optional<std::string>& value,
+        gdcm::DataSet& outerDataSet,
+        const std::vector<std::pair<gdcm::Tag, std::size_t> > indices = {})
+    {
+        detail::setPrivateValue(
+            getOrCreateDataSet(outerDataSet, indices),
+            gdcm::Tag(PRIVATE_GROUP, PRIVATE_DATA_ELEMENT + valueElement),
+            value
+        );
+    }
+
+    //------------------------------------------------------------------------------
+
+    void setPrivateValue(
+        std::uint8_t valueElement,
+        const std::optional<std::string>& value,
+        std::size_t instance                                          = 0,
+        const std::vector<std::pair<gdcm::Tag, std::size_t> > indices = {})
+    {
+        setPrivateValue(valueElement, value, getDataSet(instance), indices);
     }
 
     //------------------------------------------------------------------------------
