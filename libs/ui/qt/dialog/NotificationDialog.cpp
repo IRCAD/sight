@@ -99,8 +99,6 @@ void NotificationDialog::build()
     // Creates the main translucent auto-movable container.
     m_container = new Container(this->computePosition(), m_parent);
     m_container->setGraphicsEffect(effect);
-    m_container->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
-    m_container->setAttribute(Qt::WA_TranslucentBackground);
     m_container->setContentsMargins(0, 0, 0, 0);
     m_container->setMinimumSize(m_notification.size[0], m_notification.size[1]);
     m_container->setMaximumSize(m_notification.size[0], m_notification.size[1]);
@@ -459,7 +457,7 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
         case Position::CENTERED:
             return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parentPosCenter = _parent->mapToGlobal(_parent->rect().center());
+                       const auto parentPosCenter = _parent->rect().center();
 
                        return {
                            parentPosCenter.x() - static_cast<int>(m_notification.size[0] / 2),
@@ -470,8 +468,8 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
         case Position::CENTERED_TOP:
             return [this](QWidget* _parent) -> QPoint
                    {
-                       const int parentX = _parent->mapToGlobal(_parent->rect().center()).x();
-                       const int parentY = _parent->mapToGlobal(_parent->rect().topLeft()).y();
+                       const int parentX = _parent->rect().center().x();
+                       const int parentY = _parent->rect().topLeft().y();
                        const int height  = static_cast<int>(m_notification.size[1]) + margin;
 
                        return {
@@ -483,8 +481,8 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
         case Position::CENTERED_BOTTOM:
             return [this](QWidget* _parent) -> QPoint
                    {
-                       const int parentX = _parent->mapToGlobal(_parent->rect().center()).x();
-                       const int parentY = _parent->mapToGlobal(_parent->rect().bottomLeft()).y();
+                       const int parentX = _parent->rect().center().x();
+                       const int parentY = _parent->rect().bottomLeft().y();
                        const int height  = static_cast<int>(m_notification.size[1]) + margin;
 
                        return {
@@ -496,7 +494,7 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
         case Position::TOP_LEFT:
             return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parrentTopLeft = _parent->mapToGlobal(_parent->rect().topLeft());
+                       const auto parrentTopLeft = _parent->rect().topLeft();
                        const int parentX         = parrentTopLeft.x();
                        const int parentY         = parrentTopLeft.y();
                        const int height          = static_cast<int>(m_notification.size[1]) + margin;
@@ -510,7 +508,7 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
         case Position::TOP_RIGHT:
             return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parrentTopRight = _parent->mapToGlobal(_parent->rect().topRight());
+                       const auto parrentTopRight = _parent->rect().topRight();
                        const int parentX          = parrentTopRight.x();
                        const int parentY          = parrentTopRight.y();
                        const int height           = static_cast<int>(m_notification.size[1]) + margin;
@@ -524,7 +522,7 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
         case Position::BOTTOM_LEFT:
             return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parrentBottomLeft = _parent->mapToGlobal(_parent->rect().bottomLeft());
+                       const auto parrentBottomLeft = _parent->rect().bottomLeft();
                        const int parentX            = parrentBottomLeft.x();
                        const int parentY            = parrentBottomLeft.y();
                        const int height             = static_cast<int>(m_notification.size[1]) + margin;
@@ -538,7 +536,7 @@ std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
         case Position::BOTTOM_RIGHT:
             return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parrentBottomRight = _parent->mapToGlobal(_parent->rect().bottomRight());
+                       const auto parrentBottomRight = _parent->rect().bottomRight();
                        const int parentX             = parrentBottomRight.x();
                        const int parentY             = parrentBottomRight.y();
                        const int height              = static_cast<int>(m_notification.size[1]) + margin;
