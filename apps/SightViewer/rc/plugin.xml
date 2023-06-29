@@ -271,13 +271,18 @@
                         <separator/>
                         <menuItem name="Show/hide cropping box" icon="sight::module::ui::flaticons/CroppingBox.svg" style="check" />
                         <menuItem name="Reset cropping box" icon="sight::module::ui::flaticons/ResetCroppingBox.svg" />
-                        <menuItem name="Draw a new freehand cropping region" icon="sight::module::ui::flaticons/cutVolume.svg" style="check" />
-                        <menuItem name="Undo last freehand cropping point" icon="sight::module::ui::flaticons/undoCutVolume.svg" />
-                        <menuItem name="Revert last freehand cropping region" icon="sight::module::ui::flaticons/revertCutVolume.svg" />
+                        <accordion>
+                            <menuItem name="Draw a new freehand cropping region" icon="sight::module::ui::flaticons/cutVolume.svg" style="check" />
+                            <menuItem name="Undo last freehand cropping point" icon="sight::module::ui::flaticons/undoCutVolume.svg" />
+                            <menuItem name="Revert last freehand cropping region" icon="sight::module::ui::flaticons/revertCutVolume.svg" />
+                        </accordion>
                         <separator/>
-                        <menuItem name="Add/Edit distance" icon="sight::module::ui::flaticons/AddDistance.svg" style="check" />
-                        <menuItem name="Remove distance" icon="sight::module::ui::flaticons/RemoveDistance.svg" />
-                        <menuItem name="Hide/show distance" icon="sight::module::ui::flaticons/Distance.svg" style="check" />
+                        <accordion>
+                            <menuItem name="Show/hide distance-related actions" icon="sight::module::ui::flaticons/Distance.svg" style="check" />
+                            <menuItem name="Add/Edit distance" icon="sight::module::ui::flaticons/AddDistance.svg" style="check" />
+                            <menuItem name="Remove distance" icon="sight::module::ui::flaticons/RemoveDistance.svg" />
+                        </accordion>
+                        <menuItem name="Hide/show distance" icon="sight::module::ui::flaticons/ShowDistance.svg" style="check" />
                         <separator/>
                         <menuItem name="Show/hide axis" icon="sight::module::ui::flaticons/Axis.svg" style="check" />
                     </layout>
@@ -295,6 +300,7 @@
                     <menuItem sid="shapeExtruderAct" start="true" />
                     <menuItem sid="shapeExtruderCancelAct" start="true" />
                     <menuItem sid="shapeExtruderRevertAct" start="true" />
+                    <menuItem sid="distanceActionsVisibilityAct" start="true" />
                     <menuItem sid="addDistanceAct" start="true" />
                     <menuItem sid="removeDistanceAct" start="false" />
                     <menuItem sid="hideDistanceAct" start="false" />
@@ -428,6 +434,10 @@
             <service uid="axisVisibilityAct" type="sight::module::ui::base::com::SSignal" />
 
             <!-- Manage distance -->
+            <service uid="distanceActionsVisibilityAct" type="sight::module::ui::base::com::SSignal" >
+                <state enabled="false" />
+            </service>
+
             <service uid="addDistanceAct" type="sight::module::ui::base::com::SSignal">
                 <state enabled="false" checked="false"/>
             </service>
@@ -665,6 +675,7 @@
                 <slot>boxWidgetVisibilityAct/enable</slot>
                 <slot>shapeExtruderAct/enable</slot>
                 <slot>boxWidgetResetAct/enable</slot>
+                <slot>distanceActionsVisibilityAct/enable</slot>
                 <slot>addDistanceAct/enable</slot>
                 <slot>removeDistanceAct/enable</slot>
                 <slot>hideDistanceAct/enable</slot>
@@ -739,6 +750,17 @@
                 <slot>organsManagerAct/uncheck</slot>
                 <slot>landmarksManagerAct/uncheck</slot>
                 <slot>lightManagerAct/uncheck</slot>
+            </connect>
+
+            <!-- Only one mode can be enabled at a time -->
+            <connect>
+                <signal>distanceActionsVisibilityAct/checked</signal>
+                <slot>shapeExtruderAct/uncheck</slot>
+            </connect>
+
+            <connect>
+                <signal>shapeExtruderAct/checked</signal>
+                <slot>distanceActionsVisibilityAct/uncheck</slot>
             </connect>
 
             <!-- Manage landmarks -->

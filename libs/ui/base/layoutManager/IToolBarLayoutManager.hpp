@@ -37,6 +37,11 @@
                <menu name="My menu" />
                <separator />
                <editor />
+               <accordion>
+                    <menuItem name="Show/hide distance-related actions" icon="icons/Distance.svg" style="check" />
+                    <menuItem name="Add/Edit distance" icon="icons/AddDistance.svg" style="check" />
+                    <menuItem name="Remove distance" icon="icons/RemoveDistance.svg" />
+                </accordion>
            </layout>
        </gui>
        <registry>
@@ -46,6 +51,9 @@
            <menuItem sid="item5" />
            <menu sid="menu" />
            <editor sid="editor" />
+           <menuItem sid="distanceActionsVisibilityAct" start="true" />
+           <menuItem sid="addDistanceAct" start="true" />
+           <menuItem sid="removeDistanceAct" start="false" />
        </registry>
    </service>
    @endcode
@@ -65,6 +73,9 @@
  *   - \b icon : give the path of the icon file
  *  - \<editor\> : to add an editor in the toolbar
  *  - \<separator/\> : allow to divide the toolbar by part (draw a line).
+ *  - \<accordion\> : allows to make some buttons collapsable. The first button of the list will be the button that will
+ *                    make the other buttons in the list appear if checked. The style of the first button must be
+ *                    "check".
  */
 
 #pragma once
@@ -94,6 +105,13 @@ public:
     typedef std::string RegistryKeyType;
     typedef std::vector<ui::base::IMenuItemCallback::sptr> CallbacksType;
 
+    enum class Accordion
+    {
+        NO,
+        FIRST,
+        YES
+    };
+
     class ActionInfo
     {
     public:
@@ -115,6 +133,7 @@ public:
         bool m_isSpacer {false};
         bool m_isMenu {false};
         bool m_isEditor {false};
+        Accordion m_accordion {Accordion::NO};
         int m_size {0};
     };
 

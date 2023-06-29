@@ -29,8 +29,10 @@
 #include "ui/qt/container/QtToolBarContainer.hpp"
 
 #include <ui/base/registry/macros.hpp>
+#include <ui/qt/widget/AccordionMenu.hpp>
 
 #include <QActionGroup>
+#include <qboxlayout.h>
 #include <QMenu>
 #include <QToolBar>
 #include <QToolButton>
@@ -89,10 +91,21 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
         toolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
     }
 
-    QActionGroup* actionGroup  = nullptr;
-    unsigned int menuItemIndex = 0;
+    [[maybe_unused]] QActionGroup* actionGroup  = nullptr;
+    widget::AccordionMenu* accordionLayout      = nullptr;
+    [[maybe_unused]] unsigned int menuItemIndex = 0;
     for(ui::base::layoutManager::IToolBarLayoutManager::ActionInfo& actionInfo : m_actionInfo)
     {
+        if(actionInfo.m_accordion == ui::base::layoutManager::IToolBarLayoutManager::Accordion::NO)
+        {
+            accordionLayout = nullptr;
+        }
+        else if(actionInfo.m_accordion == ui::base::layoutManager::IToolBarLayoutManager::Accordion::FIRST)
+        {
+            accordionLayout = new widget::AccordionMenu(toolBar);
+            toolBar->addWidget(accordionLayout);
+        }
+
         if(actionInfo.m_isSeparator)
         {
             if(actionInfo.m_size > 0)
@@ -113,7 +126,15 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
         {
             auto* spacer = new QWidget(toolBar);
             spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            toolBar->addWidget(spacer);
+            if(accordionLayout != nullptr)
+            {
+                accordionLayout->addWidget(spacer);
+            }
+            else
+            {
+                toolBar->addWidget(spacer);
+            }
+
             actionGroup = nullptr;
         }
         else if(actionInfo.m_isMenu)
@@ -146,7 +167,15 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
                 toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
             }
 
-            toolBar->addWidget(toolButton);
+            if(accordionLayout != nullptr)
+            {
+                accordionLayout->addWidget(toolButton);
+            }
+            else
+            {
+                toolBar->addWidget(toolButton);
+            }
+
             m_menus.push_back(menu);
         }
         else if(actionInfo.m_isEditor)
@@ -166,7 +195,14 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
             }
 
             widget->adjustSize();
-            toolBar->addWidget(widget);
+            if(accordionLayout != nullptr)
+            {
+                accordionLayout->addWidget(widget);
+            }
+            else
+            {
+                toolBar->addWidget(widget);
+            }
 
             m_containers.push_back(container);
         }
@@ -174,30 +210,66 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
         {
             ui::qt::container::QtMenuItemContainer::sptr menuItem = ui::qt::container::QtMenuItemContainer::New();
             QAction* action                                       = nullptr;
-            if(!actionInfo.m_icon.empty())
+            if(accordionLayout != nullptr)
             {
-                QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
-                if(!actionInfo.m_icon2.empty())
+                auto* toolButton = new QToolButton;
+                toolButton->setToolButtonStyle(toolBar->toolButtonStyle());
+                toolButton->setIconSize(toolBar->iconSize());
+                if(toolBar->orientation() == Qt::Horizontal)
                 {
-                    icon.addFile(
-                        QString::fromStdString(actionInfo.m_icon2.string()),
-                        QSize(),
-                        QIcon::Normal,
-                        QIcon::On
-                    );
-                    icon.addFile(
-                        QString::fromStdString(actionInfo.m_icon2.string()),
-                        QSize(),
-                        QIcon::Active,
-                        QIcon::On
-                    );
+                    toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+                }
+                else
+                {
+                    toolButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
                 }
 
-                action = toolBar->addAction(icon, QString::fromStdString(actionInfo.m_name));
+                action = new QAction(toolBar);
+                toolButton->setDefaultAction(action);
+                action->setText(QString::fromStdString(actionInfo.m_name));
+                action->setToolTip(QString::fromStdString(actionInfo.m_name));
+                if(!actionInfo.m_icon.empty())
+                {
+                    action->setIcon(QIcon(QString::fromStdString(actionInfo.m_icon.string())));
+                }
+
+                if(!actionInfo.m_icon2.empty())
+                {
+                    QIcon icon = action->icon();
+                    icon.addFile(QString::fromStdString(actionInfo.m_icon2.string()), {}, QIcon::Normal, QIcon::On);
+                    icon.addFile(QString::fromStdString(actionInfo.m_icon2.string()), {}, QIcon::Active, QIcon::On);
+                    action->setIcon(icon);
+                }
+
+                accordionLayout->addWidget(toolButton);
             }
             else
             {
-                action = toolBar->addAction(QString::fromStdString(actionInfo.m_name));
+                if(!actionInfo.m_icon.empty())
+                {
+                    QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
+                    if(!actionInfo.m_icon2.empty())
+                    {
+                        icon.addFile(
+                            QString::fromStdString(actionInfo.m_icon2.string()),
+                            QSize(),
+                            QIcon::Normal,
+                            QIcon::On
+                        );
+                        icon.addFile(
+                            QString::fromStdString(actionInfo.m_icon2.string()),
+                            QSize(),
+                            QIcon::Active,
+                            QIcon::On
+                        );
+                    }
+
+                    action = toolBar->addAction(icon, QString::fromStdString(actionInfo.m_name));
+                }
+                else
+                {
+                    action = toolBar->addAction(QString::fromStdString(actionInfo.m_name));
+                }
             }
 
             action->setObjectName(qId + '/' + actionInfo.m_name.c_str());
