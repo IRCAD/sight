@@ -38,6 +38,7 @@ INotifier::INotifier(core::com::Signals& _signals) noexcept
 
 void INotifier::notify(Notification notification) const
 {
+    SIGHT_FATAL_IF("channel '" + notification.channel + "' not found.", !m_channels.contains(notification.channel));
     notification.channel = m_channels.at(notification.channel);
     m_notified_sig->asyncEmit(std::move(notification));
 }
@@ -46,6 +47,7 @@ void INotifier::notify(Notification notification) const
 
 void INotifier::closeNotification(std::string channel) const
 {
+    SIGHT_FATAL_IF("channel '" + channel + "' not found.", !m_channels.contains(channel));
     channel = m_channels.at(channel);
     m_notification_closed_sig->asyncEmit(std::move(channel));
 }
