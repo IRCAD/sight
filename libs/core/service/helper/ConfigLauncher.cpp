@@ -65,14 +65,61 @@ void ConfigLauncher::parseConfig(
     const service::IService::sptr& _service
 )
 {
-    service::IService::ConfigType srvCfg;
-
     const service::IService::ConfigType& oldConfig = _config;
     SIGHT_ASSERT("There must be only one <appConfig/> element.", oldConfig.count("appConfig") == 1);
 
     const service::IService::ConfigType& appConfig = oldConfig.get_child("appConfig");
-    const auto appCfgId                            = appConfig.get<std::string>("<xmlattr>.id");
+    const auto appCfgIdElement                     = appConfig.get_optional<std::string>("<xmlattr>.id");
 
+    //if there is an id attribute in the config, there is a unique config to load
+    //else there are several possible configs, and need to load all of them
+    if(appCfgIdElement.has_value())
+    {
+        const auto& appCfgId                              = *appCfgIdElement;
+        const service::IService::ConfigType& appConfigCfg = initConfig(appCfgId, oldConfig, _service);
+        m_appConfigParameters[m_configKey] = Parameters(appConfigCfg);
+    }
+    else
+    {
+        //there are several config used. Parse them all
+        const auto subconfigList = appConfig.equal_range("config");
+        for(auto subconfig = subconfigList.first ;
+            subconfig != subconfigList.second ;
+            ++subconfig)
+        {
+            const auto configName = subconfig->second.get<std::string>("<xmlattr>.name");
+            const auto configId   = subconfig->second.get<std::string>("<xmlattr>.id");
+            if(!m_appConfigParameters.contains(configId))
+            {
+                const service::IService::ConfigType& appConfigCfg = initConfig(configId, oldConfig, _service);
+                m_appConfigParameters[configName] = Parameters(appConfigCfg);
+                m_configKey                       = configName;
+            }
+            else
+            {
+                SIGHT_ERROR("The key " << configId << " is used twice to identify configs in configLauncher");
+                break;
+            }
+        }
+
+        if(const auto defaultConfig = appConfig.get_optional<std::string>(
+               "<xmlattr>.default"
+        ); defaultConfig.has_value())
+        {
+            setConfig(*defaultConfig);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+service::IService::ConfigType ConfigLauncher::initConfig(
+    const std::string& appCfgId,
+    const service::IService::ConfigType& oldConfig,
+    service::IService::sptr _service
+)
+{
+    service::IService::ConfigType srvCfg;
     srvCfg.add("config.appConfig.<xmlattr>.id", appCfgId);
     service::IService::ConfigType& newCfg          = srvCfg.get_child("config.appConfig");
     const service::IService::ConfigType* curConfig = &srvCfg;
@@ -132,10 +179,7 @@ void ConfigLauncher::parseConfig(
 
     SIGHT_ASSERT("There must be only one <appConfig/> element.", srvconfig.count("appConfig") == 1);
 
-    const service::IService::ConfigType& appConfigCfg = srvconfig.get_child("appConfig");
-
-    m_appConfig = Parameters(appConfigCfg);
-    SIGHT_ASSERT("There must be only one <appConfig/> element.", srvconfig.count("appConfig") == 1);
+    return srvconfig.get_child("appConfig");
 }
 
 //------------------------------------------------------------------------------
@@ -151,14 +195,17 @@ void ConfigLauncher::startConfig(
     const std::string genericUidAdaptor = service::extension::AppConfig::getUniqueIdentifier(_service->getID());
     replaceMap[ConfigLauncher::s_GENERIC_UID_KEY] = genericUidAdaptor;
 
-    for(const auto& param : m_appConfig.m_parameters)
+    //get the right appConfig
+    const auto appConfig = m_appConfigParameters[m_configKey];
+
+    for(const auto& param : appConfig.m_parameters)
     {
         replaceMap[param.first] = param.second;
     }
 
     // Init manager
     auto appConfigManager = service::detail::AppConfigManager::New();
-    appConfigManager->setConfig(m_appConfig.m_id, replaceMap);
+    appConfigManager->setConfig(appConfig.m_id, replaceMap);
 
     // When a configuration is launched, deferred objects may already exist.
     // This loop allow to notify the app config manager that this data exist and can be used by services.
@@ -191,6 +238,20 @@ void ConfigLauncher::stopConfig()
     }
 
     m_configIsRunning = false;
+}
+
+//------------------------------------------------------------------------------
+
+void ConfigLauncher::setConfig(const std::string& key)
+{
+    if(m_appConfigParameters.contains(key))
+    {
+        m_configKey = key;
+    }
+    else
+    {
+        SIGHT_ERROR("The is no config registered with key " << key);
+    }
 }
 
 //------------------------------------------------------------------------------

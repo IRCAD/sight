@@ -74,6 +74,8 @@ public:
         return m_configIsRunning;
     }
 
+    SERVICE_API void setConfig(const std::string& key);
+
 private:
 
     /// Stores the app config.
@@ -86,7 +88,25 @@ private:
         std::string m_id;
         std::vector<std::pair<std::string, std::string> > m_parameters;
     };
-    Parameters m_appConfig;
+
+    /**
+     * @brief initialise a config provided in param
+     *
+     * @param appCfgId : the id of the config to init
+     * @param oldConfig : the current service config
+     * @param _service : service to connect with config root object.
+     * @return the initialised config
+     */
+    service::IService::ConfigType initConfig(
+        const std::string& appCfgId,
+        const service::IService::ConfigType& oldConfig,
+        service::IService::sptr _service
+    );
+
+    // map of supported configs. Each map is associated to a key, (attribute name i the xml)
+    // a default config is stored.
+    std::map<std::string, Parameters> m_appConfigParameters;
+    std::string m_configKey = {"default"};
 
     /// Sets the configuration running state.
     bool m_configIsRunning {false};
