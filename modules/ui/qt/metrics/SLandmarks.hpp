@@ -24,8 +24,10 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <data/ImageSeries.hpp>
 #include <data/Landmarks.hpp>
 #include <data/Matrix4.hpp>
+#include <data/mt/locked_ptr.hpp>
 #include <data/Point.hpp>
 #include <data/tools/PickingInfo.hpp>
 
@@ -44,11 +46,90 @@
 namespace sight::module::ui::qt::metrics
 {
 
+struct LandmarksOrImageSeriesConstPtr
+{
+    data::Landmarks::csptr landmarks;
+    data::ImageSeries::csptr imageSeries;
+};
+
+struct LandmarksOrImageSeriesConstLock
+{
+    data::mt::locked_ptr<const data::Landmarks> landmarks;
+    data::mt::locked_ptr<const data::ImageSeries> imageSeries;
+
+    operator LandmarksOrImageSeriesConstPtr() const {
+        return {.landmarks = landmarks.get_shared(), .imageSeries = imageSeries.get_shared()};
+    }
+};
+
+struct LandmarksOrImageSeriesPtr
+{
+    data::Landmarks::sptr landmarks;
+    data::ImageSeries::sptr imageSeries;
+
+    operator LandmarksOrImageSeriesConstPtr() const {
+        return {.landmarks = landmarks, .imageSeries = imageSeries};
+    }
+};
+
+struct LandmarksOrImageSeriesLock
+{
+    data::mt::locked_ptr<data::Landmarks> landmarks;
+    data::mt::locked_ptr<data::ImageSeries> imageSeries;
+
+    operator LandmarksOrImageSeriesPtr() const {
+        return {.landmarks = landmarks.get_shared(), .imageSeries = imageSeries.get_shared()};
+    }
+
+    operator LandmarksOrImageSeriesConstPtr() const {
+        return {.landmarks = landmarks.get_shared(), .imageSeries = imageSeries.get_shared()};
+    }
+};
+
+struct ImageOrImageSeriesConstPtr
+{
+    data::Image::csptr image;
+    data::ImageSeries::csptr imageSeries;
+};
+
+struct ImageOrImageSeriesConstLock
+{
+    data::mt::locked_ptr<const data::Image> image;
+    data::mt::locked_ptr<const data::ImageSeries> imageSeries;
+
+    operator ImageOrImageSeriesConstPtr() const {
+        return {.image = image.get_shared(), .imageSeries = imageSeries.get_shared()};
+    }
+};
+
+struct ImageOrImageSeriesPtr
+{
+    data::Image::csptr image;
+    data::ImageSeries::sptr imageSeries;
+
+    operator ImageOrImageSeriesConstPtr() const {
+        return {.image = image, .imageSeries = imageSeries};
+    }
+};
+
+struct ImageOrImageSeriesLock
+{
+    data::mt::locked_ptr<const data::Image> image;
+    data::mt::locked_ptr<data::ImageSeries> imageSeries;
+
+    operator ImageOrImageSeriesPtr() const {
+        return {.image = image.get_shared(), .imageSeries = imageSeries.get_shared()};
+    }
+
+    operator ImageOrImageSeriesConstPtr() const {
+        return {.image = image.get_shared(), .imageSeries = imageSeries.get_shared()};
+    }
+};
+
 /**
  * @brief This service defines a graphical editor to edit landmarks.
  *
  * @section Slots Slots
- * - \b pick(data::tools::PickingInfo): adds or removes picked landmark.
  * - \b addPoint(std::string): adds a point to editor.
  * - \b modifyPoint(std::string, std::size_t): updates the editor when a point has moved.
  * - \b selectPoint(std::string, std::size_t): selects a point in the editor.
@@ -82,6 +163,8 @@ namespace sight::module::ui::qt::metrics
  *
  *  @subsection In-Out In-Out
  * - \b landmarks [sight::data::Landmarks]: the landmarks structure on which this editor is working.
+ * - \b imageSeries [sight::data::ImageSeries]: the imageSeries structure on which this editor is working.
+ *  Either landmarks or imageSeries parameter must be set.
  * - \b currentLandmark [sight::data::Point]: (optional) the coordinates of the currently selected landmark.
  *  It is updated when a new landmark is created, or when a double click is made on an existing landmark.
  *
@@ -222,21 +305,21 @@ public:
      * @brief SLOT: adds a point to the editor.
      * @param _groupName the group name where the point is added.
      */
-    void addPoint(std::string _groupName);
+    void addPoint(std::string _groupName) const;
 
     /**
      * @brief Slot: updates a point coordinates in the editor.
      * @param _groupName the group name of the updated point.
      * @param _index the index of the point to update.
      */
-    void modifyPoint(std::string _groupName, std::size_t _index);
+    void modifyPoint(std::string _groupName, std::size_t _index) const;
 
     /**
      * @brief SLOT: selects the point's corresponding item in the editor.
      * @param _groupName the group name of the selected point.
      * @param _index the index of the point to select.
      */
-    void selectPoint(std::string _groupName, std::size_t _index);
+    void selectPoint(std::string _groupName, std::size_t _index) const;
 
     /// Slot: deselects the currently selected item.
     void deselectPoint(std::string /*unused*/, std::size_t /*unused*/) const;
@@ -245,7 +328,7 @@ public:
      * @brief Slot: adds a landmark group to the editor.
      * @param _name Name of the new group.
      */
-    void addGroup(std::string _name);
+    void addGroup(std::string _name) const;
 
     /**
      * @brief SLOT: removes a group from the editor.
@@ -271,7 +354,7 @@ public:
      * @brief SLOT: updates a group properties in the editor.
      * @param _name The group name to updates.
      */
-    void modifyGroup(std::string _name);
+    void modifyGroup(std::string _name) const;
 
     /**
      * @brief Gets the name of the currently selected group.
@@ -312,6 +395,10 @@ public:
      * @param _color the color of the square.
      */
     static void setColorButtonIcon(QPushButton* button, const QColor& _color);
+
+    LandmarksOrImageSeriesLock lock();
+
+    LandmarksOrImageSeriesConstLock constLock() const;
 
     /// Contains a tree representing landmarks sorted by their groups.
     QPointer<QTreeWidget> m_treeWidget;
@@ -356,10 +443,12 @@ public:
     std::string m_text;
 
     static constexpr std::string_view s_LANDMARKS_INOUT        = "landmarks";
+    static constexpr std::string_view s_IMAGE_SERIES_INOUT     = "imageSeries";
     static constexpr std::string_view s_MATRIX_IN              = "matrix";
     static constexpr std::string_view s_CURRENT_LANDMARK_INOUT = "currentLandmark";
     data::ptr<data::Matrix4, sight::data::Access::in> m_matrix {this, s_MATRIX_IN, false, true};
     data::ptr<data::Landmarks, sight::data::Access::inout> m_landmarks {this, s_LANDMARKS_INOUT, true};
+    data::ptr<data::ImageSeries, sight::data::Access::inout> m_imageSeries {this, s_IMAGE_SERIES_INOUT, true};
     data::ptr<data::Point, sight::data::Access::inout> m_currentLandmark {this, s_CURRENT_LANDMARK_INOUT, false, true};
 
     /// Used to generate random color

@@ -290,6 +290,8 @@ private:
 
     void setCursor(QCursor cursor);
 
+    void removeDistance(data::PointList::sptr pl);
+
     /// Defines the radius of distances spheres.
     float m_distanceSphereRadius {3.5F};
 

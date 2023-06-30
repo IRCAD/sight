@@ -30,17 +30,15 @@
         <param name="image" />
         <param name="volumeTF" />
         <param name="extrudedModelSeries" />
-        <param name="landmarks" />
     </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${modelSeries}" type="sight::data::ModelSeries" src="deferred" />
-        <object uid="${image}" type="sight::data::Image" src="deferred" />
+        <object uid="${image}" type="sight::data::ImageSeries" src="deferred" />
         <object uid="${volumeTF}" type="sight::data::TransferFunction" src="ref" />
         <object uid="${extrudedModelSeries}" type="sight::data::ModelSeries" src="ref" />
-        <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
 
         <object uid="mask" type="sight::data::Image" />
         <object uid="clippingMatrix" type="sight::data::Matrix4" />
@@ -154,8 +152,8 @@
         </service>
 
         <service uid="landmarksAdp" type="sight::module::viz::scene3dQt::adaptor::SLandmarks" autoConnect="true">
-            <inout key="landmarks" uid="${landmarks}" />
-            <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" />
+            <inout key="imageSeries" uid="${image}" />
+            <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" viewDistance="allSlices" />
         </service>
 
         <service uid="multiDistancesAdp" type="sight::module::viz::scene3dQt::adaptor::SImageMultiDistances" autoConnect="true">

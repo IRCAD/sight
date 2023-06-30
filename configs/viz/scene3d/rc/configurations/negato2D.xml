@@ -4,7 +4,6 @@
         <param name="WID_PARENT" />
         <param name="image" />
         <param name="transferFunction" />
-        <param name="landmarks" />
         <param name="sliceIndex" default="axial" />
         <param name="enableSliceType" default="true" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" default="WORLD_COORDS_LANDMARKS_CHANNEL"/>
@@ -19,8 +18,7 @@
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}" type="sight::data::Image" src="deferred" />
-        <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
+        <object uid="${image}" type="sight::data::ImageSeries" src="deferred" />
         <object uid="${transferFunction}" type="sight::data::TransferFunction" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
@@ -77,8 +75,7 @@
         </service>
 
         <service uid="landmarksAdp" type="sight::module::viz::scene3dQt::adaptor::SLandmarks" autoConnect="true">
-            <inout key="landmarks" uid="${landmarks}" />
-            <in key="image" uid="${image}" />
+            <inout key="imageSeries" uid="${image}" />
             <config label="false" orientation="${sliceIndex}" priority="4" initialGroup="Group_0" initialSize="10.0" />
         </service>
 

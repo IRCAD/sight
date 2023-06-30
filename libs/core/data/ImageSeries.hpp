@@ -30,6 +30,7 @@
 #include "data/types.hpp"
 
 #include "FiducialsSeries.hpp"
+#include "IHasFiducials.hpp"
 
 namespace sight::data
 {
@@ -45,7 +46,8 @@ namespace sight::data
  * @brief Holds a medical images data.
  */
 class DATA_CLASS_API ImageSeries final : public Image,
-                                         public Series
+                                         public Series,
+                                         public IHasFiducials
 {
 public:
 

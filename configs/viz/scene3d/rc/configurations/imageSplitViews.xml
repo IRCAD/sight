@@ -32,17 +32,15 @@
         <param name="image" />
         <param name="volumeTF" />
         <param name="extrudedModelSeries" />
-        <param name="landmarks" />
     </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${modelSeries}" type="sight::data::ModelSeries" src="deferred" />
-        <object uid="${image}" type="sight::data::Image" src="deferred" />
+        <object uid="${image}" type="sight::data::ImageSeries" src="deferred" />
         <object uid="${volumeTF}" type="sight::data::TransferFunction" src="ref" />
         <object uid="${extrudedModelSeries}" type="sight::data::ModelSeries" src="ref" />
-        <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -124,7 +122,6 @@
                 <key name="image" uid="${image}" optional="true"/>
                 <key name="volumeTF" uid="${volumeTF}" />
                 <key name="extrudedModelSeries" uid="${extrudedModelSeries}" />
-                <key name="landmarks" uid="${landmarks}" />
             </inout>
         </service>
 
@@ -145,7 +142,6 @@
             <inout group="data">
                 <key name="image" uid="${image}" optional="true"/>
                 <key name="transferFunction" uid="${volumeTF}" />
-                <key name="landmarks" uid="${landmarks}" />
             </inout>
         </service>
 
@@ -164,7 +160,6 @@
             <inout group="data">
                 <key name="image" uid="${image}" optional="true"/>
                 <key name="transferFunction" uid="${volumeTF}" />
-                <key name="landmarks" uid="${landmarks}" />
             </inout>
         </service>
 
@@ -183,7 +178,6 @@
             <inout group="data">
                 <key name="image" uid="${image}" optional="true"/>
                 <key name="transferFunction" uid="${volumeTF}" />
-                <key name="landmarks" uid="${landmarks}" />
             </inout>
         </service>
 

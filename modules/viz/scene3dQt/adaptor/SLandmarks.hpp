@@ -29,7 +29,9 @@
 #include <core/macros.hpp>
 #include <core/thread/Timer.hpp>
 
+#include <data/FiducialsSeries.hpp>
 #include <data/helper/MedicalImage.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/Landmarks.hpp>
 #include <data/Material.hpp>
 
@@ -41,6 +43,86 @@
 
 namespace sight::module::viz::scene3dQt::adaptor
 {
+
+struct LandmarksOrImageSeriesConstPtr
+{
+    data::Landmarks::csptr landmarks;
+    data::ImageSeries::csptr imageSeries;
+};
+
+struct LandmarksOrImageSeriesConstLock
+{
+    data::mt::locked_ptr<const data::Landmarks> landmarks;
+    data::mt::locked_ptr<const data::ImageSeries> imageSeries;
+
+    operator LandmarksOrImageSeriesConstPtr() const {
+        return {.landmarks = landmarks.get_shared(), .imageSeries = imageSeries.get_shared()};
+    }
+};
+
+struct LandmarksOrImageSeriesPtr
+{
+    data::Landmarks::sptr landmarks;
+    data::ImageSeries::sptr imageSeries;
+
+    operator LandmarksOrImageSeriesConstPtr() const {
+        return {.landmarks = landmarks, .imageSeries = imageSeries};
+    }
+};
+
+struct LandmarksOrImageSeriesLock
+{
+    data::mt::locked_ptr<data::Landmarks> landmarks;
+    data::mt::locked_ptr<data::ImageSeries> imageSeries;
+
+    operator LandmarksOrImageSeriesPtr() const {
+        return {.landmarks = landmarks.get_shared(), .imageSeries = imageSeries.get_shared()};
+    }
+
+    operator LandmarksOrImageSeriesConstPtr() const {
+        return {.landmarks = landmarks.get_shared(), .imageSeries = imageSeries.get_shared()};
+    }
+};
+
+struct ImageOrImageSeriesConstPtr
+{
+    data::Image::csptr image;
+    data::ImageSeries::csptr imageSeries;
+};
+
+struct ImageOrImageSeriesConstLock
+{
+    data::mt::locked_ptr<const data::Image> image;
+    data::mt::locked_ptr<const data::ImageSeries> imageSeries;
+
+    operator ImageOrImageSeriesConstPtr() const {
+        return {.image = image.get_shared(), .imageSeries = imageSeries.get_shared()};
+    }
+};
+
+struct ImageOrImageSeriesPtr
+{
+    data::Image::csptr image;
+    data::ImageSeries::sptr imageSeries;
+
+    operator ImageOrImageSeriesConstPtr() const {
+        return {.image = image, .imageSeries = imageSeries};
+    }
+};
+
+struct ImageOrImageSeriesLock
+{
+    data::mt::locked_ptr<const data::Image> image;
+    data::mt::locked_ptr<data::ImageSeries> imageSeries;
+
+    operator ImageOrImageSeriesPtr() const {
+        return {.image = image.get_shared(), .imageSeries = imageSeries.get_shared()};
+    }
+
+    operator ImageOrImageSeriesConstPtr() const {
+        return {.image = image.get_shared(), .imageSeries = imageSeries.get_shared()};
+    }
+};
 
 /**
  * @brief This adaptor displays landmarks.
@@ -438,15 +520,44 @@ private:
     );
 
     /**
-     * @brief inserts a point.
-     * @param _groupName group name of the landmark.
-     * @param _index index of the point relative to the group.
-     * @param _landmarks landmarks data in which the point will be inserted.
+     * Creates a manual object which represents the landmark whose information is in parameter.
+     * @param groupName The group name of the landmark
+     * @param index The index of the landmark in its group
+     * @param groupData Graphical hints for the appearance of the landmark (color, size and shape)
+     * @param pointPos The position of the landmark
+     * @returns The created manual object
      */
-    std::shared_ptr<Landmark> insertMyPoint(
-        std::string _groupName,
-        std::size_t _index,
-        const data::Landmarks::csptr& _landmarks
+    std::shared_ptr<Landmark> createManualObject(
+        const std::string& groupName,
+        std::size_t index,
+        data::Landmarks::LandmarksGroup groupData,
+        data::Landmarks::PointType pointPos
+    );
+
+    /**
+     * Creates a manual object which represents the landmark whose information is in parameter.
+     * @param groupName The group name of the landmark
+     * @param index The index of the landmark in its group
+     * @param landmarks Landmarks container which provides information about the landmark (graphical hints and position)
+     * @returns The created manual object
+     */
+    std::shared_ptr<Landmark> createManualObject(
+        const std::string& groupName,
+        std::size_t index,
+        data::Landmarks::csptr landmarks
+    );
+
+    /**
+     * Creates a manual object which represents the landmark whose information is in parameter.
+     * @param groupName The group name of the landmark
+     * @param index The index of the landmark in its group
+     * @param lock Landmarks container which provides information about the landmark (graphical hints and position)
+     * @returns The created manual object
+     */
+    std::shared_ptr<Landmark> createManualObject(
+        const std::string& groupName,
+        std::size_t index,
+        LandmarksOrImageSeriesConstPtr lf
     );
 
     /**
@@ -482,17 +593,32 @@ private:
     void updateLandmarkVisibility(std::shared_ptr<Landmark> _landmark);
 
     /**
+     * Hides the landmark if it's not on the current image slice index (if one is given).
+     * @param landmark The landmark to hide
+     * @param group The group information of the landmark to hide
+     */
+    void updateLandmarkVisibility(Landmark& landmark, std::optional<data::Landmarks::LandmarksGroup> group);
+
+    /**
      * @brief Hides the landmark if it's not on the current image slice index (if one is given).
      * @param landmark the landmark whose visibility must be updated.
-     * @param landmarks landmarks data in which the landmarks should be updated.
+     * @param lock landmarks data in which the landmarks should be updated.
      */
-    void updateLandmarkVisibility(Landmark& landmark, const data::Landmarks& landmarks);
+    void updateLandmarkVisibility(Landmark& landmark, const LandmarksOrImageSeriesConstLock& lock);
 
     bool isLandmarkVisible(const data::Landmarks::PointType& point, data::Landmarks::SizeType group_size) const;
 
     std::shared_ptr<Landmark> tryPick(int x, int y) const;
 
     void setCursor(QCursor cursor);
+
+    [[nodiscard]] LandmarksOrImageSeriesLock lockLandmarks();
+
+    [[nodiscard]] LandmarksOrImageSeriesConstLock constLockLandmarks() const;
+
+    [[nodiscard]] ImageOrImageSeriesLock lockImage();
+
+    [[nodiscard]] ImageOrImageSeriesConstLock constLockImage() const;
 
     /// Contains the root scene node.
     Ogre::SceneNode* m_transNode {nullptr};
@@ -569,10 +695,13 @@ private:
     /// Auto-delete the event filter in the end
     std::unique_ptr<DeleteContextualMenuWhenFocusOut> m_eventFilter = nullptr;
 
-    static constexpr std::string_view s_LANDMARKS_INOUT = "landmarks";
-    static constexpr std::string_view s_IMAGE_INPUT     = "image";
+    static constexpr std::string_view s_LANDMARKS_INOUT    = "landmarks";
+    static constexpr std::string_view s_IMAGE_SERIES_INOUT = "imageSeries";
+    static constexpr std::string_view s_IMAGE_INPUT        = "image";
 
     sight::data::ptr<sight::data::Landmarks, sight::data::Access::inout> m_landmarks {this, s_LANDMARKS_INOUT, true};
+    sight::data::ptr<sight::data::ImageSeries, sight::data::Access::inout> m_imageSeries
+    {this, s_IMAGE_SERIES_INOUT, true};
     sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT, true, true};
 };
 

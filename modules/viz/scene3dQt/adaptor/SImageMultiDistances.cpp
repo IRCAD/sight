@@ -26,11 +26,15 @@
 
 #include "core/runtime/path.hpp"
 
+#include "data/FiducialsSeries.hpp"
+
 #include <core/com/Slots.hxx>
+#include <core/tools/UUID.hpp>
 
 #include <data/Boolean.hpp>
 #include <data/helper/MedicalImage.hpp>
 #include <data/Image.hpp>
+#include <data/ImageSeries.hpp>
 #include <data/Material.hpp>
 #include <data/PointList.hpp>
 
@@ -60,6 +64,73 @@ static const core::com::Slots::SlotKeyType s_ACTIVATE_DISTANCE_TOOL_SLOT        
 static const core::com::Slots::SlotKeyType s_UPDATE_MODIFIED_DISTANCE_SLOT      = "updateModifiedDistance";
 
 static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = sight::viz::scene3d::rq::s_SURFACE_ID;
+
+//------------------------------------------------------------------------------
+
+namespace
+{
+
+//------------------------------------------------------------------------------
+
+data::PointList::sptr toPointList(const data::FiducialsSeries::Fiducial& fiducial)
+{
+    SIGHT_ASSERT(
+        "Only RULER-shaped fiducials are supported",
+        fiducial.shapeType == data::FiducialsSeries::Shape::RULER
+    );
+    data::PointList::sptr res;
+    if(fiducial.fiducialUID.has_value())
+    {
+        core::tools::Object::sptr o = core::tools::fwID::getObject(*fiducial.fiducialUID);
+        if(o == nullptr)
+        {
+            res = data::PointList::New();
+            res->setID(*fiducial.fiducialUID);
+        }
+        else
+        {
+            res = data::PointList::dynamicCast(o);
+            SIGHT_ASSERT(
+                "The ID " << *fiducial.fiducialUID << " is already set to an object which isn't a point list.",
+                res
+            );
+        }
+    }
+    else
+    {
+        // The fiducial doesn't have a meaningful way to uniquely identify it, ignore it.
+        return nullptr;
+    }
+
+    if(!fiducial.contourData.empty())
+    {
+        SIGHT_ASSERT("Contour Data should have two elements", fiducial.contourData.size() == 2);
+        res->clear();
+        res->pushBack(
+            data::Point::New(
+                fiducial.contourData[0].x,
+                fiducial.contourData[0].y,
+                fiducial.contourData[0].z
+            )
+        );
+        res->pushBack(
+            data::Point::New(
+                fiducial.contourData[1].x,
+                fiducial.contourData[1].y,
+                fiducial.contourData[1].z
+            )
+        );
+    }
+    else
+    {
+        // Position with Graphic Coordinates Data Sequence isn't supported
+        return nullptr;
+    }
+
+    return res;
+}
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -328,10 +399,45 @@ void SImageMultiDistances::removeAll()
     }
 
     const auto image                    = m_image.lock();
-    data::Vector::sptr distanceList     = data::helper::MedicalImage::getDistances(*image);
     data::Vector::sptr distanceListCopy = data::Vector::New();
-    distanceListCopy->shallowCopy(distanceList);
-    distanceList->clear();
+    if(auto imageSeries = data::ImageSeries::dynamicCast(image.get_shared()))
+    {
+        std::vector<data::FiducialsSeries::FiducialSet> fiducialSets = imageSeries->getFiducials()->getFiducialSets();
+        for(auto itFiducialSet = fiducialSets.begin() ; itFiducialSet != fiducialSets.end() ; )
+        {
+            for(auto itFiducial = itFiducialSet->fiducialSequence.begin() ;
+                itFiducial != itFiducialSet->fiducialSequence.end() ; )
+            {
+                if(itFiducial->shapeType == data::FiducialsSeries::Shape::RULER)
+                {
+                    distanceListCopy->push_back(toPointList(*itFiducial));
+                    itFiducial = itFiducialSet->fiducialSequence.erase(itFiducial);
+                }
+                else
+                {
+                    ++itFiducial;
+                }
+            }
+
+            if(itFiducialSet->fiducialSequence.empty())
+            {
+                itFiducialSet = fiducialSets.erase(itFiducialSet);
+            }
+            else
+            {
+                ++itFiducialSet;
+            }
+        }
+
+        imageSeries->getFiducials()->setFiducialSets(fiducialSets);
+    }
+    else
+    {
+        data::Vector::sptr distanceList = data::helper::MedicalImage::getDistances(*image);
+        distanceListCopy->shallowCopy(distanceList);
+        distanceList->clear();
+    }
+
     for(const data::Object::sptr& element : *distanceListCopy)
     {
         auto pl = data::PointList::dynamicCast(element);
@@ -348,7 +454,28 @@ void SImageMultiDistances::removeDistances()
 
     const auto image = m_image.lock();
 
-    const data::Vector::csptr distanceField = data::helper::MedicalImage::getDistances(*image);
+    data::Vector::sptr distanceField;
+    if(auto imageSeries = data::ImageSeries::dynamicCast(image.get_shared()))
+    {
+        distanceField = data::Vector::New();
+        for(const data::FiducialsSeries::FiducialSet& fiducialSet : imageSeries->getFiducials()->getFiducialSets())
+        {
+            for(const data::FiducialsSeries::Fiducial& fiducial : fiducialSet.fiducialSequence)
+            {
+                if(fiducial.shapeType == data::FiducialsSeries::Shape::RULER)
+                {
+                    if(data::PointList::sptr pl = toPointList(fiducial))
+                    {
+                        distanceField->push_back(pl);
+                    }
+                }
+            }
+        }
+    }
+    else
+    {
+        distanceField = data::helper::MedicalImage::getDistances(*image);
+    }
 
     std::vector<core::tools::fwID::IDType> foundId;
     if(distanceField)
@@ -743,16 +870,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, Modifier /*_m
             if(length == 0)
             {
                 destroyDistance(pl->getID());
-                {
-                    const auto image        = m_image.lock();
-                    const auto vectDistance = data::helper::MedicalImage::getDistances(*image);
-                    const auto newVec       = std::remove(vectDistance->begin(), vectDistance->end(), pl);
-                    vectDistance->erase(newVec, vectDistance->end());
-                    const auto sig = image->signal<data::Image::DistanceRemovedSignalType>(
-                        data::Image::s_DISTANCE_REMOVED_SIG
-                    );
-                    sig->asyncEmit(pl);
-                }
+                removeDistance(pl);
                 setCursor(Qt::CrossCursor);
                 m_pickedData = {nullptr, true};
                 m_points.clear();
@@ -816,16 +934,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, Modifier /*_m
                         {
                             m_binButton->hide();
                             destroyDistance(pl->getID());
-                            {
-                                const auto image        = m_image.lock();
-                                const auto vectDistance = data::helper::MedicalImage::getDistances(*image);
-                                const auto newVec       = std::remove(vectDistance->begin(), vectDistance->end(), pl);
-                                vectDistance->erase(newVec, vectDistance->end());
-                                const auto sig = image->signal<data::Image::DistanceRemovedSignalType>(
-                                    data::Image::s_DISTANCE_REMOVED_SIG
-                                );
-                                sig->asyncEmit(pl);
-                            }
+                            removeDistance(pl);
                             setCursor(Qt::CrossCursor);
                             m_pickedData = {nullptr, true};
                             m_points.clear();
@@ -851,16 +960,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, Modifier /*_m
             m_creationMode = false;
             const auto pl = m_pickedData.m_data->m_pointList;
             destroyDistance(pl->getID());
-            {
-                const auto image        = m_image.lock();
-                const auto vectDistance = data::helper::MedicalImage::getDistances(*image);
-                const auto newVec       = std::remove(vectDistance->begin(), vectDistance->end(), pl);
-                vectDistance->erase(newVec, vectDistance->end());
-                const auto sig = image->signal<data::Image::DistanceRemovedSignalType>(
-                    data::Image::s_DISTANCE_REMOVED_SIG
-                );
-                sig->asyncEmit(pl);
-            }
+            removeDistance(pl);
             setCursor(Qt::CrossCursor);
             m_pickedData = {nullptr, true};
             m_points.clear();
@@ -1016,18 +1116,54 @@ void SImageMultiDistances::updateImageDistanceField(data::PointList::sptr _pl)
     const auto image = m_image.lock();
     if(data::helper::MedicalImage::checkImageValidity(image.get_shared()))
     {
-        data::Vector::sptr distancesField = data::helper::MedicalImage::getDistances(*image);
-
-        if(!distancesField)
+        if(auto imageSeries = data::ImageSeries::dynamicCast(image.get_shared()))
         {
-            distancesField = data::Vector::New();
-            distancesField->push_back(_pl);
-            data::helper::MedicalImage::setDistances(*image, distancesField);
+            data::FiducialsSeries::FiducialSet fiducialSet;
+            std::string frameOfReferenceUID = imageSeries->getStringValue(
+                data::dicom::attribute::Keyword::FrameOfReferenceUID
+            );
+            if(frameOfReferenceUID.empty())
+            {
+                // Generate a frame of reference UID if the image doesn't have one. It is supposed to be mandatory
+                // according
+                // to the DICOM standard anyway.
+                frameOfReferenceUID = core::tools::UUID::generateUUID();
+                imageSeries->setStringValue(data::dicom::attribute::Keyword::FrameOfReferenceUID, frameOfReferenceUID);
+            }
+
+            fiducialSet.frameOfReferenceUID = frameOfReferenceUID;
+            data::FiducialsSeries::Fiducial fiducial;
+            fiducial.shapeType           = data::FiducialsSeries::Shape::RULER;
+            fiducial.fiducialIdentifier  = _pl->getID();
+            fiducial.fiducialDescription = "Distance";
+            fiducial.fiducialUID         = _pl->getID();
+            std::array<double, 3> firstPoint  = _pl->getPoints().front()->getCoord();
+            std::array<double, 3> secondPoint = _pl->getPoints().back()->getCoord();
+            fiducial.contourData = {
+                {.x = firstPoint[0], .y = firstPoint[1], .z = firstPoint[2]},
+                {.x = secondPoint[0], .y = firstPoint[1], .z = firstPoint[2]}
+            };
+            // If both ContourData and GraphicCoordinatesDataSequence are set, they must be synchronized, but I'm too
+            // lazy to do that, so I simply get rid of GraphicCoordinatesDataSequence.
+            fiducial.graphicCoordinatesDataSequence = std::nullopt;
+            fiducialSet.fiducialSequence.push_back(fiducial);
+            imageSeries->getFiducials()->appendFiducialSet(fiducialSet);
         }
         else
         {
-            distancesField->push_back(_pl);
-            data::helper::MedicalImage::setDistances(*image, distancesField);
+            data::Vector::sptr distancesField = data::helper::MedicalImage::getDistances(*image);
+
+            if(!distancesField)
+            {
+                distancesField = data::Vector::New();
+                distancesField->push_back(_pl);
+                data::helper::MedicalImage::setDistances(*image, distancesField);
+            }
+            else
+            {
+                distancesField->push_back(_pl);
+                data::helper::MedicalImage::setDistances(*image, distancesField);
+            }
         }
     }
 }
@@ -1068,6 +1204,32 @@ void SImageMultiDistances::updateDistance(
     const data::mt::locked_ptr lock(_data->m_pointList);
     _data->m_pointList->getPoints().front()->setCoord({_begin[0], _begin[1], _begin[2]});
     _data->m_pointList->getPoints().back()->setCoord({_end[0], _end[1], _end[2]});
+
+    {
+        const auto image = m_image.lock();
+        if(auto imageSeries = data::ImageSeries::dynamicCast(image.get_shared()))
+        {
+            // With fields, the modified point list is a shared pointer to the distance field, so there is nothing more
+            // to do; however this isn't enough for fiducials, which must be updated manually.
+            std::vector<data::FiducialsSeries::FiducialSet> fiducialSets =
+                imageSeries->getFiducials()->getFiducialSets();
+            for(data::FiducialsSeries::FiducialSet& fiducialSet : fiducialSets)
+            {
+                for(data::FiducialsSeries::Fiducial& fiducial : fiducialSet.fiducialSequence)
+                {
+                    if(fiducial.shapeType == data::FiducialsSeries::Shape::RULER
+                       && fiducial.fiducialUID == _data->m_pointList->getID())
+                    {
+                        fiducial.contourData.clear();
+                        fiducial.contourData.push_back({.x = _begin.x, .y = _begin.y, .z = _begin.z});
+                        fiducial.contourData.push_back({.x = _end.x, .y = _end.y, .z = _end.z});
+                    }
+                }
+            }
+
+            imageSeries->getFiducials()->setFiducialSets(fiducialSets);
+        }
+    }
 
     const auto& sigModified = _data->m_pointList->signal<data::PointList::ModifiedSignalType>(
         data::PointList::s_MODIFIED_SIG
@@ -1178,6 +1340,55 @@ void SImageMultiDistances::setCursor(QCursor cursor)
     auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
     auto* parentWidget = qtInteractor->getQtWidget();
     parentWidget->setCursor(cursor);
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::removeDistance(data::PointList::sptr _pl)
+{
+    const auto image = m_image.lock();
+    if(auto imageSeries = data::ImageSeries::dynamicCast(image.get_shared()))
+    {
+        std::vector<data::FiducialsSeries::FiducialSet> fiducialSets = imageSeries->getFiducials()->getFiducialSets();
+        for(auto itFiducialSet = fiducialSets.begin() ; itFiducialSet != fiducialSets.end() ; )
+        {
+            for(auto itFiducial = itFiducialSet->fiducialSequence.begin() ;
+                itFiducial != itFiducialSet->fiducialSequence.end() ; )
+            {
+                if(itFiducial->shapeType == data::FiducialsSeries::Shape::RULER
+                   && itFiducial->fiducialUID == _pl->getID())
+                {
+                    itFiducial = itFiducialSet->fiducialSequence.erase(itFiducial);
+                }
+                else
+                {
+                    ++itFiducial;
+                }
+            }
+
+            if(itFiducialSet->fiducialSequence.empty())
+            {
+                itFiducialSet = fiducialSets.erase(itFiducialSet);
+            }
+            else
+            {
+                ++itFiducialSet;
+            }
+        }
+
+        imageSeries->getFiducials()->setFiducialSets(fiducialSets);
+    }
+    else
+    {
+        const auto vectDistance = data::helper::MedicalImage::getDistances(*image);
+        const auto newVec       = std::remove(vectDistance->begin(), vectDistance->end(), _pl);
+        vectDistance->erase(newVec, vectDistance->end());
+    }
+
+    const auto sig = image->signal<data::Image::DistanceRemovedSignalType>(
+        data::Image::s_DISTANCE_REMOVED_SIG
+    );
+    sig->asyncEmit(_pl);
 }
 
 SImageMultiDistances::DeleteBinButtonWhenFocusOut::DeleteBinButtonWhenFocusOut(

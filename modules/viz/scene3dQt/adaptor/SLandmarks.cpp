@@ -24,10 +24,16 @@
 
 #include "core/thread/Worker.hpp"
 
+#include "data/dicom/Attribute.hpp"
+#include "data/FiducialsSeries.hpp"
+#include "data/ImageSeries.hpp"
+#include "data/Landmarks.hpp"
+
 #include "viz/scene3d/IMaterialAdaptor.hpp"
 
 #include <core/com/Slots.hxx>
 #include <core/runtime/path.hpp>
+#include <core/tools/UUID.hpp>
 
 #include <ui/base/Cursor.hpp>
 
@@ -44,9 +50,222 @@ namespace sight::module::viz::scene3dQt::adaptor
 static constexpr Ogre::Real s_SELECTED_SCALE = 1.35F;
 static constexpr Ogre::Real s_DEFAULT_SCALE  = 1.F;
 
+namespace
+{
+
 //------------------------------------------------------------------------------
 
-static std::array<float, 3> getCurrentSlicePos(const data::Image& image)
+[[nodiscard]] std::optional<data::FiducialsSeries::FiducialSet> getFiducialSet(
+    const std::string& _groupName,
+    data::FiducialsSeries::csptr fiducialsSeries
+)
+{
+    SIGHT_ASSERT("Fiducials series mustn't be null", fiducialsSeries != nullptr);
+    std::optional<std::pair<data::FiducialsSeries::FiducialSet, std::size_t> > res =
+        fiducialsSeries->getFiducialSetAndIndex(_groupName);
+    return res.has_value() ? std::optional(res->first) : std::optional<data::FiducialsSeries::FiducialSet>();
+}
+
+//------------------------------------------------------------------------------
+
+[[nodiscard]] std::vector<data::FiducialsSeries::Fiducial*> getPointFiducialsPtr(
+    data::FiducialsSeries::FiducialSet& fiducialSet
+)
+{
+    std::vector<data::FiducialsSeries::Fiducial*> pointFiducials;
+    std::ranges::for_each(
+        fiducialSet.fiducialSequence,
+        [&pointFiducials](data::FiducialsSeries::Fiducial& fiducial)
+            {
+                if(fiducial.shapeType == data::FiducialsSeries::Shape::POINT)
+                {
+                    pointFiducials.push_back(&fiducial);
+                }
+            });
+    return pointFiducials;
+}
+
+//------------------------------------------------------------------------------
+
+[[nodiscard]] std::vector<std::string> getGroupNames(const LandmarksOrImageSeriesConstLock& lock)
+{
+    if(lock.landmarks != nullptr)
+    {
+        return lock.landmarks->getGroupNames();
+    }
+
+    if(lock.imageSeries != nullptr)
+    {
+        return lock.imageSeries->getFiducials()->getPointFiducialsGroupNames();
+    }
+
+    SIGHT_ASSERT("Either 'landmarks' or 'fiducialsSeries' must be configured as inout", false);
+    return {};
+}
+
+//------------------------------------------------------------------------------
+
+[[nodiscard]] std::optional<std::size_t> getNumberOfPointsInGroup(
+    const std::string& groupName,
+    const LandmarksOrImageSeriesConstLock& lock
+)
+{
+    if(lock.landmarks != nullptr)
+    {
+        return lock.landmarks->getGroup(groupName).m_points.size();
+    }
+
+    if(lock.imageSeries != nullptr)
+    {
+        return lock.imageSeries->getFiducials()->getNumberOfPointsInGroup(groupName);
+    }
+
+    SIGHT_ASSERT("Either 'landmarks' or 'fiducialsSeries' must be configured as inout", false);
+    return {};
+}
+
+//------------------------------------------------------------------------------
+
+void setPoint(
+    data::FiducialsSeries::FiducialSet& fiducialSet,
+    data::FiducialsSeries::Fiducial& fiducial,
+    const data::Landmarks::PointType& point,
+    data::ImageSeries::sptr imageSeries
+)
+{
+    SIGHT_ASSERT("Only point fiducials are supported", fiducial.shapeType == data::FiducialsSeries::Shape::POINT);
+    if(!fiducialSet.frameOfReferenceUID.has_value())
+    {
+        std::string frameOfReferenceUID = imageSeries->getStringValue(
+            data::dicom::attribute::Keyword::FrameOfReferenceUID
+        );
+        if(frameOfReferenceUID.empty())
+        {
+            // Generate a frame of reference UID if the image doesn't have one. It is supposed to be mandatory according
+            // to the DICOM standard anyway.
+            frameOfReferenceUID = core::tools::UUID::generateUUID();
+            imageSeries->setStringValue(data::dicom::attribute::Keyword::FrameOfReferenceUID, frameOfReferenceUID);
+        }
+
+        fiducialSet.frameOfReferenceUID = frameOfReferenceUID;
+    }
+
+    fiducial.contourData = {data::FiducialsSeries::Point3 {.x = point[0], .y = point[1], .z = point[2]}};
+    // If both ContourData and GraphicCoordinatesDataSequence are set, they must be synchronized, but I'm too lazy
+    // to do that, so I simply get rid of GraphicCoordinatesDataSequence.
+    fiducial.graphicCoordinatesDataSequence = std::nullopt;
+}
+
+//------------------------------------------------------------------------------
+
+[[nodiscard]] std::optional<std::array<double, 3> > getPoint(
+    data::FiducialsSeries::Fiducial fiducial,
+    data::FiducialsSeries::FiducialSet fiducialSet
+)
+{
+    if(fiducialSet.frameOfReferenceUID.has_value() && !fiducial.contourData.empty())
+    {
+        data::FiducialsSeries::Point3 point = fiducial.contourData[0];
+        return {{point.x, point.y, point.z}};
+    }
+
+    // Position with Graphic Coordinates Data Sequence isn't supported
+    return std::nullopt;
+}
+
+//------------------------------------------------------------------------------
+
+[[nodiscard]] std::optional<std::array<double, 3> > getPoint(
+    const std::string& _groupName,
+    std::size_t _index,
+    data::FiducialsSeries::csptr fiducialsSeries
+)
+{
+    std::optional<data::FiducialsSeries::FiducialSet> fiducialSet = getFiducialSet(_groupName, fiducialsSeries);
+    if(!fiducialSet.has_value())
+    {
+        return std::nullopt;
+    }
+
+    std::vector<data::FiducialsSeries::Fiducial> pointFiducials =
+        data::FiducialsSeries::getPointFiducials(*fiducialSet);
+    if(pointFiducials.size() <= _index)
+    {
+        return std::nullopt;
+    }
+
+    return getPoint(pointFiducials[_index], *fiducialSet);
+}
+
+//------------------------------------------------------------------------------
+
+[[nodiscard]] std::optional<std::array<double, 3> > getPoint(
+    const std::string& _groupName,
+    std::size_t _index,
+    const LandmarksOrImageSeriesConstLock& lock
+)
+{
+    if(lock.landmarks != nullptr)
+    {
+        return lock.landmarks->getPoint(_groupName, _index);
+    }
+
+    if(lock.imageSeries != nullptr)
+    {
+        return getPoint(_groupName, _index, lock.imageSeries->getFiducials());
+    }
+
+    SIGHT_ASSERT("Either 'landmarks' or 'imageSeries' must be configured as inout", false);
+    return {};
+}
+
+//------------------------------------------------------------------------------
+
+[[nodiscard]] std::optional<data::Landmarks::LandmarksGroup> getGroup(
+    const std::string& _groupName,
+    const LandmarksOrImageSeriesConstPtr& lock
+)
+{
+    if(lock.landmarks != nullptr)
+    {
+        if(!lock.landmarks->hasGroup(_groupName))
+        {
+            return std::nullopt;
+        }
+
+        return lock.landmarks->getGroup(_groupName);
+    }
+
+    if(lock.imageSeries != nullptr)
+    {
+        return lock.imageSeries->getFiducials()->getGroup(_groupName);
+    }
+
+    SIGHT_ASSERT("Either 'landmarks' or 'imageSeries' must be configured as inout", false);
+    return {};
+}
+
+//------------------------------------------------------------------------------
+
+[[nodiscard]] bool hasGroup(const std::string& _groupName, const LandmarksOrImageSeriesConstLock& lock)
+{
+    if(lock.landmarks != nullptr)
+    {
+        return lock.landmarks->hasGroup(_groupName);
+    }
+
+    if(lock.imageSeries != nullptr)
+    {
+        return getFiducialSet(_groupName, lock.imageSeries->getFiducials()).has_value();
+    }
+
+    SIGHT_ASSERT("Either 'landmarks' or 'imageSeries' must be configured as inout", false);
+    return {};
+}
+
+//------------------------------------------------------------------------------
+
+std::array<float, 3> getCurrentSlicePos(const data::Image& image)
 {
     namespace Helper = sight::data::helper::MedicalImage;
 
@@ -77,6 +296,8 @@ static std::array<float, 3> getCurrentSlicePos(const data::Image& image)
         + static_cast<float>(imgOrigin[2])
     };
 }
+
+} // namespace
 
 //------------------------------------------------------------------------------
 
@@ -236,6 +457,15 @@ void SLandmarks::configuring()
         "Renaming labels is allowed yet the labels are disabled, this is forbidden.",
         m_enableLabels || !m_renamingAllowed
     );
+
+    SIGHT_ASSERT(
+        "Only one of 'landmarks' or 'imageSeries' must be present as inout",
+        (m_landmarks.const_lock() != nullptr) + (m_imageSeries.const_lock() != nullptr) == 1
+    );
+    SIGHT_ASSERT(
+        "Either 'image' or 'imageSeries' must be present as parameter",
+        (m_image.const_lock() != nullptr) + (m_imageSeries.const_lock() != nullptr) <= 1
+    );
 }
 
 //-----------------------------------------------------------------------------
@@ -336,6 +566,11 @@ void SLandmarks::starting()
     m_contextualMenu->setLayout(layout);
     m_contextualMenu->adjustSize();
     m_contextualMenu->raise();
+
+    if(auto imageSeries = m_imageSeries.lock())
+    {
+        imageSeries->getFiducials()->setGroupNamesForPointFiducials();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -356,8 +591,23 @@ service::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
     connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_INSERTED_SIG, Slots::INSERT_POINT);
     connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_SELECTED_SIG, Slots::SELECT_POINT);
     connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_DESELECTED_SIG, Slots::DESELECT_POINT);
+
+    connections.push(s_IMAGE_SERIES_INOUT, data::ImageSeries::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::GROUP_REMOVED, Slots::REMOVE_GROUP);
+    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::GROUP_MODIFIED, Slots::MODIFY_GROUP);
+    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::GROUP_RENAMED, Slots::RENAME_GROUP);
+    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_MODIFIED, Slots::MODIFY_POINT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_ADDED, Slots::ADD_POINT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_REMOVED, Slots::REMOVE_POINT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_INSERTED, Slots::INSERT_POINT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_SELECTED, Slots::SELECT_POINT);
+    connections.push(s_IMAGE_SERIES_INOUT, data::IHasFiducials::signals::POINT_DESELECTED, Slots::DESELECT_POINT);
+
     connections.push(s_IMAGE_INPUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, Slots::SLICE_TYPE);
     connections.push(s_IMAGE_INPUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, Slots::SLICE_INDEX);
+
+    connections.push(s_IMAGE_SERIES_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, Slots::SLICE_TYPE);
+    connections.push(s_IMAGE_SERIES_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, Slots::SLICE_INDEX);
 
     return connections;
 }
@@ -369,15 +619,15 @@ void SLandmarks::updating()
     // Delete all groups.
     removeAllManualObjects();
 
-    const auto& landmarks = m_landmarks.const_lock();
+    LandmarksOrImageSeriesConstLock lock = constLockLandmarks();
 
     // Create all point.
-    for(const auto& groupName : landmarks->getGroupNames())
+    for(const auto& groupName : getGroupNames(lock))
     {
-        const auto& group = landmarks->getGroup(groupName);
-        for(std::size_t index = 0 ; index < group.m_points.size() ; ++index)
+        std::optional<std::size_t> nbOfPointsInGroup = getNumberOfPointsInGroup(groupName, lock);
+        for(std::size_t index = 0 ; index < nbOfPointsInGroup ; ++index)
         {
-            this->insertMyPoint(groupName, index, landmarks.get_shared());
+            this->createManualObject(groupName, index, lock);
         }
     }
 }
@@ -444,11 +694,66 @@ void SLandmarks::removeAll()
 {
     m_contextualMenu->hide();
 
-    auto landmarks = m_landmarks.lock();
-    for(const std::string& grp : landmarks->getGroupNames())
+    LandmarksOrImageSeriesLock lfLock = lockLandmarks();
+    if(lfLock.landmarks != nullptr)
     {
-        landmarks->removeGroup(grp);
-        landmarks->signal<data::Landmarks::GroupRemovedSignalType>(data::Landmarks::s_GROUP_REMOVED_SIG)->asyncEmit(grp);
+        for(const std::string& grp : lfLock.landmarks->getGroupNames())
+        {
+            lfLock.landmarks->removeGroup(grp);
+            lfLock.landmarks->signal<data::Landmarks::GroupRemovedSignalType>(data::Landmarks::s_GROUP_REMOVED_SIG)->
+            asyncEmit(grp);
+        }
+    }
+    else if(lfLock.imageSeries != nullptr)
+    {
+        std::vector<std::string> deletedGroupNames;
+        std::vector<data::FiducialsSeries::FiducialSet> fiducialSets =
+            lfLock.imageSeries->getFiducials()->getFiducialSets();
+        for(auto itFiducialSet = fiducialSets.begin() ; itFiducialSet != fiducialSets.end() ; )
+        {
+            if(!itFiducialSet->groupName.has_value())
+            {
+                ++itFiducialSet;
+                continue;
+            }
+
+            bool hasDeleted = false;
+            for(auto itFiducial = itFiducialSet->fiducialSequence.begin() ;
+                itFiducial != itFiducialSet->fiducialSequence.end() ; )
+            {
+                if(itFiducial->shapeType == data::FiducialsSeries::Shape::POINT)
+                {
+                    itFiducial = itFiducialSet->fiducialSequence.erase(itFiducial);
+                    hasDeleted = true;
+                }
+                else
+                {
+                    ++itFiducial;
+                }
+            }
+
+            if(hasDeleted)
+            {
+                deletedGroupNames.push_back(*itFiducialSet->groupName);
+            }
+
+            if(itFiducialSet->fiducialSequence.empty())
+            {
+                itFiducialSet = fiducialSets.erase(itFiducialSet);
+            }
+            else
+            {
+                ++itFiducialSet;
+            }
+        }
+
+        lfLock.imageSeries->getFiducials()->setFiducialSets(fiducialSets);
+        for(const std::string& group : deletedGroupNames)
+        {
+            lfLock.imageSeries->signal<data::IHasFiducials::signals::GroupRemoved>(
+                data::IHasFiducials::signals::GROUP_REMOVED
+            )->asyncEmit(group);
+        }
     }
 }
 
@@ -509,17 +814,18 @@ void SLandmarks::modifyGroup(std::string _groupName)
     removeGroup(_groupName);
 
     // Get landmarks.
-    const auto& landmarks = m_landmarks.const_lock();
+    LandmarksOrImageSeriesConstLock lock = constLockLandmarks();
 
-    // Retrieve group.
-    const auto& group = landmarks->getGroup(_groupName);
-
-    std::size_t groupSize = group.m_points.size();
+    std::optional<std::size_t> groupSize = getNumberOfPointsInGroup(_groupName, lock);
+    if(!groupSize.has_value())
+    {
+        return;
+    }
 
     // Re-create the group.
     for(std::size_t index = 0 ; index < groupSize ; ++index)
     {
-        this->insertMyPoint(_groupName, index, landmarks.get_shared());
+        createManualObject(_groupName, index, lock);
     }
 
     // Re-run selected landmark threads
@@ -562,8 +868,14 @@ void SLandmarks::setCurrentGroup(std::string _newCurrentGroupName)
 
 void SLandmarks::modifyPoint(std::string _groupName, std::size_t _index)
 {
-    const auto& landmarks = m_landmarks.const_lock();
-    const auto& point     = landmarks->getPoint(_groupName, _index);
+    std::optional<std::array<double, 3> > maybePoint = getPoint(_groupName, _index, constLockLandmarks());
+
+    if(!maybePoint.has_value())
+    {
+        return;
+    }
+
+    std::array<double, 3> point = *maybePoint;
 
     for(auto& m_manualObject : m_manualObjects)
     {
@@ -574,7 +886,7 @@ void SLandmarks::modifyPoint(std::string _groupName, std::size_t _index)
                                          static_cast<float>(point[1]),
                                          static_cast<float>(point[2]));
             m_manualObject->m_node->setPosition(position);
-            updateLandmarkVisibility(*m_manualObject, *landmarks);
+            updateLandmarkVisibility(*m_manualObject, getGroup(m_manualObject->m_groupName, constLockLandmarks()));
             break;
         }
     }
@@ -590,20 +902,18 @@ void SLandmarks::addPoint(std::string _groupName)
     getRenderService()->makeCurrent();
 
     // Get landmarks.
-    const auto landmarks = m_landmarks.const_lock();
-
-    // Retrieve group.
-    const auto& group = landmarks->getGroup(_groupName);
-    SIGHT_ASSERT(
-        "They must have at least one point in the group `" << _groupName << "`",
-        !group.m_points.empty()
-    );
+    LandmarksOrImageSeriesConstLock lock = constLockLandmarks();
 
     // Get the last index.
-    std::size_t index = group.m_points.size() - 1;
+    std::optional<std::size_t> numberOfPoints = getNumberOfPointsInGroup(_groupName, lock);
+
+    if(!numberOfPoints.has_value() || numberOfPoints == 0)
+    {
+        return;
+    }
 
     // Add the new point.
-    this->insertMyPoint(_groupName, index, landmarks.get_shared());
+    this->createManualObject(_groupName, *numberOfPoints - 1, lock);
 }
 
 //------------------------------------------------------------------------------
@@ -662,38 +972,35 @@ void SLandmarks::insertPoint(std::string _groupName, std::size_t _index)
     // Make the context as current
     getRenderService()->makeCurrent();
 
-    const auto landmarks = m_landmarks.const_lock();
-    insertMyPoint(_groupName, _index, landmarks.get_shared());
+    createManualObject(_groupName, _index, constLockLandmarks());
 }
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<SLandmarks::Landmark> SLandmarks::insertMyPoint(
-    std::string _groupName,
+std::shared_ptr<SLandmarks::Landmark> SLandmarks::createManualObject(
+    const std::string& _groupName,
     std::size_t _index,
-    const data::Landmarks::csptr& _landmarks
+    data::Landmarks::LandmarksGroup _groupData,
+    data::Landmarks::PointType _pointPos
 )
 {
-    // Retrieve group.
-    const data::Landmarks::LandmarksGroup& group = _landmarks->getGroup(_groupName);
-
     // Create the point name.
     const std::string pointName = _groupName + "_" + std::to_string(_index);
 
     // Create the manual object.
     const Ogre::ColourValue color =
-        Ogre::ColourValue(group.m_color[0], group.m_color[1], group.m_color[2], group.m_color[3]);
+        Ogre::ColourValue(_groupData.m_color[0], _groupData.m_color[1], _groupData.m_color[2], _groupData.m_color[3]);
 
     Ogre::SceneManager* sceneMgr = this->getSceneManager();
     Ogre::ManualObject* object   = sceneMgr->createManualObject(this->getID() + "_" + pointName + "_object");
-    switch(group.m_shape)
+    switch(_groupData.m_shape)
     {
         case data::Landmarks::Shape::SPHERE:
             sight::viz::scene3d::helper::ManualObject::createSphere(
                 object,
                 m_materialAdaptor->getMaterialName(),
                 color,
-                group.m_size * 0.5F
+                _groupData.m_size * 0.5F
             );
             break;
 
@@ -702,7 +1009,7 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::insertMyPoint(
                 object,
                 m_materialAdaptor->getMaterialName(),
                 color,
-                group.m_size
+                _groupData.m_size
             );
             break;
     }
@@ -712,8 +1019,7 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::insertMyPoint(
     Ogre::SceneNode* node = m_transNode->createChildSceneNode(this->getID() + "_" + pointName + "_node");
 
     // Set the point to the right position.
-    const data::Landmarks::PointType& point = _landmarks->getPoint(_groupName, _index);
-    node->setPosition(Ogre::Real(point[0]), Ogre::Real(point[1]), Ogre::Real(point[2]));
+    node->setPosition(Ogre::Real(_pointPos[0]), Ogre::Real(_pointPos[1]), Ogre::Real(_pointPos[2]));
 
     // Attach data.
     node->attachObject(object);
@@ -727,7 +1033,7 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::insertMyPoint(
         text->setFontSize(m_fontSize);
         text->setText(pointName);
         text->setTextColor(color);
-        text->setVisible(group.m_visibility && m_isVisible);
+        text->setVisible(_groupData.m_visibility && m_isVisible);
         text->setTextAlignment("center", "");
 
         // Attach data.
@@ -754,14 +1060,37 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::insertMyPoint(
                     newGroupName = newGroupName.substr(0, newGroupName.size() - (indexAsString.size() + 1));
                 }
 
-                std::string oldGroupName = landmark->m_groupName;
-                m_landmarks.lock()->renameGroup(oldGroupName, newGroupName);
-                renameGroup(oldGroupName, newGroupName);
-                auto signal =
-                    m_landmarks.lock()->signal<data::Landmarks::GroupRenamedSignalType>(
-                        data::Landmarks::s_GROUP_RENAMED_SIG
+                LandmarksOrImageSeriesLock lock = lockLandmarks();
+                std::string oldGroupName        = landmark->m_groupName;
+                if(lock.landmarks != nullptr)
+                {
+                    lock.landmarks->renameGroup(oldGroupName, newGroupName);
+                    renameGroup(oldGroupName, newGroupName);
+                    auto signal =
+                        lock.landmarks->signal<data::Landmarks::GroupRenamedSignalType>(
+                            data::Landmarks::s_GROUP_RENAMED_SIG
+                        );
+                    signal->asyncEmit(
+                        oldGroupName,
+                        newGroupName
                     );
-                signal->asyncEmit(oldGroupName, newGroupName);
+                }
+                else if(lock.imageSeries != nullptr)
+                {
+                    std::optional<std::pair<data::FiducialsSeries::FiducialSet, std::size_t> > fiducialSet =
+                        lock.imageSeries->getFiducials()->getFiducialSetAndIndex(oldGroupName);
+                    if(!fiducialSet.has_value())
+                    {
+                        SIGHT_WARN("Couldn't rename group '" << oldGroupName << "', it doesn't exist");
+                        return;
+                    }
+
+                    lock.imageSeries->getFiducials()->setGroupName(fiducialSet->second, newGroupName);
+                    renameGroup(oldGroupName, newGroupName);
+                    lock.imageSeries->signal<data::IHasFiducials::signals::GroupRenamed>(
+                        data::IHasFiducials::signals::GROUP_RENAMED
+                    )->asyncEmit(oldGroupName, newGroupName);
+                }
             });
         slotTextEdited->setWorker(core::thread::getDefaultWorker());
         newLandmark->m_label->signal(sight::viz::scene3d::IText::s_TEXT_EDITED_SIGNAL)->connect(slotTextEdited);
@@ -777,12 +1106,59 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::insertMyPoint(
         newLandmark->m_slots.push_back(slotEditingFinish);
     }
 
-    updateLandmarkVisibility(*m_manualObjects.back(), *_landmarks);
+    updateLandmarkVisibility(*m_manualObjects.back(), _groupData);
 
     // Request the rendering.
     this->requestRender();
 
     return newLandmark;
+}
+
+//------------------------------------------------------------------------------
+
+std::shared_ptr<SLandmarks::Landmark> SLandmarks::createManualObject(
+    const std::string& _groupName,
+    std::size_t _index,
+    data::Landmarks::csptr _landmarks
+)
+{
+    const data::Landmarks::LandmarksGroup& group = _landmarks->getGroup(_groupName);
+    return createManualObject(_groupName, _index, group, group.m_points[_index]);
+}
+
+//------------------------------------------------------------------------------
+
+std::shared_ptr<SLandmarks::Landmark> SLandmarks::createManualObject(
+    const std::string& _groupName,
+    std::size_t _index,
+    LandmarksOrImageSeriesConstPtr _lf
+)
+{
+    if(_lf.landmarks != nullptr)
+    {
+        return createManualObject(_groupName, _index, _lf.landmarks);
+    }
+
+    if(_lf.imageSeries != nullptr)
+    {
+        std::optional<data::Landmarks::LandmarksGroup> group = _lf.imageSeries->getFiducials()->getGroup(_groupName);
+        if(!group.has_value())
+        {
+            SIGHT_ASSERT("The group '" << _groupName << "' doesn't exist", false);
+            return nullptr;
+        }
+
+        if(group->m_points.size() <= _index)
+        {
+            SIGHT_ASSERT("The point of '" << _groupName << '_' << _index << "' doesn't exist", false);
+            return nullptr;
+        }
+
+        return createManualObject(_groupName, _index, *group, group->m_points[_index]);
+    }
+
+    SIGHT_ASSERT("Either 'landmarks' or 'fiducialsSeries' must be configured as inout", false);
+    return nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -918,12 +1294,20 @@ void SLandmarks::changeSliceIndex(int /*_axialIndex*/, int /*_frontalIndex*/, in
     // Make the context as current.
     this->getRenderService()->makeCurrent();
 
-    const auto imageLock = m_image.lock();
-
-    if(imageLock)
+    bool imageExists = false;
     {
-        this->getRenderService()->makeCurrent();
+        ImageOrImageSeriesConstLock lock = constLockImage();
 
+        if(lock.image || lock.imageSeries)
+        {
+            imageExists = true;
+
+            this->getRenderService()->makeCurrent();
+        }
+    }
+
+    if(imageExists)
+    {
         this->updateLandmarksVisibility();
 
         // Request the rendering.
@@ -935,21 +1319,17 @@ void SLandmarks::changeSliceIndex(int /*_axialIndex*/, int /*_frontalIndex*/, in
 
 void SLandmarks::removeLandmarks()
 {
-    auto landmarks = m_landmarks.lock();
-
-    if(!landmarks)
+    std::optional<std::int64_t> slice_index;
     {
-        // No need to continue if there is no landmarks
-        return;
+        ImageOrImageSeriesConstLock lock = constLockImage();
+        data::Image::csptr image         = lock.image ? lock.image.get_shared() : lock.imageSeries.get_shared();
+        SIGHT_THROW_IF("Data is null.", !image);
+
+        slice_index = sight::data::helper::MedicalImage::getSliceIndex(
+            *image,
+            m_orientation
+        );
     }
-
-    const auto& image = m_image.const_lock();
-    SIGHT_THROW_IF("Data is null.", !image);
-
-    const auto slice_index = sight::data::helper::MedicalImage::getSliceIndex(
-        *image,
-        m_orientation
-    );
 
     if(!slice_index)
     {
@@ -957,32 +1337,88 @@ void SLandmarks::removeLandmarks()
         return;
     }
 
+    LandmarksOrImageSeriesLock flLock = lockLandmarks();
+
+    if(flLock.landmarks == nullptr && flLock.imageSeries == nullptr)
+    {
+        // No need to continue if there is no landmarks
+        return;
+    }
+
     bool hasDeleted = false;
 
-    for(const auto& name : landmarks->getGroupNames())
+    if(flLock.landmarks != nullptr)
     {
-        auto& group = landmarks->getGroup(name);
-
-        for(auto it = group.m_points.begin() ; it < group.m_points.end() ; )
+        for(const auto& name : flLock.landmarks->getGroupNames())
         {
-            if(isLandmarkVisible(*it, group.m_size))
+            auto& group = flLock.landmarks->getGroup(name);
+
+            for(auto it = group.m_points.begin() ; it < group.m_points.end() ; )
             {
-                it         = group.m_points.erase(it);
-                hasDeleted = true;
+                if(isLandmarkVisible(*it, group.m_size))
+                {
+                    it         = group.m_points.erase(it);
+                    hasDeleted = true;
+                }
+                else
+                {
+                    ++it;
+                }
             }
-            else
+        }
+    }
+    else if(flLock.imageSeries != nullptr)
+    {
+        data::FiducialsSeries::sptr fiducialsSeries = flLock.imageSeries.get_shared()->getFiducials();
+        for(const std::string& name : fiducialsSeries->getPointFiducialsGroupNames())
+        {
+            std::optional<std::pair<data::FiducialsSeries::FiducialSet, std::size_t> > fiducialSet =
+                fiducialsSeries->getFiducialSetAndIndex(name);
+            if(!fiducialSet.has_value())
             {
-                ++it;
+                continue;
             }
+
+            std::optional<data::Landmarks::SizeType> size = fiducialSet->first.size;
+            if(!size.has_value())
+            {
+                size                    = m_currentSize;
+                fiducialSet->first.size = size;
+            }
+
+            for(auto it = fiducialSet->first.fiducialSequence.begin() ;
+                it != fiducialSet->first.fiducialSequence.end() ; )
+            {
+                std::optional<std::array<double, 3> > point = getPoint(*it, fiducialSet->first);
+                if(!point.has_value())
+                {
+                    continue;
+                }
+
+                if(isLandmarkVisible(*point, *size))
+                {
+                    it         = fiducialSet->first.fiducialSequence.erase(it);
+                    hasDeleted = true;
+                }
+            }
+
+            fiducialsSeries->setFiducialSet(fiducialSet->second, fiducialSet->first);
         }
     }
 
     if(hasDeleted)
     {
-        const auto& sig = landmarks->signal<sight::data::Landmarks::ModifiedSignalType>(
-            sight::data::Landmarks::s_MODIFIED_SIG
-        );
-        sig->asyncEmit();
+        data::Object::sptr object;
+        if(flLock.landmarks != nullptr)
+        {
+            object = flLock.landmarks.get_shared();
+        }
+        else if(flLock.imageSeries != nullptr)
+        {
+            object = flLock.imageSeries->getFiducials();
+        }
+
+        object->signal<sight::data::Object::ModifiedSignalType>(sight::data::Object::s_MODIFIED_SIG)->asyncEmit();
     }
 }
 
@@ -1122,44 +1558,112 @@ void SLandmarks::createAndPickLandmark(const sight::data::Landmarks::PointType& 
         return;
     }
 
-    auto landmarks = m_landmarks.lock();
+    data::Landmarks::LandmarksGroup group {{}, {}, {}, {}};
+    std::size_t index {};
 
-    // If the group does not exist, we create it.
-    if(!landmarks->hasGroup(m_currentGroup))
     {
-        landmarks->addGroup(m_currentGroup, m_currentColor, m_currentSize, m_currentShape);
-        const auto& sig = landmarks->signal<sight::data::Landmarks::GroupAddedSignalType>(
-            sight::data::Landmarks::s_GROUP_ADDED_SIG
-        );
+        LandmarksOrImageSeriesLock lfLock = lockLandmarks();
 
-        sig->asyncEmit(m_currentGroup);
+        if(lfLock.landmarks != nullptr)
+        {
+            // If the group does not exist, we create it.
+            if(!lfLock.landmarks->hasGroup(m_currentGroup))
+            {
+                lfLock.landmarks->addGroup(m_currentGroup, m_currentColor, m_currentSize, m_currentShape);
+                const auto& sig = lfLock.landmarks->signal<sight::data::Landmarks::GroupAddedSignalType>(
+                    sight::data::Landmarks::s_GROUP_ADDED_SIG
+                );
+
+                sig->asyncEmit(m_currentGroup);
+            }
+
+            lfLock.landmarks->addPoint(m_currentGroup, point);
+
+            // Get the last index.
+            group = lfLock.landmarks->getGroup(m_currentGroup);
+            index = group.m_points.size() - 1;
+
+            // Block the signal to avoid being called back.
+            const auto& sig = lfLock.landmarks->signal<sight::data::Landmarks::PointAddedSignalType>(
+                sight::data::Landmarks::s_POINT_ADDED_SIG
+            );
+
+            sight::core::com::Connection::Blocker blocker(sig->getConnection(slot(Slots::ADD_POINT)));
+            sig->asyncEmit(m_currentGroup);
+        }
+        else if(lfLock.imageSeries != nullptr)
+        {
+            std::optional<std::pair<data::FiducialsSeries::FiducialSet, std::size_t> > res =
+                lfLock.imageSeries->getFiducials()->getFiducialSetAndIndex(m_currentGroup);
+            data::FiducialsSeries::FiducialSet fiducialSet;
+            std::size_t indexOfGroup {};
+            // If the group does not exist, we create it.
+            if(!res.has_value())
+            {
+                fiducialSet.groupName = m_currentGroup;
+                fiducialSet.color     = m_currentColor;
+                fiducialSet.size      = m_currentSize;
+                switch(m_currentShape)
+                {
+                    case data::Landmarks::Shape::SPHERE:
+                        fiducialSet.shape = data::FiducialsSeries::PrivateShape::SPHERE;
+                        break;
+
+                    case data::Landmarks::Shape::CUBE:
+                        fiducialSet.shape = data::FiducialsSeries::PrivateShape::CUBE;
+                }
+
+                indexOfGroup = lfLock.imageSeries->getFiducials()->getFiducialSets().size();
+                lfLock.imageSeries->signal<data::IHasFiducials::signals::GroupAdded>(
+                    data::IHasFiducials::signals::GROUP_ADDED
+                )->asyncEmit(m_currentGroup);
+            }
+            else
+            {
+                std::tie(fiducialSet, indexOfGroup) = *res;
+            }
+
+            data::FiducialsSeries::Fiducial fiducial;
+            fiducial.shapeType = data::FiducialsSeries::Shape::POINT;
+            index              = data::FiducialsSeries::getPointFiducials(fiducialSet).size();
+            std::string fiducialName = m_currentGroup + '_' + std::to_string(index);
+            fiducial.fiducialDescription = fiducialName; // TODO: Add a more appropriate description?
+            fiducial.fiducialIdentifier  = fiducialName;
+            fiducial.fiducialUID         = core::tools::UUID::generateUUID();
+            setPoint(fiducialSet, fiducial, point, lfLock.imageSeries.get_shared());
+            fiducialSet.fiducialSequence.push_back(fiducial);
+            lfLock.imageSeries->getFiducials()->setFiducialSet(indexOfGroup, fiducialSet);
+
+            group = *getGroup(m_currentGroup, lfLock);
+
+            // Block the signal to avoid being called back.
+            const auto& sig =
+                lfLock.imageSeries->signal<data::IHasFiducials::signals::PointAdded>(
+                    data::IHasFiducials::signals::POINT_ADDED
+                );
+
+            sight::core::com::Connection::Blocker blocker(sig->getConnection(slot(Slots::ADD_POINT)));
+            sig->asyncEmit(m_currentGroup);
+        }
+        else
+        {
+            SIGHT_ASSERT("Either 'landmarks' or 'imageSeries' must be configured as inout", false);
+            return;
+        }
     }
 
-    landmarks->addPoint(m_currentGroup, point);
-
-    // Get the last index.
-    const auto& group = landmarks->getGroup(m_currentGroup);
-
     // Add the new point.
-    const auto& new_landmark = insertMyPoint(m_currentGroup, group.m_points.size() - 1, landmarks.get_shared());
+    std::shared_ptr<Landmark> newLandmark = createManualObject(m_currentGroup, index, group, point);
 
     if(pick)
     {
-        m_pickedData = new_landmark;
+        m_pickedData = newLandmark;
         m_pickedData->m_node->setScale(s_SELECTED_SCALE, s_SELECTED_SCALE, s_SELECTED_SCALE);
     }
     else
     {
         m_pickedData = nullptr;
     }
-
-    // Block the signal to avoid being called back.
-    const auto& sig = landmarks->signal<sight::data::Landmarks::PointAddedSignalType>(
-        sight::data::Landmarks::s_POINT_ADDED_SIG
-    );
-
-    sight::core::com::Connection::Blocker blocker(sig->getConnection(slot(Slots::ADD_POINT)));
-    sig->asyncEmit(m_currentGroup);
 }
 
 //------------------------------------------------------------------------------
@@ -1173,26 +1677,32 @@ bool SLandmarks::isMaxLandmarksReached()
     }
 
     // Count landmarks.
-    const auto& landmarks = m_landmarks.const_lock();
+    LandmarksOrImageSeriesConstLock lock = constLockLandmarks();
 
     if(m_groupMax.contains(m_currentGroup)
        && (m_groupMax[m_currentGroup] == 0
-           || (landmarks->hasGroup(m_currentGroup)
-               && landmarks->getGroup(m_currentGroup).m_points.size() >= m_groupMax[m_currentGroup])))
+           || (hasGroup(m_currentGroup, lock)
+               && getNumberOfPointsInGroup(m_currentGroup, lock) >= m_groupMax[m_currentGroup])))
     {
         return true;
     }
 
     if(m_totalMax || m_visibleMax)
     {
-        const auto& names = landmarks->getGroupNames();
+        const auto& names = getGroupNames(lock);
 
         std::size_t max        = 0;
         std::size_t maxVisible = 0;
 
         for(const auto& name : names)
         {
-            const auto& group = landmarks->getGroup(name);
+            std::optional<data::Landmarks::LandmarksGroup> maybeGroup = getGroup(name, lock);
+            if(!maybeGroup.has_value())
+            {
+                continue;
+            }
+
+            data::Landmarks::LandmarksGroup group = *maybeGroup;
 
             if(m_totalMax)
             {
@@ -1232,10 +1742,14 @@ void SLandmarks::updateLandmarksVisibility()
     // Make the context as current.
     getRenderService()->makeCurrent();
 
-    const auto imageLock = m_image.lock();
+    bool imageExists = false;
+    {
+        ImageOrImageSeriesConstLock iisLock = constLockImage();
+        imageExists = iisLock.image || iisLock.imageSeries;
+    }
 
     // Hide landmarks only if there is an image.
-    if(imageLock)
+    if(imageExists)
     {
         for(const auto& landmark : m_manualObjects)
         {
@@ -1251,41 +1765,40 @@ void SLandmarks::updateLandmarkVisibility(std::shared_ptr<Landmark> _landmark)
     // Make the context as current.
     getRenderService()->makeCurrent();
 
-    const auto& landmarks = m_landmarks.const_lock();
-    updateLandmarkVisibility(*_landmark, *landmarks);
+    updateLandmarkVisibility(*_landmark, constLockLandmarks());
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::updateLandmarkVisibility(Landmark& landmark, const data::Landmarks& landmarks)
+void SLandmarks::updateLandmarkVisibility(Landmark& landmark, std::optional<data::Landmarks::LandmarksGroup> group)
 {
     const bool must_show =
         [&]
         {
             // Retrieve group
-            if(!landmarks.hasGroup(landmark.m_groupName))
+            if(!group.has_value())
             {
                 return false;
             }
 
-            const auto& group = landmarks.getGroup(landmark.m_groupName);
-
-            if(!group.m_visibility)
+            if(!group->m_visibility)
             {
                 return false;
             }
 
-            if(const auto& image = m_image.const_lock(); image)
-            {
-                const auto& position = landmark.m_node->getPosition();
-                return isLandmarkVisible({position[0], position[1], position[2]}, group.m_size);
-            }
-
-            return true;
+            const auto& position = landmark.m_node->getPosition();
+            return isLandmarkVisible({position[0], position[1], position[2]}, group->m_size);
         }();
 
     // Show or hide the landmark.
     landmark.m_object->setVisible(must_show);
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::updateLandmarkVisibility(Landmark& landmark, const LandmarksOrImageSeriesConstLock& lock)
+{
+    updateLandmarkVisibility(landmark, getGroup(landmark.m_groupName, lock));
 }
 
 //------------------------------------------------------------------------------
@@ -1295,9 +1808,10 @@ bool SLandmarks::isLandmarkVisible(
     data::Landmarks::SizeType group_size
 ) const
 {
-    if(const auto& image = m_image.const_lock(); image)
+    if(const auto& iisLock = constLockImage(); iisLock.image || iisLock.imageSeries)
     {
         const auto position       = point[m_orientation];
+        data::Image::csptr image  = iisLock.image ? iisLock.image.get_shared() : iisLock.imageSeries.get_shared();
         const auto slice_position = getCurrentSlicePos(*image)[m_orientation];
         const auto spacing        = image->getSpacing()[m_orientation];
 
@@ -1333,10 +1847,16 @@ bool SLandmarks::isLandmarkVisible(
 
 void SLandmarks::setVisible(bool _visible)
 {
-    const auto landmarks = m_landmarks.const_lock();
+    LandmarksOrImageSeriesConstLock lock = constLockLandmarks();
     for(const auto& landmark : m_manualObjects)
     {
-        const auto& group = landmarks->getGroup(landmark->m_groupName);
+        std::optional<data::Landmarks::LandmarksGroup> maybeGroup = getGroup(landmark->m_groupName, lock);
+        if(!maybeGroup.has_value())
+        {
+            continue;
+        }
+
+        data::Landmarks::LandmarksGroup group = *maybeGroup;
         landmark->m_object->setVisible(_visible && group.m_visibility);
         if(m_enableLabels)
         {
@@ -1473,16 +1993,45 @@ void SLandmarks::mouseMoveEvent(MouseButton /*_button*/, Modifier /*_mods*/, int
         m_pickedData->m_object->setQueryFlags(m_landmarksQueryFlag);
 
         // Update the data, the autoconnection will call modifyPoint.
-        auto landmarks                    = m_landmarks.lock();
-        data::Landmarks::PointType& point = landmarks->getPoint(m_pickedData->m_groupName, m_pickedData->m_index);
-        point[0] = newPos[0];
-        point[1] = newPos[1];
-        point[2] = newPos[2];
+        LandmarksOrImageSeriesLock lfLock = lockLandmarks();
+        if(lfLock.landmarks != nullptr)
+        {
+            data::Landmarks::PointType& point = lfLock.landmarks->getPoint(
+                m_pickedData->m_groupName,
+                m_pickedData->m_index
+            );
+            point[0] = newPos[0];
+            point[1] = newPos[1];
+            point[2] = newPos[2];
 
-        const auto& sig = landmarks->signal<data::Landmarks::PointModifiedSigType>(
-            data::Landmarks::s_POINT_MODIFIED_SIG
-        );
-        sig->asyncEmit(m_pickedData->m_groupName, m_pickedData->m_index);
+            const auto& sig = lfLock.landmarks->signal<data::Landmarks::PointModifiedSigType>(
+                data::Landmarks::s_POINT_MODIFIED_SIG
+            );
+            sig->asyncEmit(m_pickedData->m_groupName, m_pickedData->m_index);
+        }
+        else if(lfLock.imageSeries != nullptr)
+        {
+            std::optional<std::pair<data::FiducialsSeries::FiducialSet, std::size_t> > fiducialSet =
+                lfLock.imageSeries->getFiducials()->getFiducialSetAndIndex(m_pickedData->m_groupName);
+            if(!fiducialSet.has_value())
+            {
+                return;
+            }
+
+            std::vector<data::FiducialsSeries::Fiducial*> pointFiducials = getPointFiducialsPtr(fiducialSet->first);
+            if(m_pickedData->m_index >= pointFiducials.size())
+            {
+                return;
+            }
+
+            data::FiducialsSeries::Fiducial& fiducial = *pointFiducials[m_pickedData->m_index];
+            setPoint(fiducialSet->first, fiducial, {newPos.x, newPos.y, newPos.z}, lfLock.imageSeries.get_shared());
+            lfLock.imageSeries->getFiducials()->setFiducialSet(fiducialSet->second, fiducialSet->first);
+
+            lfLock.imageSeries->signal<data::IHasFiducials::signals::PointModified>(
+                data::IHasFiducials::signals::POINT_MODIFIED
+            )->asyncEmit(m_pickedData->m_groupName, m_pickedData->m_index);
+        }
 
         this->requestRender();
     }
@@ -1545,18 +2094,24 @@ void SLandmarks::buttonReleaseEvent(MouseButton _button, Modifier /*_mods*/, int
                 [this, groupName = m_pickedData->m_groupName, index = m_pickedData->m_index]
                 {
                     m_contextualMenu->hide();
-                    m_landmarks.lock()->removePoint(groupName, index);
-                    removePoint(groupName, index);
-                    const auto& sig = m_landmarks.lock()->signal<sight::data::Landmarks::PointRemovedSignalType>(
-                        sight::data::Landmarks::s_POINT_REMOVED_SIG
-                    );
-
-                    // Block the signal to avoid being called back.
-                    sight::core::com::Connection::Blocker blocker(
-                        sig->getConnection(slot(Slots::REMOVE_POINT))
-                    );
-
-                    sig->asyncEmit(groupName, index);
+                    LandmarksOrImageSeriesLock lfLock = lockLandmarks();
+                    if(lfLock.landmarks != nullptr)
+                    {
+                        lfLock.landmarks->removePoint(groupName, index);
+                        lfLock.landmarks->signal<sight::data::Landmarks::PointRemovedSignalType>(
+                            sight::data::Landmarks::s_POINT_REMOVED_SIG
+                        )->asyncEmit(
+                            groupName,
+                            index
+                        );
+                    }
+                    else if(lfLock.imageSeries != nullptr)
+                    {
+                        lfLock.imageSeries->getFiducials()->removePoint(groupName, index);
+                        lfLock.imageSeries->signal<data::IHasFiducials::signals::PointRemoved>(
+                            data::IHasFiducials::signals::POINT_REMOVED
+                        )->asyncEmit(groupName, index);
+                    }
                 });
             if(m_renamingAllowed)
             {
@@ -1607,12 +2162,18 @@ void SLandmarks::buttonDoublePressEvent(MouseButton /*_button*/, Modifier /*_mod
         const auto pickedPos = getNearestPickedPosition(_x, _y);
         if(pickedPos.has_value())
         {
-            // Update the data, the autoconnection will call modifyPoint.
-            const auto& landmarks = m_landmarks.const_lock();
-            const auto& point     = landmarks->getPoint(
+            LandmarksOrImageSeriesConstLock lock                 = constLockLandmarks();
+            std::optional<data::Landmarks::PointType> maybePoint = getPoint(
                 pickedData->m_groupName,
-                pickedData->m_index
+                pickedData->m_index,
+                lock
             );
+            if(!maybePoint.has_value())
+            {
+                return;
+            }
+
+            data::Landmarks::PointType point = *maybePoint;
 
             // Send signal with world coordinates of the landmarks
             m_send_world_coord->asyncEmit(
@@ -1679,7 +2240,7 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::tryPick(int _x, int _y) const
         // The landmark should be the nearest object found.
         const auto* const object = queryResult[index].movable;
 
-        auto landmarks = m_landmarks.lock();
+        LandmarksOrImageSeriesConstLock lock = constLockLandmarks();
 
         for(const auto& landmark : m_manualObjects)
         {
@@ -1687,8 +2248,9 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::tryPick(int _x, int _y) const
             {
                 try
                 {
-                    if(const auto& group = landmarks->getGroup(landmark->m_groupName);
-                       group.m_visibility && isLandmarkVisible(group.m_points[landmark->m_index], group.m_size))
+                    if(auto group = getGroup(landmark->m_groupName, lock);
+                       group.has_value() && group->m_visibility
+                       && isLandmarkVisible(group->m_points[landmark->m_index], group->m_size))
                     {
                         return landmark;
                     }
@@ -1715,6 +2277,34 @@ void SLandmarks::setCursor(QCursor cursor)
     auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
     auto* parentWidget = qtInteractor->getQtWidget();
     parentWidget->setCursor(cursor);
+}
+
+//------------------------------------------------------------------------------
+
+LandmarksOrImageSeriesLock SLandmarks::lockLandmarks()
+{
+    return {.landmarks = m_landmarks.lock(), .imageSeries = m_imageSeries.lock()};
+}
+
+//------------------------------------------------------------------------------
+
+LandmarksOrImageSeriesConstLock SLandmarks::constLockLandmarks() const
+{
+    return {.landmarks = m_landmarks.const_lock(), .imageSeries = m_imageSeries.const_lock()};
+}
+
+//------------------------------------------------------------------------------
+
+ImageOrImageSeriesLock SLandmarks::lockImage()
+{
+    return {.image = m_image.lock(), .imageSeries = m_imageSeries.lock()};
+}
+
+//------------------------------------------------------------------------------
+
+ImageOrImageSeriesConstLock SLandmarks::constLockImage() const
+{
+    return {.image = m_image.const_lock(), .imageSeries = m_imageSeries.const_lock()};
 }
 
 SLandmarks::DeleteContextualMenuWhenFocusOut::DeleteContextualMenuWhenFocusOut(SLandmarks* sLandmarks) :

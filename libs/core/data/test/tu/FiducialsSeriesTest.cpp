@@ -104,6 +104,20 @@ void FiducialsSeriesTest::simpleSetterGetterTest()
     COMPARE_GETSETTERS_ARRAYS(ContourData, (std::vector<FiducialsSeries::Point3> {{{18, 19, 20}}}), 0, 0);
 
     COMPARE_GETSETTERS_DEMI_OPTIONAL(GroupName, std::optional<std::string> {}, std::optional {"21"s}, 0);
+    COMPARE_GETSETTERS_DEMI_OPTIONAL(
+        Color,
+        (std::optional<std::array<float, 4> > {}),
+        (std::optional {std::array {22.F, 23.F, 24.F, 25.F}}),
+        0
+    );
+    COMPARE_GETSETTERS_DEMI_OPTIONAL(Size, std::optional<float> {}, std::optional {26.F}, 0);
+    COMPARE_GETSETTERS_DEMI_OPTIONAL(
+        Shape,
+        std::optional<FiducialsSeries::PrivateShape> {},
+        std::optional {FiducialsSeries::PrivateShape::SPHERE},
+        0
+    );
+    COMPARE_GETSETTERS_DEMI_OPTIONAL(Visibility, std::optional<bool> {}, std::optional {true}, 0);
 }
 
 //------------------------------------------------------------------------------
@@ -181,6 +195,9 @@ static void compareFiducialSets(FiducialsSeries::FiducialSet expected, Fiducials
     }
 
     CPPUNIT_ASSERT(expected.groupName == actual.groupName);
+    CPPUNIT_ASSERT(expected.color == actual.color);
+    CPPUNIT_ASSERT(expected.size == actual.size);
+    CPPUNIT_ASSERT(expected.shape == actual.shape);
 }
 
 //------------------------------------------------------------------------------
@@ -220,7 +237,11 @@ void FiducialsSeriesTest::fiducialSetSetterGetterTest()
     fiducial.contourData = {{15, 16, 17}};
     fiducialSet.fiducialSequence.push_back(fiducial);
 
-    fiducialSet.groupName = "18";
+    fiducialSet.groupName  = "18";
+    fiducialSet.color      = {{19, 20, 21, 22}};
+    fiducialSet.size       = 23.F;
+    fiducialSet.shape      = FiducialsSeries::PrivateShape::CUBE;
+    fiducialSet.visibility = true;
 
     // Test setFiducialSets method
     fiducialsSeries->setFiducialSets({fiducialSet});

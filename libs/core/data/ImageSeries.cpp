@@ -35,7 +35,8 @@ namespace sight::data
 
 ImageSeries::ImageSeries(data::Object::Key key) :
     Image(key),
-    Series(key)
+    Series(key),
+    IHasFiducials(m_signals)
 {
 }
 

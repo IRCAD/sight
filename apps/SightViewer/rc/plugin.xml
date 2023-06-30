@@ -68,9 +68,8 @@
             <object uid="seriesSet" type="sight::data::SeriesSet" />
             <object uid="modelSeries" type="sight::data::ModelSeries" src="deferred" />
             <object uid="pacsSeriesSet" type="sight::data::SeriesSet" />
-            <object uid="image" type="sight::data::Image" src="deferred"/>
+            <object uid="image" type="sight::data::ImageSeries" src="deferred"/>
             <object uid="extrudedModelSeries" type="sight::data::ModelSeries" />
-            <object uid="landmarks" type="sight::data::Landmarks" />
 
             <object uid="volumeTF" type="sight::data::TransferFunction" />
 
@@ -237,7 +236,7 @@
                     </layout>
                 </gui>
                 <registry>
-                    <view sid="landmarksParameterSrv" start="true" />
+                    <view sid="landmarksParameterSrv" start="false" />
                 </registry>
             </service>
 
@@ -491,7 +490,6 @@
                     <key name="image" uid="image" optional="true"/>
                     <key name="volumeTF" uid="volumeTF" />
                     <key name="extrudedModelSeries" uid="extrudedModelSeries" />
-                    <key name="landmarks" uid="landmarks" />
                 </inout>
             </service>
 
@@ -549,7 +547,7 @@
 
             <!-- Parameters for landmarks -->
             <service uid="landmarksParameterSrv" type="sight::module::ui::qt::metrics::SLandmarks" autoConnect="true" >
-                <inout key="landmarks" uid="landmarks" />
+                <inout key="imageSeries" uid="image" />
                 <advanced>true</advanced>
             </service>
 
@@ -808,6 +806,7 @@
             <start uid="lightSelectorSrv" />
             <start uid="lightEditorSrv" />
             <start uid="hideDistanceAct" />
+            <start uid="landmarksParameterSrv" />
 
             <update uid="TFManagerAct" />
             <update uid="volumeParameterSrv" />
