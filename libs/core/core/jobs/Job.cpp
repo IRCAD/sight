@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -57,35 +57,36 @@ Job::Job(const std::string& name, Job::Task task, core::thread::Worker::sptr wor
 
 IJob::SharedFuture Job::runImpl()
 {
-    // No need to lock : m_task & m_worker only writable in constructor
-    if(m_task)
+    Task task_copy;
     {
-        // workaround because of vs2010 issue : http://goo.gl/WHEkQ5
-        // see IJob.hpp
-        auto fCallback = this->finishCallback();
+        core::mt::ReadToWriteLock lock(m_mutex);
 
-        auto jobTask = [ =, this]()
-                       {
-                           BOOST_SCOPE_EXIT_ALL( = )
-                           {
-                               fCallback();
-                               core::mt::WriteLock lock(m_mutex);
-                               m_task = nullptr;
-                           };
-
-                           m_task(*this);
-                       };
-        if(m_worker)
+        if(m_task == nullptr)
         {
-            return m_worker->postTask<void>(jobTask);
+            core::mt::UpgradeToWriteLock writeLock(lock);
+            this->finishNoLock();
+            return std::async([](){});
         }
 
-        jobTask();
+        task_copy = m_task;
     }
-    else
+
+    const auto job_task =
+        [task_copy, this]
+        {
+            task_copy(*this);
+
+            core::mt::WriteLock lock(m_mutex);
+            this->finishNoLock();
+            m_task = nullptr;
+        };
+
+    if(m_worker)
     {
-        this->finish();
+        return m_worker->postTask<void>(job_task);
     }
+
+    job_task();
 
     return std::async([](){});
 }
@@ -95,6 +96,7 @@ IJob::SharedFuture Job::runImpl()
 IJob::SharedFuture Job::cancel()
 {
     auto future = this->IJob::cancel();
+
     core::mt::WriteLock lock(m_mutex);
     if(m_task)
     {
@@ -118,7 +120,7 @@ Job::ProgressCallback Job::progressCallback()
 
 core::thread::Worker::sptr Job::getWorker()
 {
-    // No need to lock : m_worker only writable in contructor
+    // No need to lock : m_worker only writable in constructor
     return m_worker;
 }
 

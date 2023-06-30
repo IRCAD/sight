@@ -49,6 +49,11 @@ public:
     CORE_API static bool isProcessRunning(int pid) noexcept;
 
     /**
+     * @brief   Terminate a process
+     */
+    CORE_API static void killProcess(int pid) noexcept;
+
+    /**
      * @brief renames file or folder, use std::filesystem::rename first, use a copy-remove scenario if rename fails.
      * @param _from source path of the file to rename.
      * @param _to destination path of the renamed file.

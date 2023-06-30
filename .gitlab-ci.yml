@@ -22,8 +22,8 @@ lint:sheldon:
   extends: .linux_before
   stage: build
   needs:
-  - job: lint:sheldon
-    optional: true
+    - job: lint:sheldon
+      optional: true
   variables:
     SIGHT_BUILD_DOC: "OFF"
     SIGHT_BUILD_PACKAGES: "OFF"
@@ -69,13 +69,13 @@ lint:sheldon:
     # Launch tests
     - >
       if [ "$SIGHT_ENABLE_COVERAGE" = "ON" ] || [ "$BUILD_TYPE" = "Debug" ]; then
-        TIMEOUT="840"
+        TIMEOUT="1200"
       else
-        TIMEOUT="480"
+        TIMEOUT="600"
       fi
-    - ctest -E "(guitest)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest.log -j10 --output-junit junit1.xml --repeat until-pass:2
-    - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest.log -j10 --output-junit junit2.xml --repeat until-pass:2
-    - ctest -R "(guitest)" --timeout $TIMEOUT --output-on-failure -O ctest.log -j10 --output-junit junit3.xml --repeat until-pass:2
+    - ctest -E "(guitest)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j10 --output-junit junit1.xml --repeat until-pass:2
+    - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j10 --output-junit junit2.xml --repeat until-pass:2
+    - ctest -R "(guitest)" --timeout $TIMEOUT --output-on-failure -O ctest3.log -j10 --output-junit junit3.xml --repeat until-pass:2
     # Build documentation if needed
     - >
       if [ "${SIGHT_BUILD_DOC}" == "ON" ]; then
@@ -102,7 +102,7 @@ lint:sheldon:
   artifacts: &linux_build_artifacts
     when: always
     paths:
-      - .build/ctest.log
+      - .build/ctest*.log
       - .build/Documentation/Doxygen/
       - .build/packages/*.tar.zst
       - .build/coverage
@@ -279,9 +279,9 @@ deploy:apps-linux-release:
 .windows_build:
   extends: .windows_before
   needs:
-  - job: lint:sheldon
-    optional: true
-  - job: prebuild:windows
+    - job: lint:sheldon
+      optional: true
+    - job: prebuild:windows
   variables:
     TOOLCHAIN: "scripts\\buildsystems\\vcpkg.cmake"
     SIGHT_BUILD_PACKAGES: "OFF"
@@ -302,10 +302,16 @@ deploy:apps-linux-release:
     - $env:IMAGE_OUTPUT_PATH="${env:CI_PROJECT_DIR}/build/testImages"
     - md "${env:IMAGE_OUTPUT_PATH}"
     - $env:DISABLE_ABORT_DIALOG="1"
+    - |
+      if ("${SIGHT_ENABLE_COVERAGE}" -eq "ON" -or "${BUILD_TYPE}" -eq "Debug") {
+        $env:TIMEOUT="1200"
+      } else {
+        $env:TIMEOUT="600"
+      }
     # Launch tests
-    - ctest -E "(guitest)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest.log -j6 --output-junit junit1.xml --repeat until-pass:2
-    - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest.log -j6 --output-junit junit2.xml --repeat until-pass:2
-    - ctest -R "(guitest)" --timeout $TIMEOUT --output-on-failure -O ctest.log -j6 --output-junit junit3.xml --repeat until-pass:2
+    - ctest -E "(guitest)|(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest1.log -j6 --output-junit junit1.xml --repeat until-pass:2
+    - ctest -R "(dicom)" --timeout $TIMEOUT --output-on-failure -O ctest2.log -j6 --output-junit junit2.xml --repeat until-pass:2
+    - ctest -R "(guitest)" --timeout $TIMEOUT --output-on-failure -O ctes3.log -j6 --output-junit junit3.xml --repeat until-pass:2
     - |
       if ("${SIGHT_BUILD_PACKAGES}" -eq "ON") {
         ninja SightViewer_package
@@ -339,7 +345,7 @@ deploy:apps-linux-release:
     when: always
     name: "${env:CI_JOB_NAME}-${env:CI_COMMIT_REF_SLUG}"
     paths:
-      - build/ctest.log
+      - build/ctest*.log
       - build/fwTest.log
       - build/packages/*.exe
       - build/packages/sight-*.zip

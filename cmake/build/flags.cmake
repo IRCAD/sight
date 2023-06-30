@@ -158,6 +158,24 @@ endif()
 add_compile_options("$<$<AND:$<CXX_COMPILER_ID:Clang>,$<COMPILE_LANGUAGE:C,CXX>>:-fno-limit-debug-info>")
 
 #
+# Options: Sanitizer
+#
+
+set(SIGHT_SANITIZE "none" CACHE STRING "Enable sanitizer, options could be: node (default), address, thread, ...")
+mark_as_advanced(SIGHT_SANITIZE)
+
+if(MSVC)
+    set_property(CACHE SIGHT_SANITIZE PROPERTY STRINGS "none;address;")
+else()
+    set_property(CACHE SIGHT_SANITIZE PROPERTY STRINGS "none;address;leak;undefined;thread;address,leak,undefined;")
+endif()
+
+if(NOT "${SIGHT_SANITIZE}" STREQUAL "" AND NOT "${SIGHT_SANITIZE}" STREQUAL "none")
+    add_compile_options("$<$<COMPILE_LANGUAGE:C,CXX>:-fsanitize=${SIGHT_SANITIZE}>")
+    add_link_options("$<$<COMPILE_LANGUAGE:C,CXX>:-fsanitize=${SIGHT_SANITIZE}>")
+endif()
+
+#
 # Options: Architecture
 #
 

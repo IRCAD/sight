@@ -28,7 +28,7 @@
 namespace sight::ui::base::dialog
 {
 
-class DummyMessageDialog : public IMessageDialog
+class UI_BASE_CLASS_API DummyMessageDialog : public IMessageDialog
 {
 public:
 

@@ -82,6 +82,22 @@ bool System::isProcessRunning(int pid) noexcept
 
 //------------------------------------------------------------------------------
 
+void System::killProcess(int pid) noexcept
+{
+#ifdef WIN32
+    HANDLE hProcess = OpenProcess(PROCESS_TERMINATE, FALSE, pid);
+    if(hProcess)
+    {
+        TerminateProcess(hProcess, 0);
+        CloseHandle(hProcess);
+    }
+#else
+    kill(pid, SIGKILL);
+#endif
+}
+
+//------------------------------------------------------------------------------
+
 void System::robustRename(
     const std::filesystem::path& _p1,
     const std::filesystem::path& _p2,

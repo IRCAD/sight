@@ -33,7 +33,7 @@ namespace sight::ui::testCore
 {
 
 /// Represents a user interaction on the interace, such as a mouse click, keyboard tap...
-class Interaction
+class GUITEST_CLASS_API Interaction
 {
 public:
 
@@ -51,7 +51,7 @@ public:
 };
 
 /// Represents a mouse click.
-class MouseClick : public Interaction
+class GUITEST_CLASS_API MouseClick : public Interaction
 {
 public:
 
@@ -77,7 +77,7 @@ private:
 };
 
 /// Represents a mouse double click.
-class MouseDoubleClick : public Interaction
+class GUITEST_CLASS_API MouseDoubleClick : public Interaction
 {
 public:
 
@@ -103,7 +103,7 @@ private:
 };
 
 /// Represents a dragging of the mouse over a component.
-class MouseDrag : public Interaction
+class GUITEST_CLASS_API MouseDrag : public Interaction
 {
 public:
 
@@ -131,7 +131,7 @@ private:
 };
 
 /// Represents the use of the mouse wheel over a component.
-class MouseWheel : public Interaction
+class GUITEST_CLASS_API MouseWheel : public Interaction
 {
 public:
 
@@ -169,7 +169,7 @@ private:
 };
 
 /// Represents the typing of a sequence of printable caracters.
-class KeyboardSequence : public Interaction
+class GUITEST_CLASS_API KeyboardSequence : public Interaction
 {
 public:
 
@@ -189,7 +189,7 @@ private:
 };
 
 /// Represents a key tap.
-class KeyboardClick : public Interaction
+class GUITEST_CLASS_API KeyboardClick : public Interaction
 {
 public:
 
@@ -209,7 +209,7 @@ private:
 };
 
 /// Represents a pinch gesture with two fingers on a component.
-class PinchGesture : public Interaction
+class GUITEST_CLASS_API PinchGesture : public Interaction
 {
 public:
 

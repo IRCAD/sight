@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,7 +36,7 @@ namespace sight::core::runtime
 /**
  * @brief   Implements a module set profile.
  */
-class Profile : public core::BaseObject
+class CORE_CLASS_API Profile : public core::BaseObject
 {
 public:
 

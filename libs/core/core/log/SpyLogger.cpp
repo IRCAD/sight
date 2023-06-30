@@ -36,6 +36,7 @@
 #include "core/macros.hpp"
 #include "core/runtime/path.hpp"
 #include "core/spyLog.hpp"
+#include "core/tools/System.hpp"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/dll.hpp>
@@ -173,6 +174,7 @@ public:
             const auto log_ptr = boost::log::core::get();
             log_ptr->flush();
             log_ptr->remove_sink(m_remote_sink);
+            m_remote_sink->flush();
             m_remote_sink.reset();
         }
 
@@ -190,6 +192,13 @@ public:
             m_remote_out.reset();
         }
 
+        if(m_remote_process != nullptr)
+        {
+            m_remote_process->wait_for(std::chrono::seconds(3));
+            m_remote_process->terminate();
+            m_remote_process.reset();
+        }
+
         m_remote_pid = 0;
     }
 
@@ -203,6 +212,9 @@ public:
     {
         // If the logger is started, stop it by closing the input stream
         removeSink();
+
+        // Relax the pressure to be on the safe side on windows
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         // Find the logger binary
         const auto logger_path = get_logger_path();
@@ -253,8 +265,7 @@ public:
             }
         }
 
-        // Start the logger process
-        boost::process::spawn(
+        m_remote_process = std::make_unique<boost::process::child>(
             logger_path.string(),
             boost::process::args = args,
             boost::process::std_err > boost::process::null,
@@ -263,7 +274,13 @@ public:
         );
 
         // Wait for the logger to start
-        if(!m_remote_out->good())
+        std::size_t tries = 0;
+        while(tries++ < 100 && !m_remote_out->good())
+        {
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+
+        if(tries >= 100)
         {
             throw std::runtime_error("Unable to open the logger standard output stream");
         }
@@ -271,7 +288,7 @@ public:
         // Read the PID of the logger
         m_remote_out->read(
             reinterpret_cast<char*>(&m_remote_pid),
-            sizeof(m_pimpl->m_remote_pid)
+            sizeof(m_remote_pid)
         );
 
         if(m_remote_out->gcount() != sizeof(m_remote_pid))
@@ -322,6 +339,9 @@ public:
                                >= static_cast<trivial::severity_level>(level),
             keywords::auto_flush = true
         );
+
+        // Relax the pressure to be on the safe side on windows
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     //------------------------------------------------------------------------------
@@ -344,6 +364,8 @@ public:
     SpyLogger* const m_logger;
 
     int m_remote_pid {0};
+
+    std::unique_ptr<boost::process::child> m_remote_process;
 
     // Boost sink for the remote logger
     decltype(boost::log::add_console_log()) m_remote_sink;

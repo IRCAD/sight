@@ -73,10 +73,27 @@ constexpr static auto SIGHT_BASE64       = "base64";
 constexpr static auto SIGHT_RAW          = "raw";
 constexpr static auto SIGHT_ASK_PASS     = "ask-password";
 
+static std::atomic_bool g_interrupted = false;
+
 //------------------------------------------------------------------------------
 
 inline static void signalHandler([[maybe_unused]] int signal)
 {
+    switch(signal)
+    {
+        case SIGINT:
+        case SIGTERM:
+#ifndef WIN32
+        case SIGHUP:
+        case SIGQUIT:
+#endif
+            g_interrupted = true;
+            break;
+
+        default:
+            break;
+    }
+
     DEBUG_LOG("SIGNAL: " << signal << " received");
 }
 
@@ -234,7 +251,7 @@ inline static int log(
         sendPassword(password);
 
         // Start logging
-        while(!std::cin.eof())
+        while(!std::cin.eof() && std::cin.good() && !g_interrupted)
         {
             // Read from std::cin
             std::cin.read(buffer.data(), buffer.size());
@@ -265,7 +282,7 @@ inline static int log(
         sendPassword(password);
 
         // Start the writing loop
-        while(!std::cin.eof())
+        while(!std::cin.eof() && std::cin.good() && !g_interrupted)
         {
             // Read from std::cin
             std::cin.read(buffer.data(), buffer.size());

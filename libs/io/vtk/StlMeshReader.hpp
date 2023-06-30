@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -48,8 +48,8 @@ namespace sight::io::vtk
  *
  */
 
-class StlMeshReader : public base::reader::GenericObjectReader<data::Mesh>,
-                      public core::location::SingleFile
+class IO_VTK_CLASS_API StlMeshReader : public base::reader::GenericObjectReader<data::Mesh>,
+                                       public core::location::SingleFile
 {
 public:
 

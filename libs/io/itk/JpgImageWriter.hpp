@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -36,9 +36,9 @@
 namespace sight::io::itk
 {
 
-class JpgImageWriter : public base::writer::GenericObjectWriter<data::Image>,
-                       public core::location::SingleFolder,
-                       public core::tools::ProgressAdviser
+class IO_ITK_CLASS_API JpgImageWriter : public base::writer::GenericObjectWriter<data::Image>,
+                                        public core::location::SingleFolder,
+                                        public core::tools::ProgressAdviser
 {
 public:
 

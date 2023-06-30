@@ -31,7 +31,7 @@
 namespace sight::ui::base::dialog
 {
 
-class DummyLocationDialog : public sight::ui::base::dialog::ILocationDialog
+class UI_BASE_CLASS_API DummyLocationDialog : public sight::ui::base::dialog::ILocationDialog
 {
 public:
 

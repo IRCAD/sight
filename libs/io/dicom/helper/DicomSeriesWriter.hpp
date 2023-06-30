@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -66,8 +66,8 @@ class DicomAnonymizer;
  * If the DicomSeries contains the binaries of the DICOM files, the files are extracted (or zipped).
  * If the DicomSeries contains the paths of the DICOM files, a simple copy (or zip) is performed.
  */
-class DicomSeriesWriter : public io::base::writer::GenericObjectWriter<data::DicomSeries>,
-                          public core::location::SingleFolder
+class IO_DICOM_CLASS_API DicomSeriesWriter : public io::base::writer::GenericObjectWriter<data::DicomSeries>,
+                                             public core::location::SingleFolder
 {
 public:
 

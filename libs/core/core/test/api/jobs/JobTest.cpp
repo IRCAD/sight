@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -622,7 +622,7 @@ public:
 private:
 
     ProgressObserver* m_obs;
-    bool m_canceled {false};
+    std::atomic_bool m_canceled {false};
 };
 
 struct JobObserver : public ProgressObserver
@@ -651,9 +651,12 @@ struct JobObserver : public ProgressObserver
 
 struct JobObserverCanceler : public JobObserver
 {
-    explicit JobObserverCanceler(std::function<void(double)> func, const bool& canceled = false) :
+    explicit JobObserverCanceler(
+        std::function<void(double)> func,
+        IJob::CancelRequestCallback canceledCallback
+    ) :
         JobObserver(std::move(func)),
-        m_canceled(canceled)
+        m_canceledCallback(std::move(canceledCallback))
     {
     }
 
@@ -661,10 +664,10 @@ struct JobObserverCanceler : public JobObserver
 
     bool canceled() override
     {
-        return m_canceled;
+        return m_canceledCallback();
     }
 
-    const bool& m_canceled;
+    const IJob::CancelRequestCallback m_canceledCallback;
 };
 
 //------------------------------------------------------------------------------
@@ -739,18 +742,22 @@ void JobTest::ObserverTest()
             core::thread::Worker::sptr worker = core::thread::Worker::New();
 
             loops = 1 << 30;
-            core::jobs::Job job("GenericCallbackJob",
-                                [ = ](core::jobs::Job& runningJob)
+            core::jobs::Job job(
+                "GenericCallbackJob",
+                [ = ](core::jobs::Job& runningJob)
                     {
-                                auto f = [ =, &runningJob](double d)
+                auto f =
+                    [ =, &runningJob](double d)
                         {
-                                         runningJob.doneWork(std::uint64_t(d * fProgress));
+                    runningJob.doneWork(std::uint64_t(d * fProgress));
                         };
-                                AlgoMockObserver algo(new JobObserverCanceler(f, runningJob.cancelRequested()));
-                                algo.run(loops);
+
+                AlgoMockObserver algo(new JobObserverCanceler(f, runningJob.cancelRequestedCallback()));
+                algo.run(loops);
                     },
-                                worker
+                worker
             );
+
             job.setTotalWorkUnits(std::uint64_t(loops));
             job.run();
             std::this_thread::sleep_for(std::chrono::milliseconds(30));

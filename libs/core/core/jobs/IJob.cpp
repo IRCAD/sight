@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,9 +62,9 @@ IJob::~IJob()
 
 //------------------------------------------------------------------------------
 
-const bool& IJob::cancelRequested() const
+bool IJob::cancelRequested() const
 {
-    // core::mt::ReadLock lock(m_mutex);
+    core::mt::ReadLock lock(m_mutex);
     return m_cancelRequested;
 }
 
@@ -132,7 +132,7 @@ IJob::SharedFuture IJob::cancel()
         {
             this->setStateNoLock(nextState);
 
-            if(nextState == CANCELED)
+            if(nextState == CANCELED && !m_runFuture.valid())
             {
                 // If we use the default constructor, the future is not valid and we will not be able to wait for it
                 // Thus we build a dummy future to get a valid one
@@ -298,13 +298,6 @@ void IJob::finish()
 void IJob::finishNoLock()
 {
     this->setStateNoLock((m_state == CANCELING) ? CANCELED : FINISHED);
-}
-
-//------------------------------------------------------------------------------
-
-std::function<void()> IJob::finishCallback()
-{
-    return [this]{this->finish();};
 }
 
 //------------------------------------------------------------------------------
