@@ -131,7 +131,6 @@ void SCamera::starting()
         s_CALIBRATE_SLOT
     );
 
-    this->calibrate();
     this->updating();
 }
 
@@ -153,45 +152,48 @@ service::IService::KeyConnectionsMap SCamera::getAutoConnections() const
 
 void SCamera::updating()
 {
-    Ogre::Affine3 ogreMatrix;
+    if(m_calibrationDone || this->calibrate())
     {
-        const auto transform = m_transform.lock();
-
-        // Received input line and column data from Sight transformation matrix
-        for(std::size_t lt = 0 ; lt < 4 ; lt++)
+        Ogre::Affine3 ogreMatrix;
         {
-            for(std::size_t ct = 0 ; ct < 4 ; ct++)
+            const auto transform = m_transform.lock();
+
+            // Received input line and column data from Sight transformation matrix
+            for(std::size_t lt = 0 ; lt < 4 ; lt++)
             {
-                ogreMatrix[ct][lt] = static_cast<Ogre::Real>((*transform)(ct, lt));
+                for(std::size_t ct = 0 ; ct < 4 ; ct++)
+                {
+                    ogreMatrix[ct][lt] = static_cast<Ogre::Real>((*transform)(ct, lt));
+                }
             }
         }
+
+        // Decompose the camera matrix
+        Ogre::Vector3 position;
+        Ogre::Vector3 scale;
+        Ogre::Quaternion orientation;
+        ogreMatrix.decomposition(position, scale, orientation);
+
+        // Reverse view-up and direction for AR
+        const Ogre::Quaternion rotateY(Ogre::Degree(180), Ogre::Vector3(0, 1, 0));
+        const Ogre::Quaternion rotateZ(Ogre::Degree(180), Ogre::Vector3(0, 0, 1));
+        orientation = orientation * rotateZ * rotateY;
+
+        // Flag to skip updateTF3D() when called from the camera listener
+        m_skipUpdate = true;
+
+        Ogre::Node* parent = m_camera->getParentNode();
+
+        // Reset the camera position
+        parent->setPosition(0, 0, 0);
+        parent->setOrientation(Ogre::Quaternion::IDENTITY);
+
+        // Update the camera position
+        parent->rotate(orientation);
+        parent->translate(position);
+
+        this->requestRender();
     }
-
-    // Decompose the camera matrix
-    Ogre::Vector3 position;
-    Ogre::Vector3 scale;
-    Ogre::Quaternion orientation;
-    ogreMatrix.decomposition(position, scale, orientation);
-
-    // Reverse view-up and direction for AR
-    const Ogre::Quaternion rotateY(Ogre::Degree(180), Ogre::Vector3(0, 1, 0));
-    const Ogre::Quaternion rotateZ(Ogre::Degree(180), Ogre::Vector3(0, 0, 1));
-    orientation = orientation * rotateZ * rotateY;
-
-    // Flag to skip updateTF3D() when called from the camera listener
-    m_skipUpdate = true;
-
-    Ogre::Node* parent = m_camera->getParentNode();
-
-    // Reset the camera position
-    parent->setPosition(0, 0, 0);
-    parent->setOrientation(Ogre::Quaternion::IDENTITY);
-
-    // Update the camera position
-    parent->rotate(orientation);
-    parent->translate(position);
-
-    this->requestRender();
 }
 
 //------------------------------------------------------------------------------
@@ -308,7 +310,7 @@ void SCamera::setAspectRatio(Ogre::Real _ratio)
 
 //-----------------------------------------------------------------------------
 
-void SCamera::calibrate()
+bool SCamera::calibrate()
 {
     const auto camera_set        = m_camera_set.lock();
     const auto cameraCalibration = m_cameraCalibration.lock();
@@ -331,11 +333,18 @@ void SCamera::calibrate()
     {
         const auto width  = static_cast<float>(m_camera->getViewport()->getActualWidth());
         const auto height = static_cast<float>(m_camera->getViewport()->getActualHeight());
-        SIGHT_ASSERT("Width and height should be strictly positive", width > 0 && height > 0);
+        if(width <= 0 || height <= 0)
+        {
+            SIGHT_ERROR("Width and height should be strictly positive");
+            return false;
+        }
 
         const float aspectRatio = width / height;
         m_camera->setAspectRatio(aspectRatio);
     }
+
+    m_calibrationDone = true;
+    return true;
 }
 
 //------------------------------------------------------------------------------

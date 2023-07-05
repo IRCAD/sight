@@ -109,7 +109,7 @@ protected:
 private:
 
     /// Calibrates the scene's camera(s) using the input calibration(s).
-    void calibrate();
+    bool calibrate();
 
     /**
      * @brief Computes the camera's projection matrix using its intrinsic parameters and sets it in the scene.
@@ -148,6 +148,9 @@ private:
 
     /// This avoids a self-call to updateTF3D() when we update() the camera
     bool m_skipUpdate {false};
+
+    /// Indicates if the calibration has been done successfully. If not, no update can be done without a calibrate
+    bool m_calibrationDone {false};
 
     static constexpr std::string_view s_CALIBRATION_INPUT = "calibration";
     static constexpr std::string_view s_CAMERA_SET_INPUT  = "cameraSet";
