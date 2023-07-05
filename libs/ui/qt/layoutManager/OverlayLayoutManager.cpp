@@ -119,6 +119,8 @@ public:
                 int y = calculateOffset(m_y, resizeEvent.size().height(), m_child->height());
                 m_child->move(x, y);
             }
+
+            m_child->adjustSize();
         }
 
         return QObject::eventFilter(target, event);
