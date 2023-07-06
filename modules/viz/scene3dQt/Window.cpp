@@ -621,9 +621,7 @@ void Window::createRenderTextures(int w, int h)
             // enabled, it'll changed when add new viewport.
             SIGHT_ASSERT("Width and height should be strictly positive", !std::isnan(aspectRatio));
             camera->setAspectRatio(aspectRatio);
-            // Should restore last viewport, i.e. never disturb user code
-            // which might based on that.
-            camera->_notifyViewport(oldViewport);
+
             if(layer->getOrder() != 0)
             {
                 vp->setBackgroundColour(Ogre::ColourValue(0, 0, 0, 0));
