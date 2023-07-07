@@ -2,6 +2,7 @@
     <id>SightCalibrator_AppCfg</id>
     <parameters>
         <param name="APP_NAME" />
+        <param name="APP_VERSION" />
         <param name="ICON_PATH" />
     </parameters>
     <config>
@@ -17,6 +18,7 @@
             <gui>
                 <frame>
                     <name>${APP_NAME}</name>
+                    <version>${APP_VERSION}</version>
                     <icon>${ICON_PATH}</icon>
                     <minSize width="1600" height="900" />
                 </frame>

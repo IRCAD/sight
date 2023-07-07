@@ -82,6 +82,9 @@ public:
         /// Frame name.
         std::string m_name;
 
+        /// Optional version number, displayed in the title if specified.
+        std::string m_version;
+
         /// Frame icon.
         std::filesystem::path m_iconPath;
 

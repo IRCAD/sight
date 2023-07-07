@@ -59,6 +59,9 @@ void FrameLayoutManager::createFrame()
 {
     FrameInfo frameInfo = this->getFrameInfo();
 
+    const std::string frameTitle = frameInfo.m_version.empty() ? frameInfo.m_name : frameInfo.m_name + " "
+                                   + frameInfo.m_version;
+
     auto* mainframe = new ui::qt::QtMainFrame();
     m_qtWindow = mainframe;
     m_qtWindow->setObjectName(QString::fromStdString(frameInfo.m_name));
@@ -67,7 +70,7 @@ void FrameLayoutManager::createFrame()
     mainframe->setCloseCallback(fct);
 
     // cspell: ignore QWIDGETSIZE
-    m_qtWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
+    m_qtWindow->setWindowTitle(QString::fromStdString(frameTitle));
     m_qtWindow->setMinimumSize(std::max(frameInfo.m_minSize.first, 0), std::max(frameInfo.m_minSize.second, 0));
     m_qtWindow->setMaximumSize(
         frameInfo.m_maxSize.first == -1 ? QWIDGETSIZE_MAX : frameInfo.m_maxSize.first,

@@ -105,6 +105,7 @@ IFrameLayoutManager::IFrameLayoutManager()
 void IFrameLayoutManager::initialize(const ui::base::config_t& configuration)
 {
     m_frameInfo.m_name       = configuration.get<std::string>("name", m_frameInfo.m_name);
+    m_frameInfo.m_version    = configuration.get<std::string>("version", "");
     m_frameInfo.m_visibility = configuration.get<bool>("visibility", m_frameInfo.m_visibility);
 
     if(const auto icon = configuration.get_optional<std::string>("icon"); icon.has_value())
