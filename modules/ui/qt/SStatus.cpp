@@ -267,7 +267,7 @@ void SStatus::toggleGreenRed(const bool green)
 
 void SStatus::changeNthToGreen(const int index)
 {
-    SIGHT_INFO_IF(
+    SIGHT_DEBUG_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
         index < 0 || index >= int(m_count)
     );
@@ -283,7 +283,7 @@ void SStatus::changeNthToGreen(const int index)
 
 void SStatus::changeNthToRed(const int index)
 {
-    SIGHT_INFO_IF(
+    SIGHT_DEBUG_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
         index < 0 || index >= int(m_count)
     );
@@ -299,7 +299,7 @@ void SStatus::changeNthToRed(const int index)
 
 void SStatus::changeNthToOrange(const int index)
 {
-    SIGHT_INFO_IF(
+    SIGHT_DEBUG_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
         index < 0 || index >= int(m_count)
     );
@@ -315,7 +315,7 @@ void SStatus::changeNthToOrange(const int index)
 
 void SStatus::toggleNthGreenRed(const int index, const bool green)
 {
-    SIGHT_INFO_IF(
+    SIGHT_DEBUG_IF(
         "Index(" << index << ") must be in vector range [0:" << m_indicator.size() - 1 << "]",
         index < 0 || index >= int(m_count)
     );
