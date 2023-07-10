@@ -54,14 +54,14 @@ namespace sight::module::ui::qt::image
 {
 
 /**
- * @brief WindowLevel service allows to change the min/max value of windowing.
+ * @brief SWindowLevel service allows to change the min/max value of windowing.
  *
  * This is represented by two sliders to modify the min and max values of windowing.
  *
  * @section XML XML Configuration
  *
  * @code{.xml}
-    <service uid="..." type="sight::module::ui::qt::image::WindowLevel" autoConnect="true">
+    <service uid="..." type="sight::module::ui::qt::image::SWindowLevel" autoConnect="true">
         <inout key="image" uid="..."/>
         <inout key="tf" uid="..." />
         <config autoWindowing="true" enableSquareTF="false" />
@@ -74,26 +74,27 @@ namespace sight::module::ui::qt::image
  *      image's default transferFunction (CT-GreyLevel).
  *
  * @subsection Configuration Configuration
+ * - \b minimal(optional, default="false"): if 'true', only the windowing range slider is shown
  * - \b autoWindowing(optional, default="false"): if 'true', image windowing will be automatically compute from image
  * pixel
  * min/max intensity when this service receive BUFFER event.
  * - \b enableSquareTF(optional, default="true"): if 'true', enables the button to switch between current TF and square
  * TF.
  */
-class MODULE_UI_QT_CLASS_API WindowLevel final : public QObject,
-                                                 public sight::ui::base::IEditor
+class MODULE_UI_QT_CLASS_API SWindowLevel final : public QObject,
+                                                  public sight::ui::base::IEditor
 {
 Q_OBJECT
 
 public:
 
-    SIGHT_DECLARE_SERVICE(WindowLevel, sight::ui::base::IEditor);
+    SIGHT_DECLARE_SERVICE(SWindowLevel, sight::ui::base::IEditor);
 
     /// Initialize signals and slots.
-    MODULE_UI_QT_API WindowLevel() noexcept;
+    MODULE_UI_QT_API SWindowLevel() noexcept;
 
     /// Destroys the service.
-    MODULE_UI_QT_API ~WindowLevel() noexcept override;
+    MODULE_UI_QT_API ~SWindowLevel() noexcept override;
 
 protected:
 
@@ -113,8 +114,8 @@ protected:
      * @brief Proposals to connect service slots to associated object signals.
      * @return A map of each proposed connection.
      *
-     * Connect data::Image::s_MODIFIED_SIG to module::ui::qt::image::WindowLevel::IService::slots::s_UPDATE
-     * Connect Image::s_BUFFER_MODIFIED_SIG to module::ui::qt::image::WindowLevel::IService::slots::s_UPDATE
+     * Connect data::Image::s_MODIFIED_SIG to module::ui::qt::image::SWindowLevel::IService::slots::s_UPDATE
+     * Connect Image::s_BUFFER_MODIFIED_SIG to module::ui::qt::image::SWindowLevel::IService::slots::s_UPDATE
      */
     MODULE_UI_QT_API KeyConnectionsMap getAutoConnections() const final;
 
@@ -174,6 +175,7 @@ private:
 
     double m_widgetDynamicRangeMin {-1024};
     double m_widgetDynamicRangeWidth {4000};
+    bool m_minimal {false};
     bool m_autoWindowing {false};
     bool m_enableSquareTF {true};
 

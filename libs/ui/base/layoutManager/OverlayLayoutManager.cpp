@@ -37,7 +37,8 @@ static OverlayLayoutManager::View::Coord parseSize(const std::string& s)
     SIGHT_ASSERT("The provided size shouldn't be empty", !s.empty());
     bool relative = (s.back() == '%');
     int value     = static_cast<int>(std::strtol(s.c_str(), nullptr, 10));
-    return {relative, value};
+    bool negative = s[0] == '-';
+    return {relative, negative, value};
 }
 
 //------------------------------------------------------------------------------
@@ -66,6 +67,7 @@ void OverlayLayoutManager::initialize(const ui::base::config_t& configuration)
             vi.minWidth  = viewCfg->get("minWidth", 0);
             vi.minHeight = viewCfg->get("minHeight", 0);
             vi.visible   = viewCfg->get("visible", true);
+            vi.opacity   = viewCfg->get("opacity", 0.F);
         }
 
         m_views.push_back(vi);

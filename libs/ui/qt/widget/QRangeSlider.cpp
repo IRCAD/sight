@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,6 +30,9 @@
 
 namespace sight::ui::qt::widget
 {
+
+static QColor s_CYAN      = QColor(104, 151, 187);
+static QColor s_DARK_BLUE = QColor(102, 108, 123);
 
 template<typename T>
 struct Castable
@@ -192,8 +195,8 @@ public:
 
     explicit Window(QWidget* w) :
         Paintable(w),
-        m_pen(Qt::darkBlue),
-        m_brush(Qt::cyan),
+        m_pen(s_DARK_BLUE),
+        m_brush(s_CYAN),
         m_reversePen(Qt::darkYellow),
         m_reverseBrush(Qt::yellow)
     {
@@ -229,8 +232,8 @@ public:
         }
         else
         {
-            pen   = QPen(Qt::lightGray);
-            brush = QBrush(Qt::lightGray);
+            pen   = QPen(QColor(86, 90, 94));
+            brush = QBrush(QColor(86, 90, 94));
         }
 
         painter.setPen(pen);
@@ -383,9 +386,9 @@ void QRangeSlider::paintEvent(QPaintEvent* /*event*/)
     QRect rect = this->rect();
     rect.setLeft(rect.left() + m_handleSize / 2);
     rect.setRight(rect.right() - m_handleSize / 2);
-    painter.fillRect(rect, QApplication::palette().base());
+    painter.fillRect(rect, QColor(86, 90, 94));
 
-    painter.setBrush(Qt::cyan);
+    painter.setBrush(s_CYAN);
     m_window->draw(painter, enabled);
 
     painter.setBrush(Qt::gray);
@@ -488,7 +491,7 @@ void QRangeSlider::wheelEvent(QWheelEvent* event)
     int low  = minHandle->pos();
     int high = maxHandle->pos();
 
-    if(angleDelta.y() > 0)
+    if(angleDelta.y() != 0)
     {
         int delta = int(this->size().width() / (((double) angleDelta.y()) / 4.));
         if(!m_allowMinGreaterThanMax)
@@ -502,7 +505,7 @@ void QRangeSlider::wheelEvent(QWheelEvent* event)
         high = maxHandle->setPos(high + delta);
         window->setPos(low, high);
     }
-    else
+    else if(angleDelta.x() != 0)
     {
         int delta = int(this->size().width() / (((double) angleDelta.x()) / 4.));
         this->move(delta);

@@ -20,7 +20,7 @@
  *
  ***********************************************************************/
 
-#include "modules/ui/qt/image/WindowLevel.hpp"
+#include "modules/ui/qt/image/SWindowLevel.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
@@ -55,53 +55,34 @@ namespace sight::module::ui::qt::image
 
 static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT = "updateTF";
 
-static const std::string s_AUTO_WINDOWING_CONFIG   = "autoWindowing";
-static const std::string s_ENABLE_SQUARE_TF_CONFIG = "enableSquareTF";
-
 //------------------------------------------------------------------------------
 
-WindowLevel::WindowLevel() noexcept
+SWindowLevel::SWindowLevel() noexcept
 {
-    newSlot(s_UPDATE_TF_SLOT, &WindowLevel::updateTF, this);
+    newSlot(s_UPDATE_TF_SLOT, &SWindowLevel::updateTF, this);
 }
 
 //------------------------------------------------------------------------------
 
-WindowLevel::~WindowLevel() noexcept =
+SWindowLevel::~SWindowLevel() noexcept =
     default;
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::configuring()
+void SWindowLevel::configuring()
 {
-    this->initialize();
+    const ConfigType config = this->getConfiguration();
 
-    const ConfigType srvConfig = this->getConfiguration();
-
-    if(srvConfig.count("config.<xmlattr>") != 0U)
-    {
-        const ConfigType config = srvConfig.get_child("config.<xmlattr>");
-
-        const std::string autoWindowing = config.get(s_AUTO_WINDOWING_CONFIG, "false");
-        SIGHT_ASSERT(
-            "Bad value for 'autoWindowing' attribute. It must be 'true' or 'false'!",
-            autoWindowing == "true" || autoWindowing == "false"
-        );
-        m_autoWindowing = (autoWindowing == "true");
-
-        const std::string enableSquareTF = config.get(s_ENABLE_SQUARE_TF_CONFIG, "true");
-        SIGHT_ASSERT(
-            "Bad value for 'enableSquareTF' attribute. It must be 'true' or 'false'!",
-            enableSquareTF == "true" || enableSquareTF == "false"
-        );
-        m_enableSquareTF = (enableSquareTF == "true");
-    }
+    m_minimal        = config.get("config.<xmlattr>.minimal", m_minimal);
+    m_autoWindowing  = config.get("config.<xmlattr>.autoWindowing", m_autoWindowing);
+    m_enableSquareTF = config.get("config.<xmlattr>.enableSquareTF", m_enableSquareTF);
 }
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::starting()
+void SWindowLevel::starting()
 {
+    this->initialize();
     {
         const auto image = m_image.lock();
         SIGHT_ASSERT("inout '" << s_IMAGE << "' does not exist.", image);
@@ -123,85 +104,94 @@ void WindowLevel::starting()
 
         m_rangeSlider = new sight::ui::qt::widget::QRangeSlider();
 
-        m_toggleTFButton = new QToolButton();
-        QIcon ico;
-        std::string squareIcon(core::runtime::getModuleResourceFilePath(
-                                   "sight::module::ui::qt",
-                                   "square.png"
-        ).string());
-        std::string rampIcon(core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "ramp.png").string());
-        ico.addPixmap(QPixmap(QString::fromStdString(squareIcon)), QIcon::Normal, QIcon::On);
-        ico.addPixmap(QPixmap(QString::fromStdString(rampIcon)), QIcon::Normal, QIcon::Off);
-        m_toggleTFButton->setIcon(ico);
-        m_toggleTFButton->setCheckable(true);
-        m_toggleTFButton->setToolTip("Function style");
-
-        m_toggleAutoButton = new QToolButton();
-        QIcon icon;
-        std::string win(core::runtime::getModuleResourceFilePath("sight::module::ui::qt", "windowing.svg").string());
-        icon.addFile(QString::fromStdString(win), QSize(), QIcon::Normal, QIcon::On);
-        std::string nowindo(core::runtime::getModuleResourceFilePath(
-                                "sight::module::ui::qt",
-                                "nowindowing.svg"
-        ).string());
-        icon.addFile(QString::fromStdString(nowindo), QSize(), QIcon::Normal, QIcon::Off);
-        m_toggleAutoButton->setIcon(icon);
-        m_toggleAutoButton->setToolTip("Automatic Windowing");
-        m_toggleAutoButton->setCheckable(true);
-        m_toggleAutoButton->setChecked(m_autoWindowing);
-
-        m_dynamicRangeSelection = new QToolButton();
-        m_dynamicRangeSelection->setPopupMode(QToolButton::InstantPopup);
-
-        m_dynamicRangeMenu = new QMenu(m_dynamicRangeSelection);
-        QAction* const action1 = m_dynamicRangeMenu->addAction("-1024; 1023");
-        QAction* const action2 = m_dynamicRangeMenu->addAction("-100; 300");
-        QAction* const action3 = m_dynamicRangeMenu->addAction("Fit W/L");
-        QAction* const action4 = m_dynamicRangeMenu->addAction("Fit Data"); // TODO
-        //QAction *action5 = m_dynamicRangeMenu->addAction( "Custom ..." ); // TODO
-        m_dynamicRangeSelection->setMenu(m_dynamicRangeMenu);
-
-        action1->setData(QVariant(1));
-        action2->setData(QVariant(2));
-        action3->setData(QVariant(3));
-        action4->setData(QVariant(4));
-        //action5->setData(QVariant(5));
-
         layout->addWidget(m_rangeSlider, 0, 0, 1, -1);
-        layout->addWidget(m_valueTextMin, 1, 0);
-        layout->addWidget(m_toggleTFButton, 1, 1);
-        layout->addWidget(m_toggleAutoButton, 1, 2);
-        layout->addWidget(m_dynamicRangeSelection, 1, 3);
-        layout->addWidget(m_valueTextMax, 1, 4);
-
-        qtContainer->setLayout(layout);
-
-        // Set the visibility after the layout is created so it doesn't open its own window.
-        m_toggleTFButton->setVisible(m_enableSquareTF);
-
-        QObject::connect(m_valueTextMin, &::QLineEdit::editingFinished, this, &WindowLevel::onTextEditingFinished);
-        QObject::connect(m_valueTextMax, &::QLineEdit::editingFinished, this, &WindowLevel::onTextEditingFinished);
         QObject::connect(
             m_rangeSlider,
             SIGNAL(sliderRangeEdited(double,double)),
             this,
             SLOT(onWindowLevelWidgetChanged(double,double))
         );
-        QObject::connect(m_toggleTFButton, &::QToolButton::toggled, this, &WindowLevel::onToggleTF);
-        QObject::connect(m_toggleAutoButton, &::QToolButton::toggled, this, &WindowLevel::onToggleAutoWL);
-        QObject::connect(
-            m_dynamicRangeSelection,
-            &::QToolButton::triggered,
-            this,
-            &WindowLevel::onDynamicRangeSelectionChanged
-        );
+        if(not m_minimal)
+        {
+            m_toggleTFButton = new QToolButton();
+            QIcon ico;
+            std::string squareIcon(core::runtime::getModuleResourceFilePath(
+                                       "sight::module::ui::qt",
+                                       "square.png"
+            ).string());
+            std::string rampIcon(core::runtime::getModuleResourceFilePath(
+                                     "sight::module::ui::qt",
+                                     "ramp.png"
+            ).string());
+            ico.addPixmap(QPixmap(QString::fromStdString(squareIcon)), QIcon::Normal, QIcon::On);
+            ico.addPixmap(QPixmap(QString::fromStdString(rampIcon)), QIcon::Normal, QIcon::Off);
+            m_toggleTFButton->setIcon(ico);
+            m_toggleTFButton->setCheckable(true);
+            m_toggleTFButton->setToolTip("Function style");
+
+            m_toggleAutoButton = new QToolButton();
+            QIcon icon;
+            std::string win(core::runtime::getModuleResourceFilePath(
+                                "sight::module::ui::qt",
+                                "windowing.svg"
+            ).string());
+            icon.addFile(QString::fromStdString(win), QSize(), QIcon::Normal, QIcon::On);
+            std::string nowindo(core::runtime::getModuleResourceFilePath(
+                                    "sight::module::ui::qt",
+                                    "nowindowing.svg"
+            ).string());
+            icon.addFile(QString::fromStdString(nowindo), QSize(), QIcon::Normal, QIcon::Off);
+            m_toggleAutoButton->setIcon(icon);
+            m_toggleAutoButton->setToolTip("Automatic Windowing");
+            m_toggleAutoButton->setCheckable(true);
+            m_toggleAutoButton->setChecked(m_autoWindowing);
+
+            m_dynamicRangeSelection = new QToolButton();
+            m_dynamicRangeSelection->setPopupMode(QToolButton::InstantPopup);
+
+            m_dynamicRangeMenu = new QMenu(m_dynamicRangeSelection);
+            QAction* const action1 = m_dynamicRangeMenu->addAction("-1024; 1023");
+            QAction* const action2 = m_dynamicRangeMenu->addAction("-100; 300");
+            QAction* const action3 = m_dynamicRangeMenu->addAction("Fit W/L");
+            QAction* const action4 = m_dynamicRangeMenu->addAction("Fit Data"); // TODO
+            //QAction *action5 = m_dynamicRangeMenu->addAction( "Custom ..." ); // TODO
+            m_dynamicRangeSelection->setMenu(m_dynamicRangeMenu);
+
+            action1->setData(QVariant(1));
+            action2->setData(QVariant(2));
+            action3->setData(QVariant(3));
+            action4->setData(QVariant(4));
+            //action5->setData(QVariant(5));
+
+            layout->addWidget(m_valueTextMin, 1, 0);
+            layout->addWidget(m_toggleTFButton, 1, 1);
+            layout->addWidget(m_toggleAutoButton, 1, 2);
+            layout->addWidget(m_dynamicRangeSelection, 1, 3);
+            layout->addWidget(m_valueTextMax, 1, 4);
+
+            // Set the visibility after the layout is created so it doesn't open its own window.
+            m_toggleTFButton->setVisible(m_enableSquareTF);
+
+            QObject::connect(m_valueTextMin, &::QLineEdit::editingFinished, this, &SWindowLevel::onTextEditingFinished);
+            QObject::connect(m_valueTextMax, &::QLineEdit::editingFinished, this, &SWindowLevel::onTextEditingFinished);
+            QObject::connect(m_toggleTFButton, &::QToolButton::toggled, this, &SWindowLevel::onToggleTF);
+            QObject::connect(m_toggleAutoButton, &::QToolButton::toggled, this, &SWindowLevel::onToggleAutoWL);
+            QObject::connect(
+                m_dynamicRangeSelection,
+                &::QToolButton::triggered,
+                this,
+                &SWindowLevel::onDynamicRangeSelectionChanged
+            );
+        }
+
+        qtContainer->setLayout(layout);
     }
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::updating()
+void SWindowLevel::updating()
 {
     const auto image = m_image.lock();
     SIGHT_ASSERT("inout '" << s_IMAGE << "' does not exist.", image);
@@ -227,45 +217,48 @@ void WindowLevel::updating()
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::stopping()
+void SWindowLevel::stopping()
 {
-    QObject::disconnect(
-        m_dynamicRangeSelection,
-        &::QToolButton::triggered,
-        this,
-        &WindowLevel::onDynamicRangeSelectionChanged
-    );
-    QObject::disconnect(m_toggleAutoButton, &::QToolButton::toggled, this, &WindowLevel::onToggleAutoWL);
-    QObject::disconnect(m_toggleTFButton, &::QToolButton::toggled, this, &WindowLevel::onToggleTF);
-    QObject::disconnect(
-        m_rangeSlider,
-        SIGNAL(sliderRangeEdited(double,double)),
-        this,
-        SLOT(onWindowLevelWidgetChanged(double,double))
-    );
-    QObject::disconnect(m_valueTextMax, &::QLineEdit::editingFinished, this, &WindowLevel::onTextEditingFinished);
-    QObject::disconnect(m_valueTextMin, &::QLineEdit::editingFinished, this, &WindowLevel::onTextEditingFinished);
+    if(not m_minimal)
+    {
+        QObject::disconnect(
+            m_dynamicRangeSelection,
+            &::QToolButton::triggered,
+            this,
+            &SWindowLevel::onDynamicRangeSelectionChanged
+        );
+        QObject::disconnect(m_toggleAutoButton, &::QToolButton::toggled, this, &SWindowLevel::onToggleAutoWL);
+        QObject::disconnect(m_toggleTFButton, &::QToolButton::toggled, this, &SWindowLevel::onToggleTF);
+        QObject::disconnect(
+            m_rangeSlider,
+            SIGNAL(sliderRangeEdited(double,double)),
+            this,
+            SLOT(onWindowLevelWidgetChanged(double,double))
+        );
+        QObject::disconnect(m_valueTextMax, &::QLineEdit::editingFinished, this, &SWindowLevel::onTextEditingFinished);
+        QObject::disconnect(m_valueTextMin, &::QLineEdit::editingFinished, this, &SWindowLevel::onTextEditingFinished);
+    }
 
     this->destroy();
 }
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::updateTF()
+void SWindowLevel::updateTF()
 {
     this->updating();
 }
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::info(std::ostream& _sstream)
+void SWindowLevel::info(std::ostream& _sstream)
 {
     _sstream << "Window level editor";
 }
 
 //------------------------------------------------------------------------------
 
-WindowLevel::WindowLevelMinMaxType WindowLevel::getImageWindowMinMax()
+SWindowLevel::WindowLevelMinMaxType SWindowLevel::getImageWindowMinMax()
 {
     const auto tf = m_tf.const_lock();
     SIGHT_ASSERT("TransferFunction null pointer", tf);
@@ -273,7 +266,7 @@ WindowLevel::WindowLevelMinMaxType WindowLevel::getImageWindowMinMax()
 }
 
 //------------------------------------------------------------------------------
-void WindowLevel::updateWidgetMinMax(double _imageMin, double _imageMax)
+void SWindowLevel::updateWidgetMinMax(double _imageMin, double _imageMax)
 {
     const double rangeMin = this->fromWindowLevel(_imageMin);
     const double rangeMax = this->fromWindowLevel(_imageMax);
@@ -283,7 +276,7 @@ void WindowLevel::updateWidgetMinMax(double _imageMin, double _imageMax)
 
 //------------------------------------------------------------------------------
 
-double WindowLevel::fromWindowLevel(double val)
+double SWindowLevel::fromWindowLevel(double val)
 {
     double valMin = m_widgetDynamicRangeMin;
     double valMax = valMin + m_widgetDynamicRangeWidth;
@@ -299,14 +292,14 @@ double WindowLevel::fromWindowLevel(double val)
 
 //------------------------------------------------------------------------------
 
-double WindowLevel::toWindowLevel(double _val) const
+double SWindowLevel::toWindowLevel(double _val) const
 {
     return m_widgetDynamicRangeMin + m_widgetDynamicRangeWidth * _val;
 }
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
+void SWindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
 {
     const auto tf = m_tf.lock();
     tf->setWindowMinMax(
@@ -326,7 +319,7 @@ void WindowLevel::updateImageWindowLevel(double _imageMin, double _imageMax)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
+void SWindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
 {
     const double imageMin = this->toWindowLevel(_min);
     const double imageMax = this->toWindowLevel(_max);
@@ -336,7 +329,7 @@ void WindowLevel::onWindowLevelWidgetChanged(double _min, double _max)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::onDynamicRangeSelectionChanged(QAction* action)
+void SWindowLevel::onDynamicRangeSelectionChanged(QAction* action)
 {
     WindowLevelMinMaxType wl = this->getImageWindowMinMax();
     double min               = m_widgetDynamicRangeMin;
@@ -383,7 +376,7 @@ void WindowLevel::onDynamicRangeSelectionChanged(QAction* action)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::onImageWindowLevelChanged(double _imageMin, double _imageMax)
+void SWindowLevel::onImageWindowLevelChanged(double _imageMin, double _imageMax)
 {
     this->updateWidgetMinMax(_imageMin, _imageMax);
     this->updateTextWindowLevel(_imageMin, _imageMax);
@@ -391,7 +384,7 @@ void WindowLevel::onImageWindowLevelChanged(double _imageMin, double _imageMax)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
+void SWindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 {
     m_valueTextMin->setText(QString("%1").arg(_imageMin));
     m_valueTextMax->setText(QString("%1").arg(_imageMax));
@@ -399,7 +392,7 @@ void WindowLevel::updateTextWindowLevel(double _imageMin, double _imageMax)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::onToggleTF(bool squareTF)
+void SWindowLevel::onToggleTF(bool squareTF)
 {
     const auto currentTF = m_tf.lock();
 
@@ -447,7 +440,7 @@ void WindowLevel::onToggleTF(bool squareTF)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::onToggleAutoWL(bool autoWL)
+void SWindowLevel::onToggleAutoWL(bool autoWL)
 {
     m_autoWindowing = autoWL;
 
@@ -465,14 +458,14 @@ void WindowLevel::onToggleAutoWL(bool autoWL)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::onTextEditingFinished()
+void SWindowLevel::onTextEditingFinished()
 {
     double min = NAN;
     double max = NAN;
-    if(sight::module::ui::qt::image::WindowLevel::getWidgetDoubleValue(
+    if(sight::module::ui::qt::image::SWindowLevel::getWidgetDoubleValue(
            m_valueTextMin,
            min
-       ) && sight::module::ui::qt::image::WindowLevel::getWidgetDoubleValue(m_valueTextMax, max))
+       ) && sight::module::ui::qt::image::SWindowLevel::getWidgetDoubleValue(m_valueTextMax, max))
     {
         this->updateWidgetMinMax(min, max);
         this->updateImageWindowLevel(min, max);
@@ -481,7 +474,7 @@ void WindowLevel::onTextEditingFinished()
 
 //------------------------------------------------------------------------------
 
-bool WindowLevel::getWidgetDoubleValue(QLineEdit* widget, double& val)
+bool SWindowLevel::getWidgetDoubleValue(QLineEdit* widget, double& val)
 {
     bool ok = false;
     val = widget->text().toDouble(&ok);
@@ -502,7 +495,7 @@ bool WindowLevel::getWidgetDoubleValue(QLineEdit* widget, double& val)
 
 //------------------------------------------------------------------------------
 
-void WindowLevel::setWidgetDynamicRange(double min, double max)
+void SWindowLevel::setWidgetDynamicRange(double min, double max)
 {
     if(fabs(max - min) < 1.e-05)
     {
@@ -512,12 +505,15 @@ void WindowLevel::setWidgetDynamicRange(double min, double max)
     m_widgetDynamicRangeMin   = min;
     m_widgetDynamicRangeWidth = max - min;
 
-    m_dynamicRangeSelection->setText(QString("%1, %2 ").arg(min).arg(max));
+    if(not m_minimal)
+    {
+        m_dynamicRangeSelection->setText(QString("%1, %2 ").arg(min).arg(max));
+    }
 }
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap WindowLevel::getAutoConnections() const
+service::IService::KeyConnectionsMap SWindowLevel::getAutoConnections() const
 {
     return {
         {s_IMAGE, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE},

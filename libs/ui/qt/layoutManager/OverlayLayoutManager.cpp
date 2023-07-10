@@ -48,7 +48,7 @@ static int calculateOffset(Coord configuredOffset, int parentSize, int widgetSiz
     // If the size is negative, then the widget must be aligned to the right or the bottom.
     // In Qt, the position of a widget is defined by its top left corner, therefore we must substract the size of the
     // widget from the offset.
-    if(configuredOffset.value < 0)
+    if(configuredOffset.value <= 0 && configuredOffset.negative)
     {
         res = std::max(0, parentSize - widgetSize - res);
     }
@@ -113,7 +113,7 @@ public:
                 m_child->setFixedHeight(calculateSize(m_height, resizeEvent.size().height()));
             }
 
-            if(m_x.value < 0 || m_x.relative || m_y.value < 0 || m_y.relative)
+            if((m_x.value <= 0 && m_x.negative) || m_x.relative || (m_y.value <= 0 && m_y.negative) || m_y.relative)
             {
                 int x = calculateOffset(m_x, resizeEvent.size().width(), m_child->width());
                 int y = calculateOffset(m_y, resizeEvent.size().height(), m_child->height());
@@ -175,11 +175,16 @@ void OverlayLayoutManager::createLayout(ui::base::container::fwContainer::sptr p
             widget->setMinimumHeight(view.minHeight);
         }
 
-        widget->setStyleSheet("background-color: none");
+        if(view.opacity == 0.F)
+        {
+            widget->setStyleSheet("background-color: none");
+        }
+
         int x = calculateOffset(view.x, m_parentContainer->getQtContainer()->width(), widget->width());
         int y = calculateOffset(view.y, m_parentContainer->getQtContainer()->height(), widget->height());
         widget->move(x, y);
-        if(view.x.value < 0 || view.x.relative || view.y.value < 0 || view.y.relative
+        if((view.x.value <= 0 && view.x.negative) || view.x.relative
+           || (view.y.value <= 0 && view.y.negative) || view.y.relative
            || (view.width.value > 0 && view.width.relative) || (view.height.value > 0 && view.height.relative))
         {
             m_parentContainer->getQtContainer()->installEventFilter(

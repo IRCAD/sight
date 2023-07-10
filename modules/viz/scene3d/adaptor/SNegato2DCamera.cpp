@@ -305,6 +305,7 @@ void SNegato2DCamera::mouseMoveEvent(
 
         camNode->translate(mousePosView - previousMousePosView);
         m_hasMoved = true;
+        this->requestRender();
     }
     else if(m_isInteracting && _button == MouseButton::RIGHT)
     {

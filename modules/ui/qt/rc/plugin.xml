@@ -214,9 +214,9 @@
 
      <extension implements="sight::service::extension::Factory">
           <type>sight::ui::base::IEditor</type>
-          <service>sight::module::ui::qt::image::WindowLevel</service>
+          <service>sight::module::ui::qt::image::SWindowLevel</service>
           <object>sight::data::Image</object>
-          <desc>WindowLevel service allows to change the min/max value of windowing.</desc>
+          <desc>SWindowLevel service allows to change the min/max value of windowing.</desc>
      </extension>
 
      <extension implements="sight::service::extension::Factory">

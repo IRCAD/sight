@@ -41,6 +41,7 @@ public:
         struct Coord
         {
             bool relative = false;
+            bool negative = false;
             int value     = 0;
         };
         Coord x;
@@ -50,6 +51,7 @@ public:
         int minWidth {0};
         int minHeight {0};
         bool visible {true};
+        float opacity {0.0};
     };
 
     /**

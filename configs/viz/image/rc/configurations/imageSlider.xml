@@ -1,0 +1,127 @@
+<!--
+Example:
+
+<service uid="..." type="sight::service::SConfigController">
+    <appConfig id="TransferFunctionWithNegatoEditor" />
+    <inout group="data">
+        <key name="image" uid="..." />
+        <key name="histogram" uid="..." />
+        <key name="landmarks" uid="..." />
+        <key name="transferFunctionOutput" uid="..." />
+    </inout>
+    <parameter replace="WID_PARENT" by="..." />
+</service>
+-->
+<extension implements="sight::service::extension::AppConfig">
+    <id>sight::config::viz::image::imageSlider</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="image" />
+        <param name="transferFunction" />
+        <param name="enableSliceType" default="true"/>
+        <param name="sliceIndex" default="axial"/>
+    </parameters>
+    <desc>This configuration displays a tab layout containing a negato and a transfer function editor</desc>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${image}" type="sight::data::Image" src="ref" />
+        <object uid="${transferFunction}" type="sight::data::TransferFunction" src="ref" />
+
+        <service uid="view" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="horizontal" />
+                    <view proportion="0" />
+                    <view proportion="1" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="toolBarView" start="true" />
+                <view sid="sliderView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="toolBarView" type="sight::module::ui::base::SView">
+            <gui>
+                <toolBar backgroundColor="#00000000" />
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="horizontal" />
+                </layout>
+            </gui>
+            <registry>
+                <toolBar sid="topToolbarView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="topToolbarView" type="sight::module::ui::base::SToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="windowing" icon="sight::module::ui::qt/windowing.svg" />
+                    <menuItem name="slice" icon="sight::module::ui::flaticons/Layers.svg" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="windowingAct" start="true" />
+                <menuItem sid="sliceAct" start="true" />
+            </registry>
+        </service>
+
+        <service uid="sliderView" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="0" />
+                    <view proportion="0" visible="false"/>
+                </layout>
+            </gui>
+            <registry>
+                <view sid="negatoSlicerSrv" start="true" />
+                <view sid="windowLevelImage" start="true" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Actions ************************************ -->
+
+        <!-- Set the view in full screen -->
+        <service uid="windowingAct" type="sight::module::ui::base::SAction"/>
+
+        <!-- Set the view in windowed  -->
+        <service uid="sliceAct" type="sight::module::ui::base::SAction">
+            <state visible="false" />
+        </service>
+
+        <service uid="negatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
+            <inout key="image" uid="${image}" />
+            <sliceIndex>${sliceIndex}</sliceIndex>
+            <displayAxisSelector>${enableSliceType}</displayAxisSelector>
+        </service>
+
+        <service uid="windowLevelImage" type="sight::module::ui::qt::image::SWindowLevel" autoConnect="true">
+            <config minimal="true" />
+            <inout key="image" uid="${image}" />
+            <inout key="tf" uid="${transferFunction}" />
+        </service>
+
+        <connect>
+            <signal>windowingAct/clicked</signal>
+            <slot>negatoSlicerSrv/hide</slot>
+            <slot>windowLevelImage/show</slot>
+            <slot>windowingAct/hide</slot>
+            <slot>sliceAct/show</slot>
+        </connect>
+        <connect>
+            <signal>sliceAct/clicked</signal>
+            <slot>negatoSlicerSrv/show</slot>
+            <slot>windowLevelImage/hide</slot>
+            <slot>windowingAct/show</slot>
+            <slot>sliceAct/hide</slot>
+        </connect>
+
+        <start uid="view" />
+
+    </config>
+</extension>
