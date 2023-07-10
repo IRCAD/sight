@@ -28,7 +28,9 @@
 #include <QApplication>
 #include <QEvent>
 #include <QPropertyAnimation>
+#include <QResizeEvent>
 #include <QStyle>
+#include <QToolButton>
 
 //------------------------------------------------------------------------------
 
@@ -185,13 +187,22 @@ void AccordionMenu::update()
 
     auto* firstButton = qobject_cast<QAbstractButton*>(widgets[0]);
     SIGHT_ASSERT("The first widget must be a button", firstButton);
+    if(m_orientation == Qt::Horizontal)
+    {
+        firstButton->move(0, (height() - firstButton->height()) / 2);
+    }
+    else
+    {
+        firstButton->move((width() - firstButton->width()) / 2, 0);
+    }
+
     firstButton->installEventFilter(this);
     firstButton->show();
     // Show/hide all widgets except the first one
     std::for_each(widgets.begin() + 1, widgets.end(), [this](QWidget* w){w->setVisible(!m_folded);});
     m_firstButtonConnection =
         QObject::connect(firstButton, &QAbstractButton::toggled, this, &AccordionMenu::setUnfolded);
-    std::ranges::for_each(widgets, &QWidget::adjustSize);
+    std::ranges::for_each(widgets, [&firstButton](QWidget* w){w->resize(firstButton->size());});
     m_bracket->adjustSize();
     auto* minAccordionSizeAnim = new QPropertyAnimation(
         this,
@@ -219,15 +230,33 @@ void AccordionMenu::update()
     int offset = m_orientation == Qt::Horizontal ? firstButton->width() : firstButton->height();
     for(std::size_t i = 1 ; i < widgets.size() ; i++)
     {
-        auto* anim = new QPropertyAnimation(widgets[i], "pos");
-        anim->setStartValue(QPoint(0, 0));
-        anim->setEndValue(m_orientation == Qt::Horizontal ? QPoint(offset, 0) : QPoint(0, offset));
+        auto* anim         = new QPropertyAnimation(widgets[i], "pos");
+        int marginToCenter =
+            (m_orientation == Qt::Horizontal ? height() - widgets[i]->height() : width() - widgets[i]->width()) / 2;
+        anim->setStartValue(m_orientation == Qt::Horizontal ? QPoint(0, marginToCenter) : QPoint(marginToCenter, 0));
+        anim->setEndValue(
+            m_orientation
+            == Qt::Horizontal ? QPoint(offset, marginToCenter) : QPoint(marginToCenter, offset)
+        );
         offset += m_orientation == Qt::Horizontal ? widgets[i]->width() : widgets[i]->height();
         m_animationGroup->addAnimation(anim);
         widgets[i]->move(anim->currentValue().toPoint());
     }
 
-    m_bracket->move(firstButton->width() - m_bracket->width() - 2, firstButton->height() - m_bracket->height() - 2);
+    if(auto* toolButton = qobject_cast<QToolButton*>(firstButton);
+       !firstButton->text().isEmpty() && toolButton != nullptr
+       && toolButton->toolButtonStyle() != Qt::ToolButtonIconOnly)
+    {
+        m_bracket->move(
+            (firstButton->size().width() - firstButton->iconSize().width()) / 2 + firstButton->iconSize().width() - m_bracket->iconSize().width(),
+            firstButton->iconSize().height() - m_bracket->iconSize().height()
+        );
+    }
+    else
+    {
+        m_bracket->move(firstButton->width() - m_bracket->width() - 2, firstButton->height() - m_bracket->height() - 2);
+    }
+
     m_bracket->raise();
     auto* bracketAnim = new QVariantAnimation;
     bracketAnim->setStartValue(0);
@@ -252,6 +281,17 @@ bool AccordionMenu::eventFilter(QObject* o, QEvent* e)
     }
 
     return false;
+}
+
+//------------------------------------------------------------------------------
+
+void AccordionMenu::resizeEvent(QResizeEvent* e)
+{
+    if((m_orientation == Qt::Horizontal && e->oldSize().height() != e->size().height())
+       || (m_orientation == Qt::Vertical && e->oldSize().width() != e->size().width()))
+    {
+        update();
+    }
 }
 
 //------------------------------------------------------------------------------

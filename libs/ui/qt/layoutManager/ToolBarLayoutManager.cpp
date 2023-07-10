@@ -215,14 +215,6 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
                 auto* toolButton = new QToolButton;
                 toolButton->setToolButtonStyle(toolBar->toolButtonStyle());
                 toolButton->setIconSize(toolBar->iconSize());
-                if(toolBar->orientation() == Qt::Horizontal)
-                {
-                    toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
-                }
-                else
-                {
-                    toolButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
-                }
 
                 action = new QAction(toolBar);
                 toolButton->setDefaultAction(action);
@@ -239,6 +231,18 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
                     icon.addFile(QString::fromStdString(actionInfo.m_icon2.string()), {}, QIcon::Normal, QIcon::On);
                     icon.addFile(QString::fromStdString(actionInfo.m_icon2.string()), {}, QIcon::Active, QIcon::On);
                     action->setIcon(icon);
+                }
+
+                if(toolBar->orientation() == Qt::Horizontal)
+                {
+                    toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+                    toolBar->setMinimumHeight(std::max(toolBar->minimumHeight(), toolButton->sizeHint().height()));
+                }
+                else
+                {
+                    toolButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                    // The +5 is to take into account the margin of the toolbar
+                    toolBar->setMinimumWidth(std::max(toolBar->minimumWidth(), toolButton->sizeHint().width() + 5));
                 }
 
                 accordionLayout->addWidget(toolButton);

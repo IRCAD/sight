@@ -53,6 +53,7 @@ public:
 
 protected:
 
+    void resizeEvent(QResizeEvent* e) override;
     void childEvent(QChildEvent* e) override;
 
 private:
