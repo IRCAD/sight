@@ -117,9 +117,6 @@ private Q_SLOTS:
     /// Called when the user interacts with the scene using the mouse and keyboard, connected to @ref m_qOgreWidget.
     void onInteracted(sight::viz::scene3d::IWindowInteractor::InteractionInfo _info);
 
-    /// Called when the clipping range has to match the last updating of the scene bounding box
-    void onCameraClippingComputation();
-
 private:
 
     bool m_isFullScreen {false};

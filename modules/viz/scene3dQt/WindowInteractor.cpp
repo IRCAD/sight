@@ -169,7 +169,6 @@ void WindowInteractor::connectToContainer()
     const auto renderService = sight::viz::scene3d::SRender::dynamicCast(m_renderService.lock());
     SIGHT_ASSERT("RenderService wrongly instantiated. ", renderService);
 
-    QObject::connect(m_qOgreWidget, SIGNAL(cameraClippingComputation()), this, SLOT(onCameraClippingComputation()));
     QObject::connect(
         m_qOgreWidget,
         SIGNAL(
@@ -186,7 +185,6 @@ void WindowInteractor::connectToContainer()
 
 void WindowInteractor::disconnectInteractor()
 {
-    QObject::disconnect(m_qOgreWidget, SIGNAL(cameraClippingComputation()), this, SLOT(onCameraClippingComputation()));
     QObject::disconnect(
         m_qOgreWidget,
         SIGNAL(
@@ -248,16 +246,6 @@ void WindowInteractor::onInteracted(sight::viz::scene3d::IWindowInteractor::Inte
             _info
         );
     }
-}
-
-//-----------------------------------------------------------------------------
-
-void WindowInteractor::onCameraClippingComputation()
-{
-    service::IService::sptr renderService                = m_renderService.lock();
-    sight::viz::scene3d::SRender::sptr ogreRenderService = sight::viz::scene3d::SRender::dynamicCast(renderService);
-
-    ogreRenderService->slot(sight::viz::scene3d::SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT)->asyncRun();
 }
 
 //-----------------------------------------------------------------------------

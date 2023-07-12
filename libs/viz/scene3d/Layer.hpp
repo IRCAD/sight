@@ -172,9 +172,6 @@ public:
     /// Resets the camera clipping range (near and far).
     VIZ_SCENE3D_API void resetCameraClippingRange() const;
 
-    /// Resets the camera clipping range (near and far).
-    VIZ_SCENE3D_API void resetCameraClippingRange(const Ogre::AxisAlignedBox& worldCoordBoundingBox) const;
-
     /// Appends a new interactor with the given priority. Interactors with higher priorities are executed first.
     VIZ_SCENE3D_API void addInteractor(
         const viz::scene3d::interactor::IInteractor::sptr& _interactor,

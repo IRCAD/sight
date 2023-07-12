@@ -125,7 +125,6 @@ void PredefinedPositionInteractor::wheelEvent(Modifier /*_mods*/, double delta, 
             Ogre::SceneNode* const camNode = camera->getParentSceneNode();
             camNode->translate(Ogre::Vector3(0, 0, -1) * z, Ogre::Node::TS_LOCAL);
 
-            layer->resetCameraClippingRange();
             m_layer.lock()->requestRender();
         }
     }

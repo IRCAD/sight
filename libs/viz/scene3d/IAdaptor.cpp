@@ -155,7 +155,6 @@ void IAdaptor::requestRender()
         || renderService->getStatus() == service::IService::SWAPPING)
        && renderService->getRenderMode() == viz::scene3d::SRender::RenderMode::AUTO)
     {
-        renderService->slot(sight::viz::scene3d::SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT)->run();
         renderService->requestRender();
     }
 }

@@ -84,9 +84,6 @@ Q_SIGNALS:
     /// Emits when the user interacts with the scene using the mouse and keyboard.
     void interacted(sight::viz::scene3d::IWindowInteractor::InteractionInfo);
 
-    /// Emits to recompute the camera's clipping range.
-    void cameraClippingComputation();
-
 private:
 
     /// Manages events

@@ -194,7 +194,6 @@ void OffScreenWindowInteractor::render()
 {
     service::IService::sptr renderService                = m_renderService.lock();
     sight::viz::scene3d::SRender::sptr ogreRenderService = sight::viz::scene3d::SRender::dynamicCast(renderService);
-    ogreRenderService->slot(sight::viz::scene3d::SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT)->asyncRun();
 
     ++m_frameId;
     /*

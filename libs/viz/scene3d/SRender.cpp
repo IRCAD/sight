@@ -58,14 +58,13 @@ const std::string SRender::s_OGREBACKGROUNDID = "ogreBackground";
 
 //-----------------------------------------------------------------------------
 
-const core::com::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT     = "computeCameraParameters";
-const core::com::Slots::SlotKeyType SRender::s_RESET_CAMERAS_SLOT           = "resetCameras";
-const core::com::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT = "computeCameraClipping";
-const core::com::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT          = "requestRender";
-const core::com::Slots::SlotKeyType SRender::s_DISABLE_FULLSCREEN           = "disableFullscreen";
-const core::com::Slots::SlotKeyType SRender::s_ENABLE_FULLSCREEN            = "enableFullscreen";
-const core::com::Slots::SlotKeyType SRender::s_SET_MANUAL_MODE              = "setManualMode";
-const core::com::Slots::SlotKeyType SRender::s_SET_AUTO_MODE                = "setAutoMode";
+const core::com::Slots::SlotKeyType SRender::s_COMPUTE_CAMERA_ORIG_SLOT = "computeCameraParameters";
+const core::com::Slots::SlotKeyType SRender::s_RESET_CAMERAS_SLOT       = "resetCameras";
+const core::com::Slots::SlotKeyType SRender::s_REQUEST_RENDER_SLOT      = "requestRender";
+const core::com::Slots::SlotKeyType SRender::s_DISABLE_FULLSCREEN       = "disableFullscreen";
+const core::com::Slots::SlotKeyType SRender::s_ENABLE_FULLSCREEN        = "enableFullscreen";
+const core::com::Slots::SlotKeyType SRender::s_SET_MANUAL_MODE          = "setManualMode";
+const core::com::Slots::SlotKeyType SRender::s_SET_AUTO_MODE            = "setAutoMode";
 
 static const core::com::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
 static const core::com::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
@@ -82,7 +81,6 @@ SRender::SRender() noexcept :
 
     newSlot(s_COMPUTE_CAMERA_ORIG_SLOT, &SRender::resetCameraCoordinates, this);
     newSlot(s_RESET_CAMERAS_SLOT, &SRender::resetCameras, this);
-    newSlot(s_COMPUTE_CAMERA_CLIPPING_SLOT, &SRender::computeCameraClipping, this);
     newSlot(s_REQUEST_RENDER_SLOT, &SRender::requestRender, this);
     newSlot(s_DISABLE_FULLSCREEN, &SRender::disableFullscreen, this);
     newSlot(s_ENABLE_FULLSCREEN, &SRender::enableFullscreen, this);
@@ -492,17 +490,6 @@ void SRender::resetCameras()
     }
 
     this->requestRender();
-}
-
-//-----------------------------------------------------------------------------
-
-void SRender::computeCameraClipping()
-{
-    for(const auto& it : m_layers)
-    {
-        viz::scene3d::Layer::sptr layer = it.second;
-        layer->resetCameraClippingRange();
-    }
 }
 
 //-----------------------------------------------------------------------------

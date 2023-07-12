@@ -54,7 +54,6 @@ class Layer;
  * - \b resetCameras(): resets all layers camera.
  * - \b resetCamera_LAYER_ID(): "LAYER_ID" needs to be changed with your actual layer id. Resets the camera of the layer
  * specified by LAYER_ID.
- * - \b computeCameraClipping(): recomputes the camera's clipping range when the scene is updated.
  * - \b requestRender(): request the service to repaint the scene.
  * - \b disableFullscreen(): switches to windowed rendering if fullscreen is enabled.
  * - \b enableFullscreen(int): switches fullscreen rendering on the given screen.
@@ -166,9 +165,6 @@ public:
     /// Contains the slot name that resets all layers camera.
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_RESET_CAMERAS_SLOT;
 
-    /// Contains the slot name that computes the parameters to reset the camera.
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_COMPUTE_CAMERA_CLIPPING_SLOT;
-
     /// Contains the slot name that request the picker to do a ray cast according to the passed position.
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_DO_RAY_CAST_SLOT;
 
@@ -222,9 +218,6 @@ public:
 
     /// Resets all layers camera parameters with the actual global bounding box.
     VIZ_SCENE3D_API void resetCameras();
-
-    /// Computes camera parameters with the actual global bounding box.
-    VIZ_SCENE3D_API void computeCameraClipping();
 
     template<class T>
     std::vector<SPTR(T)> getAdaptors() const;

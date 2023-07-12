@@ -736,6 +736,9 @@ void Window::paintGL()
     {
         for(auto& renderTarget : m_renderTargets)
         {
+            auto layer = renderTarget.layer.lock();
+            layer->resetCameraClippingRange();
+
             auto* rt = renderTarget.texture->getBuffer()->getRenderTarget();
             rt->update(false);
 
@@ -760,7 +763,7 @@ void Window::paintGL()
                 int(ratio * this->height())
             );
 
-            auto* scene = renderTarget.layer.lock()->getSceneManager();
+            auto* scene = layer->getSceneManager();
             // Somehow this variable is set to true when compositors are run, and this messes things up here
             // We just reset it here and Ogre will reset it when it needs it
             scene->setLateMaterialResolving(false);

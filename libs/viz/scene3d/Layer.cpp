@@ -639,7 +639,7 @@ void Layer::removeInteractor(const viz::scene3d::interactor::IInteractor::sptr& 
 Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
 {
     // The bounding box in which all the object's bounding boxes will be merged
-    Ogre::AxisAlignedBox worldCoordBoundingBox;
+    Ogre::AxisAlignedBox worldBoundingBox;
 
     // Getting this render service scene manager
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
@@ -666,7 +666,7 @@ Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
             {
                 if(entity->isVisible())
                 {
-                    worldCoordBoundingBox.merge(entity->getWorldBoundingBox());
+                    worldBoundingBox.merge(entity->getWorldBoundingBox());
                 }
             }
             else
@@ -678,7 +678,7 @@ Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
                 {
                     if(manualObject->isVisible())
                     {
-                        worldCoordBoundingBox.merge(manualObject->getWorldBoundingBox());
+                        worldBoundingBox.merge(manualObject->getWorldBoundingBox());
                     }
                 }
                 else
@@ -690,7 +690,7 @@ Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
                     {
                         if(cameraObject->isDebugDisplayEnabled())
                         {
-                            worldCoordBoundingBox.merge(cameraObject->getWorldBoundingBox());
+                            worldBoundingBox.merge(cameraObject->getWorldBoundingBox());
                         }
                     }
                 }
@@ -709,7 +709,7 @@ Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
         }
     }
 
-    return worldCoordBoundingBox;
+    return worldBoundingBox;
 }
 
 //------------------------------------------------------------------------------
@@ -796,13 +796,13 @@ void Layer::removeDefaultLight()
 
 void Layer::resetCameraCoordinates()
 {
-    const Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
+    const Ogre::AxisAlignedBox worldBoundingBox = this->computeWorldBoundingBox();
 
     if((m_camera != nullptr))
     {
         // Check if bounding box is valid, otherwise, do nothing.
-        if(worldCoordBoundingBox == Ogre::AxisAlignedBox::EXTENT_NULL
-           || worldCoordBoundingBox == Ogre::AxisAlignedBox::EXTENT_INFINITE)
+        if(worldBoundingBox == Ogre::AxisAlignedBox::EXTENT_NULL
+           || worldBoundingBox == Ogre::AxisAlignedBox::EXTENT_INFINITE)
         {
             Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
             camNode->setPosition(0.F, 0.F, 0.F);
@@ -810,8 +810,8 @@ void Layer::resetCameraCoordinates()
         else
         {
             // Arbitrary coefficient
-            const Ogre::Real boundingBoxLength = worldCoordBoundingBox.getSize().length() > 0
-                                                 ? worldCoordBoundingBox.getSize().length() : 0;
+            const Ogre::Real boundingBoxLength = worldBoundingBox.getSize().length() > 0
+                                                 ? worldBoundingBox.getSize().length() : 0;
 
             auto coeffZoom = static_cast<float>(boundingBoxLength);
             SIGHT_DEBUG("Zoom coefficient : " << coeffZoom);
@@ -822,7 +822,7 @@ void Layer::resetCameraCoordinates()
             const Ogre::Vector3 direction = quat.zAxis();
 
             // Set the position of the camera
-            camNode->setPosition((worldCoordBoundingBox.getCenter() + coeffZoom * direction));
+            camNode->setPosition((worldBoundingBox.getCenter() + coeffZoom * direction));
 
             // Update interactor's mouse scale
             this->forAllInteractors(
@@ -830,8 +830,6 @@ void Layer::resetCameraCoordinates()
                 {
                     _i->setSceneLength(coeffZoom);
                 });
-
-            this->resetCameraClippingRange(worldCoordBoundingBox);
         }
 
         m_renderService.lock()->requestRender();
@@ -842,20 +840,20 @@ void Layer::resetCameraCoordinates()
 
 void Layer::computeCameraParameters()
 {
-    const Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
+    const Ogre::AxisAlignedBox worldBoundingBox = this->computeWorldBoundingBox();
 
     if((m_camera != nullptr))
     {
         // Check if bounding box is valid, otherwise, do nothing.
-        if(worldCoordBoundingBox != Ogre::AxisAlignedBox::EXTENT_NULL
-           && worldCoordBoundingBox != Ogre::AxisAlignedBox::EXTENT_INFINITE)
+        if(worldBoundingBox != Ogre::AxisAlignedBox::EXTENT_NULL
+           && worldBoundingBox != Ogre::AxisAlignedBox::EXTENT_INFINITE)
         {
             Ogre::SceneNode* camNode      = m_camera->getParentSceneNode();
             const Ogre::Quaternion quat   = camNode->getOrientation();
             const Ogre::Vector3 direction = quat.zAxis();
             const Ogre::Vector3 position  = camNode->getPosition();
 
-            const Ogre::Vector3 div = (position - worldCoordBoundingBox.getCenter()) / direction;
+            const Ogre::Vector3 div = (position - worldBoundingBox.getCenter()) / direction;
             const float distance    = div.z;
 
             // Update interactor's mouse scale
@@ -864,8 +862,6 @@ void Layer::computeCameraParameters()
                 {
                     _i->setSceneLength(distance);
                 });
-
-            this->resetCameraClippingRange(worldCoordBoundingBox);
         }
     }
 }
@@ -874,18 +870,13 @@ void Layer::computeCameraParameters()
 
 void Layer::resetCameraClippingRange() const
 {
-    this->resetCameraClippingRange(this->computeWorldBoundingBox());
-}
+    auto worldBoundingBox = this->computeWorldBoundingBox();
 
-//-----------------------------------------------------------------------------
-
-void Layer::resetCameraClippingRange(const Ogre::AxisAlignedBox& worldCoordBoundingBox) const
-{
-    if((m_camera != nullptr))
+    if((m_camera != nullptr) and worldBoundingBox.isFinite())
     {
         // Check if bounding box is valid, otherwise, do nothing.
-        if(worldCoordBoundingBox == Ogre::AxisAlignedBox::EXTENT_NULL
-           || worldCoordBoundingBox == Ogre::AxisAlignedBox::EXTENT_INFINITE)
+        if(worldBoundingBox == Ogre::AxisAlignedBox::EXTENT_NULL
+           || worldBoundingBox == Ogre::AxisAlignedBox::EXTENT_INFINITE)
         {
             return;
         }
@@ -898,8 +889,8 @@ void Layer::resetCameraClippingRange(const Ogre::AxisAlignedBox& worldCoordBound
         Ogre::Vector3 position  = camNode->getPosition();
 
         // Set near and far plan
-        Ogre::Vector3 minimum = worldCoordBoundingBox.getMinimum();
-        Ogre::Vector3 maximum = worldCoordBoundingBox.getMaximum();
+        Ogre::Vector3 minimum = worldBoundingBox.getMinimum();
+        Ogre::Vector3 maximum = worldBoundingBox.getMaximum();
 
         const float a = -direction.x;
         const float b = -direction.y;
@@ -963,8 +954,8 @@ void Layer::resetCameraClippingRange(const Ogre::AxisAlignedBox& worldCoordBound
         if(m_cameraOrthographic && m_camera->getProjectionType() != Ogre::PT_PERSPECTIVE)
         {
             // Use height as the difference on y coordinates.
-            const auto y1     = worldCoordBoundingBox.getMinimum().y;
-            const auto y2     = worldCoordBoundingBox.getMaximum().y;
+            const auto y1     = worldBoundingBox.getMinimum().y;
+            const auto y2     = worldBoundingBox.getMaximum().y;
             Ogre::Real h      = y2 - y1;
             Ogre::Real margin = 0.1F;
             m_camera->setOrthoWindowHeight(h + h * margin);

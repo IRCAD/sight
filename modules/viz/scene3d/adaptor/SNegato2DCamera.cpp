@@ -445,12 +445,6 @@ void SNegato2DCamera::resetCamera()
                                     * spacing[orientation]);
         camNode->setPosition(camPos);
 
-        const auto worldBoundingBox = layer->computeWorldBoundingBox();
-        if(worldBoundingBox.isFinite())
-        {
-            layer->resetCameraClippingRange(worldBoundingBox);
-        }
-
         m_hasMoved = false;
         this->requestRender();
     }

@@ -131,7 +131,6 @@ void TrackballInteractor::wheelEvent(Modifier /*_mods*/, double delta, int x, in
             Ogre::SceneNode* const camNode = camera->getParentSceneNode();
             camNode->translate(Ogre::Vector3(0, 0, -1) * z, Ogre::Node::TS_LOCAL);
 
-            layer->resetCameraClippingRange();
             layer->requestRender();
         }
     }
