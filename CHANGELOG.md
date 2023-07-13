@@ -1,3 +1,671 @@
+# sight 23.0.0
+
+## Bug fixes:
+
+### build
+
+*Fix nvcc configuration.*
+
+*Make build compatible with CUDA.*
+
+*Protect from target coverage redefinition.*
+
+*Build with gcc 12.*
+
+*Provide a project or an application version number  for xml.*
+
+We fixed and enhanced the way to specify version numbers that can be used in XML configuration:
+* the `PROJECT_VERSION` variable is now correctly filled and matches the global project version number specified in the CMake `project()` macro.
+* a new variable `<target>_VERSION` is now defined for each application, that matches the version used in the packaging, deduced from git tags. If a matching git tag does not exist, it fallback to the latest global tag.
+
+*Clang-15 support and warning fixes.*
+
+### ci
+
+*Try to avoid crashes when a service test fails.*
+
+*Increase timeout for tests.*
+
+*Fix Linux build jobs not outputting test reports.*
+
+*Fix GUI tests crashing because of dangling pointers.*
+
+### core
+
+*Parsing of "channel", "uid" pair for dedicated notifications channels.*
+
+*Error in sync test.*
+
+*Add PB missing enums.*
+
+*Start deferred service if its objects are present or optional.*
+
+*Crash if getMultiFrameGroupSequence is not found.*
+
+Safe return if `getMultiFrameGroupSequence` doesn't exist in current series.
+
+*Random crash in SSynchroniser.*
+
+The `SSynchronizer`::synchronize``function should be run on a separate worker thread. Otherwise, stopping it properly while it runs will never be possible.
+
+By doing that, we introduce an implicit synchronisation when we stop the worker thread, which joins and thus waits for `SSynchronizer`::synchronize``to finish. So we even don't need a more sophisticated synchronisation mechanism with mutexes, condition variables, etc...
+
+However, we discovered three other issues:
+
+* some data objects in the unit-tests were destroyed before the synchronizer service. We modified those unit tests accordingly,
+* a deadlock could occur when a slot is destroyed during the asynchronous emission of a signal it is connected to. Now, we ensure the destruction occurs after the emission of the signal,
+* a crash could occur when a timer is destroyed before its callback is called.
+
+*Data XML parsers execution policy.*
+
+Data-specific XML parsers are executed whenever an object is created in an XML configuration. We discovered they were also executed with referenced objects, which could lead to objects overwritten with defaults. This happened for instance with transfer functions. We no longer execute the parsers in these cases.
+
+On the other side, objects created in activities do not benefit from this mechanism. This means that after this first change, an activity having a transfer function as a requirement with `create="true"` would create an empty transfer function. Many services do not handle that correctly.
+
+It turns out to be desirable to also allow specifying initial object configuration for requirements. Example from the unit test, which set the value "dummy string" to the requirement `string`:
+
+```xml
+    <extension implements="sight::activity::extension::Activity">
+        <id>TestBuilderObjectParser</id>
+        <title>ObjectParser</title>
+        <desc>Desc Test1</desc>
+        <icon>Icon Test1</icon>
+        <requirements>
+            <requirement name="string" type="sight::data::String" minOccurs="0" maxOccurs="1" create="true">
+                <config>
+                    <value>dummy string</value>
+                </config>
+            </requirement>
+        </requirements>
+        <appConfig id="TestBuilderCfg1" />
+    </extension>
+```
+
+*Mistmatch beween malloc and delete in Demangler.*
+
+*Ensure that removed frame data are removed and not saved with GDCM writer.*
+
+### io
+
+*Prevent SReader to lose its configuraiton on start/stop.*
+
+session`::Sreader`forgets its configuration at stop and start.
+Prevent this when the dialog policy is NEVER, because it means that the file-to-read path is only specified in configuration, and should not be forgotten.
+*Add openJpg support for dicom writer.*
+
+Some dicom tests writing fail because of an internal mismatch in dicom/nvJpeg2000/openJpeg.
+
+To summarize, for strongly randomized images, nvpeg2000 fails. This has been fixed in the 0.7 version of nvjpeg, used on linux, but not presently on windows.
+So, when writing the dicom in a ut on windows, nvJpeg2000 is detected, used, fails, and a backup is used to openJpeg.
+
+However, gdcm, the dicom writing lib, uses openJpeg intrinsecly, and does not support an the external use of openjpeg (bug ! ) which lead,s in the present case to a fail of the nvjpeg2000 backup system.
+
+As a result, some tests fail on windows.
+
+To fix this, a support of dicom writing in onpenjpeg has been added, to make syure that the dicom is writen in any cases
+
+*Add tests and many fixes, optimizations and cleanup for bitmap reader/writer.*
+
+- add read - write tests
+- ensure unsupported pixel format / type will throw an exception
+- support endianness correctly (libpng)
+- cleanup and code factorization
+- add some tests
+- ensure to throw an exception if nvjpeg2000 is asked for dicom and library is not found at runtime
+
+*Prevent ssynchronizer double lock.*
+
+Prevent SSynchronizer to synchronize in the update in legacy mode.
+There is a dedicated worker for that.
+This avoids a dead lock in legacy mode.
+*Ensure the parent path is created in io::session::SWriter.*
+
+*Correct SSynchronizer test random fail.*
+
+The SSynchronizer copy from the TL to the output vars did a scoped lock, while the buffer was used outside of it. This lead to concurent access and test fail.
+The scope has been enhanced to cover the whole copy method  from the tl to the output var.
+
+### test
+
+*Fix GUI test not working on subprojects with Ctest.*
+
+GUI tests didn't work using CTest on subprojects on Linux because of a bug in the `exec_gui_tests.sh` script.
+
+### ui
+
+*Fix bugs with Accordion Menu.*
+
+*Enhance negato slider with window level.*
+
+We improved the negatoscope view to allow the bottom slider to tweak the transfer function window. Before that, it was only possible to do it with a right-click mouse move.
+
+*Replace INFO logging by DEBUG in SStatus.*
+
+*Preferences no longer reset when app version changes.*
+
+A regression caused the application preferences to be dependent on the commit ref. This fixes the behaviour.
+
+*Resize overlay layout according to its children.*
+
+*Transparent notifications with NVidia prime.*
+
+*Typo in SNotifier.*
+
+*Remove useless "SRecurrentSignal".*
+
+*Notification popups doesn't move down when stacked.*
+
+*Fully export class when derived from QObject.*
+
+This allows to use the class as a QObject outside its library and avoid strange missing symbols on windows.
+
+*Fix non-linear sliders value changing too much when scrolling.*
+
+Up to now, the non-linear sliders did too big step, going from maximum to minimum. This has been enhanced to do more progressive changes in non-linear sliders.
+
+*Non-linear slider wrong min/max values when changing values in SParameters.*
+
+These changes fix the wrong min/max values displayed for a non-linear slider in SParameters. This was because the rangeChanged signal was sent with the wrong values, those from the internal slider, rather than those from the non-linear slider.
+
+*First call IGuiContainer visibility slots when hide/show SSignalButton.*
+
+Call first `IGuiContainer` enable/disable and setVisibility slots in SSignalButton.
+
+This fix the bug where is SSignalButton was hiden in a SView, it was impossible to show it again.
+
+*Fix labels being cut off in SParameters with the touch-friendly style.*
+
+When the touch-friendly style is applied, the labels are cut off in SParameters if there isn't enough space. These changes fix that by applying a negative margin to the labels.
+
+*Remove the close callback of notification and force close at stopping of SNotifier.*
+
+### viz
+
+*Compute clipping planes on each rendering frame.*
+
+*Crash when switching an activity when a notification is shown.*
+
+*Make SCamera calibrate safer.*
+
+The SCamera adaptor requires a calibration step.
+This calibration can be provided through an input to the service (CameraSet, cameraCalibration). However, for virtual camera in classical 3Dscene, no calibration is provided, and the calibration is computed based on the viewport size.
+This set is only called at the service start, and, if the viewport is hidden, or deffined with visibility=false, its height and with are null or negativ.
+This leads to an error which stops the application in debug.
+
+Add a calibration verification checK.
+If the calibration fails in SCamera, it stops the updating.
+If the updating is called and the calibration has not been done, it is calibrated again.
+
+*Correct several update issues with the 3D widget.*
+
+*Shape extruder does not work with touchscreen.*
+
+When using shape extruder on a volume in a 3D scene, and using a mousse, all works fine.
+However, on the same machine, same volume, same extrusion path, when doing it with the touchscreen the extrusion takes ages, and freezes the application.
+
+This has been fixed by the way events are handled.
+
+shape extrusion should work perfectly on both touchscreen and mousse actions.
+
+*Fix event managment for touch.*
+
+* Remove `GestureRecognizer`, `EventFilter`, `GestureFilter` as we rely on default Qt one for Pinch and Pan.
+* Remove Tap and long Tap, as they are no more used, but it should be easy to add them back, if needed.
+* Use synthesized mouse event from Qt gesture, and synthesize the one missing (in SNegato2DCamera)
+* Use float version of device pixel ratio to manage correctly fractional scaling (like 1.5 \* full HD)
+
+*Use resize event informations to set aspect ratio.*
+
+The aspect ratio could be broken on some initialisation paths.
+Also, fixed the missing label SAxis when the axis are disabled.
+
+*Touch event for landmarks.*
+
+*Update of transfer function widget when image is updated.*
+
+*Display of landmarks and distance over volume rendering.*
+
+*Correct SLine visibility.*
+
+The SLine 3D adaptor is displayed everytime that the line length is changed, even if its visibility is set to hidden.
+
+To fix this, the rendering mechanism has been upgraded to display it only when it is set to visible.
+
+## Enhancement:
+
+### build
+
+*Add sanitizer support.*
+
+Using the CMake option `SIGHT_SANITIZE="sanitizer(s)"` like in `cmake .... -DSIGHT_SANITIZE="thread" ....`
+
+The string is passed to the compiler with the option `-fsanitize=xxx`. Launching the result binaries will execute instrumented code that will check things like concurrent access, memory leak, address uses, etc. One an error is found, the code is stopped with an exception and a meaningful message is printed on the console.
+
+### ci
+
+*Be more permissive.*
+
+*Cache sight-data.*
+
+*Disable gdb to speed-up coverage build.*
+
+*Fix caching with clang.*
+
+*Use a shared linux runner for build jobs.*
+
+*Use direct dependencies between jobs.*
+
+*Use merge-requests pipelines.*
+
+### core
+
+*Tag output synchronized images with timestamps in SSynchronizer.*
+
+*Add blocker support for IContainer<T>::scoped_emit.*
+
+The scope emiter is a shortlived object which watches a IContainer object, and, once destroyed (scope variable destroyed) sends all the appropriate signals regarding what happend to the IContainer (add/remove/changed...).
+However, in some cases, we might want to make use of a scope_emiter, though want to prevent it from sending a specific signal.
+
+This is added here, through a block method which can be called
+
+```
+const auto scoped_emitter = container->scoped_emit();
+scoped_emitter->block(this->slot(IService::slots::UPDATE));
+
+container->push_back(object1);
+container->erase(object2);
+container->push_back(object3);
+```
+
+In this case, the update will not be sent from the container.
+
+*Support start/stop slots connections in XML configurations.*
+
+The `AppConfigManager` has been modified to support the connection of `start` and `stop` slots. A service started by the trigger of a signal will be automatically stopped.
+
+```
+<connect>
+    <signal>service1/computed</signal>
+    <slot>service2/start</slot>
+</connect>
+
+<connect>
+    <signal>service1/failed</signal>
+    <slot>service2/stop</slot>
+</connect>
+```
+
+This deprecates the service `SStarter` that was used as an alternative so far.
+
+### io
+
+*Add some accessors for serialization.*
+
+- keep the file path of the original DICOM file
+- getter for archive file path
+- getter for the default (de)serializer function which allow us to call them in a custom (de)serializer
+- fix a typo  / coding style normalization
+- update unit tests
+
+*Forward the grabbing fps in IGrabber/SGrabberProxy.*
+
+For performance and quality evaluation, it is useful to forward a real-time frame-grabbing frame rate.
+A signal is added in the grabber proxy to forward the fps from the grabbers which support this functionality.
+Connect ```<signal>GRABBER_PROXY_SRC/fpsChanged</signal>``` to get the fps when it is updated.
+
+*Add NvJPEG2K backend when saving multiframes in DICOM.*
+
+### test
+
+*Update MacroSaver from change to ITest::getProfilePath.*
+
+These changes reflect the changes of GUI test API to the MacroSaver. The main change is the support for the helper API that the code generated by MacroSaver will now use.
+
+### ui
+
+*Reflect changes of presets in the TF editor.*
+
+The transfer function selector now updates the list of transfer functions properly when it changes.
+
+*Make toolbar button icons bigger in touch-friendly apps.*
+
+Some issues with touch-friendly apps were fixed:
+* The toolbar buttons are now bigger in touch-friendly apps by default (48\*48 instead of 32\*32)
+* When using SStatus with form = circle, the circles are now actually circular for any size
+* The slider groove is now bigger in touch-friendly apps to make it easier to use
+
+*Change Play/Pause/Stop shortcut.*
+
+Changes the controls.xml config Play/Pause/Stop shortcuts to config parameters. Space is the default value for play/pause and "s" for stop, though they can be changed in the configuration.
+This allows apps to use the space shortcut for their own usage.
+
+*Add swapp support from single volume view to 3/4 view with negatos.*
+
+The classical volume view in sightviewer is a single 3D scene with the volume. It is possible to go to a view with 4 scenes, with the 3D volume view on the top left, and the negato in all 3 directions in the other corner.
+It is presently not possible to simply make one of the negato in full screen.
+
+To make this possible, a SEvent service is added, to catch the different events, and forward a particular one.
+Once added to the configuration it is used to catch double click, and hide/show the different scenes.
+This makes it a lot easier to change the view, and go back.
+
+To keep the classical button functionality, the IAction api has been enhanced to support toogleVisibility.
+
+*Add grabber optimize channel to controls.xml configuration.*
+
+*Prevent SVideo crash on empty image update.*
+
+When providing an empty image (size (0,0,0) ) to a SVideo service, the service does not filter and forwards it to the textureManager which tests it and generates an error in particular in debug mode (ASSERT).
+
+However empty images are often used as default ones, and this leads to various difficulties.
+
+Here, an if(size\[0\] == 0 || size\[1\] == 0) test is added on the SVideo updating and return when it fails.
+
+*Use Qt layout instead of multiple 3D viewports in SightViewer.*
+
+### viz
+
+*Improve distance measurement tool with a click and drag movement.*
+
+The distance measurement tool had some limitations.
+In particular, at the creation, the initial process was :
+
+- click on add distance: a distance is created at the ends (0,0) and (width, height) of the image
+- drag-drop the created distance ends to the location you want to measure
+
+This was too tedious. The new behaviour is :
+
+- click on add Distance: enter a dedicated mode
+- click on the starting point you want to measure
+- drag to the end
+- drop, the distance is ready.
+
+During your measurement, the distance is automatically updated on the screen, allowing you to visualise what you measure, and the distance between the starting point and present location.
+
+SightViewer has been updated to support the new tool and to have the negato2D and 3D interacting when the distance is created and measured.
+
+*Make Qt overlays compatible with the 3D scene.*
+
+The Ogre Qt widget has been heavily reworked. This was motivated by the need to have Qt widgets as an overlay.
+
+To make this possible, we chose to let Qt make the OpenGL compositing of the whole application. However, this required us to make a part of the composition ourselves. It was no longer possible to use a classic `Ogre`::RenderWindow``because, at some point, it will end up trying to handle its own final back buffer, while we want to render in the FBO managed by Qt. Thus, `Ogre`::RenderWindow``was banned in favour of `Ogre::RenderTarget`. This implied other significant changes to handle viewport resizes with listeners.
+
+Other changes were brought along this rework:
+
+- SightViewer XML configuration has been heavily reworked to use shared configurations. Three new configurations are now available in `sight::config::viz::scene3D` to display a single negatoscope, a 3D scene and four-split views with a 3D scene and 3 negatoscopes.
+- Layer transparency: <layer transparency="..." /> if not specified, then the OIT is disabled (you still have transparency, but it is order dependent). This ensures that most render layers do not use an expensive transparency technique if it is not required. If you need OIT, `Default` is the best setting and is an alias for `HybridTransparency`
+- The Ogre Overlay was removed because it was hard to make it compatible with the new rendering setup. On top of that, it seems pretty irrelevant to keep two systems to do the same thing. The services that used it, like `sight::module::viz::scene3d`::adaptor::SText``have been switched to Qt.
+- In GUI tests, it is now possible to address the views using a `wid` in `SView`
+- `SImageExtruder` can now take an optional transform matrix, in the case where the image is moved in the scene (registration for instance)
+
+*Add reset layer camera slot.*
+
+The reset camera slot is connected, on the SRender service, to all layouts of the service.
+However, when several layouts are present, it can be expected to reset only a given layout's camera.
+
+To do this, a dedicated slot is created at the service configuration.
+The slot name contains the layoutId, and call the resetCameraCoordinates which is specified for the layoutId provided in parameter.
+
+*Use an additional mask for volume rendering extrusion.*
+
+This introduces a mask in the volume rendering, that is used to mark cropped regions instead of marking these regions with a special intensity value. This solves the problem of the computation of the gradient on the edges of these cropped regions and also provides smoother edges. A few extra changes were brought on the way: new toolbar icons for the cropping tool, cleaned properly the extrusions when a new image is loaded.
+
+*Add default tf loading option in TransferFunctionWidget.*
+
+The transferFunction editor widget (and windows) don't zllow to freely specify the a folder with f to pre-load, and the default tfs are always present.
+
+Add two optional parameters to the configs allowing loading pre-registered tf through the path attribute of STransferFunction.
+
+Add support to empty path (default value in the config) in the STransferFunction service.
+
+Changes the TransferFunctionWidgetCfg and TransferFunctionWindowsCfg config id to fetch new standards (sight::config::viz::scene2d::TransferFunctionWidgetCfg)
+
+*Enable binary alpha mixed rendering.*
+
+Binary-transparent surface objects are now rendered properly with volume rendering.
+
+*Add point selection feature on SLandmarks.*
+
+The SLandmark service is a graphical widget which handles the Landmarks, which can be seen as a vector of points. It has a feature to send the coordinates of the current selected point through a signal.
+
+This mechanism is enhanced, to treat a newly created point as a selected one.
+In addition, the selected point are outputed in a ```sight`::data::Point````variable in addition to  the signal, to make it possible to treat it as a classical sight data.
+
+closes 1040
+
+*Correct SLIne and SText.*
+
+Make SText input autoconnect to true
+Make SLine use getOrCreateTransformNode to get its transform Node
+
+*Add an optional transfer function presets list.*
+
+This adds the ability to specify an optional preset of transfer functions.
+
+## New features:
+
+### ci
+
+*Add a custom CMake command to run gcovr.*
+
+This reduces redundancy across project and make it easier to use.
+
+### core
+
+*Introduce SMultiConfigController.*
+
+The present config launcher allows starting a given XML configuration. SMultiConfigController allows running a configuration selected between a set of configs that share the same parameters. Somehow, it creates a simple interface, where each "subconfig" is an implementation. This can have many applications, in particular in device handling, and will help to make smaller and more generic XML configurations.
+
+*Add API support for fiducials.*
+
+We introduced a new class, `FiducialsSeries`, representing a "Spatial Fiducials" DICOM IOD. `ImageSeries` and `ModelSeries` can both have a `FiducialSeries`. Some modifications were done in `SeriesImpl` in order to add support to sequences of sequences with more than one element.
+
+*Ssequencer / slandmarks fixes and enhancements.*
+
+- Application::exit() can now be synchronous and exit immediatly
+- SLandmarks: make "configureLandmarks()" a slot
+- SLandmarks: allow to limit the number of landmarks
+- SLandmarks: remove also landmarks no more in the data`::Landmarks`when update() is called
+- crash when clicking on ok without selecting a DICOM series
+- show number of frame in the series description
+- SSequencer: add a validate "next" that doesn't enable next activity
+- SSequencer: reset requirement that are no more valid
+- SSequencer: refresh validity on previous and next activities when calling checkNext()
+- cleanup
+- use const_lock whenever possible
+
+*Allow per-frame private DICOM attributes.*
+
+*Allow log relocation.*
+
+Add a `relocate_log()` that does exactly what its name suggests. Optionally, it also relocates the previous log files.
+
+Additionally:
+
+* the log singleton is now really a singleton
+* `sightlog` can now be launched outside "Sight", which is needed for external unit test
+* we have now access to all "binaries" paths from repositories (IE Sight/bin, XXXX/bin, ...the directories that contain executables like `sightrun` and `sightlog`)
+* changing the password while using encrypted logs, will indeed also relocate the previous logs, with the new password. This is useful when you plan to submit the logs for analysis and don't want to remember all passwords you used during the work session.
+* ..and some gcc-12 warnings have also been fixed.
+* add also a special environment variable (try with `export SIGHT_LEGACY_COMPRESSION=1`) that force legacy zip deflate algorithm for all compression operation, instead of zstd. This allows to open archives (logs, sessions, ...) with plain old third party archiver.
+* Force non-empty password. Empty password means "no password", which makes things ambiguous and complicated.
+
+*A better temporary directory / file.*
+
+- RAII to ensure the file / directory is deleted
+- Convenient conversion / utilities operator
+- Thread safe / process safe
+- path lenght is minimized
+- globally safer
+
+### io
+
+*Allow to configure the baseFolder via a slot in IWriter.*
+
+*Allow to configure and override the transfer syntax used to write Enhanced US Volume.*
+
+Also:
+
+* 10% increase of nvjpeg2000 writing performance (avoiding unnecessary copy)
+* fix a huge memory leak while using nvjpeg2000 for DICOM writing
+* add profiling test for transfer syntax
+* allow using TempDir as a simple RAII directory cleaner
+* fix many memory leaks:
+  * [valgrind_before.log](/sight/sight/uploads/7fd81924e7cdd842494917b0c09a3b11/valgrind_before.log)
+  * [valgrind.log](/sight/sight/uploads/b84702ee5646b42910dfa3d8f679fb3d/valgrind.log)
+* fix a possible crash when the window is resized while not yet ready
+
+*Forward folder of loaded session as a signal.*
+
+*Add a new tool to extract data from an archive.*
+
+These changes introduce a new tool, ArchiveExtractor, to extract archives generated by Sight applications. It was designed specifically for opening archive from a real-world application, but it should be generalist enough to allow extract archives from any Sight application, as long as they're salted archives, as they aren't supported by ArchiveExtractor. This application needed a new module, module::io::zip::SExtract, which asks the user for the input file and the output path and eventually the password if needed.
+
+*Implement bitmap readers.*
+
+A reader and a service that allows fast bitmap reading were added.
+
+Some code has been refactored and factorized with the bitmap writers and some bugs have been fixed:
+- Image generator / randomizer that can now be called in one step, for all image formats and pixel type.
+- nvjpeg2000 flaw mitigation: fallback to openJPEG if the encoded file is bigger than source instead of failing
+- Reader / writer code factorization and cleanup
+
+### test
+
+*Add backtrace generation mechanism for GUI tests.*
+
+These changes add helper methods to ease the creation of GUI tests. Some helpers, such as `helper`::Button``or `helper::Field`, operates at the component level, while some others, such as `helper::VideoControls`, operates at the level of a Sight XML config.
+
+Most helper methods use a `Select` helper class to get the components they operate on. For example, one can use `Select::fromDialog("fileNameEdit")` to get the component named "fileNameEdit" inside the currently displayed dialog window. Select has an implicit constructor which take a string, which will select a component within the main window, which is the most common use case. In addition, Select has two setters, `withTimeout` and `withCondition` which allows to set, respectively, a specific timeout to wait for the component to show up, and a condition for it to meet.
+
+A new GUI test was added for SightCalibrator, which is VideoControls. It checks whether SightCalibrator's video controls work correctly (and, incidentally, check that helper`::VideoControls`works).
+
+### ui
+
+*Add accordion menus.*
+
+A new accordion menu is now available in tool bars by enclosing buttons in the `<accordion>` tag. The toolbar in SightViewer was modified so that extrusion-related buttons are shown only if the extruder is activated and distance-related buttons are shown only if the distance mode is activated. The extrusion and distance modes are mutually exclusive, if buttons related to extrusion are shown, buttons related to distance are hidden, and vice versa.
+
+*Notification enhancements.*
+
+- The API has been updated, the code is no more part of `IService`, but has been moved to a new interface `INotifier`. The services that need to send notifications should now inherit from that new interface. The name of the notification method and the corresponding signal has not changed (`notify()` and `notified`), but the signature now uses a `Notification` structure, instead of only the type and the message string.  For compatibility and for convenience, a `notify()` with the same parameters as before is available
+- Notifications can now have individual duration, that can be "infinite". The notification will then be "permanent" and will only be closed by a double click. The duration can be set within the `Notification` structure, a parameter of the new `notify()`
+- Notifications can now be "channeled", meaning they can be reused, shared and even closed by several services who share the same "channel" keys. The channel name is also passed in the `Notification` structure, but can also be mapped from XML configuration:
+  ```xml
+  <service uid="testNotifierSrv" type="ExNotifications::SDisplayTestNotifications">
+    <notification>
+      <channel key="CHANNEL1" uid="a_channel" />
+      <channel key="CHANNEL2" uid="${ERROR_CHANNEL}" />
+    </notification>
+  </service>
+  ```
+- Many bug fixes / small enhancement:
+  - Changing position can now be done dynamically (useful for channels), without waiting that all previous notification to be closed to have a correct placement
+  - Use a button to display long text instead of single click (which disallowed closing them !)
+  - Fixed long text truncation
+  - Race conditions / various crashes fixes.
+
+*Add a Speed Dial button.*
+
+These changes add a Speed Dial button, which displays a list of other buttons when clicked with an animation. The actual "buttons" can be any kind of QWidget, typically QPushButton, but it can also be more exotic widgets such as QOpenGLWidget.
+
+It also adds SIconSpeedDial, which is a service which allows to create a Speed Dial with a list of actions. It is the most simple and typical use case of the Speed Dial and can serve as a reference.
+
+*Create buttonbar widget for SParam enum.*
+
+The SParameter supports enums, though they are not simple to use, in terms of xml and ui.
+A new  enum display will be added, corresponding to a bar, with buttons, image and text which allow to select a specific value.
+
+It should have the features of enumSParam, with icons and labels.
+The unselected options are gray, while the selected one is in full color.
+
+Gui test are added, to check this feature, and a sample is added in SParameter.
+
+*Provide a view that can be overlayed on 3D scenes.*
+
+A new `OverlayLayoutManager` is introduced, allowing the addition of overlays to a widget. Here is an example of use:
+
+```xml
+<service uid="mainView" type="sight::module::ui::base::SView">
+    <gui>
+        <layout type="sight::ui::base::OverlayLayoutManager">
+            <view />
+            <view x="0" y="0" minWidth="55" minHeight="100" />
+            <view x="-1" y="0" width="50" height="55" visible="false" />
+            <view x="0" y="-1" height="35" width="100%" visible="false" />
+            <view x="-50%" y="0" width="400" height="300" />
+        </layout>
+    </gui>
+    <registry>
+        <parent wid="${WID_PARENT}" />
+        <view sid="scenesView" start="true" />
+        <view sid="topToolbarSliderView" start="true" />
+        <view sid="rightToolbarSliderView" start="true" />
+        <view sid="videoSliderView" start="true" />
+        <view sid="advancedQueryEditorSliderView" start="true" />
+    </registry>
+</service>
+```
+In OverlayLayoutManager, we define a list of views. The first view is the background widget, typically a 3D scene. The other ones are overlays, we can define properties such as ``x``, ``y``, ``width``, ``height`` to indicate where the overlay should be drawn and what its size should be. By default, ``x`` and ``y`` are the offset from the left and the top respectively, however, if they are negative, then it is the offset from the right and the bottom respectively. By default, they are absolute sizes in pixels, however, if ``%`` is appended, then it is relative to the size of the parent widget.
+
+*Add a optional forward / backward button for slider.*
+
+*Allow selecting absolute positions in negato sliders.*
+
+*Makes password dialog customizable.*
+
+Small modifications were brought to allow displaying an image and a custom message for the password dialog used in preferences.
+
+Basically, it is just a couple of parameters for module_ui_base:
+
+```cmake
+    module_param(
+        module_ui_base
+        PARAM_LIST
+            preferences_password_dialog_title
+            preferences_password_dialog_message
+            preferences_password_dialog_icon
+        PARAM_VALUES
+            "Password required"
+            "  Please enter your password: "
+            "sight::module::ui::qt/rename.png"
+    )
+```
+
+*Add Preferences::ignoreFilesystem method.*
+
+*Make toolbar hideable.*
+
+Enhance the IToolBarLayoutManager with a setVisible(bool isVisible) method
+Get the toggleViewAction QAction from the toolbar in the ToolBarLayoutManager and store it
+Set the toggleViewAction check state and trigger it when isVisible is called
+Add slots in the IToolBar to hide/show/setVisibility
+add toolbar hide/show to tuto14
+
+*Add non-linear sliders for SParameters.*
+
+A new widget for `type=enum` parameters in SParameters is introduced, `slider`. This will use the new NonLinearSlider widget.
+
+### viz
+
+*Create a pre-defined camera interactor.*
+
+New camera interactor SPredefinedCamera that takes multiple "point-of-view" in configuration. We can navigate through each point-of-view, the camera will go from one to another using a smooth animation.
+
+Mouse track (rotation only) can be disable, if enable you can rotate the camera arround a fixing point, but will be reset at next point of view.
+
+An optional "initial" matrix can also be set, if so camera will first use this matrix and then move to configured point-of-view according to this new position. This matrix can be updated in real time to get a "GPS-like" camera tracking an object.
+
+Others changes:
+* remove requestRender from Window,now only interactors should decide when trigger a render
+* add requestRender in ClippingBoxInteractor
+
+*Allow to specify the view distance of the landmark.*
+
+...and many fixes on SLandmarks and one in is_less and is_greater.
+
+*Allows to use SCamera with orthographic projection.*
+
+
 # sight 22.1.0
 
 ## New features:
