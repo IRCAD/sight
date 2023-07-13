@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -100,6 +100,8 @@ protected:
     CORE_API virtual void updatedFunction()
     {
     }
+
+    friend struct TimerCallback;
 
     /// Function object to execute each time the timer expires.
     FunctionType m_function;

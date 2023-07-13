@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,8 +28,8 @@
 #include <core/com/Slot.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/IText.hpp>
 #include <viz/scene3d/ITransformable.hpp>
-#include <viz/scene3d/Text.hpp>
 
 #include <Ogre.h>
 
@@ -51,6 +51,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b toggleVisibility(): toggle whether the axis is shown or not.
  * - \b show(): shows the axis.
  * - \b hide(): hides the axis.
+ * - \b updateOriginColor(data::Color::sptr): update origin sphere with provided color.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -80,7 +81,7 @@ public:
     SIGHT_DECLARE_SERVICE(SAxis, sight::viz::scene3d::IAdaptor);
 
     /// Sets default parameters and initializes necessary members.
-    MODULE_VIZ_SCENE3D_API SAxis() noexcept = default;
+    MODULE_VIZ_SCENE3D_API SAxis() noexcept;
 
     /// Destroys the adaptor.
     MODULE_VIZ_SCENE3D_API ~SAxis() noexcept override = default;
@@ -107,8 +108,14 @@ protected:
 
 private:
 
+    /// SLOT: internal function to update origin color using provided data::Color.
+    void updateOriginColor(sight::data::Color::sptr _newColor);
+
     /// Contains the material data.
     data::Material::sptr m_material {nullptr};
+
+    /// Contains the material for the origin (to change its color dynamically).
+    data::Material::sptr m_originMaterial {nullptr};
 
     /// Defines the axis length in scene units.
     float m_length {50.F};
@@ -121,6 +128,9 @@ private:
 
     /// Enables the origin visibility.
     bool m_originVisibility {false};
+
+    /// Enables the axes visibility.
+    bool m_axisVisibility {true};
 
     /// Defines the origin color.
     std::string m_originColor {"#FFFFFF"};
@@ -147,15 +157,12 @@ private:
     Ogre::SceneNode* m_sceneNode {nullptr};
 
     /// Stores labels attached to each axis.
-    std::array<sight::viz::scene3d::Text*, 3> m_axisLabels {{nullptr, nullptr, nullptr}};
+    std::array<sight::viz::scene3d::IText::sptr, 3> m_axisLabels {{nullptr, nullptr, nullptr}};
 
-    sight::viz::scene3d::Text* m_axisNameTxt {nullptr};
+    sight::viz::scene3d::IText::sptr m_axisNameTxt {nullptr};
 
     /// Defines labels font size in points.
-    std::size_t m_fontSize {16};
-
-    /// Defines the TrueType font source file.
-    std::string m_fontSource {"DejaVuSans.ttf"};
+    std::size_t m_fontSize {12};
 
     /// Axis name, default empty.
     std::string m_axisName;

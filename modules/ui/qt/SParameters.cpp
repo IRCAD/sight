@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,6 +26,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
+#include <core/runtime/path.hpp>
 #include <core/tools/Object.hpp>
 
 #include <data/tools/Color.hpp>
@@ -33,18 +34,23 @@
 #include <service/macros.hpp>
 
 #include <ui/qt/container/QtContainer.hpp>
+#include <ui/qt/widget/NonLinearSlider.hpp>
 
 #include <boost/foreach.hpp>
 #include <boost/tokenizer.hpp>
 
+#include <QAbstractButton>
+#include <QButtonGroup>
 #include <QColorDialog>
 #include <QEvent>
 #include <QFormLayout>
+#include <QGraphicsColorizeEffect>
 #include <QScrollArea>
 #include <QScrollBar>
 #include <QSpinBox>
 #include <QString>
 #include <QStyle>
+#include <QToolButton>
 
 namespace sight::module::ui::qt
 {
@@ -219,6 +225,7 @@ void SParameters::starting()
         {
             auto* parameterLabel = new QLabel(QString::fromStdString(name));
             parameterLabel->setWordWrap(true);
+            parameterLabel->setStyleSheet("margin: -0.1em;");
             layout->addWidget(parameterLabel, row, 0);
         }
 
@@ -312,15 +319,81 @@ void SParameters::starting()
         }
         else if(type == "enum")
         {
-            const auto options = cfg.get<std::string>("<xmlattr>.values");
+            const auto widget = cfg.get<std::string>("<xmlattr>.widget", "combobox");
 
-            //split values separated by ',', ' ', ';'
-            std::vector<std::string> values;
-            std::vector<std::string> data;
+            if(widget == "combobox")
+            {
+                const auto options = cfg.get<std::string>("<xmlattr>.values");
+                //split values separated by ',', ' ', ';'
+                std::vector<std::string> values;
+                std::vector<std::string> data;
 
-            sight::module::ui::qt::SParameters::parseEnumString(options, values, data);
+                sight::module::ui::qt::SParameters::parseEnumString(options, values, data);
+                this->createEnumWidget(*layout, row, key, defaultValue, values, data);
+            }
+            else if(widget == "slider")
+            {
+                const auto options = cfg.get<std::string>("<xmlattr>.values");
+                //split values separated by ',', ' ', ';'
+                std::vector<std::string> values;
+                std::vector<std::string> data;
 
-            this->createEnumWidget(*layout, row, key, defaultValue, values, data);
+                sight::module::ui::qt::SParameters::parseEnumString(options, values, data);
+                const bool onRelease = cfg.get<bool>("<xmlattr>.emitOnRelease", false);
+                this->createSliderEnumWidget(*layout, row, key, defaultValue, values, onRelease);
+            }
+            else if(widget == "buttonBar")
+            {
+                const int hOffset       = cfg.get<int>("<xmlattr>.hOffset", 0);
+                const int width         = cfg.get<int>("<xmlattr>.width", 0);
+                const int height        = cfg.get<int>("<xmlattr>.height", 0);
+                const std::string style = cfg.get<std::string>("<xmlattr>.style", "iconOnly");
+
+                const auto valueConfig = cfg.equal_range("item");
+                std::vector<enumButtonParam> buttonList;
+                for(auto valueConfigIt = valueConfig.first ;
+                    valueConfigIt != valueConfig.second ;
+                    ++valueConfigIt)
+                {
+                    const auto value = valueConfigIt->second.get<std::string>(
+                        "<xmlattr>.value"
+                    );
+
+                    const auto label = valueConfigIt->second.get<std::string>(
+                        "<xmlattr>.label",
+                        ""
+                    );
+
+                    const auto iconPathRelative = valueConfigIt->second.get<std::string>(
+                        "<xmlattr>.icon",
+                        ""
+                    );
+
+                    const std::string iconPath =
+                        core::runtime::getModuleResourceFilePath(iconPathRelative).generic_string();
+
+                    buttonList.push_back(
+                        enumButtonParam(
+                        {
+                            value,
+                            label,
+                            iconPath
+                        })
+                    );
+                }
+
+                this->createButtonBarEnumWidget(
+                    *layout,
+                    row,
+                    key,
+                    defaultValue,
+                    buttonList,
+                    width,
+                    height,
+                    hOffset,
+                    style
+                );
+            }
         }
 
         ++row;
@@ -425,7 +498,7 @@ void SParameters::updating()
         const auto key  = cfg.get<std::string>("<xmlattr>.key");
         const auto type = cfg.get<std::string>("<xmlattr>.type");
 
-        auto* child = widget->findChild<QWidget*>(QString::fromStdString(key));
+        auto* child = widget->findChild<QObject*>(QString::fromStdString(key));
         if(child != nullptr)
         {
             if(type == "bool")
@@ -463,37 +536,86 @@ void SParameters::updating()
             }
             else if(type == "enum")
             {
-                auto* box = qobject_cast<QComboBox*>(child);
-
-                SIGHT_ASSERT("Widget must be a QComboBox", box);
-
-                const QString data = box->itemData(box->currentIndex()).toString();
-
-                if(!m_blockSignals)
+                if(auto* box = qobject_cast<QComboBox*>(child); box != nullptr)
                 {
-                    this->signal<signals::EnumChangedSignalType>(signals::ENUM_CHANGED_SIG)->asyncEmit(
-                        data.toStdString(),
-                        key
-                    );
-                    this->signal<signals::ChangedSignalType>(signals::PARAMETER_CHANGED_SIG)->asyncEmit(
-                        data.toStdString(),
-                        key
-                    );
-                    SIGHT_DEBUG(
-                        "[EMIT] " << signals::ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key << ")"
-                    );
-                    this->signal<signals::EnumChangedIndexSignalType>(signals::ENUM_INDEX_CHANGED_SIG)->asyncEmit(
-                        box->currentIndex(),
-                        key
-                    );
-                    this->signal<signals::ChangedSignalType>(signals::PARAMETER_CHANGED_SIG)->asyncEmit(
-                        box->currentIndex(),
-                        key
-                    );
-                    SIGHT_DEBUG(
-                        "[EMIT] " << signals::ENUM_INDEX_CHANGED_SIG << "(" << box->currentIndex() << ", " << key
-                        << ")"
-                    );
+                    const QString data = box->itemData(box->currentIndex()).toString();
+
+                    if(!m_blockSignals)
+                    {
+                        this->signal<signals::EnumChangedSignalType>(signals::ENUM_CHANGED_SIG)->asyncEmit(
+                            data.toStdString(),
+                            key
+                        );
+                        this->signal<signals::ChangedSignalType>(signals::PARAMETER_CHANGED_SIG)->asyncEmit(
+                            data.toStdString(),
+                            key
+                        );
+                        SIGHT_DEBUG(
+                            "[EMIT] " << signals::ENUM_CHANGED_SIG << "(" << data.toStdString() << ", " << key << ")"
+                        );
+                        this->signal<signals::EnumChangedIndexSignalType>(signals::ENUM_INDEX_CHANGED_SIG)->asyncEmit(
+                            box->currentIndex(),
+                            key
+                        );
+                        this->signal<signals::ChangedSignalType>(signals::PARAMETER_CHANGED_SIG)->asyncEmit(
+                            box->currentIndex(),
+                            key
+                        );
+                        SIGHT_DEBUG(
+                            "[EMIT] " << signals::ENUM_INDEX_CHANGED_SIG << "(" << box->currentIndex() << ", " << key
+                            << ")"
+                        );
+                    }
+                }
+                else if(auto* slider = qobject_cast<sight::ui::qt::widget::NonLinearSlider*>(child); slider != nullptr)
+                {
+                    if(!m_blockSignals)
+                    {
+                        int value = slider->value();
+                        this->signal<signals::IntegerChangedSignalType>(signals::INTEGER_CHANGED_SIG)->asyncEmit(
+                            value,
+                            key
+                        );
+                        this->signal<signals::ChangedSignalType>(signals::PARAMETER_CHANGED_SIG)->asyncEmit(value, key);
+                        SIGHT_DEBUG("[EMIT] " << signals::INTEGER_CHANGED_SIG << "(" << value << ", " << key << ")");
+                        this->signal<signals::EnumChangedSignalType>(signals::ENUM_CHANGED_SIG)->asyncEmit(
+                            std::to_string(
+                                value
+                            ),
+                            key
+                        );
+                        this->signal<signals::ChangedSignalType>(signals::PARAMETER_CHANGED_SIG)->asyncEmit(
+                            std::to_string(
+                                value
+                            ),
+                            key
+                        );
+                        SIGHT_DEBUG("[EMIT] " << signals::ENUM_CHANGED_SIG << "(" << value << ", " << key << ")");
+                        this->signal<signals::EnumChangedIndexSignalType>(signals::ENUM_INDEX_CHANGED_SIG)->asyncEmit(
+                            int(slider->index()),
+                            key
+                        );
+                    }
+                }
+                else if(auto* buttonGroup = qobject_cast<QButtonGroup*>(child);
+                        buttonGroup != nullptr)
+                {
+                    const auto* checkedButton = qobject_cast<QToolButton*>(buttonGroup->checkedButton());
+                    if(checkedButton != nullptr)
+                    {
+                        const std::string value = checkedButton->property("value").toString().toStdString();
+                        this->signal<signals::EnumChangedSignalType>(signals::ENUM_CHANGED_SIG)
+                        ->asyncEmit(value, key);
+                        this->signal<signals::ChangedSignalType>(signals::PARAMETER_CHANGED_SIG)
+                        ->asyncEmit(value, key);
+                        SIGHT_DEBUG(
+                            "[EMIT] " << signals::ENUM_CHANGED_SIG << "(" << value << ", " << key << ")"
+                        );
+                    }
+                }
+                else
+                {
+                    SIGHT_ASSERT("Widget must either be a ComboBox or NonLinearSlider", false);
                 }
             }
         }
@@ -1211,6 +1333,7 @@ void SParameters::createDoubleWidget(
     for(std::size_t i = 0 ; i < std::size_t(count) ; ++i)
     {
         auto* spinbox = new QDoubleSpinBox();
+        spinbox->setObjectName(QString::fromStdString(key + "/" + std::to_string(i)));
         spinboxes[i] = spinbox;
 
         auto countDecimals = [](double _num) -> int
@@ -1311,17 +1434,20 @@ void SParameters::createDoubleSliderWidget(
     minValueLabel->setFont(font);
     minValueLabel->setText(QString::number(min, 'g', decimals));
     minValueLabel->setToolTip("Minimum value.");
+    minValueLabel->setObjectName(QString::fromStdString(key + "/minValueLabel"));
 
     auto* maxValueLabel = new QLabel();
     maxValueLabel->setFont(font);
     maxValueLabel->setText(QString::number(max, 'g', decimals));
     maxValueLabel->setToolTip("Maximum value.");
+    maxValueLabel->setObjectName(QString::fromStdString(key + "/maxValueLabel"));
 
     auto* valueLabel = new QLabel();
     valueLabel->setStyleSheet("QLabel { font: bold; }");
     valueLabel->setText(QString::number(defaultValue, 'f', decimals));
     valueLabel->setToolTip("Current value.");
     sight::module::ui::qt::SParameters::setLabelMinimumSize(valueLabel, min, max, decimals);
+    valueLabel->setObjectName(QString::fromStdString(key + "/valueLabel"));
 
     subLayout->addWidget(minValueLabel, 0, 0);
     subLayout->addWidget(slider, 0, 1);
@@ -1394,17 +1520,20 @@ void SParameters::createIntegerSliderWidget(
     minValueLabel->setFont(font);
     minValueLabel->setText(QString::number(slider->minimum()));
     minValueLabel->setToolTip("Minimum value.");
+    minValueLabel->setObjectName(QString::fromStdString(key + "/minValueLabel"));
 
     auto* maxValueLabel = new QLabel();
     maxValueLabel->setFont(font);
     maxValueLabel->setText(QString::number(slider->maximum()));
     maxValueLabel->setToolTip("Maximum value.");
+    maxValueLabel->setObjectName(QString::fromStdString(key + "/maxValueLabel"));
 
     auto* valueLabel = new QLabel();
     valueLabel->setStyleSheet("QLabel { font: bold; }");
     valueLabel->setText(QString("%1").arg(slider->value()));
     valueLabel->setToolTip("Current value.");
     sight::module::ui::qt::SParameters::setLabelMinimumSize(valueLabel, min, max);
+    valueLabel->setObjectName(QString::fromStdString(key + "/valueLabel"));
 
     subLayout->addWidget(minValueLabel, 0, 0);
     subLayout->addWidget(slider, 0, 1);
@@ -1470,6 +1599,7 @@ void SParameters::createIntegerSpinWidget(
     for(std::size_t i = 0 ; i < std::size_t(count) ; ++i)
     {
         auto* spinbox = new QSpinBox();
+        spinbox->setObjectName(QString::fromStdString(key + "/" + std::to_string(i)));
         spinboxes[i] = spinbox;
 
         spinbox->setMinimum(min);
@@ -1533,7 +1663,7 @@ void SParameters::updateEnumList(const std::vector<std::string>& _list, const st
 
     this->blockSignals(true);
 
-    QWidget* widget = this->getParamWidget(_key);
+    QObject* widget = this->getParamWidget(_key);
 
     auto* combobox = qobject_cast<QComboBox*>(widget);
 
@@ -1555,6 +1685,14 @@ void SParameters::updateEnumList(const std::vector<std::string>& _list, const st
             combobox->setItemData(idx, QString::fromStdString(k));
             ++idx;
         }
+    }
+    else if(auto* nonLinearSlider = qobject_cast<sight::ui::qt::widget::NonLinearSlider*>(widget);
+            nonLinearSlider != nullptr)
+    {
+        std::vector<int> values;
+        std::ranges::transform(labels, std::back_inserter(values), [](const std::string& s){return std::stoi(s);});
+        nonLinearSlider->setValues(values);
+        nonLinearSlider->setValue(values[0]);
     }
 
     this->blockSignals(false);
@@ -1626,6 +1764,222 @@ void SParameters::createEnumWidget(
     menu->setCurrentText(QString::fromStdString(defaultValue));
 }
 
+//------------------------------------------------------------------------------
+
+void SParameters::createSliderEnumWidget(
+    QGridLayout& layout,
+    int row,
+    const std::string& key,
+    const std::string& defaultValue,
+    const std::vector<std::string>& values,
+    bool onRelease
+)
+{
+    auto* subLayout = new QGridLayout();
+    layout.addLayout(subLayout, row, 1);
+
+    auto* slider = new sight::ui::qt::widget::NonLinearSlider();
+    slider->setObjectName(QString::fromStdString(key));
+    slider->setProperty("key", QString::fromStdString(key));
+    std::vector<int> intValues;
+    std::ranges::transform(values, std::back_inserter(intValues), [](const std::string& s){return std::stoi(s);});
+    slider->setValues(intValues);
+    slider->setValue(std::stoi(defaultValue));
+
+    slider->setTracking(!onRelease);
+
+    QFont font;
+    font.setPointSize(7);
+    font.setItalic(true);
+
+    auto* minValueLabel = new QLabel();
+    minValueLabel->setFont(font);
+    minValueLabel->setText(QString::fromStdString(values.front()));
+    minValueLabel->setToolTip("Minimum value.");
+    minValueLabel->setObjectName(QString::fromStdString(key + "/minValueLabel"));
+
+    auto* maxValueLabel = new QLabel();
+    maxValueLabel->setFont(font);
+    maxValueLabel->setText(QString::fromStdString(values.back()));
+    maxValueLabel->setToolTip("Maximum value.");
+    maxValueLabel->setObjectName(QString::fromStdString(key + "/maxValueLabel"));
+
+    auto* valueLabel = new QLabel();
+    valueLabel->setStyleSheet("QLabel { font: bold; }");
+    valueLabel->setText(QString::number(slider->value()));
+    valueLabel->setToolTip("Current value.");
+    setLabelMinimumSize(valueLabel, intValues.front(), intValues.back());
+    valueLabel->setObjectName(QString::fromStdString(key + "/valueLabel"));
+
+    subLayout->addWidget(minValueLabel, 0, 0);
+    subLayout->addWidget(slider, 0, 1);
+    subLayout->addWidget(maxValueLabel, 0, 2);
+    subLayout->addWidget(valueLabel, 0, 3);
+
+    QObject::connect(
+        slider,
+        &sight::ui::qt::widget::NonLinearSlider::valueChanged,
+        [ =, this](int value)
+        {
+            if(!m_blockSignals)
+            {
+                this->signal<signals::IntegerChangedSignalType>(signals::INTEGER_CHANGED_SIG)->asyncEmit(value, key);
+                this->signal<signals::ChangedSignalType>(signals::PARAMETER_CHANGED_SIG)->asyncEmit(value, key);
+                SIGHT_DEBUG("[EMIT] " << signals::INTEGER_CHANGED_SIG << "(" << value << ", " << key << ")");
+                this->signal<signals::EnumChangedSignalType>(signals::ENUM_CHANGED_SIG)
+                ->asyncEmit(std::to_string(value), key);
+                this->signal<signals::ChangedSignalType>(signals::PARAMETER_CHANGED_SIG)
+                ->asyncEmit(std::to_string(value), key);
+                SIGHT_DEBUG("[EMIT] " << signals::ENUM_CHANGED_SIG << "(" << value << ", " << key << ")");
+                this->signal<signals::EnumChangedIndexSignalType>(signals::ENUM_INDEX_CHANGED_SIG)
+                ->asyncEmit(int(slider->index()), key);
+            }
+
+            valueLabel->setText(QString::number(value));
+        });
+    QObject::connect(
+        slider,
+        &sight::ui::qt::widget::NonLinearSlider::rangeChanged,
+        [ = ](int min, int max)
+        {
+            minValueLabel->setText(QString::number(min));
+            maxValueLabel->setText(QString::number(max));
+        });
+}
+
+//-----------------------------------------------------------------------------
+
+void SParameters::createButtonBarEnumWidget(
+    QGridLayout& layout,
+    int row,
+    const std::string& key,
+    const std::string& defaultValue,
+    const std::vector<enumButtonParam>& buttonList,
+    const int requestedWidth,
+    const int requestedHeight,
+    const int hOffset,
+    const std::string& style
+)
+{
+    //create the grid to store the buttons
+    auto* subLayout = new QGridLayout();
+    if(hOffset != 0)
+    {
+        subLayout->setHorizontalSpacing(hOffset);
+    }
+
+    layout.addLayout(subLayout, row, 1);
+
+    //create a button group to deactivate the buttons on selection
+    auto* buttonBarGroup = new QButtonGroup(subLayout);
+    buttonBarGroup->setObjectName(QString::fromStdString(key));
+
+    //create the buttons from the provided list
+    int buttonIndex = 0;
+    for(const auto& buttonParam : buttonList)
+    {
+        auto* enumButton = new QToolButton();
+        buttonBarGroup->addButton(enumButton);
+
+        //The name needs to be the ky_value, to find it when the SParam is updated through a slot
+        enumButton->setObjectName((QString::fromStdString(key + "_" + buttonParam.value)));
+
+        enumButton->setIcon(QIcon(QString::fromStdString(buttonParam.iconPath)));
+        enumButton->setToolTip(QString::fromStdString(buttonParam.label));
+        enumButton->setMinimumSize(120, 24);
+        enumButton->setCheckable(true);
+        enumButton->setProperty("class", "buttonBar");
+        enumButton->setProperty("value", QString::fromStdString(buttonParam.value));
+        enumButton->setText(QString::fromStdString(buttonParam.label));
+
+        if(style == "ToolButtonTextOnly")
+        {
+            enumButton->setToolButtonStyle(Qt::ToolButtonTextOnly);
+        }
+        else if(style == "ToolButtonTextBesideIcon")
+        {
+            enumButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+        }
+        else if(style == "ToolButtonTextUnderIcon")
+        {
+            enumButton->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+        }
+        else if(style == "ToolButtonFollowStyle")
+        {
+            enumButton->setToolButtonStyle(Qt::ToolButtonFollowStyle);
+        }
+        else
+        {
+            enumButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
+        }
+
+        // create an effect to make it gray when not selected, and full color when selected
+        auto* effect = new QGraphicsColorizeEffect;
+        effect->setColor(QColor(10, 10, 10));
+        effect->setStrength(0.7);
+        enumButton->setGraphicsEffect(effect);
+
+        //the size depends on the configuration. xml > qss
+        if(requestedWidth != 0 || requestedHeight != 0)
+        {
+            //the size is provided through the xml. Don't use the qss.
+            const int width  = requestedWidth == 0 ? requestedHeight : requestedWidth;
+            const int height = requestedHeight == 0 ? requestedWidth : requestedHeight;
+            enumButton->setIconSize(
+                QSize(
+                    width,
+                    height
+                )
+            );
+        }
+        else
+        {
+            //the size is not provided through the xml. Use the qss style.
+            enumButton->setProperty("class", "buttonBarTouchFriendly");
+        }
+
+        //add the button in the grid at its place
+        subLayout->addWidget(enumButton, 1, buttonIndex);
+
+        //create the connection to fire signals when the button is clicked
+        QObject::connect(
+            enumButton,
+            &QToolButton::clicked,
+            [ =, this]
+            {
+                if(!m_blockSignals)
+                {
+                    this->signal<signals::EnumChangedSignalType>(signals::ENUM_CHANGED_SIG)
+                    ->asyncEmit(buttonParam.value, key);
+                    this->signal<signals::ChangedSignalType>(signals::PARAMETER_CHANGED_SIG)
+                    ->asyncEmit(buttonParam.value, key);
+                    SIGHT_DEBUG(
+                        "[EMIT] " << signals::ENUM_CHANGED_SIG << "(" << buttonParam.value << ", " << key << ")"
+                    );
+                }
+            });
+
+        //create connection to change the display (gray/full color) when the selection state changes
+        QObject::connect(
+            enumButton,
+            &QAbstractButton::toggled,
+            [ = ]
+                (bool checked)
+            {
+                QGraphicsEffect* effect = enumButton->graphicsEffect();
+                effect->setEnabled(!checked);
+            });
+
+        //set the default value
+        if(buttonParam.value == defaultValue)
+        {
+            enumButton->toggle();
+        }
+
+        ++buttonIndex;
+    }
+}
+
 //-----------------------------------------------------------------------------
 
 double SParameters::getDoubleSliderValue(const QSlider* slider)
@@ -1689,12 +2043,13 @@ void SParameters::setParameter(sight::ui::base::parameter_t val, std::string key
     {
         // This can be either an int or a enum index
         // Solve the ambiguity by testing the widget type
-        QWidget* child = this->getParamWidget(key);
+        QObject* child = this->getParamWidget(key);
 
-        auto* spinbox = qobject_cast<QSpinBox*>(child);
-        auto* slider  = qobject_cast<QSlider*>(child);
+        auto* spinbox         = qobject_cast<QSpinBox*>(child);
+        auto* slider          = qobject_cast<QSlider*>(child);
+        auto* nonLinearSlider = qobject_cast<sight::ui::qt::widget::NonLinearSlider*>(child);
 
-        if(spinbox != nullptr || slider != nullptr)
+        if(spinbox != nullptr || slider != nullptr || nonLinearSlider != nullptr)
         {
             this->setIntParameter(std::get<int>(val), key);
         }
@@ -1716,7 +2071,7 @@ void SParameters::setParameter(sight::ui::base::parameter_t val, std::string key
 void SParameters::setBoolParameter(bool val, std::string key)
 {
     this->blockSignals(true);
-    QWidget* child = this->getParamWidget(key);
+    QObject* child = this->getParamWidget(key);
     auto* checkbox = qobject_cast<QCheckBox*>(child);
 
     if(checkbox != nullptr)
@@ -1732,7 +2087,7 @@ void SParameters::setBoolParameter(bool val, std::string key)
 void SParameters::setColorParameter(std::array<std::uint8_t, 4> color, std::string key)
 {
     this->blockSignals(true);
-    QWidget* child    = this->getParamWidget(key);
+    QObject* child    = this->getParamWidget(key);
     auto* colorButton = qobject_cast<QPushButton*>(child);
 
     if(colorButton != nullptr)
@@ -1754,7 +2109,7 @@ void SParameters::setColorParameter(std::array<std::uint8_t, 4> color, std::stri
 void SParameters::setDoubleParameter(double val, std::string key)
 {
     this->blockSignals(true);
-    QWidget* child = this->getParamWidget(key);
+    QObject* child = this->getParamWidget(key);
 
     auto* spinbox = qobject_cast<QDoubleSpinBox*>(child);
     auto* slider  = qobject_cast<QSlider*>(child);
@@ -1784,7 +2139,7 @@ void SParameters::setDoubleParameter(double val, std::string key)
 void SParameters::setDouble2Parameter(double val0, double val1, std::string key)
 {
     this->blockSignals(true);
-    QWidget* child = this->getParamWidget(key);
+    QObject* child = this->getParamWidget(key);
 
     if(child != nullptr)
     {
@@ -1803,7 +2158,7 @@ void SParameters::setDouble2Parameter(double val0, double val1, std::string key)
 void SParameters::setDouble3Parameter(double val0, double val1, double val2, std::string key)
 {
     this->blockSignals(true);
-    QWidget* child = this->getParamWidget(key);
+    QObject* child = this->getParamWidget(key);
 
     if(child != nullptr)
     {
@@ -1824,7 +2179,7 @@ void SParameters::setDouble3Parameter(double val0, double val1, double val2, std
 void SParameters::setIntParameter(int val, std::string key)
 {
     this->blockSignals(true);
-    QWidget* child = this->getParamWidget(key);
+    QObject* child = this->getParamWidget(key);
 
     auto* spinbox = qobject_cast<QSpinBox*>(child);
     auto* slider  = qobject_cast<QSlider*>(child);
@@ -1837,9 +2192,10 @@ void SParameters::setIntParameter(int val, std::string key)
     {
         slider->setValue(val);
     }
-    else
+    else if(auto* nonLinearSlider = qobject_cast<sight::ui::qt::widget::NonLinearSlider*>(child);
+            nonLinearSlider != nullptr)
     {
-        SIGHT_ERROR("Widget '" + key + "' must be a QSlider or a QDoubleSpinBox");
+        nonLinearSlider->setValue(val);
     }
 
     this->blockSignals(false);
@@ -1850,7 +2206,7 @@ void SParameters::setIntParameter(int val, std::string key)
 void SParameters::setInt2Parameter(int val0, int val1, std::string key)
 {
     this->blockSignals(true);
-    QWidget* child = this->getParamWidget(key);
+    QObject* child = this->getParamWidget(key);
 
     if(child != nullptr)
     {
@@ -1869,7 +2225,7 @@ void SParameters::setInt2Parameter(int val0, int val1, std::string key)
 void SParameters::setInt3Parameter(int val0, int val1, int val2, std::string key)
 {
     this->blockSignals(true);
-    QWidget* widget = this->getParamWidget(key);
+    QObject* widget = this->getParamWidget(key);
 
     if(widget != nullptr)
     {
@@ -1891,7 +2247,7 @@ void SParameters::setEnumParameter(std::string val, std::string key)
 {
     this->blockSignals(true);
 
-    QWidget* widget = this->getParamWidget(key);
+    QObject* widget = this->getParamWidget(key);
 
     auto* combobox = qobject_cast<QComboBox*>(widget);
 
@@ -1914,6 +2270,22 @@ void SParameters::setEnumParameter(std::string val, std::string key)
             SIGHT_WARN(std::string("value '") + val + "' isn't found in Enum ComboBox '" + key + "'.");
         }
     }
+    else if(auto* nonLinearSlider = qobject_cast<sight::ui::qt::widget::NonLinearSlider*>(widget);
+            nonLinearSlider != nullptr)
+    {
+        nonLinearSlider->setValue(std::stoi(val));
+    }
+    else if(auto* buttonGroup = qobject_cast<QButtonGroup*>(widget);
+            buttonGroup != nullptr)
+    {
+        QObject* buttonObject = this->getParamWidget(key + "_" + val);
+        auto* button          = qobject_cast<QToolButton*>(buttonObject);
+
+        if(button != nullptr)
+        {
+            button->toggle();
+        }
+    }
 
     this->blockSignals(false);
 }
@@ -1924,7 +2296,7 @@ void SParameters::setEnumIndexParameter(int val, std::string key)
 {
     this->blockSignals(true);
 
-    QWidget* widget = this->getParamWidget(key);
+    QObject* widget = this->getParamWidget(key);
 
     auto* combobox = qobject_cast<QComboBox*>(widget);
 
@@ -1942,7 +2314,7 @@ void SParameters::updateEnumRange(std::string options, std::string key)
 {
     this->blockSignals(true);
 
-    QWidget* widget = this->getParamWidget(key);
+    QObject* widget = this->getParamWidget(key);
 
     auto* combobox = qobject_cast<QComboBox*>(widget);
 
@@ -2006,7 +2378,7 @@ void SParameters::blockSignals(bool block)
 
 void SParameters::updateIntMinParameter(int min, std::string key)
 {
-    QWidget* child = this->getParamWidget(key);
+    QObject* child = this->getParamWidget(key);
 
     auto* spinbox = qobject_cast<QSpinBox*>(child);
     auto* slider  = qobject_cast<QSlider*>(child);
@@ -2043,7 +2415,7 @@ void SParameters::updateIntMinParameter(int min, std::string key)
 
 void SParameters::updateIntMaxParameter(int max, std::string key)
 {
-    QWidget* child = this->getParamWidget(key);
+    QObject* child = this->getParamWidget(key);
 
     auto* spinbox = qobject_cast<QSpinBox*>(child);
     auto* slider  = qobject_cast<QSlider*>(child);
@@ -2081,7 +2453,7 @@ void SParameters::updateIntMaxParameter(int max, std::string key)
 
 void SParameters::updateDoubleMinParameter(double min, std::string key)
 {
-    QWidget* child = this->getParamWidget(key);
+    QObject* child = this->getParamWidget(key);
 
     auto* spinbox = qobject_cast<QDoubleSpinBox*>(child);
     auto* slider  = qobject_cast<QSlider*>(child);
@@ -2121,7 +2493,7 @@ void SParameters::updateDoubleMinParameter(double min, std::string key)
 
 void SParameters::updateDoubleMaxParameter(double max, std::string key)
 {
-    QWidget* child = this->getParamWidget(key);
+    QObject* child = this->getParamWidget(key);
 
     auto* spinbox = qobject_cast<QDoubleSpinBox*>(child);
     auto* slider  = qobject_cast<QSlider*>(child);
@@ -2213,13 +2585,13 @@ void SParameters::setDoubleSliderRange(QSlider* slider, double currentValue)
 
 //-----------------------------------------------------------------------------
 
-QWidget* SParameters::getParamWidget(const std::string& key)
+QObject* SParameters::getParamWidget(const std::string& key)
 {
     auto qtContainer      = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
-    const QWidget* widget = qtContainer->getQtContainer();
+    const QObject* object = qtContainer->getQtContainer();
 
-    auto* child = widget->findChild<QWidget*>(QString::fromStdString(key));
-    SIGHT_ERROR_IF("Widget '" + key + "' is not found", !child);
+    auto* child = object->findChild<QObject*>(QString::fromStdString(key));
+    SIGHT_ERROR_IF("object '" + key + "' is not found", !child);
 
     return child;
 }

@@ -39,7 +39,7 @@
             <requirement name="modelSeries" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
             <!--# ...-->
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="TestRegistryCfg0">
             <parameters>
                 <parameter replace="orientation" by="frontal" />
@@ -56,7 +56,7 @@
         <requirements>
             <requirement name="param1" type="sight::data::Image" />
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="TestRegistryCfg1">
             <parameters />
         </appConfig>
@@ -71,7 +71,7 @@
             <requirement name="img" type="sight::data::Image" />
             <requirement name="mesh" type="sight::data::Mesh" />
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="TestRegistryCfg2">
             <parameters />
         </appConfig>
@@ -88,7 +88,7 @@
                 <key>key2</key>
             </requirement>
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="TestRegistryCfg3">
             <parameters />
         </appConfig>
@@ -114,7 +114,7 @@
                 <key>key10</key>
             </requirement>
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="TestRegistryCfg4">
             <parameters />
         </appConfig>
@@ -137,7 +137,7 @@
                 <key>key8</key>
             </requirement>
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="TestRegistryCfg5">
             <parameters />
         </appConfig>
@@ -152,7 +152,7 @@
             <requirement name="param1" type="sight::data::Image" />
             <requirement name="param2" type="sight::data::Image" />
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="TestRegistryCfg6">
             <parameters />
         </appConfig>
@@ -169,7 +169,7 @@
                 <key>key1</key>
             </requirement>
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="TestRegistryCfg7">
             <parameters />
         </appConfig>

@@ -15,8 +15,10 @@ cmake_policy(SET CMP0067 NEW)
 # Use old policy for Documentation to add cache variables and find VTK documentation dependent packages.
 # (Needed for doxygen..)
 cmake_policy(SET CMP0106 OLD)
+# Use new policy for CMAKE_MSVC_DEBUG_INFORMATION_FORMAT
+cmake_policy(SET CMP0141 NEW)
 
-if(${CMAKE_VERSION} VERSION_GREATER "3.20.0")
+if(${CMAKE_VERSION} VERSION_GREATER "3.25.0")
     # Transform the ``DEPFILE`` after running the custom command for Ninja generator.
     cmake_policy(SET CMP0116 OLD)
 endif()
@@ -40,7 +42,7 @@ endif()
 
 project(
     sight
-    VERSION 22.0.0
+    VERSION 23.0.0
     DESCRIPTION "Surgical Image Guidance and Healthcare Toolkit"
     HOMEPAGE_URL "https://git.ircad.fr/sight/sight"
 )
@@ -82,7 +84,7 @@ mark_as_advanced(SIGHT_TESTS_XML_OUTPUT)
 set(SIGHT_TESTS_FILTER "" CACHE STRING "Allows to only build/run tests whose path contains the filter string.")
 mark_as_advanced(SIGHT_TESTS_FILTER)
 
-if(UNIX AND (${CMAKE_BUILD_TYPE} STREQUAL "Debug" OR ${CMAKE_BUILD_TYPE} STREQUAL "RelWithDebInfo"))
+if(UNIX)
     option(SIGHT_ENABLE_GDB
            "Test scripts will attach GDB, allowing to generate core file and print backtrace in case of crash." OFF
     )

@@ -3,13 +3,9 @@
 <plugin id="SightViewer" >
 
     <requirement id="sight::module::ui::base" />
-    <requirement id="sight::module::viz::scene3d" />
     <requirement id="sight::module::ui::qt" />
     <requirement id="sight::module::service" />
-    <requirement id="sight::module::viz::scene2d" />
     <requirement id="sight::module::io::session" />
-
-    <xi:include href="configurations/OgreGenericScene.xml" xmlns:xi="http://www.w3.org/2003/XInclude" />
 
     <extension implements="sight::service::extension::Config">
         <id>SightViewer_SightData_SrvCfg</id>
@@ -52,7 +48,7 @@
             <filterType>sight::filter::dicom::custom::DefaultDicomFilter</filterType>
         </config>
     </extension>
-    
+
     <!-- Service config used for writing Snapshot -->
     <extension implements="sight::service::extension::Config">
         <id>SightViewer_snapshot_SrvCfg</id>
@@ -84,6 +80,7 @@
                 <gui>
                     <frame>
                         <name>Sight Viewer</name>
+                        <version>@SightViewer_VERSION@</version>
                         <icon>SightViewer/Ogre_logo.svg</icon>
                         <minSize width="1150" height="700" />
                     </frame>
@@ -108,30 +105,29 @@
             <service uid="containerView" type="sight::module::ui::base::SView" >
                 <gui>
                     <toolBar align="left" />
+                    <layout type="sight::ui::base::OverlayLayoutManager" >
+                        <view />
+                        <view x="-1" y="0" width="50" height="55" visible="false" />
+                    </layout>
+                </gui>
+                <registry>
+                    <toolBar sid="toolBarView" start="true" />
+                    <view sid="sceneParameterView" start="true" />
+                    <view sid="rightToolbarSliderView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="sceneParameterView" type="sight::module::ui::base::SView" >
+                <gui>
                     <layout type="sight::ui::base::LineLayoutManager" >
                         <orientation value="horizontal" />
                         <view proportion="1" />
                         <view proportion="0" minWidth="500" backgroundColor="#36393E" />
                     </layout>
-                    <slideView opacity="1" hAlign="right" vAlign="top" width="50" height="55" >
-                        <styleSheet>
-                            <![CDATA[
-                            #SlideBar QWidget {
-                                background-color: none;
-                            }
-                            #SlideBar QToolBar {
-                                border-top-left-radius: 4px;
-                                border-bottom-left-radius: 4px;
-                            }
-                            ]]>
-                        </styleSheet>
-                    </slideView>
                 </gui>
                 <registry>
-                    <toolBar sid="toolBarView" start="true" />
-                    <view wid="ogreSceneView" start="true" />
+                    <view wid="sceneView" start="true" />
                     <view sid="parameterView" start="true" />
-                    <slideView sid="rightToolbarSliderView" start="true" />
                 </registry>
             </service>
 
@@ -179,7 +175,6 @@
                     <view wid="organsParameterView" />
                     <view sid="landmarksParameterView" start="true" />
                     <view sid="lightParameterView" start="true" />
-                    <view wid="extrudedMeshesParameterView" />
                 </registry>
             </service>
 
@@ -272,18 +267,23 @@
                         <menuItem name="Volume view" icon="sight::module::ui::flaticons/Volume.svg" />
                         <separator/>
                         <menuItem name="Show/hide mesh" icon="sight::module::ui::flaticons/Stomach.svg" style="check" />
-                        <menuItem name="Show/hide volume" icon="sight::module::ui::flaticons/Volume.svg" style="check" />
-                        <menuItem name="Show/hide negato" icon="sight::module::ui::flaticons/Layers.svg" style="check" />
+                        <menuItem name="Show/hide volume" icon="sight::module::ui::flaticons/showVolume.svg" style="check" />
+                        <menuItem name="Show/hide negato" icon="sight::module::ui::flaticons/showNegato.svg" style="check" />
                         <separator/>
                         <menuItem name="Show/hide cropping box" icon="sight::module::ui::flaticons/CroppingBox.svg" style="check" />
                         <menuItem name="Reset cropping box" icon="sight::module::ui::flaticons/ResetCroppingBox.svg" />
-                        <menuItem name="Shape extruder" icon="sight::module::ui::flaticons/Extrude.svg" style="check" />
-                        <menuItem name="Cancel shape extruder last click" icon="sight::module::ui::flaticons/ExtrudePointRemove.svg" />
-                        <menuItem name="Revert shape extruder" icon="sight::module::ui::flaticons/ExtrudeRevert.svg" />
+                        <accordion>
+                            <menuItem name="Draw a new freehand cropping region" icon="sight::module::ui::flaticons/cutVolume.svg" style="check" />
+                            <menuItem name="Undo last freehand cropping point" icon="sight::module::ui::flaticons/undoCutVolume.svg" />
+                            <menuItem name="Revert last freehand cropping region" icon="sight::module::ui::flaticons/revertCutVolume.svg" />
+                        </accordion>
                         <separator/>
-                        <menuItem name="Add distance" icon="sight::module::ui::flaticons/AddDistance.svg" />
-                        <menuItem name="Remove distance" icon="sight::module::ui::flaticons/RemoveDistance.svg" />
-                        <menuItem name="Hide/show distance" icon="sight::module::ui::flaticons/Distance.svg" style="check" />
+                        <accordion>
+                            <menuItem name="Show/hide distance-related actions" icon="sight::module::ui::flaticons/Distance.svg" style="check" />
+                            <menuItem name="Add/Edit distance" icon="sight::module::ui::flaticons/AddDistance.svg" style="check" />
+                            <menuItem name="Remove distance" icon="sight::module::ui::flaticons/RemoveDistance.svg" />
+                        </accordion>
+                        <menuItem name="Hide/show distance" icon="sight::module::ui::flaticons/ShowDistance.svg" style="check" />
                         <separator/>
                         <menuItem name="Show/hide axis" icon="sight::module::ui::flaticons/Axis.svg" style="check" />
                     </layout>
@@ -301,7 +301,8 @@
                     <menuItem sid="shapeExtruderAct" start="true" />
                     <menuItem sid="shapeExtruderCancelAct" start="true" />
                     <menuItem sid="shapeExtruderRevertAct" start="true" />
-                    <menuItem sid="addDistanceAct" start="false" />
+                    <menuItem sid="distanceActionsVisibilityAct" start="true" />
+                    <menuItem sid="addDistanceAct" start="true" />
                     <menuItem sid="removeDistanceAct" start="false" />
                     <menuItem sid="hideDistanceAct" start="false" />
                     <menuItem sid="axisVisibilityAct" start="true" />
@@ -338,7 +339,6 @@
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
-                    <hide wid="extrudedMeshesParameterView" />
                 </config>
             </service>
 
@@ -349,7 +349,6 @@
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
-                    <hide wid="extrudedMeshesParameterView" />
                 </config>
             </service>
 
@@ -360,7 +359,6 @@
                     <show wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
-                    <hide wid="extrudedMeshesParameterView" />
                 </config>
             </service>
 
@@ -371,7 +369,6 @@
                     <hide wid="organsParameterView" />
                     <show sid="landmarksParameterView" />
                     <hide sid="lightParameterView" />
-                    <hide wid="extrudedMeshesParameterView" />
                 </config>
             </service>
 
@@ -382,7 +379,6 @@
                     <hide wid="organsParameterView" />
                     <hide sid="landmarksParameterView" />
                     <show sid="lightParameterView" />
-                    <hide wid="extrudedMeshesParameterView" />
                 </config>
             </service>
 
@@ -439,8 +435,12 @@
             <service uid="axisVisibilityAct" type="sight::module::ui::base::com::SSignal" />
 
             <!-- Manage distance -->
-            <service uid="addDistanceAct" type="sight::module::ui::base::metrics::SAddDistance">
-                <inout key="image" uid="image" />
+            <service uid="distanceActionsVisibilityAct" type="sight::module::ui::base::com::SSignal" >
+                <state enabled="false" />
+            </service>
+
+            <service uid="addDistanceAct" type="sight::module::ui::base::com::SSignal">
+                <state enabled="false" checked="false"/>
             </service>
 
             <service uid="removeDistanceAct" type="sight::module::ui::base::metrics::SRemoveDistance">
@@ -454,13 +454,14 @@
             <!-- ************************ Configuration launchers ********************************* -->
 
             <service uid="ogreGenericSceneCfg" type="sight::service::SConfigController" >
-                <appConfig id="SightViewer_GenericScene_AppCfg" />
-                <parameter replace="WID_PARENT" by="ogreSceneView" />
+                <appConfig id="sight::config::viz::scene3d::imageSplitViews" />
+                <parameter replace="WID_PARENT" by="sceneView" />
                 <parameter replace="NEGATO_VIEW_RECEIVE_CHANNEL" by="NEGATO_VIEW_SENDER_CHANNEL" />
                 <parameter replace="VOLUME_VIEW_RECEIVE_CHANNEL" by="VOLUME_VIEW_SENDER_CHANNEL" />
-                <parameter replace="VR_BASIC_BOOL_PARAM_RECEIVER_CHANNEL" by="VOLUME_BASIC_BOOL_SENDER_CHANNEL" />
-                <parameter replace="VR_BASIC_INT_PARAM_RECEIVER_CHANNEL" by="VOLUME_BASIC_INT_SENDER_CHANNEL" />
-                <parameter replace="VR_BASIC_DOUBLE_PARAM_RECEIVER_CHANNEL" by="VOLUME_BASIC_DOUBLE_SENDER_CHANNEL" />
+                <parameter replace="NEGATO_VOLUME_VIEW_TOGGLE_SENDER_CHANNEL" by="NEGATO_VOLUME_VIEW_TOGGLE_RECEIVER_CHANNEL" />
+                <parameter replace="VR_BOOL_PARAM_RECEIVER_CHANNEL" by="VOLUME_BOOL_SENDER_CHANNEL" />
+                <parameter replace="VR_INT_PARAM_RECEIVER_CHANNEL" by="VOLUME_INT_SENDER_CHANNEL" />
+                <parameter replace="VR_DOUBLE_PARAM_RECEIVER_CHANNEL" by="VOLUME_DOUBLE_SENDER_CHANNEL" />
                 <parameter replace="VR_VISIBILITY_RECEIVER_CHANNEL" by="VR_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="3DNEGATO_VISIBILITY_RECEIVER_CHANNEL" by="3DNEGATO_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="MESHES_VISIBILITY_RECEIVER_CHANNEL" by="MESHES_VISIBILITY_SENDER_CHANNEL" />
@@ -470,10 +471,13 @@
                 <parameter replace="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" by="SHAPE_EXTRUDER_TOOL_DISABLED_RECEIVER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_SENDER_CHANNEL" />
+                <parameter replace="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_RESET_SENDER_CHANNEL" />
                 <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="AXIS_VISIBILITY_SENDER_CHANNEL" />
                 <parameter replace="PICKER_SENDER_CHANNEL" by="PICKER_RECEIVER_CHANNEL" />
                 <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
                 <parameter replace="NEGATO3D_TRANSPARENCY_CHANNEL" by="NEGATO3D_TRANSPARENCY_CHANNEL" />
+                <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="DISTANCE_ACTIVATION_CHANNEL"/>
+                <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="DISTANCE_DEACTIVATION_CHANNEL"/>
                 <inout group="data">
                     <key name="modelSeries" uid="modelSeries" optional="true"/>
                     <key name="image" uid="image" optional="true"/>
@@ -485,7 +489,7 @@
 
             <!-- TF manager -->
             <service uid="TFManagerCfg"  type="sight::service::SConfigController" >
-                <appConfig id="TransferFunctionWidgetCfg" />
+                <appConfig id="sight::config::viz::scene2d::TransferFunctionWidgetCfg" />
                 <parameter replace="WID_PARENT" by="TFCfgParameterView" />
                 <inout group="data">
                     <key name="image" uid="image" />
@@ -494,20 +498,11 @@
             </service>
 
             <service uid="organManagerCfg"  type="sight::service::SConfigController" >
-                <appConfig id="OgreOrganManager" />
+                <appConfig id="sight::config::viz::scene3d::organManager" />
                 <parameter replace="WID_PARENT" by="organsParameterView" />
                 <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
                 <inout group="data">
                     <key name="organManagerModelSeries" uid="modelSeries" />
-                </inout>
-            </service>
-
-            <service uid="extrudedMeshesManagerCfg"  type="sight::service::SConfigController" >
-                <appConfig id="OgreOrganManager" />
-                <parameter replace="WID_PARENT" by="extrudedMeshesParameterView" />
-                <parameter replace="MODELSERIESLIST_ENABLE_DELETE_CONFIG" by="true" />
-                <inout group="data">
-                    <key name="organManagerModelSeries" uid="extrudedModelSeries" />
                 </inout>
             </service>
 
@@ -576,6 +571,11 @@
                 <slot>negatoViewAct/show</slot>
             </connect>
 
+            <connect channel="NEGATO_VOLUME_VIEW_TOGGLE_RECEIVER_CHANNEL" >
+                <slot>negatoViewAct/toggleVisibility</slot>
+                <slot>volumeViewAct/toggleVisibility</slot>
+            </connect>
+
             <connect channel="VR_VISIBILITY_SENDER_CHANNEL" >
                 <signal>volumeVisibilityAct/triggered</signal>
             </connect>
@@ -608,6 +608,11 @@
                 <signal>shapeExtruderCancelAct/triggered</signal>
             </connect>
 
+            <connect channel="SHAPE_EXTRUDER_RESET_SENDER_CHANNEL" >
+                <signal>extractSeriesSrv/imageSelected</signal>
+                <signal>extractPacsImageSrv/updated</signal>
+            </connect>
+
             <connect channel="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" >
                 <signal>shapeExtruderRevertAct/triggered</signal>
             </connect>
@@ -630,6 +635,14 @@
                 <signal>showParameterAct/clicked</signal>
                 <slot>parameterView/show</slot>
                 <slot>rightToolbarSliderView/hide</slot>
+            </connect>
+
+            <connect channel="DISTANCE_ACTIVATION_CHANNEL">
+                <signal>addDistanceAct/isChecked</signal>
+            </connect>
+
+            <connect channel="DISTANCE_DEACTIVATION_CHANNEL">
+                <slot>addDistanceAct/uncheck</slot>
             </connect>
 
             <connect>
@@ -663,20 +676,21 @@
                 <slot>boxWidgetVisibilityAct/enable</slot>
                 <slot>shapeExtruderAct/enable</slot>
                 <slot>boxWidgetResetAct/enable</slot>
+                <slot>distanceActionsVisibilityAct/enable</slot>
                 <slot>addDistanceAct/enable</slot>
                 <slot>removeDistanceAct/enable</slot>
                 <slot>hideDistanceAct/enable</slot>
             </connect>
 
-            <connect channel="VOLUME_BASIC_BOOL_SENDER_CHANNEL" >
+            <connect channel="VOLUME_BOOL_SENDER_CHANNEL" >
                 <signal>volumeParameterSrv/boolChanged</signal>
             </connect>
 
-            <connect channel="VOLUME_BASIC_INT_SENDER_CHANNEL" >
+            <connect channel="VOLUME_INT_SENDER_CHANNEL" >
                 <signal>volumeParameterSrv/intChanged</signal>
             </connect>
 
-            <connect channel="VOLUME_BASIC_DOUBLE_SENDER_CHANNEL" >
+            <connect channel="VOLUME_DOUBLE_SENDER_CHANNEL" >
                 <signal>volumeParameterSrv/doubleChanged</signal>
             </connect>
 
@@ -739,6 +753,17 @@
                 <slot>lightManagerAct/uncheck</slot>
             </connect>
 
+            <!-- Only one mode can be enabled at a time -->
+            <connect>
+                <signal>distanceActionsVisibilityAct/checked</signal>
+                <slot>shapeExtruderAct/uncheck</slot>
+            </connect>
+
+            <connect>
+                <signal>shapeExtruderAct/checked</signal>
+                <slot>distanceActionsVisibilityAct/uncheck</slot>
+            </connect>
+
             <!-- Manage landmarks -->
             <connect channel="PICKER_RECEIVER_CHANNEL" >
                 <slot>landmarksParameterSrv/pick</slot>
@@ -754,12 +779,10 @@
             <start uid="ogreGenericSceneCfg" />
             <start uid="TFManagerCfg" />
             <start uid="organManagerCfg" />
-            <start uid="extrudedMeshesManagerCfg" />
             <start uid="extractSeriesSrv" />
             <start uid="extractPacsImageSrv" />
             <start uid="lightSelectorSrv" />
             <start uid="lightEditorSrv" />
-            <start uid="addDistanceAct" />
             <start uid="removeDistanceAct" />
             <start uid="hideDistanceAct" />
 

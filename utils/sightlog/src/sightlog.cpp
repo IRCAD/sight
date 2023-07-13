@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,9 @@
 
 #include <io/zip/ArchiveReader.hpp>
 #include <io/zip/ArchiveWriter.hpp>
+#include <io/zip/exception/Read.hpp>
 
+#include <boost/algorithm/string.hpp>
 #include <boost/log/core.hpp>
 #include <boost/optional.hpp>
 #include <boost/program_options/options_description.hpp>
@@ -50,6 +52,8 @@
 #include <iostream>
 #include <sstream>
 
+// NOLINTBEGIN(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
+
 //#define SIGHTLOG_DEBUG_FILE
 #if defined(SIGHTLOG_DEBUG_FILE)
 #define DEBUG_LOG(msg) do{std::ofstream log("sightlog.log", std::ios_base::app); \
@@ -58,10 +62,38 @@
 #define DEBUG_LOG(msg) (std::clog << __LINE__ << ": " << msg << std::endl) /* NOLINT: bugprone-macro-parentheses */
 #endif
 
+constexpr static auto SIGHT_HELP         = "help";
+constexpr static auto SIGHT_VERSION      = "version";
+constexpr static auto SIGHT_INPUT        = "input";
+constexpr static auto SIGHT_OUTPUT       = "output";
+constexpr static auto SIGHT_PASSWORD     = "password";
+constexpr static auto SIGHT_OLD_PASSWORD = "old_password";
+constexpr static auto SIGHT_DIRECTORY    = "directory";
+constexpr static auto SIGHT_BASE64       = "base64";
+constexpr static auto SIGHT_RAW          = "raw";
+constexpr static auto SIGHT_ASK_PASS     = "ask-password";
+
+static std::atomic_bool g_interrupted = false;
+
 //------------------------------------------------------------------------------
 
 inline static void signalHandler([[maybe_unused]] int signal)
 {
+    switch(signal)
+    {
+        case SIGINT:
+        case SIGTERM:
+#ifndef WIN32
+        case SIGHUP:
+        case SIGQUIT:
+#endif
+            g_interrupted = true;
+            break;
+
+        default:
+            break;
+    }
+
     DEBUG_LOG("SIGNAL: " << signal << " received");
 }
 
@@ -77,6 +109,398 @@ inline static void sendPassword(const sight::core::crypto::secure_string& passwo
     std::cout.write(password.c_str(), password_size);
 
     std::cout.flush();
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+inline static T getOptionValue(
+    const boost::program_options::variables_map& variables_map,
+    const std::string& option
+)
+{
+    static const bool use_base64 = variables_map.count(SIGHT_BASE64) > 0;
+
+    if(variables_map.count(option))
+    {
+        if(use_base64)
+        {
+            if constexpr(std::is_base_of_v<std::filesystem::path, T>)
+            {
+                return static_cast<T>(sight::core::crypto::from_base64(variables_map[option].as<T>().string()));
+            }
+            else
+            {
+                return static_cast<T>(sight::core::crypto::from_base64(variables_map[option].as<T>()));
+            }
+        }
+
+        return variables_map[option].as<T>();
+    }
+
+    return T();
+}
+
+//------------------------------------------------------------------------------
+
+inline static sight::core::crypto::secure_string getPassword(
+    int argc,
+    char* argv[],
+    const boost::program_options::variables_map& variables_map
+)
+{
+    // In "raw" mode, there is no need of a password
+    if(variables_map.count(SIGHT_RAW) > 0)
+    {
+        return {};
+    }
+
+    // Get the given password, if any
+    auto password = getOptionValue<sight::core::crypto::secure_string>(variables_map, SIGHT_PASSWORD);
+
+    // If we MUST ask the user for a password,
+    if(variables_map.count(SIGHT_ASK_PASS) > 0)
+    {
+        QApplication app(argc, argv);
+
+        bool ok = false;
+
+        const QString& entered_password = QInputDialog::getText(
+            nullptr,
+            QObject::tr("Enter password"),
+            QObject::tr("Please enter application password:"),
+            QLineEdit::Password,
+            QString::fromLocal8Bit(password.c_str()),
+            &ok
+        );
+
+        if(ok)
+        {
+            // Use the entered password as password
+            password = entered_password.toStdString();
+        }
+    }
+
+    // Try the compiled password
+    if(password.empty())
+    {
+        if constexpr(sight::core::crypto::PasswordKeeper::has_default_password())
+        {
+            // Use compiled password
+            password = sight::core::crypto::PasswordKeeper::get_default_password();
+        }
+    }
+
+    return password;
+}
+
+//------------------------------------------------------------------------------
+
+inline static int log(
+    int argc,
+    char* argv[],
+    const boost::program_options::variables_map& variables_map
+)
+{
+    // Install a signal handler
+    if(std::signal(SIGINT, signalHandler) == SIG_ERR)
+    {
+        perror("std::signal(SIGINT)");
+    }
+
+    if(std::signal(SIGTERM, signalHandler) == SIG_ERR)
+    {
+        perror("std::signal(SIGTERM)");
+    }
+
+#ifndef WIN32
+    if(std::signal(SIGHUP, signalHandler) == SIG_ERR)
+    {
+        perror("std::signal(SIGHUP)");
+    }
+
+    if(std::signal(SIGQUIT, signalHandler) == SIG_ERR)
+    {
+        perror("std::signal(SIGQUIT)");
+    }
+#endif
+
+    // start logging
+    // 1kB buffer
+    std::array<char, 1024> buffer {};
+
+    // Get the output path
+    const auto& output_path = getOptionValue<std::filesystem::path>(variables_map, SIGHT_OUTPUT);
+
+    // Get the password
+    const auto& password = getPassword(argc, argv, variables_map);
+
+    // Log without encryption, without compression
+    if(variables_map.count(SIGHT_RAW) > 0)
+    {
+        // Open the log file
+        std::ofstream log_file_stream(output_path.string());
+
+        if(!log_file_stream.good())
+        {
+            DEBUG_LOG(argv[0] << ": cannot write '" << output_path.string() << "'.");
+            return __LINE__;
+        }
+
+        // Tell to the parent process to start logging things
+        sendPassword(password);
+
+        // Start logging
+        while(!std::cin.eof() && std::cin.good() && !g_interrupted)
+        {
+            // Read from std::cin
+            std::cin.read(buffer.data(), buffer.size());
+
+            // Store the read size
+            const std::streamsize read_size = std::cin.gcount();
+
+            if(read_size > 0)
+            {
+                // Write to the archive
+                log_file_stream.write(buffer.data(), read_size);
+                log_file_stream.flush();
+            }
+        }
+    }
+    else
+    {
+        // Create the archive writer
+        auto archive_writer = sight::io::zip::ArchiveWriter::get(output_path);
+
+        // Write a new log file in the archive
+        auto archive_stream = archive_writer->openFile(
+            sight::core::log::LOG_FILE,
+            password
+        );
+
+        // Tell to the parent process to start logging things
+        sendPassword(password);
+
+        // Start the writing loop
+        while(!std::cin.eof() && std::cin.good() && !g_interrupted)
+        {
+            // Read from std::cin
+            std::cin.read(buffer.data(), buffer.size());
+
+            // Store the read size
+            const std::streamsize read_size = std::cin.gcount();
+
+            if(read_size > 0)
+            {
+                // Write to the archive
+                archive_stream->write(buffer.data(), read_size);
+                archive_stream->flush();
+            }
+        }
+    }
+
+    return 0;
+}
+
+//------------------------------------------------------------------------------
+
+inline static int extract(
+    int argc,
+    char* argv[],
+    const boost::program_options::variables_map& variables_map
+)
+{
+    // Get the input path
+    const std::filesystem::path& input_path = getOptionValue<std::string>(variables_map, SIGHT_INPUT);
+
+    // Create the archive reader
+    auto archive_reader = sight::io::zip::ArchiveReader::get(input_path);
+
+    const auto& password = getPassword(argc, argv, variables_map);
+
+    // Open log file from the archive
+    std::unique_ptr<std::istream> archive_istream;
+
+    try
+    {
+        archive_istream = archive_reader->openFile(
+            sight::core::log::LOG_FILE,
+            password
+        );
+    }
+    catch(const sight::io::zip::exception::BadPassword&)
+    {
+        if constexpr(sight::core::crypto::PasswordKeeper::has_default_password())
+        {
+            archive_istream = archive_reader->openFile(
+                sight::core::log::LOG_FILE,
+                sight::core::crypto::PasswordKeeper::get_global_password()
+            );
+        }
+        else
+        {
+            throw;
+        }
+    }
+
+    // Write to the file
+    const auto& extracted_log_path =
+        [&]
+        {
+            if(variables_map.count(SIGHT_DIRECTORY) > 0)
+            {
+                // Get the output directory
+                const auto& directory = getOptionValue<std::filesystem::path>(variables_map, SIGHT_DIRECTORY);
+
+                // Create directories, if needed
+                std::filesystem::create_directories(directory);
+                return directory / sight::core::log::LOG_FILE;
+            }
+
+            // Use current working directory
+            return std::filesystem::path(sight::core::log::LOG_FILE);
+        }();
+
+    std::ofstream log_file_stream(extracted_log_path.string());
+
+    if(!log_file_stream.good())
+    {
+        DEBUG_LOG(argv[0] << ": cannot write '" << extracted_log_path.string() << "'.");
+        return __LINE__;
+    }
+
+    log_file_stream << archive_istream->rdbuf();
+
+    return 0;
+}
+
+//------------------------------------------------------------------------------
+
+inline static int merge(
+    [[maybe_unused]] char* argv[],
+    const boost::program_options::variables_map& variables_map,
+    const sight::core::crypto::secure_string& password,
+    const sight::core::crypto::secure_string& old_password,
+    std::ostream& ostream
+)
+{
+    // Get input paths
+    std::vector<std::filesystem::path> input_paths;
+    boost::split(
+        input_paths,
+        getOptionValue<std::string>(variables_map, SIGHT_INPUT),
+        boost::is_any_of(";")
+    );
+
+    const auto decrypt =
+        [&](const std::filesystem::path& input_path, const sight::core::crypto::secure_string& secret)
+        {
+            // Create the archive reader
+            auto archive_reader = sight::io::zip::ArchiveReader::get(input_path);
+
+            // Open log file from the archive
+            auto archive_istream = archive_reader->openFile(
+                sight::core::log::LOG_FILE,
+                secret
+            );
+
+            try
+            {
+                ostream << archive_istream->rdbuf();
+            }
+            catch([[maybe_unused]] const std::exception& e)
+            {
+                DEBUG_LOG(argv[0] << ": " << e.what());
+                return __LINE__;
+            }
+            catch(...)
+            {
+                DEBUG_LOG(argv[0] << ": Unknown exception.");
+                return __LINE__;
+            }
+
+            return 0;
+        };
+
+    const auto try_decrypt =
+        [&](const std::filesystem::path& input_path)
+        {
+            try
+            {
+                return decrypt(input_path, password);
+            }
+            catch(const sight::io::zip::exception::BadPassword&)
+            {
+                try
+                {
+                    return decrypt(input_path, old_password);
+                }
+                catch(const sight::io::zip::exception::BadPassword&)
+                {
+                    if constexpr(sight::core::crypto::PasswordKeeper::has_default_password())
+                    {
+                        return decrypt(input_path, sight::core::crypto::PasswordKeeper::get_default_password());
+                    }
+
+                    throw;
+                }
+            }
+        };
+
+    // Extract all the input paths
+    for(const auto& input_path : input_paths)
+    {
+        try
+        {
+            // Try as an archive first
+            if(const auto result = try_decrypt(input_path); result != 0)
+            {
+                return result;
+            }
+        }
+        catch(...)
+        {
+            // try as a regular file
+            std::ifstream istream(input_path.string(), std::ios::binary | std::ios::in);
+            ostream << istream.rdbuf();
+        }
+    }
+
+    return 0;
+}
+
+//------------------------------------------------------------------------------
+
+inline static int convert(
+    int argc,
+    char* argv[],
+    const boost::program_options::variables_map& variables_map
+)
+{
+    // Get the output path
+    const auto& output_path = getOptionValue<std::filesystem::path>(variables_map, SIGHT_OUTPUT);
+
+    // Get the passwords
+    const auto& password     = getPassword(argc, argv, variables_map);
+    const auto& old_password = getOptionValue<sight::core::crypto::secure_string>(variables_map, SIGHT_OLD_PASSWORD);
+
+    if(variables_map.count(SIGHT_RAW) > 0)
+    {
+        std::ofstream ofstream(output_path.string(), std::ios::binary | std::ios::out | std::ios::trunc);
+
+        return merge(argv, variables_map, password, old_password, ofstream);
+    }
+
+    // Create the archive reader
+    auto archive_writer = sight::io::zip::ArchiveWriter::get(output_path);
+
+    // Write a new log file in the archive
+    auto archive_ostream = archive_writer->openFile(
+        sight::core::log::LOG_FILE,
+        password
+    );
+
+    return merge(argv, variables_map, password, old_password, *archive_ostream);
 }
 
 //------------------------------------------------------------------------------
@@ -100,42 +524,33 @@ int main(int argc, char* argv[])
     // Register program options
     // Common options
     namespace po = boost::program_options;
-    constexpr static auto HELP      = "help";
-    constexpr static auto VERSION   = "version";
-    constexpr static auto INPUT     = "input";
-    constexpr static auto OUTPUT    = "output";
-    constexpr static auto PASSWORD  = "password";
-    constexpr static auto DIRECTORY = "directory";
-    constexpr static auto BASE64    = "base64";
-    constexpr static auto RAW       = "raw";
-    constexpr static auto ASK_PASS  = "ask-password";
 
     po::options_description options("Sightlog logger options");
     options.add_options()
     (
-        (std::string(HELP) + ",h").c_str(),
+        (std::string(SIGHT_HELP) + ",h").c_str(),
         "Display this help message."
     )
     (
-        (std::string(VERSION) + ",v").c_str(),
+        (std::string(SIGHT_VERSION) + ",v").c_str(),
         "Display the version of the program."
     )
     (
-        (std::string(INPUT) + ",i").c_str(),
-        po::value<std::filesystem::path>(),
+        (std::string(SIGHT_INPUT) + ",i").c_str(),
+        po::value<std::string>(),
         "Log archive to extract."
     )
     (
-        (std::string(PASSWORD) + ",p").c_str(),
+        (std::string(SIGHT_PASSWORD) + ",p").c_str(),
         po::value<sight::core::crypto::secure_string>(),
         "Password to use for encryption and decryption."
     )
     (
-        (std::string(ASK_PASS) + ",a").c_str(),
+        (std::string(SIGHT_ASK_PASS) + ",a").c_str(),
         "Show a popup to enter the password."
     )
     (
-        (std::string(DIRECTORY) + ",d").c_str(),
+        (std::string(SIGHT_DIRECTORY) + ",d").c_str(),
         po::value<std::filesystem::path>(),
         "Output directory when extracting a log archive."
     );
@@ -144,17 +559,22 @@ int main(int argc, char* argv[])
     po::options_description hidden_options("Hidden options");
     hidden_options.add_options()
     (
-        (std::string(RAW) + ",r").c_str(),
+        (std::string(SIGHT_RAW) + ",r").c_str(),
         "Do not compress, do not encrypt, just write raw logs."
     )
     (
-        (std::string(BASE64) + ",b").c_str(),
+        (std::string(SIGHT_BASE64) + ",b").c_str(),
         "Used by sight to pass arguments without worrying about quotes and spaces characters."
     )
     (
-        (std::string(OUTPUT) + ",o").c_str(),
+        (std::string(SIGHT_OUTPUT) + ",o").c_str(),
         po::value<std::filesystem::path>(),
         "Log archive to write."
+    )
+    (
+        (std::string(SIGHT_OLD_PASSWORD) + ",P").c_str(),
+        po::value<sight::core::crypto::secure_string>(),
+        "Old password used for conversion operation."
     );
 
     // Merge options
@@ -175,19 +595,10 @@ int main(int argc, char* argv[])
 
         notify(variables_map);
 
-        // Check mutually exclusive options
-        if((variables_map.count(INPUT) != 0U) && !variables_map[INPUT].defaulted()
-           && (variables_map.count(OUTPUT) != 0U) && !variables_map[OUTPUT].defaulted())
-        {
-            std::cerr << "Error: Options -i and -o are mutually exclusive." << std::endl;
-            std::cerr << options << std::endl;
-            return __LINE__;
-        }
-
-        if((variables_map.count(HELP) == 0U)
-           && (variables_map.count(VERSION) == 0U)
-           && (variables_map.count(INPUT) == 0U)
-           && (variables_map.count(OUTPUT) == 0U))
+        if((variables_map.count(SIGHT_HELP) == 0U)
+           && (variables_map.count(SIGHT_VERSION) == 0U)
+           && (variables_map.count(SIGHT_INPUT) == 0U)
+           && (variables_map.count(SIGHT_OUTPUT) == 0U))
         {
             std::cerr << "Error: One of the options -i or -o is required." << std::endl;
             std::cerr << options << std::endl;
@@ -202,333 +613,51 @@ int main(int argc, char* argv[])
     }
 
     // Display help
-    if(variables_map.count(HELP) > 0)
+    if(variables_map.count(SIGHT_HELP) > 0)
     {
         std::cerr << options << std::endl;
         return 0;
     }
 
     // Display version
-    if(variables_map.count(VERSION) > 0)
+    if(variables_map.count(SIGHT_VERSION) > 0)
     {
-        std::cerr << "1.0" << std::endl;
+        std::cerr << "2.0" << std::endl;
         return 0;
     }
 
-    const bool is_logging = variables_map.count(OUTPUT) > 0;
-    const bool use_base64 = variables_map.count(BASE64) > 0;
+    const bool has_output = variables_map.count(SIGHT_OUTPUT) > 0;
+    const bool has_input  = variables_map.count(SIGHT_INPUT) > 0;
 
-    // Archive path
-    const auto& archive_path =
-        [&]
-        {
-            std::filesystem::path path = is_logging
-                                         ? variables_map[OUTPUT].as<std::filesystem::path>()
-                                         : variables_map[INPUT].as<std::filesystem::path>();
-
-            if(use_base64)
-            {
-                path = sight::core::crypto::from_base64(path.string());
-            }
-
-            // Force log extension for raw logs
-            if(variables_map.count(RAW) > 0)
-            {
-                path = path.replace_extension(".log");
-            }
-
-            return path;
-        }();
-
-    // Get the password
-    const auto& password =
-        [&]
-        {
-            sight::core::crypto::secure_string password;
-
-            // In "raw" mode, there is no need of a password
-            if(variables_map.count(RAW) > 0)
-            {
-                return password;
-            }
-
-            // Get the given password, if any
-            if(variables_map.count(PASSWORD) > 0)
-            {
-                password = variables_map[PASSWORD].as<sight::core::crypto::secure_string>();
-
-                if(use_base64)
-                {
-                    password = sight::core::crypto::from_base64(password);
-                }
-            }
-
-            // If we MUST ask the user for a password,
-            if(variables_map.count(ASK_PASS) > 0)
-            {
-                // NOLINTNEXTLINE(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays)
-                QApplication app(argc, argv);
-
-                bool ok = false;
-
-                const QString& entered_password = QInputDialog::getText(
-                    nullptr,
-                    QObject::tr("Enter password"),
-                    QObject::tr("Please enter application password:"),
-                    QLineEdit::Password,
-                    QString::fromLocal8Bit(password.c_str()),
-                    &ok
-                );
-
-                if(ok)
-                {
-                    // Use the entered password as password
-                    password = entered_password.toStdString();
-                }
-            }
-
-            if(password.empty())
-            {
-                if constexpr(sight::core::crypto::PasswordKeeper::has_default_password())
-                {
-                    // Use compiled password
-                    password = sight::core::crypto::PasswordKeeper::get_default_password();
-                }
-                else
-                {
-                    DEBUG_LOG(argv[0] << ": Log encryption has been enabled, but no default password has been set.");
-                    exit(__LINE__);
-                }
-            }
-
-            return password;
-        }();
-
-    // Start logging loop
-    if(is_logging)
+    try
     {
-        // Install a signal handler
-        if(std::signal(SIGINT, signalHandler) == SIG_ERR)
+        if(has_output && has_input)
         {
-            perror("std::signal(SIGINT)");
+            // We must convert a log archive to another format
+            return convert(argc, argv, variables_map);
         }
 
-        if(std::signal(SIGTERM, signalHandler) == SIG_ERR)
+        if(has_output)
         {
-            perror("std::signal(SIGTERM)");
+            // We must log
+            return log(argc, argv, variables_map);
         }
 
-    #ifndef WIN32
-        if(std::signal(SIGHUP, signalHandler) == SIG_ERR)
+        if(has_input)
         {
-            perror("std::signal(SIGHUP)");
-        }
-
-        if(std::signal(SIGQUIT, signalHandler) == SIG_ERR)
-        {
-            perror("std::signal(SIGQUIT)");
-        }
-    #endif
-
-        try
-        {
-            // 1kB buffer
-            std::array<char, 1024> buffer {};
-
-            // 100 MB rotation limit
-            constexpr std::streamsize rotate_size = 128LL * 1024 * 1024;
-
-            // Store the read size, so we can rotate the log file
-            std::streamsize written_size = 0;
-
-            // Log without encryption, without compression
-            if(variables_map.count(RAW) > 0)
-            {
-                // Open the log file
-                std::ofstream log_file_stream(archive_path.string());
-
-                if(!log_file_stream.good())
-                {
-                    DEBUG_LOG(argv[0] << ": cannot write '" << archive_path.string() << "'.");
-                    return __LINE__;
-                }
-
-                // Tell to the parent process to start logging things
-                sendPassword(password);
-
-                // Start logging
-                while(!std::cin.eof())
-                {
-                    // Read from std::cin
-                    std::cin.read(buffer.data(), buffer.size());
-
-                    // Store the read size
-                    const std::streamsize read_size = std::cin.gcount();
-
-                    if(read_size > 0)
-                    {
-                        // Write to the archive
-                        log_file_stream.write(buffer.data(), read_size);
-
-                        written_size += read_size;
-
-                        // Rotate the log file, if needed
-                        if(written_size > rotate_size)
-                        {
-                            // Close everything
-                            log_file_stream.close();
-                            std::filesystem::remove_all(archive_path);
-
-                            // Re-create the archive writer
-                            log_file_stream = std::ofstream(archive_path.string());
-
-                            if(!log_file_stream.good())
-                            {
-                                DEBUG_LOG(argv[0] << ": cannot write '" << archive_path.string() << "'.");
-                                return __LINE__;
-                            }
-
-                            // Reset the written size
-                            written_size = 0;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                // Create the archive writer
-                auto archive_writer = sight::io::zip::ArchiveWriter::get(
-                    archive_path,
-                    sight::io::zip::Archive::ArchiveFormat::OPTIMIZED
-                );
-
-                // Write a new  log file in the archive
-                auto archive_stream = archive_writer->openFile(
-                    sight::core::log::LOG_FILE,
-                    password
-                );
-
-                // Tell to the parent process to start logging things
-                sendPassword(password);
-
-                // Start the writing loop
-                while(!std::cin.eof())
-                {
-                    // Read from std::cin
-                    std::cin.read(buffer.data(), buffer.size());
-
-                    // Store the read size
-                    const std::streamsize read_size = std::cin.gcount();
-
-                    if(read_size > 0)
-                    {
-                        // Write to the archive
-                        archive_stream->write(buffer.data(), read_size);
-
-                        written_size += read_size;
-
-                        // Rotate the log file, if needed
-                        if(written_size > rotate_size)
-                        {
-                            // Close everything
-                            archive_stream.reset();
-                            archive_writer.reset();
-                            std::filesystem::remove_all(archive_path);
-
-                            // Re-create the archive writer
-                            archive_writer = sight::io::zip::ArchiveWriter::get(
-                                archive_path,
-                                sight::io::zip::Archive::ArchiveFormat::OPTIMIZED
-                            );
-
-                            // Write a new log file in the archive
-                            archive_stream = archive_writer->openFile(
-                                sight::core::log::LOG_FILE,
-                                password
-                            );
-
-                            // Reset the written size
-                            written_size = 0;
-                        }
-                    }
-                }
-            }
-        }
-        catch([[maybe_unused]] const std::exception& e)
-        {
-            DEBUG_LOG(argv[0] << ": " << e.what());
-            return __LINE__;
-        }
-        catch(...)
-        {
-            DEBUG_LOG(argv[0] << ": Unknown exception.");
-            return __LINE__;
+            // We must extract
+            return extract(argc, argv, variables_map);
         }
     }
-    else
+    catch([[maybe_unused]] const std::exception& e)
     {
-        try
-        {
-            // Create the archive reader
-            auto archive_reader = sight::io::zip::ArchiveReader::get(archive_path);
-
-            // Open log file from the archive
-            auto archive_stream = archive_reader->openFile(
-                sight::core::log::LOG_FILE,
-                password
-            );
-
-            // Write to the file
-            const auto& log_path =
-                [&]
-                {
-                    if(variables_map.count(DIRECTORY) > 0)
-                    {
-                        // Get the output directory
-                        const auto& directory = variables_map[DIRECTORY].as<std::filesystem::path>();
-
-                        if(use_base64)
-                        {
-                            const std::filesystem::path decoded_directory(
-                                sight::core::crypto::from_base64(directory.string())
-                            );
-
-                            // Create directories, if needed
-                            std::filesystem::create_directories(decoded_directory);
-
-                            return decoded_directory / sight::core::log::LOG_FILE;
-                        }
-
-                        // Create directories, if needed
-                        std::filesystem::create_directories(directory);
-                        return directory / sight::core::log::LOG_FILE;
-                    }
-
-                    // Use current working directory
-                    return std::filesystem::path(sight::core::log::LOG_FILE);
-                }();
-
-            std::ofstream log_file_stream(log_path.string());
-
-            if(!log_file_stream.good())
-            {
-                DEBUG_LOG(argv[0] << ": cannot write '" << log_path << "'.");
-                return __LINE__;
-            }
-
-            log_file_stream << archive_stream->rdbuf();
-            log_file_stream.close();
-        }
-        catch([[maybe_unused]] const std::exception& e)
-        {
-            DEBUG_LOG(argv[0] << ": " << e.what());
-            return __LINE__;
-        }
-        catch(...)
-        {
-            DEBUG_LOG(argv[0] << ": Unknown exception.");
-            return __LINE__;
-        }
+        DEBUG_LOG(argv[0] << ": " << e.what());
+        return __LINE__;
+    }
+    catch(...)
+    {
+        DEBUG_LOG(argv[0] << ": Unknown exception.");
+        return __LINE__;
     }
 
     return 0;
@@ -543,3 +672,5 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 }
 
 #endif // _WIN32
+
+// NOLINTEND(cppcoreguidelines-avoid-c-arrays,hicpp-avoid-c-arrays,modernize-avoid-c-arrays)

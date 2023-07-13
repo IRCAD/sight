@@ -25,9 +25,7 @@
 #include <core/com/Slots.hxx>
 
 #include <data/GenericFieldBase.hpp>
-#include <data/tools/Color.hpp>
 
-#include <viz/scene3d/helper/Font.hpp>
 #include <viz/scene3d/IWindowInteractor.hpp>
 #include <viz/scene3d/SRender.hpp>
 
@@ -51,7 +49,7 @@ void SText::configuring()
 
     const ConfigType config = this->getConfiguration();
 
-    static const std::string s_TEXT_CONFIG        = s_CONFIG + "text";
+    static const std::string s_TEXT_CONFIG        = "text";
     static const std::string s_FONT_SIZE_CONFIG   = s_CONFIG + "fontSize";
     static const std::string s_FONT_SOURCE_CONFIG = s_CONFIG + "fontSource";
     static const std::string s_H_ALIGN_CONFIG     = s_CONFIG + "hAlign";
@@ -84,15 +82,7 @@ void SText::configuring()
     m_position.x = config.get<float>(s_X_CONFIG, m_position.x);
     m_position.y = config.get<float>(s_Y_CONFIG, m_position.y);
 
-    const auto hexaTextColor = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
-    std::array<std::uint8_t, 4> textColor {};
-    data::tools::Color::hexaStringToRGBA(hexaTextColor, textColor);
-
-    const auto divideBy255 = [](auto&& PH1, auto&& ...)
-                             {
-                                 return std::divides<>()(std::forward<decltype(PH1)>(PH1), 255.F);
-                             };
-    std::transform(textColor.begin(), textColor.end(), m_textColor.ptr(), divideBy255);
+    m_textColor = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
 }
 
 //----------------------------------------------------------------------------
@@ -101,22 +91,11 @@ void SText::starting()
 {
     this->initialize();
 
-    this->getRenderService()->makeCurrent();
+    auto renderSrv = this->getRenderService();
 
-    Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
+    m_text = sight::viz::scene3d::IText::New(this->getLayer());
 
-    const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
-
-    m_text = sight::viz::scene3d::Text::New(
-        this->getID() + "_text",
-        this->getSceneManager(),
-        textContainer,
-        m_fontSource,
-        m_fontSize,
-        dpi,
-        this->getLayer()->getDefaultCamera()
-    );
-
+    m_text->setFontSize(m_fontSize);
     m_text->setTextColor(m_textColor);
 
     this->updateText();
@@ -143,11 +122,6 @@ void SText::updating()
 
 void SText::stopping()
 {
-    this->getRenderService()->makeCurrent();
-
-    Ogre::SceneManager* const sm = this->getLayer()->getSceneManager();
-    m_text->detachFromParent();
-    sm->destroyMovableObject(m_text);
     m_text = nullptr;
 }
 
@@ -155,50 +129,10 @@ void SText::stopping()
 
 void SText::setText(std::string str)
 {
-    this->getRenderService()->makeCurrent();
-
     m_textString = str;
     m_text->setText(str);
-    this->updatePositionFromAlignment();
-
-    this->requestRender();
-}
-
-//----------------------------------------------------------------------------
-
-void SText::updatePositionFromAlignment()
-{
-    const std::map<std::string, Ogre::TextAreaOverlayElement::Alignment> stringToHorizAlignmentMap {
-        {"left", Ogre::TextAreaOverlayElement::Left},
-        {"center", Ogre::TextAreaOverlayElement::Center},
-        {"right", Ogre::TextAreaOverlayElement::Right}
-    };
-
-    const std::map<std::string, float> horizAlignToX {
-        {"left", m_position.x},
-        {"center", 0.5F + m_position.x},
-        {"right", 1.F - m_position.x}
-    };
-
-    const std::map<std::string, Ogre::GuiVerticalAlignment> stringToVertAlignmentMap {
-        {"bottom", Ogre::GVA_BOTTOM},
-        {"center", Ogre::GVA_CENTER},
-        {"top", Ogre::GVA_TOP}
-    };
-
-    const std::map<std::string, float> vertAlignToY {
-        {"bottom", 1.F - m_position.y},
-        {"center", 0.5F + m_position.y},
-        {"top", m_position.y}
-    };
-
-    const auto hAlign = stringToHorizAlignmentMap.at(m_horizontalAlignment);
-    const auto vAlign = stringToVertAlignmentMap.at(m_verticalAlignment);
-    const float x     = horizAlignToX.at(m_horizontalAlignment);
-    const float y     = vertAlignToY.at(m_verticalAlignment);
-
-    m_text->setTextAlignment(hAlign, vAlign);
-    m_text->setPosition(x, y);
+    m_text->setTextColor(m_textColor);
+    m_text->setTextAlignment(m_horizontalAlignment, m_verticalAlignment);
 }
 
 //----------------------------------------------------------------------------

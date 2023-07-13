@@ -23,7 +23,7 @@
 #include "SSliceIndexDicomEditor.hpp"
 
 #include <core/com/Slots.hxx>
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 #include <data/ImageSeries.hpp>
@@ -47,13 +47,10 @@ static const std::string s_READER_CONFIG       = "readerConfig";
 
 //------------------------------------------------------------------------------
 
-SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept =
-    default;
-
-//------------------------------------------------------------------------------
-
-SSliceIndexDicomEditor::~SSliceIndexDicomEditor() noexcept =
-    default;
+SSliceIndexDicomEditor::SSliceIndexDicomEditor() noexcept :
+    service::INotifier(m_signals)
+{
+}
 
 //------------------------------------------------------------------------------
 
@@ -260,7 +257,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Unable to establish a connection with the PACS: " + std::string(_e.what()));
-        this->notify(NotificationType::FAILURE, "Unable to connect to PACS");
+        this->INotifier::failure("Unable to connect to PACS");
     }
 
     const auto dicomSeries = m_series.lock();
@@ -293,7 +290,7 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
             }
 
             // Compute the path and add it to the DICOM series.
-            std::filesystem::path tmpPath      = core::tools::System::getTemporaryFolder() / "dicom";
+            std::filesystem::path tmpPath      = core::os::TempDir::sharedDirectory() / "dicom";
             std::filesystem::path downloadPath = tmpPath / seriesInstanceUID / sopInstanceUID;
             dicomSeries->addDicomPath(_selectedSliceIndex, downloadPath);
 
@@ -301,13 +298,13 @@ void SSliceIndexDicomEditor::pullSlice(std::size_t _selectedSliceIndex) const
         }
         else
         {
-            this->notify(NotificationType::FAILURE, "No instance found");
+            this->INotifier::failure("No instance found");
         }
     }
     catch(const sight::io::dimse::exceptions::Base& _e)
     {
         SIGHT_ERROR("Unable to execute query to the PACS: " + std::string(_e.what()));
-        this->notify(NotificationType::FAILURE, "Unable to execute query");
+        this->INotifier::failure("Unable to execute query");
     }
     catch(const std::filesystem::filesystem_error& _e)
     {
@@ -337,7 +334,7 @@ void SSliceIndexDicomEditor::readSlice(
     const std::string modality = _dicomSeries->getModality();
     if(modality != "CT" && modality != "MR" && modality != "XA")
     {
-        this->notify(NotificationType::INFO, "Unable to read the modality '" + modality + "'");
+        this->INotifier::info("Unable to read the modality '" + modality + "'");
         return;
     }
 
@@ -351,11 +348,11 @@ void SSliceIndexDicomEditor::readSlice(
     const std::size_t bufferSize = bufferObj->getSize();
 
     // Creates unique temporary folder to save the DICOM instance.
-    std::filesystem::path tmpPath = core::tools::System::getTemporaryFolder("dicom");
-    std::filesystem::create_directories(tmpPath);
+    // Do not delete the folder, as we may use the file in the DicomReference.
+    const auto tmpDir = core::os::TempDir::sharedDirectory("do_not_delete_");
 
     // Open the temporary folder and write the buffer.
-    std::filesystem::path path = tmpPath / std::to_string(_selectedSliceIndex);
+    std::filesystem::path path = tmpDir / std::to_string(_selectedSliceIndex);
     std::ofstream fs(path, std::ios::binary | std::ios::trunc);
     if(!fs.good())
     {
@@ -367,7 +364,7 @@ void SSliceIndexDicomEditor::readSlice(
     fs.close();
 
     // Read the image.
-    m_dicomReader->setFolder(tmpPath);
+    m_dicomReader->setFolder(tmpDir);
     m_dicomReader->update().wait();
 
     if(!m_dicomReader->hasFailed() && !m_series_set->empty())
@@ -405,7 +402,7 @@ void SSliceIndexDicomEditor::readSlice(
     else
     {
         SIGHT_ERROR("Unable to read the image");
-        this->notify(NotificationType::FAILURE, "Unable to read the image");
+        this->INotifier::failure("Unable to read the image");
     }
 }
 

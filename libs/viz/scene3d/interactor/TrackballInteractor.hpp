@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ public:
     VIZ_SCENE3D_API TrackballInteractor(SPTR(Layer)_layer = nullptr, bool _layerOrderDependant = true);
 
     /// Destroys the trackball.
-    VIZ_SCENE3D_API ~TrackballInteractor() override;
+    VIZ_SCENE3D_API ~TrackballInteractor() final;
 
     /**
      * @brief Moves the camera according to the pressed button.
@@ -67,19 +67,19 @@ public:
         int _y,
         int _dx,
         int _dy
-    ) override;
+    ) final;
 
     /// Verifies if the button is pressed within the camera's viewport and enables mouse movements if that is the case.
-    VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) override;
+    VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y) final;
 
     /// Disables mouse movements.
-    VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier /*_mods*/, int /*_x*/, int /*_y*/) override;
+    VIZ_SCENE3D_API void buttonReleaseEvent(MouseButton _button, Modifier /*_mods*/, int /*_x*/, int /*_y*/) final;
 
     /**
      * @brief Moves the camera towards or away from the focus point.
      * @param _delta distance that the wheel is rotated, in eighths of a degree.
      */
-    VIZ_SCENE3D_API void wheelEvent(Modifier /*_mods*/, double _delta, int /*x*/, int /*y*/) override;
+    VIZ_SCENE3D_API void wheelEvent(Modifier /*_mods*/, double _delta, int /*x*/, int /*y*/) final;
 
     /**
      * @brief Moves the camera towards or away the central point.
@@ -87,7 +87,16 @@ public:
      * @param _centerX the width coordinate of the center of the pinch
      * @param _centerY the height coordinate of the center of the pinch
      */
-    VIZ_SCENE3D_API void pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY) override;
+    VIZ_SCENE3D_API void pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY) final;
+
+    /**
+     * @brief Moves the camera along the screen's axes.
+     * @param _x current width coordinate.
+     * @param _y current height coordinate.
+     * @param _dx the width displacement since the last event.
+     * @param _dy the height displacement since the last event.
+     */
+    VIZ_SCENE3D_API void panGestureMoveEvent(int _x, int _y, int _dx, int _dy) final;
 
     /**
      * @brief Defines camera actions when the keyboard is pressed.
@@ -97,15 +106,15 @@ public:
      * @param _mouseX the mouse's width position at the time of the key press.
      * @param _mouseY the mouse's height position at the time of the key press.
      */
-    VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int _mouseX, int _mouseY) override;
+    VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int _mouseX, int _mouseY) final;
 
     /**
      * @brief Recomputes the camera's aspect ratio when the render window is resized.
      */
-    VIZ_SCENE3D_API void resizeEvent(int /*_width*/, int /*_height*/) override;
+    VIZ_SCENE3D_API void resizeEvent(int /*_width*/, int /*_height*/) final;
 
     /// Recomputes the mouse's scale and focus point from the updated scene length.
-    VIZ_SCENE3D_API void setSceneLength(float _sceneLength) override;
+    VIZ_SCENE3D_API void setSceneLength(float _sceneLength) final;
 
 private:
 

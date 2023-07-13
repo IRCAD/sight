@@ -75,6 +75,7 @@ class ISlideViewBuilder;
  * alternative) or hides it.
  * - \b show() : this slot shows the container.
  * - \b hide() : this slot hides the container.
+ * - \b toggleVisibility() : this slot shows the container if it is hidden or hides it if it is shown
  *
  * @section XML Example of XML configuration
  *
@@ -189,6 +190,9 @@ protected:
     /// Slot to hide the container
     UI_BASE_API static const core::com::Slots::SlotKeyType s_HIDE_SLOT;
 
+    /// Slot to show the container if it is hidden or hide it if it is shown
+    UI_BASE_API static const core::com::Slots::SlotKeyType s_TOGGLE_VISIBILITY;
+
     /// SLOT: enable/disable the container
     UI_BASE_API virtual void setEnabled(bool isEnabled);
 
@@ -212,6 +216,9 @@ protected:
 
     /// SLOT: hide the container
     UI_BASE_API virtual void hide();
+
+    /// SLOT: show the container if it is hidden or hide it if it is shown
+    UI_BASE_API void toggleVisibility();
 
 /**
  * @}

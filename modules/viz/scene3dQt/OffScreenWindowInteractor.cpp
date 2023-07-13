@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,12 +22,12 @@
 
 #include "modules/viz/scene3dQt/OffScreenWindowInteractor.hpp"
 
-#include "modules/viz/scene3dQt/OpenGLWorker.hpp"
+#include <modules/viz/scene3dQt/init.hpp>
+#include <modules/viz/scene3dQt/OpenGLWorker.hpp>
 
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/registry/macros.hpp>
 #include <viz/scene3d/SRender.hpp>
-#include <viz/scene3d/WindowManager.hpp>
 
 #define FW_PROFILING_DISABLED
 #include <core/Profiling.hpp>
@@ -95,30 +95,12 @@ void OffScreenWindowInteractor::createContainer(
         m_ogreRoot->getRenderSystem()->getName().find("GL") != std::string::npos
     );
 
-    Ogre::NameValuePairList parameters;
-
-    sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
-
     // We share the OpenGL context on all windows. The first window will create the context, the other ones will
     // reuse the current context.
     m_offscreenSurface = std::make_unique<QOffscreenSurface>();
-    m_glContext        = OpenGLContext::getGlobalOgreOpenGLContext();
     this->makeCurrent();
 
-    parameters["currentGLContext"] = "true";
-
-    // We create the renderWindow with a dummy size of 1 by 1
-    m_ogreRenderWindow = m_ogreRoot->createRenderWindow(
-        "OffScreenWindow_" + std::to_string(m_id),
-        1,
-        1,
-        false,
-        &parameters
-    );
-    mgr->add(m_ogreRenderWindow);
-
-    m_ogreRenderWindow->setHidden(true);
-    m_ogreRenderWindow->setAutoUpdated(false);
+    initResources();
 
     auto& texMgr = Ogre::TextureManager::getSingleton();
     m_ogreTexture = texMgr.createManual(
@@ -132,6 +114,25 @@ void OffScreenWindowInteractor::createContainer(
         Ogre::TU_RENDERTARGET
     );
     m_ogreRenderTarget = m_ogreTexture->getBuffer()->getRenderTarget();
+
+    const auto renderService = sight::viz::scene3d::SRender::dynamicCast(m_renderService.lock());
+    SIGHT_ASSERT("RenderService wrongly instantiated. ", renderService);
+
+    std::map<int, sight::viz::scene3d::Layer::wptr> orderedLayers;
+    for(auto& layer : renderService->getLayers())
+    {
+        orderedLayers[layer.second->getOrder()] = layer.second;
+    }
+
+    for(auto& layer : orderedLayers)
+    {
+        const auto l = layer.second.lock();
+        l->setRenderTarget(m_ogreRenderTarget);
+        if(!l->initialized())
+        {
+            l->createScene();
+        }
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -145,13 +146,6 @@ void OffScreenWindowInteractor::connectToContainer()
 void OffScreenWindowInteractor::disconnectInteractor()
 {
     m_ogreRenderTarget = nullptr;
-
-    if(m_ogreRenderWindow != nullptr)
-    {
-        sight::viz::scene3d::WindowManager::sptr mgr = sight::viz::scene3d::WindowManager::get();
-        mgr->remove(m_ogreRenderWindow);
-        m_ogreRenderWindow = nullptr;
-    }
 
     if(m_ogreTexture)
     {
@@ -167,33 +161,29 @@ void OffScreenWindowInteractor::disconnectInteractor()
 
 void OffScreenWindowInteractor::makeCurrent()
 {
-    if(m_glContext)
     {
-        m_glContext->makeCurrent(m_offscreenSurface.get());
+        QOpenGLContext::globalShareContext()->makeCurrent(m_offscreenSurface.get());
 
-        if(m_ogreRenderWindow != nullptr)
+        Ogre::RenderSystem* renderSystem = m_ogreRoot->getRenderSystem();
+
+        if(renderSystem != nullptr)
         {
-            Ogre::RenderSystem* renderSystem = m_ogreRoot->getRenderSystem();
+            // Use this trick to apply the current OpenGL context
+            //
+            // Actually this method does the following :
+            // void GLRenderSystem::postExtraThreadsStarted()
+            // {
+            //   OGRE_LOCK_MUTEX(mThreadInitMutex);
+            //   if(mCurrentContext)
+            //     mCurrentContext->setCurrent();
+            // }
+            //
+            // This is actually want we want to do, even if this is not the initial purpose of this method
+            //
+            renderSystem->postExtraThreadsStarted();
 
-            if(renderSystem != nullptr)
-            {
-                // This allows to set the current OpenGL context in Ogre internal state
-                renderSystem->_setRenderTarget(m_ogreRenderTarget);
-
-                // Use this trick to apply the current OpenGL context
-                //
-                // Actually this method does the following :
-                // void GLRenderSystem::postExtraThreadsStarted()
-                // {
-                //   OGRE_LOCK_MUTEX(mThreadInitMutex);
-                //   if(mCurrentContext)
-                //     mCurrentContext->setCurrent();
-                // }
-                //
-                // This is actually want we want to do, even if this is not the initial purpose of this method
-                //
-                renderSystem->postExtraThreadsStarted();
-            }
+            // This allows to set the current OpenGL context in Ogre internal state
+            renderSystem->_setRenderTarget(m_ogreRenderTarget);
         }
     }
 }
@@ -202,14 +192,8 @@ void OffScreenWindowInteractor::makeCurrent()
 
 void OffScreenWindowInteractor::render()
 {
-    if(m_ogreRenderWindow == nullptr)
-    {
-        return;
-    }
-
     service::IService::sptr renderService                = m_renderService.lock();
     sight::viz::scene3d::SRender::sptr ogreRenderService = sight::viz::scene3d::SRender::dynamicCast(renderService);
-    ogreRenderService->slot(sight::viz::scene3d::SRender::s_COMPUTE_CAMERA_CLIPPING_SLOT)->asyncRun();
 
     ++m_frameId;
     /*
@@ -226,14 +210,15 @@ void OffScreenWindowInteractor::render()
     FW_PROFILE_AVG("Ogre", 3);
     this->makeCurrent();
 
-    m_ogreRenderTarget->update();
+    m_ogreRenderTarget->update(false);
 }
 
 //-----------------------------------------------------------------------------
 
 sight::viz::scene3d::IGraphicsWorker* OffScreenWindowInteractor::createGraphicsWorker()
 {
-    return new OpenGLWorker(m_offscreenSurface.get());
+    SIGHT_ASSERT("Not supported", false);
+    return nullptr;
 }
 
 //-----------------------------------------------------------------------------

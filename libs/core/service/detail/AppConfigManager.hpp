@@ -145,9 +145,6 @@ private:
 
     service::IService::sptr getNewService(const std::string& uid, const std::string& implType) const;
 
-    /// Stops all started services.
-    void stopStartedServices();
-
     /// Destroyes all created services
     void destroyCreatedServices();
 
@@ -255,6 +252,9 @@ private:
 
     /// Keep the connection between the OSR and `removeObjects`.
     core::com::Connection m_removeObjectConnection;
+
+    /// Synchronize start/stop sequences with add/remove objects slots;
+    core::mt::Mutex m_mutex;
 };
 
 // ------------------------------------------------------------------------

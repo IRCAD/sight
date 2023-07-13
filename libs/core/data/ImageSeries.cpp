@@ -167,4 +167,33 @@ void ImageSeries::setColumns(const std::optional<std::uint16_t>& columns)
     }
 }
 
+//------------------------------------------------------------------------------
+
+std::size_t ImageSeries::resize(const Size& size, const core::Type& type, PixelFormat format)
+{
+    Series::shrinkFrames(size[2]);
+    return Image::resize(size, type, format);
+}
+
+//------------------------------------------------------------------------------
+
+FiducialsSeries::csptr ImageSeries::getFiducials() const
+{
+    return m_fiducialsSeries;
+}
+
+//------------------------------------------------------------------------------
+
+FiducialsSeries::sptr ImageSeries::getFiducials()
+{
+    return m_fiducialsSeries;
+}
+
+//------------------------------------------------------------------------------
+
+bool ImageSeries::hasFiducials() const
+{
+    return !m_fiducialsSeries->getFiducialSets().empty();
+}
+
 } // namespace sight::data

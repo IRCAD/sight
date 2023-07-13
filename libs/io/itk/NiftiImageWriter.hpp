@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,9 +33,9 @@
 namespace sight::io::itk
 {
 
-class NiftiImageWriter : public base::writer::GenericObjectWriter<data::Image>,
-                         public core::location::SingleFile,
-                         public core::tools::ProgressAdviser
+class IO_ITK_CLASS_API NiftiImageWriter : public base::writer::GenericObjectWriter<data::Image>,
+                                          public core::location::SingleFile,
+                                          public core::tools::ProgressAdviser
 {
 public:
 

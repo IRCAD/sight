@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,17 +28,9 @@
 #include "viz/scene3d/interactor/IInteractor.hpp"
 #include "viz/scene3d/registry/detail.hpp"
 
-#include <core/base.hpp>
-
 #include <service/IService.hpp>
 
 #include <ui/base/container/fwContainer.hpp>
-
-#include <OGRE/OgreRenderWindow.h>
-#include <OGRE/Overlay/OgreOverlay.h>
-
-#include <string>
-#include <unordered_set>
 
 namespace sight::viz::scene3d
 {
@@ -70,8 +62,8 @@ public:
             PAN_GESTURE_MOVE,
             PAN_GESTURE_RELEASE,
             LONG_TAP_GESTURE,
-            PAN2_GESTURE_MOVE,
-            PAN2_GESTURE_RELEASE
+            ENTER,
+            LEAVE
         } InteractionEnumType;
 
         /**
@@ -185,9 +177,6 @@ public:
 
     /// Sets the rendering context as being enabled against this window and on this thread.
     VIZ_SCENE3D_API virtual void makeCurrent() = 0;
-
-    /// Get Ogre RenderWindow
-    VIZ_SCENE3D_API virtual Ogre::RenderTarget* getRenderTarget() = 0;
 
     /// Returns the texture in which this window manager is rendering. Only implemented for offscreen windows.
     VIZ_SCENE3D_API virtual Ogre::TexturePtr getRenderTexture() = 0;

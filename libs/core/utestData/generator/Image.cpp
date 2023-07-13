@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -113,19 +113,30 @@ inline static void randomizeIterable(I& iterable, std::uint32_t seed = 0)
 
 void Image::generateImage(
     data::Image::sptr image,
-    data::Image::Size size,
-    data::Image::Spacing spacing,
-    data::Image::Origin origin,
-    core::Type type,
-    data::Image::PixelFormat format
+    const data::Image::Size& sizes,
+    const data::Image::Spacing& spacing,
+    const data::Image::Origin& origin,
+    const core::Type& type,
+    const data::Image::PixelFormat& format,
+    const std::optional<std::uint32_t>& seed
 )
 {
-    image->resize(size, type, format);
+    SIGHT_ASSERT("Image must not be null", image);
+
+    const auto lock = image->dump_lock();
+
+    image->resize(sizes, type, format);
     image->setSpacing(spacing);
     image->setOrigin(origin);
 
-    auto lock = image->dump_lock();
-    std::fill(image->begin(), image->end(), std::int8_t(0));
+    if(seed)
+    {
+        randomizeIterable(*image, *seed);
+    }
+    else
+    {
+        std::memset(image->getBuffer(), 0, image->getSizeInBytes());
+    }
 
     sight::data::helper::MedicalImage::checkImageSliceIndex(image);
 }

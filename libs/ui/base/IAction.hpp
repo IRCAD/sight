@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,6 +40,7 @@ namespace sight::ui::base
  * - \b isEnabled(bool): Emitted when the action is enabled or disabled.
  * - \b enabled(): Emitted when the action is enabled.
  * - \b disabled(): Emitted when the action is disabled.
+ * - \b isVisible(bool): Emitted when the action is visible or invisible
  *
  * @section Slots Slots
  * - \b setChecked(bool): sets whether the action is checked.
@@ -48,7 +49,9 @@ namespace sight::ui::base
  * - \b setVisible(bool): sets whether the action is visible in its container.
  * - \b show(): make the action visible.
  * - \b hide(): make the action invisible.
+ * - \b toggleVisibility(): make the action visible if it was invisible or invisible if it was visible
  * - \b setEnabled(bool): sets whether the action can be interacted with.
+ * - \b setDisabled(bool): opposite of setEnabled(bool).
  * - \b enable(): make the action interactive.
  * - \b disable(): make the action not interactive.
  * - \b setIsActive(bool): deprecated, synonym of setChecked().
@@ -111,6 +114,9 @@ public:
 
     /// Signal emitted when action is unchecked
     static const core::com::Signals::SignalKeyType s_UNCHECKED_SIG;
+
+    /// Signal emitted when action is visible/invisible
+    static const core::com::Signals::SignalKeyType s_IS_VISIBLE_SIG;
     /**
      * @}
      */
@@ -128,6 +134,9 @@ public:
 
     /// Slot to disable the action
     static const core::com::Slots::SlotKeyType s_HIDE_SLOT;
+
+    /// Slot to make the action visible when it is invisible and invisible when it is visible
+    static const core::com::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
 
     /// Deprecated: Slot to check or uncheck the action
     static const core::com::Slots::SlotKeyType s_SET_IS_ACTIVE_SLOT;
@@ -158,6 +167,9 @@ public:
 
     /// Slot to enable or disable the action
     static const core::com::Slots::SlotKeyType s_SET_ENABLED_SLOT;
+
+    /// Slot to enable or disable the action
+    static const core::com::Slots::SlotKeyType s_SET_DISABLED_SLOT;
 
     /// Slot to enable the action
     static const core::com::Slots::SlotKeyType s_ENABLE_SLOT;

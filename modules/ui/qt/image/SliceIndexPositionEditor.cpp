@@ -78,7 +78,7 @@ void SliceIndexPositionEditor::starting()
 
     auto* layout = new QVBoxLayout();
 
-    m_sliceSelectorPanel = new sight::ui::qt::SliceSelector();
+    m_sliceSelectorPanel = new sight::ui::qt::SliceSelector(m_displayAxisSelector, m_displayStepButtons);
     m_sliceSelectorPanel->setEnable(false);
     m_sliceSelectorPanel->setObjectName(serviceID);
 
@@ -136,13 +136,17 @@ void SliceIndexPositionEditor::configuring()
     {
         SIGHT_FATAL("The value for the xml element \"sliceIndex\" can only be axial, frontal or sagittal.");
     }
+
+    m_displayAxisSelector = config.get<bool>("displayAxisSelector", m_displayAxisSelector);
+
+    m_displayStepButtons = config.get<bool>("displayStepButtons", m_displayStepButtons);
 }
 
 //------------------------------------------------------------------------------
 
 void SliceIndexPositionEditor::updating()
 {
-    const auto image = m_image.lock();
+    const auto image = m_image.const_lock();
 
     const bool imageIsValid = imHelper::checkImageValidity(image.get_shared());
     m_sliceSelectorPanel->setEnable(imageIsValid);
@@ -211,7 +215,7 @@ void SliceIndexPositionEditor::info(std::ostream& /*_sstream*/)
 
 //------------------------------------------------------------------------------
 
-void SliceIndexPositionEditor::updateSliceIndexFromImg(sight::data::Image& _image)
+void SliceIndexPositionEditor::updateSliceIndexFromImg(const sight::data::Image& _image)
 {
     if(imHelper::checkImageValidity(_image))
     {
@@ -238,7 +242,7 @@ void SliceIndexPositionEditor::updateSliceTypeFromImg(const orientation_t& type)
     // Update Type Choice
     m_sliceSelectorPanel->setTypeSelection(static_cast<int>(type));
 
-    const auto image = m_image.lock();
+    const auto image = m_image.const_lock();
     SIGHT_ASSERT("The inout key '" + s_IMAGE_INOUT + "' is not defined.", image);
 
     this->updateSliceIndexFromImg(*image);
@@ -292,7 +296,7 @@ void SliceIndexPositionEditor::sliceTypeNotification(int _type)
 
     // Fire the signal
     {
-        const auto image = m_image.lock();
+        const auto image = m_image.const_lock();
 
         auto sig = image->signal<data::Image::SliceTypeModifiedSignalType>(
             data::Image::s_SLICE_TYPE_MODIFIED_SIG

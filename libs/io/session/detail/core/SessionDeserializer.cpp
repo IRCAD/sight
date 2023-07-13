@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -67,15 +67,10 @@ deserializer_t SessionDeserializer::findDeserializer(const std::string& classnam
         return customIt->second;
     }
 
-    // Protect deserializers map
-    auto& deserializerStruct = getDeserializer();
-    std::shared_lock guard(deserializerStruct.deserializers_mutex);
-
-    if(const auto& it = deserializerStruct.deserializers.find(classname);
-       it != deserializerStruct.deserializers.end())
+    // Then try to find in the default deserializer map
+    if(auto function = deserializer(classname); function)
     {
-        // Return the found deserializer
-        return it->second;
+        return function;
     }
 
     SIGHT_THROW("There is no deserializer registered for class '" << classname << "'.");
@@ -218,6 +213,24 @@ void SessionDeserializer::setDeserializer(const std::string& className, deserial
         // Reset the deserializer for this class name
         deserializerStruct.deserializers.erase(className);
     }
+}
+
+//------------------------------------------------------------------------------
+
+deserializer_t SessionDeserializer::deserializer(const std::string& className)
+{
+    // Protect serializers map
+    auto& deserializerStruct = getDeserializer();
+    std::shared_lock guard(deserializerStruct.deserializers_mutex);
+
+    if(const auto& it = deserializerStruct.deserializers.find(className);
+       it != deserializerStruct.deserializers.end())
+    {
+        // Return the found deserializer
+        return it->second;
+    }
+
+    return nullptr;
 }
 
 //------------------------------------------------------------------------------

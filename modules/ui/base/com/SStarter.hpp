@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,6 +35,9 @@ namespace sight::module::ui::base::com
 
 /**
  * @brief   Apply an action (start, stop, ...) on a service specify by uid.
+ *
+ * @deprecated Deprecated in Sight 23.0, will be removed in Sight 24.0.
+ * Start and stop connections are now supported directly in XML.
  *
  * This action works on a data::Object. It does the action specify by the specify config.
  * This action can be :

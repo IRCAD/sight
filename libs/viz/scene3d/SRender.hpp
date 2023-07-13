@@ -25,7 +25,6 @@
 #include "viz/scene3d/config.hpp"
 #include "viz/scene3d/IWindowInteractor.hpp"
 #include "viz/scene3d/Layer.hpp"
-#include "viz/scene3d/overlay/ViewportListener.hpp"
 #include "viz/scene3d/Utils.hpp"
 
 #include <data/Image.hpp>
@@ -33,7 +32,6 @@
 #include <viz/base/IRender.hpp>
 
 #include <OGRE/OgreAxisAlignedBox.h>
-#include <OGRE/Overlay/OgreOverlay.h>
 
 #include <map>
 #include <tuple>
@@ -54,10 +52,13 @@ class Layer;
  * @section Slots Slots
  * - \b computeCameraParameters(): resets the camera position to visualize the whole scene.
  * - \b resetCameras(): resets all layers camera.
- * - \b computeCameraClipping(): recomputes the camera's clipping range when the scene is updated.
+ * - \b resetCamera_LAYER_ID(): "LAYER_ID" needs to be changed with your actual layer id. Resets the camera of the layer
+ * specified by LAYER_ID.
  * - \b requestRender(): request the service to repaint the scene.
  * - \b disableFullscreen(): switches to windowed rendering if fullscreen is enabled.
  * - \b enableFullscreen(int): switches fullscreen rendering on the given screen.
+ * - \b setManualMode(): switches to manual mode, the scene is rendered whenever the requestRender() slot is called.
+ * - \b setAutoMode(): switches to auto mode, the scene is rendered whenever an adaptor decides it.
  *
  * @section XML XML Configuration
  * @code{.xml}
@@ -82,8 +83,9 @@ class Layer;
  *
  * @subsection Configuration Configuration
  *  - \b scene (mandatory)
- *      - \b renderMode (optional, auto/sync, default=auto): 'auto' (only when something has changed), or 'sync'
- *           (only when the slot "requestRender" is called).
+ *      - \b renderMode (optional, auto/manual, default=auto): 'auto' (when any of the adaptor calls "requestRender",
+ *           i.e. when its data has changed), or 'manual' (only when the slot "requestRender" is called). This can also
+ *           be changed at runtime with setManualMode and setAutoMode slots.
  *      - \b width (optional, int, default=1280): width for off-screen rendering.
  *      - \b height (optional, int, default=720): height for off-screen rendering.
  *  - \b background (optional): defines the scene background color.
@@ -128,10 +130,21 @@ public:
     SIGHT_DECLARE_SERVICE(SRender, viz::base::IRender);
 
     /// Represents all possible render modes.
-    enum class RenderMode
+    enum class RenderMode : std::uint8_t
     {
         AUTO,
-        SYNC
+        MANUAL
+    };
+
+    struct signals
+    {
+        using key_t                      = sight::core::com::Signals::SignalKeyType;
+        using void_signal_t              = sight::core::com::Signal<void ()>;
+        using compositorUpdated_signal_t = core::com::Signal<void (std::string, bool, viz::scene3d::Layer::sptr)>;
+
+        static inline const key_t FULLSCREEN_SET     = "fullscreenSet";
+        static inline const key_t FULLSCREEN_UNSET   = "fullscreenUnset";
+        static inline const key_t COMPOSITOR_UPDATED = "compositorUpdated";
     };
 
     /// Defines the type of adaptors ID.
@@ -146,22 +159,11 @@ public:
     /// Defines actives layouts in the scene.
     typedef std::map<SceneIdType, SPTR(viz::scene3d::Layer)> LayerMapType;
 
-    /// Contains the signal sent when the compositor chain has been modified.
-    VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_COMPOSITOR_UPDATED_SIG;
-    typedef core::com::Signal<void (std::string, bool, viz::scene3d::Layer::sptr)> CompositorUpdatedSignalType;
-
-    /// Contains the signal sent when fullscreen was enabled/disabled.
-    VIZ_SCENE3D_API static const core::com::Signals::SignalKeyType s_FULLSCREEN_SET_SIG;
-    using FullscreenSetSignalType = core::com::Signal<void (bool)>;
-
     /// Contains the slot name that computes the parameters to reset the camera.
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_COMPUTE_CAMERA_ORIG_SLOT;
 
     /// Contains the slot name that resets all layers camera.
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_RESET_CAMERAS_SLOT;
-
-    /// Contains the slot name that computes the parameters to reset the camera.
-    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_COMPUTE_CAMERA_CLIPPING_SLOT;
 
     /// Contains the slot name that request the picker to do a ray cast according to the passed position.
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_DO_RAY_CAST_SLOT;
@@ -174,6 +176,12 @@ public:
 
     /// Contains the slot name that enables fullscreen rendering on a specific screen.
     VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_ENABLE_FULLSCREEN;
+
+    /// Contains the slot name that enables the manual rendering mode.
+    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SET_MANUAL_MODE;
+
+    /// Contains the slot name that enables the automatic rendering mode.
+    VIZ_SCENE3D_API static const core::com::Slots::SlotKeyType s_SET_AUTO_MODE;
 
     /// Defines the layer ID of the background.
     VIZ_SCENE3D_API static const std::string s_OGREBACKGROUNDID;
@@ -210,9 +218,6 @@ public:
 
     /// Resets all layers camera parameters with the actual global bounding box.
     VIZ_SCENE3D_API void resetCameras();
-
-    /// Computes camera parameters with the actual global bounding box.
-    VIZ_SCENE3D_API void computeCameraClipping();
 
     template<class T>
     std::vector<SPTR(T)> getAdaptors() const;
@@ -260,17 +265,8 @@ private:
     /// Contains all the layers of the scene.
     LayerMapType m_layers;
 
-    /// Contains the signal sent when fullscreen is enabled/disabled.
-    FullscreenSetSignalType::sptr m_fullscreenSetSig;
-
     /// Contains the Ogre window interactor manager.
     viz::scene3d::IWindowInteractor::sptr m_interactorManager;
-
-    /// Maps viewports to their overlays. Needed by the viewport listener.
-    overlay::ViewportListener::ViewportOverlaysMapType m_viewportOverlaysMap;
-
-    /// Listens for render target updates for all viewports and enables the required overlays.
-    overlay::ViewportListener m_viewportListener {m_viewportOverlaysMap};
 
     /// Contains the Ogre root.
     Ogre::Root* m_ogreRoot {nullptr};

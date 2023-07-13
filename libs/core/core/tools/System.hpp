@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,83 +31,11 @@ namespace sight::core::tools
 {
 
 /**
- * @brief Provide a system to get a Temporary folder which allow multi-user, multi-instance separation
- *
- * @todo  change "fwDumpFolder" to "localTemp"
+ * @brief Provide useful low-level system/os functions (pid, file move / rename).
  */
 class CORE_CLASS_API System
 {
 public:
-
-    /// Convenience class that deletes the associated temporary file on destruction
-    class TemporaryFile
-    {
-    public:
-
-        TemporaryFile(const TemporaryFile&)            = delete;
-        TemporaryFile(TemporaryFile&&)                 = delete;
-        TemporaryFile& operator=(const TemporaryFile&) = delete;
-        TemporaryFile& operator=(TemporaryFile&&)      = delete;
-
-        inline TemporaryFile() :
-            m_filePath(getTemporaryFolder() / genTempFileName())
-        {
-        }
-
-        inline ~TemporaryFile()
-        {
-            std::filesystem::remove(m_filePath);
-        }
-
-        //------------------------------------------------------------------------------
-
-        [[nodiscard]] inline const std::filesystem::path& filePath() const
-        {
-            return m_filePath;
-        }
-
-    private:
-
-        const std::filesystem::path m_filePath;
-    };
-
-    /**
-     * @brief   Returns the system's temporary folder.
-     * Returns the value returned by std::filesystem::temp_directory_path, or
-     * if std returns no valid dir, c:\\ on windows, /tmp on other systems
-     */
-    CORE_API static const std::filesystem::path& getTempPath() noexcept;
-
-    /**
-     * @brief   Generate a random filename.
-     * @param   length: the length of the generated filename.
-     */
-    CORE_API static std::string genTempFileName(std::size_t _length = 64);
-
-    /**
-     * @brief   Returns a unique per-process temporary folder.
-     * The top level temporary folder will be automatically destroyed if the process ends properly
-     *
-     * @param   subFolderPrefix if set, creates a sub folder in temporary folder prefixed with parameter value followed
-     * by a dash.
-     * @return  created folder
-     */
-    CORE_API static std::filesystem::path getTemporaryFolder(
-        const std::string& subFolderPrefix = ""
-    ) noexcept;
-
-    /**
-     * @brief   Returns the pid of a temporary folder
-     * If the given folder contains a file matching *.pid and the first part of
-     * the file name is a integer, this method will return this number.
-     * Otherwise, zero will be returned
-     */
-    CORE_API static int tempFolderPID(const std::filesystem::path& dir) noexcept;
-
-    /**
-     * @brief   Clean the zombie folders of old processes in given directory
-     */
-    CORE_API static void cleanAllTempFolders(const std::filesystem::path& dir) noexcept;
 
     /**
      *  @brief  Returns the pid of the current process
@@ -119,6 +47,11 @@ public:
      * @return  true if the process is running
      */
     CORE_API static bool isProcessRunning(int pid) noexcept;
+
+    /**
+     * @brief   Terminate a process
+     */
+    CORE_API static void killProcess(int pid) noexcept;
 
     /**
      * @brief renames file or folder, use std::filesystem::rename first, use a copy-remove scenario if rename fails.
@@ -133,19 +66,14 @@ public:
         bool _force = false
     );
 
-    /**
-     * @brief Sets the temporary folder prefix.
-     * The prefix must be set before the first call to getTemporaryFolder,
-     * otherwise, it won't be used.
-     */
-    static void setTempPrefix(const std::string& prefix)
-    {
-        s_tempPrefix = prefix;
-    }
-
-protected:
-
-    static std::string s_tempPrefix;
+    /// Deprecated functions
+    /// @deprecated Removed in sight 23.0.
+    /// @{
+    [[deprecated("Removed in sight 23.0.")]] CORE_API static const std::filesystem::path& getTempPath() noexcept;
+    [[deprecated("Removed in sight 23.0.")]] CORE_API static std::filesystem::path getTemporaryFolder(
+        const std::string& subFolderPrefix = ""
+    ) noexcept;
+    /// @}
 };
 
 } // namespace sight::core::tools

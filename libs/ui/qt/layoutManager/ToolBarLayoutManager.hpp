@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,6 +29,8 @@
 
 #include <ui/base/container/fwToolBar.hpp>
 #include <ui/base/layoutManager/IToolBarLayoutManager.hpp>
+
+#include <QAction>
 
 namespace sight::ui::qt::layoutManager
 {
@@ -78,9 +80,14 @@ public:
      */
     UI_QT_API void menuItemSetChecked(ui::base::container::fwMenuItem::sptr /*fwMenuItem*/, bool isChecked) override;
 
+    UI_QT_API void setVisible(bool isVisible) override;
+
 protected:
 
     ui::qt::container::QtToolBarContainer::sptr m_parent;
+
+    // Hidden QAction which allows to change the toolbar visibility.
+    QAction* m_toggleToolbarVisibilityAction {nullptr};
 };
 
 } // namespace sight::ui::qt::layoutManager

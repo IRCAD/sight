@@ -24,6 +24,7 @@
 
 #include "modules/ui/qt/config.hpp"
 
+#include <data/Composite.hpp>
 #include <data/Image.hpp>
 #include <data/TransferFunction.hpp>
 
@@ -48,8 +49,9 @@ namespace sight::module::ui::qt::image
  * @section XML XML Configuration
  * @code{.xml}
    <service type="sight::module::ui::qt::image::STransferFunction">
-       <inout key="tf" uid="..." />
        <in key="image" uid="..." />
+       <inout key="presets" uid="..." />
+       <inout key="tf" uid="..." />
        <config useDefaultPath="true" >
            <path>....</path>
            <path>....</path>
@@ -58,13 +60,16 @@ namespace sight::module::ui::qt::image
    </service>
    @endcode
  *
- * @subsection In-Out In-Out
- * - \b current [sight::data::TransferFunction]: current transfer function used to change editor
- * selection. It should be the same as the output.
  *
  * @subsection Input Input
  * - \b image [sight::data::Image](optional): reference image that can be used to generate the default transfer
  * function.
+ *
+ * @subsection In-Out In-Out
+ * - \b current [sight::data::TransferFunction]: current transfer function used to change editor
+ * selection. It should be the same as the output.
+ * - \b presets [sight::data::Composite](optional): map of sight::data::TransferFunction that should be used as
+ * presets, instead of loading it from the specified path(s).
  *
  * @subsection Configuration Configuration
  * - \b useDefaultPath (optional, default="true"): if true, load tf files from uiTF module.
@@ -118,33 +123,30 @@ private:
 
     /**
      * @brief Checks if the composite contains the specified key.
+     * @param _presets list of transfer functions.
      * @param _name the name used to search.
      * @return True if the preset named _name is found.
      */
-    bool hasPresetName(const std::string& _name) const;
+    static bool hasPresetName(const sight::data::Composite& _presets, const std::string& _name);
 
     /**
-     * @brief Create a string that represents a TF preset name not already present in the composite.
+     * @brief Create a string that represents a TF preset name not already present in a preset list.
      *
      * For example, if CT-GreyLevel is already used, it will return CT-GreyLevel_1.
      *
+     * @param _presets list of transfer functions.
      * @param _basename the name of the TF preset to create.
      * @return The new name of the TF preset.
      */
-    std::string createPresetName(const std::string& _basename) const;
+    std::string createPresetName(const sight::data::Composite& _presets, const std::string& _basename) const;
 
     /**
      * @brief Initializes the composite.
      *
      * Add their names to m_presetComboBox. If the composite does not contain any TF (or only the default grey level TF,
-     * the service creates a few from the ressources of the module.
-     *
-     * @see updatePresetsPreset()
+     * the service creates a few from the resources of the module.
      */
-    void initializePresets();
-
-    /// Updates the TF preset from the composite.
-    void updatePresets();
+    void initializePresets(const std::string& _currentPresetName = sight::data::TransferFunction::s_DEFAULT_TF_NAME);
 
     /// Sets the current TF preset to the output of this service.
     void setCurrentPreset();
@@ -234,11 +236,14 @@ private:
     /// Defines icons height.
     unsigned int m_iconHeight {16};
 
-    std::map<std::string, sight::data::TransferFunction::sptr> m_tfPresets;
+    /// Working copy of the TF presets, can be internal or use the optional "presets" input
+    data::Composite::sptr m_tfPresets;
 
     static constexpr std::string_view s_CURRENT_INPUT = "tf";
     static constexpr std::string_view s_IMAGE_INPUT   = "image";
-    data::ptr<data::TransferFunction, data::Access::inout> m_currentTF {this, s_CURRENT_INPUT, false};
+    static constexpr std::string_view s_PRESETS_INOUT = "presets";
+    data::ptr<data::TransferFunction, data::Access::inout> m_currentTF {this, s_CURRENT_INPUT, true};
+    data::ptr<data::Composite, data::Access::inout> m_optPresets {this, s_PRESETS_INOUT, true, true};
     data::ptr<data::Image, data::Access::in> m_image {this, s_IMAGE_INPUT, true, true};
 };
 

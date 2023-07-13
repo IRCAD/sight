@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -52,12 +52,15 @@ IVolumeRenderer::IVolumeRenderer(
     Ogre::SceneManager* const sceneManager,
     Ogre::SceneNode* const volumeNode,
     sight::data::Image::csptr image,
+    sight::data::Image::csptr mask,
     sight::data::TransferFunction::csptr tf,
     bool with_buffer,
     bool preintegration
 ) :
     m_parentId(std::move(parentId)),
     m_sceneManager(sceneManager),
+    m_3DOgreTexture(std::make_shared<sight::viz::scene3d::Texture>(image)),
+    m_maskTexture(std::make_shared<sight::viz::scene3d::Texture>(mask)),
     m_gpuVolumeTF(std::make_shared<sight::viz::scene3d::TransferFunction>(tf)),
     m_with_buffer(with_buffer),
     m_preintegration(preintegration),
@@ -71,7 +74,6 @@ IVolumeRenderer::IVolumeRenderer(
     }
 
     // 3D source texture instantiation
-    m_3DOgreTexture = std::make_shared<sight::viz::scene3d::Texture>(image);
 
     if(m_with_buffer)
     {
@@ -84,6 +86,7 @@ IVolumeRenderer::IVolumeRenderer(
 
 IVolumeRenderer::~IVolumeRenderer()
 {
+    m_maskTexture.reset();
     m_3DOgreTexture.reset();
 
     if(m_bufferingTexture)
@@ -112,6 +115,13 @@ void IVolumeRenderer::loadImage()
     {
         m_3DOgreTexture->update();
     }
+}
+
+//------------------------------------------------------------------------------
+
+void IVolumeRenderer::loadMask()
+{
+    m_maskTexture->update();
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,9 +31,8 @@
 #include <QApplication>
 #include <QGuiApplication>
 #include <QIcon>
-#include <QLayout>
-#include <QMainWindow>
 #include <QScreen>
+#include <QStyle>
 
 SIGHT_REGISTER_GUI(
     sight::ui::qt::FrameLayoutManager,
@@ -60,6 +59,9 @@ void FrameLayoutManager::createFrame()
 {
     FrameInfo frameInfo = this->getFrameInfo();
 
+    const std::string frameTitle = frameInfo.m_version.empty() ? frameInfo.m_name : frameInfo.m_name + " "
+                                   + frameInfo.m_version;
+
     auto* mainframe = new ui::qt::QtMainFrame();
     m_qtWindow = mainframe;
     m_qtWindow->setObjectName(QString::fromStdString(frameInfo.m_name));
@@ -67,8 +69,13 @@ void FrameLayoutManager::createFrame()
     ui::qt::QtMainFrame::CloseCallback fct = [this](auto&& ...){onCloseFrame();};
     mainframe->setCloseCallback(fct);
 
-    m_qtWindow->setWindowTitle(QString::fromStdString(frameInfo.m_name));
+    // cspell: ignore QWIDGETSIZE
+    m_qtWindow->setWindowTitle(QString::fromStdString(frameTitle));
     m_qtWindow->setMinimumSize(std::max(frameInfo.m_minSize.first, 0), std::max(frameInfo.m_minSize.second, 0));
+    m_qtWindow->setMaximumSize(
+        frameInfo.m_maxSize.first == -1 ? QWIDGETSIZE_MAX : frameInfo.m_maxSize.first,
+        frameInfo.m_maxSize.second == -1 ? QWIDGETSIZE_MAX : frameInfo.m_maxSize.second
+    );
 
     if(!frameInfo.m_iconPath.empty())
     {

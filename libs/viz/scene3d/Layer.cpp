@@ -23,12 +23,10 @@
 #include "viz/scene3d/Layer.hpp"
 
 #include "viz/scene3d/compositor/Core.hpp"
-#include "viz/scene3d/factory/Text.hpp"
 #include "viz/scene3d/helper/Camera.hpp"
 #include "viz/scene3d/IAdaptor.hpp"
 #include "viz/scene3d/ILight.hpp"
 #include "viz/scene3d/ogre.hpp"
-#include "viz/scene3d/Text.hpp"
 
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
@@ -55,9 +53,6 @@
 #include <OGRE/OgreSceneManager.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreTechnique.h>
-#include <OGRE/Overlay/OgreOverlay.h>
-#include <OGRE/Overlay/OgreOverlayContainer.h>
-#include <OGRE/Overlay/OgreOverlayManager.h>
 
 #include <cmath>
 #include <memory>
@@ -156,6 +151,13 @@ Layer::Layer()
 
 //-----------------------------------------------------------------------------
 
+Ogre::RenderTarget* Layer::getRenderTarget() const
+{
+    return m_renderTarget;
+}
+
+//-----------------------------------------------------------------------------
+
 void Layer::setRenderTarget(Ogre::RenderTarget* _renderTarget)
 {
     m_renderTarget = _renderTarget;
@@ -195,46 +197,36 @@ Ogre::SceneManager* Layer::getSceneManager() const
 
 void Layer::createScene()
 {
+    if(initialized())
+    {
+        return;
+    }
+
     namespace fwc = viz::scene3d::compositor;
-
-    auto renderService = m_renderService.lock();
-
-    auto* root = viz::scene3d::Utils::getOgreRoot();
-    m_sceneManager = root->createSceneManager("DefaultSceneManager", renderService->getID() + "_" + m_id);
-    m_sceneManager->addRenderQueueListener(viz::scene3d::Utils::getOverlaySystem());
+    {
+        auto renderService = m_renderService.lock();
+        auto* root         = viz::scene3d::Utils::getOgreRoot();
+        m_sceneManager = root->createSceneManager("DefaultSceneManager", renderService->getID() + "_" + m_id);
+    }
 
     SIGHT_ASSERT("Scene manager must be initialized", m_sceneManager);
     SIGHT_ASSERT("Render window must be initialized", m_renderTarget);
 
     m_sceneManager->setAmbientLight(Ogre::ColourValue(0.8F, 0.8F, 0.8F));
 
-    for(const auto& overlayName : m_overlayScripts)
-    {
-        Ogre::Overlay* overlay = Ogre::OverlayManager::getSingleton().getByName(overlayName);
-        if(overlay != nullptr)
-        {
-            overlay->hide(); // Hide the overlay for now and display it when rendering in this layer's viewport.
-            m_enabledOverlays.push_back(overlay);
-        }
-        else
-        {
-            SIGHT_ERROR("No overlay script named: '" + overlayName + "'.");
-        }
-    }
-
     // Create the camera
     m_camera = m_sceneManager->createCamera(Layer::s_DEFAULT_CAMERA_NAME);
     m_camera->setNearClipDistance(1);
 
     const auto& [left, top, width, height] = m_viewportCfg;
-    m_viewport                             = m_renderTarget->addViewport(m_camera, m_order, left, top, width, height);
-    m_viewport->setOverlaysEnabled(!m_enabledOverlays.empty());
+    auto* viewport = m_renderTarget->addViewport(m_camera, m_order, left, top, width, height);
+    SIGHT_ASSERT("Could not create a viewport", viewport);
 
-    m_compositorChainManager = std::make_unique<fwc::ChainManager>(m_viewport);
+    m_compositorChainManager = std::make_unique<fwc::ChainManager>(this->getSptr());
 
     if(m_order != 0)
     {
-        m_viewport->setClearEveryFrame(true, Ogre::FBT_DEPTH);
+        viewport->setClearEveryFrame(true, Ogre::FBT_DEPTH);
     } // Set the background material
     else
     {
@@ -290,7 +282,11 @@ void Layer::createScene()
     }
 
     // Alter the camera aspect ratio to match the viewport
-    m_camera->setAspectRatio(Ogre::Real(m_viewport->getActualWidth()) / Ogre::Real(m_viewport->getActualHeight()));
+    SIGHT_ASSERT(
+        "Width and height should be strictly positive",
+        viewport->getActualWidth() > 0 && viewport->getActualHeight() > 0
+    );
+    m_camera->setAspectRatio(Ogre::Real(viewport->getActualWidth()) / Ogre::Real(viewport->getActualHeight()));
 
     // Creating Camera Scene Node
     Ogre::SceneNode* cameraNode = m_sceneManager->getRootSceneNode()->createChildSceneNode(
@@ -301,6 +297,7 @@ void Layer::createScene()
 
     cameraNode->attachObject(m_camera);
 
+    auto renderService = m_renderService.lock();
     if(m_hasDefaultLight)
     {
         m_defaultLightDiffuseColor  = data::Color::New();
@@ -327,8 +324,6 @@ void Layer::createScene()
         this->setupCore();
     }
 
-    m_compositorChainManager->setOgreViewport(m_viewport);
-
     // Setup custom compositors and autostereo
     {
         boost::char_separator<char> sep(";");
@@ -346,10 +341,8 @@ void Layer::createScene()
             Ogre::MaterialManager::getSingleton().addListener(m_autostereoListener);
         }
 
-        m_compositorChainManager->setCompositorChain(compositorChain, m_id, renderService);
+        m_compositorChainManager->setCompositorChain(compositorChain);
     }
-
-    m_dpi = renderService->getInteractorManager()->getLogicalDotsPerInch();
 
     m_sceneCreated = true;
 
@@ -395,6 +388,8 @@ void Layer::destroyScene()
         m_sceneManager = nullptr;
     }
 
+    m_compositorChainManager = nullptr;
+
     m_camera = nullptr;
 }
 
@@ -412,7 +407,7 @@ void Layer::updateCompositorState(std::string compositorName, bool isEnabled)
     auto renderService = m_renderService.lock();
 
     renderService->makeCurrent();
-    m_compositorChainManager->updateCompositorState(compositorName, isEnabled, m_id, m_renderService.lock());
+    m_compositorChainManager->updateCompositorState(compositorName, isEnabled);
     renderService->requestRender();
 }
 
@@ -471,22 +466,6 @@ void Layer::interaction(viz::scene3d::IWindowInteractor::InteractionInfo info)
                 {
                     _i->resizeEvent(info.x, info.y);
                 });
-
-            auto renderService = m_renderService.lock();
-            const float newDpi = renderService->getInteractorManager()->getLogicalDotsPerInch();
-
-            if(m_dpi != newDpi)
-            {
-                m_dpi = newDpi;
-                const auto& movableTextObjects = m_sceneManager->getMovableObjects(factory::Text::FACTORY_TYPE_NAME);
-                for(const auto& [name, movObj] : movableTextObjects)
-                {
-                    Text* const textObj = dynamic_cast<Text*>(movObj);
-                    SIGHT_ASSERT("Movable object should be of type '::viz::scene3d::Text'", textObj);
-                    textObj->setDotsPerInch(newDpi);
-                }
-            }
-
             break;
         }
 
@@ -562,19 +541,19 @@ void Layer::interaction(viz::scene3d::IWindowInteractor::InteractionInfo info)
             });
             break;
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::PAN2_GESTURE_MOVE:
+        case viz::scene3d::IWindowInteractor::InteractionInfo::LEAVE:
             this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
+                [](const interactor::IInteractor::sptr& _i)
             {
-                _i->pan2GestureMoveEvent(info.x, info.y, info.dx, info.dy);
+                _i->leaveEvent();
             });
             break;
 
-        case viz::scene3d::IWindowInteractor::InteractionInfo::PAN2_GESTURE_RELEASE:
+        case viz::scene3d::IWindowInteractor::InteractionInfo::ENTER:
             this->forAllInteractors(
-                [&info](const interactor::IInteractor::sptr& _i)
+                [](const interactor::IInteractor::sptr& _i)
             {
-                _i->pan2GestureReleaseEvent(info.x, info.y, info.dx, info.dy);
+                _i->enterEvent();
             });
             break;
     }
@@ -660,7 +639,7 @@ void Layer::removeInteractor(const viz::scene3d::interactor::IInteractor::sptr& 
 Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
 {
     // The bounding box in which all the object's bounding boxes will be merged
-    Ogre::AxisAlignedBox worldCoordBoundingBox;
+    Ogre::AxisAlignedBox worldBoundingBox;
 
     // Getting this render service scene manager
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
@@ -687,7 +666,7 @@ Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
             {
                 if(entity->isVisible())
                 {
-                    worldCoordBoundingBox.merge(entity->getWorldBoundingBox());
+                    worldBoundingBox.merge(entity->getWorldBoundingBox());
                 }
             }
             else
@@ -699,7 +678,7 @@ Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
                 {
                     if(manualObject->isVisible())
                     {
-                        worldCoordBoundingBox.merge(manualObject->getWorldBoundingBox());
+                        worldBoundingBox.merge(manualObject->getWorldBoundingBox());
                     }
                 }
                 else
@@ -711,7 +690,7 @@ Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
                     {
                         if(cameraObject->isDebugDisplayEnabled())
                         {
-                            worldCoordBoundingBox.merge(cameraObject->getWorldBoundingBox());
+                            worldBoundingBox.merge(cameraObject->getWorldBoundingBox());
                         }
                     }
                 }
@@ -730,7 +709,7 @@ Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
         }
     }
 
-    return worldCoordBoundingBox;
+    return worldBoundingBox;
 }
 
 //------------------------------------------------------------------------------
@@ -817,13 +796,13 @@ void Layer::removeDefaultLight()
 
 void Layer::resetCameraCoordinates()
 {
-    const Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
+    const Ogre::AxisAlignedBox worldBoundingBox = this->computeWorldBoundingBox();
 
-    if((m_camera != nullptr) && m_camera->getProjectionType() == Ogre::PT_PERSPECTIVE)
+    if((m_camera != nullptr))
     {
         // Check if bounding box is valid, otherwise, do nothing.
-        if(worldCoordBoundingBox == Ogre::AxisAlignedBox::EXTENT_NULL
-           || worldCoordBoundingBox == Ogre::AxisAlignedBox::EXTENT_INFINITE)
+        if(worldBoundingBox == Ogre::AxisAlignedBox::EXTENT_NULL
+           || worldBoundingBox == Ogre::AxisAlignedBox::EXTENT_INFINITE)
         {
             Ogre::SceneNode* camNode = m_camera->getParentSceneNode();
             camNode->setPosition(0.F, 0.F, 0.F);
@@ -831,8 +810,8 @@ void Layer::resetCameraCoordinates()
         else
         {
             // Arbitrary coefficient
-            const Ogre::Real boundingBoxLength = worldCoordBoundingBox.getSize().length() > 0
-                                                 ? worldCoordBoundingBox.getSize().length() : 0;
+            const Ogre::Real boundingBoxLength = worldBoundingBox.getSize().length() > 0
+                                                 ? worldBoundingBox.getSize().length() : 0;
 
             auto coeffZoom = static_cast<float>(boundingBoxLength);
             SIGHT_DEBUG("Zoom coefficient : " << coeffZoom);
@@ -843,7 +822,7 @@ void Layer::resetCameraCoordinates()
             const Ogre::Vector3 direction = quat.zAxis();
 
             // Set the position of the camera
-            camNode->setPosition((worldCoordBoundingBox.getCenter() + coeffZoom * direction));
+            camNode->setPosition((worldBoundingBox.getCenter() + coeffZoom * direction));
 
             // Update interactor's mouse scale
             this->forAllInteractors(
@@ -851,8 +830,6 @@ void Layer::resetCameraCoordinates()
                 {
                     _i->setSceneLength(coeffZoom);
                 });
-
-            this->resetCameraClippingRange(worldCoordBoundingBox);
         }
 
         m_renderService.lock()->requestRender();
@@ -863,20 +840,20 @@ void Layer::resetCameraCoordinates()
 
 void Layer::computeCameraParameters()
 {
-    const Ogre::AxisAlignedBox worldCoordBoundingBox = this->computeWorldBoundingBox();
+    const Ogre::AxisAlignedBox worldBoundingBox = this->computeWorldBoundingBox();
 
-    if((m_camera != nullptr) && m_camera->getProjectionType() == Ogre::PT_PERSPECTIVE)
+    if((m_camera != nullptr))
     {
         // Check if bounding box is valid, otherwise, do nothing.
-        if(worldCoordBoundingBox != Ogre::AxisAlignedBox::EXTENT_NULL
-           && worldCoordBoundingBox != Ogre::AxisAlignedBox::EXTENT_INFINITE)
+        if(worldBoundingBox != Ogre::AxisAlignedBox::EXTENT_NULL
+           && worldBoundingBox != Ogre::AxisAlignedBox::EXTENT_INFINITE)
         {
             Ogre::SceneNode* camNode      = m_camera->getParentSceneNode();
             const Ogre::Quaternion quat   = camNode->getOrientation();
             const Ogre::Vector3 direction = quat.zAxis();
             const Ogre::Vector3 position  = camNode->getPosition();
 
-            const Ogre::Vector3 div = (position - worldCoordBoundingBox.getCenter()) / direction;
+            const Ogre::Vector3 div = (position - worldBoundingBox.getCenter()) / direction;
             const float distance    = div.z;
 
             // Update interactor's mouse scale
@@ -885,8 +862,6 @@ void Layer::computeCameraParameters()
                 {
                     _i->setSceneLength(distance);
                 });
-
-            this->resetCameraClippingRange(worldCoordBoundingBox);
         }
     }
 }
@@ -895,18 +870,13 @@ void Layer::computeCameraParameters()
 
 void Layer::resetCameraClippingRange() const
 {
-    this->resetCameraClippingRange(this->computeWorldBoundingBox());
-}
+    auto worldBoundingBox = this->computeWorldBoundingBox();
 
-//-----------------------------------------------------------------------------
-
-void Layer::resetCameraClippingRange(const Ogre::AxisAlignedBox& worldCoordBoundingBox) const
-{
-    if((m_camera != nullptr) && m_camera->getProjectionType() == Ogre::PT_PERSPECTIVE)
+    if((m_camera != nullptr) and worldBoundingBox.isFinite())
     {
         // Check if bounding box is valid, otherwise, do nothing.
-        if(worldCoordBoundingBox == Ogre::AxisAlignedBox::EXTENT_NULL
-           || worldCoordBoundingBox == Ogre::AxisAlignedBox::EXTENT_INFINITE)
+        if(worldBoundingBox == Ogre::AxisAlignedBox::EXTENT_NULL
+           || worldBoundingBox == Ogre::AxisAlignedBox::EXTENT_INFINITE)
         {
             return;
         }
@@ -919,22 +889,17 @@ void Layer::resetCameraClippingRange(const Ogre::AxisAlignedBox& worldCoordBound
         Ogre::Vector3 position  = camNode->getPosition();
 
         // Set near and far plan
-        Ogre::Vector3 minimum = worldCoordBoundingBox.getMinimum();
-        Ogre::Vector3 maximum = worldCoordBoundingBox.getMaximum();
+        Ogre::Vector3 minimum = worldBoundingBox.getMinimum();
+        Ogre::Vector3 maximum = worldBoundingBox.getMaximum();
 
-        float a = NAN;
-        float b = NAN;
-        float c = NAN;
-        float d = NAN;
-        a = -direction.x;
-        b = -direction.y;
-        c = -direction.z;
-        d = -(a * position.x + b * position.y + c * position.z);
+        const float a = -direction.x;
+        const float b = -direction.y;
+        const float c = -direction.z;
+        const float d = -(a * position.x + b * position.y + c * position.z);
 
         // Max near and min far
         float maxNear = a * minimum.x + b * minimum.y + c * minimum.z + d;
         float minFar  = 1e-18F;
-        float dist    = NAN;
 
         std::array corners {
             minimum.x,
@@ -951,46 +916,56 @@ void Layer::resetCameraClippingRange(const Ogre::AxisAlignedBox& worldCoordBound
             {
                 for(std::size_t i = 0 ; i < 2 ; i++)
                 {
-                    dist    = a * corners[i] + b * corners[2 + j] + c * corners[4 + k] + d;
-                    maxNear = (dist < maxNear) ? dist : maxNear;
-                    minFar  = (dist > minFar) ? dist : minFar;
+                    const float dist = a * corners[i] + b * corners[2 + j] + c * corners[4 + k] + d;
+                    maxNear = std::min(dist, maxNear);
+                    minFar  = std::max(dist, minFar);
                 }
             }
         }
 
+        // Make sure near is not bigger than far
+        auto near = std::min(minFar, maxNear);
+        auto far  = std::max(minFar, maxNear);
+
         // Give ourselves a little breathing room
-        maxNear = 0.99F * maxNear - (minFar - maxNear) * 0.5F;
-        minFar  = 1.01F * minFar + (minFar - maxNear) * 0.5F;
+        auto range = std::max((far - near) * 0.25F, 2.F);
+        far  = far + range;
+        near = near - range;
 
         // Do not let the range behind the camera throw off the calculation.
-        if(maxNear < 0.1F)
-        {
-            maxNear = 0.1F;
-        }
-
-        // Make sure near is not bigger than far
-        maxNear = (maxNear >= minFar) ? (0.01F * minFar) : (maxNear);
+        near = std::max(near, 0.1F);
 
         const auto& chain          = this->getCompositorChain();
         const auto saoCompositorIt = std::find_if(
             chain.begin(),
             chain.end(),
-            viz::scene3d::compositor::ChainManager::FindCompositorByName("SAO")
-        );
+            [](const auto& _compositor)
+            {
+                return _compositor.first == "SAO";
+            });
 
-        const auto prevNear = m_camera->getNearClipDistance();
-        const auto prevFar  = m_camera->getFarClipDistance();
+        const auto prevFar = m_camera->getFarClipDistance();
         if(saoCompositorIt != chain.end() && saoCompositorIt->second)
         {
             // Near and far for SAO
-            maxNear = 1;
-            minFar  = 10000;
+            far = 10000;
         }
 
-        m_camera->setNearClipDistance(maxNear);
-        m_camera->setFarClipDistance(minFar);
+        if(m_cameraOrthographic && m_camera->getProjectionType() != Ogre::PT_PERSPECTIVE)
+        {
+            // Use height as the difference on y coordinates.
+            const auto y1     = worldBoundingBox.getMinimum().y;
+            const auto y2     = worldBoundingBox.getMaximum().y;
+            Ogre::Real h      = y2 - y1;
+            Ogre::Real margin = 0.1F;
+            m_camera->setOrthoWindowHeight(h + h * margin);
+        }
 
-        if(maxNear != prevNear || minFar != prevFar)
+        // Keep the near plane close all the time. We need this for instance to display the shape extruder tool
+        m_camera->setNearClipDistance(near);
+        m_camera->setFarClipDistance(far);
+
+        if(far != prevFar)
         {
             this->signal<CameraUpdatedSignalType>(s_CAMERA_RANGE_UPDATED_SIG)->asyncEmit();
         }
@@ -1077,7 +1052,7 @@ void Layer::setCoreCompositorEnabled(
         {
             m_transparencyTechnique = viz::scene3d::compositor::WEIGHTEDBLENDEDOIT;
         }
-        else if(transparencyTechnique == "HybridTransparency")
+        else if(transparencyTechnique == "HybridTransparency" || transparencyTechnique == "Default")
         {
             m_transparencyTechnique = viz::scene3d::compositor::HYBRIDTRANSPARENCY;
         }
@@ -1128,6 +1103,13 @@ bool Layer::isCompositorChainEnabled() const
 
 //-------------------------------------------------------------------------------------
 
+bool Layer::initialized() const
+{
+    return m_sceneManager != nullptr;
+}
+
+//-------------------------------------------------------------------------------------
+
 compositor::Core::StereoModeType Layer::getStereoMode() const
 {
     return m_stereoMode;
@@ -1140,7 +1122,7 @@ void Layer::setupCore()
     // Needed to setup compositors in GL3Plus, Ogre creates render targets
     m_renderService.lock()->makeCurrent();
 
-    m_coreCompositor = std::make_shared<viz::scene3d::compositor::Core>(m_viewport);
+    m_coreCompositor = std::make_shared<viz::scene3d::compositor::Core>(this->getViewport());
     m_coreCompositor->setStereoMode(m_stereoMode);
     m_coreCompositor->setTransparencyTechnique(m_transparencyTechnique);
     m_coreCompositor->setTransparencyDepth(m_numPeels);
@@ -1218,7 +1200,7 @@ service::IHasServices::ServiceVector Layer::getRegisteredAdaptors() const
 
 Ogre::Viewport* Layer::getViewport() const
 {
-    return m_viewport;
+    return m_renderTarget->getViewport(m_renderTarget->getNumViewports() - 1);
 }
 
 //-------------------------------------------------------------------------------------
@@ -1355,49 +1337,23 @@ std::vector<viz::scene3d::ILight::sptr> Layer::getLightAdaptors() const
 
 //-----------------------------------------------------------------------------
 
-Ogre::OverlayContainer* Layer::getOverlayTextPanel()
-{
-    if(m_overlayTextPanel == nullptr)
-    {
-        auto& overlayManager   = Ogre::OverlayManager::getSingleton();
-        const auto textPanelId = m_renderService.lock()->getID() + m_id + "_GUI";
-
-        m_overlayTextPanel =
-            static_cast<Ogre::OverlayContainer*>(overlayManager.createOverlayElement("Panel", textPanelId));
-
-        m_overlayTextPanel->setMetricsMode(Ogre::GMM_PIXELS);
-        m_overlayTextPanel->setPosition(0, 0);
-        m_overlayTextPanel->setDimensions(1.0F, 1.0F);
-
-        Ogre::Overlay* uiOverlay = overlayManager.create(textPanelId + "_UIOverlay");
-        uiOverlay->add2D(m_overlayTextPanel);
-
-        m_enabledOverlays.push_back(uiOverlay);
-        m_viewport->setOverlaysEnabled(true);
-    }
-
-    return m_overlayTextPanel;
-}
-
-//-----------------------------------------------------------------------------
-
-void Layer::setEnabledOverlays(const std::vector<std::string>& _overlayScripts)
-{
-    m_overlayScripts = _overlayScripts;
-}
-
-//-----------------------------------------------------------------------------
-
-const Layer::OverlaySetType& Layer::getEnabledOverlays() const
-{
-    return m_enabledOverlays;
-}
-
-//-----------------------------------------------------------------------------
-
 void Layer::cancelFurtherInteraction()
 {
     m_cancelFurtherInteraction = true;
+}
+
+//-----------------------------------------------------------------------------
+
+void Layer::setOrthographicCamera(bool _ortho)
+{
+    m_cameraOrthographic = _ortho;
+}
+
+//-----------------------------------------------------------------------------
+
+bool Layer::isOrthographicCameraForce() const
+{
+    return m_cameraOrthographic;
 }
 
 //-----------------------------------------------------------------------------

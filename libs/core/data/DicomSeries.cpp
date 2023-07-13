@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -89,7 +89,7 @@ void DicomSeries::deepCopy(const Object::csptr& source, const std::unique_ptr<De
 
         if(!bufferSrc->isEmpty())
         {
-            core::memory::BufferObject::sptr bufferDest = core::memory::BufferObject::New();
+            auto bufferDest = core::memory::BufferObject::New(true);
             core::memory::BufferObject::Lock lockerDest(bufferDest);
 
             bufferDest->allocate(bufferSrc->getSize());
@@ -120,8 +120,8 @@ void DicomSeries::addDicomPath(std::size_t _instanceIndex, const std::filesystem
         !std::filesystem::exists(_path)
     );
 
-    core::memory::BufferObject::sptr buffer = core::memory::BufferObject::New();
-    const auto buffSize                     = std::filesystem::file_size(_path);
+    auto buffer         = core::memory::BufferObject::New(true);
+    const auto buffSize = std::filesystem::file_size(_path);
     buffer->setIStreamFactory(
         std::make_shared<core::memory::stream::in::Raw>(_path),
         static_cast<core::memory::BufferObject::SizeType>(buffSize),

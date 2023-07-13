@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,7 +45,7 @@ public:
     UI_QT_API ~Cursor() override;
 
     /// Set the cursor
-    UI_QT_API void setCursor(ui::base::ICursor::CursorType cursor) override;
+    UI_QT_API void setCursor(ui::base::ICursor::CursorType cursor, bool setOverridenAsDefault = true) override;
 
     /// Set the default cursor
     UI_QT_API void setDefaultCursor() override;

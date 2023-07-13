@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,10 +39,10 @@ class ACTIVITY_CLASS_API IActivitySequencer : public IActivityLauncher
 public:
 
     /// Constructor. Do nothing.
-    ACTIVITY_API IActivitySequencer();
+    ACTIVITY_API IActivitySequencer() = default;
 
     /// Destructor. Do nothing.
-    ACTIVITY_API ~IActivitySequencer() override;
+    ACTIVITY_API ~IActivitySequencer() override = default;
 
 protected:
 
@@ -72,13 +72,11 @@ protected:
      * @param index index of the activity to retrieve
      * @param slot slot to block in case the activity is created. It is usefull if the service listen notification on
      * the activity_set
-     * @param overrides Composite that contains data to override the previously stored data (from the other activities)
      */
     ACTIVITY_API data::Activity::sptr getActivity(
         data::ActivitySet& activity_set,
         std::size_t index,
-        const core::com::SlotBase::sptr& slot   = nullptr,
-        const data::Composite::csptr& overrides = nullptr
+        const core::com::SlotBase::sptr& slot = nullptr
     );
 
     /**
@@ -90,6 +88,16 @@ protected:
      * @param index the activity in index and all the following will be removed
      */
     ACTIVITY_API void removeLastActivities(data::ActivitySet& activity_set, std::size_t index);
+
+    /**
+     * @brief Reset all data created by activities (create="true", minOccurs="0") at index and beyond.
+     *
+     * This is used to clean activities when previous one changed their requirements.
+     *
+     * @param activity_set ActivitySet containing all the activities
+     * @param index the activity in index and all the following will be cleaned
+     */
+    ACTIVITY_API void cleanRequirements(std::size_t index);
 
     /// List of the activity to create.
     std::vector<std::string> m_activityIds;

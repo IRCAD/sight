@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,6 +75,8 @@ void TrackballInteractor::mouseMoveEvent(MouseButton button, Modifier /*_mods*/,
 
             camera->getParentNode()->translate(transVec, Ogre::Node::TS_LOCAL);
         }
+
+        m_layer.lock()->requestRender();
     }
 }
 
@@ -85,6 +87,7 @@ void TrackballInteractor::buttonPressEvent(IInteractor::MouseButton /*_button*/,
     if(auto layer = m_layer.lock())
     {
         m_mouseMove = isInLayer(_x, _y, layer, m_layerOrderDependant);
+        layer->requestRender();
     }
 }
 
@@ -128,7 +131,7 @@ void TrackballInteractor::wheelEvent(Modifier /*_mods*/, double delta, int x, in
             Ogre::SceneNode* const camNode = camera->getParentSceneNode();
             camNode->translate(Ogre::Vector3(0, 0, -1) * z, Ogre::Node::TS_LOCAL);
 
-            layer->resetCameraClippingRange();
+            layer->requestRender();
         }
     }
 }
@@ -137,7 +140,21 @@ void TrackballInteractor::wheelEvent(Modifier /*_mods*/, double delta, int x, in
 
 void TrackballInteractor::pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY)
 {
-    wheelEvent({}, _scaleFactor * 8, _centerX, _centerY);
+    // The pinch gesture is converted to a wheel event
+    wheelEvent({}, _scaleFactor * 12, _centerX, _centerY);
+}
+
+//------------------------------------------------------------------------------
+
+void TrackballInteractor::panGestureMoveEvent(int _x, int _y, int _dx, int _dy)
+{
+    if(auto layer = m_layer.lock(); layer)
+    {
+        if(isInLayer(_x, _y, layer, m_layerOrderDependant))
+        {
+            cameraTranslate(_dx, _dy);
+        }
+    }
 }
 
 // ----------------------------------------------------------------------------
@@ -151,6 +168,7 @@ void TrackballInteractor::keyPressEvent(int key, Modifier /*_mods*/, int _mouseX
             if(key == 'R' || key == 'r')
             {
                 layer->resetCameraCoordinates();
+                layer->requestRender();
             }
 
             if(key == 'A' || key == 'a')
@@ -186,15 +204,14 @@ void TrackballInteractor::keyPressEvent(int key, Modifier /*_mods*/, int _mouseX
 
 // ----------------------------------------------------------------------------
 
-void TrackballInteractor::resizeEvent(int /*_width*/, int /*_height*/)
+void TrackballInteractor::resizeEvent(int _width, int _height)
 {
     const Ogre::SceneManager* const sceneManager = m_layer.lock()->getSceneManager();
     Ogre::Camera* const camera                   =
         sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME);
-    const auto width  = static_cast<float>(camera->getViewport()->getActualWidth());
-    const auto height = static_cast<float>(camera->getViewport()->getActualHeight());
 
-    const float aspectRatio = width / height;
+    SIGHT_ASSERT("Width and height should be strictly positive", _width > 0 && _height > 0);
+    const float aspectRatio = static_cast<float>(_width) / static_cast<float>(_height);
     camera->setAspectRatio(aspectRatio);
 }
 

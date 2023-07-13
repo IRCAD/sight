@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -26,10 +26,12 @@
 
 #include <ui/base/dialog/ILocationDialog.hpp>
 
+#include <queue>
+
 namespace sight::ui::base::dialog
 {
 
-class DummyLocationDialog : public sight::ui::base::dialog::ILocationDialog
+class UI_BASE_CLASS_API DummyLocationDialog : public sight::ui::base::dialog::ILocationDialog
 {
 public:
 
@@ -44,11 +46,15 @@ public:
 
     UI_BASE_API static void setPaths(const std::vector<std::filesystem::path>& files);
 
+    UI_BASE_API static void pushPaths(const std::vector<std::filesystem::path>& files);
+
+    UI_BASE_API static bool clear();
+
 private:
 
     sight::ui::base::dialog::ILocationDialog::Types m_type {sight::ui::base::dialog::ILocationDialog::SINGLE_FILE};
 
-    static std::vector<std::filesystem::path> paths;
+    static std::queue<std::vector<std::filesystem::path> > pathsList;
 };
 
 }

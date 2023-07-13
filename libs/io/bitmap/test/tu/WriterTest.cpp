@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
- * Copyright (C) 2017-2020 IHU Strasbourg
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,24 +20,17 @@
  ***********************************************************************/
 
 #include "WriterTest.hpp"
+#include "helper.hxx"
 
-#include <core/tools/System.hpp>
+#include <core/Profiling.hpp>
+#include <core/os/TempPath.hpp>
 #include <core/tools/UUID.hpp>
-
-#include <data/ImageSeries.hpp>
 
 #include <io/bitmap/Writer.hpp>
 #include <io/dicom/Reader.hpp>
-#include <io/opencv/Image.hpp>
-#include <io/opencv/Type.hpp>
 
 #include <utest/Filter.hpp>
 #include <utest/profiling.hpp>
-
-#include <utestData/Data.hpp>
-
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
 
 #include <cstdlib>
 #include <future>
@@ -53,103 +45,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::io::bitmap::ut::WriterTest);
 
 namespace sight::io::bitmap::ut
 {
-
-using core::tools::UUID;
-
-//------------------------------------------------------------------------------
-
-inline static std::filesystem::path createTempFolder()
-{
-    auto tmp_folder = core::tools::System::getTemporaryFolder() / UUID::generateUUID();
-    std::filesystem::remove_all(tmp_folder);
-    std::filesystem::create_directories(tmp_folder);
-
-    return tmp_folder;
-}
-
-//------------------------------------------------------------------------------
-
-inline static data::Image::sptr getSyntheticImage()
-{
-    static const data::Image::sptr generated =
-        []
-        {
-            auto image           = data::Image::New();
-            const auto dump_lock = image->dump_lock();
-            image->resize({800, 600, 0}, core::Type::UINT8, data::Image::RGB);
-
-            auto it        = image->begin<data::iterator::rgb>();
-            const auto end = image->end<data::iterator::rgb>();
-
-            std::uint8_t r = 0;
-            std::uint8_t g = 0;
-            std::uint8_t b = 0;
-            std::for_each(
-                it,
-                end,
-                [&](auto& x)
-            {
-                x.r = r;
-                x.g = g;
-                x.b = b;
-
-                r += 1;
-
-                if(r > 254)
-                {
-                    r  = 0;
-                    g += 1;
-                }
-
-                if(g > 254)
-                {
-                    g  = 0;
-                    b += 1;
-                }
-
-                if(b > 254)
-                {
-                    r = 0;
-                    g = 0;
-                    b = 0;
-                }
-            });
-
-            return image;
-        }();
-
-    return generated;
-}
-
-//------------------------------------------------------------------------------
-
-inline static data::Image::sptr readImage(const std::filesystem::path& path)
-{
-    auto image           = data::Image::New();
-    const auto dump_lock = image->dump_lock();
-
-    auto mat           = cv::imread(path.string(), cv::IMREAD_ANYDEPTH | cv::IMREAD_ANYCOLOR);
-    const auto cv_type = io::opencv::Type::fromCv(mat.type());
-
-    switch(cv_type.second)
-    {
-        case 3:
-            cv::cvtColor(mat, mat, cv::COLOR_BGR2RGB);
-            break;
-
-        case 4:
-            cv::cvtColor(mat, mat, cv::COLOR_BGRA2RGBA);
-            break;
-
-        default:
-            // No conversion needed
-            break;
-    }
-
-    io::opencv::Image::copyFromCv(*image, mat);
-
-    return image;
-}
 
 //------------------------------------------------------------------------------
 
@@ -226,132 +121,11 @@ inline static std::vector<data::Image::sptr> readDicomImages(std::size_t count =
 
 //------------------------------------------------------------------------------
 
-inline static cv::Mat imageToMat(const data::Image::sptr& image, bool clone = true)
-{
-    // Convert origin to cv::Mat
-    const auto dump_lock = image->dump_lock();
-    const auto& sizes    = image->getSize();
-    auto mat             = cv::Mat(
-        std::vector<int> {int(sizes[1]), int(sizes[0])},
-        io::opencv::Type::toCv(image->getType(), image->numComponents()),
-        image->getBuffer()
-    );
-
-    if(clone)
-    {
-        mat = mat.clone();
-    }
-
-    switch(image->getPixelFormat())
-    {
-        case data::Image::PixelFormat::RGB:
-            cv::cvtColor(mat, mat, cv::COLOR_RGB2BGR);
-            break;
-
-        case data::Image::PixelFormat::RGBA:
-            cv::cvtColor(mat, mat, cv::COLOR_RGBA2BGRA);
-            break;
-
-        default:
-            // No conversion needed
-            break;
-    }
-
-    return mat;
-}
-
-// Borrowed from openCV sample
-inline static double getPSNR(const data::Image::sptr& origin, const data::Image::sptr& encoded)
-{
-    // Convert origin to cv::Mat
-    const cv::Mat& I1 = imageToMat(origin);
-    const cv::Mat& I2 = imageToMat(encoded);
-
-    CPPUNIT_ASSERT(!I1.empty() && !I2.empty());
-    CPPUNIT_ASSERT(I1.rows == I2.rows);
-    CPPUNIT_ASSERT(I1.cols == I2.cols);
-    CPPUNIT_ASSERT(I1.type() == I2.type());
-
-    cv::Mat s1;
-
-    // |I1 - I2|
-    cv::absdiff(I1, I2, s1);
-
-    // cannot make a square on 8 bits
-    s1.convertTo(s1, CV_64F);
-
-    // |I1 - I2|^2
-    s1 = s1.mul(s1);
-
-    // sum elements per channel
-    cv::Scalar s = cv::sum(s1);
-
-    // sum channels
-    const double sse = s.val[0] + s.val[1] + s.val[2];
-
-    // two identical images will return infinite
-    const double mse       = sse / double(std::size_t(I1.channels()) * I1.total());
-    const double max_value = std::pow(2, origin->getType().size() * 8) - 1;
-    return 10.0 * std::log10((max_value * max_value) / mse);
-}
-
-//------------------------------------------------------------------------------
-
-inline static std::string modeToString(const Writer::Mode& mode)
-{
-    std::string mode_string =
-        mode == Writer::Mode::BEST
-        ? "BEST"
-        : mode == Writer::Mode::FAST
-        ? "FAST"
-        : "DEFAULT";
-
-    return mode_string;
-}
-
-//------------------------------------------------------------------------------
-
-inline static std::pair<std::string, std::string> backendToString(const Writer::Backend& backend)
-{
-    auto backend_string =
-        backend == Writer::Backend::LIBJPEG
-        ? std::make_pair(std::string("LIBJPEG"), std::string(".jpg"))
-        : backend == Writer::Backend::LIBTIFF
-        ? std::make_pair(std::string("LIBTIFF"), std::string(".tiff"))
-        : backend == Writer::Backend::LIBPNG
-        ? std::make_pair(std::string("LIBPNG"), std::string(".png"))
-        : backend == Writer::Backend::OPENJPEG
-        ? std::make_pair(std::string("OPENJPEG"), std::string(".jp2"))
-        : backend == Writer::Backend::OPENJPEG_J2K
-        ? std::make_pair(std::string("OPENJPEG"), std::string(".j2k"))
-        : backend == Writer::Backend::NVJPEG
-        ? std::make_pair(std::string("NVJPEG"), std::string(".jpg"))
-        : backend == Writer::Backend::NVJPEG2K
-        ? std::make_pair(std::string("NVJPEG2K"), std::string(".jp2"))
-        : backend == Writer::Backend::NVJPEG2K_J2K
-        ? std::make_pair(std::string("NVJPEG2K"), std::string(".j2k"))
-        : std::make_pair(std::string("DEFAULT"), std::string(".tiff"));
-
-    return backend_string;
-}
-
-//------------------------------------------------------------------------------
-
-inline static std::string fileSuffix(const Writer::Backend& backend, const Writer::Mode& mode)
-{
-    const auto [backend_string, ext_string] = backendToString(backend);
-    const std::string mode_string = modeToString(mode);
-
-    return "_" + backend_string + "_" + mode_string + ext_string;
-}
-
-//------------------------------------------------------------------------------
-
 inline static void profileWriter(
     const std::vector<data::Image::sptr>& images,
     const std::filesystem::path& tmp_folder,
     std::size_t loop,
-    Writer::Backend backend,
+    Backend backend,
     Writer::Mode mode,
     std::vector<std::future<void> >& tasks
 )
@@ -369,20 +143,20 @@ inline static void profileWriter(
     {
         // Write image
         writer->setObject(image);
-        const auto& tmpPath = tmp_folder / (std::to_string(i) + FILE_SUFFIX);
-        writer->setFile(tmpPath);
+        const auto& tmp_path = tmp_folder / (std::to_string(i) + FILE_SUFFIX);
+        writer->setFile(tmp_path);
         CPPUNIT_ASSERT_NO_THROW(writer->write(backend, mode));
 
-        SIGHT_INFO(LABEL << " size: " << std::filesystem::file_size(tmpPath));
+        SIGHT_INFO(LABEL << " size: " << std::filesystem::file_size(tmp_path));
 
         // PSNR is only relevant with lossy format...
         if(EXT.ends_with("jpg") || EXT.ends_with(".jpeg"))
         {
-            SIGHT_INFO(LABEL << " PSNR: " << getPSNR(image, readImage(tmpPath)));
+            SIGHT_INFO(LABEL << " PSNR: " << computePSNR(image, readImage(tmp_path)));
         }
 
         // Cleanup
-        std::filesystem::remove_all(tmpPath);
+        std::filesystem::remove_all(tmp_path);
         ++i;
     }
 
@@ -394,13 +168,13 @@ inline static void profileWriter(
             for(std::size_t j = 0 ; const auto& image : images)
             {
                 writer->setObject(image);
-                const auto& tmpPath = tmp_folder / (std::to_string(i) + "_" + std::to_string(j++) + FILE_SUFFIX);
-                writer->setFile(tmpPath);
+                const auto& tmp_path = tmp_folder / (std::to_string(i) + "_" + std::to_string(j++) + FILE_SUFFIX);
+                writer->setFile(tmp_path);
 
                 CPPUNIT_ASSERT_NO_THROW(writer->write(backend, mode));
 
                 // Schedule cleanup
-                tasks.emplace_back(std::async(std::launch::deferred, [ = ]{std::filesystem::remove_all(tmpPath);}));
+                tasks.emplace_back(std::async(std::launch::deferred, [ = ]{std::filesystem::remove_all(tmp_path);}));
             }
         },
         loop,
@@ -427,12 +201,7 @@ inline static void profileOpenCVWriter(
     std::vector<std::future<void> >& tasks
 )
 {
-    const std::string MODE =
-        mode == Writer::Mode::BEST
-        ? std::string("BEST")
-        : mode == Writer::Mode::FAST
-        ? std::string("FAST")
-        : std::string("DEFAULT");
+    const std::string MODE = modeToString(mode);
 
     const std::string FILE_SUFFIX = "_OPENCV_" + MODE + "." + ext;
     const std::string LABEL       = "OpenCV (" + ext + " - " + MODE + ")";
@@ -440,7 +209,7 @@ inline static void profileOpenCVWriter(
     // Get size, psnr, ...
     for(std::size_t i = 0 ; const auto& image : images)
     {
-        const auto& tmpPath = tmp_folder / (std::to_string(i++) + FILE_SUFFIX);
+        const auto& tmp_path = tmp_folder / (std::to_string(i++) + FILE_SUFFIX);
 
         // Convert Image to OpenCV Mat
         const cv::Mat& mat = imageToMat(image);
@@ -450,7 +219,7 @@ inline static void profileOpenCVWriter(
         {
             CPPUNIT_ASSERT(
                 cv::imwrite(
-                    tmpPath.string(),
+                    tmp_path.string(),
                     mat,
                 {
                     cv::IMWRITE_JPEG_QUALITY, 100,
@@ -464,18 +233,18 @@ inline static void profileOpenCVWriter(
         }
         else
         {
-            CPPUNIT_ASSERT(cv::imwrite(tmpPath.string(), mat));
+            CPPUNIT_ASSERT(cv::imwrite(tmp_path.string(), mat));
         }
 
-        SIGHT_INFO(LABEL << " size: " << std::filesystem::file_size(tmpPath));
+        SIGHT_INFO(LABEL << " size: " << std::filesystem::file_size(tmp_path));
 
         if(ext.ends_with("jpg") || ext.ends_with(".jpeg"))
         {
-            SIGHT_INFO(LABEL << " PSNR: " << getPSNR(image, readImage(tmpPath)));
+            SIGHT_INFO(LABEL << " PSNR: " << computePSNR(image, readImage(tmp_path)));
         }
 
         // Cleanup
-        std::filesystem::remove_all(tmpPath);
+        std::filesystem::remove_all(tmp_path);
     }
 
     // Now profile writing
@@ -485,7 +254,7 @@ inline static void profileOpenCVWriter(
         {
             for(std::size_t j = 0 ; const auto& image : images)
             {
-                const auto& tmpPath = tmp_folder / (std::to_string(i) + "_" + std::to_string(j++) + FILE_SUFFIX);
+                const auto& tmp_path = tmp_folder / (std::to_string(i) + "_" + std::to_string(j++) + FILE_SUFFIX);
 
                 // Convert Image to OpenCV Mat
                 const cv::Mat& mat = imageToMat(image);
@@ -495,7 +264,7 @@ inline static void profileOpenCVWriter(
                 {
                     CPPUNIT_ASSERT(
                         cv::imwrite(
-                            tmpPath.string(),
+                            tmp_path.string(),
                             mat,
                     {
                         cv::IMWRITE_JPEG_QUALITY, 100,
@@ -509,11 +278,11 @@ inline static void profileOpenCVWriter(
                 }
                 else
                 {
-                    CPPUNIT_ASSERT(cv::imwrite(tmpPath.string(), mat));
+                    CPPUNIT_ASSERT(cv::imwrite(tmp_path.string(), mat));
                 }
 
                 // Schedule cleanup
-                tasks.emplace_back(std::async(std::launch::deferred, [ = ]{std::filesystem::remove_all(tmpPath);}));
+                tasks.emplace_back(std::async(std::launch::deferred, [ = ]{std::filesystem::remove_all(tmp_path);}));
             }
         },
         loop,
@@ -549,7 +318,7 @@ void WriterTest::basicTest()
 {
     auto writer = Writer::New();
 
-    CPPUNIT_ASSERT_EQUAL(Writer::extensions(Writer::Backend::DEFAULT).front(), writer->extension());
+    CPPUNIT_ASSERT_EQUAL(io::bitmap::extensions(Backend::LIBTIFF).front(), writer->extension());
 }
 
 //------------------------------------------------------------------------------
@@ -564,19 +333,19 @@ void WriterTest::extensionsTest()
         {".png"}
     };
 
-    std::vector<Writer::Backend> backends {
-        Writer::nvJPEG() ? Writer::Backend::NVJPEG : Writer::Backend::LIBJPEG,
-        Writer::nvJPEG2K() ? Writer::Backend::NVJPEG2K : Writer::Backend::OPENJPEG,
-        Writer::nvJPEG2K() ? Writer::Backend::NVJPEG2K_J2K : Writer::Backend::OPENJPEG_J2K,
-        Writer::Backend::LIBTIFF,
-        Writer::Backend::LIBPNG
+    std::vector<Backend> backends {
+        io::bitmap::nvJPEG() ? Backend::NVJPEG : Backend::LIBJPEG,
+        io::bitmap::nvJPEG2K() ? Backend::NVJPEG2K : Backend::OPENJPEG,
+        io::bitmap::nvJPEG2K() ? Backend::NVJPEG2K_J2K : Backend::OPENJPEG_J2K,
+        Backend::LIBTIFF,
+        Backend::LIBPNG
     };
 
     for(std::size_t i = 0 ; i < extensions.size() ; ++i)
     {
         const auto& extension_set        = extensions[i];
         const auto& backend              = backends[i];
-        const auto& actual_extension_set = Writer::extensions(backend);
+        const auto& actual_extension_set = io::bitmap::extensions(backend);
 
         CPPUNIT_ASSERT_EQUAL(extension_set.size(), actual_extension_set.size());
 
@@ -591,12 +360,12 @@ void WriterTest::extensionsTest()
 
 void WriterTest::wildcardTest()
 {
-    std::vector<Writer::Backend> backends {
-        Writer::nvJPEG() ? Writer::Backend::NVJPEG : Writer::Backend::LIBJPEG,
-        Writer::nvJPEG2K() ? Writer::Backend::NVJPEG2K : Writer::Backend::OPENJPEG,
-        Writer::nvJPEG2K() ? Writer::Backend::NVJPEG2K_J2K : Writer::Backend::OPENJPEG_J2K,
-        Writer::Backend::LIBTIFF,
-        Writer::Backend::LIBPNG
+    std::vector<Backend> backends {
+        io::bitmap::nvJPEG() ? Backend::NVJPEG : Backend::LIBJPEG,
+        io::bitmap::nvJPEG2K() ? Backend::NVJPEG2K : Backend::OPENJPEG,
+        io::bitmap::nvJPEG2K() ? Backend::NVJPEG2K_J2K : Backend::OPENJPEG_J2K,
+        Backend::LIBTIFF,
+        Backend::LIBPNG
     };
 
     static constexpr auto JPEG_LABEL {"JPEG image"};
@@ -630,7 +399,7 @@ void WriterTest::wildcardTest()
 
     for(std::size_t index = 0 ; const auto& backend : backends)
     {
-        const auto& [label, wildcard] = Writer::wildcardFilter(backend);
+        const auto& [label, wildcard] = io::bitmap::wildcardFilter(backend);
 
         CPPUNIT_ASSERT_EQUAL(labels[index], label);
         CPPUNIT_ASSERT_EQUAL(wildcards[index], wildcard);
@@ -640,35 +409,22 @@ void WriterTest::wildcardTest()
 
 //------------------------------------------------------------------------------
 
-void WriterTest::conformanceTest()
+inline static void conformance(
+    const std::vector<Backend>& supported,
+    const std::vector<Backend>& unsupported,
+    core::Type type,
+    data::Image::PixelFormat format
+)
 {
     // Create a temporary directory
-    const auto& tmp_folder = createTempFolder();
+    core::os::TempDir tmp_dir;
 
     // Create the synthetic image
-    const auto& expected_image = getSyntheticImage();
+    const auto& expected_image = getSyntheticImage(0, type, format);
 
     // Create the writer
     auto writer = Writer::New();
     writer->setObject(expected_image);
-
-    // Build backend list
-    std::vector backends {
-        Writer::Backend::LIBJPEG,
-        Writer::Backend::LIBPNG,
-        Writer::Backend::LIBTIFF,
-        Writer::Backend::OPENJPEG
-    };
-
-    if(Writer::nvJPEG())
-    {
-        backends.push_back(Writer::Backend::NVJPEG);
-    }
-
-    if(Writer::nvJPEG2K())
-    {
-        backends.push_back(Writer::Backend::NVJPEG2K);
-    }
 
     // Build mode list
     const std::vector modes {
@@ -677,14 +433,14 @@ void WriterTest::conformanceTest()
     };
 
     // For each backend and each mode
-    for(const auto& backend : backends)
+    for(const auto& backend : supported)
     {
         const std::string& backend_string = backendToString(backend).first;
 
         for(const auto& mode : modes)
         {
             // Test write
-            const auto& file_path = tmp_folder / ("conformance" + fileSuffix(backend, mode));
+            const auto& file_path = tmp_dir / ("conformance" + fileSuffix(backend, mode));
             CPPUNIT_ASSERT_NO_THROW(writer->setFile(file_path));
             CPPUNIT_ASSERT_NO_THROW(writer->write(backend, mode));
             CPPUNIT_ASSERT_MESSAGE(file_path.string() + " doesn't exist.", std::filesystem::exists(file_path));
@@ -692,7 +448,7 @@ void WriterTest::conformanceTest()
             const auto& actual_image = readImage(file_path.string());
             CPPUNIT_ASSERT(actual_image);
 
-            if(backend == Writer::Backend::OPENJPEG || backend == Writer::Backend::NVJPEG2K)
+            if(backend == Backend::OPENJPEG || backend == Backend::NVJPEG2K)
             {
                 // Because of bad encoder or decoder implementation, JPEG2000 is not always *perfectly* lossless.
                 // Indeed, it is mathematically, but the implementation can suffer from some corner floating point
@@ -701,7 +457,7 @@ void WriterTest::conformanceTest()
                 // As a workaround, we try to encode two times, and we consider success if multiple pass doesn't
                 // degrade the situation more.
                 writer->setObject(actual_image);
-                const auto& copy_file_path = tmp_folder / ("conformance_copy" + fileSuffix(backend, mode));
+                const auto& copy_file_path = tmp_dir / ("conformance_copy" + fileSuffix(backend, mode));
                 CPPUNIT_ASSERT_NO_THROW(writer->setFile(copy_file_path));
                 CPPUNIT_ASSERT_NO_THROW(writer->write(backend, mode));
                 CPPUNIT_ASSERT_MESSAGE(
@@ -713,18 +469,20 @@ void WriterTest::conformanceTest()
                 CPPUNIT_ASSERT(actual_image_copy);
 
                 CPPUNIT_ASSERT_MESSAGE(
-                    "The image are not equal for backend '" + backend_string + "'",
-                    *actual_image == *actual_image_copy
+                    "The image are not equal for backend '" + backend_string + "', mode '" + modeToString(mode)
+                    + "', format '" + pixelFormatToString(format) + "', type '" + type.name() + "'",
+                    *expected_image == *actual_image
                 );
 
                 // Restore back the original source
                 writer->setObject(expected_image);
             }
             // Compare pixels only for lossless backend
-            else if(backend != Writer::Backend::LIBJPEG && backend != Writer::Backend::NVJPEG)
+            else if(backend != Backend::LIBJPEG && backend != Backend::NVJPEG)
             {
                 CPPUNIT_ASSERT_MESSAGE(
-                    "The image are not equal for backend '" + backend_string + "'",
+                    "The image are not equal for backend '" + backend_string + "', mode '" + modeToString(mode)
+                    + "', format '" + pixelFormatToString(format) + "', type '" + type.name() + "'",
                     *expected_image == *actual_image
                 );
             }
@@ -740,7 +498,7 @@ void WriterTest::conformanceTest()
                 CPPUNIT_ASSERT_EQUAL(expected_image->getType(), actual_image->getType());
 
                 // Ensure that psnr is at least > 20
-                const double psnr = getPSNR(expected_image, actual_image);
+                const double psnr = computePSNR(expected_image, actual_image);
                 CPPUNIT_ASSERT_MESSAGE(
                     "The image seems to be different with backend '"
                     + backend_string
@@ -752,6 +510,127 @@ void WriterTest::conformanceTest()
             }
         }
     }
+
+    // For each backend and each mode
+    for(const auto& backend : unsupported)
+    {
+        for(const auto& mode : modes)
+        {
+            // Test write
+            const auto& file_path = tmp_dir / ("conformance" + fileSuffix(backend, mode));
+            CPPUNIT_ASSERT_NO_THROW(writer->setFile(file_path));
+            CPPUNIT_ASSERT_THROW(writer->write(backend, mode), core::Exception);
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void WriterTest::conformanceTest()
+{
+    // UINT8 RGB
+    {
+        if(io::bitmap::nvJPEG2K())
+        {
+            conformance(
+                {
+                    Backend::LIBJPEG,
+                    Backend::LIBPNG,
+                    Backend::LIBTIFF,
+                    Backend::OPENJPEG,
+                    Backend::NVJPEG2K,
+                    Backend::NVJPEG
+                },
+                {},
+                core::Type::UINT8,
+                data::Image::PixelFormat::RGB
+            );
+        }
+        else if(io::bitmap::nvJPEG())
+        {
+            conformance(
+                {Backend::LIBJPEG, Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG, Backend::NVJPEG},
+                {Backend::NVJPEG2K},
+                core::Type::UINT8,
+                data::Image::PixelFormat::RGB
+            );
+        }
+        else
+        {
+            conformance(
+                {Backend::LIBJPEG, Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG},
+                {Backend::NVJPEG2K, Backend::NVJPEG},
+                core::Type::UINT8,
+                data::Image::PixelFormat::RGB
+            );
+        }
+    }
+
+    // UINT8 GRAYSCALE
+    {
+        if(io::bitmap::nvJPEG2K())
+        {
+            conformance(
+                {Backend::LIBJPEG, Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG, Backend::NVJPEG2K},
+                {Backend::NVJPEG},
+                core::Type::UINT8,
+                data::Image::PixelFormat::GRAY_SCALE
+            );
+        }
+        else
+        {
+            conformance(
+                {Backend::LIBJPEG, Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG},
+                {Backend::NVJPEG2K, Backend::NVJPEG},
+                core::Type::UINT8,
+                data::Image::PixelFormat::GRAY_SCALE
+            );
+        }
+    }
+
+    // UINT16 RGB
+    {
+        if(io::bitmap::nvJPEG2K())
+        {
+            conformance(
+                {Backend::LIBTIFF, Backend::OPENJPEG, Backend::NVJPEG2K},
+                {Backend::LIBJPEG, Backend::NVJPEG},
+                core::Type::UINT16,
+                data::Image::PixelFormat::RGB
+            );
+        }
+        else
+        {
+            conformance(
+                {Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG},
+                {Backend::LIBJPEG, Backend::NVJPEG2K, Backend::NVJPEG},
+                core::Type::UINT16,
+                data::Image::PixelFormat::RGB
+            );
+        }
+    }
+
+    // UINT16 GRAYSCALE
+    {
+        if(io::bitmap::nvJPEG2K())
+        {
+            conformance(
+                {Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG, Backend::NVJPEG2K},
+                {Backend::LIBJPEG, Backend::NVJPEG},
+                core::Type::UINT16,
+                data::Image::PixelFormat::GRAY_SCALE
+            );
+        }
+        else
+        {
+            conformance(
+                {Backend::LIBPNG, Backend::LIBTIFF, Backend::OPENJPEG},
+                {Backend::LIBJPEG, Backend::NVJPEG2K, Backend::NVJPEG},
+                core::Type::UINT16,
+                data::Image::PixelFormat::GRAY_SCALE
+            );
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -759,7 +638,7 @@ void WriterTest::conformanceTest()
 void WriterTest::emptyImageTest()
 {
     // Create a temporary directory
-    const auto tmp_folder = createTempFolder();
+    core::os::TempDir tmp_dir;
 
     const auto& empty_image = data::Image::New();
     auto writer             = Writer::New();
@@ -769,10 +648,10 @@ void WriterTest::emptyImageTest()
 
     for(const auto& ext : extensions)
     {
-        const auto& tmpPath = tmp_folder / ("empty" + ext);
-        CPPUNIT_ASSERT_NO_THROW(writer->setFile(tmpPath));
+        const auto& tmp_path = tmp_dir / ("empty" + ext);
+        CPPUNIT_ASSERT_NO_THROW(writer->setFile(tmp_path));
         CPPUNIT_ASSERT_THROW(writer->write(), core::Exception);
-        CPPUNIT_ASSERT_MESSAGE(tmpPath.string() + " exists.", !std::filesystem::exists(tmpPath));
+        CPPUNIT_ASSERT_MESSAGE(tmp_path.string() + " exists.", !std::filesystem::exists(tmp_path));
     }
 }
 
@@ -780,8 +659,9 @@ void WriterTest::emptyImageTest()
 
 void WriterTest::wrongPathTest()
 {
-    // Create a temporary directory, but remove the leaf directory
-    const auto tmp_folder = core::tools::System::getTemporaryFolder() / UUID::generateUUID();
+    // Create a temporary directory, with a non existing leaf directory
+    core::os::TempDir tmp_dir;
+    const auto tmp_folder = tmp_dir / UUID::generateUUID();
     std::filesystem::remove_all(tmp_folder);
 
     const auto& imageSeries = readDicomImages(1);
@@ -792,10 +672,10 @@ void WriterTest::wrongPathTest()
 
     for(const auto& ext : extensions)
     {
-        const auto& tmpPath = tmp_folder / ("wrong_path" + ext);
-        CPPUNIT_ASSERT_NO_THROW(writer->setFile(tmpPath));
+        const auto& tmp_path = tmp_folder / ("wrong_path" + ext);
+        CPPUNIT_ASSERT_NO_THROW(writer->setFile(tmp_path));
         CPPUNIT_ASSERT_NO_THROW(writer->write());
-        CPPUNIT_ASSERT_MESSAGE(tmpPath.string() + " doesn't exist.", std::filesystem::exists(tmpPath));
+        CPPUNIT_ASSERT_MESSAGE(tmp_path.string() + " doesn't exist.", std::filesystem::exists(tmp_path));
     }
 }
 
@@ -806,7 +686,7 @@ void WriterTest::fromDicomTest()
     const auto& imageSeries = readDicomImages();
 
     // Create a temporary directory
-    const auto tmp_folder = createTempFolder();
+    core::os::TempDir tmp_dir;
 
     // Use a big epsilon since size can vary between platforms and libraries version, especially for nvJPEG2000
     static constexpr std::int64_t EPSILON = 5000;
@@ -825,12 +705,12 @@ void WriterTest::fromDicomTest()
     const auto& write =
         [&](std::size_t i, const std::string& ext)
         {
-            const auto& tmpPath = tmp_folder / (std::to_string(i) + "_from_dicom" + ext);
-            CPPUNIT_ASSERT_NO_THROW(writer->setFile(tmpPath));
+            const auto& tmp_path = tmp_dir / (std::to_string(i) + "_from_dicom" + ext);
+            CPPUNIT_ASSERT_NO_THROW(writer->setFile(tmp_path));
             CPPUNIT_ASSERT_NO_THROW(writer->write());
-            CPPUNIT_ASSERT(std::filesystem::exists(tmpPath));
+            CPPUNIT_ASSERT(std::filesystem::exists(tmp_path));
 
-            return std::int64_t(std::filesystem::file_size(tmpPath));
+            return std::int64_t(std::filesystem::file_size(tmp_path));
         };
 
     for(std::size_t i = 0 ; const auto& image : imageSeries)
@@ -838,7 +718,7 @@ void WriterTest::fromDicomTest()
         writer->setObject(image);
 
         // Test .jpg with nvJPEG (if available)
-        if(Writer::nvJPEG())
+        if(io::bitmap::nvJPEG())
         {
             const auto file_size = write(i, ".jpg");
 
@@ -861,7 +741,7 @@ void WriterTest::fromDicomTest()
         }
 
         // Test .jp2 with nvJPEG2K (if available)
-        if(Writer::nvJPEG2K())
+        if(io::bitmap::nvJPEG2K())
         {
             const auto file_size = write(i, ".jp2");
 
@@ -884,7 +764,7 @@ void WriterTest::fromDicomTest()
         }
 
         // Test .j2k with nvJPEG2K (if available)
-        if(Writer::nvJPEG2K())
+        if(io::bitmap::nvJPEG2K())
         {
             const auto file_size = write(i, ".j2k");
 
@@ -937,13 +817,13 @@ void WriterTest::fromDicomTest()
 void WriterTest::profilingTest()
 {
     auto images = readDicomImages();
-    images.push_back(getSyntheticImage());
+    images.push_back(getSyntheticImage(0));
 
     // Create a temporary directory
-    const auto tmp_folder = createTempFolder();
+    core::os::TempDir tmp_dir;
 
     // Check how many loop to perform
-    static const char* const env_loop   = std::getenv("WRITERTEST_LOOP");
+    static const char* const env_loop   = std::getenv("PROFILETEST_LOOP");
     static const std::size_t LOOP_COUNT =
         env_loop != nullptr
         ? std::stoull(env_loop)
@@ -954,44 +834,44 @@ void WriterTest::profilingTest()
     std::vector<std::future<void> > tasks;
 
     // nvJPEG
-    if(Writer::nvJPEG())
+    if(io::bitmap::nvJPEG())
     {
         profileWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
-            Writer::Backend::NVJPEG,
+            Backend::NVJPEG,
             Writer::Mode::FAST,
             tasks
         );
 
         profileWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
-            Writer::Backend::NVJPEG,
+            Backend::NVJPEG,
             Writer::Mode::BEST,
             tasks
         );
     }
 
     // nvJPEG2K
-    if(Writer::nvJPEG2K())
+    if(io::bitmap::nvJPEG2K())
     {
         profileWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
-            Writer::Backend::NVJPEG2K,
+            Backend::NVJPEG2K,
             Writer::Mode::FAST,
             tasks
         );
 
         profileWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
-            Writer::Backend::NVJPEG2K,
+            Backend::NVJPEG2K,
             Writer::Mode::BEST,
             tasks
         );
@@ -1001,18 +881,18 @@ void WriterTest::profilingTest()
     {
         profileWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
-            Writer::Backend::LIBJPEG,
+            Backend::LIBJPEG,
             Writer::Mode::FAST,
             tasks
         );
 
         profileWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
-            Writer::Backend::LIBJPEG,
+            Backend::LIBJPEG,
             Writer::Mode::BEST,
             tasks
         );
@@ -1022,18 +902,18 @@ void WriterTest::profilingTest()
     {
         profileWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
-            Writer::Backend::LIBTIFF,
+            Backend::LIBTIFF,
             Writer::Mode::FAST,
             tasks
         );
 
         profileWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
-            Writer::Backend::LIBTIFF,
+            Backend::LIBTIFF,
             Writer::Mode::BEST,
             tasks
         );
@@ -1043,18 +923,18 @@ void WriterTest::profilingTest()
     {
         profileWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
-            Writer::Backend::LIBPNG,
+            Backend::LIBPNG,
             Writer::Mode::FAST,
             tasks
         );
 
         profileWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
-            Writer::Backend::LIBPNG,
+            Backend::LIBPNG,
             Writer::Mode::BEST,
             tasks
         );
@@ -1064,10 +944,10 @@ void WriterTest::profilingTest()
     {
         profileWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
-            Writer::Backend::OPENJPEG,
-            Writer::Mode::DEFAULT,
+            Backend::OPENJPEG,
+            Writer::Mode::FAST,
             tasks
         );
     }
@@ -1077,7 +957,7 @@ void WriterTest::profilingTest()
         // Use OPENCV JPEG
         profileOpenCVWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
             "jpg",
             Writer::Mode::FAST,
@@ -1086,7 +966,7 @@ void WriterTest::profilingTest()
 
         profileOpenCVWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
             "jpg",
             Writer::Mode::BEST,
@@ -1096,17 +976,17 @@ void WriterTest::profilingTest()
         // Use OPENCV TIFF
         profileOpenCVWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
             "tiff",
-            Writer::Mode::DEFAULT,
+            Writer::Mode::FAST,
             tasks
         );
 
         // Use OPENCV PNG
         profileOpenCVWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
             "png",
             Writer::Mode::FAST,
@@ -1115,7 +995,7 @@ void WriterTest::profilingTest()
 
         profileOpenCVWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
             "png",
             Writer::Mode::BEST,
@@ -1125,10 +1005,10 @@ void WriterTest::profilingTest()
         // Use OPENCV WEBP
         profileOpenCVWriter(
             images,
-            tmp_folder,
+            tmp_dir,
             LOOP_COUNT,
             "webp",
-            Writer::Mode::DEFAULT,
+            Writer::Mode::FAST,
             tasks
         );
     }

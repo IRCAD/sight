@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -85,7 +85,11 @@ std::string Demangler::demangle() const
 {
     const char* mangled = m_name.c_str();
 #ifndef _WIN32
-    std::unique_ptr<char> c_demangled = std::unique_ptr<char>(abi::__cxa_demangle(mangled, nullptr, nullptr, nullptr));
+    const auto c_demangled =
+        std::unique_ptr<char, decltype(std::free) *>(
+            abi::__cxa_demangle(mangled, nullptr, nullptr, nullptr),
+            std::free
+        );
     std::string res;
     if(c_demangled != nullptr)
     {

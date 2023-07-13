@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,17 +30,18 @@
 
 #include <QGraphicsOpacityEffect>
 #include <QLabel>
+#include <QMessageBox>
 #include <QMouseEvent>
 #include <QPointer>
 #include <QPropertyAnimation>
-
-#include <string>
+#include <QTimerEvent>
+#include <QToolButton>
 
 namespace sight::ui::qt
 {
 
 /// Creates an auto-movable container.
-class UI_QT_CLASS_API Container : public QWidget
+class UI_QT_CLASS_QT_API Container : public QWidget
 {
 Q_OBJECT
 
@@ -59,18 +60,24 @@ public:
     }
 
     /// Destroys the Container.
-    ~Container() override
-    = default;
+    ~Container() override = default;
 
     //------------------------------------------------------------------------------
 
-    void setPosition(std::function<QPoint(QWidget*)> /*_position*/, QWidget* /*_parent*/)
+    void setPosition(std::function<QPoint(QWidget*)> _position, QWidget* _parent)
     {
         auto* a = new QPropertyAnimation(this, "pos");
         a->setDuration(500);
-        a->setEndValue(m_position(this->parentWidget()));
+        a->setEndValue(_position(_parent));
         a->setEasingCurve(QEasingCurve::OutBack);
         a->start(QPropertyAnimation::DeleteWhenStopped);
+    }
+
+    //------------------------------------------------------------------------------
+
+    void setPositionFct(std::function<QPoint(QWidget*)> _position)
+    {
+        m_position = _position;
     }
 
     /**
@@ -81,12 +88,20 @@ public:
      */
     bool eventFilter(QObject* _object, QEvent* _event) override
     {
-        if(_event->type() == QEvent::Move || _event->type() == QEvent::Resize)
+        if(const auto* const widget = qobject_cast<QWidget*>(_object); widget != nullptr)
         {
-            this->move(m_position(this->parentWidget()));
+            const bool is_root = widget->parentWidget() == nullptr;
+
+            if((!is_root && _event->type() == QEvent::Resize)
+               || (is_root && (_event->type() == QEvent::Move
+                               || _event->type() == QEvent::Resize
+                               || _event->type() == QEvent::WindowActivate)))
+            {
+                this->move(m_position(this->parentWidget()));
+            }
         }
 
-        return QWidget::eventFilter(_object, _event);
+        return false;
     }
 
 private:
@@ -96,37 +111,69 @@ private:
 };
 
 /// Creates a clickable QLabel.
-class UI_QT_CLASS_API ClickableQLabel : public QLabel
+class UI_QT_CLASS_QT_API ClickableQLabel : public QLabel
 {
 Q_OBJECT
 
 public:
 
     /// Creates a clickable QLabel.
-    explicit ClickableQLabel() :
-        QLabel(nullptr)
+    explicit ClickableQLabel(Container* root, QWidget* parent = nullptr, Qt::WindowFlags f = Qt::WindowFlags()) :
+        QLabel(parent, f),
+        m_root(root)
     {
     }
 
     /// Destroys the clickable QLabel.
     ~ClickableQLabel() override
-    = default;
+    {
+        if(m_timer_id != 0)
+        {
+            killTimer(m_timer_id);
+        }
+    }
 
 public Q_SLOTS:
 
     /// Creates a fade out effect then closes the parent widget (Must be the Container).
     void fadeout()
     {
+        if(m_timer_id != 0)
+        {
+            killTimer(m_timer_id);
+            m_timer_id = 0;
+        }
+
+        QWidget* const parent_to_kill = !m_root.isNull() ? m_root : this->parentWidget() ? this->parentWidget() : this;
+
         auto* const effect = new QGraphicsOpacityEffect();
-        this->setGraphicsEffect(effect);
-        auto* a = new QPropertyAnimation(effect, "opacity");
+        auto* a            = new QPropertyAnimation(effect, "opacity");
         a->setDuration(500);
         a->setStartValue(0.9);
         a->setEndValue(0);
         a->setEasingCurve(QEasingCurve::OutBack);
         a->start(QPropertyAnimation::DeleteWhenStopped);
+        parent_to_kill->setGraphicsEffect(effect);
+
         // When the animation is finished, we kill the parent since it must be the Container (the main widget).
-        QObject::connect(a, &QPropertyAnimation::finished, this->parentWidget(), &QWidget::deleteLater);
+        QObject::connect(a, &QPropertyAnimation::finished, this, &ClickableQLabel::faded);
+        QObject::connect(a, &QPropertyAnimation::finished, parent_to_kill, &QWidget::deleteLater);
+    }
+
+    //------------------------------------------------------------------------------
+
+    void timedFadeout(std::optional<std::chrono::milliseconds> duration)
+    {
+        // Kill the timer if already started or null duration
+        if(m_timer_id != 0 || !duration || duration->count() == 0)
+        {
+            killTimer(m_timer_id);
+        }
+
+        if(duration && duration->count() > 0)
+        {
+            m_timer_id = startTimer(*duration);
+        }
     }
 
 Q_SIGNALS:
@@ -137,7 +184,20 @@ Q_SIGNALS:
     /// Double clicked signal, emitted when a mouse double click event occurs.
     void doubleClicked();
 
-private:
+    /// Emited when the widget will be closed
+    void faded();
+
+protected:
+
+    //------------------------------------------------------------------------------
+
+    void timerEvent(QTimerEvent* event) override
+    {
+        if(event->timerId() == m_timer_id)
+        {
+            fadeout();
+        }
+    }
 
     /**
      * @brief Handles event related to the mouse buttons.
@@ -158,6 +218,13 @@ private:
     {
         Q_EMIT doubleClicked();
     }
+
+private:
+
+    int m_timer_id {0};
+
+    /// Contains the root container which will be destroyed on close
+    const QPointer<Container> m_root;
 };
 
 namespace dialog
@@ -209,7 +276,7 @@ public:
     UI_QT_API NotificationDialog(ui::base::GuiBaseObject::Key key);
 
     /// Destroys the dialog.
-    UI_QT_API ~NotificationDialog() override;
+    UI_QT_API ~NotificationDialog() override = default;
 
     /// Shows the notification relative to the active window.
     UI_QT_API void show() override;
@@ -226,14 +293,26 @@ public:
     /// Move the notification to the lower index
     UI_QT_API void moveDown() override;
 
+    /// Resize the dialog
+    UI_QT_API void setSize(std::array<int, 2> _size) override;
+
 private:
 
     std::function<QPoint(QWidget*)> computePosition();
 
+    /// Build the UI
+    void build();
+
+    /// Update the UI
+    void update();
+
     /// Pointer to the Popup QLabel.
     QPointer<ClickableQLabel> m_msgBox {nullptr};
-    QPointer<Container> m_msgContainer {nullptr};
+    QPointer<Container> m_container {nullptr};
+    QPointer<QWidget> m_subContainer {nullptr};
     QPointer<QWidget> m_parent {nullptr};
+    QPointer<QMessageBox> m_showMoreBox {nullptr};
+    QPointer<QToolButton> m_showMoreButton {nullptr};
 };
 
 } // namespace dialog.

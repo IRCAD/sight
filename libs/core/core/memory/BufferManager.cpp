@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -20,8 +20,6 @@
  *
  ***********************************************************************/
 
-// cspell:ignore NOLINTNEXTLINE
-
 #include "core/memory/BufferManager.hpp"
 
 #include "core/memory/policy/NeverDump.hpp"
@@ -30,6 +28,7 @@
 
 #include <core/com/Signal.hxx>
 #include <core/LazyInstantiator.hpp>
+#include <core/os/TempPath.hpp>
 #include <core/thread/Worker.hpp>
 #include <core/tools/System.hpp>
 
@@ -273,11 +272,7 @@ void BufferManager::destroyBufferImpl(BufferManager::BufferPtrType bufferPtr)
     SIGHT_ASSERT("Buffer must be allocated or dumped", (*bufferPtr != nullptr) || !info.loaded);
 
     m_dumpPolicy->destroyRequest(info, bufferPtr);
-
-    if(info.loaded)
-    {
-        info.bufferPolicy->destroy(*bufferPtr);
-    }
+    info.bufferPolicy->destroy(*bufferPtr);
 
     info.clear();
     info.lastAccess.modified();
@@ -426,8 +421,7 @@ bool BufferManager::dumpBuffer(BufferInfo& info, BufferManager::BufferPtrType bu
         return false;
     }
 
-    std::filesystem::path tmp        = core::tools::System::getTemporaryFolder();
-    std::filesystem::path dumpedFile = std::filesystem::temp_directory_path() / core::tools::System::genTempFileName();
+    const std::filesystem::path& dumpedFile = core::os::TempFile::uniquePath();
 
     info.lockCounter.reset();
 
@@ -477,7 +471,14 @@ bool BufferManager::restoreBuffer(
     allocSize = ((allocSize) != 0U ? allocSize : info.size);
     if(!info.loaded)
     {
-        info.bufferPolicy->allocate(*bufferPtr, allocSize);
+        if(*bufferPtr == nullptr)
+        {
+            info.bufferPolicy->allocate(*bufferPtr, allocSize);
+        }
+        else
+        {
+            info.bufferPolicy->reallocate(*bufferPtr, allocSize);
+        }
 
         char* charBuf  = static_cast<char*>(*bufferPtr);
         SizeType size  = std::min(allocSize, info.size);

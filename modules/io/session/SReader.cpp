@@ -60,7 +60,7 @@ public:
     /// Constructor
     inline explicit ReaderImpl(SReader* const reader) noexcept :
         m_reader(reader),
-        m_job_created_signal(reader->newSignal<JobCreatedSignal>("jobCreated"))
+        m_job_created_signal(reader->newSignal<signals::JobCreatedSignal>("jobCreated"))
     {
     }
 
@@ -89,7 +89,7 @@ public:
     Archive::ArchiveFormat m_archive_format {Archive::ArchiveFormat::DEFAULT};
 
     /// Signal emitted when job created.
-    JobCreatedSignal::sptr m_job_created_signal;
+    signals::JobCreatedSignal::sptr m_job_created_signal;
 
     /// Used in case of bad password
     int m_password_retry {0};
@@ -98,6 +98,8 @@ public:
 SReader::SReader() noexcept :
     m_pimpl(std::make_unique<ReaderImpl>(this))
 {
+    newSignal<signals::SessionPathSignal>(signals::SESSION_LOADED);
+    newSignal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED);
 }
 
 // Defining the destructor here, allows us to use PImpl with a unique_ptr
@@ -114,7 +116,10 @@ void SReader::starting()
 void SReader::stopping()
 {
     m_pimpl->m_password_retry = 0;
-    clearLocations();
+    if(m_pimpl->m_dialog_policy != DialogPolicy::NEVER)
+    {
+        clearLocations();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -249,7 +254,7 @@ void SReader::updating()
             // Create the session reader
             auto reader = sight::io::session::SessionReader::New();
             reader->setFile(filepath);
-            reader->set_password(password);
+            reader->setPassword(password);
             reader->setEncryptionPolicy(m_pimpl->m_encryption_policy);
             reader->setArchiveFormat(m_pimpl->m_archive_format);
 
@@ -288,6 +293,9 @@ void SReader::updating()
         jobs->run().get();
         m_readFailed              = false;
         m_pimpl->m_password_retry = 0;
+
+        // Signal that we successfully read this file
+        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADED)->asyncEmit(filepath);
     }
     catch(sight::io::zip::exception::BadPassword&)
     {
@@ -310,6 +318,9 @@ void SReader::updating()
         {
             m_pimpl->m_password_retry = 0;
         }
+
+        // Signal that we failed to read this file
+        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED)->asyncEmit(filepath);
     }
     catch(const std::exception& e)
     {
@@ -320,6 +331,9 @@ void SReader::updating()
             e.what(),
             sight::ui::base::dialog::IMessageDialog::CRITICAL
         );
+
+        // Signal that we failed to read this file
+        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED)->asyncEmit(filepath);
     }
     catch(...)
     {
@@ -329,6 +343,9 @@ void SReader::updating()
             "Reading process aborted",
             sight::ui::base::dialog::IMessageDialog::WARNING
         );
+
+        // Signal that we failed to read this file
+        this->signal<signals::SessionPathSignal>(signals::SESSION_LOADING_FAILED)->asyncEmit(filepath);
     }
 }
 

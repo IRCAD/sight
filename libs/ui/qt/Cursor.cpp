@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -44,7 +44,7 @@ Cursor::~Cursor()
 
 //-----------------------------------------------------------------------------
 
-void Cursor::setCursor(ui::base::ICursor::CursorType cursor)
+void Cursor::setCursor(ui::base::ICursor::CursorType cursor, bool setOverridenAsDefault)
 {
     QCursor qtCursor(Qt::ArrowCursor);
     switch(cursor)
@@ -61,12 +61,27 @@ void Cursor::setCursor(ui::base::ICursor::CursorType cursor)
             qtCursor.setShape(Qt::CrossCursor);
             break;
 
+        case ICursor::OPEN_HAND:
+            qtCursor.setShape(Qt::OpenHandCursor);
+            break;
+
+        case ICursor::CLOSED_HAND:
+            qtCursor.setShape(Qt::ClosedHandCursor);
+            break;
+
         case ICursor::DEFAULT:
             qtCursor.setShape(Qt::BusyCursor);
             break;
     }
 
-    qApp->setOverrideCursor(qtCursor);
+    if(setOverridenAsDefault)
+    {
+        qApp->setOverrideCursor(qtCursor);
+    }
+    else
+    {
+        qApp->changeOverrideCursor(qtCursor);
+    }
 }
 
 //-----------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "ArchiveTest.hpp"
 
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <io/zip/ArchiveReader.hpp>
 #include <io/zip/ArchiveWriter.hpp>
@@ -60,16 +60,27 @@ void ArchiveTest::newTest()
     // Nominal test
     {
         // Create a temporary file
-        const std::filesystem::path folderPath = core::tools::System::getTemporaryFolder();
-        std::filesystem::create_directories(folderPath);
-        const std::filesystem::path archivePath = folderPath / "newTest.zip";
+        core::os::TempDir tmpDir;
+        const std::filesystem::path archivePath = tmpDir / "newTest.zip";
 
         {
             auto archiveWriter = ArchiveWriter::get(archivePath);
+
+            // check the archive path getter
+            CPPUNIT_ASSERT_EQUAL(
+                archivePath,
+                archiveWriter->getArchivePath()
+            );
         }
 
         {
-            auto archive_reader = ArchiveReader::get(archivePath);
+            auto archiveReader = ArchiveReader::get(archivePath);
+
+            // check the archive path getter
+            CPPUNIT_ASSERT_EQUAL(
+                archivePath,
+                archiveReader->getArchivePath()
+            );
         }
     }
 
@@ -88,9 +99,8 @@ void ArchiveTest::newTest()
 void ArchiveTest::singletonTest()
 {
     // Create a temporary file
-    const std::filesystem::path folderPath = core::tools::System::getTemporaryFolder();
-    std::filesystem::create_directories(folderPath);
-    const std::filesystem::path archivePath = folderPath / "singletonTest.zip";
+    core::os::TempDir tmpDir;
+    const std::filesystem::path archivePath = tmpDir / "singletonTest.zip";
 
     // Error test
     {
@@ -109,9 +119,8 @@ void ArchiveTest::singletonTest()
 void ArchiveTest::openTest()
 {
     // Create a temporary file
-    const std::filesystem::path folderPath = core::tools::System::getTemporaryFolder();
-    std::filesystem::create_directories(folderPath);
-    const std::filesystem::path archivePath = folderPath / "openTest.zip";
+    core::os::TempDir tmpDir;
+    const std::filesystem::path archivePath = tmpDir / "openTest.zip";
 
     // Test default parameters
     const std::string unencrypted_zstd_default("unencrypted_zstd_default");
@@ -200,10 +209,10 @@ void ArchiveTest::openTest()
 void ArchiveTest::rawTest()
 {
     // Create a temporary file
-    std::filesystem::path folderPath = core::tools::System::getTemporaryFolder();
+    core::os::TempDir tmpDir;
 
     // use a complex uncreated path
-    folderPath = folderPath / std::filesystem::path("a/b/c/d");
+    auto folderPath = tmpDir / std::filesystem::path("a/b/c/d");
 
     // Test default parameters
     const std::string raw_text("raw_text");

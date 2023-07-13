@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,12 +23,14 @@
 #include "ui/qt/SliceSelector.hpp"
 
 #include <core/base.hpp>
+#include <core/runtime/path.hpp>
 
 #include <QComboBox>
 #include <QHBoxLayout>
 #include <QLineEdit>
 #include <QSlider>
 #include <QStringList>
+#include <QToolButton>
 
 #include <functional>
 
@@ -37,31 +39,80 @@ namespace sight::ui::qt
 
 //------------------------------------------------------------------------------
 
-SliceSelector::SliceSelector(QWidget* const parent) noexcept :
+SliceSelector::SliceSelector(bool displayAxisSelector, bool displayStepButtons, QWidget* const parent) noexcept :
     QWidget(parent),
-    m_sliceType(new QComboBox(this)),
     m_sliceIndex(new QSlider(Qt::Horizontal, this)),
     m_pSliceIndexText(new QLineEdit(this))
 {
+    m_sliceIndexStyle = new AbsoluteProxyStyle(m_sliceIndex->style());
+    m_sliceIndex->setStyle(m_sliceIndexStyle);
     m_fctChangeIndexCallback = [this](auto&& PH1, auto&& ...){printIndex(std::forward<decltype(PH1)>(PH1));};
     m_fctChangeTypeCallback  = [this](auto&& PH1, auto&& ...){printType(std::forward<decltype(PH1)>(PH1));};
 
-    /// Slice type names as a qt string array.
-    QStringList sliceTypesArray;
-    sliceTypesArray << tr("Sagittal") << tr("Frontal") << tr("Axial");
-    m_sliceType->addItems(sliceTypesArray);
+    auto* layout = new QHBoxLayout(this);
+    if(displayAxisSelector)
+    {
+        /// Slice type names as a qt string array.
+        QStringList sliceTypesArray;
+        sliceTypesArray << tr("Sagittal") << tr("Frontal") << tr("Axial");
+
+        m_sliceType = new QComboBox(this);
+        m_sliceType->addItems(sliceTypesArray);
+        layout->addWidget(m_sliceType, 0);
+        QObject::connect(m_sliceType, SIGNAL(currentIndexChanged(int)), this, SLOT(onSliceTypeChange(int)));
+    }
 
     m_pSliceIndexText->setReadOnly(true);
     m_pSliceIndexText->setMaximumWidth(80);
 
-    auto* layout = new QHBoxLayout(this);
-    layout->addWidget(m_sliceType, 0);
     layout->addWidget(m_sliceIndex, 1);
     layout->addWidget(m_pSliceIndexText, 0);
+
+    if(displayStepButtons)
+    {
+        layout->addSpacerItem(new QSpacerItem(16, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
+
+        auto* stepBackward = new QToolButton(this);
+        auto path          = core::runtime::getModuleResourcePath("sight::module::ui::flaticons");
+        stepBackward->setIcon(QIcon(QString::fromStdString((path / "YellowBackwardStep.svg").string())));
+        stepBackward->setToolTip(tr("Step backward"));
+
+        QObject::connect(
+            stepBackward,
+            &QToolButton::clicked,
+            [this]()
+            {
+                m_sliceIndex->setValue(
+                    std::max(m_sliceIndex->minimum(), m_sliceIndex->value() - m_sliceIndex->singleStep())
+                );
+            });
+
+        layout->addWidget(stepBackward, 0);
+
+        layout->addSpacerItem(new QSpacerItem(16, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
+
+        auto* stepForward = new QToolButton(this);
+        stepForward->setIcon(QIcon(QString::fromStdString((path / "YellowForwardStep.svg").string())));
+        stepBackward->setToolTip(tr("Step forward"));
+
+        QObject::connect(
+            stepForward,
+            &QToolButton::clicked,
+            [this]()
+            {
+                m_sliceIndex->setValue(
+                    std::min(m_sliceIndex->maximum(), m_sliceIndex->value() + m_sliceIndex->singleStep())
+                );
+            });
+
+        layout->addWidget(stepForward, 0);
+
+        layout->addSpacerItem(new QSpacerItem(16, 0, QSizePolicy::Expanding, QSizePolicy::Minimum));
+    }
+
     layout->setContentsMargins(0, 0, 0, 0);
 
     QObject::connect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
-    QObject::connect(m_sliceType, SIGNAL(currentIndexChanged(int)), this, SLOT(onSliceTypeChange(int)));
 
     this->setLayout(layout);
 }
@@ -71,7 +122,11 @@ SliceSelector::SliceSelector(QWidget* const parent) noexcept :
 SliceSelector::~SliceSelector() noexcept
 {
     QObject::disconnect(m_sliceIndex, SIGNAL(valueChanged(int)), this, SLOT(onSliceIndexChange(int)));
-    QObject::disconnect(m_sliceType, SIGNAL(currentIndexChanged(int)), this, SLOT(onSliceTypeChange(int)));
+
+    if(!m_sliceType.isNull())
+    {
+        QObject::disconnect(m_sliceType, SIGNAL(currentIndexChanged(int)), this, SLOT(onSliceTypeChange(int)));
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -100,7 +155,10 @@ void SliceSelector::setSliceValue(int index)
 
 void SliceSelector::setTypeSelection(int type)
 {
-    this->m_sliceType->setCurrentIndex(type);
+    if(!m_sliceType.isNull())
+    {
+        this->m_sliceType->setCurrentIndex(type);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -141,7 +199,11 @@ void SliceSelector::printType(int /*unused*/)
 
 void SliceSelector::setEnable(bool enable)
 {
-    m_sliceType->setEnabled(enable);
+    if(!m_sliceType.isNull())
+    {
+        m_sliceType->setEnabled(enable);
+    }
+
     m_sliceIndex->setEnabled(enable);
     m_pSliceIndexText->setEnabled(enable);
 }

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,8 @@
 #include "data/Image.hpp"
 #include "data/Series.hpp"
 #include "data/types.hpp"
+
+#include "FiducialsSeries.hpp"
 
 namespace sight::data
 {
@@ -102,10 +104,35 @@ public:
         const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
     ) override;
 
+    /**
+       @{
+     * @brief Resize the image and allocate the memory if needed.
+     *
+     * @param size array of size in each direction (x,y,z)
+     * @param type type of a single pixel component value
+     * @param format specify the ordering and the meaning of a pixel components
+     *
+     * If the data array owns its buffer, this method will always work (until it remain free memory)
+     * Otherwise an exception is thrown :
+     *  - if m_dataArray does not own it buffer and image's size and type combination do not match anymore array's one
+     *  - if there is no memory left
+     *
+     * @return Allocated size in bytes
+     */
+    DATA_API std::size_t resize(const Size& size, const core::Type& type, PixelFormat format) override;
+    /// @}
+
+    DATA_API FiducialsSeries::csptr getFiducials() const;
+    DATA_API FiducialsSeries::sptr getFiducials();
+    DATA_API bool hasFiducials() const;
+
 private:
 
     /// Contains the DICOM reference used to generate a valid DICOM Segmentation.
     DicomSeries::sptr m_dicomReference;
+
+    /// Contains the associated Spatial Fiducials file
+    FiducialsSeries::sptr m_fiducialsSeries {FiducialsSeries::New()};
 };
 
 //-----------------------------------------------------------------------------

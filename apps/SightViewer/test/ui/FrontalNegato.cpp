@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,8 +23,9 @@
 
 #include <utestData/Data.hpp>
 
-#include <QAction>
-#include <QSlider>
+#include <ui/testCore/helper/Button.hpp>
+#include <ui/testCore/helper/Scene3d.hpp>
+#include <ui/testCore/helper/Slider.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::FrontalNegato);
 
@@ -35,6 +36,8 @@ namespace sight::sightviewer::test::ui
 
 void FrontalNegato::test()
 {
+    namespace helper = sight::ui::testCore::helper;
+
     const std::string testName               = "sightViewerFrontalNegatoTest";
     const std::string imageName              = testName + ".png";
     const std::filesystem::path snapshotPath = sight::ui::testCore::Tester::getImageOutputPath() / imageName;
@@ -53,74 +56,23 @@ void FrontalNegato::test()
             );
 
             // Firstly, we must drag the mouse in the 3D scene so that the camera is "in front of" the image
-            tester.take(
-                "ogre scene",
-                [&tester]() -> QObject*
-            {
-                return tester.getMainWindow()->findChild<QWidget*>("genericSceneSrv");
-            });
-            const QWidget* ogreScene = tester.get<QWidget*>();
-            const int height         = ogreScene->height();
-            tester.interact(
-                std::make_unique<sight::ui::testCore::MouseDrag>(
-                    sight::ui::testCore::Tester::leftOf(ogreScene),
-                    sight::ui::testCore::Tester::leftOf(ogreScene) + QPoint(0, height / 2)
-                )
-            );
+            helper::Scene3d::rotate(tester, "sceneSrv", {0, 1 / 2.});
 
             // We want to hide the volume, we must click on the Show/hide volume button to achieve this
-            tester.take<QWidget*>(
-                "Show/hide volume button",
-                [&tester]() -> QWidget*
-            {
-                return sight::ui::testCore::Tester::getWidgetFromAction(
-                    tester.getMainWindow()->findChild<QAction*>(
-                        "toolBarView/Show/hide volume"
-                    )
-                );
-            },
-                // We want to click on it, so it should be clickable
-                [](QWidget* obj) -> bool {return obj->isEnabled();});
-            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
+            helper::Button::push(tester, "toolBarView/Show/hide volume");
 
             // Then we want to display the negato view, we must click on the Negato view button to achieve this
-            tester.take(
-                "Negato view button",
-                [&tester]() -> QObject*
-            {
-                return sight::ui::testCore::Tester::getWidgetFromAction(
-                    tester.getMainWindow()->findChild<QAction*>(
-                        "toolBarView/Negato view"
-                    )
-                );
-            });
-            tester.interact(std::make_unique<sight::ui::testCore::MouseClick>());
+            helper::Button::push(tester, "toolBarView/Negato view");
 
             // For the test to work, we must first reset all negatos to 0
             resetNegatos(tester);
 
             // We want to move the negato, we must click in the negato slider to do that
-            tester.yields(
-                "Frontal negato slicer",
-                [&tester](QObject*) -> QObject*
-            {
-                return tester.getMainWindow()->findChild<QObject*>("frontalNegatoSlicerSrv");
-            });
-            tester.yields<QSlider*>(
-                "Frontal negato slider",
-                [](QObject* old) -> QSlider* {return old->findChild<QSlider*>();},
-                [](QSlider* obj) -> bool {return obj->isEnabled();});
-            const QSlider* negatoSlider = tester.get<QSlider*>();
-            for(int i = 0 ; i < 25 ; i++)
-            {
-                tester.interact(
-                    std::make_unique<sight::ui::testCore::MouseClick>(
-                        Qt::LeftButton,
-                        Qt::NoModifier,
-                        sight::ui::testCore::Tester::rightOf(negatoSlider)
-                    )
-                );
-            }
+            helper::Slider::set(
+                tester,
+                helper::Select::fromParent("bottomScenesView/1", "negatoSlicerSrv"),
+                250
+            );
 
             saveSnapshot(tester, snapshotPath);
 

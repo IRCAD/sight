@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -33,7 +33,7 @@ namespace sight::ui::testCore
 {
 
 /// Represents a user interaction on the interace, such as a mouse click, keyboard tap...
-class Interaction
+class GUITEST_CLASS_API Interaction
 {
 public:
 
@@ -51,7 +51,7 @@ public:
 };
 
 /// Represents a mouse click.
-class MouseClick : public Interaction
+class GUITEST_CLASS_API MouseClick : public Interaction
 {
 public:
 
@@ -76,8 +76,34 @@ private:
     QPoint m_pos;
 };
 
+/// Represents a mouse double click.
+class GUITEST_CLASS_API MouseDoubleClick : public Interaction
+{
+public:
+
+    GUITEST_API MouseDoubleClick(
+        Qt::MouseButton button          = Qt::MouseButton::LeftButton,
+        Qt::KeyboardModifiers modifiers = Qt::NoModifier,
+        const QPoint& pos               = QPoint()
+    );
+
+    void interactWith(QWidget* widget) const override;
+    void interactWith(QWindow* window) const override;
+
+    [[nodiscard]] std::string toString() const override;
+
+private:
+
+    template<typename T>
+    void interactWith(T thing) const;
+
+    Qt::MouseButton m_button;
+    Qt::KeyboardModifiers m_modifiers;
+    QPoint m_pos;
+};
+
 /// Represents a dragging of the mouse over a component.
-class MouseDrag : public Interaction
+class GUITEST_CLASS_API MouseDrag : public Interaction
 {
 public:
 
@@ -105,7 +131,7 @@ private:
 };
 
 /// Represents the use of the mouse wheel over a component.
-class MouseWheel : public Interaction
+class GUITEST_CLASS_API MouseWheel : public Interaction
 {
 public:
 
@@ -143,7 +169,7 @@ private:
 };
 
 /// Represents the typing of a sequence of printable caracters.
-class KeyboardSequence : public Interaction
+class GUITEST_CLASS_API KeyboardSequence : public Interaction
 {
 public:
 
@@ -163,7 +189,7 @@ private:
 };
 
 /// Represents a key tap.
-class KeyboardClick : public Interaction
+class GUITEST_CLASS_API KeyboardClick : public Interaction
 {
 public:
 
@@ -183,7 +209,7 @@ private:
 };
 
 /// Represents a pinch gesture with two fingers on a component.
-class PinchGesture : public Interaction
+class GUITEST_CLASS_API PinchGesture : public Interaction
 {
 public:
 

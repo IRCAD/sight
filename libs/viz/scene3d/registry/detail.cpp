@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,12 +35,12 @@ SPTR(Type) get()
     return InstantiatorType::getInstance();
 }
 
-struct FwRenderOgreOffscreenMgrRegistryInstantiatorTag {};
+struct InteractorOffscreenMgrRegistryInstantiatorTag {};
 
 SPTR(OffscreenMgrType) getOffscreenMgr()
 {
     using InstantiatorType = core::LazyInstantiator<OffscreenMgrType,
-                                                    FwRenderOgreOffscreenMgrRegistryInstantiatorTag>;
+                                                    InteractorOffscreenMgrRegistryInstantiatorTag>;
     return InstantiatorType::getInstance();
 }
 
@@ -65,6 +65,14 @@ struct LightRegistryInstantiatorTag {};
 SPTR(LightFactoryType) getLightRegistry()
 {
     using InstantiatorType = core::LazyInstantiator<LightFactoryType, LightRegistryInstantiatorTag>;
+    return InstantiatorType::getInstance();
+}
+
+struct TextRegistryInstantiatorTag {};
+
+SPTR(TextFactoryType) getTextRegistry()
+{
+    using InstantiatorType = core::LazyInstantiator<TextFactoryType, TextRegistryInstantiatorTag>;
     return InstantiatorType::getInstance();
 }
 

@@ -35,8 +35,11 @@ vec4 samplePreIntegrationTable(in sampler3D _s3Image, in VolumeRay _ray_Ms)
 
 //-----------------------------------------------------------------------------
 
-vec4 sampleVolume(in sampler3D _s3Image, in VolumeRay _ray_Ms)
+vec4 sampleVolume(in sampler3D _s3Image, in sampler3D u_s1Mask, in VolumeRay _ray_Ms)
 {
+    float mask = texture(u_s1Mask, _ray_Ms.position).r;
+    if(mask < 0.5 )
+        return vec4(0.);
 #ifdef PREINTEGRATION
     vec4 sampleColor = samplePreIntegrationTable(_s3Image, _ray_Ms);
 #else // PREINTEGRATION

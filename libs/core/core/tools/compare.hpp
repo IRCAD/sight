@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -921,7 +921,7 @@ constexpr static bool is_equal(const T1& a, const T2& b)
 }
 
 /// This is a floating point less than comparison helper. It mainly use a scaled epsilon with some fallback.
-/// This is not perfetc, as no perfect solution exists
+/// This is not perfect, as no perfect solution exists
 /// @param a left floating point number to compare
 /// @param b right floating point number to compare
 template<
@@ -950,7 +950,7 @@ constexpr static bool is_less(T1 a, T2 b)
         if(diff < std::numeric_limits<T1>::epsilon())
         {
             // This manage the case where we are near zero
-            return true;
+            return std::isless(a, b);
         }
 
         // Otherwise, use a scaled epsilon
@@ -998,7 +998,7 @@ constexpr static bool is_greater(T1 a, T2 b)
         if(diff > std::numeric_limits<T1>::epsilon())
         {
             // This manage the case where we are near zero
-            return true;
+            return std::isgreater(a, b);
         }
 
         // Otherwise, use a scaled epsilon

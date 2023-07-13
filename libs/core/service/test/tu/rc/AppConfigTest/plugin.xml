@@ -188,6 +188,35 @@
         </config>
     </extension>
 
+    <extension implements="sight::service::extension::AppConfig">
+        <id>startStopConnectionTest</id>
+        <desc>Test configuration for start/stop connections</desc>
+        <config>
+
+            <service uid="TestService5Uid" type="sight::service::ut::STestNoData" />
+            <service uid="TestService6Uid" type="sight::service::ut::STestNoData" />
+            <service uid="TestService7Uid" type="sight::service::ut::STestNoData" />
+
+            <connect>
+                <signal>TestService5Uid/updated</signal>
+                <slot>TestService6Uid/start</slot>
+            </connect>
+
+            <connect>
+                <signal>TestService5Uid/signal1</signal>
+                <slot>TestService6Uid/stop</slot>
+            </connect>
+
+            <connect>
+                <signal>TestService6Uid/updated</signal>
+                <slot>TestService7Uid/stop</slot>
+            </connect>
+
+            <start uid="TestService5Uid" />
+            <start uid="TestService7Uid" />
+
+        </config>
+    </extension>
 
     <extension implements="sight::service::extension::AppConfig">
         <id>optionalKeyTest</id>

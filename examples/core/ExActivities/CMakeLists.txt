@@ -30,8 +30,22 @@ module_param(
 module_param(module_appXml PARAM_LIST config parameters PARAM_VALUES ExActivities_Base_AppCfg ExActivities_AppCfgParam)
 
 module_param(
-    module_ui_base PARAM_LIST preferences_enabled preferences_password_policy preferences_encryption_policy
-                              preferences_exit_on_password_error PARAM_VALUES true once forced true
+    module_ui_base
+    PARAM_LIST preferences_enabled
+               preferences_password_policy
+               preferences_encryption_policy
+               preferences_exit_on_password_error
+               preferences_password_dialog_title
+               preferences_password_dialog_message
+               preferences_password_dialog_icon
+    PARAM_VALUES
+        true
+        once
+        forced
+        true
+        "Password required"
+        "  Please enter your password: "
+        "sight::module::ui::flaticons/ircad.svg"
 )
 
 sight_generate_profile(ExActivities)

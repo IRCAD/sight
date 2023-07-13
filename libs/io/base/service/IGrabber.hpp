@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,6 +30,7 @@
 #include <data/FrameTL.hpp>
 #include <data/Point.hpp>
 
+#include <service/INotifier.hpp>
 #include <service/IService.hpp>
 
 #include <ui/base/parameter.hpp>
@@ -67,7 +68,8 @@ namespace sight::io::base::service
  * - \b addROICenter(sight::data::Point::sptr): Adds a new region fo interest center.
  * - \b removeROICenter(sight::data::Point::sptr): Removes a region of interest via its center.
  */
-class IO_BASE_CLASS_API IGrabber : public sight::service::IService
+class IO_BASE_CLASS_API IGrabber : public sight::service::IService,
+                                   public sight::service::INotifier
 {
 public:
 
@@ -93,13 +95,13 @@ public:
     IO_BASE_API static const core::com::Slots::SlotKeyType s_OPTIMIZE_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_ADD_ROI_CENTER_SLOT;
     IO_BASE_API static const core::com::Slots::SlotKeyType s_REMOVE_ROI_CENTER_SLOT;
+    IO_BASE_API static const core::com::Slots::SlotKeyType s_FORWARD_FPS_CHANGED_SLOT;
     ///@}
 
     /**
      * @name Signals API
      * @{
      */
-
     IO_BASE_API static const core::com::Signals::SignalKeyType s_POSITION_MODIFIED_SIG;
     using PositionModifiedSignalType = core::com::Signal<void (int64_t)>;
 
@@ -121,6 +123,8 @@ public:
     IO_BASE_API static const core::com::Signals::SignalKeyType s_JOB_CREATED_SIG;
     using JobCreatedSignalType = core::com::Signal<void (core::jobs::IJob::sptr)>;
 
+    IO_BASE_API static const core::com::Signals::SignalKeyType s_FPS_CHANGED_SIG;
+    using FPSChangedSignalType = sight::core::com::Signal<void (double)>;
     /** @} */
 
     /**
@@ -138,7 +142,7 @@ public:
     /**
      * @brief Destructor.
      */
-    IO_BASE_API ~IGrabber() noexcept override;
+    IO_BASE_API ~IGrabber() noexcept override = default;
 
     /**
      * @brief API for starting a camera. Needs to be reimplemented in child classes.
@@ -194,6 +198,9 @@ public:
 
     /// SLOT: Sets a parameter value with its key.
     IO_BASE_API virtual void setParameter(ui::base::parameter_t value, std::string key);
+
+    /// SLOT: Forward FPS data
+    IO_BASE_API virtual void forwardFPSChanged(double fps);
 
 protected:
 

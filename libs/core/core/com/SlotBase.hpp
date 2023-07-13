@@ -242,6 +242,10 @@ struct CORE_CLASS_API SlotBase : virtual core::BaseObject
         /// Slot's Worker.
         SPTR(core::thread::Worker) m_worker;
 
+        /// When the slot is wrapped to reduce the number of arguments in a connection, this stores a pointer
+        /// to the original slot. This is important in the mechanism used to keep the slot alive during an async call.
+        WPTR(SlotBase) m_sourceSlot;
+
         /// Container of current connections.
         ConnectionSetType m_connections;
 

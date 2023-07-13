@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,24 +47,24 @@ public:
         IEC
     } StandardType;
 
-    CORE_API static const std::uint64_t Bytes;
+    CORE_API static constexpr std::uint64_t Bytes = 1;
 
     // SI units
-    CORE_API static const std::uint64_t KB;
-    CORE_API static const std::uint64_t MB;
-    CORE_API static const std::uint64_t GB;
-    CORE_API static const std::uint64_t TB;
-    CORE_API static const std::uint64_t PB;
+    CORE_API static constexpr std::uint64_t KB = 1000LL;
+    CORE_API static constexpr std::uint64_t MB = 1000000LL;
+    CORE_API static constexpr std::uint64_t GB = 1000000000LL;
+    CORE_API static constexpr std::uint64_t TB = 1000000000000LL;
+    CORE_API static constexpr std::uint64_t PB = 1000000000000000LL;
 
     // IEC units
-    CORE_API static const std::uint64_t KiB;
-    CORE_API static const std::uint64_t MiB;
-    CORE_API static const std::uint64_t GiB;
-    CORE_API static const std::uint64_t TiB;
-    CORE_API static const std::uint64_t PiB;
+    CORE_API static constexpr std::uint64_t KiB = 1LL << 10;
+    CORE_API static constexpr std::uint64_t MiB = 1LL << 20;
+    CORE_API static constexpr std::uint64_t GiB = 1LL << 30;
+    CORE_API static constexpr std::uint64_t TiB = 1LL << 40;
+    CORE_API static constexpr std::uint64_t PiB = 1LL << 50;
 
-    typedef std::uint64_t SizeType;
-    typedef std::uint64_t UnitType;
+    using SizeType = std::uint64_t;
+    using UnitType = std::uint64_t;
 
     /**
      * @brief Default constructor

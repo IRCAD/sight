@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,6 +33,7 @@ namespace sight::module::ui::base
 
 /**
  * @brief  Defines the default action to have a simple action button.
+ * @deprecated Replaced by sight::module::ui::base::SAction since Sight 22.0, will be removed in Sight 23.0
  */
 class MODULE_UI_BASE_CLASS_API SDefaultAction : public sight::ui::base::IAction
 {

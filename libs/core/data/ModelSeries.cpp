@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -112,6 +112,27 @@ bool ModelSeries::operator==(const ModelSeries& other) const noexcept
 bool ModelSeries::operator!=(const ModelSeries& other) const noexcept
 {
     return !(*this == other);
+}
+
+//------------------------------------------------------------------------------
+
+FiducialsSeries::csptr ModelSeries::getFiducials() const
+{
+    return m_fiducialsSeries;
+}
+
+//------------------------------------------------------------------------------
+
+FiducialsSeries::sptr ModelSeries::getFiducials()
+{
+    return m_fiducialsSeries;
+}
+
+//------------------------------------------------------------------------------
+
+bool ModelSeries::hasFiducials() const
+{
+    return !m_fiducialsSeries->getFiducialSets().empty();
 }
 
 } // namespace sight::data

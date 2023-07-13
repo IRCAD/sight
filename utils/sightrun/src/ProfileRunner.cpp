@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -194,13 +194,10 @@ int main(int argc, char* argv[])
     bool ask_password        = false;
 #endif
 
-#if defined(WIN32)
+    /// @warning file_log cannot work with console_log on
+    /// @todo fix this
     bool console_log = false;
     bool file_log    = true;
-#else
-    bool console_log = !encrypted_log;
-    bool file_log    = encrypted_log;
-#endif
 
     std::string log_file;
 
@@ -219,7 +216,7 @@ int main(int argc, char* argv[])
     (
         "clog",
         po::value(&console_log)->implicit_value(true)->zero_tokens(),
-        "Enable log output to console"
+        "Enable log output to console. Will disable file log."
     )
     (
         "no-clog",
@@ -229,7 +226,7 @@ int main(int argc, char* argv[])
     (
         "flog",
         po::value(&file_log)->implicit_value(true)->zero_tokens(),
-        "Enable log output to file"
+        "Enable log output to file. Will disable console log."
     )
     (
         "no-flog",
@@ -310,6 +307,12 @@ int main(int argc, char* argv[])
             vm
         );
         po::notify(vm);
+
+        if(vm.count("flog") > 0 && vm.count("clog") > 0)
+        {
+            throw po::error("Cannot enable both file and console log");
+            return 1;
+        }
     }
     catch(const po::error& e)
     {
@@ -324,6 +327,12 @@ int main(int argc, char* argv[])
         std::cout << "  use '--' to stop processing args for sightrun" << std::endl << std::endl;
         std::cout << options << std::endl << logOptions << std::endl;
         return 0;
+    }
+
+    // If we enable console log, but not file log, we disable file log (which is enabled by default)
+    if(console_log)
+    {
+        file_log = false;
     }
 
 #ifdef WIN32

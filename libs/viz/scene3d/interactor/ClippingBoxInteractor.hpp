@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -51,7 +51,7 @@ public:
     ) noexcept;
 
     /// Destroys the widget.
-    VIZ_SCENE3D_API ~ClippingBoxInteractor() noexcept override = default;
+    VIZ_SCENE3D_API ~ClippingBoxInteractor() noexcept final = default;
 
     /// Interacts with the widget if it was previously picked, behaves like a trackball otherwise.
     VIZ_SCENE3D_API void mouseMoveEvent(
@@ -61,7 +61,7 @@ public:
         int /*y*/,
         int /*dx*/,
         int /*dy*/
-    ) override;
+    ) final;
 
     /// Ends all interactions with the widget.
     VIZ_SCENE3D_API void buttonReleaseEvent(
@@ -69,10 +69,32 @@ public:
         Modifier /*_mods*/,
         int /*_x*/,
         int /*_y*/
-    ) override;
+    ) final;
 
     /// Picks the object at the (x,y) position on a left click, scales or translates the widget otherwise.
-    VIZ_SCENE3D_API void buttonPressEvent(MouseButton /*button*/, Modifier /*_mods*/, int /*x*/, int /*y*/) override;
+    VIZ_SCENE3D_API void buttonPressEvent(MouseButton /*button*/, Modifier /*_mods*/, int /*x*/, int /*y*/) final;
+
+    /// Scales the widget.
+    /// @param _scalingFactor distance of the fingers
+    /// @param _centerX the width coordinate of the center of the pinch
+    /// @param _centerY the height coordinate of the center of the pinch
+    VIZ_SCENE3D_API void pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY) final;
+
+    /// Ends all interactions with the widget.
+    /// @param _x current width coordinate.
+    /// @param _y current height coordinate.
+    /// @param _dx the width displacement since the last event.
+    /// @param _dy the height displacement since the last event.
+    VIZ_SCENE3D_API void panGestureMoveEvent(int _x, int _y, int _dx, int _dy) final;
+
+    /**
+     * @brief Listens to pan gesture release events.
+     * @param _x the last width coordinate of the finger
+     * @param _y the last height coordinate of the finger
+     * @param _dx width displacement of the finger since the last event.
+     * @param _dy height displacement of the finger since the last event.
+     */
+    VIZ_SCENE3D_API void panGestureReleaseEvent(int _x, int _y, int _dx, int _dy) final;
 
     /// Sets the visibility of the box widget.
     VIZ_SCENE3D_API void setBoxVisibility(bool _visibility);

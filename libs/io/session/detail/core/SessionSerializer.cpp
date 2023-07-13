@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -65,14 +65,10 @@ serializer_t SessionSerializer::findSerializer(const std::string& classname) con
         return customIt->second;
     }
 
-    // Protect serializers map
-    auto& serializerStruct = getSerializer();
-    std::shared_lock guard(serializerStruct.serializers_mutex);
-
-    if(const auto& it = serializerStruct.serializer.find(classname); it != serializerStruct.serializer.end())
+    // Then try to find in the default deserializer map
+    if(auto function = serializer(classname); function)
     {
-        // Return the found serializer
-        return it->second;
+        return function;
     }
 
     SIGHT_THROW("There is no serializer registered for class '" << classname << "'.");
@@ -217,6 +213,23 @@ void SessionSerializer::setSerializer(const std::string& className, serializer_t
     {
         SIGHT_THROW("There is no serializer registered for class '" << className << "'.");
     }
+}
+
+//------------------------------------------------------------------------------
+
+serializer_t SessionSerializer::serializer(const std::string& className)
+{
+    // Protect serializers map
+    auto& serializerStruct = getSerializer();
+    std::shared_lock guard(serializerStruct.serializers_mutex);
+
+    if(const auto& it = serializerStruct.serializer.find(className); it != serializerStruct.serializer.end())
+    {
+        // Return the found serializer
+        return it->second;
+    }
+
+    return nullptr;
 }
 
 //------------------------------------------------------------------------------

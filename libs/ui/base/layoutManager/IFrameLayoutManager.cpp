@@ -105,6 +105,7 @@ IFrameLayoutManager::IFrameLayoutManager()
 void IFrameLayoutManager::initialize(const ui::base::config_t& configuration)
 {
     m_frameInfo.m_name       = configuration.get<std::string>("name", m_frameInfo.m_name);
+    m_frameInfo.m_version    = configuration.get<std::string>("version", "");
     m_frameInfo.m_visibility = configuration.get<bool>("visibility", m_frameInfo.m_visibility);
 
     if(const auto icon = configuration.get_optional<std::string>("icon"); icon.has_value())
@@ -118,6 +119,8 @@ void IFrameLayoutManager::initialize(const ui::base::config_t& configuration)
 
     m_frameInfo.m_minSize.first  = configuration.get<int>("minSize.<xmlattr>.width", m_frameInfo.m_minSize.first);
     m_frameInfo.m_minSize.second = configuration.get<int>("minSize.<xmlattr>.height", m_frameInfo.m_minSize.second);
+    m_frameInfo.m_maxSize.first  = configuration.get<int>("maxSize.<xmlattr>.width", m_frameInfo.m_maxSize.first);
+    m_frameInfo.m_maxSize.second = configuration.get<int>("maxSize.<xmlattr>.height", m_frameInfo.m_maxSize.second);
 
     if(const auto mode = configuration.get_optional<std::string>("style.<xmlattr>.mode"); mode.has_value())
     {

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -26,7 +26,7 @@
 #include "ui/base/container/fwContainer.hpp"
 #include "ui/base/GuiBaseObject.hpp"
 
-#include <service/IService.hpp>
+#include <service/INotifier.hpp>
 
 #include <array>
 #include <string>
@@ -44,36 +44,23 @@ public:
     SIGHT_DECLARE_CLASS(INotificationDialog, ui::base::GuiBaseObject);
 
     /// Notification Type (changes Qss style).
-
-    using Type = service::IService::NotificationType;
+    using Type = service::Notification::Type;
 
     /// Where to display notifications.
-    enum class Position
-    {
-        TOP_RIGHT = 0,
-        TOP_LEFT,
-        BOTTOM_RIGHT,
-        BOTTOM_LEFT,
-        CENTERED,
-        CENTERED_TOP,
-        CENTERED_BOTTOM,
-        DEFAULT = TOP_RIGHT
-    };
+    using Position = service::Notification::Position;
 
     /// Constructor. Does nothing.
     UI_BASE_API INotificationDialog();
 
     /// Destructor. Does nothing.
-    UI_BASE_API ~INotificationDialog() override;
+    UI_BASE_API ~INotificationDialog() override = default;
 
     typedef std::string FactoryRegistryKeyType;
     UI_BASE_API static const FactoryRegistryKeyType REGISTRY_KEY;
 
-    /**
-     * @brief Sets the message.
-     * @param _msg message as a std::string, it can be empty.
-     */
-    UI_BASE_API virtual void setMessage(const std::string& _msg);
+    /// Sets the message.
+    /// @param _msg message as a std::string, it can be empty.
+    UI_BASE_API virtual void setMessage(std::string _msg);
 
     /**
      * @brief Sets the notification type.
@@ -92,7 +79,8 @@ public:
      * @param _width width of the notification in pixel.
      * @param _height height of the notification in pixel.
      */
-    UI_BASE_API virtual void setSize(unsigned int _width, unsigned int _height);
+    UI_BASE_API virtual void setSize(std::array<int, 2> _size);
+    UI_BASE_API virtual std::array<int, 2> getSize() const;
 
     /**
      * @brief Sets the queue index of the notification (when notifications are queued).
@@ -103,8 +91,24 @@ public:
     /**
      * @brief Sets the duration in ms.
      * @param _durationInMs duration of the notification before closing (+ 1 sec of fade in/out effects).
+     *                      std::nullopt means infinite duration.
      */
-    UI_BASE_API virtual void setDuration(int _durationInMs);
+    UI_BASE_API virtual void setDuration(std::optional<std::chrono::milliseconds> _durationInMs);
+    UI_BASE_API virtual std::optional<std::chrono::milliseconds> getDuration() const;
+
+    /// Set the channel property
+    /// @param _channel the channel. Empty string for default global channel.
+    UI_BASE_API virtual void setChannel(std::string);
+    UI_BASE_API virtual std::string getChannel() const;
+
+    /// Set the closable property
+    /// @param _closable true if closable. std::nullopt means finite duration is closable.
+    UI_BASE_API virtual void setClosable(std::optional<bool> _closable);
+    UI_BASE_API virtual std::optional<bool> isClosable() const;
+
+    /// Set the notification attributes (type, message, duration...) in one step.
+    /// @param _notification notification attributes.
+    UI_BASE_API virtual void setNotification(service::Notification _notification);
 
     /// Shows the message box and return the clicked button.
     UI_BASE_API virtual void show() = 0;
@@ -135,23 +139,8 @@ public:
 
 protected:
 
-    /// Total duration of the popup (cannot be below 2000ms).
-    int m_duration {3000};
-
-    /// Message to display.
-    std::string m_message;
-
-    /// Full message if doesn't fit in size of the notification popup.
-    std::string m_fullMessage;
-
-    /// Type of notification (may change the background color).
-    Type m_notificationType {Type::INFO};
-
-    /// Where the notification will be displayed (relative to the active windows).
-    Position m_position {Position::DEFAULT};
-
-    /// Size as [width, height].
-    std::array<unsigned int, 2> m_size {200, 60};
+    /// Notification attributes (message, position, type, ...).
+    service::Notification m_notification {};
 
     /// Position of the notification, used to avoid overlapping
     /// when several notifications are shown. (0 = first, 1 = second, ...)

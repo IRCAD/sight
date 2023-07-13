@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -69,11 +69,7 @@ void Tester::doubt(const std::string& resultDescription, std::function<bool(T)> 
     }
 
     m_resultDescription = resultDescription;
-    T component = qobject_cast<T>(m_graphicComponent);
-    if(component == nullptr)
-    {
-        fail("Couldn't cast \"" + m_componentDescription + "\" to \"" + typeid(T).name() + "\"");
-    }
+    T component = get<T>();
 
     if(m_verboseMode)
     {
@@ -145,6 +141,27 @@ void Tester::yields(
 //------------------------------------------------------------------------------
 
 template<typename T>
+void Tester::yields(
+    const std::string& componentDescription,
+    const std::string& objectName,
+    std::function<bool(QObject*)> condition,
+    int timeout
+)
+{
+    yields(
+        componentDescription,
+        [&objectName](QObject* old)
+        {
+            return old->findChild<T>(objectName == "" ? QString() : QString::fromStdString(objectName));
+        },
+        condition,
+        timeout
+    );
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
 void Tester::maybeTake(
     const std::string& componentDescription,
     std::function<T()> graphicComponent,
@@ -181,13 +198,7 @@ void Tester::maybeTake(
 template<typename T>
 void Tester::doSomething(std::function<void(T)> f)
 {
-    T component = qobject_cast<T>(m_graphicComponent);
-    if(component == nullptr)
-    {
-        fail("Couldn't cast \"" + m_componentDescription + "\" to \"" + typeid(T).name() + '"');
-    }
-
-    f(component);
+    f(get<T>());
 }
 
 //------------------------------------------------------------------------------
@@ -195,13 +206,16 @@ void Tester::doSomething(std::function<void(T)> f)
 template<typename T>
 void Tester::doSomethingAsynchronously(std::function<void(T)> f)
 {
-    T component = qobject_cast<T>(m_graphicComponent);
-    if(component == nullptr)
-    {
-        fail("Couldn't cast \"" + m_componentDescription + "\" to \"" + typeid(T).name() + '"');
-    }
-
+    T component = get<T>();
     qApp->postEvent(qApp, new TestEvent([component, f]{f(component);}));
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+bool Tester::isA()
+{
+    return qobject_cast<T>(m_graphicComponent) != nullptr;
 }
 
 //------------------------------------------------------------------------------
@@ -209,7 +223,13 @@ void Tester::doSomethingAsynchronously(std::function<void(T)> f)
 template<typename T>
 T Tester::get()
 {
-    return qobject_cast<T>(m_graphicComponent);
+    T res = qobject_cast<T>(m_graphicComponent);
+    if(res == nullptr)
+    {
+        fail("Couldn't cast \"" + m_componentDescription + "\" to \"" + typeid(T).name() + '"');
+    }
+
+    return res;
 }
 
 } // namespace sight::ui::testCore

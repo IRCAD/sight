@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -97,6 +97,11 @@ namespace sight::module::ui::qt
             <param type="enum" name="enum parameters" key="enumParam" defaultValue="p1" values="p1,p2,p3" />
             <param type="int" name="integer parameter" key="intParam2" defaultValue="1" min="0" max="255"
                 depends="enumParam" dependsValue="p2" />
+            <param type="enum"    name="button list:" key="buttonRaw" widget="buttonBar" defaultValue="button2">
+                <item value="button1" label="..." icon="..." uncheckedIcon="..."/>
+                <item value="button2" label="..." icon="..."/>
+                <item value="button3" icon="..."/>
+            </param>
         </parameters>
        </service>
    @endcode
@@ -105,14 +110,21 @@ namespace sight::module::ui::qt
  * <parameters> tag:
  * - \b scrollable: If true, add a scroll bar if the content doesn't fit on the screen. If false, flatten the content
  * <param> tag:
- * - \b type: bool, color, double, double2, double3, int, int2, int3.
+ * - \b type: bool, color, enum, double, double2, double3, int, int2, int3.
  * - \b name: label to display.
  * - \b key: name used in the signal to identify the parameter.
  * - \b defaultValue: value used to initialize the parameter.
  * - \b min: minimum value, if relevant for the data type.
  * - \b max: maximum value, if relevant for the data type.
- * - \b widget (optional) : widget type, available for types 'int' and 'double'.
- * You can choose between a 'spin' or a 'slider' widget. Defaults to 'spin' for 'double' and  'slider' for 'int'.
+ * - \b widget (optional) : widget type, available for types 'int', 'double' and 'enum'.
+ * For 'int' and 'double', you can choose between a 'spin' or a 'slider' widget. Defaults to 'spin' for 'double' and
+ * 'slider' for 'int'.
+ * For 'enum', you can choose between 'combobox' (the default), 'slider' (only available with integer values), or
+ *'buttonBar'.
+ * buttonBar widget requires additional configuration.
+ *     - \b value: the enum value sent when clicking on the button.
+ *     - \b label (optional, default=""): test displayed under the button.
+ *     - \b icon: path to the icon to display.
  * - \b decimals (optional, default=2): number of decimals settable using a double slider.
  * - \b reset (optional, default=true): display the reset button.
  * - \b values: list of possible values separated by a comma ',' a space ' ' or a semicolon ';' (only for enum type).
@@ -122,7 +134,7 @@ namespace sight::module::ui::qt
  * - \b depends (optional, string): key of the dependency.
  * - \b dependsValue (optional, string): value of the dependency in case of enum.
  * - \b dependsReverse (optional, bool, default=false): reverse the dependency status checking.
- * - \b emitOnRelease (optional, default = false): int/double sliders only, if true send value when slider is released,
+ * - \b emitOnRelease (optional, default = false): sliders only, if true send value when slider is released,
  * send value when value changed otherwise.
  */
 class MODULE_UI_QT_CLASS_API SParameters : public QObject,
@@ -196,6 +208,14 @@ public:
         inline static const slots_t s_UPDATE_DOUBLE_MIN_PARAMETER_SLOT = "updateDoubleMinParameter";
         inline static const slots_t s_UPDATE_DOUBLE_MAX_PARAMETER_SLOT = "updateDoubleMaxParameter";
     };
+
+    struct enumButtonParam
+    {
+        std::string value {""};
+        std::string label {""};
+        std::string iconPath {""};
+    };
+
     MODULE_UI_QT_API SParameters() noexcept;
 
     /// Destructor. Does nothing
@@ -374,6 +394,28 @@ private:
         const std::vector<std::string>& data
     );
 
+    /// Create a multi choice widget with integer values
+    void createSliderEnumWidget(
+        QGridLayout& layout,
+        int row,
+        const std::string& key,
+        const std::string& defaultValue,
+        const std::vector<std::string>& values,
+        bool onRelease
+    );
+
+    void createButtonBarEnumWidget(
+        QGridLayout& layout,
+        int row,
+        const std::string& key,
+        const std::string& defaultValue,
+        const std::vector<enumButtonParam>& buttonList,
+        const int width,
+        const int height,
+        const int hOffset,
+        const std::string& style
+    );
+
     /// Emit the signal(s) for the integer widget
     void emitIntegerSignal(QObject* widget);
 
@@ -443,7 +485,7 @@ private:
     void updateEnumList(const std::vector<std::string>& _list, const std::string _key);
 
     /// Return the widget of the parameter with the given key, or nullptr if it does not exist
-    QWidget* getParamWidget(const std::string& key);
+    QObject* getParamWidget(const std::string& key);
 
     /// Compute the double slider value from a slider position.
     static double getDoubleSliderValue(const QSlider* slider);

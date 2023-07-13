@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -115,6 +115,11 @@ public:
      * @throw data::Exception if the group does not exist
      */
     DATA_API LandmarksGroup& getGroup(const std::string& name);
+
+    /**
+     * @brief Check if the group exists
+     */
+    DATA_API bool hasGroup(const std::string& name) const noexcept;
 
     /**
      * @brief Rename the group

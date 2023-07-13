@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,6 +76,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @code{.xml}
     <service uid="..." type="sight::module::viz::scene3d::adaptor::SVolumeRender" >
         <in key="image" uid="..." autoConnect="true" />
+        <in key="mask" uid="..." autoConnect="true" />
         <in key="tf" uid="..." />
         <inout key="clippingMatrix" uid="..." />
         <config samples="1024" preintegration="true" dynamic="false" ao="false" colorBleeding="false" shadows="false"
@@ -86,6 +87,7 @@ namespace sight::module::viz::scene3d::adaptor
  *
  * @subsection Input Input
  * - \b image [sight::data::Image]: input volume data.
+ * - \b mask [sight::data::Image]: mask used to crop regions.
  * - \b tf [sight::data::TransferFunction] (optional): the current TransferFunction. If it is not defined, we use the
  *      image's default transferFunction (CT-GreyLevel).
  *
@@ -142,6 +144,7 @@ protected:
     static inline const sight::core::com::Slots::SlotKeyType s_SET_DOUBLE_PARAMETER_SLOT = "setDoubleParameter";
     static inline const sight::core::com::Slots::SlotKeyType s_UPDATE_CLIPPING_BOX_SLOT  = "updateClippingBox";
     static inline const sight::core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT            = "updateTF";
+    static inline const sight::core::com::Slots::SlotKeyType s_UPDATE_MASK_SLOT          = "updateMask";
 
     ///@brief Internal wrapper holding config defines.
     struct config
@@ -203,6 +206,7 @@ protected:
     struct objects
     {
         static constexpr std::string_view IMAGE_IN              = "image";
+        static constexpr std::string_view MASK_IN               = "mask";
         static constexpr std::string_view VOLUME_TF_IN          = "tf";
         static constexpr std::string_view CLIPPING_MATRIX_INOUT = "clippingMatrix";
     };
@@ -256,6 +260,9 @@ private:
 
     /// Updates renderer and the GPU volume texture with the new input image data.
     void updateImage();
+
+    /// Updates renderer and the GPU volume texture with the new mask data.
+    void updateMask();
 
     /// Starts a parallel task to copy the updated image buffer into the texture buffer.
     void bufferImage();
@@ -443,6 +450,7 @@ private:
     std::shared_ptr<sight::viz::scene3d::interactor::ClippingBoxInteractor> m_widget;
 
     sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, objects::IMAGE_IN, true};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_mask {this, objects::MASK_IN, true};
     sight::data::ptr<sight::data::TransferFunction, sight::data::Access::in> m_tf {this, objects::VOLUME_TF_IN, true};
     sight::data::ptr<sight::data::Matrix4, sight::data::Access::inout> m_clippingMatrix
     {

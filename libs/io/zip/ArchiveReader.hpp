@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #pragma once
 
 #include "io/zip/Archive.hpp"
+#include "io/zip/config.hpp"
 
 #include <core/crypto/secure_string.hpp>
 
@@ -64,6 +65,14 @@ public:
     /// @param password the password needed to decrypt the file.
     IO_ZIP_API virtual std::unique_ptr<std::istream> openFile(
         const std::filesystem::path& file_path,
+        const core::crypto::secure_string& password = ""
+    )                                               = 0;
+
+    /// Extracts all the content of the archive in the specified folder
+    /// @param outputPath the output folder
+    /// @param password the password needed to decrypt the file.
+    IO_ZIP_API virtual void extractAllTo(
+        const std::filesystem::path& outputPath,
         const core::crypto::secure_string& password = ""
     )                                               = 0;
 

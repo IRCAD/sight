@@ -506,7 +506,7 @@ void SLandmarks::onLandmarkDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
 
         // Convert to double
         std::array check = {false, false, false};
-        std::array world_coord {
+        data::Landmarks::PointType world_coord {
             index[0].toDouble(check.data()),
             index[1].toDouble(&check[1]),
             index[2].toDouble(&check[2])
@@ -524,19 +524,36 @@ void SLandmarks::onLandmarkDoubleClicked(QTreeWidgetItem* _item, int /*unused*/)
             return;
         }
 
-        // Log that we double clicked on a landmark
-        SIGHT_DEBUG(
-            "Double clicked on landmark [" + index[0].toStdString()
-            + ", " + index[1].toStdString()
-            + ", " + index[2].toStdString() + "]"
-        );
+        updateCurrentLandmark(world_coord);
+    }
+}
 
-        // Send signal with world coordinates of the landmarks
-        this->signal<world_coordinates_signal_t>(s_SEND_WORLD_COORD)->asyncEmit(
-            world_coord[0],
-            world_coord[1],
-            world_coord[2]
-        );
+//------------------------------------------------------------------------------
+
+void SLandmarks::updateCurrentLandmark(data::Landmarks::PointType& world_coord) const
+{
+    // Send signal with world coordinates of the landmarks
+
+    SIGHT_DEBUG(
+        " Send world coordinates [" << world_coord[0] << ", " << world_coord[1]
+        << ", " << world_coord[2] << " ]"
+    );
+    this->signal<world_coordinates_signal_t>(s_SEND_WORLD_COORD)->asyncEmit(
+        world_coord[0],
+        world_coord[1],
+        world_coord[2]
+    );
+
+    //update the data with the current point
+    auto currentLandmark = m_currentLandmark.lock();
+    if(currentLandmark)
+    {
+        currentLandmark->setCoord(world_coord);
+        auto currentLandmarkModifiedSig =
+            currentLandmark->signal<sight::data::Object::ModifiedSignalType>(
+                sight::data::Object::s_MODIFIED_SIG
+            );
+        currentLandmarkModifiedSig->asyncEmit();
     }
 }
 
@@ -804,6 +821,7 @@ void SLandmarks::pick(data::tools::PickingInfo _info)
             }
 
             this->addPoint(groupName);
+            updateCurrentLandmark(newPoint);
 
             {
                 const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_POINT_SLOT)));

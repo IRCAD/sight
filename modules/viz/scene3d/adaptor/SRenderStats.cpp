@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,6 @@
 
 #include "modules/viz/scene3d/adaptor/SRenderStats.hpp"
 
-#include <viz/scene3d/helper/Font.hpp>
 #include <viz/scene3d/IWindowInteractor.hpp>
 #include <viz/scene3d/SRender.hpp>
 
@@ -83,9 +82,8 @@ void SRenderStats::configuring()
 
     const ConfigType config = this->getConfiguration();
 
-    static const std::string s_COLOR_CONFIG       = s_CONFIG + "color";
-    static const std::string s_FONT_SIZE_CONFIG   = s_CONFIG + "fontSize";
-    static const std::string s_FONT_SOURCE_CONFIG = s_CONFIG + "fontSource";
+    static const std::string s_COLOR_CONFIG     = s_CONFIG + "color";
+    static const std::string s_FONT_SIZE_CONFIG = s_CONFIG + "fontSize";
 
     const std::string color      = config.get<std::string>(s_COLOR_CONFIG, "#FFFFFF");
     data::Color::sptr sightColor = data::Color::New();
@@ -93,8 +91,7 @@ void SRenderStats::configuring()
 
     m_textColor = Ogre::ColourValue(sightColor->red(), sightColor->green(), sightColor->blue());
 
-    m_fontSource = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
-    m_fontSize   = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
+    m_fontSize = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
 }
 
 //------------------------------------------------------------------------------
@@ -106,24 +103,13 @@ void SRenderStats::starting()
     sight::viz::scene3d::SRender::sptr renderSrv = this->getRenderService();
     renderSrv->makeCurrent();
 
-    const float dpi = renderSrv->getInteractorManager()->getLogicalDotsPerInch();
-
-    Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
-
-    m_statsText = sight::viz::scene3d::Text::New(
-        this->getID() + "_fpsText",
-        this->getSceneManager(),
-        textContainer,
-        m_fontSource,
-        m_fontSize,
-        dpi,
-        this->getLayer()->getDefaultCamera()
-    );
-
+    m_statsText = sight::viz::scene3d::IText::New(this->getLayer());
+    m_statsText->setFontSize(m_fontSize);
     m_statsText->setPosition(0.01F, 0.01F);
     m_statsText->setTextColor(m_textColor);
 
-    auto* renderWindow = renderSrv->getInteractorManager()->getRenderTarget();
+    const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
+    auto* renderWindow                           = layer->getRenderTarget();
 
     m_listener = std::make_unique<module::viz::scene3d::adaptor::PostWindowRenderListener>(*this);
     renderWindow->addListener(m_listener.get());
@@ -142,14 +128,11 @@ void SRenderStats::stopping()
     sight::viz::scene3d::SRender::sptr renderSrv = this->getRenderService();
     renderSrv->makeCurrent();
 
-    auto* renderWindow = renderSrv->getInteractorManager()->getRenderTarget();
+    const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
+    auto* renderWindow                           = layer->getRenderTarget();
     renderWindow->removeListener(m_listener.get());
 
     m_listener.reset();
-
-    Ogre::SceneManager* sm = this->getLayer()->getSceneManager();
-    m_statsText->detachFromParent();
-    sm->destroyMovableObject(m_statsText);
     m_statsText = nullptr;
 }
 

@@ -1075,14 +1075,7 @@ void STransferFunction::mouseMoveOnPointEvent(
 
     tf->fitWindow();
 
-    // Sends the modification signal.
-    const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
-        data::TransferFunction::s_POINTS_MODIFIED_SIG
-    );
-    {
-        const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
-    }
+    pointsModified(*tf);
 }
 
 //-----------------------------------------------------------------------------
@@ -1159,14 +1152,7 @@ void STransferFunction::rightButtonClickOnPointEvent(
 
     tf->fitWindow();
 
-    // Sends the modification signal.
-    const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
-        data::TransferFunction::s_POINTS_MODIFIED_SIG
-    );
-    {
-        const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
-    }
+    pointsModified(*tf);
 
     this->getScene2DRender()->getScene()->removeItem(pointIt->second);
     delete pointIt->second;
@@ -1237,14 +1223,7 @@ void STransferFunction::leftButtonDoubleClickOnPointEvent(
 
         tf->fitWindow();
 
-        // Sends the modification signal.
-        const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
-            data::TransferFunction::s_POINTS_MODIFIED_SIG
-        );
-        {
-            const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-            sig->asyncEmit();
-        }
+        pointsModified(*tf);
 
         // Updates the displayed TF point.
         newColor.setAlpha(255);
@@ -1332,14 +1311,7 @@ void STransferFunction::leftButtonDoubleClickEvent(const sight::viz::scene2d::da
 
         tf->fitWindow();
 
-        // Sends the signal.
-        const auto sig = tf->signal<data::TransferFunction::PointsModifiedSignalType>(
-            data::TransferFunction::s_POINTS_MODIFIED_SIG
-        );
-        {
-            const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-            sig->asyncEmit();
-        }
+        pointsModified(*tf);
     }
 
     // Re-draw all the scene.
@@ -1589,14 +1561,7 @@ void STransferFunction::midButtonWheelMoveEvent(sight::viz::scene2d::data::Event
 
             tf->fitWindow();
 
-            // Sends the signal.
-            const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(
-                data::TransferFunction::s_MODIFIED_SIG
-            );
-            {
-                const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-                sig->asyncEmit();
-            }
+            pointsModified(*tf);
         }
 
         // Re-draw all the scene.
@@ -1650,12 +1615,8 @@ void STransferFunction::clampCurrentTF(bool _clamp)
 
     tfPiece->setClamped(_clamp);
     tf->fitWindow();
-    // Sends the signal.
-    const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(data::TransferFunction::s_MODIFIED_SIG);
-    {
-        const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
-    }
+
+    pointsModified(*tf);
 
     PieceView* currentPieceView = *(std::find_if(
                                         m_pieceView.begin(),
@@ -1687,12 +1648,7 @@ void STransferFunction::toggleLinearCurrentTF(bool _linear)
         _linear ? data::TransferFunction::InterpolationMode::LINEAR : data::TransferFunction::InterpolationMode::NEAREST
     );
     tf->fitWindow();
-    // Sends the signal.
-    const auto sig = tf->signal<data::TransferFunction::ModifiedSignalType>(data::TransferFunction::s_MODIFIED_SIG);
-    {
-        const core::com::Connection::Blocker block(sig->getConnection(slot(IService::slots::s_UPDATE)));
-        sig->asyncEmit();
-    }
+    pointsModified(*tf);
 
     PieceView* currentPieceView = *(std::find_if(
                                         m_pieceView.begin(),
@@ -1834,6 +1790,19 @@ void STransferFunction::updateTF()
     }
 
     updating();
+}
+
+//------------------------------------------------------------------------------
+
+void STransferFunction::pointsModified(const sight::data::TransferFunction& _tf) const
+{
+    // Sends the modification signal.
+    const auto sigTf = _tf.signal<data::TransferFunction::PointsModifiedSignalType>(
+        data::TransferFunction::s_POINTS_MODIFIED_SIG
+    );
+
+    const core::com::Connection::Blocker block1(sigTf->getConnection(slot(IService::slots::s_UPDATE)));
+    sigTf->asyncEmit();
 }
 
 //-----------------------------------------------------------------------------

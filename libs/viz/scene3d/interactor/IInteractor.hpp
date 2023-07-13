@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -155,6 +155,16 @@ public:
     VIZ_SCENE3D_API virtual void keyReleaseEvent(int _key, Modifier _mods, int _mouseX, int _mouseY);
 
     /**
+     * @brief Called when the mouse leaves the widget
+     */
+    VIZ_SCENE3D_API virtual void leaveEvent();
+
+    /**
+     * @brief Called when the mouse enters the widget
+     */
+    VIZ_SCENE3D_API virtual void enterEvent();
+
+    /**
      * @brief Checks if the cursor is inside a layer's viewport.
      * @param mouseX width coordinate of the mouse in pixels.
      * @param mouseY height coordinate of the mouse in pixels.
@@ -185,9 +195,6 @@ public:
      * @param _y the current height coordinate of the finger
      * @param _dx width displacement of the finger since the last event.
      * @param _dy height displacement of the finger since the last event.
-     *
-     * @note If not overridden, pan gesture move will emulate a mouse move (that is, call
-     * mouseMoveEvent(LEFT, {}, _x, _y, _dx, _dy)).
      */
     VIZ_SCENE3D_API virtual void panGestureMoveEvent(int _x, int _y, int _dx, int _dy);
 
@@ -197,9 +204,6 @@ public:
      * @param _y the last height coordinate of the finger
      * @param _dx width displacement of the finger since the last event.
      * @param _dy height displacement of the finger since the last event.
-     *
-     * @note If not overridden, pan gesture release will emulate a mouse button release (that is, call
-     * buttonReleaseEvent(LEFT, {}, _x, _y)).
      */
     VIZ_SCENE3D_API virtual void panGestureReleaseEvent(int _x, int _y, int _dx, int _dy);
 
@@ -209,30 +213,6 @@ public:
      * @param _y the height coordinate of the finger
      */
     VIZ_SCENE3D_API virtual void longTapGestureEvent(int _x, int _y);
-
-    /**
-     * @brief Listens to pan gesture move events with two fingers.
-     * @param _x the current width coordinate of the center of the two fingers
-     * @param _y the current height coordinate of the center of the two fingers
-     * @param _dx width displacement of the fingers since the last event.
-     * @param _dy height displacement of the fingers since the last event.
-     *
-     * @note If not overridden, pan gesture move with two fingers will emulate a mouse move while holding the middle
-     * button (that is, call mouseMoveEvent(MIDDLE, {}, _x, _y, _dx, _dy)).
-     */
-    VIZ_SCENE3D_API virtual void pan2GestureMoveEvent(int _x, int _y, int _dx, int _dy);
-
-    /**
-     * @brief Listens to pan gesture release events with two fingers.
-     * @param _x the last width coordinate of the center of the two fingers
-     * @param _y the last height coordinate of the center of the two fingers
-     * @param _dx width displacement of the fingers since the last event.
-     * @param _dy height displacement of the fingers since the last event.
-     *
-     * @note If not overridden, pan gesture release will emulate a mouse button release while holding the middle button
-     * (that is, call buttonReleaseEvent(MIDDLE, {}, _x, _y)).
-     */
-    VIZ_SCENE3D_API virtual void pan2GestureReleaseEvent(int _x, int _y, int _dx, int _dy);
 
 protected:
 

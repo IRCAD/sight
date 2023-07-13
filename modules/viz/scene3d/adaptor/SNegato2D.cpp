@@ -215,6 +215,9 @@ void SNegato2D::newImage()
         // Fits the plane to the new texture
         m_plane->update(m_orientation, spacing, origin, m_enableAlpha);
 
+        // Render the picked plane before the picking cross
+        m_plane->setRenderQueuerGroupAndPriority(sight::viz::scene3d::rq::s_NEGATO_WIDGET_ID, 0);
+
         // Update Slice
         namespace imHelper = data::helper::MedicalImage;
 

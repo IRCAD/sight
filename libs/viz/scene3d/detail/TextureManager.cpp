@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -61,23 +61,13 @@ void copyUnsignedImage(Ogre::Texture* _texture, const data::Image& _image)
     const auto size = static_cast<Ogre::int32>(_texture->getWidth() * _texture->getHeight() * _texture->getDepth());
 
     auto srcBuffer = static_cast<const SRC_TYPE*>(_image.getBuffer());
-    bool err       = false;
+
 #pragma omp parallel for shared(pDest, srcBuffer)
     for(Ogre::int32 i = 0 ; i < size ; ++i)
     {
         auto shiftedValue = static_cast<DST_TYPE>(srcBuffer[i] - lowBound);
-        err |= std::cmp_less_equal(shiftedValue, std::numeric_limits<DST_TYPE>::min())
-               || std::cmp_greater_equal(shiftedValue, std::numeric_limits<DST_TYPE>::max());
 
         pDest[i] = shiftedValue;
-    }
-
-    if(err)
-    {
-        sight::ui::base::dialog::MessageDialog::show(
-            "Medical image reading",
-            "Some pixel values do not fit in the GPU memory range. The image display may be altered."
-        );
     }
 
     // Unlock the pixel buffer

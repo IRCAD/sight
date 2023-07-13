@@ -24,7 +24,6 @@
                 <desc>Landmarks to display.</desc>
             </requirement>
         </requirements>
-        <builder>sight::activity::builder::ActivityInitData</builder>
         <appConfig id="2DVisualization" />
     </extension>
 </plugin>

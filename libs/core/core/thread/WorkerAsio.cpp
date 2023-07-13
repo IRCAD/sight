@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,8 @@
 
 #include <boost/asio/deadline_timer.hpp>
 #include <boost/asio/io_service.hpp>
+#include <boost/asio/placeholders.hpp>
+#include <boost/bind.hpp>
 
 #include <thread>
 
@@ -101,6 +103,9 @@ class TimerAsio : public core::thread::Timer
 {
 public:
 
+    SIGHT_DECLARE_CLASS(TimerAsio, core::thread::Timer);
+    SIGHT_ALLOW_SHARED_FROM_THIS();
+
     /**
      * @brief Constructs a TimerAsio from given io_service.
      */
@@ -143,8 +148,6 @@ protected:
     void cancelNoLock();
     void rearmNoLock(TimeDurationType duration);
 
-    void call(const std::error_code& error);
-
     /// Copy constructor forbidden.
     TimerAsio(const TimerAsio&);
 
@@ -152,6 +155,8 @@ protected:
     TimerAsio& operator=(const TimerAsio&);
 
 private:
+
+    friend struct TimerCallback;
 
     /// Timer object.
     boost::asio::deadline_timer m_timer;
@@ -303,45 +308,53 @@ void TimerAsio::stop()
 
 //------------------------------------------------------------------------------
 
+struct TimerCallback
+{
+    //------------------------------------------------------------------------------
+
+    static void call(const boost::system::error_code& error, TimerAsio::sptr _timer)
+    {
+        if(!error)
+        {
+            TimerAsio::TimeDurationType duration;
+            bool oneShot = false;
+            {
+                core::mt::ScopedLock lock(_timer->m_mutex);
+                oneShot  = _timer->m_oneShot;
+                duration = _timer->m_duration;
+            }
+
+            if(!oneShot)
+            {
+                {
+                    core::mt::ScopedLock lock(_timer->m_mutex);
+                    if(_timer->m_running)
+                    {
+                        _timer->rearmNoLock(duration);
+                    }
+                }
+                _timer->m_function();
+            }
+            else
+            {
+                _timer->m_function();
+                core::mt::ScopedLock lock(_timer->m_mutex);
+                _timer->m_running = false;
+            }
+        }
+    }
+};
+
+//------------------------------------------------------------------------------
+
 void TimerAsio::rearmNoLock(TimeDurationType duration)
 {
     this->cancelNoLock();
     boost::posix_time::time_duration d =
         boost::posix_time::microseconds(std::chrono::duration_cast<std::chrono::microseconds>(duration).count());
     m_timer.expires_from_now(d);
-    m_timer.async_wait([this](auto&& PH1, auto&& ...){call(std::forward<decltype(PH1)>(PH1));});
-}
-
-//------------------------------------------------------------------------------
-
-void TimerAsio::call(const std::error_code& error)
-{
-    if(!error)
-    {
-        // We keep a reference to prevent a deletion of the Timer before the call back is over
-        // This means the timer may delete itself, this is not awesome but that seems to be enough for now
-        TimerAsio::sptr deleteLater = std::dynamic_pointer_cast<TimerAsio>(shared_from_this());
-
-        TimeDurationType duration;
-        bool oneShot = false;
-        {
-            core::mt::ScopedLock lock(m_mutex);
-            oneShot  = m_oneShot;
-            duration = m_duration;
-        }
-
-        if(!oneShot)
-        {
-            this->rearmNoLock(duration);
-            m_function();
-        }
-        else
-        {
-            m_function();
-            core::mt::ScopedLock lock(m_mutex);
-            m_running = false;
-        }
-    }
+    // NOLINTNEXTLINE(modernize-avoid-bind)
+    m_timer.async_wait(boost::bind(TimerCallback::call, boost::asio::placeholders::error, this->getSptr()));
 }
 
 //------------------------------------------------------------------------------

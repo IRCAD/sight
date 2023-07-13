@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -116,8 +116,7 @@ void ImageConversionTest::testConversion2D()
     data::Image::Origin origin   = {(safeRand() % 200 - 100) / 3., (safeRand() % 200 - 100) / 3., 0.};
     core::Type type              = core::Type::INT16;
 
-    utestData::generator::Image::generateImage(image, size, spacing, origin, type, data::Image::GRAY_SCALE);
-    utestData::generator::Image::randomizeImage(image);
+    utestData::generator::Image::generateImage(image, size, spacing, origin, type, data::Image::GRAY_SCALE, 0);
 
     using ImageType = ::itk::Image<std::int16_t, 2>;
 

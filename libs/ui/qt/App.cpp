@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,7 @@
 
 #include "ui/qt/App.hpp"
 
+#include <core/runtime/ExitException.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
 
@@ -77,6 +78,22 @@ void App::onExit()
     QApplication::restoreOverrideCursor();
 
     qApp->exit(0);
+}
+
+//------------------------------------------------------------------------------
+
+bool App::notify(QObject* receiver, QEvent* e)
+{
+    try
+    {
+        return QApplication::notify(receiver, e);
+    }
+    catch(const core::runtime::ExitException& e)
+    {
+        SIGHT_DEBUG("Exit exception caught. Exit code:" << e.what());
+        qApp->exit(e.exitCode());
+        return false;
+    }
 }
 
 //-----------------------------------------------------------------------------

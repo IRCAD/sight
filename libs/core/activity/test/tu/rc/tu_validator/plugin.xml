@@ -12,7 +12,7 @@
                 <key>key2</key>
             </requirement>
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="TestValidatorCfg0" />
     </extension>
 

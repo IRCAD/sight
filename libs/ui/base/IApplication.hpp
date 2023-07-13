@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ public:
     UI_BASE_API ~IApplication() override;
 
     /// Tells the application to exit with a returncode
-    UI_BASE_API virtual void exit(int returncode) = 0;
+    UI_BASE_API virtual void exit(int returnCode = 0, bool async = true) = 0;
 
     /// Sets if confirmation is required when exiting application
     void setConfirm(bool confirm)

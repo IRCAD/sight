@@ -1,0 +1,39 @@
+//---------------------------------------------------------------------------
+
+vertex_program Blit_VP glsl
+{
+    source Blit_VP.glsl
+}
+
+//---------------------------------------------------------------------------
+
+
+material Blit
+{
+    technique
+    {
+        pass
+        {
+            cull_hardware none
+            cull_software none
+            scene_blend alpha_blend
+            depth_check off
+            depth_write off
+            depth_func always_pass
+
+            vertex_program_ref Blit_VP
+            {
+            }
+
+            fragment_program_ref RenderQuad_FP
+            {
+            }
+
+            texture_unit RT
+            {
+                tex_address_mode clamp
+                filtering none
+            }
+        }
+    }
+}

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,7 +22,7 @@
 #include "FileHolderTest.hpp"
 
 #include <core/memory/FileHolder.hpp>
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::memory::ut::FileHolderTest);
 
@@ -33,15 +33,21 @@ namespace sight::core::memory::ut
 
 void FileHolderTest::fileAutoDeleteTest()
 {
-    const std::filesystem::path path = std::filesystem::temp_directory_path()
-                                       / sight::core::tools::System::genTempFileName();
+    core::os::TempFile tempFile;
     {
-        sight::core::memory::FileHolder holder(path, true);
-        std::ofstream out(path);
+        sight::core::memory::FileHolder holder(tempFile, true);
+        std::ofstream out(tempFile);
         out << 1;
-        CPPUNIT_ASSERT(std::filesystem::exists(path));
+        out.close();
+
+        CPPUNIT_ASSERT(
+            std::filesystem::exists(tempFile)
+            && std::filesystem::is_regular_file(tempFile)
+            && std::filesystem::file_size(tempFile) > 0
+        );
     }
-    CPPUNIT_ASSERT(!std::filesystem::exists(path));
+
+    CPPUNIT_ASSERT(!std::filesystem::exists(tempFile));
 }
 
 } // namespace sight::core::memory::ut

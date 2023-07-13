@@ -77,6 +77,11 @@ public:
     /// @param deserializer the function pointer to the deserialization function
     static void setDeserializer(const std::string& className, deserializer_t deserializer = nullptr);
 
+    /// Return the registered deserialization function for an object
+    /// @param className the name of the object to deserialize
+    /// @return the function pointer to the deserialization function
+    static deserializer_t deserializer(const std::string& className);
+
 private:
 
     /// Custom serializers that override default one

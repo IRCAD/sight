@@ -53,16 +53,18 @@ namespace sight::module::filter::image
     <service uid="..." type="sight::module::filter::image::SImageExtruder">
         <in key="meshes" uid="..." />
         <in key="image" uid="..." />
-        <inout key="extrudedImage" uid="..." />
+        <in key="transform" uid="..." />
+        <inout key="mask" uid="..." />
     </service>
    @endcode
  *
  * @subsection Input Input
  * - \b meshes [sight::data::ModelSeries]: model series where all meshes used for extrusion are stored.
  * - \b image [sight::data::Image]: image to extrude, must be in 3 dimensions.
+ * - \b transform [sight::data::Matrix4] (optional): transform matrix of the image.
  *
  * @subsection In-Out In-Out
- * - \b extrudedImage [sight::data::Image]: extruded image.
+ * - \b mask [sight::data::Image]: resulting mask. Cropped regions are zeroed and full regions are marked with 255.
  */
 class MODULE_FILTER_IMAGE_CLASS_API SImageExtruder final : public service::IFilter
 {
@@ -92,6 +94,7 @@ private:
      * Connect data::ModelSeries::s_MODIFIED_SIG of s_MESHES_INPUT to IService::slots::s_UPDATE.
      * Connect data::ModelSeries::s_RECONSTRUCTIONS_ADDED_SIG of s_MESHES_INPUT to s_ADD_RECONSTRUCTIONS_SLOT.
      * Connect data::ModelSeries::s_RECONSTRUCTIONS_REMOVED_SIG of s_MESHES_INPUT to IService::slots::s_UPDATE.
+     * Connect data::Matrix4::s_MODIFIED_SIG of s_TRANSFORM_INPUT to IService::slots::s_UPDATE.
      * Connect data::Image::s_MODIFIED_SIG of s_IMAGE_INPUT to IService::slots::s_UPDATE.
      * Connect data::Image::s_BUFFER_MODIFIED_SIG of s_IMAGE_INPUT to IService::slots::s_UPDATE.
      */
@@ -106,15 +109,14 @@ private:
     /// SLOT: called when reconstructions are added to the model series.
     void addReconstructions(data::ModelSeries::ReconstructionVectorType _reconstructions) const;
 
-    /// Extrudes one mesh from the image.
-    void extrudeMesh(const data::Mesh::csptr _mesh, const data::Image::sptr _image) const;
+    static constexpr std::string_view s_MESHES_INPUT    = "meshes";
+    static constexpr std::string_view s_IMAGE_INPUT     = "image";
+    static constexpr std::string_view s_TRANSFORM_INPUT = "transform";
+    static constexpr std::string_view s_IMAGE_INOUT     = "mask";
 
-    static constexpr std::string_view s_MESHES_INPUT = "meshes";
-    static constexpr std::string_view s_IMAGE_INPUT  = "image";
-    static constexpr std::string_view s_IMAGE_INOUT  = "extrudedImage";
-
-    sight::data::ptr<sight::data::ModelSeries, sight::data::Access::in> m_meshes {this, s_MESHES_INPUT};
-    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT};
+    sight::data::ptr<sight::data::ModelSeries, sight::data::Access::in> m_meshes {this, s_MESHES_INPUT, true};
+    sight::data::ptr<sight::data::Image, sight::data::Access::in> m_image {this, s_IMAGE_INPUT, true};
+    sight::data::ptr<sight::data::Matrix4, sight::data::Access::in> m_transform {this, s_TRANSFORM_INPUT, true, true};
     sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_extrudedImage {this, s_IMAGE_INOUT};
 };
 

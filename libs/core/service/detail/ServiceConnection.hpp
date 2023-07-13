@@ -35,10 +35,11 @@ namespace sight::service::detail
 {
 
 /**
- * @brief   Private implementation of the public IService interface, which is the base class for all services.
+ * @brief   Utility object used to isolate the code managing signal/slots connections in services.
  *
- * This class defines the API to use and declare services.
- * The service state aims to impose the execution order (i.e. configure(), start(), update() or, stop()).
+ * In a regular life cycle, the connections configured in a service are plugged in after start. Thus the connection
+ * with the start slot, which allows other events to start a service, requires a specific handling, performed before
+ * the start of the service.
  */
 class ServiceConnection
 {
@@ -49,6 +50,12 @@ public:
 
     /// Disconnect the service from configuration services and objects
     void disconnect(const service::IService& _service);
+
+    /// Connect only the start slot of the service with other services and objects
+    void connectStartSlot(const service::IService& _service);
+
+    /// Disconnect only the start slot of service from other services and objects
+    void disconnectStartSlot(const service::IService& _service);
 
     /// Add a known connection from the appConfig
     void add(const helper::ProxyConnections& proxy);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2017 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -175,7 +175,7 @@ public:
      *
      * @return A boolean: true if cancel have been requested.
      */
-    CORE_API const bool& cancelRequested() const;
+    CORE_API bool cancelRequested() const;
 
     /**
      * @brief Returns a callback on job canceling status.
@@ -263,16 +263,6 @@ protected:
 
     /// Finish the job without mutex lock: set the state to finished or canceled.
     CORE_API void finishNoLock();
-
-    /**
-     * @brief Return callback to finish the job.
-     *
-     * @return A callback
-     */
-    // workaround because of vs2010 issue : http://goo.gl/WHEkQ5
-    // this is fixed in vs2012 : http://goo.gl/tvO3g7
-    // TODO : remove when compiler is up to date
-    CORE_API std::function<void()> finishCallback();
 
     /// Getter on the state without mutex lock
     CORE_API State getStateNoLock() const;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,6 +34,7 @@
 
 #include <service/IController.hpp>
 #include <service/IHasServices.hpp>
+#include <service/INotifier.hpp>
 
 #include <vector>
 
@@ -70,7 +71,8 @@ namespace sight::module::io::dimse
  * - \b readerConfig (optional, string, default=""): configuration for the DICOM Reader.
  */
 class MODULE_IO_DIMSE_CLASS_API SSeriesPuller final : public service::IController,
-                                                      public service::IHasServices
+                                                      public service::IHasServices,
+                                                      private service::INotifier
 {
 public:
 
@@ -81,7 +83,7 @@ public:
     MODULE_IO_DIMSE_API SSeriesPuller() noexcept;
 
     /// Destroys the service.
-    MODULE_IO_DIMSE_API ~SSeriesPuller() noexcept override;
+    MODULE_IO_DIMSE_API ~SSeriesPuller() noexcept override = default;
 
 protected:
 

@@ -98,8 +98,6 @@ IService::IService() :
     newSignal<signals::swapped_t>(signals::s_SWAPPED);
     newSignal<signals::stopped_t>(signals::s_STOPPED);
 
-    newSignal<signals::notification_t>(signals::s_NOTIFIED);
-
     newSlot(slots::s_START, [this](){m_pimpl->start(true);});
     newSlot(slots::s_STOP, [this](){m_pimpl->stop(true);});
     newSlot(slots::s_UPDATE, [this](){m_pimpl->update(true);});
@@ -247,14 +245,6 @@ bool IService::isStopped() const noexcept
 IService::UpdatingStatus IService::getUpdatingStatus() const noexcept
 {
     return m_pimpl->m_updatingState;
-}
-
-//------------------------------------------------------------------------------
-
-void IService::notify(NotificationType type, const std::string& message) const
-{
-    const auto sig = this->signal<signals::notification_t>(signals::s_NOTIFIED);
-    sig->asyncEmit(type, message);
 }
 
 //-----------------------------------------------------------------------------

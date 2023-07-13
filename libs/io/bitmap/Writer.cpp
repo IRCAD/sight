@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -31,86 +31,6 @@
 namespace sight::io::bitmap
 {
 
-static constexpr auto JPEG_EXT {".jpeg"};
-static constexpr auto JPG_EXT {".jpg"};
-static constexpr auto TIF_EXT {".tif"};
-static constexpr auto TIFF_EXT {".tiff"};
-static constexpr auto PNG_EXT {".png"};
-static constexpr auto JP2_EXT {".jp2"};
-static constexpr auto J2K_EXT {".j2k"};
-
-static constexpr auto JPEG_LABEL {"JPEG image"};
-static constexpr auto TIFF_LABEL {"TIFF image"};
-static constexpr auto PNG_LABEL {"PNG image"};
-static constexpr auto J2K_LABEL {"JPEG2000 image"};
-
-//------------------------------------------------------------------------------
-
-/// Returns the backend associated to an extension
-/// @arg extension: the selected extension
-/// @return backend suitable for the given extension
-inline static Writer::Backend extensionToBackend(const std::string& extension)
-{
-    if(extension.ends_with(JPEG_EXT) || extension.ends_with(JPG_EXT))
-    {
-        if(Writer::nvJPEG())
-        {
-            return Writer::Backend::NVJPEG;
-        }
-
-        return Writer::Backend::LIBJPEG;
-    }
-
-    if(extension.ends_with(J2K_EXT))
-    {
-        if(Writer::nvJPEG2K())
-        {
-            return Writer::Backend::NVJPEG2K_J2K;
-        }
-
-        return Writer::Backend::OPENJPEG_J2K;
-    }
-
-    if(extension.ends_with(JP2_EXT))
-    {
-        if(Writer::nvJPEG2K())
-        {
-            return Writer::Backend::NVJPEG2K;
-        }
-
-        return Writer::Backend::OPENJPEG;
-    }
-
-    if(extension.ends_with(TIFF_EXT) || extension.ends_with(TIF_EXT))
-    {
-        return Writer::Backend::LIBTIFF;
-    }
-
-    if(extension.ends_with(PNG_EXT))
-    {
-        return Writer::Backend::LIBPNG;
-    }
-
-    SIGHT_THROW("Unsupported extension: " << extension);
-}
-
-//------------------------------------------------------------------------------
-
-inline static std::pair<Writer::Backend, data::sequenced_set<std::string> > guessBackendOrExtension(
-    Writer::Backend backend,
-    std::string ext
-)
-{
-    // If no backend is given, only rely on extension
-    if(backend == Writer::Backend::ANY)
-    {
-        return {extensionToBackend(ext), {ext}};
-    }
-
-    // Enforce the extension to match the backend
-    return {backend, Writer::extensions(backend)};
-}
-
 Writer::Writer(base::writer::IObjectWriter::Key /*unused*/) :
     m_pimpl(std::make_unique<detail::WriterImpl>(this))
 {
@@ -125,41 +45,16 @@ std::string Writer::extension() const
 {
     try
     {
-        const auto& [backend, extensions] = guessBackendOrExtension(Backend::ANY, getFile().extension().string());
+        const auto& [backend, extensions] = detail::guessBackendOrExtension(
+            Backend::ANY,
+            getFile().extension().string()
+        );
+
         return extensions.front();
     }
     catch(...)
     {
-        return extensions(Backend::DEFAULT).front();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-data::sequenced_set<std::string> Writer::extensions(Backend backend)
-{
-    switch(backend)
-    {
-        case Backend::NVJPEG:
-        case Backend::LIBJPEG:
-            return {JPG_EXT, JPEG_EXT};
-
-        case Backend::NVJPEG2K_J2K:
-        case Backend::OPENJPEG_J2K:
-            return {J2K_EXT};
-
-        case Backend::NVJPEG2K:
-        case Backend::OPENJPEG:
-            return {JP2_EXT};
-
-        case Backend::LIBTIFF:
-            return {TIFF_EXT, TIF_EXT};
-
-        case Backend::LIBPNG:
-            return {PNG_EXT};
-
-        default:
-            SIGHT_THROW("Unsupported image backend: '" << std::uint8_t(backend) << "'");
+        return extensions(Backend::LIBTIFF).front();
     }
 }
 
@@ -167,12 +62,12 @@ data::sequenced_set<std::string> Writer::extensions(Backend backend)
 
 void Writer::write()
 {
-    write(Backend::ANY, Mode::DEFAULT);
+    write(Backend::ANY, Mode::FAST);
 }
 
 //------------------------------------------------------------------------------
 
-void Writer::write(Backend backend, Mode mode)
+std::size_t Writer::write(Backend backend, Mode mode)
 {
     auto file = getFile();
 
@@ -184,7 +79,7 @@ void Writer::write(Backend backend, Mode mode)
         }
 
         // Compute the right backend to use
-        const auto& [backend_to_use, extensions_to_use] = guessBackendOrExtension(backend, extension());
+        const auto& [backend_to_use, extensions_to_use] = detail::guessBackendOrExtension(backend, extension());
 
         // If there is no extension
         if(!file.has_extension())
@@ -216,7 +111,7 @@ void Writer::write(Backend backend, Mode mode)
         std::ofstream output;
         output.open(file.string(), std::ios::out | std::ios::binary | std::ios::trunc);
 
-        write(output, backend_to_use, mode);
+        return write(output, backend_to_use, mode);
     }
     catch(...)
     {
@@ -228,102 +123,30 @@ void Writer::write(Backend backend, Mode mode)
 
 //------------------------------------------------------------------------------
 
-void Writer::write(std::ostream& ostream, Backend backend, Mode mode)
+std::size_t Writer::write(std::ostream& ostream, Backend backend, Mode mode)
 {
-    m_pimpl->write(ostream, backend, mode);
+    return m_pimpl->write(ostream, backend, mode);
 }
 
 //------------------------------------------------------------------------------
 
-bool Writer::nvJPEG()
+std::size_t Writer::write(std::uint8_t** buffer, Backend backend, Mode mode)
 {
-    // This will returns true if SIGHT_ENABLE_NVJPEG CMake option is set, which means CUDA libraries has
-    // been found during configure
-    static const bool available =
-        []
-        {
-#ifdef SIGHT_ENABLE_NVJPEG
-            try
-            {
-                if(const auto result = cuInit(0); result != CUDA_SUCCESS)
-                {
-                    SIGHT_ERROR("cuInit failed: " << result);
-                    return false;
-                }
-
-                int count = 0;
-
-                if(const auto result = cuDeviceGetCount(&count); result != CUDA_SUCCESS)
-                {
-                    SIGHT_ERROR("cuDeviceGetCount failed: " << result);
-                    return false;
-                }
-
-                if(count == 0)
-                {
-                    SIGHT_ERROR("No CUDA device available.");
-                    return false;
-                }
-
-                return true;
-            }
-            catch(const std::exception& e)
-            {
-                SIGHT_ERROR("Exception occurred while checking for CUDA: " << e.what());
-            }
-#endif
-            return false;
-        }();
-
-    return available;
+    return m_pimpl->write(buffer, backend, mode);
 }
 
 //------------------------------------------------------------------------------
 
-bool Writer::nvJPEG2K()
+std::size_t Writer::write(std::uint8_t* buffer, Backend backend, Mode mode)
 {
-    // This will returns true if SIGHT_ENABLE_NVJPEG2K CMake option is set, which means CUDA AND nvJPEG200 libraries has
-    // been found during configure
-    static const bool available =
-        []
-        {
-#ifdef SIGHT_ENABLE_NVJPEG2K
-            return Writer::nvJPEG();
-#else
-            return false;
-#endif
-        }();
-
-    return available;
+    return m_pimpl->write(buffer, backend, mode);
 }
 
 //------------------------------------------------------------------------------
 
-std::pair<std::string, std::string> Writer::wildcardFilter(Backend backend)
+std::size_t Writer::write(std::vector<uint8_t>& buffer, Backend backend, Mode mode)
 {
-    switch(backend)
-    {
-        case Backend::NVJPEG:
-        case Backend::LIBJPEG:
-            return std::make_pair(JPEG_LABEL, std::string("*") + JPG_EXT + " *" + JPEG_EXT);
-
-        case Backend::NVJPEG2K:
-        case Backend::OPENJPEG:
-            return std::make_pair(J2K_LABEL, std::string("*") + JP2_EXT);
-
-        case Backend::NVJPEG2K_J2K:
-        case Backend::OPENJPEG_J2K:
-            return std::make_pair(J2K_LABEL, std::string("*") + J2K_EXT);
-
-        case Backend::LIBTIFF:
-            return std::make_pair(TIFF_LABEL, std::string("*") + TIF_EXT + +" *" + TIFF_EXT);
-
-        case Backend::LIBPNG:
-            return std::make_pair(PNG_LABEL, std::string("*") + PNG_EXT);
-
-        default:
-            SIGHT_THROW("Unsupported backend: " << uint8_t(backend));
-    }
+    return m_pimpl->write(buffer, backend, mode);
 }
 
 } // namespace sight::io::bitmap

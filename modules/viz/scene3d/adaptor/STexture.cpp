@@ -60,11 +60,11 @@ void STexture::configuring()
 
     const ConfigType config = this->getConfiguration();
 
-    static const std::string s_TEXTURE_NAME_CONFIG = "textureName";
-    static const std::string s_FILTERING_CONFIG    = "filtering";
-    static const std::string s_WRAPPING_CONFIG     = "wrapping";
-    static const std::string s_USE_ALPHA_CONFIG    = "useAlpha";
-    static const std::string s_DYNAMIC_CONFIG      = "dynamic";
+    static const std::string s_TEXTURE_NAME_CONFIG = s_CONFIG + "textureName";
+    static const std::string s_FILTERING_CONFIG    = s_CONFIG + "filtering";
+    static const std::string s_WRAPPING_CONFIG     = s_CONFIG + "wrapping";
+    static const std::string s_USE_ALPHA_CONFIG    = s_CONFIG + "useAlpha";
+    static const std::string s_DYNAMIC_CONFIG      = s_CONFIG + "dynamic";
 
     // Choose a default name if not provided, this is very important otherwise
     // the texture may be lost if it is unloaded (which is very likely to happen when playing with techniques)

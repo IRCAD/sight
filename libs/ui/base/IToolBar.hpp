@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,6 +27,8 @@
 #include "ui/base/registry/ToolBar.hpp"
 
 #include <service/IService.hpp>
+
+#include <ui/base/parameter.hpp>
 
 namespace sight::ui::base
 {
@@ -57,7 +59,7 @@ public:
 
 protected:
 
-    UI_BASE_API IToolBar()           = default;
+    UI_BASE_API IToolBar();
     UI_BASE_API ~IToolBar() override = default;
 
     /**
@@ -101,6 +103,13 @@ protected:
      *   - \<menu\> represents IMenu
      *   - \<editor\> represents container service (IEditor, IView, ...)
      *
+     *  * @section Slots Slots
+     * - \b setVisible(bool isVisible) : this slot shows the toolBar (if isVisible = true) or hides it.
+     * - \b setVisibleByParam(ui::base::parameter_t isVisible) : this slot shows the toolBar (if isEnabled holds boolean
+     * alternative) or hides it.
+     * - \b show() : this slot shows the toolBar.
+     * - \b hide() : this slot hides the toolBar.
+     *
      *   @warning
      *   - The number of item in the gui section must be EQUAL to the registry section.
      *   - The order of the item in each section (gui and registry) must be the same.\n
@@ -116,6 +125,28 @@ protected:
 
     /// Destroy the layout and stop the managed services.
     UI_BASE_API void destroy();
+
+    /// @brief slots: change the toolbar visibility
+    struct slots
+    {
+        using key_t = sight::core::com::Slots::SlotKeyType;
+        static inline const key_t s_SET_VISIBLE_SLOT          = "setVisible";
+        static inline const key_t s_SET_VISIBLE_BY_PARAM_SLOT = "setVisibleByParam";
+        static inline const key_t s_SHOW_SLOT                 = "show";
+        static inline const key_t s_HIDE_SLOT                 = "hide";
+    };
+
+    /// SLOT: show/hide the container
+    UI_BASE_API void setVisible(bool isVisible);
+
+    /// SLOT: show/hide the container using parameter_t (only testing bool alternative).
+    UI_BASE_API void setVisibleByParameter(ui::base::parameter_t);
+
+    /// SLOT: show the container
+    UI_BASE_API void show();
+
+    /// SLOT: hide the container
+    UI_BASE_API void hide();
 
 private:
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -39,6 +39,8 @@ Q_OBJECT
 public:
 
     UI_QML_API App(int& argc, char** argv);
+
+    UI_QML_API bool notify(QObject* receiver, QEvent* e) override;
 
 public Q_SLOTS:
 

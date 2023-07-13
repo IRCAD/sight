@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
- * Copyright (C) 2012-2018 IHU Strasbourg
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *

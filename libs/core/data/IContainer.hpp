@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -709,13 +709,17 @@ public:
         inline ~ScopedEmitter() noexcept;
 
         /// Emits the needed signals
-        constexpr void emit() noexcept;
+        void emit() noexcept;
 
         /// Resets the internal state
         constexpr void reset() noexcept;
 
+        /// Resets the internal state
+        constexpr void block(const core::com::SlotBase::sptr& slot) noexcept;
+
         const IContainer& m_container;
         IContainer::container_type m_backup;
+        std::vector<core::com::SlotBase::sptr> m_blockedSlots;
     };
 
     [[nodiscard]] constexpr auto scoped_emit() const noexcept;

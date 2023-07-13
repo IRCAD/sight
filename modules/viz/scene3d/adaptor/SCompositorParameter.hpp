@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -76,7 +76,7 @@ public:
     SIGHT_DECLARE_SERVICE(SCompositorParameter, sight::viz::scene3d::IParameter);
 
     /// Creates the adaptor.
-    MODULE_VIZ_SCENE3D_API SCompositorParameter() noexcept = default;
+    MODULE_VIZ_SCENE3D_API SCompositorParameter() noexcept;
 
     /// Destroys the adaptor.
     MODULE_VIZ_SCENE3D_API ~SCompositorParameter() noexcept override = default;
@@ -106,14 +106,17 @@ private:
     /// Updates parameter according to the attached data::Object.
     void updateValue(Ogre::MaterialPtr& _mat);
 
+    /// Adds the listener
+    void addListener();
+
     /// Defines the material name.
     std::string m_compositorName;
 
     /// Contains the Ogre compositor listener, we need to keep a pointer to unregister it.
-    CompositorListener* m_listener {};
+    CompositorListener* m_listener {nullptr};
 
-    /// Contains the compositor we work on.
-    Ogre::CompositorInstance* m_compositor {};
+    /// Handles connection with the layer.
+    core::com::helper::SigSlotConnection m_resizeConnection;
 
     friend class CompositorListener;
 };

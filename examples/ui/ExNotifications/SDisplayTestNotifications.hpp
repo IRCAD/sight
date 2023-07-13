@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,8 @@
 #pragma once
 
 #include "ExNotifications/config.hpp"
+
+#include <service/INotifier.hpp>
 
 #include <ui/base/dialog/NotificationDialog.hpp>
 #include <ui/base/IAction.hpp>
@@ -48,25 +50,29 @@ namespace ExNotifications
  *   - Values for 'type' key : INFO, SUCCESS, FAILURE.
  * - \b setBoolParameterbool _val, std::string _key): call this slot when changing "m_useSNotifier" behavior.
  */
-class EXNOTIFICATIONS_CLASS_API SDisplayTestNotifications final : public sight::ui::base::IAction
+class EXNOTIFICATIONS_CLASS_API SDisplayTestNotifications final :
+    public sight::ui::base::IAction,
+    public sight::service::INotifier
 {
 public:
 
     SIGHT_DECLARE_SERVICE(SDisplayTestNotifications, sight::ui::base::IAction);
 
-    /**
-     * @name Constructor/Destructor
-     * @{ */
+    /// Constructor/Destructor
+    /// @{
     /// Initializes slot.
     EXNOTIFICATIONS_API SDisplayTestNotifications() noexcept;
-    EXNOTIFICATIONS_API ~SDisplayTestNotifications() noexcept override;
-    /**  @} */
+    EXNOTIFICATIONS_API ~SDisplayTestNotifications() noexcept override = default;
+    /// @}
 
     /// Slot: This method is used to set an enum parameter.
     EXNOTIFICATIONS_API void setEnumParameter(std::string _val, std::string _key);
 
     /// Slot: This method is used to set a bool parameter.
     EXNOTIFICATIONS_API void setBoolParameter(bool _val, std::string _key);
+
+    /// Slot: This method is used to set a bool parameter.
+    EXNOTIFICATIONS_API void closeChannel1();
 
 protected:
 
@@ -87,14 +93,15 @@ protected:
 
 private:
 
-    /// Position of the notification relative to active window.
-    ::dial::NotificationDialog::Position m_position {::dial::NotificationDialog::Position::DEFAULT};
-    /// UI Type of the notification.
-    ::dial::NotificationDialog::Type m_type {::dial::NotificationDialog::Type::DEFAULT};
+    /// Notification position, type, duration
+    sight::service::Notification m_notification;
+
     /// Display notification at all position, default true.
     bool m_displayAll {false};
+
     /// Use centralized Mode.
     bool m_useSNotifier {true};
+
     /// To test the "Read more..." option on Notification.
     bool m_reachMaxCharacters {false};
 };

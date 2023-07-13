@@ -13,7 +13,8 @@ uniform ivec3 u_brickSize;
 uniform int u_slice;
 
 layout(binding=0) uniform sampler3D u_image;
-layout(binding=1) uniform sampler2D u_s2TFTexture;
+layout(binding=1) uniform sampler3D u_s1Mask;
+layout(binding=2) uniform sampler2D u_s2TFTexture;
 
 out float o_brickMax;
 
@@ -21,13 +22,13 @@ out float o_brickMax;
 
 void main()
 {
-    ivec3 gridPos = ivec3(floor(gl_FragCoord.xy), u_slice); // const
+    const ivec3 gridPos = ivec3(floor(gl_FragCoord.xy), u_slice);
 
-    ivec3 imageResolution = textureSize(u_image, 0); // const
-    ivec3 imagePos        = gridPos * u_brickSize; // const
+    const ivec3 imageResolution = textureSize(u_image, 0);
+    const ivec3 imagePos        = gridPos * u_brickSize;
 
-    ivec3 brickBeginPosition = max(imagePos, ivec3(0)); // const
-    ivec3 brickEndPosition   = min(imagePos + u_brickSize, imageResolution); // const
+    const ivec3 brickBeginPosition = max(imagePos, ivec3(0));
+    const ivec3 brickEndPosition   = min(imagePos + u_brickSize, imageResolution);
 
     bool brickMax = false;
     for(int u = brickBeginPosition.x; u < brickEndPosition.x; ++ u)
@@ -36,12 +37,15 @@ void main()
         {
             for(int w = brickBeginPosition.z; w < brickEndPosition.z; ++ w)
             {
-                float intensity    = texelFetch(u_image, ivec3(u, v, w), 0).r; // const
+                const float mask    = texelFetch(u_s1Mask, ivec3(u, v, w), 0).r;
+                if(mask < 0.5)
+                    continue;
+                const float intensity    = texelFetch(u_image, ivec3(u, v, w), 0).r;
 
                 // We only want to check if the voxel is not empty meaning its extinction coefficient is zero.
                 // Therefore there is NO NEED TO CALCULATE THE EXTINCTION COEFFICIENT here since it is equal to zero
                 // if and only if the opacity is equal to zero.
-                float voxelOpacity = sampleTransferFunction(intensity, u_s2TFTexture, u_f3TFWindow).a; // const
+                const float voxelOpacity = sampleTransferFunction(intensity, u_s2TFTexture, u_f3TFWindow).a;
 
                 brickMax = brickMax || voxelOpacity != 0;
             }

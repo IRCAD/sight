@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,6 +34,7 @@ CPPUNIT_TEST(nominal_test);
 CPPUNIT_TEST(bad_path_test);
 CPPUNIT_TEST(basic_decryption_test);
 CPPUNIT_TEST(password_change_decryption_test);
+CPPUNIT_TEST(relocate_log_test);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -47,6 +48,7 @@ public:
     static void bad_path_test();
     static void basic_decryption_test();
     static void password_change_decryption_test();
+    static void relocate_log_test();
 };
 
 } // namespace sight::core::log::ut

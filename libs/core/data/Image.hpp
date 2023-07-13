@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -272,7 +272,7 @@ public:
      *
      * @return Allocated size in bytes
      */
-    DATA_API std::size_t resize(const Size& size, const core::Type& type, PixelFormat format);
+    DATA_API virtual std::size_t resize(const Size& size, const core::Type& type, PixelFormat format);
     /// @}
 
     /// @brief return image size in bytes
@@ -307,6 +307,10 @@ public:
     /// Type of signal when a distance is added
     typedef core::com::Signal<void (SPTR(PointList))> DistanceAddedSignalType;
     DATA_API static const core::com::Signals::SignalKeyType s_DISTANCE_ADDED_SIG;
+
+    /// Type of signal when a distance is modified
+    using DistanceModifiedSignalType = core::com::Signal<void (SPTR(PointList))>;
+    DATA_API static const core::com::Signals::SignalKeyType s_DISTANCE_MODIFIED_SIG;
 
     /// Type of signal when a distance is removed
     typedef core::com::Signal<void (CSPTR(PointList))> DistanceRemovedSignalType;

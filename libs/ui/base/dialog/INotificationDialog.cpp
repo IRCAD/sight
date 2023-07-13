@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,52 +33,51 @@ const INotificationDialog::FactoryRegistryKeyType INotificationDialog::REGISTRY_
 //-----------------------------------------------------------------------------
 
 INotificationDialog::INotificationDialog() :
-    m_message(s_defaultMessage),
-    m_fullMessage(m_message)
+    m_notification({.message = s_defaultMessage})
 {
 }
 
 //-----------------------------------------------------------------------------
 
-INotificationDialog::~INotificationDialog()
-= default;
-
-//-----------------------------------------------------------------------------
-
-void INotificationDialog::setMessage(const std::string& _msg)
+void INotificationDialog::setMessage(std::string _msg)
 {
     if(_msg.empty())
     {
         SIGHT_ERROR("Cannot set an empty message to notification, using 'Empty Message'");
-        m_message     = s_defaultMessage;
-        m_fullMessage = m_message;
-        return;
+        m_notification.message = s_defaultMessage;
     }
-
-    m_message     = _msg;
-    m_fullMessage = m_message;
+    else
+    {
+        m_notification.message = std::move(_msg);
+    }
 }
 
 //-----------------------------------------------------------------------------
 
 void INotificationDialog::setPosition(INotificationDialog::Position _position)
 {
-    m_position = _position;
+    m_notification.position = _position;
 }
 
 //-----------------------------------------------------------------------------
 
 void INotificationDialog::setType(INotificationDialog::Type _type)
 {
-    m_notificationType = _type;
+    m_notification.type = _type;
 }
 
 //-----------------------------------------------------------------------------
 
-void INotificationDialog::setSize(unsigned int _width, unsigned int _height)
+void INotificationDialog::setSize(std::array<int, 2> _size)
 {
-    m_size[0] = _width;
-    m_size[1] = _height;
+    m_notification.size = _size;
+}
+
+//------------------------------------------------------------------------------
+
+std::array<int, 2> INotificationDialog::getSize() const
+{
+    return m_notification.size;
 }
 
 //-----------------------------------------------------------------------------
@@ -90,9 +89,51 @@ void INotificationDialog::setIndex(unsigned int _index)
 
 //-----------------------------------------------------------------------------
 
-void INotificationDialog::setDuration(int _durationInMs)
+void INotificationDialog::setDuration(std::optional<std::chrono::milliseconds> _durationInMs)
 {
-    m_duration = _durationInMs;
+    m_notification.duration = _durationInMs;
+}
+
+//------------------------------------------------------------------------------
+
+void INotificationDialog::setChannel(std::string _channel)
+{
+    m_notification.channel = std::move(_channel);
+}
+
+//------------------------------------------------------------------------------
+
+std::string INotificationDialog::getChannel() const
+{
+    return m_notification.channel;
+}
+
+//------------------------------------------------------------------------------
+
+void INotificationDialog::setClosable(std::optional<bool> _closable)
+{
+    m_notification.closable = _closable;
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<bool> INotificationDialog::isClosable() const
+{
+    return m_notification.closable;
+}
+
+//------------------------------------------------------------------------------
+
+std::optional<std::chrono::milliseconds> INotificationDialog::getDuration() const
+{
+    return m_notification.duration;
+}
+
+//------------------------------------------------------------------------------
+
+void INotificationDialog::setNotification(service::Notification _notification)
+{
+    m_notification = std::move(_notification);
 }
 
 //-----------------------------------------------------------------------------

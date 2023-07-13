@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,8 @@
 #include "ui/base/IAction.hpp"
 #include "ui/base/IMenuItemCallback.hpp"
 
+#include <core/com/Slot.hxx>
+#include <core/com/Slots.hxx>
 #include <core/thread/Worker.hpp>
 #include <core/thread/Worker.hxx>
 #include <core/tools/fwID.hpp>
@@ -34,6 +36,16 @@
 
 namespace sight::ui::base
 {
+
+//-----------------------------------------------------------------------------
+
+IToolBar::IToolBar()
+{
+    newSlot(slots::s_SET_VISIBLE_SLOT, &IToolBar::setVisible, this);
+    newSlot(slots::s_SET_VISIBLE_BY_PARAM_SLOT, &IToolBar::setVisibleByParameter, this);
+    newSlot(slots::s_SHOW_SLOT, &IToolBar::show, this);
+    newSlot(slots::s_HIDE_SLOT, &IToolBar::hide, this);
+}
 
 //-----------------------------------------------------------------------------
 
@@ -229,5 +241,35 @@ void IToolBar::initializeLayoutManager(const ui::base::config_t& layoutConfig)
 }
 
 //-----------------------------------------------------------------------------
+
+void IToolBar::setVisible(bool isVisible)
+{
+    m_layoutManager->setVisible(isVisible);
+}
+
+//-----------------------------------------------------------------------------
+
+void IToolBar::setVisibleByParameter(ui::base::parameter_t isVisible)
+{
+    // Only consider boolean alternative, skip all other type of the variant.
+    if(std::holds_alternative<bool>(isVisible))
+    {
+        this->setVisible(std::get<bool>(isVisible));
+    }
+}
+
+//-----------------------------------------------------------------------------
+
+void IToolBar::show()
+{
+    this->setVisible(true);
+}
+
+//-----------------------------------------------------------------------------
+
+void IToolBar::hide()
+{
+    this->setVisible(false);
+}
 
 } // namespace sight::ui::base

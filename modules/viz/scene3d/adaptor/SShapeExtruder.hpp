@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,6 +30,8 @@
 #include <data/Material.hpp>
 #include <data/ModelSeries.hpp>
 
+#include <service/INotifier.hpp>
+
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/interactor/IInteractor.hpp>
 
@@ -55,6 +57,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b enableTool(bool): enable or disable the tool, it will be automatically disabled when interactions are finished.
  * - \b deleteLastMesh(): delete the last extruded mesh.
  * - \b cancelLastClick(): cancel the last point clicked during the extrusion
+ * - \b reset(): delete all extruded meshes.
  *
  * @section Signal Signals
  * - \b toolDisabled(): sent when interactions are finished.
@@ -76,7 +79,8 @@ namespace sight::module::viz::scene3d::adaptor
  */
 class MODULE_VIZ_SCENE3D_CLASS_API SShapeExtruder final :
     public sight::viz::scene3d::IAdaptor,
-    public sight::viz::scene3d::interactor::IInteractor
+    public sight::viz::scene3d::interactor::IInteractor,
+    private service::INotifier
 {
 public:
 
@@ -209,6 +213,9 @@ private:
 
     /// Cancel the last clicked point during the extrusion
     void cancelLastClick();
+
+    /// Reset all extrusions
+    void reset();
 
     /**
      * @brief Gets the near and far position of the intersection between the ray starting from the camera

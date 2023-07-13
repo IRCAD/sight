@@ -918,7 +918,11 @@ inline static data::SeriesSet::sptr readImageInstance(
         // User may have canceled the job
         if(image_series)
         {
+            // Add the dataset to allow access to all DICOM attributes (not only the ones we have converted)
             image_series->setDataSet(gdcm_dataset);
+
+            // Also save the file path. It could be useful to keep a link to the original file.
+            image_series->setFile(filename);
 
             if(!image_series->isMultiFrame())
             {
@@ -947,7 +951,12 @@ inline static data::SeriesSet::sptr readImageInstance(
     // Use the last series as current series
     auto image_series    = std::static_pointer_cast<data::ImageSeries>(splitted_series->back());
     const auto dump_lock = image_series->dump_lock();
+
+    // Add the dataset to allow access to all DICOM attributes (not only the ones we have converted)
     image_series->setDataSet(gdcm_dataset, instance);
+
+    // Also save the file path. It could be useful to keep a link to the original file.
+    image_series->setFile(filename, instance);
 
     // Get the output buffer (as char* since gdcm takes char* as input)
     // If the series will be splitted by instance, we keep 0 as instance number
@@ -1176,7 +1185,7 @@ public:
             }
 
             // Start to parse DICOM time
-            std::chrono::hours hours;
+            std::chrono::hours hours {};
             if(value.length() >= 2)
             {
                 try
@@ -1194,7 +1203,7 @@ public:
                 return false;
             }
 
-            std::chrono::minutes minutes;
+            std::chrono::minutes minutes {};
             if(value.length() >= 4)
             {
                 try
@@ -1208,7 +1217,7 @@ public:
                 }
             }
 
-            std::chrono::seconds seconds;
+            std::chrono::seconds seconds {};
             if(value.length() >= 6)
             {
                 try
@@ -1222,7 +1231,7 @@ public:
                 }
             }
 
-            std::chrono::microseconds microseconds;
+            std::chrono::microseconds microseconds {};
             if(value.length() >= 8)
             {
                 try

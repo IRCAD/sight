@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,6 +22,7 @@
 
 #include "App.hpp"
 
+#include <core/runtime/ExitException.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
 
@@ -81,5 +82,19 @@ void App::onExit()
 }
 
 //-----------------------------------------------------------------------------
+
+bool App::notify(QObject* receiver, QEvent* e)
+{
+    try
+    {
+        return QGuiApplication::notify(receiver, e);
+    }
+    catch(const core::runtime::ExitException& e)
+    {
+        SIGHT_DEBUG("Exit exception caught. Exit code:" << e.what());
+        qGuiApp->exit(e.exitCode());
+        return false;
+    }
+}
 
 } // namespace sight::ui::qml

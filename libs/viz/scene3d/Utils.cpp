@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,15 +27,14 @@
 #include "viz/scene3d/compositor/MaterialMgrListener.hpp"
 #include "viz/scene3d/detail/CollisionTools.hpp"
 #include "viz/scene3d/factory/R2VBRenderable.hpp"
-#include "viz/scene3d/factory/Text.hpp"
 #include "viz/scene3d/helper/Camera.hpp"
 #include "viz/scene3d/ogre.hpp"
 #include "viz/scene3d/vr/GridProxyGeometry.hpp"
 
+#include <core/os/TempPath.hpp>
 #include <core/runtime/path.hpp>
 #include <core/spyLog.hpp>
 #include <core/tools/Os.hpp>
-#include <core/tools/System.hpp>
 
 #include <data/helper/MedicalImage.hpp>
 
@@ -64,9 +63,7 @@ static std::list<std::string> s_moduleWithResourcesNames;
 
 static std::set<std::string> s_ogrePlugins;
 
-Ogre::OverlaySystem* Utils::s_overlaySystem                                   = nullptr;
 viz::scene3d::factory::R2VBRenderable* Utils::s_R2VBRenderableFactory         = nullptr;
-viz::scene3d::factory::Text* Utils::s_textFactory                             = nullptr;
 viz::scene3d::vr::GridProxyGeometryFactory* Utils::s_gridProxyGeometryFactory = nullptr;
 viz::scene3d::compositor::MaterialMgrListener* Utils::s_oitMaterialListener   = nullptr;
 
@@ -110,12 +107,12 @@ void Utils::loadResources()
                 SIGHT_FATAL("File '" + path.string() + "' doesn't exist. Ogre needs it to load resources");
             }
 
-            const auto tmpPath = std::filesystem::temp_directory_path() / core::tools::System::genTempFileName();
-            std::ofstream newResourceFile(tmpPath.string());
+            core::os::TempFile tmpFile;
+            std::ofstream newResourceFile(tmpFile);
 
-            if(!std::filesystem::exists(tmpPath))
+            if(!std::filesystem::exists(tmpFile))
             {
-                SIGHT_FATAL("Can't create the file '" + tmpPath.string() + "'");
+                SIGHT_FATAL("Can't create the file '" + tmpFile.string() + "'");
             }
 
             // Copy the resource file and make paths absolute.
@@ -124,8 +121,7 @@ void Utils::loadResources()
             makePathsAbsolute("FileSystem", resourceFile, newResourceFile, path.parent_path());
             resourceFile.close();
             newResourceFile.close();
-            cf.load(tmpPath.string());
-            std::filesystem::remove(tmpPath);
+            cf.load(tmpFile.string());
 
             const Ogre::ConfigFile::SettingsBySection_ settings_by_section = cf.getSettingsBySection();
 
@@ -168,13 +164,6 @@ void Utils::addResourcesPath(const std::string& moduleName)
 
 //------------------------------------------------------------------------------
 
-Ogre::OverlaySystem* Utils::getOverlaySystem()
-{
-    return s_overlaySystem;
-}
-
-//------------------------------------------------------------------------------
-
 Ogre::Root* Utils::getOgreRoot()
 {
     using namespace std::literals::string_literals;
@@ -191,7 +180,7 @@ Ogre::Root* Utils::getOgreRoot()
             SIGHT_FATAL("File '" + confPath.string() + "' doesn't exist. Ogre needs it to be configured");
         }
 
-        const auto tmpPluginCfg = std::filesystem::temp_directory_path() / core::tools::System::genTempFileName();
+        core::os::TempFile tmpPluginCfg;
 
         // Set the actual plugin path in the plugin config file and add application plugins.
         {
@@ -283,10 +272,6 @@ Ogre::Root* Utils::getOgreRoot()
 
         root = new Ogre::Root(tmpPluginCfg.string());
 
-        std::filesystem::remove(tmpPluginCfg);
-
-        s_overlaySystem = new Ogre::OverlaySystem();
-
         const Ogre::RenderSystemList& rsList = root->getAvailableRenderers();
 
         Ogre::RenderSystem* rs = nullptr;
@@ -332,10 +317,6 @@ Ogre::Root* Utils::getOgreRoot()
 
         loadResources();
 
-        // Register factory for Text objects
-        s_textFactory = OGRE_NEW viz::scene3d::factory::Text();
-        Ogre::Root::getSingleton().addMovableObjectFactory(s_textFactory);
-
         // Register factory for R2VB renderables objects
         s_R2VBRenderableFactory = OGRE_NEW viz::scene3d::factory::R2VBRenderable();
         Ogre::Root::getSingleton().addMovableObjectFactory(s_R2VBRenderableFactory);
@@ -359,9 +340,6 @@ void Utils::destroyOgreRoot()
     Ogre::MaterialManager::getSingleton().removeListener(s_oitMaterialListener);
     delete s_oitMaterialListener;
 
-    Ogre::Root::getSingleton().removeMovableObjectFactory(s_textFactory);
-    delete s_textFactory;
-
     Ogre::Root::getSingleton().removeMovableObjectFactory(s_gridProxyGeometryFactory);
     delete s_gridProxyGeometryFactory;
 
@@ -370,8 +348,6 @@ void Utils::destroyOgreRoot()
 
     Ogre::Root* root = viz::scene3d::Utils::getOgreRoot();
     Ogre::ResourceGroupManager::getSingleton().shutdownAll();
-
-    delete s_overlaySystem;
 
     // Processes all dirty and pending deletion passes, needs to be done before the root deletion.
     //

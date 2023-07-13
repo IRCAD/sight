@@ -85,4 +85,10 @@
         <object>sight::data::Object</object>
     </extension>
 
+    <extension implements="sight::service::extension::Factory">
+        <type>sight::service::IController</type>
+        <service>sight::service::SMultiConfigController</service>
+        <object>sight::data::Object</object>
+    </extension>
+
 </plugin>

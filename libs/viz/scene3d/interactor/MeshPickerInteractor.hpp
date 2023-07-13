@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,8 +53,6 @@ public:
 
     /// Runs a picking query when a mouse button is pressed @see MeshPickerInteractor::pick().
     VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier _mods, int _x, int _y) override;
-
-    VIZ_SCENE3D_API void longTapGestureEvent(int _x, int _y) override;
 
     /// Sets the signal to be called when picking succeeded.
     VIZ_SCENE3D_API void setPointClickedSig(const PointClickedSigType::sptr& _sig);

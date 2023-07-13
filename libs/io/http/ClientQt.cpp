@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,8 +22,7 @@
 
 #include "ClientQt.hpp"
 
-#include <core/tools/System.hpp>
-#include <core/tools/UUID.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
@@ -93,16 +92,8 @@ std::string ClientQt::getFile(Request::sptr request)
         &ClientQt::processError
     );
 
-    std::filesystem::path folderPath = core::tools::System::getTemporaryFolder();
-    std::filesystem::path filePath   = folderPath / core::tools::UUID::generateUUID();
-
+    std::filesystem::path filePath = core::os::TempFile::uniquePath();
     QFile file(filePath.string().c_str());
-
-    while(file.exists())
-    {
-        filePath = folderPath / core::tools::UUID::generateUUID();
-        file.setFileName(filePath.string().c_str());
-    }
 
     if(!file.open(QIODevice::WriteOnly))
     {

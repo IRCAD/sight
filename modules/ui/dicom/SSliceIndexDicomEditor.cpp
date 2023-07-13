@@ -24,8 +24,8 @@
 
 #include <core/com/Slots.hpp>
 #include <core/com/Slots.hxx>
+#include <core/os/TempPath.hpp>
 #include <core/thread/Timer.hpp>
-#include <core/tools/System.hpp>
 
 #include <data/Array.hpp>
 #include <data/Composite.hpp>
@@ -247,9 +247,9 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
     const auto scoped_emitter = m_tmp_series_set->scoped_emit();
     m_tmp_series_set->clear();
 
-    // Creates unique temporary folder, no need to check if exists before (see core::tools::System::getTemporaryFolder)
-    std::filesystem::path path    = core::tools::System::getTemporaryFolder("dicom");
-    std::filesystem::path tmpPath = path / "tmp";
+    // Creates unique temporary folder
+    core::os::TempDir tmpDir;
+    std::filesystem::path tmpPath = tmpDir / "tmp";
 
     SIGHT_INFO("Create " + tmpPath.string());
     std::filesystem::create_directories(tmpPath);
@@ -323,10 +323,6 @@ void SSliceIndexDicomEditor::readImage(std::size_t selectedSliceIndex)
 
         this->setOutput(s_IMAGE, imageSeries);
     }
-
-    std::error_code ec;
-    std::filesystem::remove_all(path, ec);
-    SIGHT_ERROR_IF("remove_all error for path " + path.string() + ": " + ec.message(), ec.value());
 }
 
 //------------------------------------------------------------------------------

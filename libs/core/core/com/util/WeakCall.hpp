@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -54,11 +54,13 @@ struct WeakCall
     }
 
     WeakCall(
-        const std::shared_ptr<T const>& ptr,
+        const std::shared_ptr<T const>& weakPtr,
         std::function<R()> f,
-        const std::shared_ptr<core::thread::Worker>& m
+        const std::shared_ptr<core::thread::Worker>& m,
+        const std::shared_ptr<T const>& sharedPtr
     ) :
-        m_weakPtr(ptr),
+        m_weakPtr(weakPtr),
+        m_sharedPtr(sharedPtr),
         m_func(std::move(f)),
         m_worker(m)
     {
@@ -71,7 +73,7 @@ struct WeakCall
 
     R operator()() const
     {
-        std::shared_ptr<T const> ptr(this->m_weakPtr.lock());
+        auto ptr = this->m_weakPtr.lock();
 
         if(!ptr)
         {
@@ -82,6 +84,7 @@ struct WeakCall
 
         core::mt::ReadLock lock(ptr->m_workerMutex);
 
+        auto sharedPtr                               = this->m_sharedPtr;
         std::shared_ptr<core::thread::Worker> worker = m_worker.lock();
 
         if(worker && ptr->m_worker != worker)
@@ -91,13 +94,18 @@ struct WeakCall
         }
 
         this->m_weakPtr.reset();
+        this->m_sharedPtr.reset();
 
         return this->m_func();
     }
 
     protected:
 
+        // Maintain a pointer to the callee. Allows to not proceed if the callee has been destroyed in between.
         mutable std::weak_ptr<T const> m_weakPtr;
+        // This is used to extend the life of a wrapped slot, which is needed if the signal is disconnected before the
+        // call. Indeed, otherwise, a wrapped slot is not owned by anyone else the connected signal.
+        mutable std::shared_ptr<T const> m_sharedPtr;
         std::function<R()> m_func;
         mutable std::weak_ptr<core::thread::Worker> m_worker;
 };
@@ -112,12 +120,13 @@ WeakCall<T, R> weakcall(const std::shared_ptr<T const>& ptr, std::function<R()> 
 /// Returns weak call from given object, function and mutex.
 template<typename T, typename R>
 WeakCall<T, R> weakcall(
-    const std::shared_ptr<T const>& ptr,
+    const std::shared_ptr<T const>& weakPtr,
     std::function<R()> f,
-    const std::shared_ptr<core::thread::Worker>& m
+    const std::shared_ptr<core::thread::Worker>& m,
+    const std::shared_ptr<T const>& sharedPtr = nullptr
 )
 {
-    return WeakCall<T, R>(ptr, f, m);
+    return WeakCall<T, R>(weakPtr, f, m, sharedPtr);
 }
 
 } // namespace sight::core::com::util

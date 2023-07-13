@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2004-2022 IRCAD France
+ * Copyright (C) 2004-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -75,7 +75,7 @@ struct Options
                 << "[--help|-h] [--verbose|-v] [--xml|-x] [-o FILE] [--list|-l] [test1 ... testN]"
                 << std::endl
                 << "    -h,--help         Shows this help" << std::endl
-                << "    -s,--verbose      Shows each run test name and it status" << std::endl
+                << "    -v,--verbose      Shows each run test name and it status" << std::endl
                 << "    -x,--xml          Output results to a xml file" << std::endl
                 << "    -o FILE           Specify xml file name" << std::endl
                 << "    -l,--list         Lists test names" << std::endl

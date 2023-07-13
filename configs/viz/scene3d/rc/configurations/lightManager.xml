@@ -1,0 +1,43 @@
+<extension implements="sight::service::extension::AppConfig">
+    <id>sight::config::viz::scene3d::lightManager</id>
+    <parameters>
+        <param name="WID_PARENT" />
+    </parameters>
+
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="LightView" type="sight::module::ui::base::SView" >
+            <gui>
+                <layout type="sight::ui::base::ToolboxLayoutManager" >
+                    <orientation value="vertical" />
+                    <view caption="Light selector" expanded="true" />
+                    <view caption="Light editor" expanded="true" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="LightSelector" start="true" />
+                <view sid="LightEditor" start="true" />
+            </registry>
+        </service>
+
+        <!-- ************************************* Services ************************************ -->
+
+        <service uid="LightSelector" type="sight::module::ui::viz::SLightSelector"  />
+        <service uid="LightEditor" type="sight::module::ui::viz::SLightEditor" />
+
+        <!-- ************************************* Actions ************************************* -->
+
+        <connect>
+            <signal>LightSelector/lightSelected</signal>
+            <slot>LightEditor/editLight</slot>
+        </connect>
+
+        <start uid="LightView" />
+
+    </config>
+</extension>

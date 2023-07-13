@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -177,6 +177,7 @@ private:
     std::string m_layout;        ///< Layout orientation
 
     bool m_isCircular {false}; ///< label is a circle if true (else it's a square)
+    QString m_borderRadius = "0";
 
     std::size_t m_width {20};  ///< width of indicator
     std::size_t m_height {20}; ///< height of indicator

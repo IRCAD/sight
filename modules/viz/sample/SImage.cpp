@@ -66,6 +66,7 @@ void SImage::starting()
     renderConfig.put("scene.background.<xmlattr>.color", "#36393E");
     renderConfig.put("scene.layer.<xmlattr>.id", "default");
     renderConfig.put("scene.layer.<xmlattr>.order", "1");
+    renderConfig.put("scene.layer.<xmlattr>.transparency", "");
 
     service::IService::ConfigType interactorCfg;
     interactorCfg.put("<xmlattr>.uid", this->getID() + "interactorAdaptor");

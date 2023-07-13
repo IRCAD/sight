@@ -278,20 +278,23 @@ void SelectorModel::addSeries(data::Series::sptr _series)
     auto* seriesDescription = new QStandardItem(
         [&]
         {
-            const std::string& description = _series->getSeriesDescription();
-
-            if(!description.empty())
-            {
-                return codec->toUnicode(description.c_str());
-            }
-
             // If there is no description, build some information string from the series.
             std::string infos(_series->getSOPClassName());
             const auto& rows    = _series->getRows();
             const auto& columns = _series->getColumns();
+            const auto& frames  = _series->numFrames();
             if(rows && columns)
             {
-                infos += " (" + std::to_string(*rows) + "x" + std::to_string(*columns) + ")";
+                infos += " ( " + std::to_string(*rows)
+                         + "x" + std::to_string(*columns)
+                         + "x" + std::to_string(frames) + " )";
+            }
+
+            const std::string& description = _series->getSeriesDescription();
+
+            if(!description.empty())
+            {
+                infos += ": " + description;
             }
 
             return QString::fromStdString(infos);

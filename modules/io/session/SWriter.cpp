@@ -29,6 +29,7 @@
 #include <core/jobs/Aggregator.hpp>
 #include <core/jobs/Job.hpp>
 #include <core/location/SingleFolder.hpp>
+#include <core/os/TempPath.hpp>
 #include <core/tools/System.hpp>
 
 #include <io/session/SessionWriter.hpp>
@@ -199,10 +200,16 @@ void SWriter::updating()
         filepath += m_pimpl->m_extension_name;
     }
 
+    // In case the path is computed instead of user-selected, make sure it exists
+    if(filepath.has_parent_path() && !std::filesystem::exists(filepath.parent_path()))
+    {
+        std::filesystem::create_directories(filepath.parent_path());
+    }
+
     SIGHT_THROW_IF("The file '" << filepath << "' is an existing folder.", std::filesystem::is_directory(filepath));
 
     // Generate temporary file
-    const core::tools::System::TemporaryFile temporaryFile;
+    const core::os::TempFile tempFile;
 
     // Ask password if needed
     const secure_string& password =
@@ -236,7 +243,7 @@ void SWriter::updating()
         }();
 
     const auto writeJob = core::jobs::Job::New(
-        "Writing " + temporaryFile.filePath().string() + " file",
+        "Writing " + tempFile.string() + " file",
         [&](core::jobs::Job& runningJob)
         {
             runningJob.doneWork(10);
@@ -247,8 +254,8 @@ void SWriter::updating()
                 // The object must be unlocked since it will be locked again when writing
                 auto data = m_data.lock();
                 writer->setObject(data.get_shared());
-                writer->setFile(temporaryFile.filePath());
-                writer->set_password(password);
+                writer->setFile(tempFile);
+                writer->setPassword(password);
                 writer->setEncryptionPolicy(m_pimpl->m_encryption_policy);
                 writer->setArchiveFormat(m_pimpl->m_archive_format);
             }
@@ -265,13 +272,13 @@ void SWriter::updating()
     );
 
     const auto renameJob = core::jobs::Job::New(
-        "Rename file" + temporaryFile.filePath().string() + " to " + filepath.string() + ".",
+        "Rename file" + tempFile.string() + " to " + filepath.string() + ".",
         [&](core::jobs::Job& runningJob)
         {
             runningJob.doneWork(80);
 
             // Robust rename
-            core::tools::System::robustRename(temporaryFile.filePath(), filepath, true);
+            core::tools::System::robustRename(tempFile, filepath, true);
 
             runningJob.done();
         },

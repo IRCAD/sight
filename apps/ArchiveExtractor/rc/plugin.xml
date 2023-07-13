@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<plugin id="ArchiveExtractor" >
+
+    <requirement id="sight::module::ui::base" />
+    <requirement id="sight::module::io::zip" />
+
+    <extension implements="sight::service::extension::AppConfig" >
+        <id>ArchiveExtractor_AppCfg</id>
+        <config>
+
+            <!-- ******************************* UI declaration *********************************** -->
+
+            <service uid="mainView" type="sight::module::ui::base::SFrame" >
+                <gui>
+                    <frame>
+                        <name>Archive Extractor</name>
+                        <minSize height="80" />
+                        <maxSize height="80" />
+                    </frame>
+                </gui>
+                <registry>
+                    <view sid="containerView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="containerView" type="sight::module::ui::base::SView" >
+                <gui>
+                    <toolBar align="top" />
+                    <layout type="sight::ui::base::LineLayoutManager" >
+                        <orientation value="horizontal" />
+                    </layout>
+                </gui>
+                <registry>
+                    <toolBar sid="toolBarView" start="true" />
+                </registry>
+            </service>
+
+            <service uid="toolBarView" type="sight::module::ui::base::SToolBar" >
+                <gui>
+                    <layout style="ToolButtonTextBesideIcon">
+                        <menuItem name="Extract archive" icon="sight::module::ui::flaticons/Volume.svg" />
+                    </layout>
+                </gui>
+                <registry>
+                    <menuItem sid="extractArchiveAct" start="true" />
+                </registry>
+            </service>
+
+            <service uid="progressStatusbar" type="sight::module::ui::base::SJobBar" />
+
+            <!-- ******************************* Actions ****************************************** -->
+
+            <service uid="extractArchiveAct" type="sight::module::ui::base::SAction" />
+
+            <!-- ******************************* Services ***************************************** -->
+
+            <service uid="extractArchiveSrv" type="sight::module::io::zip::SExtract" />
+
+            <!-- ******************************* Connections ***************************************** -->
+
+            <connect>
+                <signal>extractArchiveAct/clicked</signal>
+                <slot>extractArchiveSrv/update</slot>
+            </connect>
+
+            <connect>
+                <signal>extractArchiveSrv/jobCreated</signal>
+                <slot>progressStatusbar/showJob</slot>
+            </connect>
+
+            <!-- ******************************* Start/Stop services ***************************************** -->
+
+            <start uid="mainView" />
+            <start uid="progressStatusbar" />
+
+            <start uid="extractArchiveSrv" />
+
+        </config>
+    </extension>
+</plugin>

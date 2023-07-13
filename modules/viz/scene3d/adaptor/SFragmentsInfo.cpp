@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,6 +81,14 @@ struct FragmentsInfoMaterialListener final : public Ogre::MaterialManager::Liste
 };
 
 static std::unique_ptr<FragmentsInfoMaterialListener> s_MATERIAL_LISTENER = nullptr;
+static const core::com::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT         = "resizeViewport";
+
+//-----------------------------------------------------------------------------
+
+SFragmentsInfo::SFragmentsInfo() noexcept
+{
+    newSlot(s_RESIZE_VIEWPORT_SLOT, &SFragmentsInfo::resizeViewport, this);
+}
 
 //-----------------------------------------------------------------------------
 
@@ -112,7 +120,7 @@ void SFragmentsInfo::starting()
     m_targetPrimitiveIDName = this->getID() + "_primitiveID_RTT";
 
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
-    layer->getRenderService()->getInteractorManager()->getRenderTarget()->addListener(this);
+    layer->getRenderTarget()->addListener(this);
 
     if(!s_MATERIAL_LISTENER)
     {
@@ -135,8 +143,12 @@ void SFragmentsInfo::starting()
 
         this->createCompositor(w, h);
 
-        // Listen the viewport to catch the resize event.
-        viewport->addListener(this);
+        m_resizeConnection.connect(
+            this->getLayer(),
+            sight::viz::scene3d::Layer::s_RESIZE_LAYER_SIG,
+            this->getSptr(),
+            s_RESIZE_VIEWPORT_SLOT
+        );
     }
 }
 
@@ -188,17 +200,12 @@ void SFragmentsInfo::updating() noexcept
 
 void SFragmentsInfo::stopping()
 {
+    m_resizeConnection.disconnect();
+
     this->destroyCompositor();
 
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
-    layer->getRenderService()->getInteractorManager()->getRenderTarget()->removeListener(this);
-
-    // Removes the listener from the viewport.
-    if(!m_fixedSize)
-    {
-        Ogre::Viewport* const viewport = layer->getViewport();
-        viewport->removeListener(this);
-    }
+    layer->getRenderTarget()->removeListener(this);
 }
 
 //-----------------------------------------------------------------------------
@@ -352,15 +359,17 @@ void SFragmentsInfo::destroyCompositor()
 
 //-----------------------------------------------------------------------------
 
-void SFragmentsInfo::viewportDimensionsChanged(Ogre::Viewport* _viewport)
+void SFragmentsInfo::resizeViewport()
 {
-    auto rect = _viewport->getActualDimensions();
+    const auto layer = this->getLayer();
+    auto rect        = layer->getViewport()->getActualDimensions();
 
     // Sometimes, the size can be null, we need to avoid resizing since a global texture needs absolute values.
     if(rect.width() != 0 && rect.height() != 0)
     {
         this->destroyCompositor();
         this->createCompositor(static_cast<int>(rect.width()), static_cast<int>(rect.height()));
+        layer->getRenderTarget()->addListener(this);
     }
 }
 

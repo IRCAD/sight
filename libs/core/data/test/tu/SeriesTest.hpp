@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,6 +34,7 @@ class SeriesTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(SeriesTest);
 
 CPPUNIT_TEST(privateTagTest);
+CPPUNIT_TEST(multiFramePrivateTagTest);
 CPPUNIT_TEST(attrPatientTest);
 CPPUNIT_TEST(attrStudyTest);
 CPPUNIT_TEST(attrEquipmentTest);
@@ -130,6 +131,7 @@ public:
     void tearDown() override;
 
     static void privateTagTest();
+    static void multiFramePrivateTagTest();
 
     void attrPatientTest();
     void attrStudyTest();

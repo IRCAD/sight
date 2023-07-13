@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -109,7 +109,7 @@ private:
         CWPTR(OBJECT) object;
         std::size_t use_count;
         std::uint64_t lastModified;
-        typename LOADER::return_t loadingResult; // Extra attribute to store resource-specific loading data
+        typename LOADER::return_t loadingResult {0}; // Extra attribute to store resource-specific loading data
     };
 
     std::map<std::string, Resource> m_registry;

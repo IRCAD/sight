@@ -38,9 +38,15 @@ namespace sight::io::base::service
 /**
  * @brief Writer service API. It manages extension points definition and extension configuration
  *
+ * @section Signals Signals
+ * - \b prefixSet(): Emitted when the prefix has been correctly updated,
+ * - \b baseFolderSet(): Emitted When the base folder has been correctly updated.
+ *
  * @section Slots Slots
  * - \b setPrefix(std::string): When connected to a string-emitting signal (or function),
  *   this slot will concatenate the string as a prefix of the output file/folder.
+ * - \b setBaseFolder(std::string): When connected to a string-emitting signal (or function),
+ *   this slot will set the base folder used by writers.
  *
  * @subsection Configuration Configuration
  * - \b file: default file path.
@@ -81,13 +87,15 @@ public:
      */
 
     IO_BASE_API static const core::com::Signals::SignalKeyType s_PREFIX_SET_SIG;
-    typedef core::com::Signal<void ()> PrefixSetSignalType;
+    IO_BASE_API static const core::com::Signals::SignalKeyType s_BASE_FOLDER_SET_SIG;
+    typedef core::com::Signal<void ()> VoidSignalType;
 
     /**
      * @name Slots API
      * @{
      */
     IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_PREFIX;
+    IO_BASE_API static const core::com::Slots::SlotKeyType s_SET_BASE_FOLDER;
     /// @}
 
     /**
@@ -163,6 +171,12 @@ public:
      *
      */
     IO_BASE_API void setPrefix(std::string prefix);
+
+    /**
+     * @brief Slot: Sets the output base folder.
+     *
+     */
+    IO_BASE_API void setBaseFolder(std::string path);
 
     /// Returns if a location has been defined ( by the configuration process or directly by user )
     IO_BASE_API bool hasLocationDefined() const;
@@ -275,6 +289,9 @@ private:
 
     /// Prefix to be inserted
     std::string m_currentPrefix;
+
+    /// Base folder
+    std::string m_baseFolder;
 };
 
 } //namespace sight::io::base::service

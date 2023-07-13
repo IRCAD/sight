@@ -24,6 +24,7 @@
 #include <core/com/Signal.hxx>
 #include <core/com/Slots.hxx>
 
+#include <data/ImageSeries.hpp>
 #include <data/TimeLine.hpp>
 
 namespace sight::module::sync
@@ -200,7 +201,8 @@ void SSynchronizer::starting()
     SIGHT_ASSERT("No valid worker for timer.", this->worker());
     if(m_legacyAutoSync)
     {
-        m_timer = this->worker()->createTimer();
+        m_worker = sight::core::thread::Worker::New();
+        m_timer  = m_worker->createTimer();
         const auto duration = std::chrono::milliseconds(m_timeStep);
         m_timer->setFunction([this](auto&& ...){synchronize();});
         m_timer->setDuration(duration);
@@ -214,9 +216,27 @@ void SSynchronizer::updating()
 {
     m_updateMask |= OBJECT_RECEIVED;
 
+    if(m_legacyAutoSync)
+    {
+        return;
+    }
+
     if((m_updateMask & SYNC_REQUESTED) != 0)
     {
         this->synchronize();
+    }
+}
+
+// ----------------------------------------------------------------------------
+
+void SSynchronizer::stopping()
+{
+    if(m_legacyAutoSync)
+    {
+        m_timer->stop();
+        m_timer.reset();
+        m_worker->stop();
+        m_worker.reset();
     }
 }
 
@@ -387,19 +407,16 @@ void SSynchronizer::copyFrameFromTLtoOutput(
     core::HiResClock::HiResClockType synchronizationTimestamp
 )
 {
-    CSPTR(data::FrameTL::BufferType) buffer;
-    data::Image::Size frameTLsize;
-    std::size_t frameTlNumComponents = 0;
-    core::Type frameTlType;
-    data::FrameTL::PixelFormat frameTlPixelFormat = data::FrameTL::PixelFormat::UNDEFINED;
-    {
-        const auto frameTL = m_frameTLs[frameTLIndex].lock();
-        buffer               = frameTL->getClosestBuffer(synchronizationTimestamp - m_frameTLDelay[frameTLIndex]);
-        frameTLsize          = {frameTL->getWidth(), frameTL->getHeight(), 0};
-        frameTlNumComponents = frameTL->numComponents();
-        frameTlType          = frameTL->getType();
-        frameTlPixelFormat   = frameTL->getPixelFormat();
-    }
+    const auto frameTL = m_frameTLs[frameTLIndex].lock();
+    CSPTR(data::FrameTL::BufferType) buffer =
+        frameTL->getClosestBuffer(synchronizationTimestamp - m_frameTLDelay[frameTLIndex]);
+
+    data::Image::Size frameTLsize = {frameTL->getWidth(), frameTL->getHeight(), 0};
+
+    std::size_t frameTlNumComponents              = frameTL->numComponents();
+    core::Type frameTlType                        = frameTL->getType();
+    data::FrameTL::PixelFormat frameTlPixelFormat = frameTL->getPixelFormat();
+
     if(buffer)
     {
         for(const outVarParameter outputVarParam : getFrameTlOutputVarIndex(frameTLIndex))
@@ -450,6 +467,15 @@ void SSynchronizer::copyFrameFromTLtoOutput(
                 frame->setWindowCenter({0.0});
             }
 
+            // Set the time stamp on the image, if we set dicom image as output.
+            // The value must be set after the previous `if`, in order to prevent the data
+            // from being erased in case of resize (frameTLSize has a 0 value as 3 dimension)
+            // and thus prevent the timestamp to be lost
+            if(auto imageSeries = sight::data::ImageSeries::dynamicCast(frame.get_shared()); imageSeries)
+            {
+                imageSeries->setFrameAcquisitionTimePoint(synchronizationTimestamp);
+            }
+
             const std::uint8_t* frameBuff = &buffer->getElement(frameTlElementIndex);
             auto iter                     = frame->begin<std::uint8_t>();
             std::memcpy(&*iter, frameBuff, buffer->getSize());
@@ -493,11 +519,10 @@ void SSynchronizer::copyMatrixFromTLtoOutput(
     core::HiResClock::HiResClockType synchronizationTimestamp
 )
 {
-    CSPTR(data::MatrixTL::BufferType) buffer;
-    {
-        const auto matrixTL = m_matrixTLs[matrixTLIndex].lock();
-        buffer = matrixTL->getClosestBuffer(synchronizationTimestamp - m_matrixTLDelay[matrixTLIndex]);
-    }
+    const auto matrixTL = m_matrixTLs[matrixTLIndex].lock();
+    CSPTR(data::MatrixTL::BufferType) buffer =
+        matrixTL->getClosestBuffer(synchronizationTimestamp - m_matrixTLDelay[matrixTLIndex]);
+
     if(buffer)
     {
         for(const auto outputVarParam : getMatrixTlOutputVarIndex(matrixTLIndex))
@@ -589,16 +614,6 @@ void SSynchronizer::sendMatrixVarStatus(const std::vector<std::size_t>& synchMat
 void SSynchronizer::resetTimeline()
 {
     m_lastTimeStamp = 0.;
-}
-
-// ----------------------------------------------------------------------------
-
-void SSynchronizer::stopping()
-{
-    if(m_legacyAutoSync)
-    {
-        m_timer->stop();
-    }
 }
 
 //-----------------------------------------------------------------------------

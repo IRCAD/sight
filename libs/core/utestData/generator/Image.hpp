@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,39 +29,41 @@
 
 #include <data/Image.hpp>
 
+#include <optional>
+
 namespace sight::utestData::generator
 {
 
 /**
  * @brief   This class contains helper to generate images.
  */
-class Image
+class UTESTDATA_CLASS_API Image
 {
 public:
-
-    /**
-     * @brief Generate an image with the given informations. Buffer is filled with 0.
-     * @param image     image to generate
-     * @param size      vector of image size
-     * @param spacing   vector of image spacing
-     * @param origin    vector of image origin
-     * @param type      image type
-     * @param format    image format
-     */
-    UTESTDATA_API static void generateImage(
-        data::Image::sptr image,
-        data::Image::Size size,
-        data::Image::Spacing spacing,
-        data::Image::Origin origin,
-        core::Type type,
-        data::Image::PixelFormat format
-    );
 
     /// Generate an image with random information (size, spacing, ...). Buffer is filled with random values.
     UTESTDATA_API static void generateRandomImage(
         data::Image::sptr image,
         core::Type type,
         std::uint32_t seed = 0
+    );
+
+    /// Generate an image.
+    /// @param [inout] image image to generate
+    /// @param [in] sizes image sizes
+    /// @param [in] type image component type
+    /// @param [in] format image pixel format
+    /// @param [in] spacing image spacing
+    /// @param [in] origin image origin
+    /// @param [in] seed [optional] random seed used to generate the buffer. If not set, fill the buffer with 0.
+    UTESTDATA_API static void generateImage(
+        data::Image::sptr image,
+        const data::Image::Size& sizes           = {64, 64, 64},
+        const data::Image::Spacing& spacing      = {0, 0, 0},
+        const data::Image::Origin& origin        = {0, 0, 0},
+        const core::Type& type                   = core::Type::UINT8,
+        const data::Image::PixelFormat& format   = data::Image::PixelFormat::GRAY_SCALE,
+        const std::optional<std::uint32_t>& seed = std::nullopt
     );
 
     /// Fill image array with random value

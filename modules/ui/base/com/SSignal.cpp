@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,6 +42,10 @@ SSignal::SSignal() noexcept :
     m_sigTriggered(newSignal<TriggeredSignalType>(s_TRIGGERED_SIG)),
     m_sigCancelled(newSignal<TriggeredSignalType>(s_CANCELLED_SIG))
 {
+    SIGHT_WARN(
+        "'sight::module::ui::base::com::SSignal' is deprecated and will be removed in Sight 24.0,"
+        " please use 'SAction' instead."
+    );
 }
 
 //-----------------------------------------------------------------------------

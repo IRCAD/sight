@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -230,7 +230,6 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
 
     auto pointsItr = pointCloud->begin<data::iterator::point::xyz>();
 
-    std::size_t nbRealPoints = 0;
     for(std::size_t y = 0 ; y != height ; ++y)
     {
         for(std::size_t x = 0 ; x != width ; ++x)
@@ -246,7 +245,6 @@ void SPointCloudFromDepthMap::depthMapToPointCloud(
                 pointsItr->y = static_cast<float>(py);
                 pointsItr->z = static_cast<float>(pz);
                 ++pointsItr;
-                ++nbRealPoints;
             }
 
             ++depthItr;

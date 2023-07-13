@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,8 +31,7 @@ class WorkerTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(WorkerTest);
 CPPUNIT_TEST(basicTest);
-// Disable timerTest because it fails randomly on a busy computer (see #253)
-//CPPUNIT_TEST( timerTest );
+CPPUNIT_TEST(timerTest);
 CPPUNIT_TEST(registryTest);
 CPPUNIT_TEST_SUITE_END();
 

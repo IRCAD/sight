@@ -21,6 +21,11 @@
          <desc>This adaptor binds a Sight data to a shader uniform from a specific compositor.</desc>
     </extension>
 
+    <extension implements="sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SEvent</service>
+         <desc>This adaptor echoes the input events received in a scene.</desc>
+    </extension>
 
     <extension implements="sight::service::extension::Factory">
          <type>sight::viz::scene3d::IAdaptor</type>
@@ -234,6 +239,12 @@
          <service>sight::module::viz::scene3d::adaptor::SVoxelPicker</service>
          <object key="image">sight::data::Image</object>
          <desc>This adaptor performs picking queries on an image voxel using slices.</desc>
+    </extension>
+
+    <extension implements="sight::service::extension::Factory">
+         <type>sight::viz::scene3d::IAdaptor</type>
+         <service>sight::module::viz::scene3d::adaptor::SPredefinedCamera</service>
+         <desc>This adaptor forbid mouse action to move camera.</desc>
     </extension>
 
 </plugin>

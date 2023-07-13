@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,6 +41,7 @@ namespace sight::module::viz::scene3d::adaptor
 static const core::com::Slots::SlotKeyType s_ENABLE_TOOL_SLOT       = "enableTool";
 static const core::com::Slots::SlotKeyType s_DELETE_LAST_MESH_SLOT  = "deleteLastMesh";
 static const core::com::Slots::SlotKeyType s_CANCEL_LAST_CLICK_SLOT = "cancelLastClick";
+static const core::com::Slots::SlotKeyType s_RESET_SLOT             = "reset";
 
 static const core::com::Slots::SlotKeyType s_TOOL_DISABLED_SIG = "toolDisabled";
 
@@ -140,11 +141,13 @@ Ogre::Vector3 SShapeExtruder::getCamDirection(const Ogre::Camera* const _cam)
 
 //-----------------------------------------------------------------------------
 
-SShapeExtruder::SShapeExtruder() noexcept
+SShapeExtruder::SShapeExtruder() noexcept :
+    service::INotifier(m_signals)
 {
     newSlot(s_ENABLE_TOOL_SLOT, &SShapeExtruder::enableTool, this);
     newSlot(s_DELETE_LAST_MESH_SLOT, &SShapeExtruder::deleteLastMesh, this);
     newSlot(s_CANCEL_LAST_CLICK_SLOT, &SShapeExtruder::cancelLastClick, this);
+    newSlot(s_RESET_SLOT, &SShapeExtruder::reset, this);
     m_toolDisabledSig = this->newSignal<core::com::Signal<void()> >(s_TOOL_DISABLED_SIG);
 }
 
@@ -184,7 +187,7 @@ void SShapeExtruder::configuring()
 
 void SShapeExtruder::starting()
 {
-    this->initialize();
+    this->IAdaptor::initialize();
 
     this->getRenderService()->makeCurrent();
 
@@ -295,7 +298,7 @@ void SShapeExtruder::deleteLastMesh()
         extrudedMeshes->setReconstructionDB(reconstructions);
 
         // Send notification
-        this->notify(NotificationType::INFO, "Last extrusion deleted.");
+        this->INotifier::info("Last extrusion deleted.");
 
         // Send the signal.
         auto sig = extrudedMeshes->signal<data::ModelSeries::ReconstructionsRemovedSignalType>(
@@ -305,7 +308,7 @@ void SShapeExtruder::deleteLastMesh()
     }
     else
     {
-        this->notify(NotificationType::FAILURE, "No extrusion to delete.");
+        this->INotifier::failure("No extrusion to delete.");
     }
 }
 
@@ -314,6 +317,26 @@ void SShapeExtruder::deleteLastMesh()
 void SShapeExtruder::cancelLastClick()
 {
     modifyLasso(Action::REMOVE);
+}
+
+//------------------------------------------------------------------------------
+
+void SShapeExtruder::reset()
+{
+    // Get the reconstruction list.
+    const auto extrudedMeshes = m_extrudedMeshes.lock();
+
+    data::ModelSeries::ReconstructionVectorType reconstructions = extrudedMeshes->getReconstructionDB();
+
+    if(!reconstructions.empty())
+    {
+        reconstructions.clear();
+        extrudedMeshes->setReconstructionDB(reconstructions);
+
+        // Send the signal.
+        auto sig = extrudedMeshes->signal<data::ModelSeries::ModifiedSignalType>(data::ModelSeries::s_MODIFIED_SIG);
+        sig->asyncEmit();
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -508,7 +531,7 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, i
 
 //-----------------------------------------------------------------------------
 
-void SShapeExtruder::buttonDoublePressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
+void SShapeExtruder::buttonDoublePressEvent(MouseButton _button, Modifier /*_mods*/, int /*_x*/, int /*_y*/)
 {
     if(m_interactionEnableState && _button == MouseButton::LEFT)
     {
@@ -518,34 +541,24 @@ void SShapeExtruder::buttonDoublePressEvent(MouseButton _button, Modifier /*_mod
         const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
         layer->cancelFurtherInteraction();
 
-        // Get the clicked point in the world space.
-        const auto toolNearFarPos = this->getNearFarRayPositions(_x, _y);
-
-        // Check the interactions.
-        if(_button == MouseButton::LEFT)
+        // When coming from touch, mouseReleaseEvent is not always called.
+        if(m_leftButtonMoveState)
         {
-            // Check if the point can be added.
-            bool near = false;
-            for(const Ogre::Vector3 pos : m_lassoEdgePositions)
-            {
-                if((std::get<0>(toolNearFarPos) - pos).length() < m_lassoEdgeSize)
-                {
-                    near = true;
-                    break;
-                }
-            }
+            // Add a new point to the lasso edge list.
+            m_lassoEdgePositions.push_back(m_lassoToolPositions.back());
+            this->drawLasso();
 
-            if(near)
-            {
-                this->triangulatePoints();
-
-                this->enableTool(false);
-                m_toolDisabledSig->asyncEmit();
-
-                // Send a render request.
-                this->requestRender();
-            }
+            // Cancel the left button move state.
+            m_leftButtonMoveState = false;
         }
+
+        this->triangulatePoints();
+
+        this->enableTool(false);
+        m_toolDisabledSig->asyncEmit();
+
+        // Send a render request.
+        this->requestRender();
     }
 }
 
@@ -553,44 +566,53 @@ void SShapeExtruder::buttonDoublePressEvent(MouseButton _button, Modifier /*_mod
 
 void SShapeExtruder::mouseMoveEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y, int /*_dx*/, int /*_dy*/)
 {
-    if(m_interactionEnableState)
+    if(!m_interactionEnableState)
     {
-        this->getRenderService()->makeCurrent();
-
-        // Cancel others interactions.
-        const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
-        layer->cancelFurtherInteraction();
-
-        // Get the clicked point in the world space.
-        const auto toolNearFarPos = this->getNearFarRayPositions(_x, _y);
-
-        // Check the interactions.
-        if(_button == MouseButton::LEFT)
-        {
-            // Add a new position and draws the lasso.
-            m_lassoToolPositions.push_back(std::get<0>(toolNearFarPos));
-            m_lassoNearPositions.push_back(std::get<1>(toolNearFarPos));
-            m_lassoFarPositions.push_back(std::get<2>(toolNearFarPos));
-            this->drawLasso();
-
-            // Enable the left button move state.
-            m_leftButtonMoveState = true;
-        }
-
-        // Draw the last lasso line.
-        SIGHT_ASSERT("Lasso positions must have at east one point", !m_lassoToolPositions.empty());
-
-        m_lastLassoLine->beginUpdate(0);
-
-        m_lastLassoLine->colour(m_lineColor);
-        m_lastLassoLine->position(m_lassoToolPositions.back());
-        m_lastLassoLine->position(std::get<0>(toolNearFarPos));
-
-        m_lastLassoLine->end();
-
-        // Send a render request.
-        this->requestRender();
+        return;
     }
+
+    getRenderService()->makeCurrent();
+
+    // Cancel others interactions.
+    getLayer()->cancelFurtherInteraction();
+
+    // Get the clicked point in the world space.
+    const auto& [toolPosition, nearPosition, farPosition] = getNearFarRayPositions(_x, _y);
+
+    // Check if the mouse is still on the last point.
+    // This should not happen but it's better to check, since adding the same points twice will break everything.
+    if(!m_lassoToolPositions.empty() && m_lassoToolPositions.back() == toolPosition
+       && !m_lassoNearPositions.empty() && m_lassoNearPositions.back() == nearPosition
+       && !m_lassoFarPositions.empty() && m_lassoFarPositions.back() == farPosition)
+    {
+        return;
+    }
+
+    if(_button == MouseButton::LEFT)
+    {
+        // Add a new position and draws the lasso.
+        m_lassoToolPositions.push_back(toolPosition);
+        m_lassoNearPositions.push_back(nearPosition);
+        m_lassoFarPositions.push_back(farPosition);
+        drawLasso();
+
+        // Enable the left button move state.
+        m_leftButtonMoveState = true;
+    }
+
+    // Draw the last lasso line.
+    SIGHT_ASSERT("Lasso positions must have at east one point", !m_lassoToolPositions.empty());
+
+    m_lastLassoLine->beginUpdate(0);
+
+    m_lastLassoLine->colour(m_lineColor);
+    m_lastLassoLine->position(m_lassoToolPositions.back());
+    m_lastLassoLine->position(toolPosition);
+
+    m_lastLassoLine->end();
+
+    // Send a render request.
+    requestRender();
 }
 
 //-----------------------------------------------------------------------------

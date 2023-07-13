@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -23,6 +23,8 @@
 
 #include <utestData/Data.hpp>
 
+#include <ui/testCore/helper/Scene3d.hpp>
+
 CPPUNIT_TEST_SUITE_REGISTRATION(sight::sightviewer::test::ui::ZoomOut);
 
 namespace sight::sightviewer::test::ui
@@ -32,6 +34,8 @@ namespace sight::sightviewer::test::ui
 
 void ZoomOut::test()
 {
+    namespace helper = sight::ui::testCore::helper;
+
     const std::string testName  = "sightViewerZoomOutTest";
     const std::string imageName = testName + ".png";
     const std::filesystem::path snapshotPath(sight::ui::testCore::Tester::getImageOutputPath() / imageName);
@@ -52,24 +56,8 @@ void ZoomOut::test()
                 utestData::Data::dir() / "sight/mesh/vtk/sphere.vtk"
             );
 
-            /* Drag the mouse to zoom out */
-            // Firstly, we need the 3D scene
-            tester.take(
-                "ogre scene",
-                [&tester]() -> QObject* {return tester.getMainWindow()->findChild<QWidget*>("genericSceneSrv");});
-            // We need to a reference to it for later
-            auto* ogreScene = tester.get<QWidget*>();
-            tester.interact(
-                // Drag the mouse...
-                std::make_unique<sight::ui::testCore::MouseDrag>(
-                    // ...from the center...
-                    ogreScene->rect().center(),
-                    // ...to 10 pixels lower...
-                    ogreScene->rect().center() - QPoint(0, 10),
-                    // ...while holding the right button
-                    Qt::MouseButton::RightButton
-                )
-            );
+            // Drag the mouse to zoom out
+            helper::Scene3d::zoom(tester, "sceneSrv", -7);
 
             saveSnapshot(tester, snapshotPath);
 

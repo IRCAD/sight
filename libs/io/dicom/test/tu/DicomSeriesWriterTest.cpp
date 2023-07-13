@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "DicomSeriesWriterTest.hpp"
 
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <data/DicomSeries.hpp>
 
@@ -124,17 +124,16 @@ void DicomSeriesWriterTest::writeReadTest()
 
     CPPUNIT_ASSERT_MESSAGE("Failed to set up source Dicom series", m_srcDicomSeries);
 
-    const std::filesystem::path destPath = core::tools::System::getTemporaryFolder("writeReadTest")
-                                           / "dicomSeriesTest";
-    std::filesystem::create_directories(destPath);
+    core::os::TempDir tmpDir;
+    std::filesystem::create_directories(tmpDir);
 
     // Write Dicom
     io::dicom::helper::DicomSeriesWriter::sptr writer = io::dicom::helper::DicomSeriesWriter::New();
     writer->setObject(m_srcDicomSeries);
-    writer->setFolder(destPath);
+    writer->setFolder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
-    this->checkDicomSeries(destPath);
+    this->checkDicomSeries(tmpDir);
 }
 
 //------------------------------------------------------------------------------
@@ -153,18 +152,16 @@ void DicomSeriesWriterTest::writeReadAnonymiseTest()
         io::dicom::helper::DicomAnonymizer::New();
     anonymizer->addExceptionTag(0x0010, 0x0010, "ANONYMIZED^ANONYMIZED "); // Patient's name
 
-    const std::filesystem::path destPath =
-        core::tools::System::getTemporaryFolder("writeReadAnonymiseTest") / "dicomSeriesTest";
-    std::filesystem::create_directories(destPath);
+    core::os::TempDir tmpDir;
 
     // Write Dicom
-    io::dicom::helper::DicomSeriesWriter::sptr writer = io::dicom::helper::DicomSeriesWriter::New();
+    auto writer = io::dicom::helper::DicomSeriesWriter::New();
     writer->setObject(m_srcDicomSeries);
-    writer->setFolder(destPath);
+    writer->setFolder(tmpDir);
     writer->setAnonymizer(anonymizer);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
-    this->checkDicomSeries(destPath, true);
+    this->checkDicomSeries(tmpDir, true);
 }
 
 //------------------------------------------------------------------------------
@@ -178,19 +175,16 @@ void DicomSeriesWriterTest::writeReadDirArchiveTest()
 
     CPPUNIT_ASSERT_MESSAGE("Failed to set up source Dicom series", m_srcDicomSeries);
 
-    const std::filesystem::path destPath =
-        core::tools::System::getTemporaryFolder("writeReadDirArchiveTest") / "dicomSeriesTest";
-    std::filesystem::create_directories(destPath);
-
-    io::zip::WriteDirArchive::sptr writeArchive = io::zip::WriteDirArchive::New(destPath);
+    core::os::TempDir tmpDir;
+    auto writeArchive = io::zip::WriteDirArchive::New(tmpDir);
 
     // Write Dicom
-    io::dicom::helper::DicomSeriesWriter::sptr writer = io::dicom::helper::DicomSeriesWriter::New();
+    auto writer = io::dicom::helper::DicomSeriesWriter::New();
     writer->setObject(m_srcDicomSeries);
     writer->setOutputArchive(writeArchive);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
-    this->checkDicomSeries(destPath);
+    this->checkDicomSeries(tmpDir);
 }
 
 //------------------------------------------------------------------------------

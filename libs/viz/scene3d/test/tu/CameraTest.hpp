@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,6 +34,7 @@ class CameraTest : public CPPUNIT_NS::TestFixture
 CPPUNIT_TEST_SUITE(CameraTest);
 CPPUNIT_TEST(computeProjectionMatrix);
 CPPUNIT_TEST(convertPixelToWorldSpace);
+CPPUNIT_TEST(convertWorldSpaceToScreenSpace);
 CPPUNIT_TEST_SUITE_END();
 
 public:
@@ -43,6 +44,7 @@ public:
 
     static void computeProjectionMatrix();
     static void convertPixelToWorldSpace();
+    static void convertWorldSpaceToScreenSpace();
 };
 
 } // namespace sight::viz::scene3d::ut

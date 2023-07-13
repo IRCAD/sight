@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -47,7 +47,7 @@ public:
 
     // TODO : update API to reflect the cursor stack
     /// Set the cursor
-    UI_BASE_API void setCursor(ui::base::ICursor::CursorType cursor) override;
+    UI_BASE_API void setCursor(ui::base::ICursor::CursorType cursor, bool setOverridenAsDefault = true) override;
 
     /// Set the default cursor
     UI_BASE_API void setDefaultCursor() override;
@@ -112,6 +112,44 @@ public:
 
     /// Destructor. Reset cursor to default
     UI_BASE_API ~CrossCursor() override
+    {
+        setDefaultCursor();
+    }
+};
+
+class UI_BASE_CLASS_API OpenHandCursor : public Cursor
+{
+public:
+
+    SIGHT_DECLARE_CLASS(OpenHandCursor, Cursor, new OpenHandCursor);
+
+    /// Constructor. Sets cursor to "cross" state
+    UI_BASE_API OpenHandCursor()
+    {
+        setCursor(CursorType::OPEN_HAND);
+    }
+
+    /// Destructor. Reset cursor to default
+    UI_BASE_API ~OpenHandCursor() override
+    {
+        setDefaultCursor();
+    }
+};
+
+class UI_BASE_CLASS_API ClosedHandCursor : public Cursor
+{
+public:
+
+    SIGHT_DECLARE_CLASS(ClosedHandCursor, Cursor, new ClosedHandCursor);
+
+    /// Constructor. Sets cursor to "cross" state
+    UI_BASE_API ClosedHandCursor()
+    {
+        setCursor(CursorType::CLOSED_HAND);
+    }
+
+    /// Destructor. Reset cursor to default
+    UI_BASE_API ~ClosedHandCursor() override
     {
         setDefaultCursor();
     }

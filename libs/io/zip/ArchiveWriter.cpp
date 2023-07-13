@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -34,6 +34,7 @@
 
 #include <boost/iostreams/stream.hpp>
 
+#include <cstdlib>
 #include <cstring>
 #include <fstream>
 #include <iostream>
@@ -48,6 +49,15 @@ namespace sight::io::zip
 
 namespace
 {
+
+// Force deflate if env variable is set
+const bool s_legacy_compression =
+    []
+    {
+        const char* const env_legacy_compression = std::getenv("SIGHT_LEGACY_COMPRESSION");
+
+        return env_legacy_compression != nullptr && std::strncmp(env_legacy_compression, "1", 1) == 0;
+    }();
 
 /// Convert argument to minizip dialect
 inline std::tuple<std::uint16_t, std::int16_t> toMinizipParameter(Method method, Level level)
@@ -110,6 +120,11 @@ inline std::tuple<std::uint16_t, std::int16_t> toMinizipParameter(Method method,
 
         default:
             return toMinizipParameter(Method::ZSTD, level);
+    }
+
+    if(s_legacy_compression && minizipMethod != MZ_COMPRESS_METHOD_DEFLATE)
+    {
+        return toMinizipParameter(Method::DEFLATE, level);
     }
 
     return {minizipMethod, minizipLevel};
@@ -214,7 +229,10 @@ public:
 
         mz_zip_writer_set_compress_method(m_zip_writer, minizipMethod);
         mz_zip_writer_set_compress_level(m_zip_writer, minizipLevel);
-        mz_zip_writer_set_zip_cd(m_zip_writer, m_format == Archive::ArchiveFormat::COMPATIBLE ? 0 : 1);
+        mz_zip_writer_set_zip_cd(
+            m_zip_writer,
+            s_legacy_compression || m_format == Archive::ArchiveFormat::COMPATIBLE ? 0 : 1
+        );
 
         // Open the zip file
         auto result = mz_zip_writer_open_file(m_zip_writer, m_archive_path.c_str(), 0, 0);

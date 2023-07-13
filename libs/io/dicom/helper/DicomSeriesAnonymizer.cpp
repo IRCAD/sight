@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,7 +27,7 @@
 #include <core/jobs/IJob.hpp>
 #include <core/jobs/Job.hpp>
 #include <core/jobs/Observer.hpp>
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -77,12 +77,11 @@ void DicomSeriesAnonymizer::anonymize(
     const auto future = m_job->run();
 
     // Create destination directory
-    const std::filesystem::path destPath = core::tools::System::getTemporaryFolder("AnonymizedSeries");
-    std::filesystem::create_directories(destPath);
+    core::os::TempDir dest;
 
     // Write DicomSeries (Copy files)
     m_writer->setObject(source);
-    m_writer->setFolder(destPath);
+    m_writer->setFolder(dest);
     m_writer->write();
 
     if(m_job->cancelRequested())
@@ -91,7 +90,7 @@ void DicomSeriesAnonymizer::anonymize(
     }
 
     // Anonymize directory
-    m_anonymizer.anonymize(destPath);
+    m_anonymizer.anonymize(dest);
 
     if(m_job->cancelRequested())
     {
@@ -107,7 +106,7 @@ void DicomSeriesAnonymizer::anonymize(
     // Read anonymized series
     auto series_set = data::SeriesSet::New();
     m_reader->setObject(series_set);
-    m_reader->setFolder(destPath);
+    m_reader->setFolder(dest);
     m_reader->readDicomSeries();
 
     // Update DicomSeries

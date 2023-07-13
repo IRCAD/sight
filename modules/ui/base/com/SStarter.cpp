@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,8 +33,13 @@ namespace sight::module::ui::base::com
 
 //-----------------------------------------------------------------------------
 
-SStarter::SStarter() noexcept =
-    default;
+SStarter::SStarter() noexcept
+{
+    SIGHT_WARN(
+        "'sight::module::ui::base::com::SStarter' is deprecated and will be removed in Sight 24.0,"
+        " start and stop connections are now supported directly in XML."
+    );
+}
 
 //-----------------------------------------------------------------------------
 

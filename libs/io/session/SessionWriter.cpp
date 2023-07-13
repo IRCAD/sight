@@ -115,7 +115,7 @@ std::string SessionWriter::extension() const
 
 //------------------------------------------------------------------------------
 
-void SessionWriter::set_password(const secure_string& password)
+void SessionWriter::setPassword(const secure_string& password)
 {
     m_pimpl->m_password->set_password(password);
 }
@@ -146,6 +146,13 @@ void SessionWriter::setCustomSerializer(const std::string& className, serializer
 void SessionWriter::setSerializer(const std::string& className, serializer_t serializer)
 {
     detail::SessionSerializer::setSerializer(className, serializer);
+}
+
+//------------------------------------------------------------------------------
+
+serializer_t SessionWriter::serializer(const std::string& className)
+{
+    return detail::SessionSerializer::serializer(className);
 }
 
 } //namespace sight::io::session

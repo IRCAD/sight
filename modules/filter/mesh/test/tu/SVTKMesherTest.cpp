@@ -23,10 +23,10 @@
 
 #include "data/Exception.hpp"
 
+#include <core/os/TempPath.hpp>
 #include <core/runtime/runtime.hpp>
 #include <core/service/base.hpp>
 #include <core/tools/random/Generator.hpp>
-#include <core/tools/System.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
@@ -120,10 +120,10 @@ inline static std::pair<sight::service::IService::sptr, sight::data::ImageSeries
         }
     }
 
-    const std::filesystem::path path    = core::tools::System::getTemporaryFolder() / "meshTest.vtk";
-    io::vtk::ImageWriter::sptr myWriter = io::vtk::ImageWriter::New();
+    core::os::TempFile tempFile;
+    auto myWriter = io::vtk::ImageWriter::New();
     myWriter->setObject(imageSeries);
-    myWriter->setFile(path);
+    myWriter->setFile(tempFile);
     CPPUNIT_ASSERT_NO_THROW(myWriter->write());
 
     return {generateMeshService, imageSeries};

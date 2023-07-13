@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ class Viewport;
 namespace sight::viz::scene3d
 {
 
-class SRender;
+class Layer;
 
 namespace compositor
 {
@@ -60,59 +60,30 @@ public:
     typedef std::pair<CompositorIdType, bool> CompositorType;
     typedef std::vector<CompositorType> CompositorChainType;
 
-    VIZ_SCENE3D_API ChainManager(Ogre::Viewport* viewport);
+    VIZ_SCENE3D_API ChainManager(const SPTR(viz::scene3d::Layer)& _layer);
     VIZ_SCENE3D_API ~ChainManager() override;
 
     /// Inserts the new compositor in the compositor chain vector
     VIZ_SCENE3D_API void addAvailableCompositor(CompositorIdType _compositorName);
     /// Clears the compositor chain
-    VIZ_SCENE3D_API void clearCompositorChain(const std::string& _layerId,
-                                              SPTR(viz::scene3d::SRender) _renderService);
+    VIZ_SCENE3D_API void clearCompositorChain();
     /// Enables or disables the target compositor
-    VIZ_SCENE3D_API void updateCompositorState(CompositorIdType _compositorName, bool _isEnabled,
-                                               const std::string& _layerId,
-                                               SPTR(viz::scene3d::SRender) _renderService);
+    VIZ_SCENE3D_API void updateCompositorState(CompositorIdType _compositorName, bool _isEnabled);
 
-    VIZ_SCENE3D_API void setCompositorChain(const std::vector<CompositorIdType>& _compositors,
-                                            const std::string& _layerId, SPTR(viz::scene3d::SRender) _renderService);
+    VIZ_SCENE3D_API void setCompositorChain(const std::vector<CompositorIdType>& _compositors);
 
     VIZ_SCENE3D_API CompositorChainType getCompositorChain();
-
-    VIZ_SCENE3D_API void setOgreViewport(Ogre::Viewport* _viewport);
 
     /// Name of the last compositor put in the compositor chain.
     /// This compositor is used to have a blend in order to get a correct final render
     VIZ_SCENE3D_API static const CompositorIdType FINAL_CHAIN_COMPOSITOR;
-
-    /// Class used to find a compositor by its name in the compositor chain
-    class VIZ_SCENE3D_CLASS_API FindCompositorByName
-    {
-    public:
-
-        FindCompositorByName(const CompositorIdType& _name) :
-            compositorName(_name)
-        {
-        }
-
-        //------------------------------------------------------------------------------
-
-        bool operator()(const CompositorType& _compositor) const
-        {
-            return _compositor.first == compositorName;
-        }
-
-    private:
-
-        const CompositorIdType& compositorName;
-    };
 
 private:
 
     /// Adds the final compositor to the compositor chain
     void addFinalCompositor();
 
-    void updateCompositorAdaptors(CompositorIdType _compositorName, bool _isEnabled,
-                                  const std::string& _layerId, SPTR(viz::scene3d::SRender) _renderService);
+    void updateCompositorAdaptors(CompositorIdType _compositorName, bool _isEnabled);
 
     /// List of available compositors, the names are associated to a boolean value which indicates whether
     /// the compositor is enabled or not
@@ -120,9 +91,8 @@ private:
     /// compositors as well. So this list is only there to know which compositors are handled by this class.
     CompositorChainType m_compositorChain;
 
-    /// The parent layer's viewport.
-    /// The ogre's compositor manager needs it in order to access the right compositor chain.
-    Ogre::Viewport* m_ogreViewport;
+    /// The parent layer's.
+    WPTR(viz::scene3d::Layer) m_layer;
 
     /// Map allowing to keep the objects of the created adaptors alive
     std::map<std::string, data::Object::sptr> m_adaptorsObjectsOwner;
@@ -134,13 +104,6 @@ private:
 inline ChainManager::CompositorChainType ChainManager::getCompositorChain()
 {
     return m_compositorChain;
-}
-
-//-----------------------------------------------------------------------------
-
-inline void ChainManager::setOgreViewport(Ogre::Viewport* _viewport)
-{
-    m_ogreViewport = _viewport;
 }
 
 //-----------------------------------------------------------------------------

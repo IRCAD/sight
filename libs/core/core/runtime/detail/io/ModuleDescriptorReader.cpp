@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -86,8 +86,29 @@ ModuleDescriptorReader::ModuleContainer ModuleDescriptorReader::createModules(
         throw RuntimeException("'" + normalizedPath.string() + "': not a directory.");
     }
 
-    // Walk through the repository entries.
     ModuleContainer modules;
+    const auto loadModuleFn =
+        [&](const std::filesystem::path& path)
+        {
+            try
+            {
+                SPTR(Module) module = ModuleDescriptorReader::createModule(path);
+                if(module)
+                {
+                    modules.push_back(module);
+                }
+            }
+            catch(const RuntimeException& runtimeException)
+            {
+                SIGHT_DEBUG("'" << path.string() << "': skipped. " << runtimeException.what());
+            }
+            catch(const core::Exception& exception)
+            {
+                SIGHT_DEBUG("'" << path.string() << "': skipped. " << exception.what());
+            }
+        };
+
+    // Walk through the repository entries.
     std::filesystem::directory_iterator currentEntry(normalizedPath);
     std::filesystem::directory_iterator endEntry;
     for( ; currentEntry != endEntry ; ++currentEntry)
@@ -96,23 +117,15 @@ ModuleDescriptorReader::ModuleContainer ModuleDescriptorReader::createModules(
 
         if(std::filesystem::is_directory(entryPath))
         {
-            try
-            {
-                SPTR(Module) module = ModuleDescriptorReader::createModule(entryPath);
-                if(module)
-                {
-                    modules.push_back(module);
-                }
-            }
-            catch(const RuntimeException& runtimeException)
-            {
-                SIGHT_DEBUG("'" << entryPath.string() << "': skipped. " << runtimeException.what());
-            }
-            catch(const core::Exception& exception)
-            {
-                SIGHT_DEBUG("'" << entryPath.string() << "': skipped. " << exception.what());
-            }
+            loadModuleFn(entryPath);
         }
+    }
+
+    // If nothing can be found in the subfolders, give a try with the current folder
+    // This is sometimes used in unit-test to load a specific module instead of a set of modules
+    if(modules.empty())
+    {
+        loadModuleFn(normalizedPath);
     }
 
     return modules;

@@ -62,7 +62,7 @@ Example:
         </service>
 
         <!-- Editor to manage image windowing -->
-        <service uid="windowLevelImage" type="sight::module::ui::qt::image::WindowLevel" autoConnect="true">
+        <service uid="windowLevelImage" type="sight::module::ui::qt::image::SWindowLevel" autoConnect="true">
             <in key="image" uid="${image}" />
             <inout key="tf" uid="${transferFunction}" />
         </service>

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -31,7 +31,7 @@ namespace sight::ui::qt::series
 {
 
 /// This class allows to display a DICOM series
-class UI_QT_CLASS_API SelectorDialog : public QDialog
+class UI_QT_CLASS_QT_API SelectorDialog : public QDialog
 {
 Q_OBJECT
 
@@ -40,13 +40,13 @@ public:
     /// Initializes the selector dialog.
     /// @param series the series to select.
     /// @param parent the parent widget.
-    UI_QT_API SelectorDialog(data::SeriesSet::csptr series_set, QWidget* parent = nullptr);
+    UI_QT_QT_API SelectorDialog(data::SeriesSet::csptr series_set, QWidget* parent = nullptr);
 
     /// Destroys the selector.
-    UI_QT_API ~SelectorDialog() noexcept override;
+    UI_QT_QT_API ~SelectorDialog() noexcept override;
 
     /// Returns the selected series.
-    UI_QT_API data::SeriesSet::sptr get_selection() const;
+    UI_QT_QT_API data::SeriesSet::sptr get_selection() const;
 
 private:
 

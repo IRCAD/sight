@@ -35,7 +35,6 @@
 #include <service/op/Add.hpp>
 #include <service/op/Get.hpp>
 
-#include <viz/scene3d/helper/Font.hpp>
 #include <viz/scene3d/helper/Scene.hpp>
 #include <viz/scene3d/R2VBRenderable.hpp>
 #include <viz/scene3d/SRender.hpp>
@@ -269,13 +268,7 @@ void SPointList::updating()
 
 void SPointList::createLabel(const data::PointList::csptr& _pointList)
 {
-    Ogre::SceneManager* sceneMgr          = this->getSceneManager();
-    Ogre::OverlayContainer* textContainer = this->getLayer()->getOverlayTextPanel();
-    Ogre::Camera* cam                     = this->getLayer()->getDefaultCamera();
-    SIGHT_ASSERT("Ogre::SceneManager is null", sceneMgr);
-
-    const float dpi = this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
-
+    auto renderSrv          = this->getRenderService();
     std::size_t i           = 0;
     std::string labelNumber = std::to_string(i);
     for(const auto& point : _pointList->getPoints())
@@ -290,17 +283,8 @@ void SPointList::createLabel(const data::PointList::csptr& _pointList)
             labelNumber = std::to_string(i);
         }
 
-        m_labels.push_back(
-            sight::viz::scene3d::Text::New(
-                this->getID() + labelNumber,
-                sceneMgr,
-                textContainer,
-                m_fontSource,
-                m_fontSize,
-                dpi,
-                cam
-            )
-        );
+        m_labels.push_back(sight::viz::scene3d::IText::New(this->getLayer()));
+        m_labels[i]->setFontSize(m_fontSize);
         m_labels[i]->setText(labelNumber);
         m_labels[i]->setTextColor(
             Ogre::ColourValue(
@@ -310,7 +294,7 @@ void SPointList::createLabel(const data::PointList::csptr& _pointList)
             )
         );
         m_nodes.push_back(m_sceneNode->createChildSceneNode(this->getID() + labelNumber));
-        m_nodes[i]->attachObject(m_labels[i]);
+        m_labels[i]->attachToNode(m_nodes[i], this->getLayer()->getDefaultCamera());
         data::Point::PointCoordArrayType coord = point->getCoord();
         m_nodes[i]->translate(static_cast<float>(coord[0]), static_cast<float>(coord[1]), static_cast<float>(coord[2]));
         i++;
@@ -321,20 +305,10 @@ void SPointList::createLabel(const data::PointList::csptr& _pointList)
 
 void SPointList::destroyLabel()
 {
-    Ogre::SceneManager* sceneMgr = this->getSceneManager();
-
-    for(Ogre::SceneNode* node : m_nodes)
-    {
-        m_sceneNode->removeAndDestroyChild(node);
-    }
-
+    std::ranges::for_each(m_nodes, [this](auto& node){m_sceneNode->removeAndDestroyChild(node);});
     m_nodes.clear();
 
-    for(sight::viz::scene3d::Text* label : m_labels)
-    {
-        sceneMgr->destroyMovableObject(label);
-    }
-
+    std::ranges::for_each(m_labels, [](auto& label){label->detachFromNode();});
     m_labels.clear();
 }
 

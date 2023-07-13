@@ -30,9 +30,9 @@
 #include <data/PointList.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/IText.hpp>
 #include <viz/scene3d/ITransformable.hpp>
 #include <viz/scene3d/Mesh.hpp>
-#include <viz/scene3d/Text.hpp>
 
 #include <OGRE/OgreEntity.h>
 
@@ -230,7 +230,7 @@ private:
     std::uint32_t m_queryFlags {Ogre::SceneManager::ENTITY_TYPE_MASK};
 
     /// Stores label of each point.
-    std::vector<sight::viz::scene3d::Text*> m_labels;
+    std::vector<sight::viz::scene3d::IText::sptr> m_labels;
 
     /// Stores label points nodes.
     std::vector<Ogre::SceneNode*> m_nodes;

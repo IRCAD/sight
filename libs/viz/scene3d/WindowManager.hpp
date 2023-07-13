@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -68,9 +68,6 @@ public:
     VIZ_SCENE3D_API bool hasWindow();
 
 private:
-
-    /// Contains the first window.
-    Ogre::RenderWindow* m_firstWindow {nullptr};
 
     /// Stores all Ogre windows.
     std::set<Ogre::RenderWindow*> m_windows;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,8 +49,8 @@ namespace sight::io::vtk
  *
  * Write a VTK Image using the VTK lib
  */
-class ImageWriter : public base::writer::GenericObjectWriter<data::Image>,
-                    public core::location::SingleFile
+class IO_VTK_CLASS_API ImageWriter : public base::writer::GenericObjectWriter<data::Image>,
+                                     public core::location::SingleFile
 {
 public:
 

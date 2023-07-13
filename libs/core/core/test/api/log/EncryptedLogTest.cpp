@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -25,8 +25,8 @@
 
 #include <core/crypto/Base64.hpp>
 #include <core/log/SpyLogger.hpp>
+#include <core/os/TempPath.hpp>
 #include <core/spyLog.hpp>
-#include <core/tools/System.hpp>
 #include <core/tools/UUID.hpp>
 
 #include <boost/dll.hpp>
@@ -87,18 +87,12 @@ inline static std::filesystem::path decrypt(
     }
 
     // Find the logger binary
-    static const auto logger_path =
-        []
-        {
-            decltype(boost::this_process::path()) bin_paths;
-            bin_paths.push_back(boost::dll::program_location().remove_filename());
-            return boost::process::search_path("sightlog", bin_paths);
-        }();
+    const auto& logger_path = core::log::SpyLogger::get_logger_path();
 
     boost::process::ipstream remote_err;
 
     auto child = boost::process::child(
-        logger_path,
+        logger_path.string(),
         boost::process::args = {
             "-b",
             "-i",
@@ -120,7 +114,7 @@ inline static std::filesystem::path decrypt(
     if(child.exit_code() != 0)
     {
         std::stringstream ss;
-        ss << "Sightlog error [" << child.exit_code() << "]: " << remote_err.rdbuf();
+        ss << "TEST: Sightlog error [" << child.exit_code() << "]: " << remote_err.rdbuf();
         throw std::runtime_error(ss.str());
     }
 
@@ -138,13 +132,34 @@ inline static std::filesystem::path decrypt(
 inline static std::filesystem::path setupEncryptedLog()
 {
     // Create a temporary directory
-    const auto& tmp_folder = core::tools::System::getTemporaryFolder();
-    std::filesystem::create_directories(tmp_folder);
+    const auto& tmp_folder  = core::os::TempDir::sharedDirectory();
     const auto& log_archive = tmp_folder / ENCRYPTED_LOG_FILE;
     std::filesystem::remove(log_archive);
 
     auto& log = core::log::SpyLogger::get();
     CPPUNIT_ASSERT_NO_THROW(log.start_encrypted_logger(log_archive, sight::core::log::SpyLogger::SL_TRACE, PASSWORD));
+
+    const auto& real_log_archive = log.get_current_log_path();
+
+    CPPUNIT_ASSERT_MESSAGE(
+        real_log_archive.string() + " doesn't exist.",
+        std::filesystem::exists(real_log_archive) && std::filesystem::is_regular_file(real_log_archive)
+    );
+
+    return real_log_archive;
+}
+
+//------------------------------------------------------------------------------
+
+inline static std::filesystem::path setupLog()
+{
+    // Create a temporary directory
+    const auto& tmp_folder  = core::os::TempDir::sharedDirectory();
+    const auto& log_archive = tmp_folder / LOG_FILE;
+    std::filesystem::remove(log_archive);
+
+    auto& log = core::log::SpyLogger::get();
+    CPPUNIT_ASSERT_NO_THROW(log.start_logger(log_archive, sight::core::log::SpyLogger::SL_TRACE));
 
     const auto& real_log_archive = log.get_current_log_path();
 
@@ -339,13 +354,9 @@ void EncryptedLogTest::password_change_decryption_test()
         CPPUNIT_ASSERT_NO_THROW(log.trace(message, SIGHT_SOURCE_FILE, __LINE__));
     }
 
-    // Save the first real log archive path
-    const auto& first_log_archive = log.get_current_log_path();
-    std::cerr << "First log archive: " << first_log_archive.string() << std::endl;
-
     // Change the current password, it will also close the current log archive
     constexpr static auto NEW_PASSWORD = "this_is_a_new_password";
-    log.change_log_password(NEW_PASSWORD);
+    log.change_log_password(NEW_PASSWORD, PASSWORD);
 
     // Write again some log messages
     for(const auto& message : last_messages)
@@ -355,19 +366,119 @@ void EncryptedLogTest::password_change_decryption_test()
 
     // Save the last real log archive path
     const auto& last_log_archive = log.get_current_log_path();
-    std::cerr << "Last log archive: " << last_log_archive.string() << std::endl;
 
     // This will remove the sink and close the sightlog process
     log.stop_logger();
 
     // Try to decrypt the first log archive
-    testLogArchive(first_log_archive, PASSWORD, first_messages);
+    auto merged_log_archive = last_log_archive;
+    merged_log_archive.replace_filename("sight.1.log.zip");
+    testLogArchive(merged_log_archive, NEW_PASSWORD, first_messages);
 
     // Try to decrypt the last log archive
     testLogArchive(last_log_archive, NEW_PASSWORD, last_messages);
 
     // Final cleanup
     stopLogger();
+}
+
+//------------------------------------------------------------------------------
+
+void EncryptedLogTest::relocate_log_test()
+{
+    const std::array first_messages = {
+        core::tools::UUID::generateUUID(),
+        core::tools::UUID::generateUUID(),
+        core::tools::UUID::generateUUID()
+    };
+
+    const std::array next_messages = {
+        core::tools::UUID::generateUUID(),
+        core::tools::UUID::generateUUID(),
+        core::tools::UUID::generateUUID()
+    };
+
+    const std::array last_messages = {
+        core::tools::UUID::generateUUID(),
+        core::tools::UUID::generateUUID(),
+        core::tools::UUID::generateUUID()
+    };
+
+    const auto test =
+        [&]
+        {
+            // Write some log messages
+            auto& log = core::log::SpyLogger::get();
+
+            for(const auto& message : first_messages)
+            {
+                CPPUNIT_ASSERT_NO_THROW(log.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+            }
+
+            // Relocate the log to a new directory (and relocate also current log archive)
+            core::os::TempDir first_temp_dir;
+            log.relocate_log(first_temp_dir / "LOG-20230226-163932.zip", PASSWORD, true);
+
+            const auto& merged_logs_path         = first_temp_dir / "LOG-20230226-163932.0.zip";
+            const auto& first_relocated_log_path = first_temp_dir / "LOG-20230226-163932.1.zip";
+
+            CPPUNIT_ASSERT(std::filesystem::exists(merged_logs_path));
+            CPPUNIT_ASSERT(std::filesystem::exists(first_relocated_log_path));
+
+            // Write again some log messages, in the new location
+            for(const auto& message : next_messages)
+            {
+                CPPUNIT_ASSERT_NO_THROW(log.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+            }
+
+            // Relocate the log a second time to a new directory (without relocating previous log archives)
+            core::os::TempDir second_temp_dir;
+            log.relocate_log(second_temp_dir / "LOG-20230226-165223.zip", PASSWORD, false);
+
+            const auto& second_relocated_log_path = second_temp_dir / "LOG-20230226-165223.0.zip";
+
+            CPPUNIT_ASSERT(std::filesystem::exists(second_relocated_log_path));
+            CPPUNIT_ASSERT(!std::filesystem::exists(second_temp_dir / "LOG-20230226-165223.1.zip"));
+
+            // Write the last log messages, in the last location
+            for(const auto& message : last_messages)
+            {
+                CPPUNIT_ASSERT_NO_THROW(log.trace(message, SIGHT_SOURCE_FILE, __LINE__));
+            }
+
+            // This will remove the sink and close the sightlog process
+            log.stop_logger();
+
+            // Try to decrypt the merged log archive
+            testLogArchive(merged_logs_path, PASSWORD, first_messages);
+
+            // Try to decrypt the second log archive
+            testLogArchive(first_relocated_log_path, PASSWORD, next_messages);
+
+            // Try to decrypt the last log archive
+            testLogArchive(second_relocated_log_path, PASSWORD, last_messages);
+        };
+
+    // Test when starting clear log
+    {
+        setupLog();
+
+        test();
+
+        // Final cleanup
+        stopLogger();
+    }
+
+    // Test when starting with encrypted log
+    {
+        // Start logger
+        setupEncryptedLog();
+
+        test();
+
+        // Final cleanup
+        stopLogger();
+    }
 }
 
 } // namespace sight::core::log::ut

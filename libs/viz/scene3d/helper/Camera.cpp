@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -190,6 +190,34 @@ Ogre::Vector3 Camera::convertNDCToViewSpace(const Ogre::Camera& _camera, const O
     const Ogre::Vector4 result = invertedCombinedMat * clippingCoordinatePixel;
 
     return result.xyz();
+}
+
+//------------------------------------------------------------------------------
+
+Ogre::Vector2 Camera::convertWorldSpaceToScreenSpace(const Ogre::Camera& _camera, const Ogre::Vector3& _worldPos)
+{
+    const Ogre::Affine3& viewMat = _camera.getViewMatrix();
+    const Ogre::Matrix4& projMat = _camera.getProjectionMatrix();
+
+    const Ogre::Vector4 result = projMat * viewMat * Ogre::Vector4(_worldPos, 1.0);
+    if(result.w == 0.F)
+    {
+        SIGHT_ERROR("Homogenous coordinate is null, this should not happen");
+        return {0.F, 0.F};
+    }
+
+    Ogre::Vector3 ndcPos = result.xyz() / result.w;
+
+    const Ogre::Viewport* viewport = _camera.getViewport();
+
+    const Ogre::Vector2 vpSize(static_cast<float>(viewport->getActualWidth()),
+                               static_cast<float>(viewport->getActualHeight()));
+    const Ogre::Vector2 vpPosition(static_cast<float>(viewport->getActualLeft()),
+                                   static_cast<float>(viewport->getActualTop()));
+    ndcPos.y *= -1.F;
+    const Ogre::Vector2 screenPos = ((ndcPos.xy() + 1.F) * 0.5F) * vpSize + vpPosition;
+
+    return screenPos;
 }
 
 //-----------------------------------------------------------------------------

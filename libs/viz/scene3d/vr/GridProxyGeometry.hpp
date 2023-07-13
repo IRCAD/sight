@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -65,6 +65,7 @@ public:
         const std::string& _name,
         Ogre::SceneManager* _sceneManager,
         const viz::scene3d::Texture::sptr& _3DImageTexture,
+        const viz::scene3d::Texture::sptr& _maskTexture,
         const TransferFunction::sptr& _tf,
         const std::string& _mtlName
     );
@@ -90,6 +91,9 @@ public:
 
     /// Sets the texture for which the grid is computed. Doesn't recompute the grid.
     VIZ_SCENE3D_API void set3DImageTexture(const viz::scene3d::Texture::sptr& _texture);
+
+    /// Sets the mask texture for which the grid is computed. Doesn't recompute the grid.
+    VIZ_SCENE3D_API void setMaskTexture(const viz::scene3d::Texture::sptr& _texture);
 
 private:
 
@@ -131,6 +135,9 @@ private:
 
     /// Image from which we define a grid.
     viz::scene3d::Texture::sptr m_3DImageTexture {nullptr};
+
+    /// Image from which we define a grid.
+    viz::scene3d::Texture::sptr m_maskTexture {nullptr};
 
     /// Transfer function to be applied to the image.
     TransferFunction::wptr m_gpuTF;
@@ -204,6 +211,13 @@ inline const Ogre::String& GridProxyGeometry::getMovableType() const
 inline void GridProxyGeometry::set3DImageTexture(const viz::scene3d::Texture::sptr& _texture)
 {
     m_3DImageTexture = _texture;
+}
+
+//------------------------------------------------------------------------------
+
+inline void GridProxyGeometry::setMaskTexture(const viz::scene3d::Texture::sptr& _texture)
+{
+    m_maskTexture = _texture;
 }
 
 } // namespace sight::viz::scene3d::vr

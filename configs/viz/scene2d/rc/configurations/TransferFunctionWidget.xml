@@ -1,9 +1,12 @@
 <extension implements="sight::service::extension::AppConfig" >
-    <id>TransferFunctionWidgetCfg</id>
+    <id>sight::config::viz::scene2d::TransferFunctionWidgetCfg</id>
     <parameters>
         <param name="WID_PARENT" />
         <param name="image" />
         <param name="currentTF" />
+        <param name="presets" default="emptyPresets" />
+        <param name="USE_DEFAULT_TF" default="true" />
+        <param name="ADDITIONAL_TF_PATH" default="" />
     </parameters>
     <config>
 
@@ -11,6 +14,7 @@
 
         <object uid="${image}" type="sight::data::Image" src="ref" />
         <object uid="${currentTF}" type="sight::data::TransferFunction" src="ref" />
+        <object uid="${presets}" type="sight::data::Composite" src="deferred" />
 
         <object uid="viewport" type="sight::viz::scene2d::data::Viewport" />
         <object uid="viewportShutter" type="sight::viz::scene2d::data::Viewport" />
@@ -126,7 +130,7 @@
 
         <service uid="genericSceneViewportSelectorSrv" type="sight::viz::scene2d::SRender">
             <scene>
-                <scene x="-3000" y="-1.1" width="6000" height="1.2" antialiasing="true" background="#36393E" />
+                <scene x="-5000" y="-1.1" width="10000" height="1.2" antialiasing="true" background="#36393E" />
 
                 <axis id="xAxis" origin="0.0" scale="1.0" scaleType="LINEAR" />
                 <axis id="yAxis" origin="0.0" scale="-1.0" scaleType="LINEAR" />
@@ -168,13 +172,18 @@
         <service uid="transferFunctionEditorSrv" type="sight::module::ui::qt::image::STransferFunction" >
             <in key="image" uid="${image}" />
             <inout key="tf" uid="${currentTF}" />
-            <config deleteicon="sight::module::ui::flaticons/RedDeleteFile.svg"
-                    newicon="sight::module::ui::flaticons/GreenNewFile.svg"
-                    copyicon="sight::module::ui::flaticons/GreenCopyFile.svg"
-                    reinitializeicon="sight::module::ui::flaticons/RedResetFile.svg"
-                    renameicon="sight::module::ui::flaticons/YellowRenameFile.svg"
-                    importicon="sight::module::ui::flaticons/BlueLoad.svg"
-                    exporticon="sight::module::ui::flaticons/BlueSave.svg"/>
+            <inout key="presets" uid="${presets}" />
+            <config deleteIcon="sight::module::ui::flaticons/RedDeleteFile.svg"
+                    newIcon="sight::module::ui::flaticons/GreenNewFile.svg"
+                    copyIcon="sight::module::ui::flaticons/GreenCopyFile.svg"
+                    reinitializeIcon="sight::module::ui::flaticons/RedResetFile.svg"
+                    renameIcon="sight::module::ui::flaticons/YellowRenameFile.svg"
+                    importIcon="sight::module::ui::flaticons/BlueLoad.svg"
+                    exportIcon="sight::module::ui::flaticons/BlueSave.svg"
+                    iconWidth="24" iconHeight="24" 
+                    useDefaultPath="${USE_DEFAULT_TF}">
+                    <path>${ADDITIONAL_TF_PATH}</path>
+            </config>
         </service>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

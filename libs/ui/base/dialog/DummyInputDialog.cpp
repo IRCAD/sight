@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -73,6 +73,23 @@ std::pair<std::string, bool> DummyInputDialog::getInput()
 void DummyInputDialog::pushInput(const std::string& input)
 {
     inputs.push(input);
+}
+
+//------------------------------------------------------------------------------
+
+bool DummyInputDialog::clear()
+{
+    if(inputs.empty())
+    {
+        return true;
+    }
+
+    while(!inputs.empty())
+    {
+        inputs.pop();
+    }
+
+    return false;
 }
 
 } // namespace sight::ui::base::dialog

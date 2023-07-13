@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,7 +33,6 @@
 #include <OGRE/OgrePixelFormat.h>
 #include <OGRE/OgreRoot.h>
 #include <OGRE/OgreTexture.h>
-#include <OGRE/Overlay/OgreOverlaySystem.h>
 
 #include <optional>
 #include <string>
@@ -151,8 +150,6 @@ public:
         bool _dynamic
     );
 
-    VIZ_SCENE3D_API static Ogre::OverlaySystem* getOverlaySystem();
-
     /**
      * @brief convertOgreColorToFwColor
      * @param[in] _ogreColor Color to convert into a Sight color
@@ -232,8 +229,6 @@ private:
         std::ostream& output,
         const std::filesystem::path& modulePath
     );
-
-    static Ogre::OverlaySystem* s_overlaySystem;
 
     static viz::scene3d::factory::R2VBRenderable* s_R2VBRenderableFactory;
     static viz::scene3d::factory::Text* s_textFactory;

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -87,7 +87,7 @@ public:
 
     /// Sets the password
     /// @param password the new password
-    IO_SESSION_API void set_password(const core::crypto::secure_string& password);
+    IO_SESSION_API void setPassword(const core::crypto::secure_string& password);
 
     /// Sets the encryption policy
     /// @param policy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
@@ -109,6 +109,11 @@ public:
         const std::string& className,
         deserializer_t deserializer = nullptr
     );
+
+    /// Return the registered deserialization function for an object
+    /// @param className the name of the object to deserialize
+    /// @return the function pointer to the deserialization function
+    IO_SESSION_API static deserializer_t deserializer(const std::string& className);
 
 private:
 

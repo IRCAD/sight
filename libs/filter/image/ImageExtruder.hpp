@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include "filter/image/config.hpp"
 
 #include <data/Image.hpp>
+#include <data/Matrix4.hpp>
 #include <data/Mesh.hpp>
 
 #include <glm/vec3.hpp>
@@ -54,11 +55,16 @@ public:
      * @brief Sets all voxels of the image that are inside the mesh to an empty value.
      * @param _image image to extrude.
      * @param _mesh mesh use to compute the extrusion.
+     * @param _transform transform of the image, if any.
      *
      * @warning No data are locked here, it must be done before.
      * @warning No signals are sent here, it must be done after.
      */
-    static FILTER_IMAGE_API void extrude(const data::Image::sptr& _image, const data::Mesh::csptr& _mesh);
+    static FILTER_IMAGE_API void extrude(
+        const data::Image::sptr& _image,
+        const data::Mesh::csptr& _mesh,
+        const data::Matrix4::csptr& _transform
+    );
 
     /**
      * @brief Stores parameters of the functor.
@@ -68,6 +74,7 @@ public:
     {
         data::Image::sptr m_image;
         data::Mesh::csptr m_mesh;
+        data::Matrix4::csptr m_transform;
     };
 
     /**

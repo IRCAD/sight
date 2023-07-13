@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,52 +40,6 @@ namespace sight::ui::qt::container
 class QtContainer;
 
 } // namespace sight::ui::qt::container
-
-class EventDispatcher : public QObject
-{
-Q_OBJECT
-
-public:
-
-    EventDispatcher(QObject* dispatchedTo, const QList<QEvent::Type>& eventsToDispatch);
-
-    bool eventFilter(QObject* obj, QEvent* event) override;
-
-private:
-
-    QObject* m_dispatchedTo;
-    QList<QEvent::Type> m_eventsToDispatch;
-};
-
-/// An event filter which forwards gesture event from the window container to the 3D scene window
-class GestureFilter : public QObject
-{
-Q_OBJECT
-
-public:
-
-    /**
-     * @param target The 3D scene window which will get the filtered gesture events
-     */
-    GestureFilter(QPointer<sight::module::viz::scene3dQt::Window> target);
-
-    bool eventFilter(QObject* obj, QEvent* event) override;
-
-private:
-
-    QPointer<sight::module::viz::scene3dQt::Window> m_target;
-};
-
-/// It seems that mouse clicks synthesized by Qt from touch events are shifted of exactly {49, 5}. This event filter fix
-/// this by intercepting the corresponding events.
-class TouchToMouseFixFilter : public QObject
-{
-Q_OBJECT
-
-public:
-
-    bool eventFilter(QObject* watched, QEvent* event) override;
-};
 
 namespace sight::module::viz::scene3dQt
 {
@@ -139,9 +93,6 @@ public:
     /// Makes the OpenGL context as current one on this thread against this window.
     MODULE_VIZ_SCENE3DQT_API void makeCurrent() final;
 
-    /// Gets the Ogre render target.
-    MODULE_VIZ_SCENE3DQT_API Ogre::RenderTarget* getRenderTarget() final;
-
     /// Returns a nullptr. This is due to the fact that this manager doesn't write to a texture.
     MODULE_VIZ_SCENE3DQT_API Ogre::TexturePtr getRenderTexture() final;
 
@@ -159,27 +110,21 @@ public:
      */
     MODULE_VIZ_SCENE3DQT_API void setFullscreen(bool _fullscreen, int _screenNumber) final;
 
+    QWidget* getQtWidget() const;
+
 private Q_SLOTS:
 
     /// Called when the user interacts with the scene using the mouse and keyboard, connected to @ref m_qOgreWidget.
     void onInteracted(sight::viz::scene3d::IWindowInteractor::InteractionInfo _info);
 
-    /// Called when the clipping range has to match the last updating of the scene bounding box
-    void onCameraClippingComputation();
-
 private:
 
-    /// Disables fullscreen rendering.
-    void disableFullscreen();
-
+    bool m_isFullScreen {false};
     /// Contains Qt element of the Widget.
     QPointer<module::viz::scene3dQt::Window> m_qOgreWidget;
 
     /// Contains the parent of the widget.
     SPTR(ui::qt::container::QtContainer) m_parentContainer;
-
-    /// Contains the window container.
-    QWidget* m_windowContainer {nullptr};
 };
 
 //-----------------------------------------------------------------------------
@@ -188,6 +133,13 @@ inline Ogre::TexturePtr WindowInteractor::getRenderTexture()
 {
     SIGHT_ERROR("'WindowInteractor' doesn't render in a texture.");
     return {};
+}
+
+//-----------------------------------------------------------------------------
+
+inline QWidget* WindowInteractor::getQtWidget() const
+{
+    return m_qOgreWidget;
 }
 
 } // namespace sight::module::viz::scene3dQt.

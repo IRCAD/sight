@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -62,7 +62,11 @@ void ToolBarBuilder::createToolBar(ui::base::container::fwContainer::sptr parent
     auto* window = qobject_cast<QMainWindow*>(m_parent->getQtContainer());
 
     auto* toolBar = new QToolBar(QObject::tr("ToolBar"));
-    toolBar->setIconSize(QSize(m_toolBitmapSize.first, m_toolBitmapSize.second));
+    if(m_toolBitmapSize.first != -1)
+    {
+        toolBar->setIconSize(QSize(m_toolBitmapSize.first, m_toolBitmapSize.second));
+    }
+
     toolBar->setFloatable(false);
 
     if(!m_backgroundColor.empty())

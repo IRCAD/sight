@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2017-2022 IRCAD France
+ * Copyright (C) 2017-2023 IRCAD France
  * Copyright (C) 2017-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -49,16 +49,6 @@ static data::Image::sptr genImage(
     const auto dumpLock     = image->dump_lock();
 
     SIGHT_ASSERT("Width should be at least 1", _w >= 1);
-    std::size_t imageDim = 1;
-    if(_h > 0)
-    {
-        imageDim++;
-    }
-
-    if(_d > 0)
-    {
-        imageDim++;
-    }
 
     const core::Type imageType  = core::Type::get<T>();
     data::Image::Size imageSize = {0, 0, 0};

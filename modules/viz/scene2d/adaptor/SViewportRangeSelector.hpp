@@ -87,7 +87,7 @@ public:
 
     SIGHT_DECLARE_SERVICE(SViewportRangeSelector, sight::viz::scene2d::IAdaptor);
 
-private:
+    SViewportRangeSelector();
 
     /// Configures the adaptor.
     void configuring() override;
@@ -110,11 +110,16 @@ private:
     /// Does nothing.
     void stopping() override;
 
+private:
+
     /**
      * @brief Filters the event to call the right methods from mouse informations.
      * @param _event the 2D scene event.
      */
     void processInteraction(sight::viz::scene2d::data::Event& _event) override;
+
+    /// Recomputes the viewport. Can signal or not the data depending from where it is called.
+    void updateViewport(bool _signalSelectedViewport);
 
     /**
      * @brief Update the viewport object according to the current state of the shutter.
@@ -147,10 +152,10 @@ private:
     bool m_isInteracting {false};
 
     /// Sets if there is a dragging interaction.
-    sight::viz::scene2d::vec2d_t m_dragStartPoint;
+    sight::viz::scene2d::vec2d_t m_dragStartPoint {0., 0.};
 
     ///  Defines the shutter position when dragging starts.
-    sight::viz::scene2d::vec2d_t m_dragStartShutterPos;
+    sight::viz::scene2d::vec2d_t m_dragStartShutterPos {0., 0.};
 
     /// Sets the spacing value for an easier picking onto shutter borders.
     int m_clickCatchRange {1};

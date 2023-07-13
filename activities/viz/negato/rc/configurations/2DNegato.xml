@@ -17,34 +17,17 @@
 
         <service uid="mainView" type="sight::module::ui::base::SView">
             <gui>
-                <slideView opacity="1" hAlign="left" vAlign="top" height="55" width="100">
-                    <styleSheet>
-                        <![CDATA[
-                        #SlideBar QWidget {
-                            background-color: none;
-                        }
-                        ]]>
-                    </styleSheet>
-                </slideView>
-                <layout type="sight::ui::base::LineLayoutManager">
-                    <orientation value="vertical" />
-                    <view proportion="1" />
+                <layout type="sight::ui::base::OverlayLayoutManager">
+                    <view />
+                    <view x="0" y="0" height="55" width="100" />
+                    <view x="0" y="-1" height="35" width="100%" />
                 </layout>
-                <slideView opacity="1" hAlign="left" vAlign="bottom" height="35">
-                    <styleSheet>
-                        <![CDATA[
-                        #SlideBar QWidget {
-                            background-color: none;
-                        }
-                        ]]>
-                    </styleSheet>
-                </slideView>
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <slideView sid="negato_top_slider_view" start="true" />
                 <view sid="negato" start="true" />
-                <slideView sid="negato_bottom_slider_view" start="true" />
+                <view sid="negato_top_slider_view" start="true" />
+                <view sid="negato_bottom_slider_view" start="true" />
             </registry>
         </service>
 
@@ -139,7 +122,7 @@
         </service>
 
         <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true">
-            <in key="image" uid="${image}" />
+            <inout key="image" uid="${image}" />
             <config fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
 

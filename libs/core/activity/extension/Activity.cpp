@@ -81,23 +81,24 @@ ActivityRequirementKey::ActivityRequirementKey(const ConfigType& config) :
 ActivityRequirement::ActivityRequirement(const ConfigType& config) :
     name(config.get<std::string>("<xmlattr>.name")),
     type(config.get<std::string>("<xmlattr>.type")),
-    container(config.get_optional<std::string>("<xmlattr>.container").get_value_or("")),
-    description(config.get_optional<std::string>("desc").get_value_or("")),
-    validator(config.get_optional<std::string>("validator").get_value_or("")),
-    minOccurs(config.get_optional<unsigned int>("<xmlattr>.minOccurs").get_value_or(1)),
-    maxOccurs(config.get_optional<unsigned int>("<xmlattr>.maxOccurs").get_value_or(1))
+    container(config.get<std::string>("<xmlattr>.container", "")),
+    description(config.get<std::string>("desc", "")),
+    validator(config.get<std::string>("validator", "")),
+    minOccurs(config.get<unsigned int>("<xmlattr>.minOccurs", 1)),
+    maxOccurs(config.get<unsigned int>("<xmlattr>.maxOccurs", 1)),
+    objectConfig(config.get_child("config", ConfigType()))
 {
     for(const auto& v : boost::make_iterator_range(config.equal_range("key")))
     {
         keys.push_back(ActivityRequirementKey(v.second));
     }
 
-    if(config.get_optional<std::string>("<xmlattr>.maxOccurs").get_value_or("") == "*")
+    if(config.get<std::string>("<xmlattr>.maxOccurs", "") == "*")
     {
         this->maxOccurs = std::numeric_limits<unsigned int>::max();
     }
 
-    std::string createStr = config.get_optional<std::string>("<xmlattr>.create").get_value_or("false");
+    const std::string& createStr = config.get<std::string>("<xmlattr>.create", "false");
     SIGHT_ASSERT("'create' attribute must be 'true' or 'false'", createStr == "true" || createStr == "false");
     create = (createStr == "true");
     SIGHT_ASSERT(
@@ -108,6 +109,16 @@ ActivityRequirement::ActivityRequirement(const ConfigType& config) :
     SIGHT_ASSERT(
         "minOccurs value shall be equal or greater than 0 and lower or equal to maxOccurs (" << maxOccurs << ")",
         minOccurs <= maxOccurs
+    );
+
+    const std::string& reset_string = config.get<std::string>("<xmlattr>.reset", "false");
+    SIGHT_ASSERT("'reset' attribute must be 'true' or 'false'", reset_string == "true" || reset_string == "false");
+
+    reset = (reset_string == "true");
+
+    SIGHT_ASSERT(
+        "'Reset' option is only available if 'create' = 'true' or 'minOccurs' = '0'",
+        !reset || create || minOccurs == 0
     );
 }
 
@@ -147,7 +158,7 @@ ActivityInfo::ActivityInfo(const SPTR(core::runtime::Extension)& ext) :
         }
     }
 
-    builderImpl = config.get<std::string>("builder", "sight::activity::builder::ActivityInitData");
+    builderImpl = config.get<std::string>("builder", "sight::activity::builder::Activity");
 
     // backward compatibility
     if(const auto& validatorCfg = config.get_optional<std::string>("validator"); validatorCfg.has_value())

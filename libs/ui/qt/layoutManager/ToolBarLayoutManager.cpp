@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,10 @@
 #include "ui/qt/container/QtToolBarContainer.hpp"
 
 #include <ui/base/registry/macros.hpp>
+#include <ui/qt/widget/AccordionMenu.hpp>
 
-#include <QAction>
 #include <QActionGroup>
+#include <qboxlayout.h>
 #include <QMenu>
 #include <QToolBar>
 #include <QToolButton>
@@ -90,10 +91,21 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
         toolBar->setToolButtonStyle(Qt::ToolButtonIconOnly);
     }
 
-    QActionGroup* actionGroup  = nullptr;
-    unsigned int menuItemIndex = 0;
+    [[maybe_unused]] QActionGroup* actionGroup  = nullptr;
+    widget::AccordionMenu* accordionLayout      = nullptr;
+    [[maybe_unused]] unsigned int menuItemIndex = 0;
     for(ui::base::layoutManager::IToolBarLayoutManager::ActionInfo& actionInfo : m_actionInfo)
     {
+        if(actionInfo.m_accordion == ui::base::layoutManager::IToolBarLayoutManager::Accordion::NO)
+        {
+            accordionLayout = nullptr;
+        }
+        else if(actionInfo.m_accordion == ui::base::layoutManager::IToolBarLayoutManager::Accordion::FIRST)
+        {
+            accordionLayout = new widget::AccordionMenu(toolBar);
+            toolBar->addWidget(accordionLayout);
+        }
+
         if(actionInfo.m_isSeparator)
         {
             if(actionInfo.m_size > 0)
@@ -114,7 +126,15 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
         {
             auto* spacer = new QWidget(toolBar);
             spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-            toolBar->addWidget(spacer);
+            if(accordionLayout != nullptr)
+            {
+                accordionLayout->addWidget(spacer);
+            }
+            else
+            {
+                toolBar->addWidget(spacer);
+            }
+
             actionGroup = nullptr;
         }
         else if(actionInfo.m_isMenu)
@@ -147,7 +167,15 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
                 toolButton->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
             }
 
-            toolBar->addWidget(toolButton);
+            if(accordionLayout != nullptr)
+            {
+                accordionLayout->addWidget(toolButton);
+            }
+            else
+            {
+                toolBar->addWidget(toolButton);
+            }
+
             m_menus.push_back(menu);
         }
         else if(actionInfo.m_isEditor)
@@ -167,7 +195,14 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
             }
 
             widget->adjustSize();
-            toolBar->addWidget(widget);
+            if(accordionLayout != nullptr)
+            {
+                accordionLayout->addWidget(widget);
+            }
+            else
+            {
+                toolBar->addWidget(widget);
+            }
 
             m_containers.push_back(container);
         }
@@ -175,30 +210,70 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
         {
             ui::qt::container::QtMenuItemContainer::sptr menuItem = ui::qt::container::QtMenuItemContainer::New();
             QAction* action                                       = nullptr;
-            if(!actionInfo.m_icon.empty())
+            if(accordionLayout != nullptr)
             {
-                QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
-                if(!actionInfo.m_icon2.empty())
+                auto* toolButton = new QToolButton;
+                toolButton->setToolButtonStyle(toolBar->toolButtonStyle());
+                toolButton->setIconSize(toolBar->iconSize());
+
+                action = new QAction(toolBar);
+                toolButton->setDefaultAction(action);
+                action->setText(QString::fromStdString(actionInfo.m_name));
+                action->setToolTip(QString::fromStdString(actionInfo.m_name));
+                if(!actionInfo.m_icon.empty())
                 {
-                    icon.addFile(
-                        QString::fromStdString(actionInfo.m_icon2.string()),
-                        QSize(),
-                        QIcon::Normal,
-                        QIcon::On
-                    );
-                    icon.addFile(
-                        QString::fromStdString(actionInfo.m_icon2.string()),
-                        QSize(),
-                        QIcon::Active,
-                        QIcon::On
-                    );
+                    action->setIcon(QIcon(QString::fromStdString(actionInfo.m_icon.string())));
                 }
 
-                action = toolBar->addAction(icon, QString::fromStdString(actionInfo.m_name));
+                if(!actionInfo.m_icon2.empty())
+                {
+                    QIcon icon = action->icon();
+                    icon.addFile(QString::fromStdString(actionInfo.m_icon2.string()), {}, QIcon::Normal, QIcon::On);
+                    icon.addFile(QString::fromStdString(actionInfo.m_icon2.string()), {}, QIcon::Active, QIcon::On);
+                    action->setIcon(icon);
+                }
+
+                if(toolBar->orientation() == Qt::Horizontal)
+                {
+                    toolButton->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Expanding);
+                    toolBar->setMinimumHeight(std::max(toolBar->minimumHeight(), toolButton->sizeHint().height()));
+                }
+                else
+                {
+                    toolButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
+                    // The +5 is to take into account the margin of the toolbar
+                    toolBar->setMinimumWidth(std::max(toolBar->minimumWidth(), toolButton->sizeHint().width() + 5));
+                }
+
+                accordionLayout->addWidget(toolButton);
             }
             else
             {
-                action = toolBar->addAction(QString::fromStdString(actionInfo.m_name));
+                if(!actionInfo.m_icon.empty())
+                {
+                    QIcon icon(QString::fromStdString(actionInfo.m_icon.string()));
+                    if(!actionInfo.m_icon2.empty())
+                    {
+                        icon.addFile(
+                            QString::fromStdString(actionInfo.m_icon2.string()),
+                            QSize(),
+                            QIcon::Normal,
+                            QIcon::On
+                        );
+                        icon.addFile(
+                            QString::fromStdString(actionInfo.m_icon2.string()),
+                            QSize(),
+                            QIcon::Active,
+                            QIcon::On
+                        );
+                    }
+
+                    action = toolBar->addAction(icon, QString::fromStdString(actionInfo.m_name));
+                }
+                else
+                {
+                    action = toolBar->addAction(QString::fromStdString(actionInfo.m_name));
+                }
             }
 
             action->setObjectName(qId + '/' + actionInfo.m_name.c_str());
@@ -254,6 +329,9 @@ void ToolBarLayoutManager::createLayout(ui::base::container::fwToolBar::sptr par
             (toolBar->orientation() == Qt::Horizontal) ? tb->setMinimumWidth(max) : tb->setMaximumHeight(max);
         }
     }
+
+    m_toggleToolbarVisibilityAction = toolBar->toggleViewAction();
+    m_toggleToolbarVisibilityAction->setVisible(false);
 }
 
 //-----------------------------------------------------------------------------
@@ -296,5 +374,14 @@ void ToolBarLayoutManager::menuItemSetChecked(ui::base::container::fwMenuItem::s
 }
 
 //-----------------------------------------------------------------------------
+
+void ToolBarLayoutManager::setVisible(bool isVisible)
+{
+    if(m_toggleToolbarVisibilityAction != nullptr)
+    {
+        m_toggleToolbarVisibilityAction->setChecked(!isVisible);
+        m_toggleToolbarVisibilityAction->trigger();
+    }
+}
 
 } // namespace sight::ui::qt::layoutManager

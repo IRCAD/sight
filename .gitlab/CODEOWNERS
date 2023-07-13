@@ -1,0 +1,12 @@
+[Build]
+/cmake @fbridault
+
+[Visualisation]
+/libs/viz/ @fbridault
+/modules/viz/ @fbridault
+
+[Serialisation]
+libs/io/bitmap @dweckmann
+libs/io/session @dweckmann
+modules/io/bitmap @dweckmann
+modules/io/session @dweckmann

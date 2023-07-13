@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -87,17 +87,23 @@ void SSlider::starting()
     this->create();
     auto qtContainer = sight::ui::qt::container::QtContainer::dynamicCast(this->getContainer());
 
+    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+
     QPointer<QHBoxLayout> layout = new QHBoxLayout();
+    layout->setObjectName(serviceID);
     m_positionSlider = new QSlider(Qt::Horizontal);
+    m_positionSlider->setObjectName(serviceID + "/positionSlider");
     m_positionSlider->setRange(0, 0);
 
     QObject::connect(m_positionSlider, SIGNAL(sliderPressed()), this, SLOT(sliderPressed()));
     QObject::connect(m_positionSlider, SIGNAL(sliderReleased()), this, SLOT(changePosition()));
 
     m_currentPosition = new QLabel();
+    m_currentPosition->setObjectName(serviceID + "/currentPosition");
     m_currentPosition->setText(s_UNKNOWN_TIME);
 
     m_totalDuration = new QLabel();
+    m_totalDuration->setObjectName(serviceID + "/totalDuration");
     m_totalDuration->setText(s_UNKNOWN_TIME);
 
     layout->addWidget(m_currentPosition);

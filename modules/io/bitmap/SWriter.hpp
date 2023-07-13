@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022-2023 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -80,11 +80,10 @@ namespace sight::module::io::bitmap
  * - \b dialog(optional):
  *      \b description: allows to display a label in the file dialog / confirmation dialog.
  *      \b policy:
- *          - \b "never": never show the file save / extension change dialog
+ *          - \b "never": never show the file save / extension change dialog. (DEFAULT)
  *          - \b "once": show only once, store the location as long as the service is started
  *          - \b "always": always show the location dialog / extension change dialog
- *          - \b "default": default behavior, which is "never"
- * - \b backends (optional): defines the backend available. If nothing is defined the "default" backend is used.
+ * - \b backends (optional): defines the backend available. If nothing is defined the default (LIBTIFF) backend is used.
  *               @see sight::io::bitmap::Writer
  *      \b enable (optional): enable group of backends.
  *          - \b "all": enable everything. GPU backends, if available have precedence over CPU ones.
@@ -92,7 +91,7 @@ namespace sight::module::io::bitmap
  *          - \b "gpu": enable all GPU backends.
  *      \b mode (optional): set the mode, which defines the compression/speed ratio
  *          - \b "best": emphasis compression over speed
- *          - \b "fast": emphasis speed over compression
+ *          - \b "fast": emphasis speed over compression (DEFAULT)
  *      - \b libjpeg (optional): enable LibJPEG backend.
  *          \b mode (optional)
  *      - \b libtiff (optional): enable libTIFF backend.
@@ -146,7 +145,7 @@ private:
     /// Retrieve the backend in the enabled backend list from the given extension
     /// @param extension the extension of the file to write
     /// @return the found backend
-    sight::io::bitmap::Writer::Backend findBackend(const std::string& extension) const;
+    sight::io::bitmap::Backend findBackend(const std::string& extension) const;
 
     /// How and When display a dialog
     DialogPolicy m_dialog_policy {DialogPolicy::NEVER};
@@ -155,11 +154,11 @@ private:
     JobCreatedSignal::sptr m_job_created_signal {newSignal<JobCreatedSignal>("jobCreated")};
 
     /// Selected backend
-    sight::io::bitmap::Writer::Backend m_selected_backend {sight::io::bitmap::Writer::Backend::DEFAULT};
+    sight::io::bitmap::Backend m_selected_backend {sight::io::bitmap::Backend::LIBTIFF};
 
     /// Enabled backends
-    std::map<sight::io::bitmap::Writer::Backend, sight::io::bitmap::Writer::Mode> m_mode_by_backend {
-        {sight::io::bitmap::Writer::Backend::DEFAULT, sight::io::bitmap::Writer::Mode::DEFAULT}
+    std::map<sight::io::bitmap::Backend, sight::io::bitmap::Writer::Mode> m_mode_by_backend {
+        {sight::io::bitmap::Backend::LIBTIFF, sight::io::bitmap::Writer::Mode::FAST}
     };
 
     /// Used internally to avoid double dialog display

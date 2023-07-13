@@ -1,0 +1,397 @@
+<extension implements="sight::service::extension::AppConfig">
+    <id>sight::config::viz::scene3d::volumeRendering</id>
+    <parameters>
+        <param name="WID_PARENT" />
+        <param name="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" />
+        <param name="VR_BOOL_PARAM_RECEIVER_CHANNEL" />
+        <param name="VR_INT_PARAM_RECEIVER_CHANNEL" />
+        <param name="VR_DOUBLE_PARAM_RECEIVER_CHANNEL" />
+        <param name="VR_VISIBILITY_RECEIVER_CHANNEL" />
+        <param name="3DNEGATO_VISIBILITY_RECEIVER_CHANNEL" />
+        <param name="MESHES_VISIBILITY_RECEIVER_CHANNEL" />
+        <param name="BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL" />
+        <param name="BOX_WIDGET_RESET_RECEIVER_CHANNEL" />
+        <param name="SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL" />
+        <param name="SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL" />
+        <param name="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_RECEIVER_CHANNEL" />
+        <param name="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" />
+        <param name="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" />
+        <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
+        <param name="PICKER_SENDER_CHANNEL" />
+        <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
+        <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
+        <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL"/>
+        <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL"/>
+        <param name="modelSeries" />
+        <param name="image" />
+        <param name="volumeTF" />
+        <param name="extrudedModelSeries" />
+        <param name="landmarks" />
+    </parameters>
+    <config>
+
+        <!-- ******************************* Objects declaration ****************************** -->
+
+        <object uid="${modelSeries}" type="sight::data::ModelSeries" src="deferred" />
+        <object uid="${image}" type="sight::data::Image" src="deferred" />
+        <object uid="${volumeTF}" type="sight::data::TransferFunction" src="ref" />
+        <object uid="${extrudedModelSeries}" type="sight::data::ModelSeries" src="ref" />
+        <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
+
+        <object uid="mask" type="sight::data::Image" />
+        <object uid="clippingMatrix" type="sight::data::Matrix4" />
+        <object uid="identityMatrix" type="sight::data::Matrix4" />
+        <object uid="snapshot" type="sight::data::Image" />
+        <object uid="globalCamera" type="sight::data::Matrix4" />
+
+        <!-- ******************************* UI declaration *********************************** -->
+
+        <service uid="sceneView" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::OverlayLayoutManager">
+                    <view />
+                    <view x="0" y="0" minWidth="55" minHeight="100" />
+                </layout>
+            </gui>
+            <registry>
+                <parent wid="${WID_PARENT}" />
+                <view sid="sceneSrv" start="true" />
+                <view sid="topToolbarSliderView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="topToolbarSliderView" type="sight::module::ui::base::SView">
+            <gui>
+                <toolBar backgroundColor="#00000000" />
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                </layout>
+            </gui>
+            <registry>
+                <toolBar sid="topToolbarView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="topToolbarView" type="sight::module::ui::base::SToolBar">
+            <gui>
+                <layout>
+                    <menuItem name="Fullscreen" icon="sight::module::ui::flaticons/YellowFullscreen.svg" />
+                    <menuItem name="Windowed" icon="sight::module::ui::flaticons/YellowMinimize.svg" shortcut="1" />
+                    <menuItem name="Snapshot" icon="sight::module::ui::flaticons/YellowPhoto.svg" shortcut="CTRL+S" />
+                    <spacer />
+                </layout>
+            </gui>
+            <registry>
+                <menuItem sid="fullscreenAct" start="true" />
+                <menuItem sid="windowedAct" start="true" />
+                <menuItem sid="snapshotAct" start="true" />
+            </registry>
+        </service>
+
+        <!-- ******************************* Begin Generic Scene ******************************* -->
+
+        <service uid="sceneSrv" type="sight::viz::scene3d::SRender">
+            <scene>
+                <background topColor="#36393E" bottomColor="#36393E" />
+
+                <layer id="defaultLayer" order="1" transparency="Default">
+                    <adaptor uid="globalCameraAdp" />
+                    <adaptor uid="trackballInteractorAdp" />
+                    <adaptor uid="pickerInteractorAdp" />
+                    <adaptor uid="modeSeriesAdp" />
+                    <adaptor uid="3DNegatoAdp" />
+                    <adaptor uid="volumeAdp" />
+                    <adaptor uid="landmarksAdp" />
+                    <adaptor uid="multiDistancesAdp" />
+                    <adaptor uid="axisAdp" />
+                    <adaptor uid="pickedVoxelTextAdp" />
+                    <adaptor uid="shapeExtruderAdp" />
+                    <adaptor uid="snapshotAdp" />
+                    <adaptor uid="eventAdp" />
+                </layer>
+
+                <layer id="orientationMarkerLayer" order="2">
+                    <viewport hOffset="0" vOffset="0" width="0.2" height="0.2" hAlign="right" vAlign="bottom" />
+                    <adaptor uid="orientationMarkerAdp" />
+                </layer>
+
+            </scene>
+        </service>
+
+        <service uid="globalCameraAdp" type="sight::module::viz::scene3d::adaptor::SCamera">
+            <inout key="transform" uid="globalCamera" />
+        </service>
+
+        <service uid="trackballInteractorAdp" type="sight::module::viz::scene3d::adaptor::STrackballCamera">
+            <config priority="0" />
+        </service>
+
+        <service uid="pickerInteractorAdp" type="sight::module::viz::scene3d::adaptor::SPicker">
+            <config queryMask="0x40000000" priority="1" />
+        </service>
+
+        <service uid="modeSeriesAdp" type="sight::module::viz::scene3d::adaptor::SModelSeries" autoConnect="true">
+            <in key="model" uid="${modelSeries}" />
+            <config queryFlags="0x40000000" autoresetcamera="true" />
+        </service>
+
+        <service uid="volumeAdp" type="sight::module::viz::scene3d::adaptor::SVolumeRender">
+            <in key="image" uid="${image}" />
+            <in key="mask" uid="mask" />
+            <in key="tf" uid="${volumeTF}" />
+            <inout key="clippingMatrix" uid="clippingMatrix" />
+            <config widgets="false" preintegration="false" autoresetcamera="false" samples="1024" />
+        </service>
+
+        <service uid="3DNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D">
+            <in key="image" uid="${image}" />
+            <inout key="tf" uid="${volumeTF}" />
+            <config queryFlags="0x40000000" interactive="true" priority="2" />
+        </service>
+
+        <service uid="landmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="true">
+            <inout key="landmarks" uid="${landmarks}" />
+            <config fontSize="16" priority="4" />
+        </service>
+
+        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true">
+            <inout key="image" uid="${image}" />
+            <config fontSize="16" radius="4.5" queryFlags="0x40000000" priority="3" />
+        </service>
+
+        <service uid="axisAdp" type="sight::module::viz::scene3d::adaptor::SAxis">
+            <config visible="false" origin="true" label="false" />
+        </service>
+
+        <service uid="pickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::SText">
+            <text></text>
+            <config x="0.01" y="0.01" hAlign="right" vAlign="top" color="#ffc000" />
+        </service>
+
+        <service uid="shapeExtruderAdp" type="sight::module::viz::scene3d::adaptor::SShapeExtruder">
+            <inout key="extrudedMeshes" uid="${extrudedModelSeries}" />
+            <config lineColor="#FFC66D" edgeColor="#D35151" />
+        </service>
+
+        <service uid="snapshotAdp" type="sight::module::viz::scene3d::adaptor::SFragmentsInfo">
+            <inout key="image" uid="snapshot" />
+        </service>
+
+        <service uid="eventAdp" type="sight::module::viz::scene3d::adaptor::SEvent">
+            <event type="buttonDoublePress" buttons="left" modifiers="none"/>
+        </service>
+
+        <service uid="orientationMarkerAdp" type="sight::module::viz::scene3d::adaptor::SOrientationMarker" autoConnect="true">
+            <in key="matrix" uid="globalCamera" />
+        </service>
+
+        <!-- Reset the clipping box matreix -->
+        <service uid="clippingBoxResetSrv" type="sight::module::data::SCopy">
+            <in key="source" uid="identityMatrix" />
+            <inout key="target" uid="clippingMatrix" />
+        </service>
+
+        <service uid="imageExtruderSrv" type="sight::module::filter::image::SImageExtruder" worker="EXTRUSION_THREAD">
+            <in key="meshes" uid="${extrudedModelSeries}" />
+            <in key="image" uid="${image}" />
+            <inout key="mask" uid="mask" />
+        </service>
+
+        <service uid="notifierSrv" type="sight::module::ui::qt::SNotifier">
+            <parent uid="mainview" />
+            <channels>
+                <channel position="BOTTOM_LEFT" duration="3000" max="3" />
+            </channels>
+        </service>
+
+        <!-- Write the snapshot image -->
+        <service uid="imageWriterSrv" type="sight::module::io::bitmap::SWriter">
+            <in key="data" uid="snapshot" />
+            <dialog policy="always" />
+            <backends enable="all" mode="best"/>
+        </service>
+
+        <!-- ************************************* Actions ************************************ -->
+
+        <!-- Set the view in full screen -->
+        <service uid="fullscreenAct" type="sight::module::ui::viz::SScreenSelector">
+            <config mode="select" />
+        </service>
+
+        <!-- Set the view in windowed  -->
+        <service uid="windowedAct" type="sight::module::ui::base::SAction">
+            <state visible="false" />
+        </service>
+
+        <!-- Save the snapshot image -->
+        <service uid="snapshotAct" type="sight::module::ui::base::SAction" />
+
+        <!-- ******************************* Connections ***************************************** -->
+
+        <!-- Volume rendering parameters -->
+        <connect channel="${VR_BOOL_PARAM_RECEIVER_CHANNEL}">
+            <slot>volumeAdp/setBoolParameter</slot>
+        </connect>
+
+        <connect channel="${VR_INT_PARAM_RECEIVER_CHANNEL}">
+            <slot>volumeAdp/setIntParameter</slot>
+        </connect>
+
+        <connect channel="${VR_DOUBLE_PARAM_RECEIVER_CHANNEL}">
+            <slot>volumeAdp/setDoubleParameter</slot>
+        </connect>
+
+        <!-- Adaptors visibility -->
+        <connect channel="${VR_VISIBILITY_RECEIVER_CHANNEL}">
+            <slot>volumeAdp/updateVisibility</slot>
+        </connect>
+
+        <connect channel="${3DNEGATO_VISIBILITY_RECEIVER_CHANNEL}">
+            <slot>3DNegatoAdp/updateVisibility</slot>
+        </connect>
+
+        <connect channel="${MESHES_VISIBILITY_RECEIVER_CHANNEL}">
+            <slot>modeSeriesAdp/updateVisibility</slot>
+        </connect>
+
+        <connect channel="${BOX_WIDGET_VISIBILITY_RECEIVER_CHANNEL}">
+            <slot>volumeAdp/toggleWidgets</slot>
+        </connect>
+
+        <connect channel="${BOX_WIDGET_RESET_RECEIVER_CHANNEL}">
+            <slot>clippingBoxResetSrv/update</slot>
+            <slot>volumeAdp/updateClippingBox</slot>
+        </connect>
+
+        <connect channel="${SHAPE_EXTRUDER_ENABLE_TOOL_RECEIVER_CHANNEL}">
+            <slot>shapeExtruderAdp/enableTool</slot>
+        </connect>
+
+        <connect channel="${SHAPE_EXTRUDER_TOOL_DISABLED_SENDER_CHANNEL}">
+            <signal>shapeExtruderAdp/toolDisabled</signal>
+        </connect>
+
+        <connect channel="${SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL}">
+            <slot>shapeExtruderAdp/deleteLastMesh</slot>
+        </connect>
+
+        <connect channel="${SHAPE_EXTRUDER_CANCEL_LAST_CLICK_RECEIVER_CHANNEL}">
+            <slot>shapeExtruderAdp/cancelLastClick</slot>
+        </connect>
+
+        <connect channel="${SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL}">
+            <slot>shapeExtruderAdp/reset</slot>
+        </connect>
+
+        <connect channel="${AXIS_VISIBILITY_RECEIVER_CHANNEL}">
+            <slot>axisAdp/updateVisibility</slot>
+        </connect>
+
+        <connect channel="${PICKER_SENDER_CHANNEL}">
+            <signal>pickerInteractorAdp/picked</signal>
+        </connect>
+
+        <connect channel="${WORLD_COORDS_LANDMARKS_CHANNEL}">
+            <slot>3DNegatoAdp/updateSlicesFromWorld</slot>
+        </connect>
+
+        <connect channel="${NEGATO3D_TRANSPARENCY_CHANNEL}">
+            <slot>3DNegatoAdp/setTransparency</slot>
+        </connect>
+
+        <!-- Slide view -->
+        <connect>
+            <signal>sceneView/started</signal>
+            <slot>topToolbarSliderView/show</slot>
+        </connect>
+
+        <!-- Manage full screen -->
+        <connect>
+            <signal>fullscreenAct/screenSelected</signal>
+            <slot>sceneSrv/enableFullscreen</slot>
+        </connect>
+
+        <connect>
+            <signal>sceneSrv/fullscreenSet</signal>
+            <slot>windowedAct/show</slot>
+            <slot>fullscreenAct/hide</slot>
+        </connect>
+
+        <connect>
+            <signal>windowedAct/clicked</signal>
+            <slot>sceneSrv/disableFullscreen</slot>
+        </connect>
+
+        <connect>
+            <signal>sceneSrv/fullscreenUnset</signal>
+            <slot>windowedAct/hide</slot>
+            <slot>fullscreenAct/show</slot>
+        </connect>
+
+        <!-- Display the picked voxel information -->
+        <connect>
+            <signal>3DNegatoAdp/pickedVoxel</signal>
+            <slot>pickedVoxelTextAdp/setText</slot>
+        </connect>
+
+        <connect>
+            <signal>shapeExtruderAdp/notified</signal>
+            <slot>notifierSrv/pop</slot>
+        </connect>
+
+        <!-- Connects double click on landmark to slice moves. -->
+        <connect>
+            <signal>landmarksAdp/sendWorldCoord</signal>
+            <slot>3DNegatoAdp/updateSlicesFromWorld</slot>
+        </connect>
+
+
+        <connect>
+            <signal>snapshotAct/clicked</signal>
+            <slot>imageWriterSrv/update</slot>
+        </connect>
+
+        <!-- Enlarge CT view by double-clicking it -->
+
+        <connect channel="${TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL}">
+            <signal>eventAdp/triggered</signal>
+        </connect>
+
+        <!-- distance channels -->
+
+        <connect channel="${DISTANCE_ACTIVATION_CHANNEL}">
+            <slot>multiDistancesAdp/activateDistanceTool</slot>
+        </connect>
+
+        <connect channel="${DISTANCE_DEACTIVATION_CHANNEL}">
+            <signal>multiDistancesAdp/deactivateDistanceTool</signal>
+        </connect>
+
+        <!-- ******************************* Start/Stop services ***************************************** -->
+
+        <start uid="sceneView" />
+        <start uid="clippingBoxResetSrv" />
+        <start uid="imageExtruderSrv" />
+        <start uid="notifierSrv" />
+        <start uid="imageWriterSrv" />
+
+        <start uid="globalCameraAdp" />
+        <start uid="trackballInteractorAdp" />
+        <start uid="pickerInteractorAdp" />
+        <start uid="modeSeriesAdp" />
+        <start uid="volumeAdp" />
+        <start uid="landmarksAdp" />
+        <start uid="multiDistancesAdp" />
+        <start uid="axisAdp" />
+        <start uid="pickedVoxelTextAdp" />
+        <start uid="shapeExtruderAdp" />
+        <start uid="snapshotAdp" />
+        <start uid="eventAdp" />
+        <start uid="orientationMarkerAdp" />
+        <start uid="3DNegatoAdp" />
+
+        <update uid="imageExtruderSrv" />
+        <update uid="shapeExtruderAdp" />
+
+    </config>
+</extension>

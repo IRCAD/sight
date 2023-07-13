@@ -80,10 +80,7 @@
 
             <!-- ******************************* Actions ****************************************** -->
 
-            <service uid="openMeshAct" type="sight::module::ui::base::com::SStarter" >
-                <start uid="meshReaderSrv" />
-            </service>
-
+            <service uid="openMeshAct" type="sight::module::ui::base::SAction" />
             <service uid="quitAct" type="sight::module::ui::base::SQuit" />
 
             <!-- ******************************* Services ***************************************** -->
@@ -132,9 +129,15 @@
                 <slot>rendering1Srv/updateCamPosition</slot>
             </connect>
 
+            <connect>
+                <signal>openMeshAct/clicked</signal>
+                <slot>meshReaderSrv/update</slot>
+            </connect>
+
             <!-- ******************************* Start services ***************************************** -->
 
             <start uid="mainFrame" />
+            <start uid="meshReaderSrv" />
 
         </config>
     </extension>

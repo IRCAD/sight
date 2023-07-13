@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -22,10 +22,10 @@
 #include "WriterTest.hpp"
 
 #include <core/Exception.hpp>
+#include <core/os/TempPath.hpp>
 #include <core/runtime/Profile.hpp>
 #include <core/runtime/runtime.hpp>
 #include <core/tools/Os.hpp>
-#include <core/tools/System.hpp>
 #include <core/tools/UUID.hpp>
 
 #include <ui/base/Preferences.hpp>
@@ -55,7 +55,7 @@ void WriterTest::setUp()
     // Enables the preferences
     sight::ui::base::Preferences::set_enabled(true);
 
-    m_rootPath = sight::core::tools::System::getTemporaryFolder();
+    m_rootPath = core::os::TempDir::sharedDirectory();
 }
 
 //------------------------------------------------------------------------------

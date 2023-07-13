@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,56 +23,20 @@
 #include "ui/qt/dialog/NotificationDialog.hpp"
 
 #include "ui/qt/container/QtContainer.hpp"
+#include "ui/qt/widget/SlideBar.hpp"
 
 #include <ui/base/registry/macros.hpp>
 
 #include <QApplication>
 #include <QBoxLayout>
-#include <QMessageBox>
+#include <QPushButton>
 #include <QTimer>
+#include <QVBoxLayout>
 
 namespace sight::ui::qt::dialog
 {
 
-//------------------------------------------------------------------------------
-
-// Checks if bounding rectange of a message fit into _acceptable_size.
-bool checkSizeOfMessage(const QString& _message, const QFontMetrics& _fm, const QSize _acceptable_size)
-{
-    const auto rect = _fm.boundingRect(
-        QRect(0, 0, _acceptable_size.width(), _acceptable_size.height()),
-        int(Qt::TextWordWrap) | Qt::AlignHCenter | Qt::AlignVCenter,
-        _message
-    );
-
-    return !(rect.width() >= _acceptable_size.width() || rect.height() >= _acceptable_size.height());
-}
-
-//------------------------------------------------------------------------------
-
-// Find where to trunc a message, to fit _acceptable_size. Calls checkSizeOfMessage.
-std::size_t truncMessageToFit(const std::string& _message, const QFontMetrics& _fm, const QSize _acceptable_size)
-{
-    // if size is > 100, start trunc at 100 to be faster.
-    const auto initial_size = _message.size() < 100 ? _message.size() : 100;
-
-    bool fit = false;
-
-    // initialize trunc_size to initial_size + 1
-    std::size_t trunc_size = initial_size + 1;
-    do
-    {
-        // first time == initial_size
-        --trunc_size;
-        // trunc _message
-        const auto trunc_msg = _message.substr(0, trunc_size);
-        // check if it fits.
-        fit = checkSizeOfMessage(QString::fromStdString(trunc_msg), _fm, _acceptable_size);
-    }
-    while(!fit);
-
-    return trunc_size;
-}
+static constexpr auto s_SHOW_MORE = "...";
 
 //------------------------------------------------------------------------------
 
@@ -82,101 +46,45 @@ NotificationDialog::NotificationDialog(ui::base::GuiBaseObject::Key /*unused*/)
 
 //------------------------------------------------------------------------------
 
-NotificationDialog::~NotificationDialog()
-= default;
-
-//------------------------------------------------------------------------------
-
 void NotificationDialog::show()
 {
-    // Checks if we have a Parent widget.
-    m_parent = qApp->activeWindow();
-
-    // If the active window is a slide bar, we need to retrieve the native parent.
-    if((m_parent != nullptr) && m_parent->objectName() == "SlideBar")
+    // Check if the widget is already created and has already been shown
+    if(m_parent.isNull())
     {
-        m_parent = m_parent->nativeParentWidget();
-    }
-
-    ui::qt::container::QtContainer::csptr parentContainer =
-        ui::qt::container::QtContainer::dynamicCast(m_parentContainer);
-
-    // Replaces the activeWindow by the parentContainer if exists.
-    if(parentContainer)
-    {
-        m_parent = parentContainer->getQtContainer();
-    }
-
-    // If there is no parent here, we get the top one.
-    if(m_parent == nullptr)
-    {
-        SIGHT_ERROR("Notification ignored, no Active Window are found(Focus may be lost).");
-        return;
-    }
-
-    // Creates the clickable label.
-    m_msgBox = new ClickableQLabel();
-    m_msgBox->setWordWrap(true);
-    m_msgBox->setScaledContents(true);
-    m_msgBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
-
-    m_fullMessage = m_message;
-    bool display_show_more = false;
-
-    const int w = static_cast<int>(m_size[0]);
-    const int h = static_cast<int>(m_size[1]);
-
-    // Acceptable size is w, h with 10% margin removal.
-    const QSize acceptable_size = {w - static_cast<int>(0.1 * w), h - static_cast<int>(0.1 * h)};
-
-    const auto trunc_size = truncMessageToFit(m_fullMessage, QFontMetrics(m_msgBox->font()), acceptable_size);
-
-    if(trunc_size != m_fullMessage.size())
-    {
-        display_show_more = true;
-        const std::string read_more = "...";
-        const std::string msg       = m_fullMessage.substr(0, trunc_size - read_more.size());
-        m_message = msg + read_more;
-    }
-
-    m_msgBox->setText(QString::fromStdString(m_message));
-
-    // If no styleSheet is used.
-    if(qApp->styleSheet().isEmpty())
-    {
-        if(m_notificationType == INotificationDialog::Type::SUCCESS)
-        {
-            m_msgBox->setStyleSheet(
-                "background-color:#58D68D;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
-            );
-        }
-        else if(m_notificationType == INotificationDialog::Type::FAILURE)
-        {
-            m_msgBox->setStyleSheet(
-                "background-color:#E74C3C;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
-            );
-        }
-        else // INFO by default.
-        {
-            m_msgBox->setStyleSheet(
-                "background-color:#5DADE2;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
-            );
-        }
+        build();
     }
     else
     {
-        if(m_notificationType == INotificationDialog::Type::SUCCESS)
+        update();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void NotificationDialog::build()
+{
+    /// Retrieve the parent widget
+    SIGHT_ASSERT("The dialog UI has been already built", m_parent.isNull());
+
+    if(const auto& parentContainer = ui::qt::container::QtContainer::dynamicCast(m_parentContainer); parentContainer)
+    {
+        m_parent = parentContainer->getQtContainer();
+    }
+    else
+    {
+        // Checks if we have a Parent widget.
+        m_parent = qApp->activeWindow();
+
+        if(const auto* slideBar = qobject_cast<widget::SlideBar*>(m_parent); slideBar != nullptr)
         {
-            m_msgBox->setObjectName("NotificationDialog_Success");
+            m_parent = slideBar->nativeParentWidget();
         }
-        else if(m_notificationType == INotificationDialog::Type::FAILURE)
-        {
-            m_msgBox->setObjectName("NotificationDialog_Failure");
-        }
-        else // INFO by default.
-        {
-            m_msgBox->setObjectName("NotificationDialog_Info");
-        }
+    }
+
+    if(m_parent == nullptr)
+    {
+        SIGHT_ERROR("Notification ignored, no Active Window are found (focus may be lost).");
+        return;
     }
 
     // Fade in effect.
@@ -188,73 +96,294 @@ void NotificationDialog::show()
     a->setEasingCurve(QEasingCurve::InBack);
     a->start(QPropertyAnimation::DeleteWhenStopped);
 
-    // Creates the getPosition function
-    std::function<QPoint(QWidget*)> position;
-
-    position = this->computePosition();
-
     // Creates the main translucent auto-movable container.
-    m_msgContainer = new Container(position, m_parent);
-    m_msgContainer->setGraphicsEffect(effect);
-    m_msgContainer->setWindowFlags(Qt::Tool | Qt::FramelessWindowHint | Qt::NoDropShadowWindowHint);
-    m_msgContainer->setAttribute(Qt::WA_TranslucentBackground);
-    m_msgContainer->setContentsMargins(0, 0, 0, 0);
-    m_msgContainer->setMinimumSize(static_cast<int>(m_size[0]), static_cast<int>(m_size[1]));
-    m_msgContainer->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::MinimumExpanding);
+    m_container = new Container(this->computePosition(), m_parent);
+    m_container->setGraphicsEffect(effect);
+    m_container->setContentsMargins(0, 0, 0, 0);
+    m_container->setMinimumSize(m_notification.size[0], m_notification.size[1]);
+    m_container->setMaximumSize(m_notification.size[0], m_notification.size[1]);
+    m_container->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+
+    // Creates container layout.
+    auto* const containerLayout = new QBoxLayout(QBoxLayout::LeftToRight, m_container);
+    containerLayout->setSpacing(0);
+    containerLayout->setContentsMargins(0, 0, 0, 0);
+    m_container->setLayout(containerLayout);
 
     // Moves the container when the main window is moved or is resized.
-    m_parent->installEventFilter(m_msgContainer);
-
-    // Gives it a layout with the clickable label.
-    auto* const layout = new QBoxLayout(QBoxLayout::LeftToRight);
-    layout->setSpacing(0);
-    layout->setContentsMargins(0, 0, 0, 0);
-    m_msgContainer->setLayout(layout);
-    layout->addWidget(m_msgBox);
-
-    if(display_show_more)
+    // Find the real "root" mainwindow
+    auto* root_widget = m_parent.data();
+    while(root_widget->parentWidget() != nullptr)
     {
-        QMessageBox::Icon icon = QMessageBox::NoIcon;
-        if(m_notificationType == INotificationDialog::Type::FAILURE)
+        root_widget = root_widget->parentWidget();
+    }
+
+    // Instal event filters
+    root_widget->installEventFilter(m_container);
+    m_parent->installEventFilter(m_container);
+
+    // Creates an intermediate layer so we can add optional "show more" button
+    m_subContainer = new QWidget(m_container);
+    containerLayout->addWidget(m_subContainer);
+    m_subContainer->setAutoFillBackground(true);
+    m_subContainer->setAttribute(Qt::WA_StyledBackground, true);
+
+    auto* const subcontainerLayout = new QBoxLayout(QBoxLayout::LeftToRight, m_subContainer);
+    subcontainerLayout->setSpacing(0);
+    subcontainerLayout->setContentsMargins(0, 0, 0, 0);
+    m_subContainer->setLayout(subcontainerLayout);
+
+    // Creates the clickable label.
+    m_msgBox = new ClickableQLabel(m_container, m_subContainer);
+    m_msgBox->setWordWrap(true);
+    m_msgBox->setScaledContents(true);
+    m_msgBox->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    subcontainerLayout->addWidget(m_msgBox);
+
+    // Execute the callback on close
+    // Make an explicit copy so It will still be callable in the lambda when this has been destroyed.
+    auto callable = m_closedCallBack;
+
+    QObject::connect(
+        m_msgBox,
+        &ClickableQLabel::faded,
+        [callable]
+        {
+            if(callable)
+            {
+                callable();
+            }
+        });
+
+    // Build the show more button
+    m_showMoreButton = new QToolButton(m_msgBox);
+    m_showMoreButton->setContentsMargins(0, 0, 0, 0);
+    m_showMoreButton->setMinimumSize(32, 24);
+    m_showMoreButton->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+    m_showMoreButton->setText(s_SHOW_MORE);
+    m_showMoreButton->setStyleSheet("border-radius: 10px;border: 2px solid white;");
+    subcontainerLayout->addWidget(m_showMoreButton);
+
+    // Build the show more dialog (icon, text, title will be set in update())
+    m_showMoreBox = new QMessageBox(
+        QMessageBox::Information,
+        QString(),
+        QString(),
+        QMessageBox::Ok,
+        m_parent
+    );
+
+    // Show the show more dialog on button click
+    QObject::connect(m_showMoreButton, &QToolButton::clicked, m_showMoreBox, &QMessageBox::exec);
+
+    // Set text, icon, etc..
+    update();
+
+    // Displays it.
+    m_container->show();
+}
+
+//------------------------------------------------------------------------------
+
+inline static bool checkMessageLength(
+    const QFontMetrics& metrics,
+    const QRect& available,
+    const QString& message,
+    const bool is_truncated
+)
+{
+    const auto& bounding = metrics.boundingRect(
+        available,
+        int(Qt::TextWordWrap) | Qt::AlignHCenter | Qt::AlignVCenter,
+        message + (is_truncated ? "..." : "")
+    );
+
+    return available.width() >= bounding.width() && available.height() >= bounding.height();
+}
+
+//------------------------------------------------------------------------------
+
+void NotificationDialog::update()
+{
+    // Check that the UI is built
+    SIGHT_ASSERT("The dialog UI has not been built", !m_parent.isNull());
+
+    // If we must reapply the style sheet or not
+    const auto& old_object_name = m_subContainer->objectName();
+
+    static constexpr auto success_name {"NotificationDialog_Success"};
+    static constexpr auto failure_name {"NotificationDialog_Failure"};
+    static constexpr auto info_name {"NotificationDialog_Info"};
+
+    // Set object names
+    switch(m_notification.type)
+    {
+        case INotificationDialog::Type::SUCCESS:
+            m_subContainer->setObjectName(success_name);
+            m_msgBox->setObjectName(success_name);
+            break;
+
+        case INotificationDialog::Type::FAILURE:
+            m_subContainer->setObjectName(failure_name);
+            m_msgBox->setObjectName(failure_name);
+            break;
+
+        default:
+            m_subContainer->setObjectName(info_name);
+            m_msgBox->setObjectName(info_name);
+            break;
+    }
+
+    // If different, then we must (re)apply the style sheet
+    if(old_object_name != m_subContainer->objectName())
+    {
+        if(const auto& global_stylesheet = qApp->styleSheet(); !global_stylesheet.isEmpty())
+        {
+            m_subContainer->setStyleSheet(global_stylesheet);
+            m_msgBox->setStyleSheet(global_stylesheet);
+        }
+        else
+        {
+            static constexpr auto success_style {
+                "background-color:#58D68D;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
+            };
+
+            static constexpr auto failure_style {
+                "background-color:#E74C3C;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
+            };
+
+            static constexpr auto info_style {
+                "background-color:#5DADE2;color:white;font-weight: bold;font-size: 16px;border-radius: 10px"
+            };
+
+            switch(m_notification.type)
+            {
+                case INotificationDialog::Type::SUCCESS:
+                    m_subContainer->setStyleSheet(success_style);
+                    m_msgBox->setStyleSheet(success_style);
+                    break;
+
+                case INotificationDialog::Type::FAILURE:
+                    m_subContainer->setStyleSheet(failure_style);
+                    m_msgBox->setStyleSheet(failure_style);
+                    break;
+
+                default:
+                    m_subContainer->setStyleSheet(info_style);
+                    m_msgBox->setStyleSheet(info_style);
+                    break;
+            }
+        }
+
+        // Force to reapply style
+        m_subContainer->adjustSize();
+        m_subContainer->update();
+    }
+
+    const auto& [is_truncated, message] =
+        [&]
+        {
+            SIGHT_ASSERT("Width is invalid", m_notification.size[0] > 0);
+            SIGHT_ASSERT("Height is invalid", m_notification.size[1] > 0);
+
+            const QRect available(
+                0,
+                0,
+                int(m_notification.size[0] - 0.1 * m_notification.size[0]),
+                int(m_notification.size[1] - 0.1 * m_notification.size[1])
+            );
+
+            const QFontMetrics metrics(m_msgBox->font());
+
+            // Initial message
+            auto truncated    = QString::fromStdString(m_notification.message);
+            bool is_truncated = !checkMessageLength(metrics, available, truncated, false);
+
+            if(is_truncated)
+            {
+                const auto& button_size = !m_showMoreButton.isNull() ? m_showMoreButton->sizeHint() : QSize(0, 0);
+                const QRect new_available(
+                    0,
+                    0,
+                    available.width() - int(button_size.width()),
+                    available.height()
+                );
+
+                // Truncate
+                for(int step = truncated.length() / 2 ; step > 2 ; step = step / 2)
+                {
+                    // Truncate roughly
+                    if(!checkMessageLength(metrics, new_available, truncated, true))
+                    {
+                        truncated.truncate(truncated.length() - step);
+                    }
+
+                    // Refine
+                    if(checkMessageLength(metrics, new_available, truncated, true))
+                    {
+                        const int previous = truncated.length() + step;
+                        truncated = QString::fromStdString(m_notification.message);
+                        truncated.truncate(previous);
+                    }
+                }
+
+                // Last 1-2 steps
+                while(!checkMessageLength(metrics, new_available, truncated, true))
+                {
+                    truncated.truncate(truncated.length() - 1);
+                }
+            }
+
+            return std::make_pair(is_truncated, truncated);
+        }();
+
+    if(is_truncated)
+    {
+        const auto& truncated_message = message + s_SHOW_MORE;
+        m_msgBox->setText(truncated_message);
+
+        // Create a real message box with the full text
+        auto icon = QMessageBox::NoIcon;
+        if(m_notification.type == INotificationDialog::Type::FAILURE)
         {
             icon = QMessageBox::Critical;
         }
-        else if(m_notificationType == INotificationDialog::Type::INFO)
+        else if(m_notification.type == INotificationDialog::Type::INFO)
         {
             icon = QMessageBox::Information;
         }
 
-        auto* full_message_box = new QMessageBox(
-            icon,
-            "Read more ...",
-            QString::fromStdString(m_fullMessage),
-            QMessageBox::Ok,
-            qApp->activeWindow()
-        );
-
-        QObject::connect(m_msgBox, &ClickableQLabel::clicked, full_message_box, &QMessageBox::exec);
+        m_showMoreBox->setIcon(icon);
+        m_showMoreBox->setWindowTitle(truncated_message);
+        m_showMoreBox->setText(QString::fromStdString(m_notification.message));
+    }
+    else
+    {
+        m_msgBox->setText(message);
     }
 
-    // Fadeout when  double clicked.
-    QObject::connect(m_msgBox, &ClickableQLabel::doubleClicked, m_msgBox, &ClickableQLabel::fadeout);
-    QObject::connect(
-        m_msgBox,
-        &ClickableQLabel::destroyed,
-        [ =, this]()
-        {
-            if(m_closedCallBack)
-            {
-                m_closedCallBack();
-            }
-        });
+    // Only show the button for truncated text.
+    m_showMoreButton->setVisible(is_truncated);
 
-    // Displays it.
-    m_msgContainer->show();
+    // Reapply the position
+    auto positionFct = this->computePosition();
+    m_container->setPosition(positionFct, m_parent);
+    m_container->setPositionFct(positionFct);
 
-    if(m_duration > 0)
+    // (re)Start / stop the fadeout timer
+    m_msgBox->timedFadeout(m_notification.duration);
+
+    // If the notification has a closable attribute, use it, otherwise, make it closable if not permanent
+    if((m_notification.closable && *m_notification.closable)
+       || (!m_notification.closable && (m_notification.duration && m_notification.duration->count() != 0)))
     {
-        // Launches a timer and fadeout before closing.
-        QTimer::singleShot(m_duration, m_msgBox, &ClickableQLabel::fadeout);
+        // Fadeout when clicked.
+        QObject::connect(m_msgBox, &ClickableQLabel::clicked, m_msgBox, &ClickableQLabel::fadeout);
+    }
+    else
+    {
+        // Not closable
+        QObject::disconnect(m_msgBox, &ClickableQLabel::clicked, m_msgBox, &ClickableQLabel::fadeout);
     }
 }
 
@@ -285,11 +414,35 @@ void NotificationDialog::close() const
 
 void NotificationDialog::moveDown()
 {
-    if((m_msgContainer != nullptr) && m_index > 0)
+    if(!m_container.isNull() && m_index > 0)
     {
         --m_index;
-        auto position = this->computePosition();
-        m_msgContainer->setPosition(position, m_parent);
+
+        // Use the Qt event loop to have a smoother animation, especially when moving many notifications at once, like
+        // when closing permanent top level one.
+        QTimer::singleShot(
+            0,
+            [&]
+            {
+                if(!m_container.isNull())
+                {
+                    m_container->setPosition(computePosition(), m_parent);
+                }
+            });
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void NotificationDialog::setSize(std::array<int, 2> _size)
+{
+    INotificationDialog::setSize(_size);
+
+    // Apply the size change
+    if(!m_container.isNull())
+    {
+        m_container->setMinimumSize(m_notification.size[0], m_notification.size[1]);
+        m_container->setMaximumSize(m_notification.size[0], m_notification.size[1]);
     }
 }
 
@@ -297,110 +450,111 @@ void NotificationDialog::moveDown()
 
 std::function<QPoint(QWidget*)> NotificationDialog::computePosition()
 {
-    std::function<QPoint(QWidget*)> position;
-    const int margin = 5;
-    if(m_position == Position::CENTERED)
+    constexpr int margin = 5;
+
+    switch(m_notification.position)
     {
-        position = [*this](QWidget* _parent) -> QPoint
+        case Position::CENTERED:
+            return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parentPosCenter = _parent->mapToGlobal(_parent->rect().center());
+                       const auto parentPosCenter = _parent->rect().center();
 
                        return {
-                           parentPosCenter.x() - static_cast<int>(m_size[0] / 2),
-                           parentPosCenter.y() - static_cast<int>(m_size[1] / 2)
+                           parentPosCenter.x() - static_cast<int>(m_notification.size[0] / 2),
+                           parentPosCenter.y() - static_cast<int>(m_notification.size[1] / 2)
                        };
                    };
-    }
-    else if(m_position == Position::CENTERED_TOP)
-    {
-        position = [*this](QWidget* _parent) -> QPoint
+
+        case Position::CENTERED_TOP:
+            return [this](QWidget* _parent) -> QPoint
                    {
-                       const int parentX = _parent->mapToGlobal(_parent->rect().center()).x();
-                       const int parentY = _parent->mapToGlobal(_parent->rect().topLeft()).y();
-                       const int height  = static_cast<int>(m_size[1]) + margin;
+                       const int parentX = _parent->rect().center().x();
+                       const int parentY = _parent->rect().topLeft().y();
+                       const int height  = static_cast<int>(m_notification.size[1]) + margin;
 
                        return {
-                           parentX - static_cast<int>(m_size[0] / 2),
+                           parentX - static_cast<int>(m_notification.size[0] / 2),
                            parentY + margin + (height * static_cast<int>(m_index))
                        };
                    };
-    }
-    else if(m_position == Position::CENTERED_BOTTOM)
-    {
-        position = [*this](QWidget* _parent) -> QPoint
+
+        case Position::CENTERED_BOTTOM:
+            return [this](QWidget* _parent) -> QPoint
                    {
-                       const int parentX = _parent->mapToGlobal(_parent->rect().center()).x();
-                       const int parentY = _parent->mapToGlobal(_parent->rect().bottomLeft()).y();
-                       const int height  = static_cast<int>(m_size[1]) + margin;
+                       const int parentX = _parent->rect().center().x();
+                       const int parentY = _parent->rect().bottomLeft().y();
+                       const int height  = static_cast<int>(m_notification.size[1]) + margin;
 
                        return {
-                           parentX - static_cast<int>(m_size[0] / 2),
+                           parentX - static_cast<int>(m_notification.size[0] / 2),
                            parentY - margin - (height * (static_cast<int>(m_index) + 1))
                        };
                    };
-    }
-    else if(m_position == Position::TOP_LEFT)
-    {
-        position = [*this](QWidget* _parent) -> QPoint
+
+        case Position::TOP_LEFT:
+            return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parrentTopLeft = _parent->mapToGlobal(_parent->rect().topLeft());
+                       const auto parrentTopLeft = _parent->rect().topLeft();
                        const int parentX         = parrentTopLeft.x();
                        const int parentY         = parrentTopLeft.y();
-                       const int height          = static_cast<int>(m_size[1]) + margin;
+                       const int height          = static_cast<int>(m_notification.size[1]) + margin;
 
                        return {
                            parentX + margin,
                            parentY + margin + (height * static_cast<int>(m_index))
                        };
                    };
-    }
-    else if(m_position == Position::TOP_RIGHT)
-    {
-        position = [*this](QWidget* _parent) -> QPoint
+
+        case Position::TOP_RIGHT:
+            return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parrentTopRight = _parent->mapToGlobal(_parent->rect().topRight());
+                       const auto parrentTopRight = _parent->rect().topRight();
                        const int parentX          = parrentTopRight.x();
                        const int parentY          = parrentTopRight.y();
-                       const int height           = static_cast<int>(m_size[1]) + margin;
+                       const int height           = static_cast<int>(m_notification.size[1]) + margin;
 
                        return {
-                           parentX - margin - static_cast<int>(m_size[0]),
+                           parentX - margin - static_cast<int>(m_notification.size[0]),
                            parentY + margin + (height * static_cast<int>(m_index))
                        };
                    };
-    }
-    else if(m_position == Position::BOTTOM_LEFT)
-    {
-        position = [*this](QWidget* _parent) -> QPoint
+
+        case Position::BOTTOM_LEFT:
+            return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parrentBottomLeft = _parent->mapToGlobal(_parent->rect().bottomLeft());
+                       const auto parrentBottomLeft = _parent->rect().bottomLeft();
                        const int parentX            = parrentBottomLeft.x();
                        const int parentY            = parrentBottomLeft.y();
-                       const int height             = static_cast<int>(m_size[1]) + margin;
+                       const int height             = static_cast<int>(m_notification.size[1]) + margin;
 
                        return {
                            parentX + margin,
                            parentY - (height * (static_cast<int>(m_index) + 1))
                        };
                    };
-    }
-    else if(m_position == Position::BOTTOM_RIGHT)
-    {
-        position = [*this](QWidget* _parent) -> QPoint
+
+        case Position::BOTTOM_RIGHT:
+            return [this](QWidget* _parent) -> QPoint
                    {
-                       const auto parrentBottomRight = _parent->mapToGlobal(_parent->rect().bottomRight());
+                       const auto parrentBottomRight = _parent->rect().bottomRight();
                        const int parentX             = parrentBottomRight.x();
                        const int parentY             = parrentBottomRight.y();
-                       const int height              = static_cast<int>(m_size[1]) + margin;
+                       const int height              = static_cast<int>(m_notification.size[1]) + margin;
 
                        return {
-                           parentX - margin - static_cast<int>(m_size[0]),
+                           parentX - margin - static_cast<int>(m_notification.size[0]),
                            parentY - (height * (static_cast<int>(m_index) + 1))
                        };
                    };
-    }
 
-    return position;
+        default:
+            SIGHT_ASSERT("Position '" + std::to_string(int(m_notification.position)) + "' is unknown.", false);
+
+            return [](QWidget* _parent) -> QPoint
+                   {
+                       return _parent->pos();
+                   };
+    }
 }
 
 //------------------------------------------------------------------------------

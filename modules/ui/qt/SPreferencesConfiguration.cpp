@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,6 +29,7 @@
 #include <ui/base/dialog/LocationDialog.hpp>
 #include <ui/base/Preferences.hpp>
 
+#include <boost/algorithm/string.hpp>
 #include <boost/tokenizer.hpp>
 
 #include <QApplication>
@@ -48,34 +49,38 @@ const core::com::Signals::SignalKeyType SPreferencesConfiguration::s_PREFERENCE_
 
 //------------------------------------------------------------------------------
 
-sight::ui::base::parameter_t SPreferencesConfiguration::convertValue(
-    const PreferenceType& _type,
-    const std::string& _stringValue
-)
+sight::ui::base::parameter_t SPreferencesConfiguration::convertValue(const PreferenceElt& _elt)
 {
-    switch(_type)
+    switch(_elt.m_type)
     {
         case PreferenceType::TEXT:
         case PreferenceType::PATH:
         case PreferenceType::COMBOBOX:
         case PreferenceType::FILE:
         {
-            return _stringValue;
+            return _elt.m_preferenceValue;
         }
 
         case PreferenceType::U_INT:
         {
-            return std::stoi(_stringValue);
+            return std::stoi(_elt.m_preferenceValue);
         }
 
         case PreferenceType::DOUBLE:
         {
-            return std::stod(_stringValue);
+            return std::stod(_elt.m_preferenceValue);
         }
 
         case PreferenceType::CHECKBOX:
         {
-            return _stringValue == "true";
+            return _elt.m_preferenceValue == "true";
+        }
+
+        case PreferenceType::LIST:
+        {
+            std::vector<std::string> list;
+            boost::split(list, _elt.m_preferenceValue, boost::is_any_of(_elt.m_separator));
+            return list;
         }
 
         default:
@@ -104,8 +109,6 @@ SPreferencesConfiguration::~SPreferencesConfiguration() noexcept =
 void SPreferencesConfiguration::configuring()
 {
     this->initialize();
-
-    const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
 
     const auto configuration = this->getConfiguration();
 
@@ -148,6 +151,12 @@ void SPreferencesConfiguration::configuring()
             pref.m_iMinMax.first  = cfg.second.get<int>("min", pref.m_iMinMax.first);
             pref.m_iMinMax.second = cfg.second.get<int>("max", pref.m_iMinMax.second);
         }
+        else if(type == "list")
+        {
+            pref.m_type = PreferenceType::LIST;
+
+            pref.m_separator = cfg.second.get("separator", ",");
+        }
         else
         {
             SIGHT_ERROR("Preference type " << type << " is not implemented");
@@ -158,28 +167,28 @@ void SPreferencesConfiguration::configuring()
         pref.m_defaultValue  = cfg.second.get<std::string>("default_value");
 
         if(pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH
-           || pref.m_type == PreferenceType::FILE)
+           || pref.m_type == PreferenceType::FILE || pref.m_type == PreferenceType::LIST)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
-            pref.m_lineEdit->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
+            pref.m_lineEdit->setObjectName(pref.m_preferenceKey.c_str());
         }
         else if(pref.m_type == PreferenceType::CHECKBOX)
         {
             pref.m_checkBox = new QCheckBox();
             pref.m_checkBox->setChecked(pref.m_defaultValue == "true");
-            pref.m_checkBox->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
+            pref.m_checkBox->setObjectName(pref.m_preferenceKey.c_str());
         }
         else if(pref.m_type == PreferenceType::U_INT)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
             pref.m_lineEdit->setValidator(new QIntValidator(pref.m_iMinMax.first, pref.m_iMinMax.second));
-            pref.m_lineEdit->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
+            pref.m_lineEdit->setObjectName(pref.m_preferenceKey.c_str());
         }
         else if(pref.m_type == PreferenceType::DOUBLE)
         {
             pref.m_lineEdit = new QLineEdit(QString::fromStdString(pref.m_defaultValue));
             pref.m_lineEdit->setValidator(new QDoubleValidator(pref.m_dMinMax.first, pref.m_dMinMax.second, 6));
-            pref.m_lineEdit->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
+            pref.m_lineEdit->setObjectName(pref.m_preferenceKey.c_str());
         }
         else if(pref.m_type == PreferenceType::COMBOBOX)
         {
@@ -189,7 +198,7 @@ void SPreferencesConfiguration::configuring()
             const boost::tokenizer<boost::char_separator<char> > tokens {valuesCfg, sep};
 
             pref.m_comboBox = new QComboBox();
-            pref.m_comboBox->setObjectName(serviceID + '/' + pref.m_preferenceKey.c_str());
+            pref.m_comboBox->setObjectName(pref.m_preferenceKey.c_str());
             for(const std::string& value : tokens)
             {
                 pref.m_comboBox->addItem(QString::fromStdString(value));
@@ -236,7 +245,7 @@ void SPreferencesConfiguration::updating()
     const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
 
     QPointer<QDialog> dialog = new QDialog();
-    dialog->setObjectName(serviceID);
+    dialog->setObjectName("SPreferencesConfiguration");
     QPointer<QGridLayout> layout = new QGridLayout();
 
     int index = 0;
@@ -245,7 +254,7 @@ void SPreferencesConfiguration::updating()
         QPointer<QLabel> label = new QLabel(QString::fromStdString(pref.m_name));
         layout->addWidget(label, index, 0);
 
-        if(pref.m_type == PreferenceType::TEXT)
+        if(pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::LIST)
         {
             pref.m_lineEdit->setText(QString::fromStdString(pref.m_preferenceValue));
             layout->addWidget(pref.m_lineEdit, index, 1);
@@ -337,9 +346,9 @@ void SPreferencesConfiguration::updating()
     }
 
     QPointer<QPushButton> cancelButton = new QPushButton("Cancel");
-    cancelButton->setObjectName(serviceID + '/' + cancelButton->text());
+    cancelButton->setObjectName(cancelButton->text());
     QPointer<QPushButton> okButton = new QPushButton("OK");
-    okButton->setObjectName(serviceID + '/' + okButton->text());
+    okButton->setObjectName(okButton->text());
     okButton->setDefault(true);
 
     QPointer<QHBoxLayout> buttonLayout = new QHBoxLayout();
@@ -362,7 +371,8 @@ void SPreferencesConfiguration::updating()
             bool preferenceUpdate = false; // only emit signal for preference that has changed.
 
             if((pref.m_type == PreferenceType::TEXT || pref.m_type == PreferenceType::PATH
-                || pref.m_type == PreferenceType::FILE) && !pref.m_lineEdit->text().isEmpty())
+                || pref.m_type == PreferenceType::FILE || pref.m_type == PreferenceType::LIST)
+               && !pref.m_lineEdit->text().isEmpty())
             {
                 preferenceUpdate =
                     pref.m_preferenceValue != pref.m_lineEdit->text().toStdString();
@@ -414,7 +424,7 @@ void SPreferencesConfiguration::updating()
             // Emit preferenceChanged signal with new value and preference key.
             if(preferenceUpdate)
             {
-                const auto value = this->convertValue(pref.m_type, pref.m_preferenceValue);
+                const auto value = this->convertValue(pref);
                 m_sigPreferenceChanged->asyncEmit(value, pref.m_preferenceKey);
             }
         }

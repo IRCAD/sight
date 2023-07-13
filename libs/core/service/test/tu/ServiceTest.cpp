@@ -432,16 +432,17 @@ void ServiceTest::testCommunication()
     // Register communication channel
     comHelper.connect(
         service1,
-        service::ut::ISTest::s_MSG_SENT_SIG,
+        service::ut::ISTest::signals::s_MSG_SENT,
         service2,
-        service::ut::ISTest::s_UPDATE2_SLOT
+        service::ut::ISTest::slots::s_UPDATE2
     );
 
     CPPUNIT_ASSERT(!service2->getIsUpdated2());
 
     // Service1 send notification
     {
-        auto sig  = service1->signal<service::ut::ISTest::MsgSentSignalType>(service::ut::ISTest::s_MSG_SENT_SIG);
+        auto sig =
+            service1->signal<service::ut::ISTest::signals::msg_sent_t>(service::ut::ISTest::signals::s_MSG_SENT);
         auto slot = service1->slot(service::IService::slots::s_UPDATE);
         core::com::Connection::Blocker block(sig->getConnection(slot));
         sig->asyncEmit(EVENT);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,7 +43,7 @@ Cursor::~Cursor()
 
 //-----------------------------------------------------------------------------
 
-void Cursor::setCursor(ui::base::ICursor::CursorType cursor)
+void Cursor::setCursor(ui::base::ICursor::CursorType cursor, bool setOverridenAsDefault)
 {
     if(m_implementation)
     {
@@ -52,9 +52,9 @@ void Cursor::setCursor(ui::base::ICursor::CursorType cursor)
 
         // Go to main thread....
         core::thread::getDefaultWorker()->postTask<void>(
-            [cursor_implementation, cursor]()
+            [cursor_implementation, cursor, setOverridenAsDefault]()
             {
-                cursor_implementation->setCursor(cursor);
+                cursor_implementation->setCursor(cursor, setOverridenAsDefault);
             });
     }
 }

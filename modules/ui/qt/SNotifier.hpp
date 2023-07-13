@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2020-2022 IRCAD France
+ * Copyright (C) 2020-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,7 @@
 #include "modules/ui/qt/config.hpp"
 
 #include <service/IController.hpp>
+#include <service/INotifier.hpp>
 
 #include <ui/base/dialog/NotificationDialog.hpp>
 
@@ -37,9 +38,7 @@ namespace sight::module::ui::qt
  *
  * @section Slots Slots
  * - \b pop(): Adds a popup in the queue & display it.
- * - \b popInfo(): Adds an INFO popup in the queue & display it (deprecated).
- * - \b popFailure(): Adds a FAILURE popup in the queue & display it (deprecated).
- * - \b popSuccess():Adds a SUCCESS popup in the queue & display it (deprecated).
+ * - \b closeNotification(std::string channel): Close the popup associated with the given channel.
  * - \b setEnumParameter(std::string value, std::string key): Changes the position of notifications (key "position"),
  * accepted values are the same than the "position" tag in the XML configuration.
  *
@@ -48,31 +47,54 @@ namespace sight::module::ui::qt
  * @code{.xml}
         <service type="sight::module::ui::qt::SNotifier">
             <message>Default Message</message>
-            <maxNotifications>3</maxNotifications>
-            <position>TOP_RIGHT</position>
-            <duration>3000</duration>
             <parent uid="myContainerID"/>
+            <channels>
+                <channel position="TOP_RIGHT" duration="3000" max="3" />
+                <channel uid="INFO" position="TOP_LEFT" duration="5000" max="2" />
+                <channel uid="${ERROR_CHANNEL}" position="BOTTOM_RIGHT" size="400x60" />
+            </channels>
         </service>
    @endcode
  *
  * @subsection Configuration Configuration
- * - \b message (optional): Default message of the notification if the emitted signal contains empty string (default:
- * "Notification").
- * - \b maxNotifications (optional): Maximum number of queued notifications (default: 3).
- * - \b position (optional): Position of the notification queue (default: TOP_RIGHT).
- *  Accepted values are:
- *   - TOP_RIGHT: default value.
- *   - TOP_LEFT
- *   - CENTERED_TOP
- *   - CENTERED: when choosing CENTERED, only ONE notification can be displayed at once (maxNotifications is ignored).
- *   - BOTTOM_RIGHT
- *   - BOTTOM_LEFT
- *   - CENTERED_BOTTOM
- *
- * - \b duration (optional): Duration in ms of the notification (+ 1 sec for fadein & fadeout effects) (default:
- * 3000ms).
+ * - \b message (optional): Default message of the notification if the emitted signal contains empty string.
+ *                          (default: "Notification").
  * - \b parent (optional): UID of the gui Container where the notifications will be displayed (default the whole app),
- * NOTE: we use the xml attribute "uid" to resolve "${GENERIC_UID}_" prefixes.
+ *                         NOTE: we use the xml attribute "uid" to resolve "${GENERIC_UID}_" prefixes.
+ * - \b channels (optional): Channels sub-configuration.
+ *   - \b channel (optional): Channel specific configuration.
+ *
+ *     - \b uid (optional): The uid that identify the channel. If no uid is set, then the settings apply to the global
+ *              default, where notification widgets are not shared, but will share the configuration
+ *              (position, duration, ...).
+ *              All notification request that use the same channel, will share the same notification dialog widget and
+ *              the same configuration.
+ *
+ *     - \b position (optional): Position of the notification queue (default: TOP_RIGHT).
+ *                   Accepted values are:
+ *                   - TOP_RIGHT: default value.
+ *                   - TOP_LEFT
+ *                   - CENTERED_TOP
+ *                   - CENTERED
+ *                   - BOTTOM_RIGHT
+ *                   - BOTTOM_LEFT
+ *                   - CENTERED_BOTTOM
+ *
+ *                   Different channels can share the same postion. However, some configuration (most notably "max"
+ *                   and size) will be shared since they configure the behavior of the stack. If so, the value may be
+ *                   "harmonized" across all dialogs by taking the maximum value.
+ *                   @note This may change if the positioning algorithm got updated
+ *
+ *     - \b duration (optional): Override duration in ms (+ 1 sec for fadein & fadeout effects).
+ *
+ *     - \b max (optional): maximum number of notifications in the same position.
+ *              Permanent notification are not counted.
+ *
+ *     - \b size (optional): size of notifications in the same position.
+ *
+ *     - \b closable (optional): override default which is closable for timed notification. This is mostly useful to
+ *                   allow closing of permanent notification
+ *
  */
 class MODULE_UI_QT_CLASS_API SNotifier final : public service::IController
 {
@@ -84,7 +106,18 @@ public:
     MODULE_UI_QT_API SNotifier() noexcept;
 
     /// Destructor, clears the position map.
-    MODULE_UI_QT_API ~SNotifier() noexcept override;
+    MODULE_UI_QT_API ~SNotifier() noexcept override = default;
+
+    /// Slot: This method is used to set an enum parameter.
+    MODULE_UI_QT_API void setEnumParameter(std::string _val, std::string _key);
+
+    /// Slot: pops a notification.
+    /// @param notification notification.
+    MODULE_UI_QT_API void pop(service::Notification notification);
+
+    /// Slot: close a notification identified by the channel name.
+    /// @param channel notification channel.
+    MODULE_UI_QT_API void closeNotification(std::string channel);
 
 protected:
 
@@ -112,48 +145,60 @@ protected:
 
 private:
 
-    /// Slot: This method is used to set an enum parameter.
-    void setEnumParameter(std::string _val, std::string _key);
-
-    /**
-     * @brief Slot: pops a notification.
-     *
-     * @param _type type of the notification.
-     * @param _message text of the notification.
-     */
-    void pop(service::IService::NotificationType _type, std::string _message);
-
-    /**
-     * @brief Queue the notification and display it (called by popInfo/Success/Failure Slot).
-     * @param _message message to display.
-     * @param _type type of the notification.
-     */
-    void showNotification(
-        const std::string& _message,
-        sight::ui::base::dialog::NotificationDialog::Type _type
-    );
-
     /// Called when a notification is closed
     void onNotificationClosed(const sight::ui::base::dialog::NotificationDialog::sptr& notif);
 
-    /// Max number of displayed notifications.
-    std::uint8_t m_maxStackedNotifs {3};
+    /// Erase a notification from m_popups and move down the remaining
+    /// @param position The stack where we need to erase a notification
+    /// @param it the iterator pointing on the element to erase
+    std::list<sight::ui::base::dialog::NotificationDialog::sptr>::iterator eraseNotification(
+        const service::Notification::Position& position,
+        const std::list<sight::ui::base::dialog::NotificationDialog::sptr>::iterator& it
+    );
 
-    /// Duration of the notifications before closing (in ms).
-    int m_durationInMs {3000};
-
-    /// Set position once, all notifications of the app/config are displayed here.
-    sight::ui::base::dialog::NotificationDialog::Position m_notificationsPosition
-    {sight::ui::base::dialog::NotificationDialog::Position::TOP_RIGHT};
-
-    /// Map to convert string position like "TOP_RIGHT" to NotificationDialog::Position.
-    std::map<std::string, sight::ui::base::dialog::NotificationDialog::Position> m_positionMap;
+    /// Count the number of notifications and remove the oldest if > m_maxStackedNotifs
+    /// @param position The stack to clean
+    /// @param max The maximum number of element
+    /// @param skipPermanent if true, only non permanent notifications are counted
+    void cleanNotifications(
+        const service::Notification::Position& position,
+        std::size_t max,
+        std::array<int, 2> size,
+        bool skipPermanent = true
+    );
 
     /// Default message (if message in slot are empty), the default message can be configured in xml.
-    std::string m_defaultMessage = "Notification";
+    std::string m_defaultMessage {"Notification"};
 
-    /// Vector of displayed NotificationDialog, resized with "m_maxStackedNotifs" at start.
-    std::list<sight::ui::base::dialog::NotificationDialog::sptr> m_popups {};
+    struct Configuration final
+    {
+        std::optional<service::Notification::Position> position {std::nullopt};
+        std::optional<std::chrono::milliseconds> duration {std::nullopt};
+        std::optional<std::array<int, 2> > size {std::nullopt};
+        std::optional<std::size_t> max {std::nullopt};
+        std::optional<bool> closable {std::nullopt};
+    };
+
+    std::map<std::string, Configuration> m_channels {{"", {.max = {3}}}};
+
+    /// A stack of NotificationDialog
+    struct Stack final
+    {
+        std::optional<std::array<int, 2> > size {std::nullopt};
+        std::optional<std::size_t> max {std::nullopt};
+        std::list<sight::ui::base::dialog::NotificationDialog::sptr> popups {};
+    };
+
+    /// Map of displayed Stack
+    std::map<service::Notification::Position, Stack> m_stacks {
+        {service::Notification::Position::TOP_RIGHT, {}},
+        {service::Notification::Position::TOP_LEFT, {}},
+        {service::Notification::Position::BOTTOM_RIGHT, {}},
+        {service::Notification::Position::BOTTOM_LEFT, {}},
+        {service::Notification::Position::CENTERED, {}},
+        {service::Notification::Position::CENTERED_TOP, {}},
+        {service::Notification::Position::CENTERED_BOTTOM, {}},
+    };
 
     /// fwContainer where notifications will be displayed in, nullptr by default.
     sight::ui::base::container::fwContainer::csptr m_containerWhereToDisplayNotifs {nullptr};

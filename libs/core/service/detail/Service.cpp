@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -44,6 +44,11 @@ register_t::sptr s_unregisterSignal = std::make_shared<register_t>();
 Service::Service(sight::service::IService& service) :
     m_service(service)
 {
+}
+
+Service::~Service()
+{
+    m_connections.disconnectStartSlot(m_service);
 }
 
 //-----------------------------------------------------------------------------
@@ -97,6 +102,8 @@ void Service::configure()
 
         m_configurationState = IService::CONFIGURED;
     }
+
+    m_connections.connectStartSlot(m_service);
 }
 
 //-----------------------------------------------------------------------------
@@ -139,7 +146,7 @@ IService::SharedFutureType Service::start(bool _async)
     this->autoConnect();
 
     auto sig = m_service.signal<IService::signals::started_t>(IService::signals::s_STARTED);
-    sig->asyncEmit();
+    sig->asyncEmit(m_service.getSptr());
 
     return future;
 }
@@ -182,7 +189,7 @@ IService::SharedFutureType Service::stop(bool _async)
     m_globalState = IService::STOPPED;
 
     auto sig = m_service.signal<IService::signals::stopped_t>(IService::signals::s_STOPPED);
-    sig->asyncEmit();
+    sig->asyncEmit(m_service.getSptr());
 
     m_connections.disconnect(m_service);
 
@@ -257,7 +264,7 @@ IService::SharedFutureType Service::swapKey(std::string_view _key, data::Object:
     this->autoConnect();
 
     auto sig = m_service.signal<IService::signals::swapped_t>(IService::signals::s_SWAPPED);
-    sig->asyncEmit();
+    sig->asyncEmit(m_service.getSptr());
 
     return future;
 }
@@ -308,7 +315,7 @@ IService::SharedFutureType Service::update(bool _async)
     m_updatingState = IService::NOTUPDATING;
 
     auto sig = m_service.signal<IService::signals::updated_t>(IService::signals::s_UPDATED);
-    sig->asyncEmit();
+    sig->asyncEmit(m_service.getSptr());
 
     return future;
 }

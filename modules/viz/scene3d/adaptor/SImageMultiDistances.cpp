@@ -34,6 +34,8 @@
 
 #include <service/macros.hpp>
 
+#include <ui/base/Cursor.hpp>
+
 #include <viz/scene3d/helper/ManualObject.hpp>
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/Utils.hpp>
@@ -45,17 +47,26 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-static const core::com::Signals::SignalKeyType s_ADD_DISTANCES_SLOT                 = "addDistances";
-static const core::com::Signals::SignalKeyType s_REMOVE_DISTANCES_SLOT              = "removeDistances";
-static const core::com::Signals::SignalKeyType s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
+static const core::com::Slots::SlotKeyType s_REMOVE_DISTANCES_SLOT              = "removeDistances";
+static const core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
+static const core::com::Slots::SlotKeyType s_ACTIVATE_DISTANCE_TOOL_SLOT        = "activateDistanceTool";
+static const core::com::Slots::SlotKeyType s_UPDATE_MODIFIED_DISTANCE_SLOT      = "updateModifiedDistance";
 
 static constexpr std::uint8_t s_DISTANCE_RQ_GROUP_ID = sight::viz::scene3d::rq::s_SURFACE_ID;
 
 //------------------------------------------------------------------------------
 
-Ogre::ColourValue SImageMultiDistances::generateColor(core::tools::fwID::IDType _id)
+Ogre::ColourValue SImageMultiDistances::generateColor()
 {
-    switch(std::hash<std::string>()(_id) % 7)
+    if(std::getenv("GUI_TESTS_ARE_RUNNING") != nullptr)
+    {
+        // on windows and linux, the color is not the same and prevent comparison with a reference image in GUI tests.
+        // For that reason, the color is fixed in gui tests.
+        return Ogre::ColourValue(236 / 255.0F, 219 / 255.0F, 84 / 255.0F);
+    }
+
+    ++m_colorIndex;
+    switch(m_colorIndex % 7)
     {
         case 0:
             return Ogre::ColourValue(63 / 255.0F, 105 / 255.0F, 170 / 255.0F);
@@ -75,6 +86,7 @@ Ogre::ColourValue SImageMultiDistances::generateColor(core::tools::fwID::IDType 
         case 5:
             return Ogre::ColourValue(149 / 255.0F, 222 / 255.0F, 227 / 255.0F);
 
+        case 6:
         default:
             return Ogre::ColourValue(29 / 255.0F, 45 / 255.0F, 168 / 255.0F);
     }
@@ -128,9 +140,24 @@ std::string SImageMultiDistances::getLength(const Ogre::Vector3& _begin, const O
 
 SImageMultiDistances::SImageMultiDistances() noexcept
 {
-    newSlot(s_ADD_DISTANCES_SLOT, &SImageMultiDistances::addDistances, this);
     newSlot(s_REMOVE_DISTANCES_SLOT, &SImageMultiDistances::removeDistances, this);
     newSlot(s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT, &SImageMultiDistances::updateVisibilityFromField, this);
+    newSlot(s_ACTIVATE_DISTANCE_TOOL_SLOT, &SImageMultiDistances::activateDistanceTool, this);
+    newSlot(s_UPDATE_MODIFIED_DISTANCE_SLOT, &SImageMultiDistances::updateModifiedDistance, this);
+
+    newSignal<signals::void_signal_t>(signals::s_DEACTIVATE_DISTANCE_TOOL);
+}
+
+//------------------------------------------------------------------------------
+
+service::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
+{
+    KeyConnectionsMap connections;
+    connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_MODIFIED_SIG, s_UPDATE_MODIFIED_DISTANCE_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
+    connections.push(s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
+    return connections;
 }
 
 //------------------------------------------------------------------------------
@@ -141,7 +168,6 @@ void SImageMultiDistances::configuring()
 
     const ConfigType config = this->getConfiguration();
 
-    static const std::string s_FONT_SOURCE_CONFIG = s_CONFIG + "fontSource";
     static const std::string s_FONT_SIZE_CONFIG   = s_CONFIG + "fontSize";
     static const std::string s_RADIUS_CONFIG      = s_CONFIG + "radius";
     static const std::string s_INTERACTIVE_CONFIG = s_CONFIG + "interactive";
@@ -149,7 +175,6 @@ void SImageMultiDistances::configuring()
     static const std::string s_QUERY_MASK_CONFIG  = s_CONFIG + "queryMask";
     static const std::string s_QUERY_FLAGS_CONFIG = s_CONFIG + "distanceQueryFlags";
 
-    m_fontSource           = config.get(s_FONT_SOURCE_CONFIG, m_fontSource);
     m_fontSize             = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
     m_distanceSphereRadius = config.get<float>(s_RADIUS_CONFIG, m_distanceSphereRadius);
     m_interactive          = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
@@ -216,7 +241,7 @@ void SImageMultiDistances::starting()
     m_dashedLineMaterial->setHasVertexColor(true);
     m_dashedLineMaterial->updateShadingMode(data::Material::AMBIENT, layer->getLightsNumber(), false, false);
 
-    // Retrive the ogre material to change the depth check.
+    // Retrieve the ogre material to change the depth check.
     const Ogre::MaterialPtr ogreSphereMaterial = Ogre::MaterialManager::getSingleton().getByName(
         m_sphereMaterialName,
         sight::viz::scene3d::RESOURCE_GROUP
@@ -248,32 +273,15 @@ void SImageMultiDistances::starting()
 
 //------------------------------------------------------------------------------
 
-service::IService::KeyConnectionsMap SImageMultiDistances::getAutoConnections() const
-{
-    KeyConnectionsMap connections;
-    connections.push(s_IMAGE_IN, data::Image::s_DISTANCE_ADDED_SIG, s_ADD_DISTANCES_SLOT);
-    connections.push(s_IMAGE_IN, data::Image::s_DISTANCE_REMOVED_SIG, s_REMOVE_DISTANCES_SLOT);
-    connections.push(s_IMAGE_IN, data::Image::s_DISTANCE_DISPLAYED_SIG, s_UPDATE_VISIBILITY_SLOT);
-    connections.push(s_IMAGE_IN, data::Image::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-    return connections;
-}
-
-//------------------------------------------------------------------------------
-
 void SImageMultiDistances::updating()
 {
+    this->getRenderService()->makeCurrent();
+
     const sight::viz::scene3d::Layer::csptr layer = this->getLayer();
 
     m_sphereMaterial->updateShadingMode(data::Material::PHONG, layer->getLightsNumber(), false, false);
     m_lineMaterial->updateShadingMode(data::Material::AMBIENT, layer->getLightsNumber(), false, false);
     m_dashedLineMaterial->updateShadingMode(data::Material::AMBIENT, layer->getLightsNumber(), false, false);
-
-    while(!m_distances.empty())
-    {
-        this->destroyDistance(m_distances.begin()->first);
-    }
-
-    this->addDistances();
 }
 
 //------------------------------------------------------------------------------
@@ -300,48 +308,6 @@ void SImageMultiDistances::stopping()
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::addDistances()
-{
-    this->getRenderService()->makeCurrent();
-
-    const auto image = m_image.lock();
-
-    const data::Vector::sptr distanceField = data::helper::MedicalImage::getDistances(*image);
-
-    if(distanceField)
-    {
-        for(const auto& object : *distanceField)
-        {
-            const data::PointList::sptr pointList = data::PointList::dynamicCast(object);
-            SIGHT_ASSERT("The distance should be a point list", pointList);
-            SIGHT_ASSERT("The distance must contains two points", pointList->getPoints().size() == 2);
-
-            const core::tools::fwID::IDType id = pointList->getID();
-            if(m_distances.find(id) == m_distances.end())
-            {
-                this->createDistance(pointList);
-                const auto& sigModified = pointList->signal<data::PointList::ModifiedSignalType>(
-                    data::PointList::s_MODIFIED_SIG
-                );
-                sigModified->connect(slot(IService::slots::s_UPDATE));
-            }
-        }
-    }
-    // The signal data::Image::s_DISTANCE_ADDED_SIG is send if all distances are removed.
-    // When all distances are removed, the field is removed in the image.
-    else
-    {
-        while(!m_distances.empty())
-        {
-            this->destroyDistance(m_distances.begin()->first);
-        }
-    }
-
-    this->requestRender();
-}
-
-//------------------------------------------------------------------------------
-
 void SImageMultiDistances::removeDistances()
 {
     this->getRenderService()->makeCurrent();
@@ -356,6 +322,13 @@ void SImageMultiDistances::removeDistances()
         for(const auto& object : *distanceField)
         {
             foundId.push_back(object->getID());
+        }
+    }
+    else
+    {
+        while(!m_distances.empty())
+        {
+            this->destroyDistance(m_distances.begin()->first);
         }
     }
 
@@ -449,11 +422,10 @@ std::optional<Ogre::Vector3> SImageMultiDistances::getNearestPickedPosition(int 
 
 void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
 {
-    if(_button == LEFT)
+    if(_button == LEFT && m_toolActivated && !m_creationMode)
     {
         const sight::viz::scene3d::Layer::csptr layer = this->getLayer();
-
-        Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
+        Ogre::SceneManager* const sceneMgr            = layer->getSceneManager();
 
         const Ogre::Camera* const cam = layer->getDefaultCamera();
         const auto* const vp          = cam->getViewport();
@@ -465,17 +437,48 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier /*_mod
 
         bool found                               = false;
         Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_distanceQueryFlag);
-        raySceneQuery->setSortByDistance(false);
+        raySceneQuery->setSortByDistance(true);
         if(!raySceneQuery->execute().empty())
         {
-            const Ogre::Real scale = 1.15F;
+            const Ogre::RaySceneQueryResult& queryResultVect = raySceneQuery->getLastResults();
 
-            const Ogre::RaySceneQueryResult& queryResult = raySceneQuery->getLastResults();
-            for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
+            for(std::size_t qrIdx = 0 ; qrIdx < queryResultVect.size() && !found ; qrIdx++)
             {
-                const Ogre::MovableObject* const object = queryResult[qrIdx].movable;
-                if(object->isVisible())
+                const Ogre::MovableObject* const object = queryResultVect[qrIdx].movable;
+                const auto objectType                   = object->getMovableType();
+
+                if(objectType == "Entity" && object->isVisible())
                 {
+                    //First point
+                    auto firstPoint      = data::Point::New();
+                    auto clickedPosition = this->getNearestPickedPosition(_x, _y);
+                    firstPoint->setCoord({clickedPosition->x, clickedPosition->y, clickedPosition->z});
+                    //Second Point
+                    auto secondPoint = data::Point::New();
+                    secondPoint->setCoord({clickedPosition->x, clickedPosition->y, clickedPosition->z});
+                    m_points.push_back(firstPoint);
+                    m_points.push_back(secondPoint);
+
+                    //createDistance equal to 0, firstPoint = secondPoint
+                    auto pointList = data::PointList::New();
+                    pointList->setPoints(m_points);
+                    this->createDistance(pointList);
+                    this->updateImageDistanceField(pointList);
+                    auto& distanceData = m_distances[pointList->getID()];
+                    m_pickedData = {&distanceData, false};
+
+                    //remember that this is a creation.
+                    m_creationMode = true;
+
+                    sight::ui::base::Cursor cursor;
+                    cursor.setCursor(ui::base::ICursor::CLOSED_HAND, false);
+
+                    break;
+                }
+
+                if(objectType == "ManualObject" && object->isVisible())
+                {
+                    const Ogre::Real scale = 1.15F;
                     for(auto& distance : m_distances)
                     {
                         DistanceData& distanceData = distance.second;
@@ -484,6 +487,9 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier /*_mod
                             distanceData.m_node1->setScale(scale, scale, scale);
                             m_pickedData = {&distanceData, true};
                             found        = true;
+
+                            sight::ui::base::Cursor cursor;
+                            cursor.setCursor(ui::base::ICursor::CLOSED_HAND, false);
                             break;
                         }
 
@@ -492,18 +498,20 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier /*_mod
                             distanceData.m_node2->setScale(scale, scale, scale);
                             m_pickedData = {&distanceData, false};
                             found        = true;
+
+                            sight::ui::base::Cursor cursor;
+                            cursor.setCursor(ui::base::ICursor::CLOSED_HAND, false);
                             break;
                         }
                     }
                 }
             }
-        }
 
-        delete raySceneQuery;
-
-        if(found)
-        {
-            this->getLayer()->cancelFurtherInteraction();
+            delete raySceneQuery;
+            if(found)
+            {
+                this->getLayer()->cancelFurtherInteraction();
+            }
         }
     }
 }
@@ -519,102 +527,279 @@ void SImageMultiDistances::mouseMoveEvent(
     int /*_dy*/
 )
 {
-    if(m_pickedData.m_data != nullptr)
+    if(m_toolActivated)
     {
-        // Discard the current distance to launch the ray over the scene without picking this one.
-        m_pickedData.m_data->m_sphere1->setQueryFlags(0x0);
-        m_pickedData.m_data->m_sphere2->setQueryFlags(0x0);
+        this->getRenderService()->makeCurrent();
 
-        const auto layer              = this->getLayer();
-        const Ogre::Camera* const cam = layer->getDefaultCamera();
-        SIGHT_ASSERT("No camera found", cam);
-
-        bool moveInCameraPlane = true;
-
-        Ogre::Vector3 newPos;
-        if(cam->getProjectionType() == Ogre::ProjectionType::PT_PERSPECTIVE)
+        if(m_pickedData.m_data != nullptr)
         {
-            // If something is picked, we will snap the landmark to it
-            std::optional<Ogre::Vector3> pickedPos = this->getNearestPickedPosition(_x, _y);
-            if(pickedPos.has_value())
+            // Discard the current distance to launch the ray over the scene without picking this one.
+            m_pickedData.m_data->m_sphere1->setQueryFlags(0x0);
+            m_pickedData.m_data->m_sphere2->setQueryFlags(0x0);
+
+            const auto layer              = this->getLayer();
+            const Ogre::Camera* const cam = layer->getDefaultCamera();
+            SIGHT_ASSERT("No camera found", cam);
+
+            bool moveInCameraPlane = true;
+
+            Ogre::Vector3 newPos;
+            if(cam->getProjectionType() == Ogre::ProjectionType::PT_PERSPECTIVE)
             {
-                newPos            = pickedPos.value();
-                moveInCameraPlane = false;
+                // If something is picked, we will snap the landmark to it
+                std::optional<Ogre::Vector3> pickedPos = this->getNearestPickedPosition(_x, _y);
+                if(pickedPos.has_value())
+                {
+                    newPos            = pickedPos.value();
+                    moveInCameraPlane = false;
+                }
             }
-        }
 
-        // Else we move the distance along a plane.
-        if(moveInCameraPlane)
+            // Else we move the distance along a plane.
+            if(moveInCameraPlane)
+            {
+                const auto* const vp = cam->getViewport();
+
+                const float vpX = static_cast<float>(_x - vp->getActualLeft())
+                                  / static_cast<float>(vp->getActualWidth());
+                const float vpY = static_cast<float>(_y - vp->getActualTop())
+                                  / static_cast<float>(vp->getActualHeight());
+
+                const Ogre::Ray ray           = cam->getCameraToViewportRay(vpX, vpY);
+                const Ogre::Vector3 direction = this->getCamDirection(cam);
+
+                Ogre::Vector3 position;
+                if(m_pickedData.m_first)
+                {
+                    position = m_pickedData.m_data->m_node1->getPosition();
+                }
+                else
+                {
+                    position = m_pickedData.m_data->m_node2->getPosition();
+                }
+
+                const Ogre::Plane plane(direction, position);
+
+                const std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, plane);
+
+                if(!hit.first)
+                {
+                    SIGHT_ERROR("The ray must intersect the plane")
+                    return;
+                }
+
+                newPos = ray.getPoint(hit.second);
+            }
+
+            // Reset the query flag.
+            m_pickedData.m_data->m_sphere1->setQueryFlags(m_distanceQueryFlag);
+            m_pickedData.m_data->m_sphere2->setQueryFlags(m_distanceQueryFlag);
+
+            if(m_pickedData.m_first)
+            {
+                const Ogre::Vector3 secondPos = m_pickedData.m_data->m_node2->getPosition();
+                this->updateDistance(m_pickedData.m_data, newPos, secondPos);
+            }
+            else
+            {
+                const Ogre::Vector3 firstPos = m_pickedData.m_data->m_node1->getPosition();
+                this->updateDistance(m_pickedData.m_data, firstPos, newPos);
+            }
+
+            this->requestRender();
+            this->getLayer()->cancelFurtherInteraction();
+
+            const auto image = m_image.lock();
+            const auto sig   = image->signal<data::Image::DistanceModifiedSignalType>(
+                data::Image::s_DISTANCE_MODIFIED_SIG
+            );
+            sig->asyncEmit(m_pickedData.m_data->m_pointList);
+        }
+        else
         {
-            const auto* const vp = cam->getViewport();
+            const sight::viz::scene3d::Layer::csptr layer = this->getLayer();
+            Ogre::SceneManager* const sceneMgr            = layer->getSceneManager();
+
+            const Ogre::Camera* const cam = layer->getDefaultCamera();
+            const auto* const vp          = cam->getViewport();
 
             const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
             const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
 
-            const Ogre::Ray ray           = cam->getCameraToViewportRay(vpX, vpY);
-            const Ogre::Vector3 direction = this->getCamDirection(cam);
+            const Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
 
-            Ogre::Vector3 position;
-            if(m_pickedData.m_first)
+            bool found                               = false;
+            Ogre::RaySceneQuery* const raySceneQuery = sceneMgr->createRayQuery(ray, m_distanceQueryFlag);
+            raySceneQuery->setSortByDistance(true);
+            if(!raySceneQuery->execute().empty())
             {
-                position = m_pickedData.m_data->m_node1->getPosition();
+                const Ogre::RaySceneQueryResult& queryResultVect = raySceneQuery->getLastResults();
+
+                for(std::size_t qrIdx = 0 ; qrIdx < queryResultVect.size() && !found ; qrIdx++)
+                {
+                    const Ogre::MovableObject* const object = queryResultVect[qrIdx].movable;
+                    const auto objectType                   = object->getMovableType();
+
+                    if(objectType == "ManualObject" && object->isVisible())
+                    {
+                        for(auto& distance : m_distances)
+                        {
+                            DistanceData& distanceData = distance.second;
+                            if(distanceData.m_sphere1 == object || distanceData.m_sphere2 == object)
+                            {
+                                sight::ui::base::Cursor cursor;
+                                cursor.setCursor(ui::base::ICursor::OPEN_HAND, false);
+                                m_isOverDistance = true;
+                                found            = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
+                if(m_isOverDistance && !found)
+                {
+                    m_isOverDistance = false;
+                    sight::ui::base::Cursor cursor;
+                    cursor.setCursor(ui::base::ICursor::CROSS, false);
+                }
             }
-            else
-            {
-                position = m_pickedData.m_data->m_node2->getPosition();
-            }
-
-            const Ogre::Plane plane(direction, position);
-
-            const std::pair<bool, Ogre::Real> hit = Ogre::Math::intersects(ray, plane);
-
-            if(!hit.first)
-            {
-                SIGHT_ERROR("The ray must intersect the plane")
-                return;
-            }
-
-            newPos = ray.getPoint(hit.second);
         }
-
-        // Reset the query flag.
-        m_pickedData.m_data->m_sphere1->setQueryFlags(m_distanceQueryFlag);
-        m_pickedData.m_data->m_sphere2->setQueryFlags(m_distanceQueryFlag);
-
-        if(m_pickedData.m_first)
-        {
-            const Ogre::Vector3 secondPos = m_pickedData.m_data->m_node2->getPosition();
-            this->updateDistance(m_pickedData.m_data, newPos, secondPos);
-        }
-        else
-        {
-            const Ogre::Vector3 firstPos = m_pickedData.m_data->m_node1->getPosition();
-            this->updateDistance(m_pickedData.m_data, firstPos, newPos);
-        }
-
-        this->requestRender();
-        this->getLayer()->cancelFurtherInteraction();
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/)
+void SImageMultiDistances::leaveEvent()
+{
+    sight::ui::base::Cursor cursor;
+    cursor.setCursor(ui::base::ICursor::CROSS, false);
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::enterEvent()
 {
     if(m_pickedData.m_data != nullptr)
+    {
+        sight::ui::base::Cursor cursor;
+        cursor.setCursor(ui::base::ICursor::CLOSED_HAND, false);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, Modifier /*_mods*/, int /*_x*/, int /*_y*/)
+{
+    if(_button == LEFT && m_pickedData.m_data != nullptr)
     {
         const Ogre::Real scale = 1.F;
         m_pickedData.m_data->m_node1->setScale(scale, scale, scale);
         m_pickedData.m_data->m_node2->setScale(scale, scale, scale);
-        m_pickedData = {nullptr, true};
+
+        const auto pl                     = m_pickedData.m_data->m_pointList;
+        const std::array<double, 3> front = pl->getPoints().front()->getCoord();
+        const std::array<double, 3> back  = pl->getPoints().back()->getCoord();
+
+        const Ogre::Vector3 begin(static_cast<float>(front[0]),
+                                  static_cast<float>(front[1]),
+                                  static_cast<float>(front[2]));
+        const Ogre::Vector3 end(static_cast<float>(back[0]),
+                                static_cast<float>(back[1]),
+                                static_cast<float>(back[2]));
+
+        const int length = static_cast<int>(std::round((end - begin).length()));
+
+        // if it is in creation mode, and a distance is calculated, it is the second point of the distance.
+        // Finish the distance creation
+        if(m_creationMode && length != 0)
+        {
+            m_creationMode = false;
+            sight::ui::base::Cursor cursor;
+            cursor.setCursor(ui::base::ICursor::OPEN_HAND, false);
+            m_pickedData = {nullptr, true};
+            m_points.clear();
+        }
+        //If it is not a creationMode, a distance null means that the distance should be removed
+        else if(!m_creationMode)
+        {
+            if(length == 0)
+            {
+                destroyDistance(pl->getID());
+                {
+                    const auto image        = m_image.lock();
+                    const auto vectDistance = data::helper::MedicalImage::getDistances(*image);
+                    const auto newVec       = std::remove(vectDistance->begin(), vectDistance->end(), pl);
+                    vectDistance->erase(newVec, vectDistance->end());
+                    const auto sig = image->signal<data::Image::DistanceRemovedSignalType>(
+                        data::Image::s_DISTANCE_REMOVED_SIG
+                    );
+                    sig->asyncEmit(pl);
+                }
+                sight::ui::base::Cursor cursor;
+                cursor.setCursor(ui::base::ICursor::CROSS, false);
+                m_pickedData = {nullptr, true};
+                m_points.clear();
+            }
+            else
+            {
+                sight::ui::base::Cursor cursor;
+                cursor.setCursor(ui::base::ICursor::OPEN_HAND, false);
+                m_pickedData = {nullptr, true};
+                m_points.clear();
+            }
+        }
 
         this->getLayer()->requestRender();
+    }
+    else if(_button == RIGHT)
+    {
+        // right button in creation mode destroys the created distance
+        if(m_creationMode)
+        {
+            m_creationMode = false;
+            const auto pl = m_pickedData.m_data->m_pointList;
+            destroyDistance(pl->getID());
+            {
+                const auto image        = m_image.lock();
+                const auto vectDistance = data::helper::MedicalImage::getDistances(*image);
+                const auto newVec       = std::remove(vectDistance->begin(), vectDistance->end(), pl);
+                vectDistance->erase(newVec, vectDistance->end());
+                const auto sig = image->signal<data::Image::DistanceRemovedSignalType>(
+                    data::Image::s_DISTANCE_REMOVED_SIG
+                );
+                sig->asyncEmit(pl);
+            }
+            sight::ui::base::Cursor cursor;
+            cursor.setCursor(ui::base::ICursor::CROSS, false);
+            m_pickedData = {nullptr, true};
+            m_points.clear();
+        }
+        //right button other than in creation mode goes out of the add distance mode
+        else
+        {
+            activateDistanceTool(false);
+            this->signal<signals::void_signal_t>(signals::s_DEACTIVATE_DISTANCE_TOOL)->asyncEmit();
+        }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SImageMultiDistances::createDistance(data::PointList::sptr _pl)
+void SImageMultiDistances::keyPressEvent(int key, Modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/)
+{
+    // code for escape
+    //Hardcoded, because scene3D has no access to Qt, and this code is stored in Qt::Key_Escape
+    if(m_toolActivated && key == 16777216)
+    {
+        activateDistanceTool(false);
+        this->signal<signals::void_signal_t>(signals::s_DEACTIVATE_DISTANCE_TOOL)->asyncEmit();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::createDistance(data::PointList::sptr& _pl)
 {
     const core::tools::fwID::IDType id = _pl->getID();
     SIGHT_ASSERT("The distance already exist", m_distances.find(id) == m_distances.end());
@@ -623,7 +808,7 @@ void SImageMultiDistances::createDistance(data::PointList::sptr _pl)
     Ogre::SceneNode* const rootNode    = sceneMgr->getRootSceneNode();
 
     // Retrieve data used to create Ogre resources.
-    const Ogre::ColourValue colour = SImageMultiDistances::generateColor(id);
+    const Ogre::ColourValue colour = SImageMultiDistances::generateColor();
 
     const std::array<double, 3> front = _pl->getPoints().front()->getCoord();
     const std::array<double, 3> back  = _pl->getPoints().back()->getCoord();
@@ -700,28 +885,17 @@ void SImageMultiDistances::createDistance(data::PointList::sptr _pl)
 
     // Label.
     const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
-    Ogre::OverlayContainer* const textContainer  = layer->getOverlayTextPanel();
-    Ogre::Camera* const cam                      = layer->getDefaultCamera();
-    const float dpi                              =
-        this->getRenderService()->getInteractorManager()->getLogicalDotsPerInch();
-    sight::viz::scene3d::Text* label = sight::viz::scene3d::Text::New(
-        this->getID() + "_label_" + id,
-        sceneMgr,
-        textContainer,
-        m_fontSource,
-        m_fontSize,
-        dpi,
-        cam
-    );
+
+    sight::viz::scene3d::IText::sptr label = sight::viz::scene3d::IText::New(layer);
+
     // NOLINTNEXTLINE(readability-suspicious-call-argument)
-    const std::string length = SImageMultiDistances::getLength(end, begin);
+    const std::string length = SImageMultiDistances::getLength(begin, end);
     label->setText(length);
     label->setTextColor(colour);
-    label->setQueryFlags(0x0);
-    Ogre::SceneNode* const labelNode =
-        rootNode->createChildSceneNode(this->getID() + "_labelNode_" + id, end);
+    label->setFontSize(m_fontSize);
+    Ogre::SceneNode* const labelNode = rootNode->createChildSceneNode(this->getID() + "_labelNode_" + id, end);
     SIGHT_ASSERT("Can't create the label node", labelNode);
-    labelNode->attachObject(label);
+    label->attachToNode(labelNode, this->getLayer()->getDefaultCamera());
 
     // Set the visibility.
     sphere1->setVisible(m_isVisible);
@@ -731,8 +905,31 @@ void SImageMultiDistances::createDistance(data::PointList::sptr _pl)
     label->setVisible(m_isVisible);
 
     // Store data in the map.
-    DistanceData data {_pl, node1, sphere1, node2, sphere2, line, dashedLine, labelNode, label};
+    const DistanceData data {_pl, node1, sphere1, node2, sphere2, line, dashedLine, labelNode, label};
     m_distances[id] = data;
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::updateImageDistanceField(data::PointList::sptr _pl)
+{
+    const auto image = m_image.lock();
+    if(data::helper::MedicalImage::checkImageValidity(image.get_shared()))
+    {
+        data::Vector::sptr distancesField = data::helper::MedicalImage::getDistances(*image);
+
+        if(!distancesField)
+        {
+            distancesField = data::Vector::New();
+            distancesField->push_back(_pl);
+            data::helper::MedicalImage::setDistances(*image, distancesField);
+        }
+        else
+        {
+            distancesField->push_back(_pl);
+            data::helper::MedicalImage::setDistances(*image, distancesField);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -758,7 +955,7 @@ void SImageMultiDistances::updateDistance(
 
     // Update the label.
     // NOLINTNEXTLINE(readability-suspicious-call-argument)
-    const std::string length = SImageMultiDistances::getLength(_end, _begin);
+    const std::string length = SImageMultiDistances::getLength(_begin, _end);
     _data->m_label->setText(length);
     _data->m_labelNode->setPosition(_end);
 
@@ -790,9 +987,11 @@ void SImageMultiDistances::destroyDistance(core::tools::fwID::IDType _id)
     SIGHT_ASSERT("The distance is not found", it != m_distances.end());
 
     // Destroy Ogre resource.
-    const DistanceData distanceData    = it->second;
+    DistanceData distanceData          = it->second;
     Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 
+    distanceData.m_label->detachFromNode();
+    distanceData.m_label.reset();
     sceneMgr->destroySceneNode(distanceData.m_node1);
     sceneMgr->destroyManualObject(distanceData.m_sphere1);
     sceneMgr->destroySceneNode(distanceData.m_node2);
@@ -800,15 +999,60 @@ void SImageMultiDistances::destroyDistance(core::tools::fwID::IDType _id)
     sceneMgr->destroyManualObject(distanceData.m_line);
     sceneMgr->destroyManualObject(distanceData.m_dashedLine);
     sceneMgr->destroySceneNode(distanceData.m_labelNode);
-    sceneMgr->destroyMovableObject(distanceData.m_label);
-
-    const auto& sigModified = distanceData.m_pointList->signal<data::PointList::ModifiedSignalType>(
-        data::PointList::s_MODIFIED_SIG
-    );
-    sigModified->disconnect(slot(IService::slots::s_UPDATE));
 
     // Remove it from the map.
     m_distances.erase(it);
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::activateDistanceTool(bool _activate)
+{
+    sight::ui::base::Cursor cursor;
+    if(_activate)
+    {
+        m_toolActivated = true;
+        cursor.setCursor(ui::base::ICursor::CROSS);
+    }
+    else
+    {
+        m_toolActivated  = false;
+        m_isOverDistance = false;
+        m_creationMode   = false;
+        m_pickedData     = {nullptr, true};
+        m_points.clear();
+
+        cursor.setDefaultCursor();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::updateModifiedDistance(data::PointList::sptr _pl)
+{
+    if(m_distances.find(_pl->getID()) == m_distances.end())
+    {
+        // create Distance if it doesn't exist
+        this->createDistance(_pl);
+    }
+    else
+    {
+        // if it already exists, update distance with the new position
+        auto distanceToUpdate = m_distances[_pl->getID()];
+
+        const std::array<double, 3> front = _pl->getPoints().front()->getCoord();
+        const std::array<double, 3> back  = _pl->getPoints().back()->getCoord();
+
+        const Ogre::Vector3 begin(static_cast<float>(front[0]),
+                                  static_cast<float>(front[1]),
+                                  static_cast<float>(front[2]));
+        const Ogre::Vector3 end(static_cast<float>(back[0]),
+                                static_cast<float>(back[1]),
+                                static_cast<float>(back[2]));
+        this->updateDistance(&distanceToUpdate, begin, end);
+    }
+
+    this->requestRender();
 }
 
 //------------------------------------------------------------------------------

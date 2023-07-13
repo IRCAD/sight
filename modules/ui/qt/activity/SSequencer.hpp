@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -126,23 +126,58 @@ public:
     MODULE_UI_QT_API SSequencer() noexcept;
 
     /// Destructor. Do nothing.
-    MODULE_UI_QT_API ~SSequencer() noexcept override;
+    MODULE_UI_QT_API ~SSequencer() noexcept override = default;
 
-    /**
-     * @name Signals API
-     * @{
-     */
-    using ActivityCreatedSignalType = core::com::Signal<void (data::Activity::sptr)>;
-    using DataRequiredSignalType    = core::com::Signal<void (data::Activity::sptr)>;
-    using BoolSignalType            = core::com::Signal<void (bool)>;
-/**
- * @}
- */
+    struct MODULE_UI_QT_CLASS_API Slots final
+    {
+        using key_t = sight::core::com::Slots::SlotKeyType;
+
+        inline static const key_t GO_TO         = "goTo";
+        inline static const key_t CHECK_NEXT    = "checkNext";
+        inline static const key_t VALIDATE_NEXT = "validateNext";
+        inline static const key_t NEXT          = "next";
+        inline static const key_t PREVIOUS      = "previous";
+        inline static const key_t SEND_INFO     = "sendInfo";
+    };
+
+    struct MODULE_UI_QT_CLASS_API Signals final
+    {
+        using key_t = sight::core::com::Signals::SignalKeyType;
+
+        inline static const key_t ACTIVITY_CREATED = "activityCreated";
+        inline static const key_t DATA_REQUIRED    = "dataRequired";
+        inline static const key_t HAS_PREVIOUS     = "hasPrevious";
+        inline static const key_t HAS_NEXT         = "hasNext";
+        inline static const key_t NEXT_ENABLED     = "nextEnabled";
+
+        inline static const key_t NEXT_VALIDATED = "nextValidated";
+        inline static const key_t NEXT_VALID     = "nextValid";
+        inline static const key_t NEXT_INVALID   = "nextInvalid";
+
+        using void_signal_t     = core::com::Signal<void ()>;
+        using bool_signal_t     = core::com::Signal<void (bool)>;
+        using activity_signal_t = core::com::Signal<void (data::Activity::sptr)>;
+    };
+
+    /// Slot: Check if the next activities can be enabled
+    MODULE_UI_QT_API void checkNext();
+
+    /// Slot: Validate the next activities without enabling it. Emits nextValidated(true/false), next(In)Valid signals
+    MODULE_UI_QT_API void validateNext();
+
+    /// Slot: Create the next activity, emit 'dataRequired' signal if the activity require additional data
+    MODULE_UI_QT_API void next();
+
+    /// Slot: Create the previous activity, emit 'dataRequired' signal if the activity require additional data
+    MODULE_UI_QT_API void previous();
+
+    /// Slot: Send the 'hasNext' and 'enablePrevious' signals for the current activity
+    MODULE_UI_QT_API void sendInfo() const;
 
 public Q_SLOTS:
 
     /// Slot: create the activity at the given index, emit 'dataRequired' signal if the activity require additional data
-    void goTo(int index);
+    MODULE_UI_QT_API void goTo(int index);
 
 protected:
 
@@ -169,29 +204,11 @@ protected:
 
 private:
 
-    /// Slot: Check if the next activities can be enabled
-    void checkNext();
-
-    /// Slot: Create the next activity, emit 'dataRequired' signal if the activity require additional data
-    void next();
-
-    /// Slot: Create the previous activity, emit 'dataRequired' signal if the activity require additional data
-    void previous();
-
-    /// Slot: Send the 'hasNext' and 'enablePrevious' signals for the current activity
-    void sendInfo() const;
-
     /// Invoke 'enableActivity' method in Qml file
     void enableActivity(int index);
 
     /// Invokes 'disableActivity' method in Qml file
     void disableActivity(int index);
-
-    ActivityCreatedSignalType::sptr m_sigActivityCreated;
-    DataRequiredSignalType::sptr m_sigDataRequired;
-    BoolSignalType::sptr m_sigHasPrevious;
-    BoolSignalType::sptr m_sigHasNext;
-    BoolSignalType::sptr m_sigNextEnabled;
 
     /// List of the activities
     std::vector<std::string> m_activityNames;
@@ -209,6 +226,38 @@ private:
     std::string m_background;
     std::string m_primary;
     std::string m_elevation;
+
+    const Signals::activity_signal_t::sptr m_activity_created {
+        newSignal<Signals::activity_signal_t>(Signals::ACTIVITY_CREATED)
+    };
+
+    const Signals::activity_signal_t::sptr m_data_required {
+        newSignal<Signals::activity_signal_t>(Signals::DATA_REQUIRED)
+    };
+
+    const Signals::bool_signal_t::sptr m_has_previous {
+        newSignal<Signals::bool_signal_t>(Signals::HAS_PREVIOUS)
+    };
+
+    const Signals::bool_signal_t::sptr m_has_next {
+        newSignal<Signals::bool_signal_t>(Signals::HAS_NEXT)
+    };
+
+    const Signals::bool_signal_t::sptr m_next_enabled {
+        newSignal<Signals::bool_signal_t>(Signals::NEXT_ENABLED)
+    };
+
+    const Signals::bool_signal_t::sptr m_next_validated {
+        newSignal<Signals::bool_signal_t>(Signals::NEXT_VALIDATED)
+    };
+
+    const Signals::void_signal_t::sptr m_next_valid {
+        newSignal<Signals::void_signal_t>(Signals::NEXT_VALID)
+    };
+
+    const Signals::void_signal_t::sptr m_next_invalid {
+        newSignal<Signals::void_signal_t>(Signals::NEXT_INVALID)
+    };
 
     static constexpr std::string_view s_ACTIVITY_SET_INOUT = "activitySet";
     data::ptr<data::ActivitySet, data::Access::inout> m_activity_set {this, s_ACTIVITY_SET_INOUT, true};

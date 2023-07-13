@@ -59,7 +59,7 @@
     ).setLifePeriod( \
         BOOST_PP_IF( \
             BOOST_PP_IS_EMPTY(__VA_ARGS__), \
-            2000, \
+            10000, \
             BOOST_PP_VARIADIC_ELEM(0, __VA_ARGS__) \
         ) \
     ); \

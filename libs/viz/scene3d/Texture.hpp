@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2022 IRCAD France
+ * Copyright (C) 2015-2023 IRCAD France
  * Copyright (C) 2015-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -56,21 +56,33 @@ public:
     /// update.
     VIZ_SCENE3D_API void update() override;
 
+    VIZ_SCENE3D_API void setDirty();
+
     /// Binds the texture in the given texture unit state
     VIZ_SCENE3D_API void bind(
         Ogre::TextureUnitState* _texUnit,
         Ogre::TextureType _type,
         Ogre::TextureFilterOptions _filterType,
         Ogre::TextureAddressingMode _addressMode
-    );
+    ) const;
 
     /// Binds the texture in the given pass
     VIZ_SCENE3D_API void bind(
         Ogre::Pass* _pass,
         const std::string& _samplerName,
         std::optional<Ogre::TextureFilterOptions> _filterType   = std::nullopt,
+        std::optional<Ogre::TextureAddressingMode> _addressMode = std::nullopt,
+        bool _uploadWindowUniform                               = true
+    ) const;
+
+    /// Binds the texture in the given pass and the given uniform
+    VIZ_SCENE3D_API void bind(
+        Ogre::Pass* _pass,
+        const std::string& _samplerName,
+        const std::string& uniformName,
+        std::optional<Ogre::TextureFilterOptions> _filterType   = std::nullopt,
         std::optional<Ogre::TextureAddressingMode> _addressMode = std::nullopt
-    );
+    ) const;
 
     /// Gets the width of this texture
     [[nodiscard]] std::uint32_t width() const

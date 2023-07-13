@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2021 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,7 @@
 #include "viz/scene3d/factory/new.hpp"
 
 #include "viz/scene3d/ILight.hpp"
+#include "viz/scene3d/IText.hpp"
 #include "viz/scene3d/IWindowInteractor.hpp"
 
 namespace sight::viz::scene3d
@@ -33,9 +34,9 @@ namespace factory
 
 //------------------------------------------------------------------------------
 
-viz::scene3d::IWindowInteractor::sptr New(const viz::scene3d::registry::KeyType& classname)
+viz::scene3d::IWindowInteractor::sptr New(const viz::scene3d::registry::KeyType& _classname)
 {
-    return viz::scene3d::registry::get()->create(classname);
+    return viz::scene3d::registry::get()->create(_classname);
 }
 
 } // namespace factory
@@ -46,11 +47,11 @@ namespace offscreenInteractorMgrFactory
 //------------------------------------------------------------------------------
 
 viz::scene3d::IWindowInteractor::sptr New(
-    const viz::scene3d::registry::KeyType& classname,
+    const viz::scene3d::registry::KeyType& _classname,
     std::pair<unsigned int, unsigned int> _dims
 )
 {
-    return viz::scene3d::registry::getOffscreenMgr()->create(classname, _dims);
+    return viz::scene3d::registry::getOffscreenMgr()->create(_classname, _dims);
 }
 
 } // namespace offscreenInteractorMgrFactory
@@ -60,11 +61,26 @@ namespace lightFactory
 
 //------------------------------------------------------------------------------
 
-viz::scene3d::ILight::sptr New(const viz::scene3d::registry::KeyType& classname)
+viz::scene3d::ILight::sptr New(const viz::scene3d::registry::KeyType& _classname)
 {
-    return viz::scene3d::registry::getLightRegistry()->create(classname);
+    return viz::scene3d::registry::getLightRegistry()->create(_classname);
 }
 
 } // namespace lightFactory
+
+namespace textFactory
+{
+
+//------------------------------------------------------------------------------
+
+viz::scene3d::IText::sptr New(
+    const viz::scene3d::registry::KeyType& _classname,
+    const sight::viz::scene3d::Layer::sptr& _layer
+)
+{
+    return viz::scene3d::registry::getTextRegistry()->create(_classname, _layer);
+}
+
+} // namespace textFactory
 
 } // namespace sight::viz::scene3d

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,8 +43,8 @@ namespace sight::ui::qt
 /**
  * @brief   Defines the frame manager.
  */
-class UI_QT_CLASS_API FrameLayoutManager : public QObject,
-                                           public ui::base::layoutManager::IFrameLayoutManager
+class UI_QT_CLASS_QT_API FrameLayoutManager : public QObject,
+                                              public ui::base::layoutManager::IFrameLayoutManager
 {
 Q_OBJECT
 
@@ -56,19 +56,19 @@ public:
         ui::base::factory::New<FrameLayoutManager>
     )
 
-    UI_QT_API FrameLayoutManager(ui::base::GuiBaseObject::Key key);
+    UI_QT_QT_API FrameLayoutManager(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API ~FrameLayoutManager() override;
+    UI_QT_QT_API ~FrameLayoutManager() override;
 
     /**
      * @brief Instantiate frame.
      */
-    UI_QT_API void createFrame() override;
+    UI_QT_QT_API void createFrame() override;
 
     /**
      * @brief Destroy local frame with sub containers.
      */
-    UI_QT_API void destroyFrame() override;
+    UI_QT_QT_API void destroyFrame() override;
 
 private Q_SLOTS:
 

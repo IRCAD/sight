@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -187,29 +187,20 @@ void PasswordKeeper::set_global_password(
 {
     std::lock_guard guard(s_password_mutex);
 
-#if defined(SIGHT_ENABLE_ENCRYPTED_LOG)
     // Check if the password is new
-    if(restart_logger && core::crypto::decrypt(s_password, get_global_password_key()) != password)
+    if(restart_logger)
     {
         // If we use encrypted log
         if(auto& logger = core::log::SpyLogger::get(); logger.is_log_encrypted())
         {
-            // Check if the password is not the default one.
-            // If this is the case, we do nothing as the logger is already started
-            if constexpr(has_default_password())
+            // Check if the password has changed and is not the default one.
+            if(const auto& old_password = core::crypto::decrypt(s_password, getGlobalPasswordKey());
+               old_password != password || (has_default_password() && password != get_default_password()))
             {
-                if(password != get_default_password())
-                {
-                    logger.change_log_password(password);
-                }
-            }
-            else
-            {
-                logger.change_log_password(password);
+                logger.change_log_password(password, old_password);
             }
         }
     }
-#endif
 
     // Store the new password
     s_password = core::crypto::encrypt(password, getGlobalPasswordKey());

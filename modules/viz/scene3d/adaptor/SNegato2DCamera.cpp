@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2019-2022 IRCAD France
+ * Copyright (C) 2019-2023 IRCAD France
  * Copyright (C) 2019-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -38,7 +38,6 @@ namespace sight::module::viz::scene3d::adaptor
 static const core::com::Slots::SlotKeyType s_RESET_CAMERA_SLOT       = "resetCamera";
 static const core::com::Slots::SlotKeyType s_RESIZE_VIEWPORT_SLOT    = "resizeViewport";
 static const core::com::Slots::SlotKeyType s_CHANGE_ORIENTATION_SLOT = "changeOrientation";
-static const core::com::Slots::SlotKeyType s_MOVE_BACK_SLOT          = "moveBack";
 
 //-----------------------------------------------------------------------------
 
@@ -47,7 +46,6 @@ SNegato2DCamera::SNegato2DCamera() noexcept
     newSlot(s_RESET_CAMERA_SLOT, &SNegato2DCamera::resetCamera, this);
     newSlot(s_RESIZE_VIEWPORT_SLOT, &SNegato2DCamera::resizeViewport, this);
     newSlot(s_CHANGE_ORIENTATION_SLOT, &SNegato2DCamera::changeOrientation, this);
-    newSlot(s_MOVE_BACK_SLOT, &SNegato2DCamera::moveBack, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -131,8 +129,7 @@ service::IService::KeyConnectionsMap SNegato2DCamera::getAutoConnections() const
 {
     return {
         {s_IMAGE_INOUT, data::Image::s_MODIFIED_SIG, s_RESET_CAMERA_SLOT},
-        {s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_CHANGE_ORIENTATION_SLOT},
-        {s_IMAGE_INOUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, s_MOVE_BACK_SLOT}
+        {s_IMAGE_INOUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, s_CHANGE_ORIENTATION_SLOT}
     };
 }
 
@@ -170,6 +167,7 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
             const auto vpWidth  = static_cast<float>(viewport->getActualWidth());
             const auto vpHeight = static_cast<float>(viewport->getActualHeight());
 
+            SIGHT_ASSERT("Width and height should be strictly positive", vpWidth > 0 && vpHeight > 0);
             camera->setAspectRatio(vpWidth / vpHeight);
             camera->setOrthoWindowHeight(clampedHeight);
 
@@ -180,6 +178,8 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
             // Translate the camera back to the cursor's previous position.
             camNode->translate(mousePosView - newMousePosView);
             m_hasMoved = true;
+
+            this->requestRender();
         }
         // Wheel alone or other modifier -> moving along slices (SHIFT to speed-up)
         else
@@ -239,11 +239,11 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
                 static_cast<int>(imHelper::getSliceIndex(*image, imHelper::orientation_t::AXIAL).value_or(0))
             };
             m_hasMoved = true;
+
             // Send signal.
             auto sig = image->signal<data::Image::SliceIndexModifiedSignalType>(
                 data::Image::s_SLICE_INDEX_MODIFIED_SIG
             );
-            // this->moveBack() will be automatically called due to auto-connection.
             sig->asyncEmit(idx[2], idx[1], idx[0]);
         }
     }
@@ -253,9 +253,24 @@ void SNegato2DCamera::wheelEvent(Modifier _modifier, double _delta, int _x, int 
 
 void SNegato2DCamera::pinchGestureEvent(double _scaleFactor, int _centerX, int _centerY)
 {
-    // 120 here refers to the units of delta needed to do one increment of mouse wheel. Check the method above for a
-    // more detailed explanation.
-    wheelEvent({}, _scaleFactor * 120, _centerX, _centerY);
+    // * 42 / 0.05 is a magic number to get a similar behavior as the mouse wheel
+    wheelEvent(Modifier::CONTROL, (_scaleFactor * 42) / 0.05, _centerX, _centerY);
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2DCamera::panGestureMoveEvent(int _x, int _y, int _dx, int _dy)
+{
+    m_isInteracting = true;
+
+    mouseMoveEvent(MouseButton::MIDDLE, {}, _x, _y, _dx, _dy);
+}
+
+//------------------------------------------------------------------------------
+
+void SNegato2DCamera::panGestureReleaseEvent(int /*_x*/, int /*_y*/, int /*_dx*/, int /*_dy*/)
+{
+    m_isInteracting = false;
 }
 
 // ----------------------------------------------------------------------------
@@ -290,6 +305,7 @@ void SNegato2DCamera::mouseMoveEvent(
 
         camNode->translate(mousePosView - previousMousePosView);
         m_hasMoved = true;
+        this->requestRender();
     }
     else if(m_isInteracting && _button == MouseButton::RIGHT)
     {
@@ -358,6 +374,7 @@ void SNegato2DCamera::resetCamera()
 
     const auto vpWidth  = static_cast<float>(viewport->getActualWidth());
     const auto vpHeight = static_cast<float>(viewport->getActualHeight());
+    SIGHT_ASSERT("Width and height should be strictly positive", vpWidth > 0 && vpHeight > 0);
     const float vpRatio = vpWidth / vpHeight;
     camera->setAspectRatio(vpRatio);
 
@@ -428,12 +445,6 @@ void SNegato2DCamera::resetCamera()
                                     * spacing[orientation]);
         camNode->setPosition(camPos);
 
-        const auto worldBoundingBox = layer->computeWorldBoundingBox();
-        if(worldBoundingBox.isFinite())
-        {
-            layer->resetCameraClippingRange(worldBoundingBox);
-        }
-
         m_hasMoved = false;
         this->requestRender();
     }
@@ -465,31 +476,6 @@ void SNegato2DCamera::changeOrientation(int _from, int _to)
     {
         m_currentNegatoOrientation = toOrientation;
         this->resetCamera();
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SNegato2DCamera::moveBack()
-{
-    const auto layer    = this->getLayer();
-    auto* const camera  = layer->getDefaultCamera();
-    auto* const camNode = camera->getParentNode();
-
-    const auto worldBoundingBox = layer->computeWorldBoundingBox();
-
-    if(worldBoundingBox.isFinite())
-    {
-        const auto orientation = static_cast<std::size_t>(m_currentNegatoOrientation);
-
-        auto camPos = camNode->getPosition();
-
-        const float backupPos = worldBoundingBox.getMinimum()[orientation] - 1.F;
-        camPos[orientation] = std::min(camPos[orientation], backupPos);
-
-        camNode->setPosition(camPos);
-
-        this->requestRender();
     }
 }
 

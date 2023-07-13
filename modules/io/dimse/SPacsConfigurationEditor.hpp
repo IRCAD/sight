@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,6 +28,8 @@
 
 #include <io/dimse/data/PacsConfiguration.hpp>
 #include <io/dimse/SeriesEnquirer.hpp>
+
+#include <service/INotifier.hpp>
 
 #include <ui/base/IEditor.hpp>
 
@@ -63,7 +65,8 @@ namespace sight::module::io::dimse
  *                                                 notification.
  */
 class MODULE_IO_DIMSE_CLASS_API SPacsConfigurationEditor : public QObject,
-                                                           public sight::ui::base::IEditor
+                                                           public sight::ui::base::IEditor,
+                                                           private sight::service::INotifier
 {
 Q_OBJECT;
 
@@ -76,7 +79,7 @@ public:
     MODULE_IO_DIMSE_API SPacsConfigurationEditor() noexcept;
 
     /// Destroyes the service.
-    MODULE_IO_DIMSE_API ~SPacsConfigurationEditor() noexcept override;
+    MODULE_IO_DIMSE_API ~SPacsConfigurationEditor() noexcept override = default;
 
 protected:
 

@@ -297,7 +297,7 @@ void SReader::updating()
 
     auto jobs = core::jobs::Aggregator::New("DICOM reader");
 
-    const auto sort_job = core::jobs::Job::New(
+    const auto read_job = core::jobs::Job::New(
         "Sorting selected series",
         [&](core::jobs::Job& job)
         {
@@ -308,44 +308,15 @@ void SReader::updating()
 
             SIGHT_THROW_IF("No series were selected.", !m_pimpl->m_selection || m_pimpl->m_selection->empty());
 
+            // Sort the series
             m_pimpl->m_reader->sort();
 
-            job.done();
-        },
-        this->worker()
-    );
-
-    jobs->add(sort_job);
-
-    const auto read_job = core::jobs::Job::New(
-        "Reading sorted series",
-        [&](core::jobs::Job& job)
-        {
-            // Set cursor to busy state. It will be reset to default even if exception occurs
-            const sight::ui::base::BusyCursor busy_cursor;
-            SIGHT_THROW_IF("No series were selected.", !m_pimpl->m_selection || m_pimpl->m_selection->empty());
+            job.doneWork(20);
 
             // Really read the series
             m_pimpl->m_reader->read();
 
-            job.done();
-        },
-        this->worker()
-    );
-
-    // Give the reader access to the job
-    m_pimpl->m_reader->setJob(read_job);
-
-    jobs->add(read_job);
-
-    const auto build_job = core::jobs::Job::New(
-        "Building series set from DICOM data",
-        [&](core::jobs::Job& job)
-        {
-            // Set cursor to busy state. It will be reset to default even if exception occurs
-            const sight::ui::base::BusyCursor busy_cursor;
-
-            job.doneWork(10);
+            job.doneWork(90);
 
             // Get the series set from the reader
             if(const auto& read = m_pimpl->m_reader->getConcreteObject(); read != nullptr && !read->empty())
@@ -367,8 +338,10 @@ void SReader::updating()
         this->worker()
     );
 
-    jobs->add(build_job);
+    jobs->add(read_job);
 
+    // Give the reader access to the job
+    m_pimpl->m_reader->setJob(read_job);
     m_pimpl->m_job_created_signal->emit(jobs);
 
     try

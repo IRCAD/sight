@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -99,6 +99,8 @@ inline sight::core::crypto::secure_string::~basic_string()
     shrink_to_fit();
 
     // The "metadata" of the container is cleansed here, not its content
+    volatile char* const p = (volatile char*) (this);
+
     // NOLINTNEXTLINE(bugprone-sizeof-container)
-    std::fill_n(((volatile char*) this), sizeof(*this), static_cast<char>(0));
+    std::fill_n(p, sizeof(*this), static_cast<char>(0));
 }

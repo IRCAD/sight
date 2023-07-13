@@ -27,6 +27,7 @@
             <gui>
                 <frame>
                     <name>${appName}</name>
+                    <version>${appVersion}</version>
                     <icon>${appIconPath}</icon>
                     <minSize width="800" height="600" />
                 </frame>

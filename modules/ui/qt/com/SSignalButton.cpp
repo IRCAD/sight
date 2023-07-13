@@ -29,6 +29,7 @@
 
 #include <ui/qt/container/QtContainer.hpp>
 
+#include <QVariant>
 #include <QVBoxLayout>
 
 namespace sight::module::ui::qt::com
@@ -115,6 +116,7 @@ void SSignalButton::starting()
     auto* layout = new QVBoxLayout();
     m_button = new QPushButton(QString::fromStdString(m_text));
     m_button->setEnabled(m_enable);
+    m_button->setProperty("class", "signal-button");
     layout->addWidget(m_button);
     qtContainer->setLayout(layout);
 
@@ -237,6 +239,8 @@ void SSignalButton::uncheck()
 
 void SSignalButton::setEnabled(bool _isEnabled)
 {
+    IEditor::setEnabled(_isEnabled);
+    // Keep this in case of SSignalButton is used outside a view container
     m_button->setEnabled(_isEnabled);
 }
 
@@ -258,6 +262,8 @@ void SSignalButton::disable()
 
 void SSignalButton::setVisible(bool _isVisible)
 {
+    IEditor::setVisible(_isVisible);
+    // Keep this in case of SSignalButton is used outside a view container
     m_button->setVisible(_isVisible);
 }
 
@@ -265,14 +271,14 @@ void SSignalButton::setVisible(bool _isVisible)
 
 void SSignalButton::show()
 {
-    m_button->show();
+    this->setVisible(true);
 }
 
 //-----------------------------------------------------------------------------
 
 void SSignalButton::hide()
 {
-    m_button->hide();
+    this->setVisible(false);
 }
 
 //-----------------------------------------------------------------------------

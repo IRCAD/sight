@@ -24,7 +24,8 @@
     <extension implements="sight::service::extension::AppConfigParameters">
         <id>SightCalibrator_AppCfgParam</id>
         <parameters>
-            <param name="APP_NAME" value="SightCalibrator @PROJECT_VERSION@" />
+            <param name="APP_NAME" value="SightCalibrator" />
+            <param name="APP_VERSION" value="@SightCalibrator_VERSION@" />
             <param name="ICON_PATH" value="SightCalibrator/app.ico" />
         </parameters>
     </extension>

@@ -35,6 +35,7 @@
 #include <io/dimse/data/PacsConfiguration.hpp>
 
 #include <service/IHasServices.hpp>
+#include <service/INotifier.hpp>
 
 #include <ui/base/IEditor.hpp>
 
@@ -75,7 +76,8 @@ namespace sight::module::io::dimse
 class MODULE_IO_DIMSE_CLASS_API SSliceIndexDicomEditor final :
     public QObject,
     public sight::ui::base::IEditor,
-    public service::IHasServices
+    public service::IHasServices,
+    private service::INotifier
 {
 Q_OBJECT;
 
@@ -88,7 +90,7 @@ public:
     MODULE_IO_DIMSE_API SSliceIndexDicomEditor() noexcept;
 
     /// Destroys the service.
-    MODULE_IO_DIMSE_API ~SSliceIndexDicomEditor() noexcept override;
+    MODULE_IO_DIMSE_API ~SSliceIndexDicomEditor() noexcept override = default;
 
 protected:
 

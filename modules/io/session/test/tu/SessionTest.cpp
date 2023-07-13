@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -21,7 +21,9 @@
 
 #include "SessionTest.hpp"
 
-#include <core/tools/System.hpp>
+#include <core/com/Slot.hpp>
+#include <core/com/Slot.hxx>
+#include <core/os/TempPath.hpp>
 
 #include <data/String.hpp>
 
@@ -34,7 +36,7 @@
 
 #include <ui/base/dialog/DummyInputDialog.hpp>
 #include <ui/base/dialog/DummyLocationDialog.hpp>
-#include <ui/base/dialog/IMessageDialog.hpp>
+#include <ui/base/dialog/DummyMessageDialog.hpp>
 #include <ui/base/registry/macros.hpp>
 
 // Registers the fixture into the 'registry'
@@ -45,81 +47,10 @@ SIGHT_REGISTER_GUI(
     sight::ui::base::dialog::ILocationDialog::REGISTRY_KEY
 );
 SIGHT_REGISTER_GUI(sight::ui::base::dialog::DummyInputDialog, sight::ui::base::dialog::IInputDialog::REGISTRY_KEY);
+SIGHT_REGISTER_GUI(sight::ui::base::dialog::DummyMessageDialog, sight::ui::base::dialog::IMessageDialog::REGISTRY_KEY);
 
 namespace sight::module::io::session::ut
 {
-
-class DummyMessageDialog : public sight::ui::base::dialog::IMessageDialog
-{
-public:
-
-    explicit DummyMessageDialog(sight::ui::base::factory::Key /*key*/)
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void setTitle(const std::string& /*title*/) override
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void setMessage(const std::string& /*msg*/) override
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void setIcon(Icons /*icon*/) override
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void addButton(Buttons /*button*/) override
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void setDefaultButton(Buttons /*button*/) override
-    {
-    }
-
-    //------------------------------------------------------------------------------
-
-    void addCustomButton(const std::string& /*label*/, std::function<void()> /*clickedFn*/) override
-    {
-    }
-
-    static std::queue<sight::ui::base::dialog::IMessageDialog::Buttons> actions;
-
-    //------------------------------------------------------------------------------
-
-    static void pushAction(sight::ui::base::dialog::IMessageDialog::Buttons action)
-    {
-        actions.push(action);
-    }
-
-    //------------------------------------------------------------------------------
-
-    sight::ui::base::dialog::IMessageDialog::Buttons show() override
-    {
-        sight::ui::base::dialog::IMessageDialog::Buttons res = NOBUTTON;
-        if(!actions.empty())
-        {
-            res = actions.front();
-            actions.pop();
-        }
-
-        return res;
-    }
-};
-
-std::queue<sight::ui::base::dialog::IMessageDialog::Buttons> DummyMessageDialog::actions;
-
-SIGHT_REGISTER_GUI(DummyMessageDialog, sight::ui::base::dialog::IMessageDialog::REGISTRY_KEY);
 
 //------------------------------------------------------------------------------
 
@@ -167,11 +98,9 @@ inline static service::IService::ConfigType getConfiguration(const bool read = t
 
 inline static void basicTest(const bool raw = false)
 {
-    // Create a temporary directory
-    const auto tmpfolder = core::tools::System::getTemporaryFolder("BasicTest");
-    std::filesystem::remove_all(tmpfolder);
-    std::filesystem::create_directories(tmpfolder);
-    const auto testPath = tmpfolder / "powder.perlimpinpin";
+    // Create a temporary file
+    core::os::TempDir tmpDir;
+    const auto& tmpFile = tmpDir / "powder.perlimpinpin";
 
     const std::string expected("Abracadabra");
     {
@@ -186,7 +115,7 @@ inline static void basicTest(const bool raw = false)
         writer->setInput(inString, sight::io::base::service::s_DATA_KEY);
 
         // Set file output
-        writer->setFile(testPath);
+        writer->setFile(tmpFile);
 
         // Configure the writer service
         writer->setConfiguration(getConfiguration(false, raw));
@@ -202,7 +131,11 @@ inline static void basicTest(const bool raw = false)
     }
 
     // The file should have been created
-    CPPUNIT_ASSERT(std::filesystem::exists(testPath) && std::filesystem::is_regular_file(testPath));
+    CPPUNIT_ASSERT(
+        std::filesystem::exists(tmpFile)
+        && std::filesystem::is_regular_file(tmpFile)
+        && std::filesystem::file_size(tmpFile) > 0
+    );
 
     {
         // Create a reader service
@@ -216,7 +149,30 @@ inline static void basicTest(const bool raw = false)
         reader->setInOut(outString, sight::io::base::service::s_DATA_KEY);
 
         // Set file input
-        reader->setFile(testPath);
+        reader->setFile(tmpFile);
+
+        // Create slot connections
+        bool sessionLoaded = false;
+        std::filesystem::path sessionLoadedPath;
+        auto sessionLoadedSlot = sight::core::com::newSlot(
+            [&](std::filesystem::path path)
+            {
+                sessionLoaded     = true;
+                sessionLoadedPath = path;
+            });
+        sessionLoadedSlot->setWorker(sight::core::thread::getDefaultWorker());
+        auto conn1 = reader->signal("sessionLoaded")->connect(sessionLoadedSlot);
+
+        bool sessionLoadingFailed = false;
+        std::filesystem::path sessionLoadingFailedPath;
+        auto sessionLoadingFailedSlot = sight::core::com::newSlot(
+            [&sessionLoadingFailed, &sessionLoadingFailedPath](std::filesystem::path path)
+            {
+                sessionLoadingFailed     = true;
+                sessionLoadingFailedPath = path;
+            });
+        sessionLoadingFailedSlot->setWorker(sight::core::thread::getDefaultWorker());
+        auto conn2 = reader->signal("sessionLoadingFailed")->connect(sessionLoadingFailedSlot);
 
         // Configure the reader service
         reader->setConfiguration(getConfiguration(true, raw));
@@ -231,6 +187,11 @@ inline static void basicTest(const bool raw = false)
         service::unregisterService(reader);
 
         // Final test
+        CPPUNIT_ASSERT(sessionLoaded);
+        CPPUNIT_ASSERT_EQUAL(sessionLoadedPath, tmpFile);
+        CPPUNIT_ASSERT(!sessionLoadingFailed);
+        CPPUNIT_ASSERT_EQUAL(sessionLoadingFailedPath, std::filesystem::path(""));
+
         CPPUNIT_ASSERT_EQUAL(expected, outString->getValue());
     }
 }
@@ -293,6 +254,71 @@ void SessionTest::readerBadPasswordEncryptionTest()
 
 //------------------------------------------------------------------------------
 
+void SessionTest::readerBadFile()
+{
+    // Create a temporary file
+    core::os::TempDir tmpDir;
+    const auto& tmpFile = tmpDir / "powder.perlimpinpin";
+
+    {
+        // Create a reader service
+        auto reader = sight::io::base::service::IReader::dynamicCast(
+            service::add("sight::module::io::session::SReader")
+        );
+        CPPUNIT_ASSERT(reader);
+
+        // Set data output
+        auto outString = data::String::New();
+        reader->setInOut(outString, sight::io::base::service::s_DATA_KEY);
+
+        // Set file input
+        reader->setFile(tmpFile);
+
+        // Create slot connections
+        bool sessionLoaded = false;
+        std::filesystem::path sessionLoadedPath;
+        auto sessionLoadedSlot = sight::core::com::newSlot(
+            [&](std::filesystem::path path)
+            {
+                sessionLoaded     = true;
+                sessionLoadedPath = path;
+            });
+        sessionLoadedSlot->setWorker(sight::core::thread::getDefaultWorker());
+        auto conn1 = reader->signal("sessionLoaded")->connect(sessionLoadedSlot);
+
+        bool sessionLoadingFailed = false;
+        std::filesystem::path sessionLoadingFailedPath;
+        auto sessionLoadingFailedSlot = sight::core::com::newSlot(
+            [&sessionLoadingFailed, &sessionLoadingFailedPath](std::filesystem::path path)
+            {
+                sessionLoadingFailed     = true;
+                sessionLoadingFailedPath = path;
+            });
+        sessionLoadingFailedSlot->setWorker(sight::core::thread::getDefaultWorker());
+        auto conn2 = reader->signal("sessionLoadingFailed")->connect(sessionLoadingFailedSlot);
+
+        // Configure the reader service
+        reader->setConfiguration(getConfiguration(true, false));
+        reader->configure();
+
+        // Execute the writer service
+        reader->start().wait();
+        reader->update().wait();
+        reader->stop().wait();
+
+        // Cleanup
+        service::unregisterService(reader);
+
+        // Final test
+        CPPUNIT_ASSERT(!sessionLoaded);
+        CPPUNIT_ASSERT_EQUAL(sessionLoadedPath, std::filesystem::path(""));
+        CPPUNIT_ASSERT(sessionLoadingFailed);
+        CPPUNIT_ASSERT_EQUAL(sessionLoadingFailedPath, tmpFile);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SessionTest::writerBadDialogPolicyTest()
 {
     badPolicyTest(false, "dialog.<xmlattr>.policy", "whenever_i_want");
@@ -316,11 +342,9 @@ void SessionTest::writerBadPasswordEncryptionTest()
 
 void SessionTest::fileDialogTest()
 {
-    // Create a temporary directory
-    const auto tmpfolder = core::tools::System::getTemporaryFolder("FileDialogTest");
-    std::filesystem::remove_all(tmpfolder);
-    std::filesystem::create_directories(tmpfolder);
-    const auto testPath = tmpfolder / "powder.perlimpinpin";
+    // Create a temporary file
+    core::os::TempDir tmpDir;
+    const auto& tmpFile = tmpDir / "powder.perlimpinpin";
 
     const std::string expected("Abracadabra");
     {
@@ -343,17 +367,23 @@ void SessionTest::fileDialogTest()
         // Execute the writer service
         writer->start().wait();
 
-        sight::ui::base::dialog::DummyLocationDialog::setPaths({testPath});
+        sight::ui::base::dialog::DummyLocationDialog::setPaths({tmpFile});
 
         writer->update().wait();
         writer->stop().wait();
 
         // Cleanup
         service::unregisterService(writer);
+
+        CPPUNIT_ASSERT(sight::ui::base::dialog::DummyLocationDialog::clear());
     }
 
     // The file should have been created
-    CPPUNIT_ASSERT(std::filesystem::exists(testPath) && std::filesystem::is_regular_file(testPath));
+    CPPUNIT_ASSERT(
+        std::filesystem::exists(tmpFile)
+        && std::filesystem::is_regular_file(tmpFile)
+        && std::filesystem::file_size(tmpFile) > 0
+    );
 
     {
         // Create a reader service
@@ -375,7 +405,7 @@ void SessionTest::fileDialogTest()
         // Execute the writer service
         reader->start().wait();
 
-        sight::ui::base::dialog::DummyLocationDialog::setPaths({testPath});
+        sight::ui::base::dialog::DummyLocationDialog::setPaths({tmpFile});
 
         reader->update().wait();
         reader->stop().wait();
@@ -385,6 +415,8 @@ void SessionTest::fileDialogTest()
 
         // Final test
         CPPUNIT_ASSERT_EQUAL(expected, outString->getValue());
+
+        CPPUNIT_ASSERT(sight::ui::base::dialog::DummyLocationDialog::clear());
     }
 }
 
@@ -392,11 +424,9 @@ void SessionTest::fileDialogTest()
 
 void SessionTest::passwordTest()
 {
-    // Create a temporary directory
-    const auto tmpfolder = core::tools::System::getTemporaryFolder("BasicTest");
-    std::filesystem::remove_all(tmpfolder);
-    std::filesystem::create_directories(tmpfolder);
-    const auto testPath = tmpfolder / "powder.perlimpinpin";
+    // Create a temporary file
+    core::os::TempDir tmpDir;
+    const auto& tmpFile = tmpDir / "powder.perlimpinpin";
 
     const std::string expected("Abracadabra");
     {
@@ -411,7 +441,7 @@ void SessionTest::passwordTest()
         writer->setInput(inString, sight::io::base::service::s_DATA_KEY);
 
         // Set file output
-        writer->setFile(testPath);
+        writer->setFile(tmpFile);
 
         // Configure the writer service
         auto config = getConfiguration(false);
@@ -429,10 +459,16 @@ void SessionTest::passwordTest()
 
         // Cleanup
         service::unregisterService(writer);
+
+        CPPUNIT_ASSERT(sight::ui::base::dialog::DummyInputDialog::clear());
     }
 
     // The file should have been created
-    CPPUNIT_ASSERT(std::filesystem::exists(testPath) && std::filesystem::is_regular_file(testPath));
+    CPPUNIT_ASSERT(
+        std::filesystem::exists(tmpFile)
+        && std::filesystem::is_regular_file(tmpFile)
+        && std::filesystem::file_size(tmpFile) > 0
+    );
 
     {
         // Create a reader service
@@ -446,7 +482,7 @@ void SessionTest::passwordTest()
         reader->setInOut(outString, sight::io::base::service::s_DATA_KEY);
 
         // Set file input
-        reader->setFile(testPath);
+        reader->setFile(tmpFile);
 
         // Configure the reader service
         auto config = getConfiguration(true);
@@ -458,11 +494,11 @@ void SessionTest::passwordTest()
         reader->start().wait();
 
         sight::ui::base::dialog::DummyInputDialog::pushInput("Oops");
-        DummyMessageDialog::pushAction(sight::ui::base::dialog::IMessageDialog::RETRY);
+        ui::base::dialog::DummyMessageDialog::pushAction(sight::ui::base::dialog::IMessageDialog::RETRY);
         sight::ui::base::dialog::DummyInputDialog::pushInput("I forgot");
-        DummyMessageDialog::pushAction(sight::ui::base::dialog::IMessageDialog::RETRY);
+        ui::base::dialog::DummyMessageDialog::pushAction(sight::ui::base::dialog::IMessageDialog::RETRY);
         sight::ui::base::dialog::DummyInputDialog::pushInput("Wait I remember");
-        DummyMessageDialog::pushAction(sight::ui::base::dialog::IMessageDialog::RETRY);
+        ui::base::dialog::DummyMessageDialog::pushAction(sight::ui::base::dialog::IMessageDialog::RETRY);
         sight::ui::base::dialog::DummyInputDialog::pushInput("case-sensitive");
 
         reader->update().wait();
@@ -473,6 +509,9 @@ void SessionTest::passwordTest()
 
         // Final test
         CPPUNIT_ASSERT_EQUAL(expected, outString->getValue());
+
+        CPPUNIT_ASSERT(sight::ui::base::dialog::DummyInputDialog::clear());
+        CPPUNIT_ASSERT(ui::base::dialog::DummyMessageDialog::clear());
     }
 }
 

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -43,8 +43,7 @@ using serializer_t = std::function<void (
                                        boost::property_tree::ptree&,
                                        data::Object::csptr,
                                        std::map<std::string, data::Object::csptr>&,
-                                       const core::crypto::secure_string&
-                                   )>;
+                                       const core::crypto::secure_string&)>;
 
 /**
  * @brief Session writer.
@@ -59,9 +58,8 @@ using serializer_t = std::function<void (
  *
  */
 
-class IO_SESSION_CLASS_API SessionWriter final :
-    public base::writer::IObjectWriter,
-    public core::location::SingleFile
+class IO_SESSION_CLASS_API SessionWriter final : public base::writer::IObjectWriter,
+                                                 public core::location::SingleFile
 {
 public:
 
@@ -88,7 +86,7 @@ public:
 
     /// Sets the password
     /// @param password the new password
-    IO_SESSION_API void set_password(const core::crypto::secure_string& password);
+    IO_SESSION_API void setPassword(const core::crypto::secure_string& password);
 
     /// Sets the encryption policy
     /// @param policy the encryption policy: @see sight::io::session::PasswordKeeper::EncryptionPolicy
@@ -107,6 +105,11 @@ public:
     /// @param className the name of the object to serialize
     /// @param serializer the function pointer to the serialization function
     IO_SESSION_API static void setSerializer(const std::string& className, serializer_t serializer = nullptr);
+
+    /// Return the registered serialization function for an object
+    /// @param className the name of the object to serialize
+    /// @return the function pointer to the serialization function
+    IO_SESSION_API static serializer_t serializer(const std::string& className);
 
 private:
 

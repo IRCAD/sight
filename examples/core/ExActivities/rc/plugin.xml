@@ -110,7 +110,8 @@
     <extension implements="sight::service::extension::AppConfigParameters">
         <id>ExActivities_AppCfgParam</id>
         <parameters>
-            <param name="APP_NAME" value="Ex Activity @PROJECT_VERSION@" />
+            <param name="APP_NAME" value="ExActivities @PROJECT_VERSION@" />
+            <param name="APP_VERSION" value="@PROJECT_VERSION@" />
             <param name="ICON_PATH" value="ExActivities/app.ico" />
             <param name="SEQUENCER_CONFIG" value="ExActivities_Sequencer_SrvCfg" />
             <param name="WIZARD_CONFIG" value="ExActivities_Wizard_SrvCfg" />

@@ -12,7 +12,7 @@
         <requirements>
             <requirement name="series" type="sight::data::ImageSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="ExportSelection" />
     </extension>
 
@@ -25,7 +25,7 @@
         <requirements>
             <requirement name="series" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="ExportSelection" />
     </extension>
 
@@ -38,7 +38,7 @@
         <requirements>
             <requirement name="modelSeries" type="sight::data::ModelSeries" minOccurs="1" maxOccurs="1" />
         </requirements>
-        <builder>::activity::builder::Activity</builder>
+        <builder>sight::activity::builder::Activity</builder>
         <appConfig id="ExportDicomSelection" />
     </extension>
 

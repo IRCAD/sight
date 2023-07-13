@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,7 +22,7 @@
 
 #include "DicomAnonymizerTest.hpp"
 
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <data/Image.hpp>
 #include <data/ImageSeries.hpp>
@@ -86,24 +86,23 @@ void DicomAnonymizerTest::anonymizeImageSeriesTest()
     data::ImageSeries::sptr imgSeries;
     imgSeries = utestData::generator::SeriesSet::createImageSeries();
 
-    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "anonymizedDicomFolderTest";
-    std::filesystem::create_directories(path);
+    core::os::TempDir tmpDir;
 
     // Write ImageSeries
     io::dicom::writer::Series::sptr writer = io::dicom::writer::Series::New();
     writer->setObject(imgSeries);
-    writer->setFolder(path);
+    writer->setFolder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     // Anonymize ImageSeries
     io::dicom::helper::DicomAnonymizer anonymizer;
-    CPPUNIT_ASSERT_NO_THROW(anonymizer.anonymize(path));
+    CPPUNIT_ASSERT_NO_THROW(anonymizer.anonymize(tmpDir));
 
     // Load ImageSeries
     auto series_set = data::SeriesSet::New();
     auto reader     = io::dicom::reader::SeriesSet::New();
     reader->setObject(series_set);
-    reader->setFolder(path);
+    reader->setFolder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(reader->read());
 
     // Check series
@@ -265,20 +264,19 @@ void DicomAnonymizerTest::testDICOMFolder(const std::filesystem::path& srcPath)
     CPPUNIT_ASSERT_EQUAL(std::size_t(1), series_set->size());
 
     // Write DicomSeries
-    const std::filesystem::path path = core::tools::System::getTemporaryFolder() / "anonymizedDicomFolderTest2";
-    std::filesystem::create_directories(path);
-    io::dicom::helper::DicomSeriesWriter::sptr writer = io::dicom::helper::DicomSeriesWriter::New();
+    core::os::TempDir tmpDir;
+    auto writer = io::dicom::helper::DicomSeriesWriter::New();
     writer->setObject((*series_set)[0]);
-    writer->setFolder(path);
+    writer->setFolder(tmpDir);
     CPPUNIT_ASSERT_NO_THROW(writer->write());
 
     // Anonymize folder
     io::dicom::helper::DicomAnonymizer anonymizer;
-    CPPUNIT_ASSERT_NO_THROW(anonymizer.anonymize(path));
+    CPPUNIT_ASSERT_NO_THROW(anonymizer.anonymize(tmpDir));
 
     // Read DICOM files
     std::vector<std::filesystem::path> filenames;
-    io::dicom::helper::DicomSearch::searchRecursively(path, filenames, true);
+    io::dicom::helper::DicomSearch::searchRecursively(tmpDir, filenames, true);
     for(const std::filesystem::path& filename : filenames)
     {
         this->testAnonymizedFile(filename);

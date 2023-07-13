@@ -31,6 +31,7 @@
 #include <core/crypto/obfuscated_string.hpp>
 #include <core/crypto/PasswordKeeper.hpp>
 #include <core/crypto/SHA256.hpp>
+#include <core/runtime/path.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
 
@@ -68,6 +69,23 @@ static std::size_t s_max_retry {3};
 // current number of retry
 static std::size_t s_password_retry {0};
 
+/// Password dialog configuration
+/// @{
+static std::string s_password_title {"Enter Password"};
+static std::string s_password_message {"Password:"};
+static std::string s_password_error_title {"Invalid password"};
+static std::string s_password_error_message {
+    "Invalid password. The number of tries is exceeded and the application will close."
+};
+static std::string s_password_retry_message {
+    "The provided password is wrong.\n\n"
+    "You may retry with a different password."
+};
+static std::string s_password_empty_title {"Empty password"};
+static std::string s_password_empty_message {"Password cannot be empty. Please enter a valid password."};
+
+/// @}
+
 // Guard the preference tree
 std::shared_mutex Preferences::s_preferences_mutex;
 
@@ -79,6 +97,8 @@ bool Preferences::s_is_preferences_modified {false};
 
 // Preferences can be disabled globally
 bool Preferences::s_is_enabled {false};
+
+bool Preferences::s_ignoreFilesystem {false};
 
 //------------------------------------------------------------------------------
 
@@ -180,6 +200,13 @@ Preferences::Preferences()
             // Create and load the preferences file if not already done
             if(s_is_enabled && !s_preferences)
             {
+                if(s_ignoreFilesystem)
+                {
+                    // Don't read a preference file, simply create an empty preferences
+                    s_preferences = std::make_unique<boost::property_tree::ptree>();
+                    return;
+                }
+
                 // Set the password to use
                 // NEVER policy means we never ask for a password and only rely on manually set
                 if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
@@ -194,24 +221,38 @@ Preferences::Preferences()
                        || (s_password_keeper_policy == PasswordKeeper::PasswordPolicy::GLOBAL
                            && password.empty()))
                     {
-                        const auto& [new_password, ok] = sight::ui::base::dialog::InputDialog::showInputDialog(
-                            "Enter Password",
-                            "Password:",
-                            password.c_str(), // NOLINT(readability-redundant-string-cstr)
-                            sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
-                        );
+                        secure_string new_password;
+                        bool ok = true;
+
+                        while(ok && new_password.empty())
+                        {
+                            std::tie(new_password, ok) = sight::ui::base::dialog::InputDialog::showInputDialog(
+                                s_password_title,
+                                s_password_message,
+                                password.c_str(), // NOLINT(readability-redundant-string-cstr)
+                                sight::ui::base::dialog::InputDialog::EchoMode::PASSWORD
+                            );
+
+                            if(ok && new_password.empty())
+                            {
+                                sight::ui::base::dialog::MessageDialog::show(
+                                    s_password_empty_title,
+                                    s_password_empty_message,
+                                    sight::ui::base::dialog::IMessageDialog::WARNING
+                                );
+                            }
+                        }
 
                         if(ok)
                         {
-                            const secure_string secure_password(new_password);
-                            setPasswordNolock(secure_password);
-                            PasswordKeeper::set_global_password(secure_password);
+                            setPasswordNolock(new_password);
+                            PasswordKeeper::set_global_password(new_password);
                         }
                         else if(s_exit_on_password_error)
                         {
                             SIGHT_WARN("User canceled. Exiting.");
                             sight::ui::base::BusyCursor cursor;
-                            sight::ui::base::Application::New()->exit(0);
+                            sight::ui::base::Application::New()->exit(0, false);
                         }
                         else
                         {
@@ -275,42 +316,30 @@ Preferences::Preferences()
                     {
                         if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
                         {
-                            sight::ui::base::dialog::MessageDialog messageDialog;
-                            messageDialog.setTitle("Wrong password");
-                            messageDialog.setMessage("The provided password is wrong and there were too many tries.");
-                            messageDialog.setIcon(ui::base::dialog::IMessageDialog::CRITICAL);
-                            messageDialog.addButton(ui::base::dialog::IMessageDialog::OK);
-                            messageDialog.show();
+                            sight::ui::base::dialog::MessageDialog::show(
+                                s_password_error_title,
+                                s_password_error_message,
+                                sight::ui::base::dialog::IMessageDialog::CRITICAL
+                            );
                         }
                     }
                     else
                     {
                         if(s_password_keeper_policy != PasswordKeeper::PasswordPolicy::NEVER)
                         {
-                            sight::ui::base::dialog::MessageDialog messageDialog;
-                            messageDialog.setTitle("Wrong password");
-                            messageDialog.setMessage(
-                                "The preference file is password protected and the provided password is wrong.\n\nRetry"
-                                " with a different password ?"
+                            sight::ui::base::dialog::MessageDialog::show(
+                                s_password_error_title,
+                                s_password_retry_message,
+                                sight::ui::base::dialog::IMessageDialog::WARNING
                             );
-                            messageDialog.setIcon(ui::base::dialog::IMessageDialog::QUESTION);
-                            messageDialog.addButton(ui::base::dialog::IMessageDialog::RETRY);
-                            messageDialog.addButton(ui::base::dialog::IMessageDialog::CANCEL);
 
-                            if(messageDialog.show() == sight::ui::base::dialog::IMessageDialog::RETRY)
-                            {
-                                // Retry...
-                                load();
-                                return;
-                            }
+                            // Retry...
+                            load();
+                            return;
+                        }
 
-                            s_password_retry = 0;
-                        }
-                        else
-                        {
-                            // Give a chance to retry with a different password
-                            SIGHT_THROW_EXCEPTION(BadPassword(e.what()));
-                        }
+                        // Give a chance to retry with a different password
+                        SIGHT_THROW_EXCEPTION(BadPassword(e.what()));
                     }
 
                     // Too much retries or canceled
@@ -320,7 +349,7 @@ Preferences::Preferences()
                     {
                         SIGHT_WARN("The provided password is wrong. Exiting.");
                         sight::ui::base::BusyCursor cursor;
-                        sight::ui::base::Application::New()->exit(0);
+                        sight::ui::base::Application::New()->exit(0, false);
                     }
                     else
                     {
@@ -354,7 +383,7 @@ Preferences::~Preferences()
     std::unique_lock guard(s_preferences_mutex);
 
     // Check if we must save the modifications
-    if(s_is_enabled && s_is_preferences_modified)
+    if(s_is_enabled && s_is_preferences_modified && !s_ignoreFilesystem)
     {
         const auto& preferences_filepath = computePreferencesFilepath();
 
@@ -433,6 +462,14 @@ void Preferences::set_enabled(bool enable)
 
 //------------------------------------------------------------------------------
 
+void Preferences::ignoreFilesystem(bool ignore)
+{
+    std::unique_lock guard(s_preferences_mutex);
+    s_ignoreFilesystem = ignore;
+}
+
+//------------------------------------------------------------------------------
+
 void Preferences::throw_if_disabled()
 {
     SIGHT_THROW_EXCEPTION_IF(
@@ -471,6 +508,22 @@ void Preferences::exit_on_password_error(bool exit)
 {
     std::unique_lock guard(s_preferences_mutex);
     s_exit_on_password_error = exit;
+}
+
+//------------------------------------------------------------------------------
+
+void Preferences::set_password_dialog_title(const std::string& title)
+{
+    std::unique_lock guard(s_preferences_mutex);
+    s_password_title = title;
+}
+
+//------------------------------------------------------------------------------
+
+void Preferences::set_password_dialog_message(const std::string& message)
+{
+    std::unique_lock guard(s_preferences_mutex);
+    s_password_message = message;
 }
 
 //-----------------------------------------------------------------------------

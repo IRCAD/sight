@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -81,14 +81,29 @@ typename SlotCall<R(A ...)>::SharedFutureType SlotCall<R(A ...)>::asyncCall(A ..
         SIGHT_THROW_EXCEPTION(core::com::exception::NoWorker("Slot has no worker set."));
     }
 
-    return postWeakCall(
-        this->m_worker,
-        core::com::util::weakcall(
-            std::dynamic_pointer_cast<const SlotBase>(this->shared_from_this()),
-            this->bindCall(args ...),
-            this->m_worker
-        )
-    );
+    if(const auto& sourceSlot = this->m_sourceSlot.lock(); sourceSlot)
+    {
+        return postWeakCall(
+            this->m_worker,
+            core::com::util::weakcall(
+                std::dynamic_pointer_cast<const SlotBase>(sourceSlot),
+                this->bindCall(args ...),
+                this->m_worker,
+                std::dynamic_pointer_cast<const SlotBase>(this->shared_from_this())
+            )
+        );
+    }
+    else
+    {
+        return postWeakCall(
+            this->m_worker,
+            core::com::util::weakcall(
+                std::dynamic_pointer_cast<const SlotBase>(this->shared_from_this()),
+                this->bindCall(args ...),
+                this->m_worker
+            )
+        );
+    }
 }
 
 //-----------------------------------------------------------------------------

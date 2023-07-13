@@ -101,7 +101,7 @@
         </service>
 
         <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true">
-            <in key="image" uid="${image}" />
+            <inout key="image" uid="${image}" />
             <config fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
 

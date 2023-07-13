@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -37,7 +37,7 @@ const IToolBarBuilder::RegistryKeyType IToolBarBuilder::REGISTRY_KEY = "::ui::ba
 //-----------------------------------------------------------------------------
 
 IToolBarBuilder::IToolBarBuilder() :
-    m_toolBitmapSize(std::make_pair(32, 32))
+    m_toolBitmapSize(std::make_pair(-1, -1))
 {
 }
 

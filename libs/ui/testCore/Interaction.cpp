@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -131,7 +131,7 @@ void MouseClick::interactWith(T thing) const
             if(auto* pushButton = qobject_cast<QAbstractButton*>(thing);
                m_modifiers == Qt::NoModifier && pushButton != nullptr)
             {
-                QTimer::singleShot(0, pushButton, &QAbstractButton::click);
+                pushButton->click();
             }
             else
             {
@@ -161,6 +161,73 @@ std::string MouseClick::toString() const
     else
     {
         res += "other click";
+    }
+
+    const std::string modifiers = modifiersToString(m_modifiers);
+    if(!modifiers.empty())
+    {
+        res += " while holding " + modifiers;
+    }
+
+    return res;
+}
+
+MouseDoubleClick::MouseDoubleClick(Qt::MouseButton button, Qt::KeyboardModifiers modifiers, const QPoint& pos) :
+    m_button(button),
+    m_modifiers(modifiers),
+    m_pos(pos)
+{
+}
+
+//------------------------------------------------------------------------------
+
+void MouseDoubleClick::interactWith(QWidget* widget) const
+{
+    interactWith<>(widget);
+}
+
+//------------------------------------------------------------------------------
+
+void MouseDoubleClick::interactWith(QWindow* window) const
+{
+    interactWith<>(window);
+}
+
+//------------------------------------------------------------------------------
+
+template<typename T>
+void MouseDoubleClick::interactWith(T thing) const
+{
+    qApp->postEvent(
+        qApp,
+        new TestEvent(
+            [*this, thing]
+        {
+            QTest::mouseDClick(thing, m_button, m_modifiers, m_pos);
+        })
+    );
+}
+
+//------------------------------------------------------------------------------
+
+std::string MouseDoubleClick::toString() const
+{
+    std::string res;
+    if(m_button == Qt::LeftButton)
+    {
+        res += "left double click";
+    }
+    else if(m_button == Qt::RightButton)
+    {
+        res += "right double click";
+    }
+    else if(m_button == Qt::MiddleButton)
+    {
+        res += "middle double click";
+    }
+    else
+    {
+        res += "other double click";
     }
 
     const std::string modifiers = modifiersToString(m_modifiers);

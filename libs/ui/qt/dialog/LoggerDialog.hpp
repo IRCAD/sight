@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -40,8 +40,8 @@ namespace sight::ui::qt::dialog
 /**
  * @brief   Defines a dialog showing log information.
  */
-class UI_QT_CLASS_API LoggerDialog : public QDialog,
-                                     public ui::base::dialog::ILoggerDialog
+class UI_QT_CLASS_QT_API LoggerDialog : public QDialog,
+                                        public ui::base::dialog::ILoggerDialog
 {
 Q_OBJECT
 
@@ -50,33 +50,33 @@ public:
     SIGHT_DECLARE_CLASS(LoggerDialog, ui::base::dialog::ILoggerDialog, ui::base::factory::New<LoggerDialog>);
 
     /// Constructor
-    UI_QT_API LoggerDialog(ui::base::GuiBaseObject::Key key);
+    UI_QT_QT_API LoggerDialog(ui::base::GuiBaseObject::Key key);
 
     /// Destructor
-    UI_QT_API ~LoggerDialog() override;
+    UI_QT_QT_API ~LoggerDialog() override;
 
     /**
      * @brief Set the dialog title.
      * @param[in] title Dialog title
      */
-    UI_QT_API void setTitle(const std::string& title) override;
+    UI_QT_QT_API void setTitle(const std::string& title) override;
 
     /**
      * @brief Set the dialog message.
      * @param[in] message Dialog message
      */
-    UI_QT_API void setMessage(const std::string& message) override;
+    UI_QT_QT_API void setMessage(const std::string& message) override;
 
     /**
      * @brief Set the dialog logger.
      * @param[in] logger Dialog logger
      */
-    UI_QT_API void setLogger(const core::log::Logger::sptr& logger) override;
+    UI_QT_QT_API void setLogger(const core::log::Logger::sptr& logger) override;
 
     /**
      * @brief Show the dialog and return whether the user has selected the Ok or Cancel button
      */
-    UI_QT_API bool show() override;
+    UI_QT_QT_API bool show() override;
 
 protected Q_SLOTS:
 

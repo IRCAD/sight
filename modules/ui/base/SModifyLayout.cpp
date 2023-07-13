@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -22,9 +22,6 @@
 
 #include "SModifyLayout.hpp"
 
-#include <core/base.hpp>
-
-#include <service/macros.hpp>
 #include <service/op/Get.hpp>
 
 #include <ui/base/dialog/MessageDialog.hpp>
@@ -36,13 +33,74 @@ namespace sight::module::ui::base
 
 //-----------------------------------------------------------------------------
 
-SModifyLayout::SModifyLayout() noexcept =
-    default;
+void SModifyLayout::configuring()
+{
+    this->initialize();
 
-//-----------------------------------------------------------------------------
+    const auto& config = this->getConfiguration();
 
-SModifyLayout::~SModifyLayout() noexcept =
-    default;
+    for(const auto& actionCfg : config.get_child("config"))
+    {
+        if(actionCfg.first == "move")
+        {
+            const auto uid = actionCfg.second.get<std::string>("<xmlattr>.uid");
+            const auto wid = actionCfg.second.get<std::string>("<xmlattr>.wid");
+
+            m_moveSrv.push_back(std::make_pair(uid, wid));
+        }
+        else if(actionCfg.first == "show"
+                || actionCfg.first == "hide"
+                || actionCfg.first == "show_or_hide"
+                || actionCfg.first == "toggle")
+        {
+            visibility_t visibility = visibility_t::SHOW;
+            if(actionCfg.first == "show")
+            {
+                visibility = visibility_t::SHOW;
+            }
+            else if(actionCfg.first == "hide")
+            {
+                visibility = visibility_t::HIDE;
+            }
+            else if(actionCfg.first == "show_or_hide")
+            {
+                visibility = visibility_t::SHOW_OR_HIDE;
+            }
+            else if(actionCfg.first == "toggle")
+            {
+                visibility = visibility_t::TOGGLE;
+            }
+            else
+            {
+                SIGHT_FATAL("Unknown visiblity parameter value : " + actionCfg.first)
+            }
+
+            if(const auto wid = actionCfg.second.get_optional<std::string>("<xmlattr>.wid"); wid.has_value())
+            {
+                m_showSrvWid.push_back(std::make_pair(wid.value(), visibility));
+            }
+            else if(const auto sid = actionCfg.second.get_optional<std::string>("<xmlattr>.sid"); sid.has_value())
+            {
+                m_showSrvSid.push_back(std::make_pair(sid.value(), visibility));
+            }
+            else
+            {
+                SIGHT_ERROR("Attribute wid or sid missing");
+            }
+        }
+        else if(actionCfg.first == "enable" || actionCfg.first == "disable")
+        {
+            const auto uid = actionCfg.second.get<std::string>("<xmlattr>.uid");
+            bool isEnable  = (actionCfg.first == "enable");
+
+            m_enableSrv.push_back(std::make_pair(uid, isEnable));
+        }
+        else
+        {
+            SIGHT_FATAL("Invalid tag name " << actionCfg.first);
+        }
+    }
+}
 
 //-----------------------------------------------------------------------------
 
@@ -110,30 +168,38 @@ void SModifyLayout::updating()
 
     for(const ShowSrvVectType::value_type& elt : m_showSrvWid)
     {
-        std::string wid                                         = elt.first;
-        boost::logic::tribool isVisible                         = elt.second;
+        const std::string wid                                   = elt.first;
+        const auto visibility                                   = elt.second;
         sight::ui::base::container::fwContainer::sptr container =
             sight::ui::base::GuiRegistry::getWIDContainer(wid);
         SIGHT_ASSERT("::ui::base::IGuiContainer " << wid << " is unknown", container);
 
-        if(isVisible)
+        if(visibility == visibility_t::SHOW)
         {
             container->setVisible(true);
         }
-        else if(!isVisible)
+        else if(visibility == visibility_t::HIDE)
         {
             container->setVisible(false);
         }
-        else
+        else if(visibility == visibility_t::SHOW_OR_HIDE)
         {
             container->setVisible(this->checked());
+        }
+        else if(visibility == visibility_t::TOGGLE)
+        {
+            container->setVisible(!container->isShownOnScreen());
+        }
+        else
+        {
+            SIGHT_FATAL("Unknown visiblity parameter value");
         }
     }
 
     for(const ShowSrvVectType::value_type& elt : m_showSrvSid)
     {
-        std::string uid                 = elt.first;
-        boost::logic::tribool isVisible = elt.second;
+        std::string uid       = elt.first;
+        const auto visibility = elt.second;
         SIGHT_ASSERT(uid << " doesn't exist", core::tools::fwID::exist(uid));
         service::IService::sptr service = service::get(uid);
 
@@ -142,79 +208,25 @@ void SModifyLayout::updating()
 
         sight::ui::base::container::fwContainer::sptr container = containerSrv->getContainer();
 
-        if(isVisible)
+        if(visibility == visibility_t::SHOW)
         {
             container->setVisible(true);
         }
-        else if(!isVisible)
+        else if(visibility == visibility_t::HIDE)
         {
             container->setVisible(false);
         }
-        else
+        else if(visibility == visibility_t::SHOW_OR_HIDE)
         {
             container->setVisible(this->checked());
         }
-    }
-}
-
-//-----------------------------------------------------------------------------
-
-void SModifyLayout::configuring()
-{
-    this->initialize();
-
-    const auto& config = this->getConfiguration();
-
-    for(const auto& actionCfg : config.get_child("config"))
-    {
-        if(actionCfg.first == "move")
+        else if(visibility == visibility_t::TOGGLE)
         {
-            const auto uid = actionCfg.second.get<std::string>("<xmlattr>.uid");
-            const auto wid = actionCfg.second.get<std::string>("<xmlattr>.wid");
-
-            m_moveSrv.push_back(std::make_pair(uid, wid));
-        }
-        else if(actionCfg.first == "show"
-                || actionCfg.first == "hide"
-                || actionCfg.first == "show_or_hide")
-        {
-            boost::logic::tribool isVisible;
-            if(actionCfg.first == "show")
-            {
-                isVisible = true;
-            }
-            else if(actionCfg.first == "hide")
-            {
-                isVisible = false;
-            }
-            else
-            {
-                isVisible = boost::logic::indeterminate;
-            }
-
-            if(const auto wid = actionCfg.second.get_optional<std::string>("<xmlattr>.wid"); wid.has_value())
-            {
-                m_showSrvWid.push_back(std::make_pair(wid.value(), isVisible));
-            }
-            else if(const auto sid = actionCfg.second.get_optional<std::string>("<xmlattr>.sid"); sid.has_value())
-            {
-                m_showSrvSid.push_back(std::make_pair(sid.value(), isVisible));
-            }
-            else
-            {
-                SIGHT_ERROR("Attribute wid or sid missing");
-            }
-        }
-        else if(actionCfg.first == "enable" || actionCfg.first == "disable")
-        {
-            const auto uid = actionCfg.second.get<std::string>("<xmlattr>.uid");
-            bool isEnable  = (actionCfg.first == "enable");
-
-            m_enableSrv.push_back(std::make_pair(uid, isEnable));
+            container->setVisible(!container->isShownOnScreen());
         }
         else
         {
-            SIGHT_FATAL("Invalid tag name " << actionCfg.first);
+            SIGHT_FATAL("Unknown visiblity parameter value");
         }
     }
 }

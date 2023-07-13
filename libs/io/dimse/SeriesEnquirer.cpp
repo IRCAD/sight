@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -28,7 +28,7 @@
 #include "io/dimse/exceptions/RequestFailure.hpp"
 #include "io/dimse/exceptions/TagMissing.hpp"
 
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 
 #include <boost/foreach.hpp>
 
@@ -82,7 +82,7 @@ void SeriesEnquirer::initialize(
     m_progressCallback = _progressCallback;
 
     // Creating folder.
-    m_path = core::tools::System::getTemporaryFolder() / "dicom/";
+    m_path = core::os::TempDir::sharedDirectory() / "dicom/";
     if(!m_path.empty() && !std::filesystem::exists(m_path))
     {
         std::filesystem::create_directories(m_path);

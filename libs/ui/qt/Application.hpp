@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,7 +46,7 @@ public:
     = default;
 
     /// Tells the application to exit with a returncode
-    UI_QT_API void exit(int returncode = 0) override;
+    UI_QT_API void exit(int returnCode = 0, bool async = true) override;
 };
 
 } // namespace sight::ui::qt

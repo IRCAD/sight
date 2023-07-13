@@ -24,7 +24,7 @@
 
 #include <core/crypto/AES256.hpp>
 #include <core/crypto/Base64.hpp>
-#include <core/tools/System.hpp>
+#include <core/os/TempPath.hpp>
 #include <core/tools/UUID.hpp>
 
 #include <data/Activity.hpp>
@@ -218,10 +218,8 @@ inline void test(const bool encrypt, const bool raw, const bool empty_obj = fals
     const auto& test_id = T::leafClassname() + "_" + std::to_string(encrypt) + "_" + std::to_string(raw);
 
     // Create a temporary directory
-    const auto tmpfolder = core::tools::System::getTemporaryFolder() / UUID::generateUUID();
-    std::filesystem::remove_all(tmpfolder);
-    std::filesystem::create_directories(tmpfolder);
-    const auto testPath = tmpfolder / (test_id + (raw ? ".json" : ".zip"));
+    core::os::TempDir tmpDir;
+    const auto testPath = tmpDir / (test_id + (raw ? ".json" : ".zip"));
 
     static constexpr auto fieldName = "field";
 
@@ -247,7 +245,7 @@ inline void test(const bool encrypt, const bool raw, const bool empty_obj = fals
         }
         else if(encrypt)
         {
-            sessionWriter->set_password(password);
+            sessionWriter->setPassword(password);
         }
 
         // Write the session
@@ -270,7 +268,7 @@ inline void test(const bool encrypt, const bool raw, const bool empty_obj = fals
         }
         else if(encrypt)
         {
-            sessionReader->set_password(password);
+            sessionReader->setPassword(password);
         }
 
         // Read the session
@@ -287,8 +285,6 @@ inline void test(const bool encrypt, const bool raw, const bool empty_obj = fals
 
         CPPUNIT_ASSERT(*expected_object == *actual_object);
     }
-
-    std::filesystem::remove_all(tmpfolder);
 }
 
 //------------------------------------------------------------------------------
@@ -482,7 +478,8 @@ inline data::Series::sptr generate<data::Series>(const std::size_t variant)
     }
 
     // Test private tag...
-    object->setPrivateValue(0x10, UUID::generateUUID());
+    object->setPrivateValue(UUID::generateUUID(), 0x10);
+    object->setMultiFramePrivateValue(UUID::generateUUID(), 0x15, 0);
 
     return object;
 }
@@ -674,10 +671,9 @@ inline data::Image::sptr generate<data::Image>(const std::size_t variant)
                 ? data::Image::PixelFormat::BGRA
                 : std::is_same<T, std::int64_t>::value
                 ? data::Image::PixelFormat::RGB
-                : data::Image::PixelFormat::UNDEFINED
+                : data::Image::PixelFormat::UNDEFINED,
+                std::uint32_t(variant)
             );
-
-            utestData::generator::Image::randomizeImage(object);
         };
 
     switch(variant % 5)
@@ -1631,10 +1627,8 @@ inline static data::String::sptr customDeserialize(
 void SessionTest::customSerializerTest()
 {
     // Create a temporary directory
-    const auto tmpfolder = core::tools::System::getTemporaryFolder();
-    std::filesystem::create_directories(tmpfolder);
-    const auto testPath = tmpfolder / "customSerializerTest.zip";
-    std::filesystem::remove(testPath);
+    core::os::TempDir tmpDir;
+    const auto testPath = tmpDir / "customSerializerTest.zip";
 
     // Test serialization
     {
@@ -1648,6 +1642,9 @@ void SessionTest::customSerializerTest()
         // Configure the session writer
         sessionWriter->setObject(object);
         sessionWriter->setFile(testPath);
+
+        // Test serializer getter
+        CPPUNIT_ASSERT(sessionWriter->serializer(data::String::classname()));
 
         // Change the session serializer by setting a new one using setCustomSerializer
         sessionWriter->setCustomSerializer(data::String::classname(), customSerialize);
@@ -1669,8 +1666,12 @@ void SessionTest::customSerializerTest()
         // Read the session: it should fail since the serializer has been modified by a custom one
         CPPUNIT_ASSERT_THROW(sessionReader->read(), sight::core::Exception);
 
+        // Test deserializer getter
+        CPPUNIT_ASSERT(sessionReader->deserializer(data::String::classname()));
+
         // Set the new customDeserializer
         sessionReader->setCustomDeserializer(data::String::classname(), customDeserialize);
+
         CPPUNIT_ASSERT_NO_THROW(sessionReader->read());
 
         // Test value

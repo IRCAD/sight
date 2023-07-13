@@ -22,23 +22,13 @@
 
 #include "activity/IActivitySequencer.hpp"
 
-#include <core/com/Connection.hpp>
-#include <core/com/Signal.hxx>
-#include <core/tools/dateAndTime.hpp>
-#include <core/tools/UUID.hpp>
+#include "activity/builder/data.hpp"
+#include "activity/IBuilder.hpp"
+
+#include <data/mt/locked_ptr.hpp>
 
 namespace sight::activity
 {
-
-//-----------------------------------------------------------------------------
-
-IActivitySequencer::IActivitySequencer()
-= default;
-
-//-----------------------------------------------------------------------------
-
-IActivitySequencer::~IActivitySequencer()
-= default;
 
 //------------------------------------------------------------------------------
 
@@ -101,8 +91,7 @@ void IActivitySequencer::storeActivityData(
 data::Activity::sptr IActivitySequencer::getActivity(
     data::ActivitySet& activity_set,
     std::size_t index,
-    const core::com::SlotBase::sptr& slot,
-    const data::Composite::csptr& overrides
+    const core::com::SlotBase::sptr& slot
 )
 {
     data::Activity::sptr activity;
@@ -118,17 +107,6 @@ data::Activity::sptr IActivitySequencer::getActivity(
         // FIXME: update all the data or only the requirement ?
         for(const auto& req : info.requirements)
         {
-            if(overrides)
-            {
-                if(const auto& it = overrides->find(req.name); it != overrides->cend())
-                {
-                    activity->insert_or_assign(req.name, it->second);
-
-                    // Look for the next requirement
-                    continue;
-                }
-            }
-
             // Look at the non overriden requirements
             if(const auto& it = m_requirements.find(req.name); it != m_requirements.cend())
             {
@@ -141,7 +119,7 @@ data::Activity::sptr IActivitySequencer::getActivity(
         // try to create the intermediate activities
         if(index > 0 && (index - 1) >= activity_set.size())
         {
-            getActivity(activity_set, index - 1, slot, overrides);
+            getActivity(activity_set, index - 1, slot);
         }
 
         // Create the activity
@@ -152,17 +130,6 @@ data::Activity::sptr IActivitySequencer::getActivity(
 
         for(const auto& req : info.requirements)
         {
-            if(overrides)
-            {
-                if(const auto& it = overrides->find(req.name); it != overrides->cend())
-                {
-                    activity->insert_or_assign(req.name, it->second);
-
-                    // Look for the next requirement
-                    continue;
-                }
-            }
-
             // Look at the non overriden requirements
             if(const auto& it = m_requirements.find(req.name); it != m_requirements.cend())
             {
@@ -171,7 +138,7 @@ data::Activity::sptr IActivitySequencer::getActivity(
             else if(req.create || (req.minOccurs == 0 && req.maxOccurs == 0))
             {
                 // Create the new data
-                auto object = data::factory::New(req.type);
+                auto object = sight::activity::detail::data::create(req.type, req.objectConfig);
                 activity->insert_or_assign(req.name, object);
                 m_requirements.insert_or_assign(req.name, object);
             }
@@ -214,6 +181,43 @@ void IActivitySequencer::removeLastActivities(data::ActivitySet& activity_set, s
         // clear the requirements and parse the remaining activities to regereate the requirements
         m_requirements.clear();
         this->parseActivities(activity_set);
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void IActivitySequencer::cleanRequirements(std::size_t index)
+{
+    // For all registered activities at index and after
+    for(auto i = index, end = m_activityIds.size() ; i < end ; ++i)
+    {
+        // Get the information about the activity
+        const auto& id   = m_activityIds[i];
+        const auto& info = extension::Activity::getDefault()->getInfo(id);
+
+        // For all registered requirements of the current activity
+        for(const auto& requirement : info.requirements)
+        {
+            // Only reset the requirements that are resettable
+            if(requirement.reset && m_requirements.contains(requirement.name))
+            {
+                // Get the data object and lock it
+                const auto& object = m_requirements[requirement.name];
+                data::mt::locked_ptr locked_object(object);
+
+                // Reset the data object
+                if(requirement.create || (requirement.minOccurs == 0 && requirement.maxOccurs == 0))
+                {
+                    const auto& clean_object = detail::data::create(requirement.type, requirement.objectConfig);
+                    object->shallowCopy(clean_object);
+                }
+                else if(requirement.minOccurs == 0)
+                {
+                    const auto& composite = data::Composite::New();
+                    object->shallowCopy(composite);
+                }
+            }
+        }
     }
 }
 

@@ -114,7 +114,7 @@
         <service uid="ActionSaveLandmark" type="sight::module::ui::base::SAction" />
         <service uid="ActionEditLandmark" type="sight::module::ui::base::SAction" />
 
-        <service uid="ActionAddDistance" type="sight::module::ui::base::metrics::SAddDistance">
+        <service uid="ActionAddDistance" type="sight::module::ui::base::metrics::SImageMultiDistances">
             <inout key="image" uid="${imageSeries}" />
         </service>
         <service uid="ActionRemoveDistance" type="sight::module::ui::base::metrics::SRemoveDistance">

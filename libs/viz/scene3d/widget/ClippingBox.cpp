@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2016-2022 IRCAD France
+ * Copyright (C) 2016-2023 IRCAD France
  * Copyright (C) 2016-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -279,7 +279,7 @@ void ClippingBox::initWidgets()
         const Ogre::Real scaleMin = std::min(volScale[0], std::min(volScale[1], volScale[2]));
 
         // Scale the handle to be 1/100th of the volume's initial size.
-        const Ogre::Vector3 widgetScale((0.01F * scaleMin) / newWidget->getBoundingRadius());
+        const Ogre::Vector3 widgetScale((0.02F * scaleMin) / newWidget->getBoundingRadius());
         sphereSceneNode->setScale(widgetScale);
 
         sphereSceneNode->attachObject(newWidget);

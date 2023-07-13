@@ -77,6 +77,11 @@ public:
     /// @param serializer the function pointer to the serialization function
     static void setSerializer(const std::string& className, serializer_t serializer = nullptr);
 
+    /// Return the registered serialization function for an object
+    /// @param className the name of the object to serialize
+    /// @return the function pointer to the serialization function
+    static serializer_t serializer(const std::string& className);
+
 private:
 
     /// Custom serializers that override default one

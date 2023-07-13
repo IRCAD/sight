@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -379,7 +379,14 @@ void Image::readImagePixelModule()
     }
 
     // Last, set image buffer
-    m_object->setBuffer(imageBuffer, true, imageType, {dimensions[0], dimensions[1], dimensions[2]}, format);
+    m_object->setBuffer(
+        imageBuffer,
+        true,
+        imageType,
+        {dimensions[0], dimensions[1], dimensions[2]},
+        format,
+        core::memory::BufferNewPolicy::New()
+    );
 
     if(sight::data::helper::MedicalImage::checkImageValidity(m_object))
     {
