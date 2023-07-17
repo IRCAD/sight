@@ -35,3 +35,5 @@ sight-git
 *.log
 
 compile_commands.json
+
+CMakeUserPresets.json
