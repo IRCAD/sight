@@ -328,9 +328,9 @@
             </service>
 
             <!-- Show the negato/volume view -->
-            <service uid="negatoViewAct" type="sight::module::ui::base::com::SSignal" />
+            <service uid="negatoViewAct" type="sight::module::ui::base::SAction" />
 
-            <service uid="volumeViewAct" type="sight::module::ui::base::com::SSignal" >
+            <service uid="volumeViewAct" type="sight::module::ui::base::SAction" >
                 <state visible="false" />
             </service>
 
@@ -403,52 +403,52 @@
             </service>
 
             <!-- Adaptors visibility -->
-            <service uid="volumeVisibilityAct" type="sight::module::ui::base::com::SSignal" >
+            <service uid="volumeVisibilityAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
-            <service uid="negato3DVisibilityAct" type="sight::module::ui::base::com::SSignal" >
+            <service uid="negato3DVisibilityAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
-            <service uid="meshVisibilityAct" type="sight::module::ui::base::com::SSignal" >
+            <service uid="meshVisibilityAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
-            <service uid="boxWidgetVisibilityAct" type="sight::module::ui::base::com::SSignal" >
+            <service uid="boxWidgetVisibilityAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
-            <service uid="boxWidgetResetAct" type="sight::module::ui::base::com::SSignal" >
+            <service uid="boxWidgetResetAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
-            <service uid="shapeExtruderAct" type="sight::module::ui::base::com::SSignal" >
+            <service uid="shapeExtruderAct" type="sight::module::ui::base::SAction" >
                 <state enabled="true" />
             </service>
 
-            <service uid="shapeExtruderCancelAct" type="sight::module::ui::base::com::SSignal" >
+            <service uid="shapeExtruderCancelAct" type="sight::module::ui::base::SAction" >
                 <state enabled="true" />
             </service>
 
-            <service uid="shapeExtruderRevertAct" type="sight::module::ui::base::com::SSignal" >
+            <service uid="shapeExtruderRevertAct" type="sight::module::ui::base::SAction" >
                 <state enabled="true" />
             </service>
 
-            <service uid="axisVisibilityAct" type="sight::module::ui::base::com::SSignal" />
+            <service uid="axisVisibilityAct" type="sight::module::ui::base::SAction" />
 
-            <service uid="landmarksEditModeAct" type="sight::module::ui::base::com::SSignal" >
+            <service uid="landmarksEditModeAct" type="sight::module::ui::base::SAction" >
                 <state enabled="false" />
             </service>
 
-            <service uid="removeAllLandmarksAct" type="sight::module::ui::base::com::SSignal" />
+            <service uid="removeAllLandmarksAct" type="sight::module::ui::base::SAction" />
 
             <!-- Manage distance -->
-            <service uid="addDistanceAct" type="sight::module::ui::base::com::SSignal">
+            <service uid="addDistanceAct" type="sight::module::ui::base::SAction">
                 <state enabled="false" checked="false"/>
             </service>
 
-            <service uid="removeAllDistancesAct" type="sight::module::ui::base::com::SSignal" />
+            <service uid="removeAllDistancesAct" type="sight::module::ui::base::SAction" />
 
             <service uid="hideDistanceAct" type="sight::module::ui::base::metrics::SShowDistance" autoConnect="true" >
                 <inout key="image" uid="image" />
@@ -566,13 +566,13 @@
             <!-- ******************************* Connections ***************************************** -->
 
             <connect channel="NEGATO_VIEW_SENDER_CHANNEL" >
-                <signal>negatoViewAct/triggered</signal>
+                <signal>negatoViewAct/clicked</signal>
                 <slot>negatoViewAct/hide</slot>
                 <slot>volumeViewAct/show</slot>
             </connect>
 
             <connect channel="VOLUME_VIEW_SENDER_CHANNEL" >
-                <signal>volumeViewAct/triggered</signal>
+                <signal>volumeViewAct/clicked</signal>
                 <slot>volumeViewAct/hide</slot>
                 <slot>negatoViewAct/show</slot>
             </connect>
@@ -583,27 +583,27 @@
             </connect>
 
             <connect channel="VR_VISIBILITY_SENDER_CHANNEL" >
-                <signal>volumeVisibilityAct/triggered</signal>
+                <signal>volumeVisibilityAct/isChecked</signal>
             </connect>
 
             <connect channel="3DNEGATO_VISIBILITY_SENDER_CHANNEL" >
-                <signal>negato3DVisibilityAct/triggered</signal>
+                <signal>negato3DVisibilityAct/isChecked</signal>
             </connect>
 
             <connect channel="MESHES_VISIBILITY_SENDER_CHANNEL" >
-                <signal>meshVisibilityAct/triggered</signal>
+                <signal>meshVisibilityAct/isChecked</signal>
             </connect>
 
             <connect channel="BOX_WIDGET_VISIBILITY_SENDER_CHANNEL" >
-                <signal>boxWidgetVisibilityAct/triggered</signal>
+                <signal>boxWidgetVisibilityAct/isChecked</signal>
             </connect>
 
             <connect channel="BOX_WIDGET_RESET_SENDER_CHANNEL" >
-                <signal>boxWidgetResetAct/triggered</signal>
+                <signal>boxWidgetResetAct/clicked</signal>
             </connect>
 
             <connect channel="SHAPE_EXTRUDER_ENABLE_TOOL_SENDER_CHANNEL" >
-                <signal>shapeExtruderAct/triggered</signal>
+                <signal>shapeExtruderAct/isChecked</signal>
             </connect>
 
             <connect channel="SHAPE_EXTRUDER_TOOL_DISABLED_RECEIVER_CHANNEL" >
@@ -611,7 +611,7 @@
             </connect>
 
             <connect channel="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_SENDER_CHANNEL" >
-                <signal>shapeExtruderCancelAct/triggered</signal>
+                <signal>shapeExtruderCancelAct/clicked</signal>
             </connect>
 
             <connect channel="SHAPE_EXTRUDER_RESET_SENDER_CHANNEL" >
@@ -620,11 +620,11 @@
             </connect>
 
             <connect channel="SHAPE_EXTRUDER_REVERT_SENDER_CHANNEL" >
-                <signal>shapeExtruderRevertAct/triggered</signal>
+                <signal>shapeExtruderRevertAct/clicked</signal>
             </connect>
 
             <connect channel="AXIS_VISIBILITY_SENDER_CHANNEL" >
-                <signal>axisVisibilityAct/triggered</signal>
+                <signal>axisVisibilityAct/isChecked</signal>
             </connect>
 
             <connect channel="NEGATO3D_TRANSPARENCY_CHANNEL" >
@@ -784,11 +784,11 @@
             </connect>
 
             <connect channel="REMOVE_ALL_LANDMARKS_SENDER_CHANNEL" >
-                <signal>removeAllLandmarksAct/triggered</signal>
+                <signal>removeAllLandmarksAct/clicked</signal>
             </connect>
 
             <connect channel="REMOVE_ALL_DISTANCES_SENDER_CHANNEL" >
-                <signal>removeAllDistancesAct/triggered</signal>
+                <signal>removeAllDistancesAct/clicked</signal>
             </connect>
 
             <connect channel="LANDMARKS_EDIT_MODE_CHANGED_RECEIVER_CHANNEL" >
