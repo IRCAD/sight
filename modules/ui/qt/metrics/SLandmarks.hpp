@@ -59,6 +59,9 @@ namespace sight::module::ui::qt::metrics
  * - \b modifyGroup(std::string): updates a group attributes.
  * - \b renameGroup(std::string, std::string): renames a group in the editor.
  *
+ * @section Signals Signals
+ * - \b groupSelected(std::string groupName): triggered when a new group is selected from the editor
+ *
  * @section XML XML Configuration
  *
  * @code{.xml}
@@ -140,6 +143,8 @@ public:
     /// Signal send when double clicked on a landmark, send its world coordinates;
     MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_SEND_WORLD_COORD;
     typedef core::com::Signal<void (double, double, double)> world_coordinates_signal_t;
+    MODULE_UI_QT_API static const core::com::Signals::SignalKeyType s_GROUP_SELECTED;
+    using GroupSelectedSignal = core::com::Signal<void (std::string)>;
 
     /// Resets the interface content and create connections between widgets and this service.
     void updating() override;
@@ -212,17 +217,6 @@ public:
 
     /// Called when the remove button is pressed, deletes selected group or point.
     void onRemoveSelection();
-
-    /**
-     * @brief SLOT: adds or removes a landmark from picking information.
-     *
-     * Interactions will take place while holding down the button. The following actions are available:
-     * - CTRL + left mouse click: adds a new landmarks in the current selected group or create a new group to add it.
-     * - CTRL + right mouse click: removes the landmark at the closest picking position.
-     *
-     * @param _info contains picking information.
-     */
-    void pick(data::tools::PickingInfo _info);
 
     /**
      * @brief SLOT: adds a point to the editor.
@@ -359,7 +353,7 @@ public:
     float m_defaultLandmarkOpacity {1.F};
 
     /// Sets the text displayed at the top of this editor.
-    std::string m_text {"Use 'Ctrl+Left Click' to add new landmarks"};
+    std::string m_text;
 
     static constexpr std::string_view s_LANDMARKS_INOUT        = "landmarks";
     static constexpr std::string_view s_MATRIX_IN              = "matrix";

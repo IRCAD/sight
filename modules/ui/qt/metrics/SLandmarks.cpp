@@ -69,12 +69,12 @@ static const std::string s_ADVANCED_CONFIG = "advanced";
 static const std::string s_TEXT_CONFIG     = "text";
 
 const core::com::Signals::SignalKeyType SLandmarks::s_SEND_WORLD_COORD = "sendWorldCoord";
+const core::com::Signals::SignalKeyType SLandmarks::s_GROUP_SELECTED   = "groupSelected";
 
 //------------------------------------------------------------------------------
 
 SLandmarks::SLandmarks() noexcept
 {
-    newSlot(s_PICK_SLOT, &SLandmarks::pick, this);
     newSlot(s_ADD_POINT_SLOT, &SLandmarks::addPoint, this);
     newSlot(s_MODIFY_POINT_SLOT, &SLandmarks::modifyPoint, this);
     newSlot(s_SELECT_POINT_SLOT, &SLandmarks::selectPoint, this);
@@ -86,6 +86,7 @@ SLandmarks::SLandmarks() noexcept
     newSlot(s_RENAME_GROUP_SLOT, &SLandmarks::renameGroup, this);
 
     newSignal<world_coordinates_signal_t>(s_SEND_WORLD_COORD);
+    newSignal<GroupSelectedSignal>(s_GROUP_SELECTED);
 }
 
 //------------------------------------------------------------------------------
@@ -175,6 +176,7 @@ void SLandmarks::starting()
     m_groupEditorWidget->setLayout(gridLayout);
 
     m_treeWidget = new QTreeWidget();
+    m_treeWidget->setObjectName(serviceID + "/treeWidget");
     if(!m_text.empty())
     {
         auto* helperTextLabel = new QLabel(QString::fromStdString(m_text));
@@ -468,6 +470,8 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
             visible   = group.m_visibility;
             shapeText = group.m_shape == data::Landmarks::Shape::CUBE ? "Cube" : "Sphere";
             opacity   = group.m_color[3];
+
+            signal<GroupSelectedSignal>(s_GROUP_SELECTED)->asyncEmit(groupName);
         }
 
         // Set widget values
@@ -475,6 +479,10 @@ void SLandmarks::onSelectionChanged(QTreeWidgetItem* _current, QTreeWidgetItem* 
         m_visibilityCheckbox->setChecked(visible);
         m_shapeSelector->setCurrentText(shapeText);
         m_opacitySlider->setValue(static_cast<int>(opacity * float(m_opacitySlider->maximum())));
+    }
+    else
+    {
+        signal<GroupSelectedSignal>(s_GROUP_SELECTED)->asyncEmit("");
     }
 
     m_groupEditorWidget->setDisabled(_current == nullptr);
@@ -750,157 +758,6 @@ void SLandmarks::onRemoveSelection()
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::pick(data::tools::PickingInfo _info)
-{
-    if((_info.m_modifierMask & data::tools::PickingInfo::CTRL) != 0)
-    {
-        // Adds a new landmark.
-        if(_info.m_eventId == data::tools::PickingInfo::Event::MOUSE_LEFT_UP)
-        {
-            const std::array<double, 3>& pickedPos = _info.m_worldPos;
-            data::Landmarks::PointType newPoint    = {{pickedPos[0], pickedPos[1], pickedPos[2]}};
-
-            {
-                const auto matrix = m_matrix.lock();
-                if(matrix)
-                {
-                    const auto pickedPoint = glm::dvec4 {pickedPos[0], pickedPos[1], pickedPos[2], 1.0};
-                    const auto mat         = geometry::data::getMatrixFromTF3D(*matrix);
-
-                    const auto modifiedPoint = mat * pickedPoint;
-                    for(uint8_t i = 0 ; i < 3 ; ++i)
-                    {
-                        newPoint[i] = modifiedPoint[i];
-                    }
-                }
-            }
-
-            std::string groupName = this->generateNewGroupName();
-            QTreeWidgetItem* item = m_treeWidget->currentItem();
-
-            // No selection or simple mode, create a new group.
-            if(item == nullptr || !m_advancedMode)
-            {
-                data::Landmarks::GroupAddedSignalType::sptr sig;
-                {
-                    auto landmarks = m_landmarks.lock();
-                    SIGHT_ASSERT("inout '" << s_LANDMARKS_INOUT << "' does not exist.", landmarks);
-
-                    landmarks->addGroup(groupName, this->generateNewColor(), m_defaultLandmarkSize);
-
-                    sig = landmarks->signal<data::Landmarks::GroupAddedSignalType>(data::Landmarks::s_GROUP_ADDED_SIG);
-                }
-
-                this->addGroup(groupName);
-
-                {
-                    const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_GROUP_SLOT)));
-                    sig->asyncEmit(groupName);
-                }
-            }
-            // Advanced mode and a point or a group is selected.
-            else
-            {
-                const int topLevelIndex = m_treeWidget->indexOfTopLevelItem(item);
-
-                // Point selected, add new point to parent group.
-                if(topLevelIndex == -1)
-                {
-                    item = item->parent();
-                }
-
-                groupName = item->text(0).toStdString();
-            }
-
-            data::Landmarks::PointAddedSignalType::sptr sig;
-            {
-                auto landmarks = m_landmarks.lock();
-                SIGHT_ASSERT("inout '" << s_LANDMARKS_INOUT << "' does not exist.", landmarks);
-                landmarks->addPoint(groupName, newPoint);
-                sig = landmarks->signal<data::Landmarks::PointAddedSignalType>(data::Landmarks::s_POINT_ADDED_SIG);
-            }
-
-            this->addPoint(groupName);
-            updateCurrentLandmark(newPoint);
-
-            {
-                const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_ADD_POINT_SLOT)));
-                sig->asyncEmit(groupName);
-            }
-        }
-        else if(_info.m_eventId == data::tools::PickingInfo::Event::MOUSE_RIGHT_UP)
-        {
-            const std::array<double, 3>& pickedPos = _info.m_worldPos;
-
-            auto landmarks = m_landmarks.lock();
-            SIGHT_ASSERT("inout '" << s_LANDMARKS_INOUT << "' does not exist.", landmarks);
-
-            // Find closest landmarks.
-            double closest         = std::numeric_limits<double>::max();
-            std::size_t foundIndex = 0;
-            std::string foundGroupname;
-
-            for(const std::string& groupName : landmarks->getGroupNames())
-            {
-                for(std::size_t index = 0 ; index < landmarks->numPoints(groupName) ; ++index)
-                {
-                    const data::Landmarks::PointType landmark = landmarks->getPoint(groupName, index);
-
-                    const double tmpClosest = std::sqrt(
-                        std::pow(pickedPos[0] - landmark[0], 2)
-                        + std::pow(pickedPos[1] - landmark[1], 2)
-                        + std::pow(pickedPos[2] - landmark[2], 2)
-                    );
-
-                    if(tmpClosest < closest)
-                    {
-                        closest        = tmpClosest;
-                        foundGroupname = groupName;
-                        foundIndex     = index;
-                    }
-                }
-            }
-
-            // 10.0 is an acceptable delta to remove a landmark.
-            if(!foundGroupname.empty() && closest < 10.)
-            {
-                // If the group contains only one point, we remove it.
-                if(landmarks->numPoints(foundGroupname) == 1)
-                {
-                    this->removeGroup(foundGroupname);
-
-                    landmarks->removeGroup(foundGroupname);
-
-                    auto sig = landmarks->signal<data::Landmarks::GroupRemovedSignalType>(
-                        data::Landmarks::s_GROUP_REMOVED_SIG
-                    );
-                    {
-                        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_GROUP_SLOT)));
-                        sig->asyncEmit(foundGroupname);
-                    }
-                }
-                else
-                {
-                    landmarks->removePoint(foundGroupname, foundIndex);
-
-                    this->removePoint(foundGroupname, foundIndex);
-
-                    const auto sig = landmarks->signal<data::Landmarks::PointRemovedSignalType>(
-                        data::Landmarks::s_POINT_REMOVED_SIG
-                    );
-
-                    {
-                        const core::com::Connection::Blocker block(sig->getConnection(this->slot(s_REMOVE_POINT_SLOT)));
-                        sig->asyncEmit(foundGroupname, foundIndex);
-                    }
-                }
-            }
-        }
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void SLandmarks::addPoint(std::string _groupName)
 {
     if(m_advancedMode)
@@ -1015,6 +872,7 @@ void SLandmarks::renameGroup(std::string _oldName, std::string _newName) const
     widget->setProperty(s_GROUP_PROPERTY_NAME, qtNewName);
 
     item->setText(0, qtNewName);
+
     m_treeWidget->blockSignals(false);
 }
 

@@ -27,6 +27,7 @@
 #include "viz/scene3d/IText.hpp"
 
 #include <QLabel>
+#include <QLineEdit>
 #include <QPointer>
 
 namespace sight::module::viz::scene3dQt
@@ -81,16 +82,25 @@ public:
     /// Sets the font size to be used for rendering.
     void setFontSize(std::size_t _size) override;
 
+    /// Sets the edit mode. If true, the label can be modified, else it is read-only.
+    void setEditMode(bool editMode) override;
+
+    void setUnderlyingNodeRect(std::pair<Ogre::Vector2, Ogre::Vector2> rect);
+
 private:
 
     /// Recompute the size according to the object properties
     void adjustSize();
 
+    /// Compute the style according to the object properties
+    QString computeStyle();
+
     /// Set the style according to the object properties
     void adjustStyle();
 
     /// Contains the displayed stats in the overlay.
-    QPointer<QLabel> m_text;
+    QPointer<QLineEdit> m_text;
+    // QPointer<QLabel> m_text;
 
     /// Defines the text's color.
     QString m_textColor;
@@ -99,7 +109,7 @@ private:
     std::size_t m_fontSize {16};
 
     /// Defines the position of the text.
-    Ogre::Vector2 m_position {0.F, 0.F};
+    std::pair<Ogre::Vector2, Ogre::Vector2> m_position {};
 
     /// Defines the vertical alignment type (top, center or bottom).
     std::string m_verticalAlignment;

@@ -56,8 +56,6 @@ void AddDistance::test()
             resetNegatos(tester);
 
             // We want to hide the volume, we must click on the Show/hide volume button to achieve this
-            // However, it is within a collapsed accordion menu; we must first make it visible by unfolding it the menu.
-            helper::Button::push(tester, "toolBarView/Show/hide distance-related actions");
             helper::Button::push(tester, "toolBarView/Show/hide volume");
 
             // Activate the add distance mode

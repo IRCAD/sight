@@ -279,11 +279,14 @@
                         </accordion>
                         <separator/>
                         <accordion>
-                            <menuItem name="Show/hide distance-related actions" icon="sight::module::ui::flaticons/Distance.svg" style="check" />
-                            <menuItem name="Add/Edit distance" icon="sight::module::ui::flaticons/AddDistance.svg" style="check" />
-                            <menuItem name="Remove distance" icon="sight::module::ui::flaticons/RemoveDistance.svg" />
+                            <menuItem name="Enable landmarks edit mode" icon="sight::module::ui::flaticons/YellowLandmarks.svg" style="check" />
+                            <menuItem name="Remove all landmarks"  icon="sight::module::ui::flaticons/RemoveLandmark.svg"  />
                         </accordion>
-                        <menuItem name="Hide/show distance" icon="sight::module::ui::flaticons/ShowDistance.svg" style="check" />
+                        <accordion>
+                            <menuItem name="Add/Edit distance" icon="sight::module::ui::flaticons/Distance.svg" style="check" />
+                            <menuItem name="Remove all distances" icon="sight::module::ui::flaticons/RemoveDistance.svg" />
+                        </accordion>
+                        <menuItem name="Hide/show distance" icon="sight::module::ui::flaticons/HideDistance.svg"  icon2="sight::module::ui::flaticons/ShowDistance.svg" style="check" />
                         <separator/>
                         <menuItem name="Show/hide axis" icon="sight::module::ui::flaticons/Axis.svg" style="check" />
                     </layout>
@@ -301,9 +304,10 @@
                     <menuItem sid="shapeExtruderAct" start="true" />
                     <menuItem sid="shapeExtruderCancelAct" start="true" />
                     <menuItem sid="shapeExtruderRevertAct" start="true" />
-                    <menuItem sid="distanceActionsVisibilityAct" start="true" />
+                    <menuItem sid="landmarksEditModeAct" start="true" />
+                    <menuItem sid="removeAllLandmarksAct" start="true" />
                     <menuItem sid="addDistanceAct" start="true" />
-                    <menuItem sid="removeDistanceAct" start="false" />
+                    <menuItem sid="removeAllDistancesAct" start="true" />
                     <menuItem sid="hideDistanceAct" start="false" />
                     <menuItem sid="axisVisibilityAct" start="true" />
                 </registry>
@@ -434,18 +438,18 @@
 
             <service uid="axisVisibilityAct" type="sight::module::ui::base::com::SSignal" />
 
-            <!-- Manage distance -->
-            <service uid="distanceActionsVisibilityAct" type="sight::module::ui::base::com::SSignal" >
+            <service uid="landmarksEditModeAct" type="sight::module::ui::base::com::SSignal" >
                 <state enabled="false" />
             </service>
 
+            <service uid="removeAllLandmarksAct" type="sight::module::ui::base::com::SSignal" />
+
+            <!-- Manage distance -->
             <service uid="addDistanceAct" type="sight::module::ui::base::com::SSignal">
                 <state enabled="false" checked="false"/>
             </service>
 
-            <service uid="removeDistanceAct" type="sight::module::ui::base::metrics::SRemoveDistance">
-                <inout key="image" uid="image" />
-            </service>
+            <service uid="removeAllDistancesAct" type="sight::module::ui::base::com::SSignal" />
 
             <service uid="hideDistanceAct" type="sight::module::ui::base::metrics::SShowDistance" autoConnect="true" >
                 <inout key="image" uid="image" />
@@ -473,11 +477,15 @@
                 <parameter replace="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_SENDER_CHANNEL" />
                 <parameter replace="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" by="SHAPE_EXTRUDER_RESET_SENDER_CHANNEL" />
                 <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="AXIS_VISIBILITY_SENDER_CHANNEL" />
-                <parameter replace="PICKER_SENDER_CHANNEL" by="PICKER_RECEIVER_CHANNEL" />
                 <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
                 <parameter replace="NEGATO3D_TRANSPARENCY_CHANNEL" by="NEGATO3D_TRANSPARENCY_CHANNEL" />
                 <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="DISTANCE_ACTIVATION_CHANNEL"/>
                 <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="DISTANCE_DEACTIVATION_CHANNEL"/>
+                <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="LANDMARKS_EDIT_MODE_SENDER_CHANNEL" />
+                <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="LANDMARKS_GROUP_SELECTED_SENDER_CHANNEL" />
+                <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="REMOVE_ALL_LANDMARKS_SENDER_CHANNEL" />
+                <parameter replace="REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL" by="REMOVE_ALL_DISTANCES_SENDER_CHANNEL" />
+                <parameter replace="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" by="LANDMARKS_EDIT_MODE_CHANGED_RECEIVER_CHANNEL" />
                 <inout group="data">
                     <key name="modelSeries" uid="modelSeries" optional="true"/>
                     <key name="image" uid="image" optional="true"/>
@@ -646,6 +654,16 @@
             </connect>
 
             <connect>
+                <signal>landmarksEditModeAct/checked</signal>
+                <slot>addDistanceAct/uncheck</slot>
+            </connect>
+
+            <connect>
+                <signal>addDistanceAct/checked</signal>
+                <slot>landmarksEditModeAct/uncheck</slot>
+            </connect>
+
+            <connect>
                 <signal>seriesSet/modified</signal>
                 <slot>extractSeriesSrv/update</slot>
             </connect>
@@ -676,7 +694,7 @@
                 <slot>boxWidgetVisibilityAct/enable</slot>
                 <slot>shapeExtruderAct/enable</slot>
                 <slot>boxWidgetResetAct/enable</slot>
-                <slot>distanceActionsVisibilityAct/enable</slot>
+                <slot>landmarksEditModeAct/enable</slot>
                 <slot>addDistanceAct/enable</slot>
                 <slot>removeDistanceAct/enable</slot>
                 <slot>hideDistanceAct/enable</slot>
@@ -753,24 +771,30 @@
                 <slot>lightManagerAct/uncheck</slot>
             </connect>
 
-            <!-- Only one mode can be enabled at a time -->
-            <connect>
-                <signal>distanceActionsVisibilityAct/checked</signal>
-                <slot>shapeExtruderAct/uncheck</slot>
-            </connect>
-
-            <connect>
-                <signal>shapeExtruderAct/checked</signal>
-                <slot>distanceActionsVisibilityAct/uncheck</slot>
-            </connect>
-
             <!-- Manage landmarks -->
-            <connect channel="PICKER_RECEIVER_CHANNEL" >
-                <slot>landmarksParameterSrv/pick</slot>
-            </connect>
 
             <connect channel="WORLD_COORDS_LANDMARKS_CHANNEL">
                 <signal>landmarksParameterSrv/sendWorldCoord</signal>
+            </connect>
+
+            <connect channel="LANDMARKS_EDIT_MODE_SENDER_CHANNEL">
+                <signal>landmarksEditModeAct/isChecked</signal>
+            </connect>
+
+            <connect channel="LANDMARKS_GROUP_SELECTED_SENDER_CHANNEL" >
+                <signal>landmarksParameterSrv/groupSelected</signal>
+            </connect>
+
+            <connect channel="REMOVE_ALL_LANDMARKS_SENDER_CHANNEL" >
+                <signal>removeAllLandmarksAct/triggered</signal>
+            </connect>
+
+            <connect channel="REMOVE_ALL_DISTANCES_SENDER_CHANNEL" >
+                <signal>removeAllDistancesAct/triggered</signal>
+            </connect>
+
+            <connect channel="LANDMARKS_EDIT_MODE_CHANGED_RECEIVER_CHANNEL" >
+                <slot>landmarksEditModeAct/setChecked</slot>
             </connect>
 
             <!-- ******************************* Start/Stop services ***************************************** -->
@@ -783,7 +807,6 @@
             <start uid="extractPacsImageSrv" />
             <start uid="lightSelectorSrv" />
             <start uid="lightEditorSrv" />
-            <start uid="removeDistanceAct" />
             <start uid="hideDistanceAct" />
 
             <update uid="TFManagerAct" />

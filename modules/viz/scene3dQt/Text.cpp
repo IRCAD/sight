@@ -27,12 +27,14 @@
 #include <ui/qt/container/QtContainer.hpp>
 
 #include <viz/scene3d/helper/Camera.hpp>
+#include <viz/scene3d/helper/Scene.hpp>
 #include <viz/scene3d/registry/macros.hpp>
 
 #include <modules/viz/scene3dQt/WindowInteractor.hpp>
 
 #include <OGRE/OgreNode.h>
 
+#include <OgreAxisAlignedBox.h>
 #include <QStyle>
 
 //-----------------------------------------------------------------------------
@@ -43,8 +45,6 @@ SIGHT_REGISTER_SCENE3D_TEXT(sight::module::viz::scene3dQt::Text, sight::viz::sce
 
 namespace sight::module::viz::scene3dQt
 {
-
-//-----------------------------------------------------------------------------
 
 class NodeListener : public Ogre::SceneNode::Listener
 {
@@ -61,12 +61,12 @@ public:
 
     void nodeUpdated(const Ogre::Node* /*unused*/) override
     {
-        const Ogre::Vector2 screenPos = sight::viz::scene3d::helper::Camera::convertWorldSpaceToScreenSpace(
-            m_camera,
-            m_node._getDerivedPosition()
+        m_text.setUnderlyingNodeRect(
+            sight::viz::scene3d::helper::Scene::computeBoundingRect(
+                m_camera,
+                &dynamic_cast<Ogre::SceneNode&>(m_node)
+            )
         );
-
-        m_text.setPosition(screenPos.x, screenPos.y);
     }
 
     Text& m_text;
@@ -91,12 +91,14 @@ public:
             m_text,
             [this](auto& p)
             {
-                const Ogre::Vector2 screenPos = sight::viz::scene3d::helper::Camera::convertWorldSpaceToScreenSpace(
-                    m_camera,
-                    p.second->_getDerivedPosition()
+                const auto* sceneNode = dynamic_cast<Ogre::SceneNode*>(p.second);
+                SIGHT_ASSERT("cast from Ogre::Node to Ogre::SceneNode failed", sceneNode);
+                p.first->setUnderlyingNodeRect(
+                    sight::viz::scene3d::helper::Scene::computeBoundingRect(
+                        m_camera,
+                        sceneNode
+                    )
                 );
-
-                p.first->setPosition(screenPos.x, screenPos.y);
             });
     }
 
@@ -152,8 +154,52 @@ Text::Text(sight::viz::scene3d::IText::Key /*unused*/, const sight::viz::scene3d
 
     auto* parentWidget = qtInteractor->getQtWidget();
 
-    m_text = new QLabel("", parentWidget);
+    m_text = new QLineEdit("", parentWidget);
+    m_text->setReadOnly(true);
     m_text->setAttribute(Qt::WA_TransparentForMouseEvents);
+    Qt::Alignment alignment;
+    if(m_horizontalAlignment == "left")
+    {
+        alignment |= Qt::AlignLeft;
+    }
+    else if(m_horizontalAlignment == "center")
+    {
+        alignment |= Qt::AlignHCenter;
+    }
+    else if(m_horizontalAlignment == "right")
+    {
+        alignment |= Qt::AlignRight;
+    }
+
+    if(m_verticalAlignment == "top")
+    {
+        alignment |= Qt::AlignTop;
+    }
+    else if(m_verticalAlignment == "center")
+    {
+        alignment |= Qt::AlignVCenter;
+    }
+    else if(m_verticalAlignment == "bottom")
+    {
+        alignment |= Qt::AlignBottom;
+    }
+
+    m_text->setAlignment(alignment);
+    QObject::connect(
+        m_text,
+        &QLineEdit::textEdited,
+        [this](QString text)
+        {
+            signal<IText::TextEditedSignal>(IText::s_TEXT_EDITED_SIGNAL)->asyncEmit(text.toStdString());
+            adjustSize();
+        });
+    QObject::connect(
+        m_text,
+        &QLineEdit::editingFinished,
+        [this]
+        {
+            signal<IText::EditingFinishedSignal>(IText::s_EDITING_FINISHED_SIGNAL)->asyncEmit();
+        });
     m_text->show();
 }
 
@@ -210,7 +256,24 @@ void Text::detachFromNode()
 
 void Text::setText(const std::string& _text)
 {
-    m_text->setText(QString::fromStdString(_text));
+    QString qText = QString::fromStdString(_text);
+    if(m_text->text() == qText)
+    {
+        return;
+    }
+
+    std::optional<int> cursorPosition;
+    if(m_text->hasFocus())
+    {
+        cursorPosition = m_text->cursorPosition();
+    }
+
+    m_text->setText(qText);
+    if(cursorPosition.has_value())
+    {
+        m_text->setCursorPosition(*cursorPosition);
+    }
+
     this->adjustSize();
 }
 
@@ -218,7 +281,7 @@ void Text::setText(const std::string& _text)
 
 void Text::setPosition(float _x, float _y)
 {
-    m_position = Ogre::Vector2(_x, _y);
+    m_position = {Ogre::Vector2(_x, _y), Ogre::Vector2(_x, _y)};
     this->adjustSize();
 }
 
@@ -281,44 +344,78 @@ void Text::setFontSize(std::size_t _size)
 
 //------------------------------------------------------------------------------
 
+void Text::setEditMode(bool editMode)
+{
+    m_text->setReadOnly(!editMode);
+    m_text->setAttribute(Qt::WA_TransparentForMouseEvents, !editMode);
+}
+
+//------------------------------------------------------------------------------
+
+void Text::setUnderlyingNodeRect(std::pair<Ogre::Vector2, Ogre::Vector2> rect)
+{
+    m_position = rect;
+    this->adjustSize();
+}
+
+//------------------------------------------------------------------------------
+
 void Text::adjustSize()
 {
-    m_text->adjustSize();
-
-    Qt::Alignment alignment;
-    if(m_horizontalAlignment == "left")
-    {
-        alignment |= Qt::AlignLeft;
-    }
-    else if(m_horizontalAlignment == "center")
-    {
-        alignment |= Qt::AlignHCenter;
-    }
-    else if(m_horizontalAlignment == "right")
-    {
-        alignment |= Qt::AlignRight;
-    }
-
-    if(m_verticalAlignment == "top")
-    {
-        alignment |= Qt::AlignTop;
-    }
-    else if(m_verticalAlignment == "center")
-    {
-        alignment |= Qt::AlignVCenter;
-    }
-    else if(m_verticalAlignment == "bottom")
-    {
-        alignment |= Qt::AlignBottom;
-    }
+    QLabel dummyLabel(m_text->text());
+    dummyLabel.setStyleSheet(computeStyle());
+    dummyLabel.adjustSize();
+    m_text->resize(dummyLabel.size());
 
     QPoint origin;
     if(m_nodeListener != nullptr)
     {
-        origin = QPoint(static_cast<int>(m_position.x), static_cast<int>(m_position.y)) / m_text->devicePixelRatioF();
+        QRectF positionRect = {QPointF(m_position.first.x, m_position.first.y), QPointF(
+                                   m_position.second.x,
+                                   m_position.second.y
+        )
+        };
+        int x {};
+        if(m_horizontalAlignment == "center")
+        {
+            x = static_cast<int>(positionRect.center().x() - static_cast<float>(m_text->width()) / 2.F);
+        }
+        else
+        {
+            x = static_cast<int>(positionRect.bottomRight().x());
+        }
+
+        origin = QPoint(x, static_cast<int>(positionRect.bottom())) / m_text->devicePixelRatioF();
     }
     else
     {
+        Qt::Alignment alignment;
+        if(m_horizontalAlignment == "left")
+        {
+            alignment |= Qt::AlignLeft;
+        }
+        else if(m_horizontalAlignment == "center")
+        {
+            alignment |= Qt::AlignHCenter;
+        }
+        else if(m_horizontalAlignment == "right")
+        {
+            alignment |= Qt::AlignRight;
+        }
+
+        if(m_verticalAlignment == "top")
+        {
+            alignment |= Qt::AlignTop;
+        }
+        else if(m_verticalAlignment == "center")
+        {
+            alignment |= Qt::AlignVCenter;
+        }
+        else if(m_verticalAlignment == "bottom")
+        {
+            alignment |= Qt::AlignBottom;
+        }
+
         QRect const parentRect {QPoint {0, 0}, m_text->parentWidget()->size()};
         origin = QStyle::alignedRect(Qt::LeftToRight, alignment, m_text->size(), parentRect).topLeft();
     }
@@ -328,11 +425,29 @@ void Text::adjustSize()
 
 //------------------------------------------------------------------------------
 
+QString Text::computeStyle()
+{
+    static const QString s_textCss =
+        R"(
+        * {
+            color: %1;
+            font-size: %2px;
+            font-family: %3;
+            background: transparent;
+            border: 0;
+        }
+        QLineEdit:!read-only {
+            color: black;
+            background: white;
+        })";
+    return s_textCss.arg(m_textColor).arg(m_fontSize).arg(m_fontFamily);
+}
+
+//------------------------------------------------------------------------------
+
 void Text::adjustStyle()
 {
-    static QString s_textCss = ".QLabel { color: %1; font-size: %2px; font-family: %3; background-color: none;} " \
-                               ".QWidget { background-color: none;}";
-    m_text->setStyleSheet(s_textCss.arg(m_textColor).arg(m_fontSize).arg(m_fontFamily));
+    m_text->setStyleSheet(computeStyle());
 }
 
 //------------------------------------------------------------------------------

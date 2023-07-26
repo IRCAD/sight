@@ -20,21 +20,63 @@
  *
  ***********************************************************************/
 
-#include "modules/viz/scene3d/adaptor/SLandmarks.hpp"
+#include "SLandmarks.hpp"
 
-#include "modules/viz/scene3d/adaptor/STransform.hpp"
+#include "core/thread/Worker.hpp"
+
+#include "viz/scene3d/IMaterialAdaptor.hpp"
 
 #include <core/com/Slots.hxx>
-#include <core/tools/compare.hpp>
+#include <core/runtime/path.hpp>
+
+#include <ui/base/Cursor.hpp>
 
 #include <viz/scene3d/helper/ManualObject.hpp>
 #include <viz/scene3d/helper/Scene.hpp>
 
-namespace sight::module::viz::scene3d::adaptor
+#include <modules/viz/scene3dQt/WindowInteractor.hpp>
+
+#include <QHBoxLayout>
+
+namespace sight::module::viz::scene3dQt::adaptor
 {
 
 static constexpr Ogre::Real s_SELECTED_SCALE = 1.35F;
 static constexpr Ogre::Real s_DEFAULT_SCALE  = 1.F;
+
+//------------------------------------------------------------------------------
+
+static std::array<float, 3> getCurrentSlicePos(const data::Image& image)
+{
+    namespace Helper = sight::data::helper::MedicalImage;
+
+    const auto axialIndex = std::max(
+        std::int64_t(0),
+        Helper::getSliceIndex(image, Helper::orientation_t::AXIAL).value_or(0)
+    );
+
+    const auto frontalIndex = std::max(
+        std::int64_t(0),
+        Helper::getSliceIndex(image, Helper::orientation_t::FRONTAL).value_or(0)
+    );
+
+    const auto sagittalIndex = std::max(
+        std::int64_t(0),
+        Helper::getSliceIndex(image, Helper::orientation_t::SAGITTAL).value_or(0)
+    );
+
+    const auto& imgSpacing = image.getSpacing();
+    const auto& imgOrigin  = image.getOrigin();
+
+    return {
+        static_cast<float>(sagittalIndex) * static_cast<float>(imgSpacing[0])
+        + static_cast<float>(imgOrigin[0]),
+        static_cast<float>(frontalIndex) * static_cast<float>(imgSpacing[1])
+        + static_cast<float>(imgOrigin[1]),
+        static_cast<float>(axialIndex) * static_cast<float>(imgSpacing[2])
+        + static_cast<float>(imgOrigin[2])
+    };
+}
 
 //------------------------------------------------------------------------------
 
@@ -50,11 +92,7 @@ Ogre::Vector3 SLandmarks::getCamDirection(const Ogre::Camera* const _cam)
 
 SLandmarks::SLandmarks() noexcept
 {
-    SIGHT_WARN(
-        "'sight::module::viz::scene3d::adaptor::SLandmarks' is deprecated, please use"
-        " 'sight::module::viz::scene3dQt::adaptor::SLandmarks' instead."
-    );
-
+    newSlot(Slots::REMOVE_ALL, &SLandmarks::removeAll, this);
     newSlot(Slots::REMOVE_GROUP, &SLandmarks::removeGroup, this);
     newSlot(Slots::MODIFY_GROUP, &SLandmarks::modifyGroup, this);
     newSlot(Slots::MODIFY_POINT, &SLandmarks::modifyPoint, this);
@@ -63,15 +101,17 @@ SLandmarks::SLandmarks() noexcept
     newSlot(Slots::INSERT_POINT, &SLandmarks::insertPoint, this);
     newSlot(Slots::SELECT_POINT, &SLandmarks::selectPoint, this);
     newSlot(Slots::DESELECT_POINT, &SLandmarks::deselectPoint, this);
-    newSlot(Slots::INITIALIZE_IMAGE, &SLandmarks::initializeImage, this);
     newSlot(Slots::SLICE_TYPE, &SLandmarks::changeSliceType, this);
     newSlot(Slots::SLICE_INDEX, &SLandmarks::changeSliceIndex, this);
     newSlot(Slots::RENAME_GROUP, &SLandmarks::renameGroup, this);
-    newSlot(Slots::TOGGLE_ADD_LANDMARKS, &SLandmarks::toggleAddLandmarks, this);
-    newSlot(Slots::TOGGLE_REMOVE_LANDMARKS, &SLandmarks::toggleRemoveLandmarks, this);
+    newSlot(Slots::SET_CURRENT_GROUP, &SLandmarks::setCurrentGroup, this);
     newSlot(Slots::REMOVE_LANDMARKS, &SLandmarks::removeLandmarks, this);
     newSlot(Slots::CREATE_LANDMARK, &SLandmarks::createLandmark, this);
     newSlot(Slots::CONFIGURE_LANDMARKS, &SLandmarks::configureLandmarks, this);
+    newSlot(Slots::ENABLE_EDIT_MODE, &SLandmarks::enableEditMode, this);
+    newSlot(Slots::DISABLE_EDIT_MODE, &SLandmarks::disableEditMode, this);
+    newSlot(Slots::TOGGLE_EDIT_MODE, [this]{m_editMode ? disableEditMode() : enableEditMode();});
+    newSlot(Slots::CHANGE_EDIT_MODE, [this](bool editMode){editMode ? enableEditMode() : disableEditMode();});
 }
 
 //-----------------------------------------------------------------------------
@@ -101,6 +141,7 @@ void SLandmarks::configuring()
     static const std::string s_INITIAL_COLOR          = s_CONFIG + "initialColor";
     static const std::string s_INITIAL_SIZE           = s_CONFIG + "initialSize";
     static const std::string s_INITIAL_SHAPE          = s_CONFIG + "initialShape";
+    static const std::string s_ALLOW_RENAME           = s_CONFIG + "allowRename";
 
     m_fontSize     = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
     m_enableLabels = config.get<bool>(s_LABEL_CONFIG, m_enableLabels);
@@ -189,6 +230,12 @@ void SLandmarks::configuring()
     {
         SIGHT_ERROR("Unknown shape, allowed values are `sphere` and `cube`");
     }
+
+    m_renamingAllowed = config.get<bool>(s_ALLOW_RENAME, m_enableLabels);
+    SIGHT_ASSERT(
+        "Renaming labels is allowed yet the labels are disabled, this is forbidden.",
+        m_enableLabels || !m_renamingAllowed
+    );
 }
 
 //-----------------------------------------------------------------------------
@@ -206,10 +253,10 @@ void SLandmarks::starting()
     m_material->setDiffuse(data::Color::New(1.F, 1.F, 1.F, 1.F));
 
     // Register the material adaptor.
-    m_materialAdaptor = this->registerService<module::viz::scene3d::adaptor::SMaterial>(
+    m_materialAdaptor = this->registerService<sight::viz::scene3d::IMaterialAdaptor>(
         "sight::module::viz::scene3d::adaptor::SMaterial"
     );
-    m_materialAdaptor->setInOut(m_material, module::viz::scene3d::adaptor::SMaterial::s_MATERIAL_INOUT, true);
+    m_materialAdaptor->setInOut(m_material, sight::viz::scene3d::IMaterialAdaptor::s_MATERIAL_INOUT, true);
     m_materialAdaptor->configure(
         this->getID() + m_materialAdaptor->getID(),
         this->getID() + m_materialAdaptor->getID(),
@@ -227,11 +274,68 @@ void SLandmarks::starting()
         getLayer()->addInteractor(interactor, m_priority);
     }
 
-    // Set current slice indexes.
-    initializeImage();
-
     // Draw landmarks.
     updating();
+
+    auto interactor    = getLayer()->getRenderService()->getInteractorManager();
+    auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+    auto* parentWidget = qtInteractor->getQtWidget();
+    m_contextualMenu = new QWidget(parentWidget);
+    m_contextualMenu->setStyleSheet(".QWidget {background-color: none;}");
+    m_contextualMenu->hide();
+    auto* layout = new QHBoxLayout;
+    QIcon trashBinIcon(QString::fromStdString(
+                           core::runtime::getModuleResourceFilePath(
+                               "sight::module::ui::flaticons/RedTrashBin.svg"
+                           ).string()
+    ));
+    auto* binButton             = new QPushButton(trashBinIcon, "");
+    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
+    binButton->setObjectName(QString::fromStdString(serviceID) + "/binButton");
+    binButton->setCursor(Qt::ArrowCursor);
+    binButton->adjustSize();
+    if(binButton->width() < 40)
+    {
+        binButton->setMinimumWidth(40);
+    }
+
+    if(binButton->height() < 40)
+    {
+        binButton->setMinimumHeight(40);
+    }
+
+    binButton->adjustSize();
+    binButton->setIconSize(binButton->size());
+    layout->addWidget(binButton);
+    if(m_renamingAllowed)
+    {
+        QIcon penIcon(QString::fromStdString(
+                          core::runtime::getModuleResourceFilePath(
+                              "sight::module::ui::flaticons/YellowPen.svg"
+                          ).string()
+        ));
+        auto* penButton = new QPushButton(penIcon, "");
+        penButton->setObjectName(QString::fromStdString(serviceID) + "/penButton");
+        penButton->setCursor(Qt::ArrowCursor);
+        penButton->adjustSize();
+        if(penButton->width() < 40)
+        {
+            penButton->setMinimumWidth(40);
+        }
+
+        if(penButton->height() < 40)
+        {
+            penButton->setMinimumHeight(40);
+        }
+
+        penButton->adjustSize();
+        penButton->setIconSize(penButton->size());
+        layout->addWidget(penButton);
+    }
+
+    m_contextualMenu->setLayout(layout);
+    m_contextualMenu->adjustSize();
+    m_contextualMenu->raise();
 }
 
 //-----------------------------------------------------------------------------
@@ -252,7 +356,6 @@ service::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
     connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_INSERTED_SIG, Slots::INSERT_POINT);
     connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_SELECTED_SIG, Slots::SELECT_POINT);
     connections.push(s_LANDMARKS_INOUT, data::Landmarks::s_POINT_DESELECTED_SIG, Slots::DESELECT_POINT);
-    connections.push(s_IMAGE_INPUT, data::Image::s_MODIFIED_SIG, Slots::INITIALIZE_IMAGE);
     connections.push(s_IMAGE_INPUT, data::Image::s_SLICE_TYPE_MODIFIED_SIG, Slots::SLICE_TYPE);
     connections.push(s_IMAGE_INPUT, data::Image::s_SLICE_INDEX_MODIFIED_SIG, Slots::SLICE_INDEX);
 
@@ -264,7 +367,7 @@ service::IService::KeyConnectionsMap SLandmarks::getAutoConnections() const
 void SLandmarks::updating()
 {
     // Delete all groups.
-    removeAll();
+    removeAllManualObjects();
 
     const auto& landmarks = m_landmarks.const_lock();
 
@@ -295,15 +398,17 @@ void SLandmarks::stopping()
         selectedLandmark->m_timer->stop();
     }
 
-    removeAll();
+    removeAllManualObjects();
 
     // Unregister the material adaptor.
     unregisterServices();
+
+    m_eventFilter = nullptr;
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::removeAll()
+void SLandmarks::removeAllManualObjects()
 {
     // Make the context as current.
     getRenderService()->makeCurrent();
@@ -335,6 +440,20 @@ void SLandmarks::removeAll()
 
 //------------------------------------------------------------------------------
 
+void SLandmarks::removeAll()
+{
+    m_contextualMenu->hide();
+
+    auto landmarks = m_landmarks.lock();
+    for(const std::string& grp : landmarks->getGroupNames())
+    {
+        landmarks->removeGroup(grp);
+        landmarks->signal<data::Landmarks::GroupRemovedSignalType>(data::Landmarks::s_GROUP_REMOVED_SIG)->asyncEmit(grp);
+    }
+}
+
+//------------------------------------------------------------------------------
+
 void SLandmarks::removeGroup(std::string _groupName)
 {
     // Make the context as current.
@@ -354,6 +473,7 @@ void SLandmarks::removeGroup(std::string _groupName)
             if(m_enableLabels)
             {
                 (*objectIt)->m_label->detachFromNode();
+                (*objectIt)->m_label->setVisible(false);
             }
 
             m_transNode->removeAndDestroyChild((*objectIt)->m_node);
@@ -413,38 +533,29 @@ void SLandmarks::modifyGroup(std::string _groupName)
 
 void SLandmarks::renameGroup(std::string _oldGroupName, std::string _newGroupName)
 {
-    // Make the context as current.
-    this->getRenderService()->makeCurrent();
-
-    // Get all selected point.
-    std::vector<std::size_t> indexes;
-    for(const auto& landmark : m_selectedLandmarks)
+    for(const std::shared_ptr<Landmark>& landmark : m_manualObjects)
     {
-        indexes.push_back(landmark->m_landmark->m_index);
+        if(landmark->m_groupName == _oldGroupName)
+        {
+            landmark->m_groupName = _newGroupName;
+            if(m_enableLabels)
+            {
+                landmark->m_label->setText(_newGroupName + '_' + std::to_string(landmark->m_index));
+            }
+        }
     }
 
-    // Remove the group.
-    removeGroup(_oldGroupName);
-
-    // Get landmarks.
-    const auto& landmarks = m_landmarks.const_lock();
-
-    // Retrieve group.
-    const auto& group = landmarks->getGroup(_newGroupName);
-
-    const std::size_t groupSize = group.m_points.size();
-
-    // Re-create the group.
-    for(std::size_t index = 0 ; index < groupSize ; ++index)
+    if(m_currentGroup == _oldGroupName)
     {
-        this->insertMyPoint(_newGroupName, index, landmarks.get_shared());
+        m_currentGroup = _newGroupName;
     }
+}
 
-    // Re-run selected landmark threads
-    for(std::size_t index : indexes)
-    {
-        this->selectPoint(_newGroupName, index);
-    }
+//------------------------------------------------------------------------------
+
+void SLandmarks::setCurrentGroup(std::string _newCurrentGroupName)
+{
+    m_currentGroup = _newCurrentGroupName;
 }
 
 //------------------------------------------------------------------------------
@@ -463,6 +574,7 @@ void SLandmarks::modifyPoint(std::string _groupName, std::size_t _index)
                                          static_cast<float>(point[1]),
                                          static_cast<float>(point[2]));
             m_manualObject->m_node->setPosition(position);
+            updateLandmarkVisibility(*m_manualObject, *landmarks);
             break;
         }
     }
@@ -515,6 +627,7 @@ void SLandmarks::removePoint(std::string _groupName, std::size_t _index)
             if(m_enableLabels)
             {
                 (*objectIt)->m_label->detachFromNode();
+                (*objectIt)->m_label->setVisible(false);
             }
 
             m_transNode->removeAndDestroyChild((*objectIt)->m_node);
@@ -615,6 +728,7 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::insertMyPoint(
         text->setText(pointName);
         text->setTextColor(color);
         text->setVisible(group.m_visibility && m_isVisible);
+        text->setTextAlignment("center", "");
 
         // Attach data.
         text->attachToNode(node, this->getLayer()->getDefaultCamera());
@@ -624,8 +738,46 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::insertMyPoint(
     auto newLandmark = std::make_shared<Landmark>(node, object, _groupName, _index, text);
     m_manualObjects.push_back(newLandmark);
 
-    // Hide landmarks if an image is given to the service.
-    this->hideMyLandmark(*m_manualObjects.back(), *_landmarks);
+    if(m_enableLabels)
+    {
+        // The landmark should be in a weak ptr, else there is a circular reference (the slot refers to the landmark via
+        // newLandmark, and the landmark refers to the slot via m_slots).
+        auto slotTextEdited = core::com::newSlot(
+            [this, weakLandmark = std::weak_ptr(newLandmark)](std::string editedText)
+            {
+                auto landmark             = weakLandmark.lock();
+                std::string newGroupName  = editedText;
+                std::string indexAsString = std::to_string(landmark->m_index);
+                // Remove the index suffix if present
+                if(newGroupName.ends_with('_' + indexAsString))
+                {
+                    newGroupName = newGroupName.substr(0, newGroupName.size() - (indexAsString.size() + 1));
+                }
+
+                std::string oldGroupName = landmark->m_groupName;
+                m_landmarks.lock()->renameGroup(oldGroupName, newGroupName);
+                renameGroup(oldGroupName, newGroupName);
+                auto signal =
+                    m_landmarks.lock()->signal<data::Landmarks::GroupRenamedSignalType>(
+                        data::Landmarks::s_GROUP_RENAMED_SIG
+                    );
+                signal->asyncEmit(oldGroupName, newGroupName);
+            });
+        slotTextEdited->setWorker(core::thread::getDefaultWorker());
+        newLandmark->m_label->signal(sight::viz::scene3d::IText::s_TEXT_EDITED_SIGNAL)->connect(slotTextEdited);
+        newLandmark->m_slots.push_back(slotTextEdited);
+
+        auto slotEditingFinish = core::com::newSlot(
+            [label = std::weak_ptr(newLandmark->m_label)]
+            {
+                label.lock()->setEditMode(false);
+            });
+        slotEditingFinish->setWorker(core::thread::getDefaultWorker());
+        newLandmark->m_label->signal(sight::viz::scene3d::IText::s_EDITING_FINISHED_SIGNAL)->connect(slotEditingFinish);
+        newLandmark->m_slots.push_back(slotEditingFinish);
+    }
+
+    updateLandmarkVisibility(*m_manualObjects.back(), *_landmarks);
 
     // Request the rendering.
     this->requestRender();
@@ -697,7 +849,7 @@ void SLandmarks::deselectPoint(std::string _groupName, std::size_t _index)
             // Stop the timer.
             (*landmarkIt)->m_timer->stop();
             (*landmarkIt)->m_landmark->m_object->setVisible(true);
-            hideLandmark((*landmarkIt)->m_landmark);
+            updateLandmarkVisibility((*landmarkIt)->m_landmark);
 
             // Request the rendering.
             requestRender();
@@ -716,7 +868,7 @@ void SLandmarks::hightlight(std::shared_ptr<SelectedLandmark> _selectedLandmark)
     this->getRenderService()->makeCurrent();
 
     // Hightlight the selected landmark.
-    this->hideLandmark(_selectedLandmark->m_landmark);
+    this->updateLandmarkVisibility(_selectedLandmark->m_landmark);
     if(_selectedLandmark->m_landmark->m_object->isVisible())
     {
         if(_selectedLandmark->m_show)
@@ -739,39 +891,6 @@ void SLandmarks::hightlight(std::shared_ptr<SelectedLandmark> _selectedLandmark)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::initializeImage()
-{
-    const auto image = m_image.lock();
-
-    if(image)
-    {
-        namespace Helper = sight::data::helper::MedicalImage;
-
-        const auto axial_index = std::max(
-            std::int64_t(0),
-            Helper::getSliceIndex(*image, Helper::orientation_t::AXIAL).value_or(0)
-        );
-
-        const auto frontal_index = std::max(
-            std::int64_t(0),
-            Helper::getSliceIndex(*image, Helper::orientation_t::FRONTAL).value_or(0)
-        );
-
-        const auto m_sagittal_index = std::max(
-            std::int64_t(0),
-            Helper::getSliceIndex(*image, Helper::orientation_t::SAGITTAL).value_or(0)
-        );
-
-        this->changeSliceIndex(int(axial_index), int(frontal_index), int(m_sagittal_index));
-    }
-    else
-    {
-        this->changeSliceIndex(0, 0, 0);
-    }
-}
-
-//------------------------------------------------------------------------------
-
 void SLandmarks::changeSliceType(int _from, int _to)
 {
     // Make the context as current.
@@ -786,7 +905,7 @@ void SLandmarks::changeSliceType(int _from, int _to)
 
     m_orientation = newOrientation;
 
-    this->hideLandmarks();
+    this->updateLandmarksVisibility();
 
     // Request the rendering.
     this->requestRender();
@@ -794,7 +913,7 @@ void SLandmarks::changeSliceType(int _from, int _to)
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagittalIndex)
+void SLandmarks::changeSliceIndex(int /*_axialIndex*/, int /*_frontalIndex*/, int /*_sagittalIndex*/)
 {
     // Make the context as current.
     this->getRenderService()->makeCurrent();
@@ -805,50 +924,10 @@ void SLandmarks::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagit
     {
         this->getRenderService()->makeCurrent();
 
-        const auto& imgSpacing = imageLock->getSpacing();
-        const auto& imgOrigin  = imageLock->getOrigin();
-
-        m_currentSlicePos = {
-            static_cast<float>(_sagittalIndex) * static_cast<float>(imgSpacing[0])
-            + static_cast<float>(imgOrigin[0]),
-            static_cast<float>(_frontalIndex) * static_cast<float>(imgSpacing[1])
-            + static_cast<float>(imgOrigin[1]),
-            static_cast<float>(_axialIndex) * static_cast<float>(imgSpacing[2])
-            + static_cast<float>(imgOrigin[2])
-        };
-
-        this->hideLandmarks();
+        this->updateLandmarksVisibility();
 
         // Request the rendering.
         this->requestRender();
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SLandmarks::toggleAddLandmarks(bool toggle)
-{
-    if(toggle)
-    {
-        m_landmarksMode = LandmarksMode::ADD;
-    }
-    else if(m_landmarksMode == LandmarksMode::ADD)
-    {
-        m_landmarksMode = LandmarksMode::NONE;
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SLandmarks::toggleRemoveLandmarks(bool toggle)
-{
-    if(toggle)
-    {
-        m_landmarksMode = LandmarksMode::REMOVE;
-    }
-    else if(m_landmarksMode == LandmarksMode::REMOVE)
-    {
-        m_landmarksMode = LandmarksMode::NONE;
     }
 }
 
@@ -978,6 +1057,55 @@ void SLandmarks::configureLandmarks(
 
 //------------------------------------------------------------------------------
 
+void SLandmarks::enableEditMode()
+{
+    if(m_editMode)
+    {
+        return;
+    }
+
+    m_editMode = true;
+    setCursor(Qt::CrossCursor);
+
+    if(m_eventFilter == nullptr)
+    {
+        auto interactor    = getLayer()->getRenderService()->getInteractorManager();
+        auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+        auto* parentWidget = qtInteractor->getQtWidget();
+        m_eventFilter = std::make_unique<DeleteContextualMenuWhenFocusOut>(this);
+        parentWidget->installEventFilter(m_eventFilter.get());
+    }
+
+    m_editModeChanged->asyncEmit(true);
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::disableEditMode()
+{
+    if(!m_editMode)
+    {
+        return;
+    }
+
+    m_editMode = false;
+    auto interactor    = getLayer()->getRenderService()->getInteractorManager();
+    auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+    auto* parentWidget = qtInteractor->getQtWidget();
+    parentWidget->unsetCursor();
+
+    m_contextualMenu->hide();
+
+    if(m_enableLabels && m_renamingAllowed)
+    {
+        std::ranges::for_each(m_manualObjects, [](std::shared_ptr<Landmark> l){l->m_label->setEditMode(false);});
+    }
+
+    m_editModeChanged->asyncEmit(false);
+}
+
+//------------------------------------------------------------------------------
+
 void SLandmarks::createLandmark(sight::data::Landmarks::PointType point)
 {
     createAndPickLandmark(point, false);
@@ -1099,7 +1227,7 @@ bool SLandmarks::isMaxLandmarksReached()
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::hideLandmarks()
+void SLandmarks::updateLandmarksVisibility()
 {
     // Make the context as current.
     getRenderService()->makeCurrent();
@@ -1111,26 +1239,25 @@ void SLandmarks::hideLandmarks()
     {
         for(const auto& landmark : m_manualObjects)
         {
-            hideLandmark(landmark);
+            updateLandmarkVisibility(landmark);
         }
     }
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::hideLandmark(std::shared_ptr<Landmark> _landmark)
+void SLandmarks::updateLandmarkVisibility(std::shared_ptr<Landmark> _landmark)
 {
     // Make the context as current.
     getRenderService()->makeCurrent();
 
-    // Get image.
     const auto& landmarks = m_landmarks.const_lock();
-    hideMyLandmark(*_landmark, *landmarks);
+    updateLandmarkVisibility(*_landmark, *landmarks);
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::hideMyLandmark(Landmark& landmark, const data::Landmarks& landmarks)
+void SLandmarks::updateLandmarkVisibility(Landmark& landmark, const data::Landmarks& landmarks)
 {
     const bool must_show =
         [&]
@@ -1171,7 +1298,7 @@ bool SLandmarks::isLandmarkVisible(
     if(const auto& image = m_image.const_lock(); image)
     {
         const auto position       = point[m_orientation];
-        const auto slice_position = m_currentSlicePos[m_orientation];
+        const auto slice_position = getCurrentSlicePos(*image)[m_orientation];
         const auto spacing        = image->getSpacing()[m_orientation];
 
         switch(m_viewDistance)
@@ -1251,100 +1378,36 @@ std::optional<Ogre::Vector3> SLandmarks::getNearestPickedPosition(int _x, int _y
 
 void SLandmarks::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
 {
+    m_contextualMenu->hide();
+
     if(_button != LEFT)
     {
         // We only manage left click.
         return;
     }
 
-    const auto layer = this->getLayer();
-
-    Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
-
-    const Ogre::Camera* const cam = layer->getDefaultCamera();
-    const auto* const vp          = cam->getViewport();
-
-    const float vpX = static_cast<float>(_x - vp->getActualLeft()) / static_cast<float>(vp->getActualWidth());
-    const float vpY = static_cast<float>(_y - vp->getActualTop()) / static_cast<float>(vp->getActualHeight());
-
-    const Ogre::Ray ray = cam->getCameraToViewportRay(vpX, vpY);
-
-    const auto raySceneQuery = std::unique_ptr<Ogre::RaySceneQuery>(
-        sceneMgr->createRayQuery(ray, m_landmarksQueryFlag)
-    );
-
-    raySceneQuery->setSortByDistance(true);
-    const auto& queryResult = raySceneQuery->execute();
-
-    if(queryResult.empty())
+    if(!m_editMode)
     {
-        // Nothing found.
+        // If the edit mode is off, the landmarks are read-only.
         return;
     }
 
-    // Find the ogre landmark and apply a scale.
-    bool found = false;
-
-    // The plane is always intercepted, if a landmark is found
-    for(std::size_t index = 0 ; !found && index < queryResult.size() ; ++index)
+    std::shared_ptr<Landmark> pickedData = tryPick(_x, _y);
+    if(pickedData != nullptr)
     {
-        // The landmark should be the nearest object found.
-        const auto* const object = queryResult[index].movable;
-
-        auto landmarks = m_landmarks.lock();
-
-        for(auto& landmark : m_manualObjects)
-        {
-            if(landmark->m_object == object)
-            {
-                try
-                {
-                    if(const auto& group = landmarks->getGroup(landmark->m_groupName);
-                       group.m_visibility && isLandmarkVisible(group.m_points[landmark->m_index], group.m_size))
-                    {
-                        found        = true;
-                        m_pickedData = landmark;
-                        m_pickedData->m_node->setScale(s_SELECTED_SCALE, s_SELECTED_SCALE, s_SELECTED_SCALE);
-
-                        // If we are in remove mode, we will remove the picked landmark.
-                        if(m_landmarksMode == LandmarksMode::REMOVE)
-                        {
-                            // Remove the picked landmark
-                            landmarks->removePoint(landmark->m_groupName, landmark->m_index);
-                            removePoint(landmark->m_groupName, landmark->m_index);
-
-                            const auto& sig = landmarks->signal<sight::data::Landmarks::PointRemovedSignalType>(
-                                sight::data::Landmarks::s_POINT_REMOVED_SIG
-                            );
-
-                            // Block the signal to avoid a being called back.
-                            sight::core::com::Connection::Blocker blocker(
-                                sig->getConnection(slot(Slots::REMOVE_POINT))
-                            );
-
-                            sig->asyncEmit(m_currentGroup, landmark->m_index);
-                        }
-
-                        break;
-                    }
-                }
-                catch(...)
-                {
-                    SIGHT_ERROR("Landmark group '" + landmark->m_groupName + "' not found.");
-
-                    // No point found, we can't select it.
-                    continue;
-                }
-            }
-        }
+        setCursor(Qt::ClosedHandCursor);
+        m_pickedData = pickedData;
+        m_pickedData->m_node->setScale(s_SELECTED_SCALE, s_SELECTED_SCALE, s_SELECTED_SCALE);
+        m_mustShowContextualMenu = true;
     }
-
-    // If nothing is picked, we will create a new landmark.
-    if(!found && m_landmarksMode == LandmarksMode::ADD)
+    else
     {
+        // If nothing is picked, we will create a new landmark.
         if(auto newPos = this->getNearestPickedPosition(_x, _y); newPos)
         {
+            setCursor(Qt::ClosedHandCursor);
             createAndPickLandmark({(*newPos)[0], (*newPos)[1], (*newPos)[2]});
+            m_mustShowContextualMenu = false;
         }
     }
 }
@@ -1355,6 +1418,10 @@ void SLandmarks::mouseMoveEvent(MouseButton /*_button*/, Modifier /*_mods*/, int
 {
     if(m_pickedData != nullptr)
     {
+        m_mustShowContextualMenu = false;
+
+        setCursor(Qt::ClosedHandCursor);
+
         // Discard the current landmark to launch the ray over the scene without picking this one.
         m_pickedData->m_object->setQueryFlags(0x0);
 
@@ -1419,18 +1486,108 @@ void SLandmarks::mouseMoveEvent(MouseButton /*_button*/, Modifier /*_mods*/, int
 
         this->requestRender();
     }
+    else if(m_editMode)
+    {
+        if(tryPick(_x, _y) != nullptr)
+        {
+            setCursor(Qt::OpenHandCursor);
+        }
+        else
+        {
+            setCursor(Qt::CrossCursor);
+        }
+    }
 }
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/, int /*_x*/, int /*_y*/)
+void SLandmarks::buttonReleaseEvent(MouseButton _button, Modifier /*_mods*/, int /*_x*/, int /*_y*/)
 {
     if(m_pickedData != nullptr)
     {
         m_pickedData->m_node->setScale(s_DEFAULT_SCALE, s_DEFAULT_SCALE, s_DEFAULT_SCALE);
+
+        setCursor(Qt::OpenHandCursor);
+
+        // If we are in edit mode, we show the bin button to remove it.
+        if(m_editMode && m_mustShowContextualMenu)
+        {
+            std::pair<Ogre::Vector2, Ogre::Vector2> screenPos = sight::viz::scene3d::helper::Scene::computeBoundingRect(
+                *getLayer()->getDefaultCamera(),
+                m_pickedData->m_node
+            );
+            const auto ratio   = m_contextualMenu->devicePixelRatioF();
+            auto interactor    = getLayer()->getRenderService()->getInteractorManager();
+            auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+            auto* parentWidget = qtInteractor->getQtWidget();
+            const int x        = std::clamp(
+                int(((screenPos.first.x + screenPos.second.x) / 2) / ratio),
+                0,
+                parentWidget->width() - m_contextualMenu->width()
+            );
+
+            int y = int((screenPos.first.y / ratio) - m_contextualMenu->height());
+            if(y < 0)
+            {
+                // If there isn't enough place upward the landmark, place the menu downward.
+                y = int(screenPos.second.y / ratio);
+            }
+
+            m_contextualMenu->move(x, y);
+            m_contextualMenu->raise();
+            const QString serviceID = QString::fromStdString(getID().substr(getID().find_last_of('_') + 1));
+            auto* binButton         = m_contextualMenu->findChild<QPushButton*>(serviceID + "/binButton");
+            SIGHT_ASSERT("The contextual menu should have the bin button", binButton);
+            binButton->disconnect();
+            QObject::connect(
+                binButton,
+                &QPushButton::clicked,
+                [this, groupName = m_pickedData->m_groupName, index = m_pickedData->m_index]
+                {
+                    m_contextualMenu->hide();
+                    m_landmarks.lock()->removePoint(groupName, index);
+                    removePoint(groupName, index);
+                    const auto& sig = m_landmarks.lock()->signal<sight::data::Landmarks::PointRemovedSignalType>(
+                        sight::data::Landmarks::s_POINT_REMOVED_SIG
+                    );
+
+                    // Block the signal to avoid being called back.
+                    sight::core::com::Connection::Blocker blocker(
+                        sig->getConnection(slot(Slots::REMOVE_POINT))
+                    );
+
+                    sig->asyncEmit(groupName, index);
+                });
+            if(m_renamingAllowed)
+            {
+                auto* penButton = m_contextualMenu->findChild<QPushButton*>(serviceID + "/penButton");
+                SIGHT_ASSERT("The contextual menu should have the pen button", penButton);
+                penButton->disconnect();
+                QObject::connect(
+                    penButton,
+                    &QPushButton::clicked,
+                    [this, label = std::weak_ptr(m_pickedData->m_label)]
+                    {
+                        m_contextualMenu->hide();
+                        for(const std::shared_ptr<Landmark>& landmark : m_manualObjects)
+                        {
+                            landmark->m_label->setEditMode(false);
+                        }
+
+                        label.lock()->setEditMode(true);
+                    });
+            }
+
+            m_contextualMenu->show();
+        }
+
         m_pickedData = nullptr;
 
         this->getLayer()->requestRender();
+    }
+    else if(_button == RIGHT)
+    {
+        disableEditMode();
     }
 }
 
@@ -1438,7 +1595,57 @@ void SLandmarks::buttonReleaseEvent(MouseButton /*_button*/, Modifier /*_mods*/,
 
 void SLandmarks::buttonDoublePressEvent(MouseButton /*_button*/, Modifier /*_mods*/, int _x, int _y)
 {
-    const auto& layer = getLayer();
+    m_contextualMenu->hide();
+
+    std::shared_ptr<Landmark> pickedData = tryPick(_x, _y);
+
+    if(pickedData != nullptr)
+    {
+        getLayer()->cancelFurtherInteraction();
+
+        // Check if something is picked to update the position of the distance.
+        const auto pickedPos = getNearestPickedPosition(_x, _y);
+        if(pickedPos.has_value())
+        {
+            // Update the data, the autoconnection will call modifyPoint.
+            const auto& landmarks = m_landmarks.const_lock();
+            const auto& point     = landmarks->getPoint(
+                pickedData->m_groupName,
+                pickedData->m_index
+            );
+
+            // Send signal with world coordinates of the landmarks
+            m_send_world_coord->asyncEmit(
+                point[0],
+                point[1],
+                point[2]
+            );
+        }
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::wheelEvent(Modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/)
+{
+    m_contextualMenu->hide();
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::keyPressEvent(int _key, Modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/)
+{
+    if(m_editMode && _key == Qt::Key_Escape)
+    {
+        disableEditMode();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+std::shared_ptr<SLandmarks::Landmark> SLandmarks::tryPick(int _x, int _y) const
+{
+    const auto layer = this->getLayer();
 
     Ogre::SceneManager* const sceneMgr = layer->getSceneManager();
 
@@ -1459,50 +1666,74 @@ void SLandmarks::buttonDoublePressEvent(MouseButton /*_button*/, Modifier /*_mod
 
     if(queryResult.empty())
     {
-        return;
+        // Nothing found.
+        return nullptr;
     }
 
+    // Find the ogre landmark and apply a scale.
     bool found = false;
 
-    for(std::size_t qrIdx = 0 ; qrIdx < queryResult.size() && !found ; qrIdx++)
+    // The plane is always intercepted, if a landmark is found
+    for(std::size_t index = 0 ; !found && index < queryResult.size() ; ++index)
     {
-        const auto* const object = queryResult[qrIdx].movable;
-        for(auto& landmark : m_manualObjects)
+        // The landmark should be the nearest object found.
+        const auto* const object = queryResult[index].movable;
+
+        auto landmarks = m_landmarks.lock();
+
+        for(const auto& landmark : m_manualObjects)
         {
             if(landmark->m_object == object)
             {
-                m_pickedData = landmark;
-                m_pickedData->m_node->setScale(s_SELECTED_SCALE, s_SELECTED_SCALE, s_SELECTED_SCALE);
+                try
+                {
+                    if(const auto& group = landmarks->getGroup(landmark->m_groupName);
+                       group.m_visibility && isLandmarkVisible(group.m_points[landmark->m_index], group.m_size))
+                    {
+                        return landmark;
+                    }
+                }
+                catch(...)
+                {
+                    SIGHT_ERROR("Landmark group '" + landmark->m_groupName + "' not found.");
 
-                found = true;
-                break;
+                    // No point found, we can't select it.
+                    continue;
+                }
             }
         }
     }
 
-    if(found)
-    {
-        getLayer()->cancelFurtherInteraction();
-
-        // Check if something is picked to update the position of the distance.
-        const auto pickedPos = getNearestPickedPosition(_x, _y);
-        if(pickedPos.has_value())
-        {
-            // Update the data, the autoconnection will call modifyPoint.
-            const auto& landmarks = m_landmarks.const_lock();
-            const auto& point     = landmarks->getPoint(
-                m_pickedData->m_groupName,
-                m_pickedData->m_index
-            );
-
-            // Send signal with world coordinates of the landmarks
-            m_send_world_coord->asyncEmit(
-                point[0],
-                point[1],
-                point[2]
-            );
-        }
-    }
+    return nullptr;
 }
 
-} // namespace sight::module::viz::scene3d::adaptor.
+//------------------------------------------------------------------------------
+
+void SLandmarks::setCursor(QCursor cursor)
+{
+    auto interactor    = getLayer()->getRenderService()->getInteractorManager();
+    auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+    auto* parentWidget = qtInteractor->getQtWidget();
+    parentWidget->setCursor(cursor);
+}
+
+SLandmarks::DeleteContextualMenuWhenFocusOut::DeleteContextualMenuWhenFocusOut(SLandmarks* sLandmarks) :
+    m_sLandmarks(sLandmarks)
+{
+}
+
+//------------------------------------------------------------------------------
+
+bool SLandmarks::DeleteContextualMenuWhenFocusOut::eventFilter(QObject* /*o*/, QEvent* e)
+{
+    if(m_sLandmarks->m_contextualMenu != nullptr
+       && !m_sLandmarks->m_contextualMenu->findChild<QPushButton*>()->hasFocus()
+       && (e->type() == QEvent::FocusOut || e->type() == QEvent::Resize))
+    {
+        m_sLandmarks->m_contextualMenu->hide();
+    }
+
+    return false;
+}
+
+} // namespace sight::module::viz::scene3dQt::adaptor.

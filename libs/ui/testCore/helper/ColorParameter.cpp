@@ -49,11 +49,18 @@ void ColorParameter::select(Tester& tester, const Select& colorParam, const QCol
     );
     helper::Button::push(tester, colorParam);
     helper::Dialog::take<QColorDialog*>(tester, "color select dialog");
+    QPointer<QColorDialog> colorDialog = tester.get<QColorDialog*>();
     tester.doSomethingAsynchronously<QColorDialog*>(
         [&color](QColorDialog* obj)
         {
             obj->setCurrentColor(color);
             obj->accept();
+        });
+    tester.doubt(
+        "the color select window is closed",
+        [&colorDialog](QObject*)
+        {
+            return colorDialog == nullptr || !colorDialog->isVisible();
         });
 }
 

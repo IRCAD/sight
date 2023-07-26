@@ -22,6 +22,8 @@
 
 #include "viz/scene3d/Layer.hpp"
 
+#include "helper/Scene.hpp"
+
 #include "viz/scene3d/compositor/Core.hpp"
 #include "viz/scene3d/helper/Camera.hpp"
 #include "viz/scene3d/IAdaptor.hpp"
@@ -638,78 +640,13 @@ void Layer::removeInteractor(const viz::scene3d::interactor::IInteractor::sptr& 
 
 Ogre::AxisAlignedBox Layer::computeWorldBoundingBox() const
 {
-    // The bounding box in which all the object's bounding boxes will be merged
-    Ogre::AxisAlignedBox worldBoundingBox;
-
     // Getting this render service scene manager
     Ogre::SceneNode* rootSceneNode = this->getSceneManager()->getRootSceneNode();
 
     // Needed to recompute world bounding boxes
     rootSceneNode->_update(true, false);
 
-    // This stack will be used for iterate through the scene nodes graph
-    std::stack<const Ogre::SceneNode*> childrenStack;
-    childrenStack.push(rootSceneNode);
-
-    while(!childrenStack.empty())
-    {
-        const Ogre::SceneNode* tempSceneNode = childrenStack.top();
-        childrenStack.pop();
-
-        // Retrieves an iterator pointing to the attached movable objects of the current scene node
-        const Ogre::SceneNode::ObjectMap& entities = tempSceneNode->getAttachedObjects();
-        for(auto* const movable : entities)
-        {
-            const Ogre::Entity* entity = dynamic_cast<Ogre::Entity*>(movable);
-
-            if(entity != nullptr)
-            {
-                if(entity->isVisible())
-                {
-                    worldBoundingBox.merge(entity->getWorldBoundingBox());
-                }
-            }
-            else
-            {
-                // Then try to cast into a ManualObject*
-                const Ogre::ManualObject* manualObject = dynamic_cast<Ogre::ManualObject*>(movable);
-
-                if(manualObject != nullptr)
-                {
-                    if(manualObject->isVisible())
-                    {
-                        worldBoundingBox.merge(manualObject->getWorldBoundingBox());
-                    }
-                }
-                else
-                {
-                    // Last try to cast into a Camera*
-                    const Ogre::Camera* cameraObject = dynamic_cast<Ogre::Camera*>(movable);
-
-                    if((cameraObject != nullptr) && cameraObject != this->getDefaultCamera())
-                    {
-                        if(cameraObject->isDebugDisplayEnabled())
-                        {
-                            worldBoundingBox.merge(cameraObject->getWorldBoundingBox());
-                        }
-                    }
-                }
-            }
-        }
-
-        for(auto* const childNode : tempSceneNode->getChildren())
-        {
-            // First, we must cast the Node* into a SceneNode*
-            const Ogre::SceneNode* childSceneNode = dynamic_cast<Ogre::SceneNode*>(childNode);
-            if(childSceneNode != nullptr)
-            {
-                // Push the current node into the stack in order to continue iteration
-                childrenStack.push(childSceneNode);
-            }
-        }
-    }
-
-    return worldBoundingBox;
+    return helper::Scene::computeBoundingBox(rootSceneNode);
 }
 
 //------------------------------------------------------------------------------

@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "modules/viz/scene3d/config.hpp"
+#include "modules/viz/scene3dQt/config.hpp"
 
 #include <data/PointList.hpp>
 
@@ -34,16 +34,17 @@
 #include <viz/scene3d/Material.hpp>
 
 #include <Ogre.h>
+#include <QPushButton>
 
 #include <memory>
 #include <optional>
 
-namespace sight::module::viz::scene3d::adaptor
+namespace sight::module::viz::scene3dQt::adaptor
 {
 
 /**
  * @brief This adaptor displays distances retrieved from the image fields.
- * @deprecated Use sight::module::viz::scene3dQt::adaptor::SImageMultiDistances instead.
+ *
 
  * @section XML XML Configuration
  * @code{.xml}
@@ -66,6 +67,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b distanceQueryFlags (optional, uint32, default=0x40000000): mask apply to distances spheres.
  *
  * @section Slots Slots
+ * - \b removeAll(): remove all distances.
  * - \b removeDistance(): removes distances contained in the image from the scene manager.
  * - \b updateVisibilityFromField(): updates the visibility of distances from the field status.
  * - \b updateVisibility(bool): sets whether distances are shown or not.
@@ -97,10 +99,10 @@ public:
     SIGHT_DECLARE_SERVICE(SImageMultiDistances, sight::viz::scene3d::IAdaptor);
 
     /// Initialize slots.
-    MODULE_VIZ_SCENE3D_API SImageMultiDistances() noexcept;
+    MODULE_VIZ_SCENE3DQT_API SImageMultiDistances() noexcept;
 
     /// Destroys the adaptor.
-    MODULE_VIZ_SCENE3D_API ~SImageMultiDistances() noexcept override = default;
+    MODULE_VIZ_SCENE3DQT_API ~SImageMultiDistances() noexcept override = default;
 
     /**
      * @brief Retrieves the picked distance and stores the result in m_pickedData.
@@ -108,14 +110,14 @@ public:
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_API void buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
+    MODULE_VIZ_SCENE3DQT_API void buttonPressEvent(MouseButton _button, Modifier _mod, int _x, int _y) override;
 
     /**
      * @brief Moves a distance stored in m_pickedData.
      * @param _x X screen coordinate.
      * @param _y Y screen coordinate.
      */
-    MODULE_VIZ_SCENE3D_API void mouseMoveEvent(
+    MODULE_VIZ_SCENE3DQT_API void mouseMoveEvent(
         MouseButton /*_button*/,
         Modifier _mod,
         int _x,
@@ -125,7 +127,7 @@ public:
     ) override;
 
     /// Resets m_pickedData.
-    MODULE_VIZ_SCENE3D_API void buttonReleaseEvent(
+    MODULE_VIZ_SCENE3DQT_API void buttonReleaseEvent(
         MouseButton _button,
         Modifier _mod,
         int _x,
@@ -133,21 +135,18 @@ public:
     ) override;
 
     /// catch escape to go out of add distance mode
-    MODULE_VIZ_SCENE3D_API void keyPressEvent(int _key, Modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/) final;
+    MODULE_VIZ_SCENE3DQT_API void keyPressEvent(int _key, Modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/) final;
 
-    /// catch the mouse leaving the widget
-    MODULE_VIZ_SCENE3D_API void leaveEvent() final;
-
-    /// catch the mouse entering the widget
-    MODULE_VIZ_SCENE3D_API void enterEvent() final;
+    /// Hides the contextual menu when the mouse wheel is used
+    MODULE_VIZ_SCENE3DQT_API void wheelEvent(Modifier _mods, double _angleDelta, int _x, int _y) final;
 
 protected:
 
     /// Configures the service.
-    MODULE_VIZ_SCENE3D_API void configuring() override;
+    MODULE_VIZ_SCENE3DQT_API void configuring() override;
 
     /// Adds the interactor to the layer and creates the material.
-    MODULE_VIZ_SCENE3D_API void starting() override;
+    MODULE_VIZ_SCENE3DQT_API void starting() override;
 
     /**
      * @brief Proposals to connect service slots to associated object signals.
@@ -156,19 +155,19 @@ protected:
      * Connect data::Image::s_DISTANCE_DISPLAYED_SIG to s_UPDATE_VISIBILITY_SLOT
      * Connect data::Image::s_MODIFIED_SIG to IService::slots::s_UPDATE
      */
-    MODULE_VIZ_SCENE3D_API KeyConnectionsMap getAutoConnections() const override;
+    MODULE_VIZ_SCENE3DQT_API KeyConnectionsMap getAutoConnections() const override;
 
     /// Updates materials and all distances.
-    MODULE_VIZ_SCENE3D_API void updating() override;
+    MODULE_VIZ_SCENE3DQT_API void updating() override;
 
     /// Removes the interactor from the layer and destroys Ogre resources.
-    MODULE_VIZ_SCENE3D_API void stopping() override;
+    MODULE_VIZ_SCENE3DQT_API void stopping() override;
 
     /**
      * @brief Sets distances visibility.
      * @param _visible the visibility status of distances.
      */
-    MODULE_VIZ_SCENE3D_API void setVisible(bool _visible) override;
+    MODULE_VIZ_SCENE3DQT_API void setVisible(bool _visible) override;
 
 private:
 
@@ -199,6 +198,15 @@ private:
 
     /// Map each distances to there related list ID.
     using DistanceMap = std::map<core::tools::fwID::IDType, DistanceData>;
+
+    class DeleteBinButtonWhenFocusOut : public QObject
+    {
+    public:
+
+        explicit DeleteBinButtonWhenFocusOut(SImageMultiDistances* sImageMultiDistances);
+        bool eventFilter(QObject* o, QEvent* e) override;
+        SImageMultiDistances* m_sImageMultiDistances;
+    };
 
     /**
      * @brief Generates a color from a distance ID.
@@ -235,6 +243,9 @@ private:
 
     /// Saves the created distances to image's field
     void updateImageDistanceField(data::PointList::sptr _pl);
+
+    /// SLOT: Remove all distances
+    void removeAll();
 
     /// Retrieves distances from the image and remove them from the scene.
     void removeDistances();
@@ -277,6 +288,8 @@ private:
     /// adaptors(Negato2d/Negato3d) by displaying the distances synchronously.
     void updateModifiedDistance(data::PointList::sptr _pl);
 
+    void setCursor(QCursor cursor);
+
     /// Defines the radius of distances spheres.
     float m_distanceSphereRadius {3.5F};
 
@@ -288,6 +301,9 @@ private:
 
     /// Defines whether to start using the distance creation tool or not.
     bool m_toolActivated {false};
+
+    /// Defines whether the distances are actually visible or not.
+    bool m_visible {true};
 
     /// Defines whether a distance is in creation or not.
     bool m_creationMode {false};
@@ -332,8 +348,14 @@ private:
     DistanceMap m_distances;
     std::vector<data::Point::sptr> m_points;
 
+    QPushButton* m_binButton = nullptr;
+
+    bool m_isAMouseMove = false;
+
+    std::unique_ptr<DeleteBinButtonWhenFocusOut> m_eventFilter = nullptr;
+
     static constexpr std::string_view s_IMAGE_INOUT = "image";
     sight::data::ptr<sight::data::Image, sight::data::Access::inout> m_image {this, s_IMAGE_INOUT, true};
 };
 
-} // namespace sight::module::viz::scene3d::adaptor.
+} // namespace sight::module::viz::scene3dQt::adaptor

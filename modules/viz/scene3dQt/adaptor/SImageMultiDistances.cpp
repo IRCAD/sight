@@ -22,7 +22,9 @@
 
 // cspell:ignore NOLINTNEXTLINE
 
-#include "modules/viz/scene3d/adaptor/SImageMultiDistances.hpp"
+#include "SImageMultiDistances.hpp"
+
+#include "core/runtime/path.hpp"
 
 #include <core/com/Slots.hxx>
 
@@ -40,13 +42,18 @@
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/Utils.hpp>
 
+#include <libs/viz/scene3d/helper/Scene.hpp>
+
+#include <modules/viz/scene3dQt/WindowInteractor.hpp>
+
 #include <OgreEntity.h>
 #include <OgreNode.h>
 #include <OgreSceneNode.h>
 
-namespace sight::module::viz::scene3d::adaptor
+namespace sight::module::viz::scene3dQt::adaptor
 {
 
+static const core::com::Slots::SlotKeyType s_REMOVE_ALL_SLOT                    = "removeAll";
 static const core::com::Slots::SlotKeyType s_REMOVE_DISTANCES_SLOT              = "removeDistances";
 static const core::com::Slots::SlotKeyType s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT = "updateVisibilityFromField";
 static const core::com::Slots::SlotKeyType s_ACTIVATE_DISTANCE_TOOL_SLOT        = "activateDistanceTool";
@@ -140,11 +147,7 @@ std::string SImageMultiDistances::getLength(const Ogre::Vector3& _begin, const O
 
 SImageMultiDistances::SImageMultiDistances() noexcept
 {
-    SIGHT_WARN(
-        "'sight::module::viz::scene3d::adaptor::SImageMultiDistances' is deprecated, please use"
-        " 'sight::module::viz::scene3dQt::adaptor::SImageMultiDistances' instead."
-    );
-
+    newSlot(s_REMOVE_ALL_SLOT, &SImageMultiDistances::removeAll, this);
     newSlot(s_REMOVE_DISTANCES_SLOT, &SImageMultiDistances::removeDistances, this);
     newSlot(s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT, &SImageMultiDistances::updateVisibilityFromField, this);
     newSlot(s_ACTIVATE_DISTANCE_TOOL_SLOT, &SImageMultiDistances::activateDistanceTool, this);
@@ -309,6 +312,32 @@ void SImageMultiDistances::stopping()
     {
         this->destroyDistance(m_distances.begin()->first);
     }
+
+    m_eventFilter = nullptr;
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::removeAll()
+{
+    if(m_binButton != nullptr)
+    {
+        m_binButton->hide();
+        delete m_binButton;
+        m_binButton = nullptr;
+    }
+
+    const auto image                    = m_image.lock();
+    data::Vector::sptr distanceList     = data::helper::MedicalImage::getDistances(*image);
+    data::Vector::sptr distanceListCopy = data::Vector::New();
+    distanceListCopy->shallowCopy(distanceList);
+    distanceList->clear();
+    for(const data::Object::sptr& element : *distanceListCopy)
+    {
+        auto pl = data::PointList::dynamicCast(element);
+        SIGHT_ASSERT("All elements in distance image field must be point lists.", pl);
+        image->signal<data::Image::DistanceRemovedSignalType>(data::Image::s_DISTANCE_REMOVED_SIG)->asyncEmit(pl);
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -393,6 +422,8 @@ void SImageMultiDistances::setVisible(bool _visible)
         data.m_label->setVisible(_visible);
     }
 
+    m_visible = _visible;
+
     this->requestRender();
 }
 
@@ -427,7 +458,16 @@ std::optional<Ogre::Vector3> SImageMultiDistances::getNearestPickedPosition(int 
 
 void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _x, int _y)
 {
-    if(_button == LEFT && m_toolActivated && !m_creationMode)
+    if(m_binButton != nullptr)
+    {
+        m_binButton->hide();
+        delete m_binButton;
+        m_binButton = nullptr;
+    }
+
+    m_isAMouseMove = false;
+
+    if(_button == LEFT && m_toolActivated && m_visible && !m_creationMode)
     {
         const sight::viz::scene3d::Layer::csptr layer = this->getLayer();
         Ogre::SceneManager* const sceneMgr            = layer->getSceneManager();
@@ -475,8 +515,7 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier /*_mod
                     //remember that this is a creation.
                     m_creationMode = true;
 
-                    sight::ui::base::Cursor cursor;
-                    cursor.setCursor(ui::base::ICursor::CLOSED_HAND, false);
+                    setCursor(Qt::ClosedHandCursor);
 
                     break;
                 }
@@ -493,8 +532,7 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier /*_mod
                             m_pickedData = {&distanceData, true};
                             found        = true;
 
-                            sight::ui::base::Cursor cursor;
-                            cursor.setCursor(ui::base::ICursor::CLOSED_HAND, false);
+                            setCursor(Qt::ClosedHandCursor);
                             break;
                         }
 
@@ -504,8 +542,7 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier /*_mod
                             m_pickedData = {&distanceData, false};
                             found        = true;
 
-                            sight::ui::base::Cursor cursor;
-                            cursor.setCursor(ui::base::ICursor::CLOSED_HAND, false);
+                            setCursor(Qt::ClosedHandCursor);
                             break;
                         }
                     }
@@ -513,10 +550,6 @@ void SImageMultiDistances::buttonPressEvent(MouseButton _button, Modifier /*_mod
             }
 
             delete raySceneQuery;
-            if(found)
-            {
-                this->getLayer()->cancelFurtherInteraction();
-            }
         }
     }
 }
@@ -532,7 +565,9 @@ void SImageMultiDistances::mouseMoveEvent(
     int /*_dy*/
 )
 {
-    if(m_toolActivated)
+    m_isAMouseMove = true;
+
+    if(m_toolActivated && m_visible)
     {
         this->getRenderService()->makeCurrent();
 
@@ -612,7 +647,6 @@ void SImageMultiDistances::mouseMoveEvent(
             }
 
             this->requestRender();
-            this->getLayer()->cancelFurtherInteraction();
 
             const auto image = m_image.lock();
             const auto sig   = image->signal<data::Image::DistanceModifiedSignalType>(
@@ -652,8 +686,7 @@ void SImageMultiDistances::mouseMoveEvent(
                             DistanceData& distanceData = distance.second;
                             if(distanceData.m_sphere1 == object || distanceData.m_sphere2 == object)
                             {
-                                sight::ui::base::Cursor cursor;
-                                cursor.setCursor(ui::base::ICursor::OPEN_HAND, false);
+                                setCursor(Qt::OpenHandCursor);
                                 m_isOverDistance = true;
                                 found            = true;
                                 break;
@@ -665,30 +698,10 @@ void SImageMultiDistances::mouseMoveEvent(
                 if(m_isOverDistance && !found)
                 {
                     m_isOverDistance = false;
-                    sight::ui::base::Cursor cursor;
-                    cursor.setCursor(ui::base::ICursor::CROSS, false);
+                    setCursor(Qt::CrossCursor);
                 }
             }
         }
-    }
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::leaveEvent()
-{
-    sight::ui::base::Cursor cursor;
-    cursor.setCursor(ui::base::ICursor::CROSS, false);
-}
-
-//------------------------------------------------------------------------------
-
-void SImageMultiDistances::enterEvent()
-{
-    if(m_pickedData.m_data != nullptr)
-    {
-        sight::ui::base::Cursor cursor;
-        cursor.setCursor(ui::base::ICursor::CLOSED_HAND, false);
     }
 }
 
@@ -720,8 +733,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, Modifier /*_m
         if(m_creationMode && length != 0)
         {
             m_creationMode = false;
-            sight::ui::base::Cursor cursor;
-            cursor.setCursor(ui::base::ICursor::OPEN_HAND, false);
+            setCursor(Qt::OpenHandCursor);
             m_pickedData = {nullptr, true};
             m_points.clear();
         }
@@ -741,15 +753,89 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, Modifier /*_m
                     );
                     sig->asyncEmit(pl);
                 }
-                sight::ui::base::Cursor cursor;
-                cursor.setCursor(ui::base::ICursor::CROSS, false);
+                setCursor(Qt::CrossCursor);
                 m_pickedData = {nullptr, true};
                 m_points.clear();
             }
             else
             {
-                sight::ui::base::Cursor cursor;
-                cursor.setCursor(ui::base::ICursor::OPEN_HAND, false);
+                if(!m_isAMouseMove)
+                {
+                    auto interactor    = getLayer()->getRenderService()->getInteractorManager();
+                    auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+                    auto* parentWidget = qtInteractor->getQtWidget();
+                    static const QIcon trashBinIcon(QString::fromStdString(
+                                                        (core::runtime::getModuleResourcePath(
+                                                             "sight::module::ui::flaticons"
+                                                         ) / "RedTrashBin.svg").string()
+                    ));
+                    m_binButton = new QPushButton(trashBinIcon, "", parentWidget);
+                    const std::string serviceID = getID().substr(getID().find_last_of('_') + 1);
+                    m_binButton->setObjectName(QString::fromStdString(serviceID) + "/binButton");
+                    m_binButton->setCursor(Qt::ArrowCursor);
+                    m_binButton->adjustSize();
+                    if(m_binButton->width() < 40)
+                    {
+                        m_binButton->setMinimumWidth(40);
+                    }
+
+                    if(m_binButton->height() < 40)
+                    {
+                        m_binButton->setMinimumHeight(40);
+                    }
+
+                    m_binButton->adjustSize();
+                    m_binButton->setIconSize(m_binButton->size());
+                    m_binButton->raise();
+                    Ogre::SceneNode* node =
+                        m_pickedData.m_first ? m_pickedData.m_data->m_node1 : m_pickedData.m_data->m_node2;
+                    std::pair<Ogre::Vector2,
+                              Ogre::Vector2> screenPos = sight::viz::scene3d::helper::Scene::computeBoundingRect(
+                        *getLayer()->getDefaultCamera(),
+                        node
+                              );
+                    double ratio = m_binButton->devicePixelRatioF();
+                    const int x  = std::clamp(
+                        int(((screenPos.first.x + screenPos.second.x) / 2) / ratio),
+                        0,
+                        parentWidget->width() - m_binButton->width()
+                    );
+                    int y = int((screenPos.first.y / ratio) - m_binButton->height());
+                    if(y < 0)
+                    {
+                        // If there isn't enough place upward the landmark, place the menu downward.
+                        y = int(screenPos.second.y / ratio);
+                    }
+
+                    m_binButton->move(x, y);
+                    m_binButton->show();
+                    QObject::connect(
+                        m_binButton,
+                        &QPushButton::clicked,
+                        [this, pl = m_pickedData.m_data->m_pointList]
+                        {
+                            m_binButton->hide();
+                            destroyDistance(pl->getID());
+                            {
+                                const auto image        = m_image.lock();
+                                const auto vectDistance = data::helper::MedicalImage::getDistances(*image);
+                                const auto newVec       = std::remove(vectDistance->begin(), vectDistance->end(), pl);
+                                vectDistance->erase(newVec, vectDistance->end());
+                                const auto sig = image->signal<data::Image::DistanceRemovedSignalType>(
+                                    data::Image::s_DISTANCE_REMOVED_SIG
+                                );
+                                sig->asyncEmit(pl);
+                            }
+                            setCursor(Qt::CrossCursor);
+                            m_pickedData = {nullptr, true};
+                            m_points.clear();
+
+                            delete m_binButton;
+                            m_binButton = nullptr;
+                        });
+                }
+
+                setCursor(Qt::OpenHandCursor);
                 m_pickedData = {nullptr, true};
                 m_points.clear();
             }
@@ -775,8 +861,7 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, Modifier /*_m
                 );
                 sig->asyncEmit(pl);
             }
-            sight::ui::base::Cursor cursor;
-            cursor.setCursor(ui::base::ICursor::CROSS, false);
+            setCursor(Qt::CrossCursor);
             m_pickedData = {nullptr, true};
             m_points.clear();
         }
@@ -793,12 +878,22 @@ void SImageMultiDistances::buttonReleaseEvent(MouseButton _button, Modifier /*_m
 
 void SImageMultiDistances::keyPressEvent(int key, Modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/)
 {
-    // code for escape
-    //Hardcoded, because scene3D has no access to Qt, and this code is stored in Qt::Key_Escape
-    if(m_toolActivated && key == 16777216)
+    if(m_toolActivated && key == Qt::Key_Escape)
     {
         activateDistanceTool(false);
         this->signal<signals::void_signal_t>(signals::s_DEACTIVATE_DISTANCE_TOOL)->asyncEmit();
+    }
+}
+
+//------------------------------------------------------------------------------
+
+void SImageMultiDistances::wheelEvent(Modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/)
+{
+    if(m_binButton != nullptr)
+    {
+        m_binButton->hide();
+        delete m_binButton;
+        m_binButton = nullptr;
     }
 }
 
@@ -996,6 +1091,7 @@ void SImageMultiDistances::destroyDistance(core::tools::fwID::IDType _id)
     Ogre::SceneManager* const sceneMgr = this->getSceneManager();
 
     distanceData.m_label->detachFromNode();
+    distanceData.m_label->setVisible(false);
     distanceData.m_label.reset();
     sceneMgr->destroySceneNode(distanceData.m_node1);
     sceneMgr->destroyManualObject(distanceData.m_sphere1);
@@ -1013,11 +1109,15 @@ void SImageMultiDistances::destroyDistance(core::tools::fwID::IDType _id)
 
 void SImageMultiDistances::activateDistanceTool(bool _activate)
 {
-    sight::ui::base::Cursor cursor;
     if(_activate)
     {
         m_toolActivated = true;
-        cursor.setCursor(ui::base::ICursor::CROSS);
+        setCursor(Qt::CrossCursor);
+        auto interactor    = getLayer()->getRenderService()->getInteractorManager();
+        auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+        auto* parentWidget = qtInteractor->getQtWidget();
+        m_eventFilter = std::make_unique<DeleteBinButtonWhenFocusOut>(this);
+        parentWidget->installEventFilter(m_eventFilter.get());
     }
     else
     {
@@ -1027,7 +1127,17 @@ void SImageMultiDistances::activateDistanceTool(bool _activate)
         m_pickedData     = {nullptr, true};
         m_points.clear();
 
-        cursor.setDefaultCursor();
+        auto interactor    = getLayer()->getRenderService()->getInteractorManager();
+        auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+        auto* parentWidget = qtInteractor->getQtWidget();
+        parentWidget->unsetCursor();
+
+        if(m_binButton != nullptr)
+        {
+            m_binButton->hide();
+            delete m_binButton;
+            m_binButton = nullptr;
+        }
     }
 }
 
@@ -1062,4 +1172,37 @@ void SImageMultiDistances::updateModifiedDistance(data::PointList::sptr _pl)
 
 //------------------------------------------------------------------------------
 
-} // namespace sight::module::viz::scene3d::adaptor.
+void SImageMultiDistances::setCursor(QCursor cursor)
+{
+    auto interactor    = getLayer()->getRenderService()->getInteractorManager();
+    auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+    auto* parentWidget = qtInteractor->getQtWidget();
+    parentWidget->setCursor(cursor);
+}
+
+SImageMultiDistances::DeleteBinButtonWhenFocusOut::DeleteBinButtonWhenFocusOut(
+    SImageMultiDistances* sImageMultiDistances
+) :
+    m_sImageMultiDistances(sImageMultiDistances)
+{
+}
+
+//------------------------------------------------------------------------------
+
+bool SImageMultiDistances::DeleteBinButtonWhenFocusOut::eventFilter(QObject* /*o*/, QEvent* e)
+{
+    if(m_sImageMultiDistances->m_binButton != nullptr && !m_sImageMultiDistances->m_binButton->hasFocus()
+       && (e->type() == QEvent::FocusOut || e->type() == QEvent::Resize))
+    {
+        m_sImageMultiDistances->m_binButton->hide();
+        delete m_sImageMultiDistances->m_binButton;
+        m_sImageMultiDistances->m_binButton = nullptr;
+        return true;
+    }
+
+    return false;
+}
+
+//------------------------------------------------------------------------------
+
+} // namespace sight::module::viz::scene3dQt::adaptor

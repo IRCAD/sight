@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,6 +43,26 @@ public:
     VIZ_SCENE3D_API static Ogre::SceneNode* getNodeById(
         viz::scene3d::SRender::OgreObjectIdType _nodeId,
         Ogre::SceneNode* _sceneNode
+    );
+
+    /**
+     * Computes the bounding box of the descendants of the provided node.
+     * @param rootSceneNode The node whose bounding box is to be computed
+     * @return The bounding box of the node
+     */
+    VIZ_SCENE3D_API static Ogre::AxisAlignedBox computeBoundingBox(const Ogre::SceneNode* rootSceneNode);
+
+    /**
+     * Computes the projection of the bounding box of the descendants of the provided node in screen space using the
+     * provided camera.
+     * @param camera The camera used for the projection
+     * @param rootSceneNode The node whose bounding box is to be computed
+     * @return The projection of the bounding box in screen space as a pair, with the first element being the minimum
+     * (top left) and the second element the maximum (bottom right).
+     */
+    VIZ_SCENE3D_API static std::pair<Ogre::Vector2, Ogre::Vector2> computeBoundingRect(
+        const Ogre::Camera& camera,
+        const Ogre::SceneNode* rootSceneNode
     );
 };
 
