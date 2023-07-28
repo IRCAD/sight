@@ -1858,6 +1858,11 @@ Series::DicomType Series::getDicomType() const noexcept
         return DicomType::MODEL;
     }
 
+    if(dynamic_cast<const FiducialsSeries*>(this) != nullptr)
+    {
+        return DicomType::FIDUCIALS;
+    }
+
     // Then try with the SOPClassUID
     if(const auto& sop_class_uid = getSOPClassUID(); !sop_class_uid.empty())
     {
@@ -1964,6 +1969,9 @@ Series::DicomType Series::getDicomType(const std::string& sop_class_uid) noexcep
         case dicom::sop::Keyword::RTDoseStorage:
             return DicomType::IMAGE;
 
+        case dicom::sop::Keyword::SpatialFiducialsStorage:
+            return DicomType::FIDUCIALS;
+
         default:
             return DicomType::UNKNOWN;
     }
@@ -2003,6 +2011,16 @@ std::string Series::dicomTypesToString(Series::DicomTypes types) noexcept
         }
 
         dicom_types += dicomTypeToString(DicomType::REPORT);
+    }
+
+    if((types & static_cast<DicomTypes>(DicomType::FIDUCIALS)) == types)
+    {
+        if(!dicom_types.empty())
+        {
+            dicom_types += ", ";
+        }
+
+        dicom_types += dicomTypeToString(DicomType::FIDUCIALS);
     }
 
     return dicom_types;

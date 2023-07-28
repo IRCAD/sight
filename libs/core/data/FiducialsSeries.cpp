@@ -21,6 +21,8 @@
 
 #include "FiducialsSeries.hpp"
 
+#include "data/dicom/Sop.hpp"
+
 #include "detail/SeriesImpl.hxx"
 
 #include <gdcmSequenceOfItems.h>
@@ -241,9 +243,83 @@ bool FiducialsSeries::Point3::operator==(Point3 other) const
     return x == other.x && y == other.y && z == other.z;
 }
 
+//------------------------------------------------------------------------------
+
+bool FiducialsSeries::ReferencedImage::operator==(const ReferencedImage& other) const
+{
+    return referencedSOPClassUID == other.referencedSOPClassUID
+           && referencedSOPInstanceUID == other.referencedSOPInstanceUID
+           && referencedFrameNumber == other.referencedFrameNumber
+           && referencedSegmentNumber == other.referencedSegmentNumber;
+}
+
+//------------------------------------------------------------------------------
+
+bool FiducialsSeries::ReferencedImage::operator!=(const ReferencedImage& other) const
+{
+    return !(*this == other);
+}
+
+//------------------------------------------------------------------------------
+
+bool FiducialsSeries::GraphicCoordinatesData::operator==(const GraphicCoordinatesData& other) const
+{
+    return referencedImageSequence == other.referencedImageSequence && graphicData == other.graphicData;
+}
+
+//------------------------------------------------------------------------------
+
+bool FiducialsSeries::GraphicCoordinatesData::operator!=(const GraphicCoordinatesData& other) const
+{
+    return !(*this == other);
+}
+
+//------------------------------------------------------------------------------
+
+bool FiducialsSeries::Fiducial::operator==(const Fiducial& other) const
+{
+    return shapeType == other.shapeType && fiducialDescription == other.fiducialDescription
+           && fiducialIdentifier == other.fiducialIdentifier
+           && graphicCoordinatesDataSequence == other.graphicCoordinatesDataSequence && fiducialUID == other.fiducialUID
+           && contourData == other.contourData;
+}
+
+//------------------------------------------------------------------------------
+
+bool FiducialsSeries::Fiducial::operator!=(const Fiducial& other) const
+{
+    return !(*this == other);
+}
+
+//------------------------------------------------------------------------------
+
+bool FiducialsSeries::FiducialSet::operator==(const FiducialSet& other) const
+{
+    return referencedImageSequence == other.referencedImageSequence && frameOfReferenceUID == other.frameOfReferenceUID
+           && fiducialSequence == other.fiducialSequence && groupName == other.groupName;
+}
+
 FiducialsSeries::FiducialsSeries(Key key) :
     Series(key)
 {
+    setSOPKeyword(dicom::sop::Keyword::SpatialFiducialsStorage);
+}
+
+//------------------------------------------------------------------------------
+
+bool FiducialsSeries::operator==(const FiducialsSeries& other) const
+{
+    return getContentDate() == other.getContentDate() && getContentLabel() == other.getContentLabel()
+           && getContentDescription() == other.getContentDescription()
+           && getContentCreatorName() == other.getContentCreatorName() && getFiducialSets() == other.getFiducialSets()
+           && BaseClass::operator==(other);
+}
+
+//------------------------------------------------------------------------------
+
+bool FiducialsSeries::operator!=(const FiducialsSeries& other) const
+{
+    return !(*this == other);
 }
 
 //------------------------------------------------------------------------------

@@ -23,6 +23,8 @@
 
 #include "core/macros.hpp"
 
+#include "data/config.hpp"
+
 #include "Series.hpp"
 
 namespace gdcm
@@ -106,6 +108,9 @@ public:
         std::string referencedSOPInstanceUID;               /// ReferencedSOPInstanceUID (0008,1155)
         std::vector<std::int32_t> referencedFrameNumber;    /// ReferencedFrameNumber (0008,1160)
         std::vector<std::uint16_t> referencedSegmentNumber; /// ReferencedSegmentNumber (0062,000B)
+
+        DATA_API bool operator==(const ReferencedImage& other) const;
+        DATA_API bool operator!=(const ReferencedImage& other) const;
     };
 
     /// Struct which represents an element in the GraphicCoordinatesDataSequence (0070,0318) data element.
@@ -113,6 +118,9 @@ public:
     {
         ReferencedImage referencedImageSequence; /// ReferencedImageSequence (0008,1140)
         std::vector<Point2> graphicData;         /// GraphicData (0070,0022)
+
+        DATA_API bool operator==(const GraphicCoordinatesData& other) const;
+        DATA_API bool operator!=(const GraphicCoordinatesData& other) const;
     };
 
     /// Struct which represents an element in the FiducialSequence (0070,031E) data element.
@@ -130,6 +138,9 @@ public:
                                                                                             /// (NumberOfContourPoints
                                                                                             /// (3006,0046) included
                                                                                             /// inside)
+
+        DATA_API bool operator==(const Fiducial& other) const;
+        DATA_API bool operator!=(const Fiducial& other) const;
     };
 
     /// Struct which represents an element in the FiducialSetSequence (0070,031C) data element.
@@ -139,12 +150,18 @@ public:
         std::optional<std::string> frameOfReferenceUID;                       /// FrameOfReference (0020,0052)
         std::vector<Fiducial> fiducialSequence;                               /// FiducialSequence (0070,031E)
         std::optional<std::string> groupName;                                 /// Private tag
+
+        DATA_API bool operator==(const FiducialSet& other) const;
+        DATA_API bool operator!=(const FiducialSet& other) const;
     };
 
     SIGHT_DECLARE_CLASS(FiducialsSeries, Series, factory::New<FiducialsSeries>);
 
     DATA_API explicit FiducialsSeries(Key key);
     DATA_API ~FiducialsSeries() noexcept override = default;
+
+    DATA_API bool operator==(const FiducialsSeries& other) const;
+    DATA_API bool operator!=(const FiducialsSeries& other) const;
 
     /**
      * Getter/Setter for the ContentDate (0008,0023) data element.

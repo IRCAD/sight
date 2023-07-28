@@ -21,6 +21,8 @@
 
 #include "Reader.hpp"
 
+#include "core/jobs/Job.hpp"
+
 #include <core/macros.hpp>
 #include <core/tools/compare.hpp>
 
@@ -51,6 +53,17 @@ namespace sight::io::dicom
 // We consider that 1e-3 is a good enough precision for our purpose.
 // All frames that have a z position closer than 1e-3 will be considered as the same.
 static constexpr double Z_EPSILON = 1e-3;
+
+struct FiducialSetWithMetadata
+{
+    data::FiducialsSeries::FiducialSet fiducialSet;
+    std::string contentDate;
+    std::string contentTime;
+    std::optional<std::int32_t> instanceNumber;
+    std::string contentLabel;
+    std::string contentDescription;
+    std::string contentCreatorName;
+};
 
 //------------------------------------------------------------------------------
 
@@ -189,12 +202,6 @@ inline static data::SeriesSet::sptr scanGDCMFiles(
 
                     return identifier;
                 }();
-
-            // If we cannot build an unique series identifier, we skip this file, it is certainly bogus.
-            if(unique_series_identifier.empty())
-            {
-                continue;
-            }
 
             // Retrieve the associated series and associated DICOM files
             auto& series               = unique_series[unique_series_identifier];
@@ -1043,6 +1050,34 @@ inline static data::SeriesSet::sptr readModel(const data::Series& /*unused*/, co
     return splitted_series;
 }
 
+//------------------------------------------------------------------------------
+
+inline static std::vector<FiducialSetWithMetadata> readFiducialSets(const data::Series& series)
+{
+    gdcm::Reader reader;
+    reader.SetFileName(series.getFile().string().c_str());
+    reader.Read();
+    auto fiducialsSeries = data::FiducialsSeries::New();
+    fiducialsSeries->setDataSet(reader.GetFile().GetDataSet());
+    std::vector<FiducialSetWithMetadata> res;
+    std::ranges::transform(
+        fiducialsSeries->getFiducialSets(),
+        std::back_inserter(res),
+        [fiducialsSeries](data::FiducialsSeries::FiducialSet fs) -> FiducialSetWithMetadata
+        {
+            return {
+                .fiducialSet        = fs,
+                .contentDate        = fiducialsSeries->getContentDate(),
+                .contentTime        = fiducialsSeries->getContentTime(),
+                .instanceNumber     = fiducialsSeries->getInstanceNumber(),
+                .contentLabel       = fiducialsSeries->getContentLabel(),
+                .contentDescription = fiducialsSeries->getContentDescription(),
+                .contentCreatorName = fiducialsSeries->getContentCreatorName()
+            };
+        });
+    return res;
+}
+
 /// Private SReader implementation
 class Reader::ReaderImpl
 {
@@ -1361,6 +1396,8 @@ public:
             m_reader->setObject(m_read);
         }
 
+        std::vector<FiducialSetWithMetadata> fiducialSets;
+
         // Start reading selected series
         for(const auto& source : *m_sorted)
         {
@@ -1384,6 +1421,10 @@ public:
                 // Read a model series
                 splitted_series = readModel(*source, m_job);
             }
+            else if(source->getDicomType() == data::Series::DicomType::FIDUCIALS)
+            {
+                std::ranges::copy(readFiducialSets(*source), std::back_inserter(fiducialSets));
+            }
             else
             {
                 SIGHT_THROW("Unsupported DICOM IOD '" << data::dicom::sop::get(source->getSOPKeyword()).m_name << "'.");
@@ -1397,6 +1438,68 @@ public:
                     splitted_series->cend(),
                     std::back_inserter(*m_read)
                 );
+            }
+        }
+
+        // Associate the fiducials to their images/models
+        for(const FiducialSetWithMetadata& fiducialSet : fiducialSets)
+        {
+            for(const data::Series::sptr& series : *m_read)
+            {
+                auto imageSeries = std::dynamic_pointer_cast<data::ImageSeries>(series);
+                auto modelSeries = std::dynamic_pointer_cast<data::ModelSeries>(series);
+                if(imageSeries == nullptr && modelSeries == nullptr)
+                {
+                    break;
+                }
+
+                bool fiducialSetIsRelevant = fiducialSet.fiducialSet.frameOfReferenceUID && series->getStringValue(
+                    data::dicom::attribute::Keyword::FrameOfReferenceUID
+                )
+                                             == fiducialSet.fiducialSet.frameOfReferenceUID;
+                if(!fiducialSetIsRelevant && fiducialSet.fiducialSet.referencedImageSequence)
+                {
+                    for(const data::FiducialsSeries::ReferencedImage& referencedImage :
+                        *fiducialSet.fiducialSet.referencedImageSequence)
+                    {
+                        // TODO: Take ReferencedSegmentNumber into account for Segmentation IOD
+                        if(referencedImage.referencedSOPClassUID == data::dicom::sop::get(series->getSOPKeyword()).m_uid
+                           && referencedImage.referencedSOPInstanceUID == series->getSOPInstanceUID())
+                        {
+                            fiducialSetIsRelevant = true;
+                            break;
+                        }
+                    }
+                }
+
+                if(fiducialSetIsRelevant)
+                {
+                    data::FiducialsSeries::sptr fiducialsSeries;
+                    bool seriesHaveFiducials = false;
+                    if(imageSeries != nullptr)
+                    {
+                        fiducialsSeries     = imageSeries->getFiducials();
+                        seriesHaveFiducials = imageSeries->hasFiducials();
+                    }
+                    else if(modelSeries != nullptr)
+                    {
+                        fiducialsSeries     = modelSeries->getFiducials();
+                        seriesHaveFiducials = modelSeries->hasFiducials();
+                    }
+
+                    if(!seriesHaveFiducials)
+                    {
+                        // It is the first fiducial set to be appended to this fiducials series; set fiducials metadata
+                        fiducialsSeries->setContentDate(fiducialSet.contentDate);
+                        fiducialsSeries->setContentTime(fiducialSet.contentTime);
+                        fiducialsSeries->setInstanceNumber(fiducialSet.instanceNumber);
+                        fiducialsSeries->setContentLabel(fiducialSet.contentLabel);
+                        fiducialsSeries->setContentDescription(fiducialSet.contentDescription);
+                        fiducialsSeries->setContentCreatorName(fiducialSet.contentCreatorName);
+                    }
+
+                    fiducialsSeries->appendFiducialSet(fiducialSet.fiducialSet);
+                }
             }
         }
 

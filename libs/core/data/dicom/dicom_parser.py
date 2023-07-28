@@ -572,7 +572,7 @@ def fetch_attributes(table_id: str) -> list[AttributeElement]:
                 # We ignore Functional Groups for now since we need to replace them by the IOD specific ones
                 continue
             else:
-                raise Exception(f"Unable to find xref or tag in table {table_id}")
+                print(f"Unable to find xref or tag in table {table_id}")
 
     return attribute_elements
 

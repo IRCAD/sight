@@ -23,8 +23,11 @@
 
 #include "codec/NvJpeg2K.hpp"
 
+#include "data/ModelSeries.hpp"
+
 #include <core/macros.hpp>
 
+#include <data/FiducialsSeries.hpp>
 #include <data/ImageSeries.hpp>
 
 #include <io/bitmap/Writer.hpp>
@@ -32,6 +35,7 @@
 #include <gdcmImageChangeTransferSyntax.h>
 #include <gdcmImageWriter.h>
 
+#include <filesystem>
 #include <iomanip>
 #include <sstream>
 
@@ -279,6 +283,21 @@ inline static void writeEnhancedUSVolume(
     writer.Write();
 }
 
+//------------------------------------------------------------------------------
+
+static void writeSpatialFiducials(const data::FiducialsSeries& fiducialsSeries, const std::filesystem::path& imagePath)
+{
+    gdcm::Writer writer;
+    std::filesystem::path folder = imagePath.parent_path();
+    std::string filename         = imagePath.stem().string() + "_fiducials.dcm";
+
+    writer.SetFileName((folder / filename).string().c_str());
+    writer.GetFile().SetDataSet(fiducialsSeries.getDataSet());
+    // Dummy value else GDCM complains. TransferSyntax shouldn't be required since Fiducials aren't an image.
+    writer.GetFile().GetHeader().SetDataSetTransferSyntax(gdcm::TransferSyntax::JPEG2000Lossless);
+    writer.Write();
+}
+
 /// Private Writer implementation
 class Writer::WriterImpl
 {
@@ -428,6 +447,21 @@ void Writer::write()
             catch(const std::exception&)
             {
                 SIGHT_THROW("SOP Class ID '" << int(sop_keyword) << "' is unknown.");
+            }
+        }
+
+        if(const auto& imageSeries = data::ImageSeries::dynamicCast(series))
+        {
+            if(imageSeries->hasFiducials())
+            {
+                writeSpatialFiducials(*imageSeries->getFiducials(), filepath);
+            }
+        }
+        else if(const auto& modelSeries = data::ModelSeries::dynamicCast(series))
+        {
+            if(modelSeries->hasFiducials())
+            {
+                writeSpatialFiducials(*modelSeries->getFiducials(), filepath);
             }
         }
 
