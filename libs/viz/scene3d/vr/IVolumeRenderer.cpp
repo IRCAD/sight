@@ -54,6 +54,7 @@ IVolumeRenderer::IVolumeRenderer(
     sight::data::Image::csptr image,
     sight::data::Image::csptr mask,
     sight::data::TransferFunction::csptr tf,
+    std::uint16_t samples,
     bool with_buffer,
     bool preintegration
 ) :
@@ -66,6 +67,7 @@ IVolumeRenderer::IVolumeRenderer(
     m_preintegration(preintegration),
     m_volumeSceneNode(volumeNode),
     m_camera(m_sceneManager->getCamera(viz::scene3d::Layer::s_DEFAULT_CAMERA_NAME)),
+    m_nbSlices(samples),
     m_clippedImagePositions(s_imagePositions)
 {
     //Transfer function and preintegration table

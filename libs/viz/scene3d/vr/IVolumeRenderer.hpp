@@ -133,6 +133,7 @@ public:
         sight::data::Image::csptr image,
         sight::data::Image::csptr mask,
         sight::data::TransferFunction::csptr tf,
+        std::uint16_t samples,
         bool with_buffer    = false,
         bool preintegration = false
     );

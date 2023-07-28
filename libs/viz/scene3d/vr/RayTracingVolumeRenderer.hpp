@@ -131,6 +131,7 @@ public:
         sight::data::Image::csptr image,
         sight::data::Image::csptr mask,
         sight::data::TransferFunction::csptr tf,
+        std::uint16_t samples,
         bool buffer                                                   = false,
         bool preintegration                                           = false,
         std::optional<shadows_parameters_t> shadows                   = {},

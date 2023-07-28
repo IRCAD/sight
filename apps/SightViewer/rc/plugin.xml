@@ -529,7 +529,7 @@
             <!-- Parameters for the volume rendering -->
             <service uid="volumeParameterSrv" type="sight::module::ui::qt::SParameters" >
                 <parameters>
-                    <param type="int" name="Samples" key="sampling" defaultValue="1024" min="128" max="8192" reset="false" />
+                    <param type="int" name="Samples" key="sampling" defaultValue="1200" min="128" max="8192" reset="false" />
                     <param type="int" name="Opacity correction" key="opacityCorrection" defaultValue="200" min="0" max="200" reset="false" />
                     <param type="bool" name="Pre-integration" key="preIntegration" defaultValue="false" reset="false" />
                     <param type="bool" name="Soft shadows" key = "shadows" defaultValue="false" reset="false"/>
