@@ -31,6 +31,7 @@
 #include <data/ModelSeries.hpp>
 #include <data/Series.hpp>
 
+#include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/trim.hpp>
 #include <boost/math/special_functions/round.hpp>
 
@@ -110,11 +111,336 @@ inline static std::string formatDate(const std::string& date)
     return date;
 }
 
+enum class When
+{
+    STUDY,
+    SERIES
+};
+
+struct ColumnDisplayInformation
+{
+    std::string header;
+    std::function<QStandardItem* (data::Series::csptr, When)> getInfo;
+};
+
+/* *INDENT-OFF* */
+static const std::map<std::string, ColumnDisplayInformation> columnMap {
+    {"PatientName", {.header = "Name", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            if(when == When::SERIES)
+            {
+                return new QStandardItem;
+            }
+
+            QTextCodec* codec = QTextCodec::codecForName(series->getEncoding().c_str());
+            if(codec == nullptr)
+            {
+                codec = QTextCodec::codecForName("UTF-8");
+            }
+
+            QString res = codec->toUnicode(series->getPatientName().c_str());
+            QString upperPatientName = res.toUpper();
+            if(upperPatientName.isEmpty() || upperPatientName.contains("ANONYMIZED") || upperPatientName == "UNKNOWN"
+                || upperPatientName.contains("ANONYMOUS") || upperPatientName == "NONE" || upperPatientName == "NA")
+            {
+                // Automatically switch to Patient ID if the Patient Name is anonymized
+                res = QString::fromStdString(series->getPatientID());
+            }
+
+            return new QStandardItem(res);
+        }
+     }
+    },
+    {"SeriesInstanceUID", {.header = "Name", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            if(when == When::STUDY)
+            {
+                return new QStandardItem;
+            }
+
+            if(std::string seriesInstanceUID = series->getSeriesInstanceUID();
+                !seriesInstanceUID.empty())
+            {
+                return new QStandardItem(QString::fromStdString(seriesInstanceUID));
+            }
+
+            return new QStandardItem(QString::fromStdString(series->getID()));
+        }
+     }
+    },
+    {"PatientName/SeriesInstanceUID", {.header = "Name", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            if(when == When::STUDY)
+            {
+                QTextCodec* codec = QTextCodec::codecForName(series->getEncoding().c_str());
+                if(codec == nullptr)
+                {
+                    codec = QTextCodec::codecForName("UTF-8");
+                }
+
+                QString res = codec->toUnicode(series->getPatientName().c_str());
+                QString upperPatientName = res.toUpper();
+                if(upperPatientName.isEmpty() || upperPatientName.contains("ANONYMIZED") || upperPatientName == "UNKNOWN"
+                    || upperPatientName.contains("ANONYMOUS") || upperPatientName == "NONE" || upperPatientName == "NA")
+                {
+                    // Automatically switch to Patient ID if the Patient Name is anonymized
+                    res = QString::fromStdString(series->getPatientID());
+                }
+
+                return new QStandardItem(res);
+            }
+
+            if(std::string seriesInstanceUID = series->getSeriesInstanceUID(); !seriesInstanceUID.empty())
+            {
+                return new QStandardItem(QString::fromStdString(seriesInstanceUID));
+            }
+
+            return new QStandardItem(QString::fromStdString(series->getID()));
+        }
+     }
+    },
+    {"PatientSex", {.header = "Sex", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(QString::fromStdString(when == When::STUDY ? series->getPatientSex() : ""));
+        }
+     }
+    },
+    {"PatientBirthDate", {.header = "Birthdate", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(
+                QString::fromStdString(when == When::STUDY ? formatDate(series->getPatientBirthDate()) : ""));
+        }
+     }
+    },
+    {"Icon", {.header = "Icon", .getInfo =
+        [](data::Series::csptr /*series*/, When when)
+        {
+            if(when == When::STUDY)
+            {
+                return new QStandardItem;
+            }
+
+            auto* item = new QStandardItem;
+            item->setData(true, SelectorModel::Role::ICON);
+            return item;
+        }
+     }
+    },
+    {"PatientBirthDate/Icon", {.header = "Birthdate", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            if(when == When::STUDY)
+            {
+                return new QStandardItem(QString::fromStdString(formatDate(series->getPatientBirthDate())));
+            }
+
+            auto* item = new QStandardItem;
+            item->setData(true, SelectorModel::Role::ICON);
+            return item;
+        }
+     }
+    },
+    {"Modality", {.header = "Modality", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(QString::fromStdString(when == When::SERIES ? series->getModality() : ""));
+        }
+     }
+    },
+    {"StudyDescription", {.header = "Description", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(QString::fromStdString(when == When::STUDY ? series->getStudyDescription() : ""));
+        }
+     }
+    },
+    {"SeriesDescription", {.header = "Description", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            if(when == When::STUDY)
+            {
+                return new QStandardItem;
+            }
+
+            std::string infos(series->getSOPClassName());
+            const auto& rows    = series->getRows();
+            const auto& columns = series->getColumns();
+            const auto& frames  = series->numFrames();
+            if(rows && columns)
+            {
+                infos += " ( " + std::to_string(*rows)
+                        + "x" + std::to_string(*columns)
+                        + "x" + std::to_string(frames) + " )";
+            }
+
+            const std::string& description = series->getSeriesDescription();
+
+            if(!description.empty())
+            {
+                infos += ": " + description;
+            }
+
+            return new QStandardItem(QString::fromStdString(infos));
+        }
+     }
+    },
+    {"StudyDescription/SeriesDescription", {.header = "Description", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            if(when == When::STUDY)
+            {
+                return new QStandardItem(QString::fromStdString(series->getDescription()));
+            }
+
+            std::string infos(series->getSOPClassName());
+            const auto& rows = series->getRows();
+            const auto& columns = series->getColumns();
+            const auto& frames = series->numFrames();
+            if(rows && columns)
+            {
+                infos += " ( " + std::to_string(*rows)
+                        + "x" + std::to_string(*columns)
+                        + "x" + std::to_string(frames) + " )";
+            }
+
+            const std::string& description = series->getSeriesDescription();
+
+            if(!description.empty())
+            {
+                infos += ": " + description;
+            }
+
+            return new QStandardItem(QString::fromStdString(infos));
+        }
+     }
+    },
+    {"StudyDate", {.header = "Date", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(
+                QString::fromStdString(when == When::STUDY ? formatDate(series->getStudyDate()) : ""));
+        }
+     }
+    },
+    {"SeriesDate", {.header = "Date", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(
+                QString::fromStdString(when == When::SERIES ? formatDate(series->getSeriesDate()) : ""));
+        }
+     }
+    },
+    {"StudyDate/SeriesDate", {.header = "Date", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(QString::fromStdString(
+                formatDate(when == When::STUDY ? series->getStudyDate() : series->getSeriesDate())));
+        }
+     }
+    },
+    {"StudyTime", {.header = "Time", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(
+                QString::fromStdString(when == When::STUDY ? formatTime(series->getStudyTime()) : ""));
+        }
+     }
+    },
+    {"SeriesTime", {.header = "Time", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(
+                QString::fromStdString(when == When::SERIES ? formatTime(series->getSeriesTime()) : ""));
+        }
+     }
+    },
+    {"StudyTime/SeriesTime", {.header = "Time", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(QString::fromStdString(
+                formatTime(when == When::STUDY ? series->getStudyTime() : series->getSeriesTime())));
+        }
+     }
+    },
+    {"PatientAge", {.header = "Patient age", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(QString::fromStdString(when == When::STUDY ? series->getPatientAge() : ""));
+        }
+     }
+    },
+    {"BodyPartExamined", {.header = "Body part examined", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(QString::fromStdString(
+                when == When::SERIES && series->getDicomType() == data::Series::DicomType::IMAGE
+                    ? series->getBodyPartExamined()
+                    : ""));
+        }
+     }
+    },
+    {"PatientPositionString", {.header = "Patient position", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(QString::fromStdString(
+                when == When::SERIES && series->getDicomType() == data::Series::DicomType::IMAGE
+                    ? series->getPatientPositionString()
+                    : ""));
+        }
+     }
+    },
+    {"ContrastBolusAgent", {.header = "Contrast agent", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(QString::fromStdString(
+                when == When::SERIES && series->getDicomType() == data::Series::DicomType::IMAGE
+                    ? series->getContrastBolusAgent()
+                    : ""));
+        }
+     }
+    },
+    {"AcquisitionTime", {.header = "Acquisition time", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(QString::fromStdString(
+                when == When::SERIES && series->getDicomType() == data::Series::DicomType::IMAGE
+                    ? formatTime(series->getAcquisitionTime())
+                    : ""));
+        }
+     }
+    },
+    {"ContrastBolusStartTime", {.header = "Contrast/bolus time", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(QString::fromStdString(
+                when == When::SERIES && series->getDicomType() == data::Series::DicomType::IMAGE
+                    ? formatTime(series->getContrastBolusStartTime())
+                    : ""));
+        }
+     }
+    },
+    {"PatientID", {.header = "Patient ID", .getInfo =
+        [](data::Series::csptr series, When when)
+        {
+            return new QStandardItem(QString::fromStdString(when == When::STUDY ? series->getPatientID() : ""));
+        }
+     }
+    }
+};
+/* *INDENT-ON* */
+
 //-----------------------------------------------------------------------------
 
-SelectorModel::SelectorModel(QWidget* _parent) :
-    QStandardItemModel(_parent)
+SelectorModel::SelectorModel(const std::string& displayColumns, QWidget* _parent, bool allowRemove) :
+    QStandardItemModel(_parent),
+    m_removeAllowed(allowRemove)
 {
+    boost::split(m_displayColumns, displayColumns, boost::is_any_of(","));
     this->init();
 }
 
@@ -126,13 +452,11 @@ void SelectorModel::init()
     m_items.clear();
 
     QStringList headers;
-    headers << "Name" << "Sex" << "Birthdate"
-    << "Modality"
-    << "Description"
-    << "Date" << "Time"
-    << "Patient age"
-    << "Body part examined" << "Patient position" << "Contrast agent"
-    << "Acquisition time" << "Contrast/bolus time";
+    for(const std::string& displayColumn : m_displayColumns)
+    {
+        SIGHT_ASSERT("Display column '" << displayColumn << "' unknown.", columnMap.contains(displayColumn));
+        headers << QString::fromStdString(columnMap.at(displayColumn).header);
+    }
 
     if(m_removeAllowed)
     {
@@ -181,68 +505,32 @@ void SelectorModel::addSeries(data::Series::sptr _series)
     auto itr                     = m_items.find(studyInstanceUID);
     QStandardItem* studyRootItem = nullptr;
 
-    // Get the text codec for the current series.
-    QTextCodec* codec = QTextCodec::codecForName(_series->getEncoding().c_str());
-
-    // Fallback
-    if(codec == nullptr)
-    {
-        codec = QTextCodec::codecForName("UTF-8");
-    }
-
     if(itr != m_items.end())
     {
         studyRootItem = itr->second;
     }
     else
     {
-        auto* patientName = new QStandardItem(codec->toUnicode(_series->getPatientName().c_str()));
+        std::size_t i = 0;
+        for(const std::string& displayColumn : m_displayColumns)
+        {
+            setItem(m_studyRowCount, static_cast<int>(i), columnMap.at(displayColumn).getInfo(_series, When::STUDY));
+            i++;
+        }
 
-        patientName->setData(QVariant((int) ItemType::STUDY), Role::ITEM_TYPE);
-        patientName->setData(QVariant(QString::fromStdString(studyInstanceUID)), Role::UID);
-
-        auto* patientSex = new QStandardItem(QString::fromStdString(_series->getPatientSex()));
-
-        const std::string& birthDate = formatDate(_series->getPatientBirthDate());
-
-        auto* patientBirthdate = new QStandardItem(QString::fromStdString(birthDate));
-
-        auto* studyDescription = new QStandardItem(codec->toUnicode(_series->getStudyDescription().c_str()));
-
-        const std::string& studyDate = formatDate(_series->getStudyDate());
-
-        auto* studyDateItem = new QStandardItem(QString::fromStdString(studyDate));
-
-        const std::string& studyTime = formatTime(_series->getStudyTime());
-
-        auto* studyTimeItem = new QStandardItem(QString::fromStdString(studyTime));
-
-        auto* studyPatientAge = new QStandardItem(QString::fromStdString(_series->getPatientAge()));
-
-        this->setItem(m_studyRowCount, int(ColumnSeriesType::NAME), patientName);
-        this->setItem(m_studyRowCount, int(ColumnSeriesType::SEX), patientSex);
-        this->setItem(m_studyRowCount, int(ColumnSeriesType::BIRTHDATE), patientBirthdate);
-        this->setItem(m_studyRowCount, int(ColumnSeriesType::MODALITY), new QStandardItem());
-        this->setItem(m_studyRowCount, int(ColumnSeriesType::DESCRIPTION), studyDescription);
-        this->setItem(m_studyRowCount, int(ColumnSeriesType::DATE), studyDateItem);
-        this->setItem(m_studyRowCount, int(ColumnSeriesType::TIME), studyTimeItem);
-        this->setItem(m_studyRowCount, int(ColumnSeriesType::PATIENT_AGE), studyPatientAge);
-        this->setItem(m_studyRowCount, int(ColumnSeriesType::BODY_PART_EXAMINED), new QStandardItem());
-        this->setItem(m_studyRowCount, int(ColumnSeriesType::PATIENT_POSITION), new QStandardItem());
-        this->setItem(m_studyRowCount, int(ColumnSeriesType::CONTRAST_AGENT), new QStandardItem());
-        this->setItem(m_studyRowCount, int(ColumnSeriesType::ACQUISITION_TIME), new QStandardItem());
-        this->setItem(m_studyRowCount, int(ColumnSeriesType::CONTRAST_BOLUS_START_TIME), new QStandardItem());
+        item(m_studyRowCount)->setData(ItemType::STUDY, Role::ITEM_TYPE);
+        item(m_studyRowCount)->setData(QString::fromStdString(studyInstanceUID), Role::UID);
 
         // Add a remove button to each studies.
         if(m_removeAllowed && !m_removeStudyIcon.empty())
         {
-            this->setItem(m_studyRowCount, int(ColumnSeriesType::REMOVE), new QStandardItem());
+            this->setItem(m_studyRowCount, static_cast<int>(i), new QStandardItem());
 
             auto* const selector = static_cast<QTreeView*>(this->parent());
             SIGHT_ASSERT("The QTreeView parent must be given to the constructor", selector);
 
             auto* const removeButton = new QPushButton(QIcon(m_removeStudyIcon.string().c_str()), "");
-            selector->setIndexWidget(this->index(m_studyRowCount, int(ColumnSeriesType::REMOVE)), removeButton);
+            selector->setIndexWidget(this->index(m_studyRowCount, static_cast<int>(i)), removeButton);
 
             // When the remove button is clicked, emit a signal with the study UID.
             QObject::connect(
@@ -255,73 +543,37 @@ void SelectorModel::addSeries(data::Series::sptr _series)
                 });
         }
 
+        studyRootItem = item(m_studyRowCount);
         m_studyRowCount++;
-        studyRootItem             = patientName;
         m_items[studyInstanceUID] = studyRootItem;
     }
 
     const std::string& seriesID = _series->getID();
 
-    const auto& seriesInstanceUID = _series->getSeriesInstanceUID();
-    auto* seriesRole              = new QStandardItem(
-        seriesInstanceUID.empty()
-        ? QString::fromStdString(seriesID)
-        : QString::fromStdString(seriesInstanceUID)
-    );
-
-    seriesRole->setData(QVariant((int) ItemType::SERIES), Role::ITEM_TYPE);
-    seriesRole->setData(QVariant(QString::fromStdString(seriesID)), Role::UID);
-
-    auto* seriesIcon     = new QStandardItem();
-    auto* seriesModality = new QStandardItem(QString::fromStdString(_series->getModality()));
-
-    auto* seriesDescription = new QStandardItem(
-        [&]
-        {
-            // If there is no description, build some information string from the series.
-            std::string infos(_series->getSOPClassName());
-            const auto& rows    = _series->getRows();
-            const auto& columns = _series->getColumns();
-            const auto& frames  = _series->numFrames();
-            if(rows && columns)
-            {
-                infos += " ( " + std::to_string(*rows)
-                         + "x" + std::to_string(*columns)
-                         + "x" + std::to_string(frames) + " )";
-            }
-
-            const std::string& description = _series->getSeriesDescription();
-
-            if(!description.empty())
-            {
-                infos += ": " + description;
-            }
-
-            return QString::fromStdString(infos);
-        }()
-    );
-
-    const std::string& seriesDate = formatDate(_series->getSeriesDate());
-
-    auto* seriesDateItem = new QStandardItem(QString::fromStdString(seriesDate));
-
-    const std::string& seriesTime = formatTime(_series->getSeriesTime());
-
-    auto* seriesTimeItem = new QStandardItem(QString::fromStdString(seriesTime));
-
     const int nbRow = studyRootItem->rowCount();
-    studyRootItem->setChild(nbRow, int(ColumnSeriesType::NAME), seriesRole);
-    studyRootItem->setChild(nbRow, int(ColumnSeriesType::BIRTHDATE), seriesIcon);
-    studyRootItem->setChild(nbRow, int(ColumnSeriesType::MODALITY), seriesModality);
-    studyRootItem->setChild(nbRow, int(ColumnSeriesType::DESCRIPTION), seriesDescription);
-    studyRootItem->setChild(nbRow, int(ColumnSeriesType::DATE), seriesDateItem);
-    studyRootItem->setChild(nbRow, int(ColumnSeriesType::TIME), seriesTimeItem);
+
+    QStandardItem* seriesIcon = nullptr;
+    std::size_t i             = 0;
+    for(const std::string& displayColumn : m_displayColumns)
+    {
+        QStandardItem* item = columnMap.at(displayColumn).getInfo(_series, When::SERIES);
+        studyRootItem->setChild(nbRow, static_cast<int>(i), item);
+        if(item->data(Role::ICON).toBool())
+        {
+            seriesIcon = item;
+        }
+
+        i++;
+    }
+
+    studyRootItem->child(nbRow)->setData(ItemType::SERIES, Role::ITEM_TYPE);
+    studyRootItem->child(nbRow)->setData(QString::fromStdString(seriesID), Role::UID);
 
     // Add a remove button to each series.
     if(m_removeAllowed && !m_removeSeriesIcon.empty())
     {
         auto* const removeItem = new QStandardItem();
-        studyRootItem->setChild(nbRow, int(ColumnSeriesType::REMOVE), removeItem);
+        studyRootItem->setChild(nbRow, static_cast<int>(i), removeItem);
 
         auto* const selector = static_cast<QTreeView*>(this->parent());
         SIGHT_ASSERT("The QTreeView parent must be given to the constructor", selector);
@@ -340,55 +592,16 @@ void SelectorModel::addSeries(data::Series::sptr _series)
             });
     }
 
-    if(_series->getDicomType() == data::Series::DicomType::IMAGE)
-    {
-        studyRootItem->setChild(
-            nbRow,
-            int(ColumnSeriesType::BODY_PART_EXAMINED),
-            new QStandardItem(QString::fromStdString(_series->getBodyPartExamined()))
-        );
-
-        const std::string& patientPosition = _series->getPatientPositionString();
-
-        studyRootItem->setChild(
-            nbRow,
-            int(ColumnSeriesType::PATIENT_POSITION),
-            new QStandardItem(QString::fromStdString(patientPosition))
-        );
-
-        studyRootItem->setChild(
-            nbRow,
-            int(ColumnSeriesType::CONTRAST_AGENT),
-            new QStandardItem(QString::fromStdString(_series->getContrastBolusAgent()))
-        );
-
-        const std::string& acquisitionTime = formatTime(_series->getAcquisitionTime());
-
-        studyRootItem->setChild(
-            nbRow,
-            int(ColumnSeriesType::ACQUISITION_TIME),
-            new QStandardItem(QString::fromStdString(acquisitionTime))
-        );
-
-        const std::string& contrastTime = formatTime(_series->getContrastBolusStartTime());
-
-        studyRootItem->setChild(
-            nbRow,
-            int(ColumnSeriesType::CONTRAST_BOLUS_START_TIME),
-            new QStandardItem(QString::fromStdString(contrastTime))
-        );
-    }
-
     if(m_insert)
     {
         const int nbColumns = studyRootItem->columnCount();
-        for(int i = 0 ; i < nbColumns ; ++i)
+        for(int j = 0 ; j < nbColumns ; ++j)
         {
-            QStandardItem* item = studyRootItem->child(nbRow, i);
+            QStandardItem* item = studyRootItem->child(nbRow, j);
             if(item == nullptr)
             {
-                studyRootItem->setChild(nbRow, i, new QStandardItem());
-                item = studyRootItem->child(nbRow, i);
+                studyRootItem->setChild(nbRow, j, new QStandardItem());
+                item = studyRootItem->child(nbRow, j);
             }
 
             QFont f = item->font();
@@ -397,7 +610,10 @@ void SelectorModel::addSeries(data::Series::sptr _series)
         }
     }
 
-    this->addSeriesIcon(_series, seriesIcon);
+    if(seriesIcon != nullptr)
+    {
+        this->addSeriesIcon(_series, seriesIcon);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -458,7 +674,7 @@ void SelectorModel::removeRows(const QModelIndexList _indexes)
 
     for(QModelIndex index : _indexes)
     {
-        SIGHT_ASSERT("Index must be in the name column.", index.column() == int(ColumnSeriesType::NAME));
+        SIGHT_ASSERT("Index must be in the first column.", index.column() == 0);
         QStandardItem* item = this->itemFromIndex(index);
         if(item->data(Role::ITEM_TYPE) == ItemType::STUDY)
         {
@@ -536,7 +752,7 @@ QStandardItem* SelectorModel::findSeriesItem(data::Series::sptr _series)
         int nbRow = studyItem->rowCount();
         for(int row = 0 ; row < nbRow ; ++row)
         {
-            QStandardItem* child = studyItem->child(row, int(ColumnSeriesType::NAME));
+            QStandardItem* child = studyItem->child(row, 0);
             std::string seriesId = child->data(Role::UID).toString().toStdString();
             if(seriesId == _series->getID())
             {

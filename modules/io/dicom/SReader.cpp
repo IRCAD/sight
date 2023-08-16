@@ -194,9 +194,9 @@ public:
 
             // Ask the user to select one or more series
             const auto result = core::thread::getDefaultWorker()->postTask<std::pair<bool, data::SeriesSet::sptr> >(
-                [selection]
+                [this, selection]
                 {
-                    sight::ui::qt::series::SelectorDialog selector(selection);
+                    sight::ui::qt::series::SelectorDialog selector(selection, m_displayedColumns);
                     if(selector.exec() != QDialog::Rejected)
                     {
                         return std::make_pair(true, selector.get_selection());
@@ -227,6 +227,9 @@ public:
         | static_cast<data::Series::DicomTypes>(data::Series::DicomType::MODEL)
         | static_cast<data::Series::DicomTypes>(data::Series::DicomType::REPORT)
     };
+
+    std::string m_displayedColumns =
+        "PatientName/SeriesInstanceUID,PatientSex,PatientBirthDate/Icon,Modality,StudyDescription/SeriesDescription,StudyDate/SeriesDate,StudyTime/SeriesTime,PatientAge,BodyPartExamined,PatientPositionString,ContrastBolusAgent,AcquisitionTime,ContrastBolusStartTime";
 
     /// Signal emitted when job created.
     JobCreatedSignal::sptr m_job_created_signal;
@@ -279,6 +282,15 @@ void SReader::configuring()
         );
 
         m_pimpl->m_filter = data::Series::stringToDicomTypes(dialog->get<std::string>("filter", "image,model,report"));
+    }
+
+    const auto& config = tree.get_child_optional("config.<xmlattr>");
+    if(config.is_initialized())
+    {
+        if(std::string displayedColumns = config->get("displayedColumns", ""); !displayedColumns.empty())
+        {
+            m_pimpl->m_displayedColumns = displayedColumns;
+        }
     }
 }
 
