@@ -112,11 +112,9 @@ public:
     ZipHandle& operator=(ZipHandle&&)      = delete;
 
     inline explicit ZipHandle(const std::filesystem::path& archive_path) :
-        m_archive_path(archive_path.string())
+        m_archive_path(archive_path.string()),
+        m_zip_reader(mz_zip_reader_create())
     {
-        // Create zip reader instance
-        mz_zip_reader_create(&m_zip_reader);
-
         SIGHT_THROW_EXCEPTION_IF(
             exception::Read(
                 "Cannot create zip reader instance",

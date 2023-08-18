@@ -56,7 +56,7 @@ target_link_libraries(minizip PRIVATE OpenSSL::Crypto)
 
 # Windows specific
 if(WIN32)
-    target_compile_definitions(minizip PRIVATE "-D_CRT_SECURE_NO_DEPRECATE")
+    target_compile_definitions(minizip PRIVATE "-D_CRT_SECURE_NO_DEPRECATE -D_CRT_NONSTDC_NO_DEPRECATE")
 endif()
 
 # Unix specific
