@@ -54,7 +54,8 @@ void ImageSeries::shallowCopy(const Object::csptr& source)
         !bool(other)
     );
 
-    m_dicomReference = other->m_dicomReference;
+    m_dicomReference  = other->m_dicomReference;
+    m_fiducialsSeries = other->m_fiducialsSeries;
 
     Series::shallowCopy(other);
 
@@ -76,6 +77,9 @@ void ImageSeries::deepCopy(const Object::csptr& source, const std::unique_ptr<De
     );
 
     m_dicomReference = data::Object::copy(other->m_dicomReference);
+
+    m_fiducialsSeries = FiducialsSeries::New();
+    m_fiducialsSeries->deepCopy(other->m_fiducialsSeries, cache);
 
     Series::deepCopy(other, cache);
 

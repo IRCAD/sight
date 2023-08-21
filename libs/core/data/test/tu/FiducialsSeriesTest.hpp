@@ -29,6 +29,8 @@ namespace sight::data::ut
 class FiducialsSeriesTest : public CPPUNIT_NS::TestFixture
 {
 CPPUNIT_TEST_SUITE(FiducialsSeriesTest);
+CPPUNIT_TEST(shallowCopyTest);
+CPPUNIT_TEST(deepCopyTest);
 CPPUNIT_TEST(simpleSetterGetterTest);
 CPPUNIT_TEST(fiducialSetSetterGetterTest);
 CPPUNIT_TEST(referencedImageSetterGetterTest);
@@ -38,6 +40,8 @@ CPPUNIT_TEST_SUITE_END();
 
 public:
 
+    static void shallowCopyTest();
+    static void deepCopyTest();
     static void simpleSetterGetterTest();
     static void fiducialSetSetterGetterTest();
     static void referencedImageSetterGetterTest();

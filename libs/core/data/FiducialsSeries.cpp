@@ -284,6 +284,40 @@ void appendInSequence(
 
 //------------------------------------------------------------------------------
 
+void FiducialsSeries::shallowCopy(const Object::csptr& source)
+{
+    const auto& other = dynamicConstCast(source);
+
+    SIGHT_THROW_EXCEPTION_IF(
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
+        ),
+        !bool(other)
+    );
+
+    BaseClass::shallowCopy(other);
+}
+
+//------------------------------------------------------------------------------
+
+void FiducialsSeries::deepCopy(const Object::csptr& source, const std::unique_ptr<DeepCopyCacheType>& cache)
+{
+    const auto& other = dynamicConstCast(source);
+
+    SIGHT_THROW_EXCEPTION_IF(
+        Exception(
+            "Unable to copy " + (source ? source->getClassname() : std::string("<NULL>"))
+            + " to " + getClassname()
+        ),
+        !bool(other)
+    );
+
+    BaseClass::deepCopy(other, cache);
+}
+
+//------------------------------------------------------------------------------
+
 bool FiducialsSeries::Point2::operator==(Point2 other) const
 {
     return x == other.x && y == other.y;

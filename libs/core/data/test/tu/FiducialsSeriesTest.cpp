@@ -33,6 +33,81 @@ namespace sight::data::ut
 
 //------------------------------------------------------------------------------
 
+data::FiducialsSeries::sptr initFiducialsSeries()
+{
+    data::FiducialsSeries::sptr fs = data::FiducialsSeries::New();
+    fs->setContentLabel("TestLabel");
+    fs->setContentLabel("1");
+    fs->setContentDescription("FS");
+    fs->setContentCreatorName("John Doe");
+
+    // Adds a dummy fiducial set
+    FiducialsSeries::FiducialSet fiducialSet;
+
+    FiducialsSeries::ReferencedImage referencedImage;
+    referencedImage.referencedSOPClassUID    = "1";
+    referencedImage.referencedSOPInstanceUID = "2";
+    referencedImage.referencedFrameNumber    = {3};
+    referencedImage.referencedSegmentNumber  = {4};
+    fiducialSet.referencedImageSequence      = {referencedImage};
+
+    fiducialSet.frameOfReferenceUID = "5";
+
+    FiducialsSeries::Fiducial fiducial;
+    fiducial.shapeType           = FiducialsSeries::Shape::POINT;
+    fiducial.fiducialDescription = "6";
+    fiducial.fiducialIdentifier  = "7";
+
+    FiducialsSeries::GraphicCoordinatesData graphicCoordinatesData;
+    graphicCoordinatesData.referencedImageSequence.referencedSOPClassUID    = "8";
+    graphicCoordinatesData.referencedImageSequence.referencedSOPInstanceUID = "9";
+    graphicCoordinatesData.referencedImageSequence.referencedFrameNumber    = {10};
+    graphicCoordinatesData.referencedImageSequence.referencedSegmentNumber  = {11};
+    graphicCoordinatesData.graphicData                                      = {{12, 13}};
+    fiducial.graphicCoordinatesDataSequence                                 = {graphicCoordinatesData};
+
+    fiducial.fiducialUID = "14";
+    fiducial.contourData = {{15, 16, 17}};
+    fiducialSet.fiducialSequence.push_back(fiducial);
+
+    fiducialSet.groupName  = "18";
+    fiducialSet.color      = {{19, 20, 21, 22}};
+    fiducialSet.size       = 23.F;
+    fiducialSet.shape      = FiducialsSeries::PrivateShape::CUBE;
+    fiducialSet.visibility = true;
+
+    // Test setFiducialSets method
+    fs->setFiducialSets({fiducialSet});
+
+    return fs;
+}
+
+//------------------------------------------------------------------------------
+
+void FiducialsSeriesTest::shallowCopyTest()
+{
+    data::FiducialsSeries::sptr fs1 = initFiducialsSeries();
+    data::FiducialsSeries::sptr fs2 = data::FiducialsSeries::New();
+
+    CPPUNIT_ASSERT(*fs1 != *fs2);
+    fs2->shallowCopy(fs1);
+    CPPUNIT_ASSERT(*fs1 == *fs2);
+}
+
+//------------------------------------------------------------------------------
+
+void FiducialsSeriesTest::deepCopyTest()
+{
+    data::FiducialsSeries::sptr fs1 = initFiducialsSeries();
+    data::FiducialsSeries::sptr fs2 = data::FiducialsSeries::New();
+
+    CPPUNIT_ASSERT(*fs1 != *fs2);
+    fs2->deepCopy(fs1);
+    CPPUNIT_ASSERT(*fs1 == *fs2);
+}
+
+//------------------------------------------------------------------------------
+
 void FiducialsSeriesTest::simpleSetterGetterTest()
 {
     // This method checks that plain method getters/setters work correctly.

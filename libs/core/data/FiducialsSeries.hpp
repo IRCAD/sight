@@ -174,6 +174,20 @@ public:
     DATA_API bool operator==(const FiducialsSeries& other) const;
     DATA_API bool operator!=(const FiducialsSeries& other) const;
 
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
+
+    /// Defines deep copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
+
     /**
      * Getter/Setter for the ContentDate (0008,0023) data element.
      * @{
