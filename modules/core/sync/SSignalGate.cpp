@@ -36,9 +36,6 @@ namespace sight::module::sync
 // Public signal
 const core::com::Signals::SignalKeyType SSignalGate::s_ALL_RECEIVED_SIG = "allReceived";
 
-// Private slot
-static const core::com::Slots::SlotKeyType s_RECEIVE_SLOT = "receive";
-
 //-----------------------------------------------------------------------------
 
 SSignalGate::SSignalGate()

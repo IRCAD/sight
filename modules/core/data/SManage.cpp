@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2015-2022 IRCAD France
+ * Copyright (C) 2015-2023 IRCAD France
  * Copyright (C) 2015-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -46,12 +46,6 @@ const core::com::Slots::SlotKeyType SManage::s_SWAP_OBJ_SLOT          = "swapObj
 const core::com::Slots::SlotKeyType SManage::s_REMOVE_SLOT            = "remove";
 const core::com::Slots::SlotKeyType SManage::s_REMOVE_IF_PRESENT_SLOT = "removeIfPresent";
 const core::com::Slots::SlotKeyType SManage::s_CLEAR_SLOT             = "clear";
-
-const service::IService::KeyType s_COMPOSITE_INOUT    = "composite";
-const service::IService::KeyType s_VECTOR_INOUT       = "vector";
-const service::IService::KeyType s_SERIES_SET_INOUT   = "seriesSet";
-const service::IService::KeyType s_FIELD_HOLDER_INOUT = "fieldHolder";
-const service::IService::KeyType s_OBJECT_INOUT       = "object";
 
 //-----------------------------------------------------------------------------
 

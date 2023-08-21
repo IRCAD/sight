@@ -339,14 +339,14 @@ public:
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline const auto& getDataPair(std::size_t instance = 0) const
+    [[nodiscard]] inline const SeriesDataset& getDataPair(std::size_t instance = 0) const
     {
         return m_frame_datasets[instance];
     }
 
     //------------------------------------------------------------------------------
 
-    [[nodiscard]] inline auto& getDataPair(std::size_t instance = 0)
+    [[nodiscard]] inline SeriesDataset& getDataPair(std::size_t instance = 0)
     {
         if(instance >= m_frame_datasets.size())
         {

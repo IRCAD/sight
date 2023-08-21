@@ -33,8 +33,6 @@
 namespace sight::module::io::igtl
 {
 
-const service::IService::KeyType s_OBJECTS_GROUP = "objects";
-
 //-----------------------------------------------------------------------------
 
 SClientSender::SClientSender()
@@ -54,8 +52,8 @@ void SClientSender::configuring()
     const ConfigType configIn = config.get_child("in");
 
     SIGHT_ASSERT(
-        "configured group must be '" + s_OBJECTS_GROUP + "'",
-        configIn.get<std::string>("<xmlattr>.group", "") == s_OBJECTS_GROUP
+        "configured group must be 'objects'",
+        configIn.get<std::string>("<xmlattr>.group", "") == "objects"
     );
 
     const auto keyCfg = configIn.equal_range("key");

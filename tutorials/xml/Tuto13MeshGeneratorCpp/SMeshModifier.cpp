@@ -28,12 +28,8 @@
 
 #include <ui/base/dialog/MessageDialog.hpp>
 
-namespace service = sight::service;
-
 namespace Tuto13MeshGeneratorCpp
 {
-
-static const service::IService::KeyType s_MESH_INOUT = "mesh";
 
 static const std::string s_FUNCTOR_CONFIG = "functor";
 

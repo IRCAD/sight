@@ -34,10 +34,7 @@ endif()
 find_package(ZLIB QUIET REQUIRED)
 target_link_libraries(minizip PRIVATE ZLIB::ZLIB)
 target_compile_definitions(minizip PRIVATE "-DHAVE_ZLIB")
-
-if(ZLIB_COMPAT)
-    target_compile_definitions(minizip PRIVATE "-DZLIB_COMPAT")
-endif()
+target_compile_definitions(minizip PRIVATE "-DZLIB_COMPAT")
 
 # ZSTD
 find_package(PkgConfig QUIET)

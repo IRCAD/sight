@@ -41,7 +41,6 @@ static const core::com::Slots::SlotKeyType s_DISPLAY_IMAGE_SLOT = "displayImage"
 static const core::com::Slots::SlotKeyType s_STOP_CONFIG_SLOT   = "stopConfig";
 
 static const std::string s_SINGLE_IMAGE_CONFIG = "singleImageConfig";
-static const std::string s_TWO_IMAGE_CONFIG    = "twoImageConfig";
 
 static const std::string s_CLOSE_CONFIG_CHANNEL_ID = "CLOSE_CONFIG_CHANNEL";
 

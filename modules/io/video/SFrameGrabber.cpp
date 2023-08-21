@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -43,8 +43,6 @@
 
 namespace sight::module::io::video
 {
-
-static const core::com::Slots::SlotKeyType s_SET_STEP_SLOT = "setStep";
 
 // -----------------------------------------------------------------------------
 

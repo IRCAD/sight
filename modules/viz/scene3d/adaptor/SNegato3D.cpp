@@ -53,8 +53,6 @@ static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT           = "updateT
 
 static const core::com::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
 
-static const std::string s_VISIBILITY_FIELD = "VISIBILITY";
-
 //------------------------------------------------------------------------------
 
 SNegato3D::SNegato3D() noexcept

@@ -224,8 +224,7 @@ struct CORE_CLASS_API SlotBase : virtual core::BaseObject
         template<typename F>
         std::string getTypeName() const
         {
-            std::string signature = std::string("function_type(") + typeid(F).name() + ")";
-            return signature;
+            return std::string("function_type(") + std::string(typeid(F).name()) + std::string(")");
         }
 
         SlotBase(unsigned int arity) :

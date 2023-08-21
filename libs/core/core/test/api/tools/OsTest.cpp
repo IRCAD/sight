@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,8 +35,6 @@ CPPUNIT_TEST_SUITE_REGISTRATION(sight::core::tools::ut::Os);
 
 namespace sight::core::tools::ut
 {
-
-static const std::string default_company("sight");
 
 //------------------------------------------------------------------------------
 
