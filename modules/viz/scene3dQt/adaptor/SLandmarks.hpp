@@ -192,6 +192,8 @@ struct ImageOrImageSeriesLock
  * - \b initialSize (optional, float, default=32.0): initial size of the current group.
  * - \b initialShape (optional, sphere/cube, default="sphere): initial shape of the current group.
  * - \b allowRenaming (optional, bool, default=true): true if the user can rename landmarks
+ * - \b modify (optional, all/group, default="all"): if "all", all the landmarks can be modified, ignoring the current
+        group; if "group", only the landmarks belonging to the current group can be modified
  */
 class MODULE_VIZ_SCENE3DQT_CLASS_API SLandmarks final :
     public sight::viz::scene3d::IAdaptor,
@@ -608,7 +610,7 @@ private:
 
     bool isLandmarkVisible(const data::Landmarks::PointType& point, data::Landmarks::SizeType group_size) const;
 
-    std::shared_ptr<Landmark> tryPick(int x, int y) const;
+    std::shared_ptr<Landmark> tryPick(int x, int y, bool forModification = true) const;
 
     void setCursor(QCursor cursor);
 
@@ -682,6 +684,9 @@ private:
 
     /// True if the adaptor is in edit mode, which allows to modify the landmarks
     bool m_editMode = false;
+
+    /// Whether all landmarks can be modified or only landmarks belonging to the current group
+    bool m_canOnlyModifyCurrent = false;
 
     /// True if the landmarks can be renamed by the user
     bool m_renamingAllowed = true;

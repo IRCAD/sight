@@ -363,6 +363,7 @@ void SLandmarks::configuring()
     static const std::string s_INITIAL_SIZE           = s_CONFIG + "initialSize";
     static const std::string s_INITIAL_SHAPE          = s_CONFIG + "initialShape";
     static const std::string s_ALLOW_RENAME           = s_CONFIG + "allowRename";
+    static const std::string s_MODIFY                 = s_CONFIG + "modify";
 
     m_fontSize     = config.get<std::size_t>(s_FONT_SIZE_CONFIG, m_fontSize);
     m_enableLabels = config.get<bool>(s_LABEL_CONFIG, m_enableLabels);
@@ -457,6 +458,13 @@ void SLandmarks::configuring()
         "Renaming labels is allowed yet the labels are disabled, this is forbidden.",
         m_enableLabels || !m_renamingAllowed
     );
+
+    std::string modify = config.get(s_MODIFY, "all");
+    SIGHT_ERROR_IF(
+        "'modify' config has wrong value '" << modify << "', the only authorized values are 'all' and 'group'",
+        modify != "all" && modify != "group"
+    );
+    m_canOnlyModifyCurrent = (modify == "group");
 
     SIGHT_ASSERT(
         "Only one of 'landmarks' or 'imageSeries' must be present as inout",
@@ -2152,7 +2160,7 @@ void SLandmarks::buttonDoublePressEvent(MouseButton /*_button*/, Modifier /*_mod
 {
     m_contextualMenu->hide();
 
-    std::shared_ptr<Landmark> pickedData = tryPick(_x, _y);
+    std::shared_ptr<Landmark> pickedData = tryPick(_x, _y, false);
 
     if(pickedData != nullptr)
     {
@@ -2204,7 +2212,7 @@ void SLandmarks::keyPressEvent(int _key, Modifier /*_mods*/, int /*_mouseX*/, in
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<SLandmarks::Landmark> SLandmarks::tryPick(int _x, int _y) const
+std::shared_ptr<SLandmarks::Landmark> SLandmarks::tryPick(int _x, int _y, bool forModification) const
 {
     const auto layer = this->getLayer();
 
@@ -2250,7 +2258,8 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::tryPick(int _x, int _y) const
                 {
                     if(auto group = getGroup(landmark->m_groupName, lock);
                        group.has_value() && group->m_visibility
-                       && isLandmarkVisible(group->m_points[landmark->m_index], group->m_size))
+                       && isLandmarkVisible(group->m_points[landmark->m_index], group->m_size)
+                       && (!forModification || !m_canOnlyModifyCurrent || landmark->m_groupName == m_currentGroup))
                     {
                         return landmark;
                     }
