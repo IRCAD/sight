@@ -25,9 +25,10 @@
 
         <service uid="sceneView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="sight::ui::base::OverlayLayoutManager">
-                    <view />
-                    <view x="0" y="-0" width="100%" height="48" opacity="0.75" />
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
                 </layout>
             </gui>
             <registry>

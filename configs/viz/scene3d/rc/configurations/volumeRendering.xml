@@ -48,7 +48,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="sceneView" type="sight::module::ui::base::SView">
+        <service uid="sceneOverlayView" type="sight::module::ui::base::SView">
             <gui>
                 <layout type="sight::ui::base::OverlayLayoutManager">
                     <view />
@@ -57,8 +57,22 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="sceneSrv" start="true" />
+                <view sid="sceneView" start="true" />
                 <view sid="topToolbarSliderView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="sceneView" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="sceneSrv" start="true"/>
+                <view wid="sliderView" />
             </registry>
         </service>
 
@@ -211,6 +225,18 @@
             <in key="data" uid="snapshot" />
             <dialog policy="always" />
             <backends enable="all" mode="best"/>
+        </service>
+
+        <service uid="sliderCfg" type="sight::service::SConfigController" >
+            <appConfig id="sight::config::viz::image::imageSlider" />
+            <parameter replace="WID_PARENT" by="sliderView" />
+            <parameter replace="sliceIndex" by="axial" />
+            <parameter replace="enableSliceType" by="true" />
+            <parameter replace="enableOpacity" by="true" />
+            <inout group="data">
+                <key name="image" uid="${image}" />
+                <key name="transferFunction" uid="${volumeTF}" />
+            </inout>
         </service>
 
         <!-- ************************************* Actions ************************************ -->
@@ -387,7 +413,7 @@
 
         <!-- ******************************* Start/Stop services ***************************************** -->
 
-        <start uid="sceneView" />
+        <start uid="sceneOverlayView" />
         <start uid="clippingBoxResetSrv" />
         <start uid="imageExtruderSrv" />
         <start uid="notifierSrv" />
@@ -407,6 +433,7 @@
         <start uid="eventAdp" />
         <start uid="orientationMarkerAdp" />
         <start uid="3DNegatoAdp" />
+        <start uid="sliderCfg" />
 
         <update uid="imageExtruderSrv" />
         <update uid="shapeExtruderAdp" />

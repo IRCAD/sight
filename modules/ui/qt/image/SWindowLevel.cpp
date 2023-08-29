@@ -462,10 +462,7 @@ void SWindowLevel::onTextEditingFinished()
 {
     double min = NAN;
     double max = NAN;
-    if(sight::module::ui::qt::image::SWindowLevel::getWidgetDoubleValue(
-           m_valueTextMin,
-           min
-       ) && sight::module::ui::qt::image::SWindowLevel::getWidgetDoubleValue(m_valueTextMax, max))
+    if(getWidgetDoubleValue(m_valueTextMin, min) && getWidgetDoubleValue(m_valueTextMax, max))
     {
         this->updateWidgetMinMax(min, max);
         this->updateImageWindowLevel(min, max);
@@ -497,13 +494,10 @@ bool SWindowLevel::getWidgetDoubleValue(QLineEdit* widget, double& val)
 
 void SWindowLevel::setWidgetDynamicRange(double min, double max)
 {
-    if(fabs(max - min) < 1.e-05)
-    {
-        max = min + 1.e-05;
-    }
+    SIGHT_ASSERT("Maximum is not greater than minimum", max >= min);
 
     m_widgetDynamicRangeMin   = min;
-    m_widgetDynamicRangeWidth = max - min;
+    m_widgetDynamicRangeWidth = std::max(1., max - min);
 
     if(not m_minimal)
     {

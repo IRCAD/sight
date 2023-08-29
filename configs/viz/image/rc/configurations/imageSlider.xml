@@ -18,10 +18,12 @@ Example:
         <param name="WID_PARENT" />
         <param name="image" />
         <param name="transferFunction" />
-        <param name="enableSliceType" default="true"/>
-        <param name="sliceIndex" default="axial"/>
+        <param name="enableSliceType" default="true" />
+        <param name="enableOpacity" default="false" />
+        <param name="sliceIndex" default="axial" />
     </parameters>
-    <desc>This configuration displays a tab layout containing a negato and a transfer function editor</desc>
+    <desc>This configuration displays a tab layout containing a negato and a transfer function
+        editor</desc>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
@@ -59,14 +61,16 @@ Example:
         <service uid="topToolbarView" type="sight::module::ui::base::SToolBar">
             <gui>
                 <layout>
-                    <menuItem name="windowing" icon="sight::module::ui::qt/windowing.svg" />
-                    <menuItem name="slice" icon="sight::module::ui::flaticons/Layers.svg" />
+                    <menuItem name="slice" icon="sight::module::ui::flaticons/Layers.svg" style="radio" />
+                    <menuItem name="windowing" icon="sight::module::ui::qt/windowing.svg" style="radio" />
+                    <menuItem name="opacity" icon="sight::module::ui::qt/opacity.svg" style="radio" />
                     <spacer />
                 </layout>
             </gui>
             <registry>
-                <menuItem sid="windowingAct" start="true" />
                 <menuItem sid="sliceAct" start="true" />
+                <menuItem sid="windowingAct" start="true" />
+                <menuItem sid="opacityAct" start="true" />
             </registry>
         </service>
 
@@ -75,34 +79,43 @@ Example:
                 <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="0" />
-                    <view proportion="0" visible="false"/>
+                    <view proportion="0" visible="false" />
+                    <view proportion="0" visible="false" />
                 </layout>
             </gui>
             <registry>
                 <view sid="negatoSlicerSrv" start="true" />
                 <view sid="windowLevelImage" start="true" />
+                <view sid="transferFunctionOpacity" start="true" />
             </registry>
         </service>
 
         <!-- ************************************* Actions ************************************ -->
 
-        <!-- Set the view in full screen -->
-        <service uid="windowingAct" type="sight::module::ui::base::SAction"/>
 
-        <!-- Set the view in windowed  -->
         <service uid="sliceAct" type="sight::module::ui::base::SAction">
-            <state visible="false" />
+            <state checked="true" />
         </service>
 
-        <service uid="negatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor" autoConnect="true">
+        <service uid="windowingAct" type="sight::module::ui::base::SAction" />
+        <service uid="opacityAct" type="sight::module::ui::base::SAction" >
+            <state visible="${enableOpacity}" />
+        </service>
+
+        <service uid="negatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor"
+            autoConnect="true">
             <inout key="image" uid="${image}" />
             <sliceIndex>${sliceIndex}</sliceIndex>
             <displayAxisSelector>${enableSliceType}</displayAxisSelector>
         </service>
 
-        <service uid="windowLevelImage" type="sight::module::ui::qt::image::SWindowLevel" autoConnect="true">
+        <service uid="windowLevelImage" type="sight::module::ui::qt::image::SWindowLevel">
             <config minimal="true" />
             <inout key="image" uid="${image}" />
+            <inout key="tf" uid="${transferFunction}" />
+        </service>
+
+        <service uid="transferFunctionOpacity" type="sight::module::ui::qt::image::STransferFunctionOpacity">
             <inout key="tf" uid="${transferFunction}" />
         </service>
 
@@ -110,15 +123,21 @@ Example:
             <signal>windowingAct/clicked</signal>
             <slot>negatoSlicerSrv/hide</slot>
             <slot>windowLevelImage/show</slot>
-            <slot>windowingAct/hide</slot>
-            <slot>sliceAct/show</slot>
+            <slot>transferFunctionOpacity/hide</slot>
         </connect>
+
         <connect>
             <signal>sliceAct/clicked</signal>
             <slot>negatoSlicerSrv/show</slot>
             <slot>windowLevelImage/hide</slot>
-            <slot>windowingAct/show</slot>
-            <slot>sliceAct/hide</slot>
+            <slot>transferFunctionOpacity/hide</slot>
+        </connect>
+
+        <connect>
+            <signal>opacityAct/clicked</signal>
+            <slot>negatoSlicerSrv/hide</slot>
+            <slot>windowLevelImage/hide</slot>
+            <slot>transferFunctionOpacity/show</slot>
         </connect>
 
         <start uid="view" />
