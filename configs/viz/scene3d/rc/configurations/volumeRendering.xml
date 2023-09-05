@@ -67,7 +67,7 @@
                 <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
-                    <view proportion="0" />
+                    <view proportion="0" backgroundColor="#36393E" spacing="0" />
                 </layout>
             </gui>
             <registry>
@@ -231,7 +231,8 @@
             <appConfig id="sight::config::viz::image::imageSlider" />
             <parameter replace="WID_PARENT" by="sliderView" />
             <parameter replace="sliceIndex" by="axial" />
-            <parameter replace="enableSliceType" by="true" />
+            <parameter replace="enableSliceSlider" by="false" />
+            <parameter replace="enableSliceType" by="false" />
             <parameter replace="enableOpacity" by="true" />
             <inout group="data">
                 <key name="image" uid="${image}" />

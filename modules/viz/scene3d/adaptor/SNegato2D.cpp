@@ -70,11 +70,12 @@ void SNegato2D::configuring()
 
     const ConfigType config = this->getConfiguration();
 
-    static const std::string s_SLICE_INDEX_CONFIG = s_CONFIG + "sliceIndex";
-    static const std::string s_FILTERING_CONFIG   = s_CONFIG + "filtering";
-    static const std::string s_TF_ALPHA_CONFIG    = s_CONFIG + "tfAlpha";
-    static const std::string s_BORDER_CONFIG      = s_CONFIG + "border";
-    static const std::string s_INTERACTIVE_CONFIG = s_CONFIG + "interactive";
+    static const std::string s_SLICE_INDEX_CONFIG  = s_CONFIG + "sliceIndex";
+    static const std::string s_FILTERING_CONFIG    = s_CONFIG + "filtering";
+    static const std::string s_TF_ALPHA_CONFIG     = s_CONFIG + "tfAlpha";
+    static const std::string s_BORDER_CONFIG       = s_CONFIG + "border";
+    static const std::string s_SLICES_CROSS_CONFIG = s_CONFIG + "slicesCross";
+    static const std::string s_INTERACTIVE_CONFIG  = s_CONFIG + "interactive";
 
     const auto orientation = config.get<std::string>(s_SLICE_INDEX_CONFIG, "axial");
     if(orientation == "axial")
@@ -108,6 +109,7 @@ void SNegato2D::configuring()
 
     m_enableAlpha = config.get<bool>(s_TF_ALPHA_CONFIG, m_enableAlpha);
     m_border      = config.get<bool>(s_BORDER_CONFIG, m_border);
+    m_slicesCross = config.get<bool>(s_SLICES_CROSS_CONFIG, m_slicesCross);
     m_interactive = config.get<bool>(s_INTERACTIVE_CONFIG, m_interactive);
 
     const std::string transformId =
@@ -323,7 +325,7 @@ void SNegato2D::updateSlicesFromWorld(double _x, double _y, double _z)
 
 void SNegato2D::updateShaderSliceIndexParameter()
 {
-    m_plane->changeSlice(m_currentSliceIndex[static_cast<std::size_t>(m_plane->getOrientationMode())]);
+    m_plane->changeSlice(m_currentSliceIndex);
 }
 
 //------------------------------------------------------------------------------
@@ -434,6 +436,8 @@ void SNegato2D::pickIntensity(int _x, int _y)
 
             const auto pickingText = sight::viz::scene3d::Utils::pickImage(*image, result->second, origin, spacing);
             m_pickedVoxelSignal->asyncEmit(pickingText);
+
+            this->requestRender();
         }
     }
 }

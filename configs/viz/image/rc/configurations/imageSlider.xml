@@ -2,14 +2,14 @@
 Example:
 
 <service uid="..." type="sight::service::SConfigController">
-    <appConfig id="TransferFunctionWithNegatoEditor" />
+    <appConfig id="sight::config::viz::image::imageSlider2D" />
+    <parameter replace="WID_PARENT" by="negatoSliderView" />
+    <parameter replace="sliceIndex" by="axial" />
+    <parameter replace="enableSliceType" by="true" />
     <inout group="data">
-        <key name="image" uid="..." />
-        <key name="histogram" uid="..." />
-        <key name="landmarks" uid="..." />
-        <key name="transferFunctionOutput" uid="..." />
+        <key name="image" uid="${image}" />
+        <key name="transferFunction" uid="${transferFunction}" />
     </inout>
-    <parameter replace="WID_PARENT" by="..." />
 </service>
 -->
 <extension implements="sight::service::extension::AppConfig">
@@ -18,6 +18,7 @@ Example:
         <param name="WID_PARENT" />
         <param name="image" />
         <param name="transferFunction" />
+        <param name="enableSliceSlider" default="true" />
         <param name="enableSliceType" default="true" />
         <param name="enableOpacity" default="false" />
         <param name="sliceIndex" default="axial" />
@@ -78,13 +79,13 @@ Example:
             <gui>
                 <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
-                    <view proportion="0" />
                     <view proportion="0" visible="false" />
+                    <view proportion="0" visible="true" />
                     <view proportion="0" visible="false" />
                 </layout>
             </gui>
             <registry>
-                <view sid="negatoSlicerSrv" start="true" />
+                <view sid="negatoSlicerSrv" start="${enableSliceSlider}" />
                 <view sid="windowLevelImage" start="true" />
                 <view sid="transferFunctionOpacity" start="true" />
             </registry>
@@ -92,18 +93,21 @@ Example:
 
         <!-- ************************************* Actions ************************************ -->
 
-
         <service uid="sliceAct" type="sight::module::ui::base::SAction">
+            <state visible="${enableSliceSlider}" />
+        </service>
+
+        <service uid="windowingAct" type="sight::module::ui::base::SAction" >
             <state checked="true" />
         </service>
 
-        <service uid="windowingAct" type="sight::module::ui::base::SAction" />
         <service uid="opacityAct" type="sight::module::ui::base::SAction" >
             <state visible="${enableOpacity}" />
         </service>
 
-        <service uid="negatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor"
-            autoConnect="true">
+        <!-- ************************************* Services *********************************** -->
+
+        <service uid="negatoSlicerSrv" type="sight::module::ui::qt::image::SliceIndexPositionEditor">
             <inout key="image" uid="${image}" />
             <sliceIndex>${sliceIndex}</sliceIndex>
             <displayAxisSelector>${enableSliceType}</displayAxisSelector>
@@ -140,6 +144,17 @@ Example:
             <slot>transferFunctionOpacity/show</slot>
         </connect>
 
+        <connect>
+            <signal>negatoSlicerSrv/started</signal>
+            <slot>negatoSlicerSrv/update</slot>
+        </connect>
+
+        <connect>
+            <signal>negatoSlicerSrv/updated</signal>
+            <slot>sliceAct/check</slot>
+            <slot>sliceAct/update</slot>
+        </connect>
+    
         <start uid="view" />
 
     </config>

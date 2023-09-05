@@ -28,7 +28,7 @@
                 <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
                     <view proportion="1" />
-                    <view proportion="0" />
+                    <view proportion="0" backgroundColor="#36393E" spacing="0" />
                 </layout>
             </gui>
             <registry>

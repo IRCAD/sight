@@ -48,8 +48,8 @@
             <gui>
                 <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
-                    <view proportion="0" />
-                    <view proportion="0" />
+                    <view proportion="0" spacing="2" />
+                    <view proportion="0" spacing="2" />
                 </layout>
             </gui>
             <registry>
@@ -65,7 +65,7 @@
               <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" minWidth="0" />
-                    <view proportion="1" minWidth="0" visible="false" />
+                    <view proportion="1" minWidth="0" visible="false" spacing="2" />
                </layout>
            </gui>
            <registry>
@@ -79,7 +79,7 @@
               <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" minWidth="0" visible="false" />
-                    <view proportion="1" minWidth="0" visible="false" />
+                    <view proportion="1" minWidth="0" visible="false" spacing="2" />
                </layout>
            </gui>
            <registry>

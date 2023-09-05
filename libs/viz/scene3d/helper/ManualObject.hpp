@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  * Copyright (C) 2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -25,6 +25,8 @@
 #include "viz/scene3d/config.hpp"
 
 #include <Ogre.h>
+
+#include <optional>
 
 namespace sight::viz::scene3d::helper
 {
@@ -110,6 +112,28 @@ public:
         const std::string& _material,
         const Ogre::Frustum& _frustum
     );
+
+    /**
+     * @brief Draw a dashed line in a Ogre::ManualObject between two points.
+     *
+     * On the contrary to the create* functions of this class, this function is intended to be used inside
+     * a ManualObject::begin()/ManualObject::end() scope. Thus it can be called many times to create more complex
+     * shape made of lines, but which will issue a single draw call.
+     *
+     * @param _object the Ogre::ManualObject used to store the cone
+     * @param _p1 first point
+     * @param _p2 second point
+     * @param _dashLength length of a dash
+     * @param _dashSpacing spacing between two dashes
+     * @param _color optional line color, only necessary when using a material that supports vertex color
+     */
+    VIZ_SCENE3D_API static void drawDashedLine(
+        Ogre::ManualObject* _object,
+        const Ogre::Vector3& _p1,
+        const Ogre::Vector3& _p2,
+        const float _dashLength,
+        const float _dashSpacing,
+        std::optional<Ogre::ColourValue> _color = {});
 };
 
 } // namespace sight::viz::scene3d::helper

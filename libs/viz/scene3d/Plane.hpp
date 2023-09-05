@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2014-2022 IRCAD France
+ * Copyright (C) 2014-2023 IRCAD France
  * Copyright (C) 2014-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -72,9 +72,10 @@ public:
      * @param _negatoId unique identifier of the negato.
      * @param _parentSceneNode parent node where attach the plane.
      * @param _sceneManager the Ogre scene manager.
-     * @param _orientation the direction of the plane.
      * @param _tex texture to apply on the plane.
      * @param _filtering filtering method used to apply the texture.
+     * @param _displayBorder display a border around the negato plane.
+     * @param _displayOtherPlanes display a line indicating the location of the two other planes.
      * @param _entityOpacity opacity of the entity.
      */
     VIZ_SCENE3D_API Plane(
@@ -83,8 +84,9 @@ public:
         Ogre::SceneManager* _sceneManager,
         viz::scene3d::Texture::sptr _tex,
         filter_t _filtering,
-        bool _displayBorder  = true,
-        float _entityOpacity = 1.0F
+        bool _displayBorder      = true,
+        bool _displayOtherPlanes = true,
+        float _entityOpacity     = 1.0F
     );
 
     /// Cleans ogre resources.
@@ -105,9 +107,9 @@ public:
      * @brief Handles the slice plane move.
      *     - in 2D, it will convert the position in unit floating value and call the fragment shader.
      *     - in 3D, it will also move the scene node in space.
-     * @param _sliceIndex the image slice index used to move the plane.
+     * @param _slicesIndex the image slices indexes.
      */
-    VIZ_SCENE3D_API void changeSlice(float _sliceIndex);
+    VIZ_SCENE3D_API void changeSlice(const std::array<float, 3>& _slicesIndex);
 
     /**
      * @brief Sets the plane's opacity.
@@ -158,6 +160,24 @@ private:
     /// Sets the dimensions for the related members, and also creates a movable plane to instantiate the entity.
     Ogre::MovablePlane setDimensions(const Ogre::Vector3& _spacing);
 
+    struct LineShape
+    {
+        /// Contains the manual object that represent borders.
+        Ogre::ManualObject* shape {nullptr};
+
+        /// Contains the material used to display borders.
+        Ogre::MaterialPtr material {nullptr};
+
+        /// Is it displayed?
+        bool enabled {true};
+    };
+
+    /// Optional border
+    LineShape m_border;
+
+    /// Lines representing the slices of the two other orthogonal planes
+    LineShape m_slicesCross;
+
     /// Defines the filtering type for this plane.
     filter_t m_filtering {filter_t::ANISOTROPIC};
 
@@ -167,17 +187,11 @@ private:
     /// Contains the plane on which we will apply a texture.
     Ogre::MeshPtr m_slicePlane;
 
-    /// Contains the manual object that represent borders.
-    Ogre::ManualObject* m_border {nullptr};
-
     /// Defines the origin position of the slice plane according to the source image's origin.
     Ogre::Vector3 m_origin {Ogre::Vector3::ZERO};
 
     /// Contains the plane material.
     Ogre::MaterialPtr m_texMaterial {nullptr};
-
-    /// Contains the material used to display borders.
-    Ogre::MaterialPtr m_borderMaterial {nullptr};
 
     /// Contains the texture.
     viz::scene3d::Texture::sptr m_texture;
@@ -200,17 +214,8 @@ private:
     /// Contains the parent scene node.
     Ogre::SceneNode* m_parentSceneNode {nullptr};
 
-    /// Defines the entity's width.
-    Ogre::Real m_width {0.F};
-
-    /// Defines the entity's height.
-    Ogre::Real m_height {0.F};
-
-    /// Defines the entity's depth.
-    Ogre::Real m_depth {0.F};
-
-    /// Defines if the border is displayed.
-    bool m_displayBorder {true};
+    /// Defines the entity's size in the X,Y,Z axis.
+    Ogre::Vector3 m_size {0.F};
 
     /// Defines the opacity applied to the entity.
     float m_entityOpacity {1.F};

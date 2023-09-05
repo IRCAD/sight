@@ -21,6 +21,7 @@
 
 #include "viz/scene3d/PickingCross.hpp"
 
+#include <viz/scene3d/helper/ManualObject.hpp>
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/Utils.hpp>
 
@@ -80,11 +81,24 @@ void PickingCross::update(
     const Ogre::Vector3& _d
 )
 {
+    using sight::viz::scene3d::helper::ManualObject;
+    const auto dashLength  = std::max(_a.distance(_b), _c.distance(_d)) / 400.F;
+    const auto dashSpacing = std::max(_a.distance(_b), _c.distance(_d)) / 200.F;
     m_cross->beginUpdate(0);
-    m_cross->position(_a);
-    m_cross->position(_b);
-    m_cross->position(_c);
-    m_cross->position(_d);
+    ManualObject::drawDashedLine(
+        m_cross,
+        _a,
+        _b,
+        dashLength,
+        dashSpacing
+    );
+    ManualObject::drawDashedLine(
+        m_cross,
+        _c,
+        _d,
+        dashLength,
+        dashSpacing
+    );
     m_cross->end();
     m_cross->setVisible(true);
 }
