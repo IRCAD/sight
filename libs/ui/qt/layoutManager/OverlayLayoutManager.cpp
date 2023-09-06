@@ -88,6 +88,7 @@ public:
         Coord width,
         Coord height
     ) :
+        QObject(child),
         m_child(child),
         m_x(x),
         m_y(y),
@@ -155,6 +156,7 @@ void OverlayLayoutManager::createLayout(ui::base::container::fwContainer::sptr p
     {
         const View& view = views()[i];
         auto* widget     = new QWidget(m_parentContainer->getQtContainer());
+
         if(view.width.value > 0)
         {
             widget->setFixedWidth(calculateSize(view.width, m_parentContainer->getQtContainer()->width()));

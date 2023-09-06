@@ -55,9 +55,11 @@ public:
 
     /// Initializes the interractor.
     VIZ_SCENE3D_API PredefinedPositionInteractor(
-        SPTR(Layer)_layer                             = nullptr,
-        bool _layerOrderDependant                     = true,
-        std::vector<predefined_position_t> _positions = {});
+        SPTR(Layer)_layer                                   = nullptr,
+        bool _layerOrderDependant                           = true,
+        std::vector<predefined_position_t> _positions       = {},
+        const std::optional<std::string>& _default_position = std::nullopt
+    );
 
     /// Destroys the trackball.
     VIZ_SCENE3D_API ~PredefinedPositionInteractor() override;
@@ -159,7 +161,7 @@ private:
      * Does nothing if _idx >= vector size
      * @param _idx : the index in the vector of predefined positions
      */
-    void toPredefinedPosition(std::size_t _idx);
+    void toPredefinedPosition(std::size_t _idx, bool _animate = true);
 
     /// Resets the camera's focal length when the focus point changes.
     void updateCameraFocalLength();
@@ -183,7 +185,7 @@ private:
     core::thread::Timer::sptr m_timer;
 
     /// Stores the initial rotation.
-    Ogre::Quaternion m_cameraInitRotation;
+    const Ogre::Quaternion m_cameraInitRotation {Ogre::Quaternion(Ogre::Degree(180), Ogre::Vector3::NEGATIVE_UNIT_X)};
 
     Ogre::Quaternion m_currentOrientation;
 
@@ -191,10 +193,17 @@ private:
 
     /// Vector of predefined position to loop.
     std::vector<predefined_position_t> m_predefined_positions;
+
     /// Stores the current index in m_predefined_positions.
     std::optional<std::size_t> m_current_position_idx {std::nullopt};
 
     Ogre::Matrix4 m_transform {Ogre::Matrix4::IDENTITY};
+
+    /// Curent percentage for animation
+    float m_percentage {0.F};
+
+    /// last time step
+    std::chrono::system_clock::time_point m_last_step_time {};
 };
 
 //------------------------------------------------------------------------------

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -42,10 +42,10 @@ public:
     SIGHT_DECLARE_SERVICE(SView, sight::ui::base::view::IView);
 
     /// Constructor. Do nothing.
-    MODULE_UI_BASE_API SView() noexcept;
+    MODULE_UI_BASE_API SView() noexcept = default;
 
     /// Destructor. Do nothing.
-    MODULE_UI_BASE_API ~SView() noexcept override;
+    MODULE_UI_BASE_API ~SView() noexcept override = default;
 
 protected:
 

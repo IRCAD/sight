@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -45,14 +45,12 @@ protected:
     /**
      * @brief Constructor. Do nothing (Just initialize parameters).
      */
-    IView() noexcept =
-        default;
+    IView() noexcept = default;
 
     /**
      * @brief Destructor. Do nothing.
      */
-    ~IView() noexcept override =
-        default;
+    ~IView() noexcept override = default;
 };
 
 } // namespace sight::ui::base::view

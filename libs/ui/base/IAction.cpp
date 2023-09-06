@@ -37,6 +37,7 @@ const core::com::Slots::SlotKeyType IAction::s_SET_CHECKED_SLOT       = "setChec
 const core::com::Slots::SlotKeyType IAction::s_CHECK_SLOT             = "check";
 const core::com::Slots::SlotKeyType IAction::s_UNCHECK_SLOT           = "uncheck";
 const core::com::Slots::SlotKeyType IAction::s_SET_VISIBLE_SLOT       = "setVisible";
+const core::com::Slots::SlotKeyType IAction::s_SET_HIDDEN_SLOT        = "setHidden";
 const core::com::Slots::SlotKeyType IAction::s_SHOW_SLOT              = "show";
 const core::com::Slots::SlotKeyType IAction::s_HIDE_SLOT              = "hide";
 const core::com::Slots::SlotKeyType IAction::s_TOGGLE_VISIBILITY_SLOT = "toggleVisibility";
@@ -74,6 +75,7 @@ IAction::IAction()
     newSlot(s_DISABLE_SLOT, [this](){this->setEnabled(false);});
 
     newSlot(s_SET_VISIBLE_SLOT, &IAction::setVisible, this);
+    newSlot(s_SET_HIDDEN_SLOT, [this](bool hidden){this->setVisible(!hidden);});
     newSlot(s_SHOW_SLOT, [this](){this->setVisible(true);});
     newSlot(s_HIDE_SLOT, [this](){this->setVisible(false);});
     newSlot(s_TOGGLE_VISIBILITY_SLOT, [this]{this->setVisible(!m_visible);});

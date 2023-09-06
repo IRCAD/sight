@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -24,6 +24,7 @@
 #include "modules/ui/base/config.hpp"
 
 #include <ui/base/IAction.hpp>
+#include <ui/base/parameter.hpp>
 
 namespace sight::module::ui::base
 {
@@ -34,6 +35,7 @@ namespace sight::module::ui::base
  *
  * @section Signals Signals
  * - \b clicked(): Emitted when the action is clicked.
+ * - \b parameterChanged(parameter_t, std::string): Emitted when the action is clicked or setChecked(true|false).
  *
  * Example of configuration
  * @code{.xml}
@@ -41,34 +43,67 @@ namespace sight::module::ui::base
         <state checked="false" enabled="false" inverse="true" visible="true" />
         <sync>true</sync>
         <confirmation message="..." />
+        <!-- will send parameterChanged("left", "position") when checked and parameterChanged("center", "position") when
+ * unchecked -->
+        <parameter key="position" checked="left" unchecked="center" />
     </service>
    @endcode
  *
  * All configurations options are optional. Common action options can be found in @see IAction.
  * - \b sync: set to true to emit the 'clicked' signals synchronously instead of the default, asynchronously.
+ * - \b parameter: set the key and values to send in parameterChanged signal on click and setChecked(true|false).
+ *   - \b key: the key used in parameterChanged signal
+ *   - \b clicked: the value used in parameterChanged signal on click
+ *   - \b checked: the value used in parameterChanged signal on setChecked(true)
+ *   - \b unchecked: the value used in parameterChanged signal on setChecked(false)
  */
-class MODULE_UI_BASE_CLASS_API SAction : public sight::ui::base::IAction
+class MODULE_UI_BASE_CLASS_API SAction final : public sight::ui::base::IAction
 {
 public:
 
+    struct signals final
+    {
+        using key_t = core::com::Signals::SignalKeyType;
+        inline static const key_t s_CLICKED           = "clicked";
+        inline static const key_t s_PARAMETER_CHANGED = "parameterChanged";
+
+        using changed_t = core::com::Signal<void (sight::ui::base::parameter_t, std::string)>;
+    };
+
     SIGHT_DECLARE_SERVICE(SAction, sight::ui::base::IAction);
 
-    MODULE_UI_BASE_API SAction() noexcept;
-    MODULE_UI_BASE_API ~SAction() noexcept override = default;
+    MODULE_UI_BASE_API SAction() noexcept        = default;
+    MODULE_UI_BASE_API ~SAction() noexcept final = default;
+
+protected:
+
+    MODULE_UI_BASE_API void configuring() final;
+
+    MODULE_UI_BASE_API void starting() final;
+
+    MODULE_UI_BASE_API void stopping() final;
+
+    /// Emits the clicked signal
+    MODULE_UI_BASE_API void updating() final;
 
 private:
 
-    MODULE_UI_BASE_API void configuring() override;
-
-    MODULE_UI_BASE_API void starting() override;
-
-    MODULE_UI_BASE_API void stopping() override;
-
-    /// Emits the clicked signal
-    MODULE_UI_BASE_API void updating() override;
+    /// Signals
+    const IAction::void_signal_t::sptr m_clicked_sig {newSignal<IAction::void_signal_t>(signals::s_CLICKED)};
+    const signals::changed_t::sptr m_parameter_changed_sig {
+        newSignal<signals::changed_t>(signals::s_PARAMETER_CHANGED)
+    };
 
     /// Configuration option to emit the clicked signal synchronously or asynchronously
     bool m_sync {false};
+
+    /// The optional key used in parameterChanged signal
+    std::optional<std::string> m_key;
+
+    /// The optional values used in parameterChanged signal on click and setChecked(true|false)
+    std::optional<std::string> m_clicked;
+    std::optional<std::string> m_checked;
+    std::optional<std::string> m_unchecked;
 };
 
 } // namespace sight::module::ui::base

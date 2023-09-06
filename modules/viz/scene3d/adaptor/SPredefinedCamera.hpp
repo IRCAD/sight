@@ -47,7 +47,7 @@ namespace sight::module::viz::scene3d::adaptor
  * @section XML XML Configuration
  * @code{.xml}
     <service type="sight::module::viz::scene3d::adaptor::SPredefinedCamera">
-        <config priority="0" mouseRotation="true" />
+        <config priority="0" mouseRotation="true" defaultPosition="pos3" />
         <in key="transform" uid="..." autoConnect="true"/>
         <positions>
             <position name="pos1" rx="-30.0" />
@@ -65,6 +65,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b priority (optional, int, default=0): interaction priority, higher priority interactions are performed first.
  * - \b layerOrderDependant (optional, bool, default=true): defines if interaction must take into account above layers.
  * - \b mouseRotation (optional, bool, default=true): defines if mouse rotation through mouse is activated or not.
+ * - \b defaultPosition (optional, string, default=""): defines the default position to use.
  *
  * @section Slots Slots
  * - \b setParameter(parameter_t value, std::string key): If key = "position", looking for value in the position name,
@@ -132,6 +133,9 @@ private:
 
     /// Defines if one can move using the mouse interaction (default off)
     bool m_manualRotation {false};
+
+    /// Defines the default position to use.
+    std::optional<std::string> m_defaultPosition;
 
     /// Input transform.
     static constexpr std::string_view s_REGISTRATION_TRANSFORM_IN = "transform";
