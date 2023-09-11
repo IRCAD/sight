@@ -18,7 +18,7 @@
             <gui>
                 <layout type="sight::ui::base::CardinalLayoutManager">
                     <view caption="Negato1" align="center" />
-                    <view caption="Negato2" align="right" />
+                    <view caption="Negato2" align="right" minWidth="300"/>
                     <view caption="Negato3" align="right" />
                     <view align="left" visible="false" />
                 </layout>
@@ -30,7 +30,6 @@
                 <view wid="view_negato1" />
                 <view wid="view_negato2" />
                 <view wid="view_negato3" />
-                <view sid="landmarksEditor" />
             </registry>
         </service>
 
@@ -39,33 +38,11 @@
                 <layout>
                     <menuItem name="Previous" icon="sight::module::ui::icons/Back.svg" />
                     <menuItem name="Next" icon="sight::module::ui::icons/Next.svg" />
-                    <menuItem name="Load landmark" icon="sight::module::ui::icons/Load-landmark.png" />
-                    <menuItem name="Save landmark" icon="sight::module::ui::icons/Save-landmark.png" />
-                    <!-- <menuItem name="Focus landmark" icon="sight::module::ui::icons/Find-landmark.png" /> -->
-                    <menuItem name="Display Landmarks editor" icon="sight::module::ui::icons/View-landmark.png" style="check" />
-                    <separator />
-                    <menuItem name="Add distance" icon="sight::module::ui::icons/distance.png" />
-                    <menuItem name="Remove distance" icon="sight::module::ui::icons/RemoveDistance.png" />
-                    <menuItem name="Hide distance" icon="sight::module::ui::icons/HideDistance.png" style="check" />
-                    <separator />
-                    <menuItem name="Hide cross" icon="sight::module::ui::icons/HideCross.png" style="radio" />
-                    <menuItem name="Show normal cross" icon="sight::module::ui::icons/NormalCross.png" style="radio" />
-                    <menuItem name="Show full cross" icon="sight::module::ui::icons/FullCross.png" style="radio" />
                 </layout>
             </gui>
             <registry>
                 <menuItem sid="ActionPrevious" />
                 <menuItem sid="ActionNext" />
-                <menuItem sid="ActionLoadLandmark" />
-                <menuItem sid="ActionSaveLandmark" />
-                <!-- <menuItem sid="ActionSFocusLandmark"  /> -->
-                <menuItem sid="ActionEditLandmark" />
-                <menuItem sid="ActionAddDistance" />
-                <menuItem sid="ActionRemoveDistance" />
-                <menuItem sid="ActionHideDistance" />
-                <menuItem sid="ActionHideCross" />
-                <menuItem sid="ActionShowNormalCross" />
-                <menuItem sid="ActionShowFullCross" />
             </registry>
         </service>
 
@@ -105,25 +82,6 @@
             <parameter replace="orientation" by="sagittal" />
         </service>
 
-        <service uid="landmarksEditor" type="sight::module::ui::qt::metrics::SLandmarks" autoConnect="true">
-            <inout key="landmarks" uid="${landmarks}" />
-            <advanced>${advancedLandmarksEditor}</advanced>
-        </service>
-
-        <service uid="ActionLoadLandmark" type="sight::module::ui::base::SAction" />
-        <service uid="ActionSaveLandmark" type="sight::module::ui::base::SAction" />
-        <service uid="ActionEditLandmark" type="sight::module::ui::base::SAction" />
-
-        <service uid="ActionAddDistance" type="sight::module::ui::base::metrics::SImageMultiDistances">
-            <inout key="image" uid="${imageSeries}" />
-        </service>
-        <service uid="ActionRemoveDistance" type="sight::module::ui::base::metrics::SRemoveDistance">
-            <inout key="image" uid="${imageSeries}" />
-        </service>
-        <service uid="ActionHideDistance" type="sight::module::ui::base::metrics::SShowDistance" autoConnect="true">
-            <inout key="image" uid="${imageSeries}" />
-        </service>
-
         <!-- The action "previous" and "next" are visible only if the application use a "SSequencer".
              This service send signals to enable or not the actions. -->
         <service uid="ActionPrevious" type="sight::module::ui::base::com::SSignal">
@@ -134,57 +92,9 @@
             <state visible="false" />
         </service>
 
-        <service uid="LoadLandmark" type="sight::module::ui::base::io::SSelector">
-            <inout key="data" uid="${landmarks}" />
-            <type mode="reader" />
-            <selection mode="include" />
-            <addSelection service="sight::module::io::session::SReader" />
-            <config id="LandmarksConfig" service="sight::module::io::session::SReader" />
-        </service>
-
-        <service uid="SaveLandmark" type="sight::module::ui::base::io::SSelector">
-            <inout key="data" uid="${landmarks}" />
-            <type mode="writer" />
-            <selection mode="include" />
-            <addSelection service="sight::module::io::session::SWriter" />
-            <config id="LandmarksConfig" service="sight::module::io::session::SWriter" />
-        </service>
-
-        <service uid="ActionHideCross" type="sight::module::ui::base::viz::CrossTypeAction">
-            <crossType>hide</crossType>
-        </service>
-        <service uid="ActionShowNormalCross" type="sight::module::ui::base::viz::CrossTypeAction">
-            <crossType>half</crossType>
-            <state checked="true" />
-        </service>
-        <service uid="ActionShowFullCross" type="sight::module::ui::base::viz::CrossTypeAction">
-            <crossType>full</crossType>
-        </service>
-
-        <connect>
-            <signal>ActionLoadLandmark/clicked</signal>
-            <slot>LoadLandmark/update</slot>
-        </connect>
-
-        <connect>
-            <signal>ActionSaveLandmark/clicked</signal>
-            <slot>SaveLandmark/update</slot>
-        </connect>
-
-        <connect channel="crossTypeChannel">
-            <signal>ActionHideCross/crossTypeModified</signal>
-            <signal>ActionShowNormalCross/crossTypeModified</signal>
-            <signal>ActionShowFullCross/crossTypeModified</signal>
-        </connect>
-
-        <connect channel="pickerChannel">
-            <slot>landmarksEditor/pick</slot>
-        </connect>
-
         <!-- Connection to enable "previous" action. It should be connected to a SSequencer in the application
              configuration.-->
         <connect channel="${hasPreviousChannel}">
-            <slot>ActionExportActivity/hide</slot>
             <slot>ActionPrevious/show</slot>
             <slot>ActionPrevious/setEnabled</slot>
         </connect>
@@ -197,7 +107,6 @@
         <!-- Connection to enable "next" action. It should be connected to a SSequencer in the application
              configuration.-->
         <connect channel="${hasNextChannel}">
-            <slot>ActionExportActivity/hide</slot>
             <slot>ActionNext/show</slot>
             <slot>ActionNext/setEnabled</slot>
         </connect>
@@ -207,32 +116,15 @@
             <signal>ActionNext/triggered</signal>
         </connect>
 
-        <connect>
-            <signal>ActionEditLandmark/isChecked</signal>
-            <slot>landmarksEditor/setVisible</slot>
-        </connect>
-
         <!-- START AND STOP SERVICES -->
         <start uid="mainView" />
         <start uid="toolBar" />
-        <start uid="landmarksEditor" />
         <start uid="ActionPrevious" />
         <start uid="ActionNext" />
-        <start uid="ActionLoadLandmark" />
-        <start uid="ActionSaveLandmark" />
-        <start uid="ActionEditLandmark" />
-        <start uid="ActionAddDistance" />
-        <start uid="ActionRemoveDistance" />
-        <start uid="ActionHideDistance" />
-        <start uid="ActionHideCross" />
-        <start uid="ActionShowNormalCross" />
-        <start uid="ActionShowFullCross" />
 
         <start uid="cfgNegato1" />
         <start uid="cfgNegato2" />
         <start uid="cfgNegato3" />
 
-        <start uid="LoadLandmark" />
-        <start uid="SaveLandmark" />
     </config>
 </extension>

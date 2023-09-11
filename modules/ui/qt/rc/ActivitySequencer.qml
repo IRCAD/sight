@@ -48,10 +48,10 @@ Item{
                 enabled: false
 
                 Rectangle{
-                    Layout.fillWidth: true
                     color: Material.primary
                     height: 3
                     visible: index > 0
+                    width: 30
                 }
                 Button{
                     id: toolButton
@@ -64,19 +64,23 @@ Item{
                         }
                     }
                     background: Rectangle {
-                        implicitWidth: 200
+                        implicitWidth: buttonWidth
                         implicitHeight: 50
                         color: {
                             var color = Material.background
+                            border.width = 0
                             if(activitySequencer.currentSelection === index)
                             {
                                 color = Material.accent
+                                border.color = "white"
+                                border.width = 2
                             }
                             if(toolButton.hovered)
                             {
                                 color = elevation
                             }
                             toolButton.enabled? color : Material.foreground
+
                         }
                         radius: 10
                     }
@@ -105,7 +109,7 @@ Item{
                         Text {
                             Layout.fillWidth: true
                             text: toolButton.text
-                            font: Qt.font({pointSize: 12})
+                            font: Qt.font({pointSize: fontSize})
                             opacity: enabled ? 1.0 : 0.3
                             color: Material.primary
                             horizontalAlignment: Text.AlignHCenter

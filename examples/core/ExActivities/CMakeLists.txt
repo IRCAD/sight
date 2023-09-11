@@ -9,6 +9,7 @@ add_dependencies(
     module_activity
     data
     module_service
+    module_filter_image
     module_ui_base
     module_ui_flaticons
     module_io_vtk

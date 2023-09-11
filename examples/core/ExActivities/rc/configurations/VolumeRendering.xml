@@ -11,9 +11,8 @@
 
         <object uid="${imageSeries}" type="sight::data::ImageSeries" src="ref" />
         <object uid="tf" type="sight::data::TransferFunction" />
-        <object uid="mask" type="sight::data::Image">
-            <gray>255</gray>
-        </object>
+        <object uid="mask" type="sight::data::Image" />
+        <object uid="extrudedModelSeries" type="sight::data::ModelSeries" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -57,11 +56,11 @@
         <!-- ************************************* Services ************************************ -->
 
         <service uid="imageScene" type="sight::viz::scene3d::SRender">
-            <scene overlay="true">
+            <scene>
                 <background color="#36393E" />
                 <layer id="default" order="1" >
-                <adaptor uid="cameraInteractorAdaptor" />
-                <adaptor uid="volumeRender" />
+                    <adaptor uid="cameraInteractorAdaptor" />
+                    <adaptor uid="volumeRender" />
                 </layer>
             </scene>
         </service>
@@ -74,7 +73,13 @@
             <in key="image" uid="${imageSeries}" />
             <in key="tf" uid="tf" />
             <in key="mask" uid="mask" />
-            <config widgets="false" preintegration="false" autoresetcamera="true" />
+            <config widgets="true" preintegration="false" autoresetcamera="true" />
+        </service>
+
+        <service uid="imageExtruderSrv" type="sight::module::filter::image::SImageExtruder" worker="EXTRUSION_THREAD">
+            <in key="meshes" uid="extrudedModelSeries" />
+            <in key="image" uid="${imageSeries}" />
+            <inout key="mask" uid="mask" />
         </service>
 
         <service uid="tfm" type="sight::module::ui::qt::image::STransferFunction">
@@ -90,5 +95,9 @@
         <start uid="volumeRender" />
         <start uid="tfm" />
         <start uid="importAct" />
+        <start uid="imageExtruderSrv" />
+
+        <update uid="imageExtruderSrv" />
+
     </config>
 </extension>

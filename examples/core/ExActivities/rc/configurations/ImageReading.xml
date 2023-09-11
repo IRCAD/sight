@@ -20,7 +20,6 @@
                     <orientation value="vertical" />
                     <view proportion="0" />
                 </layout>
-                <toolBar />
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
@@ -53,7 +52,6 @@
         <!-- ******************************* Start services ***************************************** -->
 
         <start uid="mainView" />
-        <!-- <start uid="toolBarView" /> -->
         <start uid="imageScene" />
         <start uid="importAct" />
     </config>

@@ -42,7 +42,7 @@ endif()
 
 project(
     sight
-    VERSION 23.0.0
+    VERSION 23.1.0
     DESCRIPTION "Surgical Image Guidance and Healthcare Toolkit"
     HOMEPAGE_URL "https://git.ircad.fr/sight/sight"
 )

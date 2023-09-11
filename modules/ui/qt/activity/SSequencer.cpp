@@ -50,6 +50,8 @@ static const std::string s_FOREGROUND_CONFIG       = "foreground";
 static const std::string s_BACKGROUND_CONFIG       = "background";
 static const std::string s_PRIMARY_CONFIG          = "primary";
 static const std::string s_ELEVATION_CONFIG        = "elevation";
+static const std::string s_BUTTON_WIDTH            = "buttonWidth";
+static const std::string s_FONT_SIZE               = "fontSize";
 
 //------------------------------------------------------------------------------
 
@@ -81,13 +83,15 @@ void SSequencer::configuring()
 
     m_clearActivities = config.get<bool>(s_CLEAR_ACTIVITIES_CONFIG, m_clearActivities);
 
-    m_theme      = config.get<std::string>(s_THEME_CONFIG, m_theme);
-    m_clear      = config.get<std::string>(s_CLEAR_CONFIG, m_clear);
-    m_accent     = config.get<std::string>(s_ACCENT_CONFIG, m_accent);
-    m_foreground = config.get<std::string>(s_FOREGROUND_CONFIG, m_foreground);
-    m_background = config.get<std::string>(s_BACKGROUND_CONFIG, m_background);
-    m_primary    = config.get<std::string>(s_PRIMARY_CONFIG, m_primary);
-    m_elevation  = config.get<std::string>(s_ELEVATION_CONFIG, m_elevation);
+    m_theme       = config.get<std::string>(s_THEME_CONFIG, m_theme);
+    m_clear       = config.get<std::string>(s_CLEAR_CONFIG, m_clear);
+    m_accent      = config.get<std::string>(s_ACCENT_CONFIG, m_accent);
+    m_foreground  = config.get<std::string>(s_FOREGROUND_CONFIG, m_foreground);
+    m_background  = config.get<std::string>(s_BACKGROUND_CONFIG, m_background);
+    m_primary     = config.get<std::string>(s_PRIMARY_CONFIG, m_primary);
+    m_elevation   = config.get<std::string>(s_ELEVATION_CONFIG, m_elevation);
+    m_buttonWidth = config.get<std::string>(s_BUTTON_WIDTH, m_buttonWidth);
+    m_fontSize    = config.get<double>(s_FONT_SIZE, m_fontSize);
 }
 
 //------------------------------------------------------------------------------
@@ -203,6 +207,11 @@ void SSequencer::starting()
         QString::fromStdString(s_ELEVATION_CONFIG),
         QString::fromStdString(m_elevation)
     );
+    engine->rootContext()->setContextProperty(
+        QString::fromStdString(s_BUTTON_WIDTH),
+        QString::fromStdString(m_buttonWidth)
+    );
+    engine->rootContext()->setContextProperty(QString::fromStdString(s_FONT_SIZE), m_fontSize);
 
     m_widget->setSource(QUrl::fromLocalFile(QString::fromStdString(path.string())));
 
@@ -499,7 +508,6 @@ service::IService::KeyConnectionsMap SSequencer::getAutoConnections() const
     KeyConnectionsMap connections;
     connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_ADDED_OBJECTS_SIG, IService::slots::s_UPDATE);
     connections.push(s_ACTIVITY_SET_INOUT, data::ActivitySet::s_MODIFIED_SIG, IService::slots::s_UPDATE);
-
     return connections;
 }
 
