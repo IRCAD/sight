@@ -376,8 +376,15 @@ void ManualObject::drawDashedLine(
 {
     SIGHT_ASSERT("Invalid argument", _object != nullptr);
 
-    const auto vec        = _p2 - _p1;
-    const auto length     = vec.length();
+    const auto vec    = _p2 - _p1;
+    const auto length = vec.length();
+
+    if(length <= (_dashLength + _dashSpacing))
+    {
+        // No need to draw a dashed line
+        return;
+    }
+
     const auto numDashes  = length / (_dashLength + _dashSpacing);
     const auto incDash    = vec * _dashLength / length;
     const auto incSpacing = vec * _dashSpacing / length;
