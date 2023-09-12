@@ -331,8 +331,22 @@ SLandmarks::SLandmarks() noexcept
     newSlot(Slots::CONFIGURE_LANDMARKS, &SLandmarks::configureLandmarks, this);
     newSlot(Slots::ENABLE_EDIT_MODE, &SLandmarks::enableEditMode, this);
     newSlot(Slots::DISABLE_EDIT_MODE, &SLandmarks::disableEditMode, this);
-    newSlot(Slots::TOGGLE_EDIT_MODE, [this]{m_editMode ? disableEditMode() : enableEditMode();});
+    newSlot(
+        Slots::TOGGLE_EDIT_MODE,
+        [this]
+        {
+            (m_editMode& EditMode::EDIT) == EditMode::EDIT ? disableEditMode() : enableEditMode();
+        });
     newSlot(Slots::CHANGE_EDIT_MODE, [this](bool editMode){editMode ? enableEditMode() : disableEditMode();});
+    newSlot(Slots::ENABLE_MOVE_MODE, &SLandmarks::enableMoveMode, this);
+    newSlot(Slots::DISABLE_MOVE_MODE, &SLandmarks::disableMoveMode, this);
+    newSlot(
+        Slots::TOGGLE_MOVE_MODE,
+        [this]
+        {
+            (m_editMode& EditMode::MOVE) == EditMode::MOVE ? disableMoveMode() : enableMoveMode();
+        });
+    newSlot(Slots::CHANGE_MOVE_MODE, [this](bool editMode){editMode ? enableMoveMode() : disableMoveMode();});
 }
 
 //-----------------------------------------------------------------------------
@@ -1432,41 +1446,33 @@ void SLandmarks::removeLandmarks()
 
 //------------------------------------------------------------------------------
 
-void SLandmarks::configureLandmarks(
-    std::optional<std::string> group,
-    std::optional<sight::data::Landmarks::ColorType> color,
-    std::optional<sight::data::Landmarks::SizeType> size,
-    std::optional<sight::data::Landmarks::Shape> shape,
-    std::optional<int> groupMax,
-    std::optional<int> visibleMax,
-    std::optional<int> totalMax
-)
+void SLandmarks::configureLandmarks(sight::viz::scene3d::LandmarksConfiguration configuration)
 {
-    if(group)
+    if(configuration.group)
     {
-        m_currentGroup = *group;
+        m_currentGroup = *configuration.group;
     }
 
-    if(color)
+    if(configuration.color)
     {
-        m_currentColor = *color;
+        m_currentColor = *configuration.color;
     }
 
-    if(size)
+    if(configuration.size)
     {
-        m_currentSize = *size;
+        m_currentSize = *configuration.size;
     }
 
-    if(shape)
+    if(configuration.shape)
     {
-        m_currentShape = *shape;
+        m_currentShape = *configuration.shape;
     }
 
-    if(groupMax)
+    if(configuration.groupMax)
     {
-        if(*groupMax >= 0)
+        if(*configuration.groupMax >= 0)
         {
-            m_groupMax[m_currentGroup] = std::size_t(*groupMax);
+            m_groupMax[m_currentGroup] = std::size_t(*configuration.groupMax);
         }
         else
         {
@@ -1474,11 +1480,11 @@ void SLandmarks::configureLandmarks(
         }
     }
 
-    if(visibleMax)
+    if(configuration.visibleMax)
     {
-        if(*visibleMax >= 0)
+        if(*configuration.visibleMax >= 0)
         {
-            m_visibleMax = *visibleMax;
+            m_visibleMax = *configuration.visibleMax;
         }
         else
         {
@@ -1486,16 +1492,21 @@ void SLandmarks::configureLandmarks(
         }
     }
 
-    if(totalMax)
+    if(configuration.totalMax)
     {
-        if(*totalMax >= 0)
+        if(*configuration.totalMax >= 0)
         {
-            m_totalMax = *totalMax;
+            m_totalMax = *configuration.totalMax;
         }
         else
         {
             m_totalMax = std::nullopt;
         }
+    }
+
+    if(configuration.movableGroups)
+    {
+        m_movableGroups = *configuration.movableGroups;
     }
 }
 
@@ -1503,12 +1514,13 @@ void SLandmarks::configureLandmarks(
 
 void SLandmarks::enableEditMode()
 {
-    if(m_editMode)
+    if((m_editMode& EditMode::EDIT) == EditMode::EDIT)
     {
         return;
     }
 
-    m_editMode = true;
+    m_editMode |= EditMode::EDIT;
+
     setCursor(Qt::CrossCursor);
 
     if(m_eventFilter == nullptr)
@@ -1527,16 +1539,20 @@ void SLandmarks::enableEditMode()
 
 void SLandmarks::disableEditMode()
 {
-    if(!m_editMode)
+    if((m_editMode& EditMode::EDIT) != EditMode::EDIT)
     {
         return;
     }
 
-    m_editMode = false;
-    auto interactor    = getLayer()->getRenderService()->getInteractorManager();
-    auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
-    auto* parentWidget = qtInteractor->getQtWidget();
-    parentWidget->unsetCursor();
+    m_editMode &= ~EditMode::EDIT;
+
+    if(m_editMode == EditMode::DISPLAY)
+    {
+        auto interactor    = getLayer()->getRenderService()->getInteractorManager();
+        auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+        auto* parentWidget = qtInteractor->getQtWidget();
+        parentWidget->unsetCursor();
+    }
 
     m_contextualMenu->hide();
 
@@ -1546,6 +1562,40 @@ void SLandmarks::disableEditMode()
     }
 
     m_editModeChanged->asyncEmit(false);
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::enableMoveMode()
+{
+    if((m_editMode& EditMode::MOVE) == EditMode::MOVE)
+    {
+        return;
+    }
+
+    m_editMode |= EditMode::MOVE;
+
+    setCursor(Qt::CrossCursor);
+}
+
+//------------------------------------------------------------------------------
+
+void SLandmarks::disableMoveMode()
+{
+    if((m_editMode& EditMode::MOVE) != EditMode::MOVE)
+    {
+        return;
+    }
+
+    m_editMode &= ~EditMode::MOVE;
+
+    if(m_editMode == EditMode::DISPLAY)
+    {
+        auto interactor    = getLayer()->getRenderService()->getInteractorManager();
+        auto qtInteractor  = WindowInteractor::dynamicCast(interactor);
+        auto* parentWidget = qtInteractor->getQtWidget();
+        parentWidget->unsetCursor();
+    }
 }
 
 //------------------------------------------------------------------------------
@@ -1914,28 +1964,35 @@ void SLandmarks::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, int _
         return;
     }
 
-    if(!m_editMode)
+    if(m_editMode == EditMode::DISPLAY)
     {
-        // If the edit mode is off, the landmarks are read-only.
+        // If the EDIT mode is off, the landmarks are read-only.
         return;
     }
 
-    std::shared_ptr<Landmark> pickedData = tryPick(_x, _y);
-    if(pickedData != nullptr)
+    const bool mustEdit = (m_editMode& EditMode::EDIT) == EditMode::EDIT;
+
+    // Try to pick a landmark.
+    if(const auto& pickedData = tryPick(_x, _y); pickedData)
     {
+        // If something is picked, we will select it.
         setCursor(Qt::ClosedHandCursor);
         m_pickedData = pickedData;
         m_pickedData->m_node->setScale(s_SELECTED_SCALE, s_SELECTED_SCALE, s_SELECTED_SCALE);
-        m_mustShowContextualMenu = true;
+
+        // Only show contextual menu if we are in "true" EDIT mode
+        m_mustShowContextualMenu = mustEdit;
     }
-    else
+    else if(mustEdit)
     {
+        // Nothing is picked, we will create a new landmark if we are in EDIT mode.
+        m_mustShowContextualMenu = false;
+
         // If nothing is picked, we will create a new landmark.
         if(auto newPos = this->getNearestPickedPosition(_x, _y); newPos)
         {
             setCursor(Qt::ClosedHandCursor);
             createAndPickLandmark({(*newPos)[0], (*newPos)[1], (*newPos)[2]});
-            m_mustShowContextualMenu = false;
         }
     }
 }
@@ -2043,7 +2100,7 @@ void SLandmarks::mouseMoveEvent(MouseButton /*_button*/, Modifier /*_mods*/, int
 
         this->requestRender();
     }
-    else if(m_editMode)
+    else if(m_editMode != EditMode::DISPLAY)
     {
         if(tryPick(_x, _y) != nullptr)
         {
@@ -2067,7 +2124,7 @@ void SLandmarks::buttonReleaseEvent(MouseButton _button, Modifier /*_mods*/, int
         setCursor(Qt::OpenHandCursor);
 
         // If we are in edit mode, we show the bin button to remove it.
-        if(m_editMode && m_mustShowContextualMenu)
+        if((m_editMode& EditMode::EDIT) == EditMode::EDIT && m_mustShowContextualMenu)
         {
             std::pair<Ogre::Vector2, Ogre::Vector2> screenPos = sight::viz::scene3d::helper::Scene::computeBoundingRect(
                 *getLayer()->getDefaultCamera(),
@@ -2148,9 +2205,10 @@ void SLandmarks::buttonReleaseEvent(MouseButton _button, Modifier /*_mods*/, int
 
         this->getLayer()->requestRender();
     }
-    else if(_button == RIGHT)
+    else if(_button == RIGHT && m_editMode != EditMode::DISPLAY)
     {
         disableEditMode();
+        disableMoveMode();
     }
 }
 
@@ -2204,9 +2262,10 @@ void SLandmarks::wheelEvent(Modifier /*_mods*/, double /*_angleDelta*/, int /*_x
 
 void SLandmarks::keyPressEvent(int _key, Modifier /*_mods*/, int /*_mouseX*/, int /*_mouseY*/)
 {
-    if(m_editMode && _key == Qt::Key_Escape)
+    if(m_editMode != EditMode::DISPLAY && _key == Qt::Key_Escape)
     {
         disableEditMode();
+        disableMoveMode();
     }
 }
 
@@ -2259,7 +2318,10 @@ std::shared_ptr<SLandmarks::Landmark> SLandmarks::tryPick(int _x, int _y, bool f
                     if(auto group = getGroup(landmark->m_groupName, lock);
                        group.has_value() && group->m_visibility
                        && isLandmarkVisible(group->m_points[landmark->m_index], group->m_size)
-                       && (!forModification || !m_canOnlyModifyCurrent || landmark->m_groupName == m_currentGroup))
+                       && (!forModification
+                           || !m_canOnlyModifyCurrent
+                           || landmark->m_groupName == m_currentGroup
+                           || m_movableGroups.contains(landmark->m_groupName)))
                     {
                         return landmark;
                     }

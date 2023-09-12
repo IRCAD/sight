@@ -1,7 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2023 IRCAD France
- * Copyright (C) 2018-2020 IHU Strasbourg
+ * Copyright (C) 2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -38,6 +37,7 @@
 #include <viz/scene3d/IAdaptor.hpp>
 #include <viz/scene3d/IText.hpp>
 #include <viz/scene3d/ITransformable.hpp>
+#include <viz/scene3d/LandmarksConfiguration.hpp>
 
 #include <QPushButton>
 
@@ -238,6 +238,10 @@ public:
         inline static const key_t DISABLE_EDIT_MODE       = "disableEditMode";
         inline static const key_t TOGGLE_EDIT_MODE        = "toggleEditMode";
         inline static const key_t CHANGE_EDIT_MODE        = "changeEditMode";
+        inline static const key_t ENABLE_MOVE_MODE        = "enableMoveMode";
+        inline static const key_t DISABLE_MOVE_MODE       = "disableMoveMode";
+        inline static const key_t TOGGLE_MOVE_MODE        = "toggleMoveMode";
+        inline static const key_t CHANGE_MOVE_MODE        = "changeMoveMode";
     };
 
     /// Remove all manual objects group
@@ -321,26 +325,20 @@ public:
     MODULE_VIZ_SCENE3DQT_API void createLandmark(sight::data::Landmarks::PointType point);
 
     /// SLOT: Configure the new landmarks size, shape and color used when adding landmarks ind "ADD" mode.
-    /// Parameter with `std::nullopt`, means "no change".
-    /// @param group the group name of the landmarks to configure.
-    /// @param color the color of the landmarks.
-    /// @param size the size of the landmarks.
-    /// @param shape the shape of the landmarks.
-    /// @param groupMax the maximum number of landmark in the group. Value < 0 means "no limit".
-    /// @param visibleMax the maximum number of visible landmark. Value < 0 means "no limit".
-    /// @param totalMax the maximum number of total landmark. Value < 0 means "no limit".
-    MODULE_VIZ_SCENE3DQT_API void configureLandmarks(
-        std::optional<std::string> group,
-        std::optional<sight::data::Landmarks::ColorType> color,
-        std::optional<sight::data::Landmarks::SizeType> size,
-        std::optional<sight::data::Landmarks::Shape> shape,
-        std::optional<int> groupMax,
-        std::optional<int> visibleMax,
-        std::optional<int> totalMax
-    );
 
+    MODULE_VIZ_SCENE3DQT_API void configureLandmarks(sight::viz::scene3d::LandmarksConfiguration configuration);
+
+    /// SLOT: Enable edit mode.
     void enableEditMode();
+
+    /// SLOT: Disable edit mode.
     void disableEditMode();
+
+    /// SLOT: Enable move mode.
+    void enableMoveMode();
+
+    /// SLOT: Disable move mode.
+    void disableMoveMode();
 
     struct MODULE_VIZ_SCENE3DQT_CLASS_API Signals final
     {
@@ -682,8 +680,20 @@ private:
     std::optional<size_t> m_totalMax {std::nullopt};
     /// @}
 
-    /// True if the adaptor is in edit mode, which allows to modify the landmarks
-    bool m_editMode = false;
+    std::set<std::string> m_movableGroups;
+
+    /// Adaptor edit "mode":
+    /// - DISPLAY is read-only,
+    /// - MOVE allows to modify existing landmarks position
+    /// - EDIT allows to add/remove and move landmarks
+    enum EditMode : std::uint8_t
+    {
+        DISPLAY = 1 << 0,
+        MOVE    = 1 << 1,
+        EDIT    = 1 << 2
+    };
+
+    std::uint8_t m_editMode {std::uint8_t(EditMode::DISPLAY)};
 
     /// Whether all landmarks can be modified or only landmarks belonging to the current group
     bool m_canOnlyModifyCurrent = false;
