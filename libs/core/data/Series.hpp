@@ -646,10 +646,19 @@ public:
     }
 
     /// Convenience function to convert from / to DicomTypes values to string
+    /// This may be used to configure reader/writer service
+    /// @{
     DATA_API static std::string dicomTypesToString(DicomTypes types) noexcept;
     DATA_API static DicomTypes stringToDicomTypes(const std::string& types) noexcept;
 
-    /// Returns the type of the Series. For now, only "Image" and "Model" are supported.
+    using SopKeywords = std::set<dicom::sop::Keyword>;
+    DATA_API static SopKeywords dicomTypesToSops(DicomTypes types) noexcept;
+    DATA_API static DicomTypes sopsToDicomTypes(const SopKeywords& sops) noexcept;
+    DATA_API static SopKeywords stringToSops(const std::string& sops) noexcept;
+    DATA_API static std::string sopsToString(const SopKeywords& sops) noexcept;
+    /// @}
+
+    /// Returns the type of the Series. For now, only "Image", "Model" and "Fiducials" are supported.
     DATA_API DicomType getDicomType() const noexcept;
     DATA_API static DicomType getDicomType(const std::string& SOPClassUID) noexcept;
 

@@ -123,6 +123,19 @@ struct ColumnDisplayInformation
     std::function<QStandardItem* (data::Series::csptr, When)> getInfo;
 };
 
+//------------------------------------------------------------------------------
+
+inline static QTextCodec* getCodec(data::Series::csptr series)
+{
+    QTextCodec* codec = QTextCodec::codecForName(series->getEncoding().c_str());
+    if(codec == nullptr)
+    {
+        return QTextCodec::codecForName("UTF-8");
+    }
+
+    return codec;
+}
+
 /* *INDENT-OFF* */
 static const std::map<std::string, ColumnDisplayInformation> columnMap {
     {"PatientName", {.header = "Name", .getInfo =
@@ -133,13 +146,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
                 return new QStandardItem;
             }
 
-            QTextCodec* codec = QTextCodec::codecForName(series->getEncoding().c_str());
-            if(codec == nullptr)
-            {
-                codec = QTextCodec::codecForName("UTF-8");
-            }
-
-            QString res = codec->toUnicode(series->getPatientName().c_str());
+            QString res = getCodec(series)->toUnicode(series->getPatientName().c_str());
             QString upperPatientName = res.toUpper();
             if(upperPatientName.isEmpty() || upperPatientName.contains("ANONYMIZED") || upperPatientName == "UNKNOWN"
                 || upperPatientName.contains("ANONYMOUS") || upperPatientName == "NONE" || upperPatientName == "NA")
@@ -175,13 +182,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
         {
             if(when == When::STUDY)
             {
-                QTextCodec* codec = QTextCodec::codecForName(series->getEncoding().c_str());
-                if(codec == nullptr)
-                {
-                    codec = QTextCodec::codecForName("UTF-8");
-                }
-
-                QString res = codec->toUnicode(series->getPatientName().c_str());
+                QString res = getCodec(series)->toUnicode(series->getPatientName().c_str());
                 QString upperPatientName = res.toUpper();
                 if(upperPatientName.isEmpty() || upperPatientName.contains("ANONYMIZED") || upperPatientName == "UNKNOWN"
                     || upperPatientName.contains("ANONYMOUS") || upperPatientName == "NONE" || upperPatientName == "NA")
@@ -255,7 +256,12 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
     {"StudyDescription", {.header = "Description", .getInfo =
         [](data::Series::csptr series, When when)
         {
-            return new QStandardItem(QString::fromStdString(when == When::STUDY ? series->getStudyDescription() : ""));
+            if(when == When::STUDY)
+            {
+                return new QStandardItem(getCodec(series)->toUnicode(series->getStudyDescription().c_str()));
+            }
+
+            return new QStandardItem();
         }
      }
     },
@@ -278,14 +284,15 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
                         + "x" + std::to_string(frames) + " )";
             }
 
-            const std::string& description = series->getSeriesDescription();
+            QString full_description = QString::fromStdString(infos);
+            const auto& description = getCodec(series)->toUnicode(series->getSeriesDescription().c_str());
 
-            if(!description.empty())
+            if(!description.isEmpty())
             {
-                infos += ": " + description;
+                full_description += ": " + description;
             }
 
-            return new QStandardItem(QString::fromStdString(infos));
+            return new QStandardItem(full_description);
         }
      }
     },
@@ -294,7 +301,7 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
         {
             if(when == When::STUDY)
             {
-                return new QStandardItem(QString::fromStdString(series->getDescription()));
+                return new QStandardItem(getCodec(series)->toUnicode(series->getDescription().c_str()));
             }
 
             std::string infos(series->getSOPClassName());
@@ -308,14 +315,15 @@ static const std::map<std::string, ColumnDisplayInformation> columnMap {
                         + "x" + std::to_string(frames) + " )";
             }
 
-            const std::string& description = series->getSeriesDescription();
+            QString full_description = QString::fromStdString(infos);
+            const auto& description = getCodec(series)->toUnicode(series->getSeriesDescription().c_str());
 
-            if(!description.empty())
+            if(!description.isEmpty())
             {
-                infos += ": " + description;
+                full_description += ": " + description;
             }
 
-            return new QStandardItem(QString::fromStdString(infos));
+            return new QStandardItem(full_description);
         }
      }
     },

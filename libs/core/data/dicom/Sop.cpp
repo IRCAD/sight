@@ -186,11 +186,11 @@ template<> DATA_API const std::string_view Sop<Keyword::RTDoseStorage>::s_iod = 
 template<> DATA_API const Keyword Sop<Keyword::EnhancedRTImageStorage>::s_keyword = Keyword::EnhancedRTImageStorage;
 template<> DATA_API const std::string_view Sop<Keyword::EnhancedRTImageStorage>::s_name = "Enhanced RT Image Storage";
 template<> DATA_API const std::string_view Sop<Keyword::EnhancedRTImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.481.23";
-template<> DATA_API const std::string_view Sop<Keyword::EnhancedRTImageStorage>::s_iod = "Enhanced RT Image Information Object Definition";
+template<> DATA_API const std::string_view Sop<Keyword::EnhancedRTImageStorage>::s_iod = "Enhanced RT Image IOD";
 template<> DATA_API const Keyword Sop<Keyword::EnhancedContinuousRTImageStorage>::s_keyword = Keyword::EnhancedContinuousRTImageStorage;
 template<> DATA_API const std::string_view Sop<Keyword::EnhancedContinuousRTImageStorage>::s_name = "Enhanced Continuous RT Image Storage";
 template<> DATA_API const std::string_view Sop<Keyword::EnhancedContinuousRTImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.481.24";
-template<> DATA_API const std::string_view Sop<Keyword::EnhancedContinuousRTImageStorage>::s_iod = "Enhanced Continuous RT Image Information Object Definition";
+template<> DATA_API const std::string_view Sop<Keyword::EnhancedContinuousRTImageStorage>::s_iod = "Enhanced Continuous RT Image IOD";
 template<> DATA_API const Keyword Sop<Keyword::UltrasoundImageStorage>::s_keyword = Keyword::UltrasoundImageStorage;
 template<> DATA_API const std::string_view Sop<Keyword::UltrasoundImageStorage>::s_name = "Ultrasound Image Storage";
 template<> DATA_API const std::string_view Sop<Keyword::UltrasoundImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.6.1";
@@ -199,6 +199,10 @@ template<> DATA_API const Keyword Sop<Keyword::EnhancedUSVolumeStorage>::s_keywo
 template<> DATA_API const std::string_view Sop<Keyword::EnhancedUSVolumeStorage>::s_name = "Enhanced US Volume Storage";
 template<> DATA_API const std::string_view Sop<Keyword::EnhancedUSVolumeStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.6.2";
 template<> DATA_API const std::string_view Sop<Keyword::EnhancedUSVolumeStorage>::s_iod = "Enhanced US Volume IOD";
+template<> DATA_API const Keyword Sop<Keyword::PhotoacousticImageStorage>::s_keyword = Keyword::PhotoacousticImageStorage;
+template<> DATA_API const std::string_view Sop<Keyword::PhotoacousticImageStorage>::s_name = "Photoacoustic Image Storage";
+template<> DATA_API const std::string_view Sop<Keyword::PhotoacousticImageStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.6.3";
+template<> DATA_API const std::string_view Sop<Keyword::PhotoacousticImageStorage>::s_iod = "Photoacoustic Image IOD";
 template<> DATA_API const Keyword Sop<Keyword::SpatialFiducialsStorage>::s_keyword = Keyword::SpatialFiducialsStorage;
 template<> DATA_API const std::string_view Sop<Keyword::SpatialFiducialsStorage>::s_name = "Spatial Fiducials Storage";
 template<> DATA_API const std::string_view Sop<Keyword::SpatialFiducialsStorage>::s_uid = "1.2.840.10008.5.1.4.1.1.66.2";
@@ -449,6 +453,7 @@ const ISop& get(Keyword keyword)
         case Keyword::EnhancedContinuousRTImageStorage: return get<Keyword::EnhancedContinuousRTImageStorage>();
         case Keyword::UltrasoundImageStorage: return get<Keyword::UltrasoundImageStorage>();
         case Keyword::EnhancedUSVolumeStorage: return get<Keyword::EnhancedUSVolumeStorage>();
+        case Keyword::PhotoacousticImageStorage: return get<Keyword::PhotoacousticImageStorage>();
         case Keyword::SpatialFiducialsStorage: return get<Keyword::SpatialFiducialsStorage>();
         case Keyword::SegmentationStorage: return get<Keyword::SegmentationStorage>();
         case Keyword::SurfaceSegmentationStorage: return get<Keyword::SurfaceSegmentationStorage>();
@@ -552,6 +557,7 @@ const ISop& get(const std::string_view& uid)
         {Sop<Keyword::EnhancedContinuousRTImageStorage>::s_uid, get<Keyword::EnhancedContinuousRTImageStorage>()},
         {Sop<Keyword::UltrasoundImageStorage>::s_uid, get<Keyword::UltrasoundImageStorage>()},
         {Sop<Keyword::EnhancedUSVolumeStorage>::s_uid, get<Keyword::EnhancedUSVolumeStorage>()},
+        {Sop<Keyword::PhotoacousticImageStorage>::s_uid, get<Keyword::PhotoacousticImageStorage>()},
         {Sop<Keyword::SpatialFiducialsStorage>::s_uid, get<Keyword::SpatialFiducialsStorage>()},
         {Sop<Keyword::SegmentationStorage>::s_uid, get<Keyword::SegmentationStorage>()},
         {Sop<Keyword::SurfaceSegmentationStorage>::s_uid, get<Keyword::SurfaceSegmentationStorage>()},

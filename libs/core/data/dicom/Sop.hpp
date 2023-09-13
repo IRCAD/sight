@@ -66,6 +66,7 @@ enum class Keyword : std::uint8_t
     EnhancedContinuousRTImageStorage,
     UltrasoundImageStorage,
     EnhancedUSVolumeStorage,
+    PhotoacousticImageStorage,
     SpatialFiducialsStorage,
     SegmentationStorage,
     SurfaceSegmentationStorage,

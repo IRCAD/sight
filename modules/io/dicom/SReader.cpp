@@ -162,7 +162,8 @@ public:
         // Set the folder from the service location
         m_reader->setFolder(m_owner->getFolder());
 
-        m_reader->setFilter(m_filter);
+        // Set filters
+        m_reader->setFilters(m_filters);
 
         // Scan the folder
         m_selection = m_reader->scan();
@@ -222,10 +223,13 @@ public:
     /// Dialog policy to use for dialogs. By default, always show dialog
     DialogPolicy m_dialog_policy {DialogPolicy::ALWAYS};
 
-    data::Series::DicomTypes m_filter {
-        static_cast<data::Series::DicomTypes>(data::Series::DicomType::IMAGE)
-        | static_cast<data::Series::DicomTypes>(data::Series::DicomType::MODEL)
-        | static_cast<data::Series::DicomTypes>(data::Series::DicomType::REPORT)
+    /// Default filters to use when scanning for DICOM files
+    data::Series::SopKeywords m_filters {
+        data::Series::dicomTypesToSops(
+            static_cast<data::Series::DicomTypes>(data::Series::DicomType::IMAGE)
+            | static_cast<data::Series::DicomTypes>(data::Series::DicomType::MODEL)
+            | static_cast<data::Series::DicomTypes>(data::Series::DicomType::REPORT)
+        )
     };
 
     std::string m_displayedColumns =
@@ -281,7 +285,42 @@ void SReader::configuring()
             m_pimpl->m_dialog_policy == DialogPolicy::INVALID
         );
 
-        m_pimpl->m_filter = data::Series::stringToDicomTypes(dialog->get<std::string>("filter", "image,model,report"));
+        m_pimpl->m_filters.clear();
+
+        if(const auto sop_filter = dialog->get_optional<std::string>("sopFilter"); sop_filter)
+        {
+            const auto& sop_filters = data::Series::stringToSops(*sop_filter);
+            m_pimpl->m_filters.insert(sop_filters.cbegin(), sop_filters.cend());
+        }
+
+        if(const auto type_filter = dialog->get_optional<std::string>("typeFilter"); type_filter)
+        {
+            const auto& type_filters = data::Series::dicomTypesToSops(
+                data::Series::stringToDicomTypes(*type_filter)
+            );
+
+            m_pimpl->m_filters.insert(type_filters.cbegin(), type_filters.cend());
+        }
+
+        // Compat
+        if(const auto compat_filter = dialog->get_optional<std::string>("filter"); compat_filter)
+        {
+            const auto& compat_filters = data::Series::dicomTypesToSops(
+                data::Series::stringToDicomTypes(*compat_filter)
+            );
+
+            m_pimpl->m_filters.insert(compat_filters.cbegin(), compat_filters.cend());
+        }
+
+        // If no filters are defined, use the default ones (image, model and report)
+        if(m_pimpl->m_filters.empty())
+        {
+            m_pimpl->m_filters = data::Series::dicomTypesToSops(
+                static_cast<data::Series::DicomTypes>(data::Series::DicomType::IMAGE)
+                | static_cast<data::Series::DicomTypes>(data::Series::DicomType::MODEL)
+                | static_cast<data::Series::DicomTypes>(data::Series::DicomType::REPORT)
+            );
+        }
     }
 
     const auto& config = tree.get_child_optional("config.<xmlattr>");

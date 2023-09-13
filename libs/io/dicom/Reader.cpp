@@ -69,8 +69,7 @@ struct FiducialSetWithMetadata
 
 inline static data::SeriesSet::sptr scanGDCMFiles(
     const gdcm::Directory::FilenamesType& files,
-    data::Series::DicomTypes filter = 0
-)
+    const std::set<data::dicom::sop::Keyword>& filters = {})
 {
     // Use GDCM scanner to scan all files
     gdcm::Scanner scanner;
@@ -158,15 +157,30 @@ inline static data::SeriesSet::sptr scanGDCMFiles(
             const auto& mapping = scanner.GetMapping(key);
 
             // Filter, if needed
-            if(filter != 0)
+            if(!filters.empty())
             {
-                if(const auto& found = mapping.find(gdcm::Keywords::SOPClassUID::GetTag()); found != mapping.end())
+                // Get the SOP Class UID
+                const auto& found = mapping.find(gdcm::Keywords::SOPClassUID::GetTag());
+
+                if(found == mapping.end())
                 {
-                    const auto type = static_cast<data::Series::DicomTypes>(data::Series::getDicomType(found->second));
-                    if(type == 0 || (type & filter) != type)
-                    {
-                        continue;
-                    }
+                    // No need to continue if we cannot find the SOP Class UID
+                    continue;
+                }
+
+                // Convert the string to SOP Class UID keyword
+                const auto& sop_keyword = data::dicom::sop::keyword(found->second);
+
+                if(sop_keyword == data::dicom::sop::Keyword::INVALID)
+                {
+                    // No need to continue if the SOP Class UID string is unknown for us
+                    continue;
+                }
+
+                // Check if the SOP Class UID is in the filter
+                if(!filters.contains(sop_keyword))
+                {
+                    continue;
                 }
             }
 
@@ -1124,7 +1138,7 @@ public:
             gdcm_files.empty()
         );
 
-        return scanGDCMFiles(gdcm_files, m_filter);
+        return scanGDCMFiles(gdcm_files, m_filters);
     }
 
     /// Returns a list of DICOM series with associated files sorted
@@ -1533,7 +1547,7 @@ public:
     }
 
     /// The default filter to select only some type (Image, Model, ...) of DICOM files.
-    data::Series::DicomTypes m_filter {0};
+    data::Series::SopKeywords m_filters {};
 
     /// Contains the list of files to sort and read.
     /// Usually, it is filed by user after showing a selection dialog, but calling read() will fill it automatically.
@@ -1654,9 +1668,9 @@ void Reader::read()
 
 //------------------------------------------------------------------------------
 
-void Reader::setFilter(data::Series::DicomTypes filter)
+void Reader::setFilters(const data::Series::SopKeywords& filters)
 {
-    m_pimpl->m_filter = filter;
+    m_pimpl->m_filters = filters;
 }
 
 //------------------------------------------------------------------------------

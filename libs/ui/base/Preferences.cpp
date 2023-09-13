@@ -31,6 +31,7 @@
 #include <core/crypto/obfuscated_string.hpp>
 #include <core/crypto/PasswordKeeper.hpp>
 #include <core/crypto/SHA256.hpp>
+#include <core/runtime/ExitException.hpp>
 #include <core/runtime/path.hpp>
 #include <core/runtime/profile/Profile.hpp>
 #include <core/tools/Os.hpp>
@@ -502,6 +503,12 @@ Preferences::Preferences()
 
                     SIGHT_THROW_EXCEPTION(BadPassword(e.what()));
                 }
+            }
+            catch(const core::runtime::ExitException&)
+            {
+                // Propagate the exception
+                s_is_enabled = false;
+                throw;
             }
             catch(const std::exception& e)
             {

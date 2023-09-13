@@ -454,7 +454,7 @@ def write_sop_hpp() -> None:
             f"DATA_API const I{g_sop_class_name}& get(const std::string_view& uid);\n"
             "/// @}\n\n"
             "/// convert a uid directly to a keyword\n"
-            f"DATA_API const Keyword& keyword(const std::string_view& uid) noexcept;\n\n"
+            "DATA_API const Keyword& keyword(const std::string_view& uid) noexcept;\n\n"
         )
 
         sop_hpp.write(generate_footer(namespace=g_sop_class_name.lower()))

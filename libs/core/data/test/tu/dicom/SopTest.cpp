@@ -120,6 +120,8 @@ void SopTest::sopTest()
     CPPUNIT_ASSERT_EQUAL(sop::Sop<sop::Keyword::UltrasoundImageStorage>::s_keyword, sop::get("1.2.840.10008.5.1.4.1.1.6.1").m_keyword);
     CPPUNIT_ASSERT_EQUAL(sop::Sop<sop::Keyword::EnhancedUSVolumeStorage>::s_keyword, sop::get(sop::Keyword::EnhancedUSVolumeStorage).m_keyword);
     CPPUNIT_ASSERT_EQUAL(sop::Sop<sop::Keyword::EnhancedUSVolumeStorage>::s_keyword, sop::get("1.2.840.10008.5.1.4.1.1.6.2").m_keyword);
+    CPPUNIT_ASSERT_EQUAL(sop::Sop<sop::Keyword::PhotoacousticImageStorage>::s_keyword, sop::get(sop::Keyword::PhotoacousticImageStorage).m_keyword);
+    CPPUNIT_ASSERT_EQUAL(sop::Sop<sop::Keyword::PhotoacousticImageStorage>::s_keyword, sop::get("1.2.840.10008.5.1.4.1.1.6.3").m_keyword);
     CPPUNIT_ASSERT_EQUAL(sop::Sop<sop::Keyword::SpatialFiducialsStorage>::s_keyword, sop::get(sop::Keyword::SpatialFiducialsStorage).m_keyword);
     CPPUNIT_ASSERT_EQUAL(sop::Sop<sop::Keyword::SpatialFiducialsStorage>::s_keyword, sop::get("1.2.840.10008.5.1.4.1.1.66.2").m_keyword);
     CPPUNIT_ASSERT_EQUAL(sop::Sop<sop::Keyword::SegmentationStorage>::s_keyword, sop::get(sop::Keyword::SegmentationStorage).m_keyword);
