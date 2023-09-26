@@ -58,7 +58,8 @@ public:
         SPTR(Layer)_layer                                   = nullptr,
         bool _layerOrderDependant                           = true,
         std::vector<predefined_position_t> _positions       = {},
-        const std::optional<std::string>& _default_position = std::nullopt
+        const std::optional<std::string>& _default_position = std::nullopt,
+        bool _animate                                       = true
     );
 
     /// Destroys the trackball.
@@ -193,6 +194,9 @@ private:
 
     /// Vector of predefined position to loop.
     std::vector<predefined_position_t> m_predefined_positions;
+
+    /// Defines if an animation is performed when switching positions
+    bool m_animate {true};
 
     /// Stores the current index in m_predefined_positions.
     std::optional<std::size_t> m_current_position_idx {std::nullopt};

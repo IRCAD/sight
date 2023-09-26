@@ -43,11 +43,13 @@ PredefinedPositionInteractor::PredefinedPositionInteractor(
     Layer::sptr _layer,
     bool _layerOrderDependant,
     std::vector<predefined_position_t> _positions,
-    const std::optional<std::string>& _default_position
+    const std::optional<std::string>& _default_position,
+    bool _animate
 ) :
     IInteractor(_layer, _layerOrderDependant),
     m_timer(core::thread::getDefaultWorker()->createTimer()),
-    m_predefined_positions(std::move(_positions))
+    m_predefined_positions(std::move(_positions)),
+    m_animate(_animate)
 {
     this->init();
 
@@ -294,7 +296,7 @@ void PredefinedPositionInteractor::nextPosition()
         m_current_position_idx.value()++;
     }
 
-    this->toPredefinedPosition(m_current_position_idx.value());
+    this->toPredefinedPosition(m_current_position_idx.value(), m_animate);
 }
 
 // ----------------------------------------------------------------------------
@@ -311,7 +313,7 @@ void PredefinedPositionInteractor::previousPosition()
         m_current_position_idx.value()--;
     }
 
-    this->toPredefinedPosition(m_current_position_idx.value());
+    this->toPredefinedPosition(m_current_position_idx.value(), m_animate);
 }
 
 // ----------------------------------------------------------------------------
@@ -455,7 +457,7 @@ void PredefinedPositionInteractor::setParameter(ui::base::parameter_t _value, st
             return;
         }
 
-        this->toPredefinedPosition(static_cast<std::size_t>(index));
+        this->toPredefinedPosition(static_cast<std::size_t>(index), m_animate);
     }
 }
 

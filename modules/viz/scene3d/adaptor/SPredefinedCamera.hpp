@@ -66,6 +66,7 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b layerOrderDependant (optional, bool, default=true): defines if interaction must take into account above layers.
  * - \b mouseRotation (optional, bool, default=true): defines if mouse rotation through mouse is activated or not.
  * - \b defaultPosition (optional, string, default=""): defines the default position to use.
+ * - \b animate (optional, bool, default=true): defines if an animation is used when switching position or not.
  *
  * @section Slots Slots
  * - \b setParameter(parameter_t value, std::string key): If key = "position", looking for value in the position name,
@@ -136,6 +137,9 @@ private:
 
     /// Defines the default position to use.
     std::optional<std::string> m_defaultPosition;
+
+    /// Defines if an animation is performed when switching positions
+    bool m_animate {true};
 
     /// Input transform.
     static constexpr std::string_view s_REGISTRATION_TRANSFORM_IN = "transform";
