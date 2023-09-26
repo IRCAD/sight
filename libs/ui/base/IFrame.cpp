@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -34,7 +34,6 @@
 
 #include <service/macros.hpp>
 
-#include <boost/foreach.hpp>
 #include <boost/lambda/lambda.hpp>
 
 namespace sight::ui::base

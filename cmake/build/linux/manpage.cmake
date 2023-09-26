@@ -6,8 +6,8 @@ if(SIGHT_BUILD_MANPAGES)
     )
 
     if(NOT EXISTS ${PANDOCCOMMAND_PATH})
-        message(WARNING "Pandoc processor not found, man pages will not be generated. Install pandoc or use the "
-                        "CMAKE_PROGRAM_PATH variable."
+        message(FATAL_ERROR "Pandoc processor not found, man pages will not be generated. Install pandoc or use the "
+                            "CMAKE_PROGRAM_PATH variable."
         )
     else()
         set(PANDOCCOMMAND_FOUND 1)

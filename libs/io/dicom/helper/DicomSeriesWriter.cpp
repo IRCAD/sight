@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -32,8 +32,6 @@
 
 #include <io/base/writer/registry/macros.hpp>
 #include <io/zip/IWriteArchive.hpp>
-
-#include <boost/foreach.hpp>
 
 SIGHT_REGISTER_IO_WRITER(sight::io::dicom::helper::DicomSeriesWriter);
 

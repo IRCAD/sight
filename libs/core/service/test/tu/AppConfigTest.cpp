@@ -55,10 +55,7 @@ namespace sight::service::ut
 static inline void waitServiceStarted(const std::string& srv)
 {
     auto service = core::tools::fwID::getObject(srv);
-    fwTestWaitMacro(
-        service != nullptr
-        && service::IService::dynamicCast(service)->getStatus() == service::IService::STARTED
-    );
+    fwTestWaitMacro(service != nullptr && service::IService::dynamicCast(service)->isStarted());
 }
 
 //------------------------------------------------------------------------------

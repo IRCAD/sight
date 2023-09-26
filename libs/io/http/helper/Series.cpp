@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -27,8 +27,6 @@
 #include <data/DicomSeries.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
-
-#include <boost/foreach.hpp>
 
 namespace sight::io::http::helper
 {

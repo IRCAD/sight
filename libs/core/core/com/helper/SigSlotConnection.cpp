@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -30,7 +30,7 @@
 #include <core/spyLog.hpp>
 #include <core/tools/Object.hpp>
 
-#include <boost/foreach.hpp>
+#include <ranges>
 
 namespace sight::core::com::helper
 {
@@ -143,10 +143,11 @@ void SigSlotConnection::addConnection(core::com::Connection connection)
 void SigSlotConnection::disconnect()
 {
     // NOLINTNEXTLINE(bugprone-branch-clone)
-    BOOST_REVERSE_FOREACH(core::com::Connection& connection, m_connections)
+    for(auto& connection : std::views::reverse(m_connections))
     {
         connection.disconnect();
     }
+
     m_connections.clear();
 }
 
