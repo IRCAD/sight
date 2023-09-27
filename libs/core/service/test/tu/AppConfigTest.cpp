@@ -1118,8 +1118,8 @@ void AppConfigTest::optionalKeyTest()
         CPPUNIT_ASSERT(data2bis == srv2->getSwappedObject());
 
         // Check that the output of SGenerateData changed as well
-        fwTestWaitMacro(data2bis == genDataSrv->data::IHasData::getOutput("out2").lock());
-        CPPUNIT_ASSERT(data2bis == genDataSrv->data::IHasData::getOutput("out2").lock());
+        fwTestWaitMacro(data2bis == genDataSrv->data::IHasData::getOutput("out2").lock().get_shared());
+        CPPUNIT_ASSERT(data2bis == genDataSrv->data::IHasData::getOutput("out2").lock().get_shared());
 
         // Revert that
         genDataSrv2->setOutput("out", data2b);
