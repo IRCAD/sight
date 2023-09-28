@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,8 +31,6 @@
 #include <ui/base/dialog/MessageDialog.hpp>
 #include <ui/base/Preferences.hpp>
 #include <ui/qt/container/QtContainer.hpp>
-
-#include <boost/foreach.hpp>
 
 #include <QGridLayout>
 #include <QHBoxLayout>

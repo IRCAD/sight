@@ -26,7 +26,7 @@
 
 #include <data/Composite.hpp>
 
-#include <boost/foreach.hpp>
+#include <ranges>
 
 namespace sight::service::parser
 {
@@ -122,8 +122,7 @@ void Composite::updateConfig()
 
 void Composite::stopConfig()
 {
-    // NOLINTNEXTLINE(bugprone-branch-clone)
-    BOOST_REVERSE_FOREACH(service::IAppConfigManager::sptr ctm, m_ctmContainer)
+    for(auto& ctm : std::views::reverse(m_ctmContainer))
     {
         ctm->stop();
     }
@@ -133,11 +132,11 @@ void Composite::stopConfig()
 
 void Composite::destroyConfig()
 {
-    // NOLINTNEXTLINE(bugprone-branch-clone)
-    BOOST_REVERSE_FOREACH(service::IAppConfigManager::sptr ctm, m_ctmContainer)
+    for(auto& ctm : std::views::reverse(m_ctmContainer))
     {
         ctm->destroy();
     }
+
     m_ctmContainer.clear();
 }
 

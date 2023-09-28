@@ -50,6 +50,11 @@ Ogre::Vector3 SLandmarks::getCamDirection(const Ogre::Camera* const _cam)
 
 SLandmarks::SLandmarks() noexcept
 {
+    SIGHT_WARN(
+        "'sight::module::viz::scene3d::adaptor::SLandmarks' is deprecated, please use"
+        " 'sight::module::viz::scene3dQt::adaptor::SLandmarks' instead."
+    );
+
     newSlot(Slots::REMOVE_GROUP, &SLandmarks::removeGroup, this);
     newSlot(Slots::MODIFY_GROUP, &SLandmarks::modifyGroup, this);
     newSlot(Slots::MODIFY_POINT, &SLandmarks::modifyPoint, this);

@@ -9,6 +9,7 @@ add_dependencies(
     module_activity
     data
     module_service
+    module_filter_image
     module_ui_base
     module_ui_flaticons
     module_io_vtk
@@ -35,6 +36,9 @@ module_param(
                preferences_password_policy
                preferences_encryption_policy
                preferences_exit_on_password_error
+               preferences_new_password_dialog_title
+               preferences_new_password_dialog_message
+               preferences_new_password_dialog_icon
                preferences_password_dialog_title
                preferences_password_dialog_message
                preferences_password_dialog_icon
@@ -43,6 +47,9 @@ module_param(
         once
         forced
         true
+        "New password required"
+        "  Please enter a new password: "
+        "sight::module::ui::flaticons/ircad.svg"
         "Password required"
         "  Please enter your password: "
         "sight::module::ui::flaticons/ircad.svg"

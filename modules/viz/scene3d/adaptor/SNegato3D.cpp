@@ -53,8 +53,6 @@ static const core::com::Slots::SlotKeyType s_UPDATE_TF_SLOT           = "updateT
 
 static const core::com::Signals::SignalKeyType s_PICKED_VOXEL_SIG = "pickedVoxel";
 
-static const std::string s_VISIBILITY_FIELD = "VISIBILITY";
-
 //------------------------------------------------------------------------------
 
 SNegato3D::SNegato3D() noexcept
@@ -162,7 +160,8 @@ void SNegato3D::starting()
             this->getSceneManager(),
             m_3DOgreTexture,
             m_filtering,
-            m_border
+            m_border,
+            false
         );
     }
 
@@ -313,7 +312,7 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
     imgSize[1] = imgSize[1] == 1 ? 2 : imgSize[1];
     imgSize[2] = imgSize[2] == 1 ? 2 : imgSize[2];
 
-    const Ogre::Vector3 sliceIndices = {
+    const std::array<float, 3> sliceIndices = {
         static_cast<float>(_sagittalIndex) / (static_cast<float>(imgSize[0] - 1)),
         static_cast<float>(_frontalIndex) / (static_cast<float>(imgSize[1] - 1)),
         static_cast<float>(_axialIndex) / (static_cast<float>(imgSize[2] - 1))
@@ -321,7 +320,7 @@ void SNegato3D::changeSliceIndex(int _axialIndex, int _frontalIndex, int _sagitt
 
     for(std::uint8_t i = 0 ; i < 3 ; ++i)
     {
-        m_planes[i]->changeSlice(sliceIndices[i]);
+        m_planes[i]->changeSlice(sliceIndices);
     }
 
     this->requestRender();
@@ -523,6 +522,8 @@ void SNegato3D::pickIntensity(int _x, int _y)
             m_pickingCross->update(crossLines[0], crossLines[1], crossLines[2], crossLines[3]);
             const std::string pickingText = sight::viz::scene3d::Utils::pickImage(*image, *pickedPos, origin, spacing);
             m_pickedVoxelSignal->asyncEmit(pickingText);
+
+            this->requestRender();
 
             // Render the picked plane before the widget.
             m_pickedPlane->setRenderQueuerGroupAndPriority(sight::viz::scene3d::rq::s_NEGATO_WIDGET_ID, 0);

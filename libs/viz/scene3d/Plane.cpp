@@ -22,6 +22,7 @@
 
 #include "viz/scene3d/Plane.hpp"
 
+#include <viz/scene3d/helper/ManualObject.hpp>
 #include <viz/scene3d/helper/Shading.hpp>
 #include <viz/scene3d/ogre.hpp>
 #include <viz/scene3d/Utils.hpp>
@@ -45,13 +46,15 @@ Plane::Plane(
     viz::scene3d::Texture::sptr _tex,
     filter_t _filtering,
     bool _displayBorder,
+    bool _displayOtherPlanes,
     float _entityOpacity
 ) :
+    m_border({.shape = nullptr, .material = nullptr, .enabled = _displayBorder}),
+    m_slicesCross({.shape = nullptr, .material = nullptr, .enabled = _displayOtherPlanes}),
     m_filtering(_filtering),
     m_texture(std::move(_tex)),
     m_sceneManager(_sceneManager),
     m_parentSceneNode(_parentSceneNode),
-    m_displayBorder(_displayBorder),
     m_entityOpacity(_entityOpacity)
 {
     // We need an internal counter to avoid naming conflicts
@@ -79,17 +82,16 @@ Plane::Plane(
     const Ogre::ColourValue diffuse(1.F, 1.F, 1.F, m_entityOpacity);
     m_texMaterial->setDiffuse(diffuse);
 
-    if(m_displayBorder)
+    if(m_border.enabled)
     {
-        // If the border material exist, delete it.
-        if(m_borderMaterial)
-        {
-            materialMgr.remove(m_borderMaterial);
-            m_borderMaterial.reset();
-        }
+        const auto material = materialMgr.getByName("BasicAmbient", RESOURCE_GROUP);
+        m_border.material = material->clone(m_slicePlaneName + "_BorderMaterial");
+    }
 
-        m_borderMaterial = Ogre::MaterialManager::getSingleton().getByName("BasicAmbient", RESOURCE_GROUP);
-        m_borderMaterial = m_borderMaterial->clone(m_slicePlaneName + "_BorderMaterial");
+    if(m_slicesCross.enabled)
+    {
+        const auto material = materialMgr.getByName("BasicAmbientVT", RESOURCE_GROUP);
+        m_slicesCross.material = material->clone(m_slicePlaneName + "_OthersMaterial");
     }
 }
 
@@ -110,9 +112,9 @@ Plane::~Plane()
         Ogre::MeshManager::getSingleton().remove(m_slicePlane);
     }
 
-    if(m_border != nullptr)
+    if(m_border.shape != nullptr)
     {
-        m_sceneManager->destroyManualObject(m_border);
+        m_sceneManager->destroyManualObject(m_border.shape);
     }
 
     if(m_texMaterial)
@@ -120,9 +122,14 @@ Plane::~Plane()
         Ogre::MaterialManager::getSingleton().remove(m_texMaterial);
     }
 
-    if(m_borderMaterial)
+    if(m_slicesCross.shape != nullptr)
     {
-        Ogre::MaterialManager::getSingleton().remove(m_borderMaterial);
+        Ogre::MaterialManager::getSingleton().remove(m_slicesCross.material);
+    }
+
+    if(m_border.material)
+    {
+        Ogre::MaterialManager::getSingleton().remove(m_border.material);
     }
 }
 
@@ -164,8 +171,8 @@ void Plane::update(
             m_slicePlaneName,
             viz::scene3d::RESOURCE_GROUP,
             plane,
-            m_width,
-            m_height,
+            m_size[0],
+            m_size[1],
             1,
             1,
             true,
@@ -181,8 +188,8 @@ void Plane::update(
             m_slicePlaneName,
             viz::scene3d::RESOURCE_GROUP,
             plane,
-            m_width,
-            m_height
+            m_size[0],
+            m_size[1]
         );
     }
 
@@ -229,81 +236,81 @@ void Plane::update(
         }
     }
 
-    if(m_displayBorder)
+    if(m_border.enabled)
     {
-        if(m_border != nullptr)
+        if(m_border.shape != nullptr)
         {
-            m_sceneManager->destroyManualObject(m_border);
-            m_border = nullptr;
+            m_sceneManager->destroyManualObject(m_border.shape);
+            m_border.shape = nullptr;
         }
 
         // Create the border.
-        m_border = m_sceneManager->createManualObject(m_slicePlaneName + "_Border");
-        m_border->estimateVertexCount(5);
-        m_border->begin(m_borderMaterial, Ogre::RenderOperation::OT_LINE_STRIP);
+        m_border.shape = m_sceneManager->createManualObject(m_slicePlaneName + "_Border");
+        m_border.shape->estimateVertexCount(5);
+        m_border.shape->begin(m_border.material, Ogre::RenderOperation::OT_LINE_STRIP);
 
         if(m_orientation == OrientationMode::X_AXIS)
         {
-            m_border->position(Ogre::Vector3(0.F, -m_height / 2.F, -m_width / 2.F));
-            m_border->position(Ogre::Vector3(0.F, m_height / 2.F, -m_width / 2.F));
-            m_border->position(Ogre::Vector3(0.F, m_height / 2.F, m_width / 2.F));
-            m_border->position(Ogre::Vector3(0.F, -m_height / 2.F, m_width / 2.F));
-            m_border->position(Ogre::Vector3(0.F, -m_height / 2.F, -m_width / 2.F));
-            m_border->setBoundingBox(
+            m_border.shape->position(Ogre::Vector3(0.F, -m_size[1] / 2.F, -m_size[0] / 2.F));
+            m_border.shape->position(Ogre::Vector3(0.F, m_size[1] / 2.F, -m_size[0] / 2.F));
+            m_border.shape->position(Ogre::Vector3(0.F, m_size[1] / 2.F, m_size[0] / 2.F));
+            m_border.shape->position(Ogre::Vector3(0.F, -m_size[1] / 2.F, m_size[0] / 2.F));
+            m_border.shape->position(Ogre::Vector3(0.F, -m_size[1] / 2.F, -m_size[0] / 2.F));
+            m_border.shape->setBoundingBox(
                 Ogre::AxisAlignedBox(
-                    Ogre::Vector3(0.F, -m_height / 2.F, -m_width / 2.F),
-                    Ogre::Vector3(0.F, m_height / 2.F, m_width / 2.F)
+                    Ogre::Vector3(0.F, -m_size[1] / 2.F, -m_size[0] / 2.F),
+                    Ogre::Vector3(0.F, m_size[1] / 2.F, m_size[0] / 2.F)
                 )
             );
         }
         else if(m_orientation == OrientationMode::Y_AXIS)
         {
-            m_border->position(Ogre::Vector3(-m_width / 2.F, 0.F, -m_height / 2.F));
-            m_border->position(Ogre::Vector3(m_width / 2.F, 0.F, -m_height / 2.F));
-            m_border->position(Ogre::Vector3(m_width / 2.F, 0.F, m_height / 2.F));
-            m_border->position(Ogre::Vector3(-m_width / 2.F, 0.F, m_height / 2.F));
-            m_border->position(Ogre::Vector3(-m_width / 2.F, 0.F, -m_height / 2.F));
-            m_border->setBoundingBox(
+            m_border.shape->position(Ogre::Vector3(-m_size[0] / 2.F, 0.F, -m_size[1] / 2.F));
+            m_border.shape->position(Ogre::Vector3(m_size[0] / 2.F, 0.F, -m_size[1] / 2.F));
+            m_border.shape->position(Ogre::Vector3(m_size[0] / 2.F, 0.F, m_size[1] / 2.F));
+            m_border.shape->position(Ogre::Vector3(-m_size[0] / 2.F, 0.F, m_size[1] / 2.F));
+            m_border.shape->position(Ogre::Vector3(-m_size[0] / 2.F, 0.F, -m_size[1] / 2.F));
+            m_border.shape->setBoundingBox(
                 Ogre::AxisAlignedBox(
-                    Ogre::Vector3(-m_height / 2.F, 0.F, -m_width / 2.F),
-                    Ogre::Vector3(m_height / 2.F, 0.F, m_width / 2.F)
+                    Ogre::Vector3(-m_size[1] / 2.F, 0.F, -m_size[0] / 2.F),
+                    Ogre::Vector3(m_size[1] / 2.F, 0.F, m_size[0] / 2.F)
                 )
             );
         }
         else
         {
-            m_border->position(Ogre::Vector3(-m_width / 2.F, -m_height / 2.F, 0.F));
-            m_border->position(Ogre::Vector3(m_width / 2.F, -m_height / 2.F, 0.F));
-            m_border->position(Ogre::Vector3(m_width / 2.F, m_height / 2.F, 0.F));
-            m_border->position(Ogre::Vector3(-m_width / 2.F, m_height / 2.F, 0.F));
-            m_border->position(Ogre::Vector3(-m_width / 2.F, -m_height / 2.F, 0.F));
-            m_border->setBoundingBox(
+            m_border.shape->position(Ogre::Vector3(-m_size[0] / 2.F, -m_size[1] / 2.F, 0.F));
+            m_border.shape->position(Ogre::Vector3(m_size[0] / 2.F, -m_size[1] / 2.F, 0.F));
+            m_border.shape->position(Ogre::Vector3(m_size[0] / 2.F, m_size[1] / 2.F, 0.F));
+            m_border.shape->position(Ogre::Vector3(-m_size[0] / 2.F, m_size[1] / 2.F, 0.F));
+            m_border.shape->position(Ogre::Vector3(-m_size[0] / 2.F, -m_size[1] / 2.F, 0.F));
+            m_border.shape->setBoundingBox(
                 Ogre::AxisAlignedBox(
-                    Ogre::Vector3(-m_height / 2.F, -m_width / 2.F, 0.F),
-                    Ogre::Vector3(m_height / 2.F, m_width / 2.F, 0.F)
+                    Ogre::Vector3(-m_size[1] / 2.F, -m_size[0] / 2.F, 0.F),
+                    Ogre::Vector3(m_size[1] / 2.F, m_size[0] / 2.F, 0.F)
                 )
             );
         }
 
-        m_border->end();
+        m_border.shape->end();
 
         if(m_orientation == OrientationMode::X_AXIS)
         {
-            m_borderMaterial->setAmbient(Ogre::ColourValue::Red);
-            m_borderMaterial->setDiffuse(Ogre::ColourValue::Red);
+            m_border.material->setAmbient(Ogre::ColourValue::Red);
+            m_border.material->setDiffuse(Ogre::ColourValue::Red);
         }
         else if(m_orientation == OrientationMode::Y_AXIS)
         {
-            m_borderMaterial->setAmbient(Ogre::ColourValue::Green);
-            m_borderMaterial->setDiffuse(Ogre::ColourValue::Green);
+            m_border.material->setAmbient(Ogre::ColourValue::Green);
+            m_border.material->setDiffuse(Ogre::ColourValue::Green);
         }
         else
         {
-            m_borderMaterial->setAmbient(Ogre::ColourValue::Blue);
-            m_borderMaterial->setDiffuse(Ogre::ColourValue::Blue);
+            m_border.material->setAmbient(Ogre::ColourValue::Blue);
+            m_border.material->setDiffuse(Ogre::ColourValue::Blue);
         }
 
-        m_planeSceneNode->attachObject(m_border);
+        m_planeSceneNode->attachObject(m_border.shape);
     }
 
     this->updatePosition();
@@ -318,15 +325,15 @@ void Plane::updatePosition()
     switch(m_orientation)
     {
         case OrientationMode::X_AXIS:
-            m_planeSceneNode->translate(0, m_height / 2, m_width / 2);
+            m_planeSceneNode->translate(0, m_size[1] / 2, m_size[0] / 2);
             break;
 
         case OrientationMode::Y_AXIS:
-            m_planeSceneNode->translate(m_width / 2, 0, m_height / 2);
+            m_planeSceneNode->translate(m_size[0] / 2, 0, m_size[1] / 2);
             break;
 
         case OrientationMode::Z_AXIS:
-            m_planeSceneNode->translate(m_width / 2, m_height / 2, 0);
+            m_planeSceneNode->translate(m_size[0] / 2, m_size[1] / 2, 0);
             break;
     }
 }
@@ -381,8 +388,9 @@ void Plane::setVisible(bool _visible)
 
 //------------------------------------------------------------------------------
 
-void Plane::changeSlice(float sliceIndex)
+void Plane::changeSlice(const std::array<float, 3>& _slicesIndex)
 {
+    const auto currentSlice                      = _slicesIndex[static_cast<std::size_t>(m_orientation)];
     const Ogre::Material::Techniques& techniques = m_texMaterial->getTechniques();
 
     for(auto* const tech : techniques)
@@ -395,15 +403,15 @@ void Plane::changeSlice(float sliceIndex)
 
             SIGHT_ASSERT("Can't find Ogre pass", pass);
 
-            pass->getFragmentProgramParameters()->setNamedConstant("u_slice", sliceIndex);
+            pass->getFragmentProgramParameters()->setNamedConstant("u_slice", currentSlice);
         }
     }
 
     // as close as possible from 1, but smaller.
-    const float relativePosition = std::clamp(sliceIndex, 0.F, 0.999999999999999F);
+    const float relativePosition = std::clamp(currentSlice, 0.F, 0.999999999999999F);
 
     this->updatePosition();
-    Ogre::Real distance = relativePosition * m_depth;
+    Ogre::Real distance = relativePosition * m_size[2];
 
     switch(m_orientation)
     {
@@ -419,6 +427,111 @@ void Plane::changeSlice(float sliceIndex)
             m_planeSceneNode->translate(0, 0, distance);
             break;
     }
+
+    // Display a cross for the two other planes
+    if(m_slicesCross.enabled)
+    {
+        if(m_slicesCross.shape != nullptr)
+        {
+            m_sceneManager->destroyManualObject(m_slicesCross.shape);
+            m_slicesCross.shape = nullptr;
+        }
+
+        // Create the border.
+        m_slicesCross.shape = m_sceneManager->createManualObject(m_slicePlaneName + "_Others");
+        m_slicesCross.shape->estimateVertexCount(4);
+        m_slicesCross.shape->begin(m_slicesCross.material, Ogre::RenderOperation::OT_LINE_LIST);
+
+        const auto halfWidth  = m_size[0] * .5F;
+        const auto halfHeight = m_size[1] * .5F;
+
+        const auto dashLength = std::max(std::max(m_size[0], m_size[1]), m_size[2]) / 100.F;
+        using sight::viz::scene3d::helper::ManualObject;
+        if(m_orientation == OrientationMode::X_AXIS)
+        {
+            ManualObject::drawDashedLine(
+                m_slicesCross.shape,
+                Ogre::Vector3(0.F, _slicesIndex[1] * m_size[1] - halfHeight, -halfWidth),
+                Ogre::Vector3(0.F, _slicesIndex[1] * m_size[1] - halfHeight, +halfWidth),
+                dashLength,
+                dashLength,
+                Ogre::ColourValue::Green
+            );
+            ManualObject::drawDashedLine(
+                m_slicesCross.shape,
+                Ogre::Vector3(0.F, -halfHeight, _slicesIndex[2] * m_size[0] - halfWidth),
+                Ogre::Vector3(0.F, halfHeight, _slicesIndex[2] * m_size[0] - halfWidth),
+                dashLength,
+                dashLength,
+                Ogre::ColourValue::Blue
+            );
+
+            m_slicesCross.shape->setBoundingBox(
+                Ogre::AxisAlignedBox(
+                    Ogre::Vector3(0.F, -halfHeight, -halfWidth),
+                    Ogre::Vector3(0.F, halfHeight, halfWidth)
+                )
+            );
+        }
+        else if(m_orientation == OrientationMode::Y_AXIS)
+        {
+            ManualObject::drawDashedLine(
+                m_slicesCross.shape,
+                Ogre::Vector3(_slicesIndex[0] * m_size[0] - halfWidth, 0.F, -halfHeight),
+                Ogre::Vector3(_slicesIndex[0] * m_size[0] - halfWidth, 0.F, halfHeight),
+                dashLength,
+                dashLength,
+                Ogre::ColourValue::Red
+            );
+            ManualObject::drawDashedLine(
+                m_slicesCross.shape,
+                Ogre::Vector3(-halfWidth, 0.F, _slicesIndex[2] * m_size[1] - halfHeight),
+                Ogre::Vector3(halfWidth, 0.F, _slicesIndex[2] * m_size[1] - halfHeight),
+                dashLength,
+                dashLength,
+                Ogre::ColourValue::Blue
+            );
+            m_slicesCross.shape->setBoundingBox(
+                Ogre::AxisAlignedBox(
+                    Ogre::Vector3(-halfHeight, 0.F, -halfWidth),
+                    Ogre::Vector3(halfHeight, 0.F, halfWidth)
+                )
+            );
+        }
+        else
+        {
+            ManualObject::drawDashedLine(
+                m_slicesCross.shape,
+                Ogre::Vector3(_slicesIndex[0] * m_size[0] - halfWidth, -halfHeight, 0.F),
+                Ogre::Vector3(_slicesIndex[0] * m_size[0] - halfWidth, halfHeight, 0.F),
+                dashLength,
+                dashLength,
+                Ogre::ColourValue::Red
+            );
+            ManualObject::drawDashedLine(
+                m_slicesCross.shape,
+                Ogre::Vector3(-halfWidth, _slicesIndex[1] * m_size[1] - halfHeight, 0.F),
+                Ogre::Vector3(halfWidth, _slicesIndex[1] * m_size[1] - halfHeight, 0.F),
+                dashLength,
+                dashLength,
+                Ogre::ColourValue::Green
+            );
+
+            m_slicesCross.shape->setBoundingBox(
+                Ogre::AxisAlignedBox(
+                    Ogre::Vector3(-halfHeight, -halfWidth, 0.F),
+                    Ogre::Vector3(halfHeight, halfWidth, 0.F)
+                )
+            );
+        }
+
+        m_slicesCross.shape->end();
+
+        m_slicesCross.material->setAmbient(Ogre::ColourValue::White);
+        m_slicesCross.material->setDiffuse(Ogre::ColourValue::White);
+
+        m_planeSceneNode->attachObject(m_slicesCross.shape);
+    }
 }
 
 //-----------------------------------------------------------------------------
@@ -433,21 +546,21 @@ Ogre::MovablePlane Plane::setDimensions(const Ogre::Vector3& _spacing)
     switch(m_orientation)
     {
         case OrientationMode::X_AXIS:
-            m_width  = tex_depth * _spacing[2];
-            m_height = tex_height * _spacing[1];
-            m_depth  = tex_width * _spacing[0];
+            m_size[0] = tex_depth * _spacing[2];
+            m_size[1] = tex_height * _spacing[1];
+            m_size[2] = tex_width * _spacing[0];
             break;
 
         case OrientationMode::Y_AXIS:
-            m_width  = tex_width * _spacing[0];
-            m_height = tex_depth * _spacing[2];
-            m_depth  = tex_height * _spacing[1];
+            m_size[0] = tex_width * _spacing[0];
+            m_size[1] = tex_depth * _spacing[2];
+            m_size[2] = tex_height * _spacing[1];
             break;
 
         case OrientationMode::Z_AXIS:
-            m_width  = tex_width * _spacing[0];
-            m_height = tex_height * _spacing[1];
-            m_depth  = tex_depth * _spacing[2];
+            m_size[0] = tex_width * _spacing[0];
+            m_size[1] = tex_height * _spacing[1];
+            m_size[2] = tex_depth * _spacing[2];
             break;
     }
 
@@ -505,23 +618,23 @@ std::array<Ogre::Vector3, 4> Plane::computeCross(const Ogre::Vector3& _center, c
     {
         case sight::viz::scene3d::Plane::OrientationMode::X_AXIS:
             crossLines[0] = {_center.x, 0 + _imageOrigin.y, _center.z};
-            crossLines[1] = {_center.x, m_height + _imageOrigin.y, _center.z};
+            crossLines[1] = {_center.x, m_size[1] + _imageOrigin.y, _center.z};
             crossLines[2] = {_center.x, _center.y, 0 + _imageOrigin.z};
-            crossLines[3] = {_center.x, _center.y, m_width + _imageOrigin.z};
+            crossLines[3] = {_center.x, _center.y, m_size[0] + _imageOrigin.z};
             break;
 
         case sight::viz::scene3d::Plane::OrientationMode::Y_AXIS:
             crossLines[0] = {0 + _imageOrigin.x, _center.y, _center.z};
-            crossLines[1] = {m_width + _imageOrigin.x, _center.y, _center.z};
+            crossLines[1] = {m_size[0] + _imageOrigin.x, _center.y, _center.z};
             crossLines[2] = {_center.x, _center.y, 0 + _imageOrigin.z};
-            crossLines[3] = {_center.x, _center.y, m_height + _imageOrigin.z};
+            crossLines[3] = {_center.x, _center.y, m_size[1] + _imageOrigin.z};
             break;
 
         case sight::viz::scene3d::Plane::OrientationMode::Z_AXIS:
             crossLines[0] = {0 + _imageOrigin.x, _center.y, _center.z};
-            crossLines[1] = {m_width + _imageOrigin.x, _center.y, _center.z};
+            crossLines[1] = {m_size[0] + _imageOrigin.x, _center.y, _center.z};
             crossLines[2] = {_center.x, 0 + _imageOrigin.y, _center.z};
-            crossLines[3] = {_center.x, m_height + _imageOrigin.y, _center.z};
+            crossLines[3] = {_center.x, m_size[1] + _imageOrigin.y, _center.z};
             break;
 
         default:

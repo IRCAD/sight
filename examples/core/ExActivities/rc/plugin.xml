@@ -70,6 +70,7 @@
             <elevation>#525867</elevation>
             <accent>#666C7B</accent>
             <foreground>#3E4453</foreground>
+            <fontSize>14</fontSize>
         </config>
     </extension>
 
@@ -110,7 +111,7 @@
     <extension implements="sight::service::extension::AppConfigParameters">
         <id>ExActivities_AppCfgParam</id>
         <parameters>
-            <param name="APP_NAME" value="ExActivities @PROJECT_VERSION@" />
+            <param name="APP_NAME" value="ExActivities" />
             <param name="APP_VERSION" value="@PROJECT_VERSION@" />
             <param name="ICON_PATH" value="ExActivities/app.ico" />
             <param name="SEQUENCER_CONFIG" value="ExActivities_Sequencer_SrvCfg" />

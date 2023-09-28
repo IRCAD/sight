@@ -85,6 +85,8 @@ namespace sight::module::ui::qt::activity
         <background>#FF00FF</background>
         <primary>#FF00FF</primary>
         <elevation>#FF00FF</elevation>
+        <buttonWidth>200</buttonWidth>
+        <fontSize>12</fontSize>
     </service>
    @endcode
  * @subsection In In
@@ -109,6 +111,8 @@ namespace sight::module::ui::qt::activity
  * - \b background (optional): the background color used by the sequencer.
  * - \b primary (optional): the primary color used by the sequencer.
  * - \b elevation (optional): the elevation color used by the sequencer.
+ * - \b buttonWidth (optional): the width of the buttons of the sequencer.
+ * - \b fontSize (optional): the size of the font used in the buttons of the sequencer.
  *
  * @todo listen the current activity data to notify when the next activity can be created
  */
@@ -226,6 +230,8 @@ private:
     std::string m_background;
     std::string m_primary;
     std::string m_elevation;
+    std::string m_buttonWidth {"200"};
+    double m_fontSize {12.0};
 
     const Signals::activity_signal_t::sptr m_activity_created {
         newSignal<Signals::activity_signal_t>(Signals::ACTIVITY_CREATED)

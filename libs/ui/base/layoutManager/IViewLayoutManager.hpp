@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,6 +29,7 @@
 #include "ui/base/config.hpp"
 #include "ui/base/container/fwContainer.hpp"
 #include "ui/base/GuiBaseObject.hpp"
+#include "ui/base/parameter.hpp"
 
 namespace sight::ui::base::layoutManager
 {
@@ -43,10 +44,10 @@ public:
     SIGHT_DECLARE_CLASS(IViewLayoutManager, ui::base::GuiBaseObject);
 
     /// Constructor. Do nothing.
-    UI_BASE_API IViewLayoutManager();
+    UI_BASE_API IViewLayoutManager() = default;
 
     /// Destructor. Do nothing.
-    UI_BASE_API ~IViewLayoutManager() override;
+    UI_BASE_API ~IViewLayoutManager() override = default;
 
     /**
      * @brief Configure the layout before creation.
@@ -70,6 +71,11 @@ public:
      * @brief Returns all sub containers managed by this layout.
      */
     UI_BASE_API virtual std::vector<ui::base::container::fwContainer::sptr> getSubViews();
+
+    /// Modify a layout element, depending of the key.
+    /// @param parameter The parameter of the action.
+    /// @param key The action to perform.
+    UI_BASE_API virtual void modifyLayout(const ui::base::parameter_t& parameter, const std::string& key);
 
 protected:
 

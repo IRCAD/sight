@@ -47,13 +47,11 @@
 namespace sight::core::runtime::detail::io
 {
 
-static const std::string CLASS("class");
 static const std::string EXTENSION("extension");
 static const std::string EXTENSION_POINT("extension-point");
 static const std::string ID("id");
 static const std::string IMPLEMENTS("implements");
 static const std::string LIBRARY("library");
-static const std::string NAME("name");
 static const std::string PLUGIN("plugin");
 static const std::string PRIORITY("priority");
 static const std::string REQUIREMENT("requirement");

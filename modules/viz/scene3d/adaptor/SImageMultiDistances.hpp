@@ -43,7 +43,7 @@ namespace sight::module::viz::scene3d::adaptor
 
 /**
  * @brief This adaptor displays distances retrieved from the image fields.
- *
+ * @deprecated Use sight::module::viz::scene3dQt::adaptor::SImageMultiDistances instead.
 
  * @section XML XML Configuration
  * @code{.xml}

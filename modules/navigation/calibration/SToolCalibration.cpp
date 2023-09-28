@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -29,9 +29,7 @@
 namespace sight::module::navigation::calibration
 {
 
-static const service::IService::KeyType s_MATRIX_CENTER_OUTPUT      = "matrixCenter";
 static const service::IService::KeyType s_MATRIX_CALIBRATION_OUTPUT = "matrixCalibration";
-static const service::IService::KeyType s_MATRICES_VECTOR_INPUT     = "matricesVector";
 
 // -----------------------------------------------------------------------------
 

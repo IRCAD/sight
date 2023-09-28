@@ -105,7 +105,7 @@
             <inout key="image" uid="snapshot" />
         </service>
 
-        <service uid="negatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera" autoConnect="true">
+        <service uid="negatoCameraAdp" type="sight::module::viz::scene3d::adaptor::SNegato2DCamera">
             <inout key="image" uid="${image}" />
             <inout key="tf" uid="tf" />
             <config priority="0" orientation="${orientation}" />
@@ -121,12 +121,12 @@
             <config sliceIndex="${orientation}" filtering="none" />
         </service>
 
-        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true">
+        <service uid="multiDistancesAdp" type="sight::module::viz::scene3dQt::adaptor::SImageMultiDistances" autoConnect="true">
             <inout key="image" uid="${image}" />
             <config fontSize="32" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
 
-        <service uid="landmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="true">
+        <service uid="landmarksAdp" type="sight::module::viz::scene3dQt::adaptor::SLandmarks" autoConnect="true">
             <inout key="landmarks" uid="${landmarks}" />
             <config priority="4" />
         </service>

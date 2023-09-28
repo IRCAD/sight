@@ -66,10 +66,6 @@ const core::com::Slots::SlotKeyType SRender::s_ENABLE_FULLSCREEN        = "enabl
 const core::com::Slots::SlotKeyType SRender::s_SET_MANUAL_MODE          = "setManualMode";
 const core::com::Slots::SlotKeyType SRender::s_SET_AUTO_MODE            = "setAutoMode";
 
-static const core::com::Slots::SlotKeyType s_ADD_OBJECTS_SLOT    = "addObject";
-static const core::com::Slots::SlotKeyType s_CHANGE_OBJECTS_SLOT = "changeObject";
-static const core::com::Slots::SlotKeyType s_REMOVE_OBJECTS_SLOT = "removeObjects";
-
 //-----------------------------------------------------------------------------
 
 SRender::SRender() noexcept :

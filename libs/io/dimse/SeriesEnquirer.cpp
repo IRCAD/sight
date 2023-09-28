@@ -30,8 +30,6 @@
 
 #include <core/os/TempPath.hpp>
 
-#include <boost/foreach.hpp>
-
 #include <dcmtk/config/osconfig.h>
 #include <dcmtk/dcmdata/dcfilefo.h>
 #include <dcmtk/dcmnet/diutil.h>

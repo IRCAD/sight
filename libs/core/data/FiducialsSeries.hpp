@@ -21,7 +21,10 @@
 
 #pragma once
 
+#include "core/com/Signals.hpp"
 #include "core/macros.hpp"
+
+#include "data/config.hpp"
 
 #include "Series.hpp"
 
@@ -99,6 +102,12 @@ public:
         SHAPE
     };
 
+    enum class PrivateShape
+    {
+        SPHERE,
+        CUBE
+    };
+
     /// Struct which represents an element in the ReferencedImageSequence (0008,1140) data element.
     struct ReferencedImage
     {
@@ -106,6 +115,9 @@ public:
         std::string referencedSOPInstanceUID;               /// ReferencedSOPInstanceUID (0008,1155)
         std::vector<std::int32_t> referencedFrameNumber;    /// ReferencedFrameNumber (0008,1160)
         std::vector<std::uint16_t> referencedSegmentNumber; /// ReferencedSegmentNumber (0062,000B)
+
+        DATA_API bool operator==(const ReferencedImage& other) const;
+        DATA_API bool operator!=(const ReferencedImage& other) const;
     };
 
     /// Struct which represents an element in the GraphicCoordinatesDataSequence (0070,0318) data element.
@@ -113,6 +125,9 @@ public:
     {
         ReferencedImage referencedImageSequence; /// ReferencedImageSequence (0008,1140)
         std::vector<Point2> graphicData;         /// GraphicData (0070,0022)
+
+        DATA_API bool operator==(const GraphicCoordinatesData& other) const;
+        DATA_API bool operator!=(const GraphicCoordinatesData& other) const;
     };
 
     /// Struct which represents an element in the FiducialSequence (0070,031E) data element.
@@ -130,6 +145,9 @@ public:
                                                                                             /// (NumberOfContourPoints
                                                                                             /// (3006,0046) included
                                                                                             /// inside)
+
+        DATA_API bool operator==(const Fiducial& other) const;
+        DATA_API bool operator!=(const Fiducial& other) const;
     };
 
     /// Struct which represents an element in the FiducialSetSequence (0070,031C) data element.
@@ -139,12 +157,36 @@ public:
         std::optional<std::string> frameOfReferenceUID;                       /// FrameOfReference (0020,0052)
         std::vector<Fiducial> fiducialSequence;                               /// FiducialSequence (0070,031E)
         std::optional<std::string> groupName;                                 /// Private tag
+        std::optional<std::array<float, 4> > color;                           /// Private tag
+        std::optional<float> size;                                            /// Private tag
+        std::optional<PrivateShape> shape;                                    /// Private tag
+        std::optional<bool> visibility;                                       /// Private tag
+
+        DATA_API bool operator==(const FiducialSet& other) const;
+        DATA_API bool operator!=(const FiducialSet& other) const;
     };
 
     SIGHT_DECLARE_CLASS(FiducialsSeries, Series, factory::New<FiducialsSeries>);
 
     DATA_API explicit FiducialsSeries(Key key);
     DATA_API ~FiducialsSeries() noexcept override = default;
+
+    DATA_API bool operator==(const FiducialsSeries& other) const;
+    DATA_API bool operator!=(const FiducialsSeries& other) const;
+
+    /// Defines shallow copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param[in] source the source object to copy
+    DATA_API void shallowCopy(const Object::csptr& source) override;
+
+    /// Defines deep copy
+    /// @throws data::Exception if an errors occurs during copy
+    /// @param source source object to copy
+    /// @param cache cache used to deduplicate pointers
+    DATA_API void deepCopy(
+        const Object::csptr& source,
+        const std::unique_ptr<DeepCopyCacheType>& cache = std::make_unique<DeepCopyCacheType>()
+    ) override;
 
     /**
      * Getter/Setter for the ContentDate (0008,0023) data element.
@@ -606,9 +648,138 @@ public:
     DATA_API void setGroupName(std::size_t fiducialSetNumber, const std::string& groupName);
     /// @}
 
+    /**
+     * Getter/Setter for the Color private tag data element.
+     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
+     * @{
+     */
+    DATA_API std::optional<std::array<float, 4> > getColor(std::size_t fiducialSetNumber) const noexcept;
+    DATA_API void setColor(std::size_t fiducialSetNumber, const std::array<float, 4>& color);
+    /// @}
+
+    /**
+     * Getter/Setter for the Size private tag data element.
+     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
+     * @{
+     */
+    DATA_API std::optional<float> getSize(std::size_t fiducialSetNumber) const noexcept;
+    DATA_API void setSize(std::size_t fiducialSetNumber, float size);
+    /// @}
+
+    /**
+     * Getter/Setter for the Shape private tag data element.
+     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
+     * @{
+     */
+    DATA_API std::optional<PrivateShape> getShape(std::size_t fiducialSetNumber) const noexcept;
+    DATA_API void setShape(std::size_t fiducialSetNumber, PrivateShape shape);
+    /// @}
+
+    /**
+     * Getter/Setter for the Visibility private tag data element.
+     * @param fiducialSetNumber The 0-indexed index of the fiducial set whose data must be fetched.
+     * @{
+     */
+    DATA_API std::optional<bool> getVisibility(std::size_t fiducialSetNumber) const noexcept;
+    DATA_API void setVisibility(std::size_t fiducialSetNumber, bool visibility);
+    /// @}
+
+    // Helper methods
+
+    /**
+     * Set group names for fiducial sets which contains point fiducials which doesn't have group names
+     */
+    DATA_API void setGroupNamesForPointFiducials();
+
+    /**
+     * Get the list of group names for fiducial sets which contains point fiducials
+     * @return The list of group names
+     */
+    [[nodiscard]] DATA_API std::vector<std::string> getPointFiducialsGroupNames() const;
+
+    /**
+     * Get the fiducial set which has the name in parameter and its index
+     * @param groupName The name of the group to fetch
+     * @return A pair with the fiducial set and its index, or std::nullopt if the group name doesn't exist
+     */
+    [[nodiscard]] DATA_API std::optional<std::pair<FiducialSet, std::size_t> > getFiducialSetAndIndex(
+        const std::string& groupName
+    ) const;
+
+    /**
+     * Get the number of point fiducials in a group
+     * @param groupName The name of the group to fetch
+     * @return The number of points in the group, or std::nullopt if the group name doesn't exist
+     */
+    [[nodiscard]] DATA_API std::optional<std::size_t> getNumberOfPointsInGroup(const std::string& groupName) const;
+
+    /**
+     * Returns the 3D position of the point fiducial using Contour Data.
+     * @param fiducial The fiducial whose 3D position must be found
+     * @return The 3D position of the fiducial, or std::nullopt if it has no Contour Data (getting 3D position using
+     * Graphic Coordinates Data Sequence isn't supported) or if its shape type isn't point.
+     */
+    [[nodiscard]] DATA_API static std::optional<std::array<double, 3> > getPoint(const Fiducial& fiducial);
+
+    /**
+     * Returns the 3D position of the point INDEX in group GROUP_NAME
+     * @param groupName The name of the group of the point
+     * @param index The index of the point in its group
+     * @return The 3D position of the fiducial, or std::nullopt if the group doesn't exist or if it has no Contour Data
+     * (getting 3D position using Graphic Coordinates Data Sequence isn't supported) or if its shape type isn't point.
+     */
+    [[nodiscard]] DATA_API std::optional<std::array<double, 3> > getPoint(
+        const std::string& groupName,
+        std::size_t index
+    ) const;
+
+    /**
+     * Get all the fiducials whose shape type is point in the given fiducial set
+     * @param fiducialSet The fiducial set whose fiducials must be filtered
+     * @return The list of fiducial whose shape type is point
+     */
+    [[nodiscard]] DATA_API static std::vector<Fiducial> getPointFiducials(const FiducialSet& fiducialSet);
+
+    /**
+     * Get a fiducial set as a structure compatible with data::Landmarks
+     * @param groupName The name of the group to fetch
+     * @return The fiducial set as a structure compatible with data::Landmarks
+     */
+    [[nodiscard]] DATA_API std::optional<Landmarks::LandmarksGroup> getGroup(const std::string& groupName) const;
+
+    /**
+     * Remove the point INDEX in group GROUP_NAME
+     * @param groupName The name of the group of the point
+     * @param index The index of the point in its group
+     */
+    DATA_API void removePoint(const std::string& groupName, std::size_t index);
+
+    /**
+     * Remove the group GROUP_NAME
+     * @param groupName The name of the group to be removed
+     */
+    DATA_API void removeGroup(const std::string& group);
+
+    /**
+     * Add a new fiducial set with the given parameters
+     * @param groupName The name of the new fiducial set
+     * @param color The color of the new fiducial set
+     * @param size The size of the points in the new fiducial set
+     */
+    DATA_API void addGroup(const std::string& groupName, const std::array<float, 4>& color, float size);
+
+    /**
+     * Add a point fiducial in a fiducial set
+     * @param groupName The name of the group of the point
+     * @param point The 3D position of the new point
+     */
+    DATA_API void addPoint(const std::string& groupName, const std::array<double, 3>& pos);
+
 private:
 
     static Shape stringToShape(const std::optional<std::string>& string);
+    static std::optional<std::array<float, 4> > stringToColor(const std::optional<std::string>& string);
+    static std::optional<PrivateShape> stringToPrivateShape(const std::optional<std::string>& string);
 
     template<typename T>
     T to(const gdcm::DataSet& dataSet) const;

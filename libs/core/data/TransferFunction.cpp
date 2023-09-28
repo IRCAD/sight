@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -99,7 +99,13 @@ TransferFunctionPiece::min_max_t ITransferFunction::windowMinMax() const
 
 void ITransferFunction::setWindowMinMax(const min_max_t& _minMax)
 {
-    this->setWindow(_minMax.second - _minMax.first);
+    this->setWindow(
+        _minMax.second
+        >= _minMax.first ? std::max(1., _minMax.second - _minMax.first) : std::min(
+            -1.,
+            _minMax.second - _minMax.first
+        )
+    );
 
     const value_t halfWindow = window() * 0.5;
     this->setLevel(halfWindow + _minMax.first);
@@ -402,6 +408,8 @@ void TransferFunction::setLevel(value_t _value)
 
 void TransferFunction::setWindow(value_t _value)
 {
+    SIGHT_ASSERT("Window should be non-null", std::fpclassify(_value) != FP_ZERO);
+
     const double scale = _value / this->window();
     for(auto& piece : this->pieces())
     {

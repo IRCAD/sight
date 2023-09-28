@@ -42,7 +42,7 @@ endif()
 
 project(
     sight
-    VERSION 23.0.0
+    VERSION 23.1.0
     DESCRIPTION "Surgical Image Guidance and Healthcare Toolkit"
     HOMEPAGE_URL "https://git.ircad.fr/sight/sight"
 )
@@ -145,6 +145,8 @@ option(SIGHT_ENABLE_REALSENSE "Enable RealSense" OFF)
 
 # Make samples/tutorials build optional
 option(SIGHT_BUILD_EXAMPLES "Build examples and tutorials" ON)
+
+option(SIGHT_BUILD_MANPAGES "Generate man pages for applications" OFF)
 
 ########################################################################################################################
 # Warn user of install dir isn't empty
@@ -344,6 +346,7 @@ elseif(UNIX)
         FILES "${CMAKE_SOURCE_DIR}/cmake/build/linux/template.sh.in"
               "${CMAKE_SOURCE_DIR}/cmake/build/linux/template_exe.sh.in"
               "${CMAKE_SOURCE_DIR}/cmake/build/linux/template_test.sh.in"
+              "${CMAKE_SOURCE_DIR}/cmake/build/linux/manpage.cmake"
         DESTINATION ${FWCONFIG_PACKAGE_LOCATION}/build/linux
         COMPONENT dev
     )

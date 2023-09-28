@@ -180,6 +180,7 @@ void SVolumeRender::starting()
             image.get_shared(),
             mask.get_shared(),
             tf.get_shared(),
+            m_config.samples,
             m_config.dynamic,
             m_config.preintegration,
             m_config.shadows,

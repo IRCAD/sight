@@ -33,6 +33,7 @@
 #include <data/Mesh.hpp>
 
 #include <viz/scene3d/IAdaptor.hpp>
+#include <viz/scene3d/IMaterialAdaptor.hpp>
 #include <viz/scene3d/Material.hpp>
 #include <viz/scene3d/Mesh.hpp>
 #include <viz/scene3d/ogre.hpp>
@@ -87,12 +88,12 @@ namespace sight::module::viz::scene3d::adaptor
  *  - \b representationMode (optional, SURFACE/POINT/WIREFRAME/EDGE, default=SURFACE):
  *      representation mode as in data::Material.
  */
-class MODULE_VIZ_SCENE3D_CLASS_API SMaterial final : public sight::viz::scene3d::IAdaptor
+class MODULE_VIZ_SCENE3D_CLASS_API SMaterial final : public sight::viz::scene3d::IMaterialAdaptor
 {
 public:
 
     /// Generates default methods as New, dynamicCast, ...
-    SIGHT_DECLARE_SERVICE(SMaterial, sight::viz::scene3d::IAdaptor);
+    SIGHT_DECLARE_SERVICE(SMaterial, sight::viz::scene3d::IMaterialAdaptor);
 
     /**
      * @name Slots API
@@ -125,37 +126,37 @@ public:
         const std::string& _layer,
         const std::string& _shadingMode = "",
         const std::string& _template    = sight::viz::scene3d::Material::DEFAULT_MATERIAL_TEMPLATE_NAME
-    );
+    ) override;
 
     /// Gets Ogre associated material.
-    MODULE_VIZ_SCENE3D_API Ogre::MaterialPtr getMaterial();
+    MODULE_VIZ_SCENE3D_API Ogre::MaterialPtr getMaterial() override;
 
     /// Gets material name.
-    MODULE_VIZ_SCENE3D_API std::string getMaterialName() const;
+    MODULE_VIZ_SCENE3D_API std::string getMaterialName() const override;
 
     /// Retrieves the associated texture name.
-    MODULE_VIZ_SCENE3D_API void setTextureName(const std::string& _textureName);
+    MODULE_VIZ_SCENE3D_API void setTextureName(const std::string& _textureName) override;
 
     /// Sets material name.
-    MODULE_VIZ_SCENE3D_API void setMaterialName(const std::string& _materialName);
+    MODULE_VIZ_SCENE3D_API void setMaterialName(const std::string& _materialName) override;
 
     /// Sets material template name.
-    MODULE_VIZ_SCENE3D_API void setMaterialTemplateName(const std::string& _materialName);
+    MODULE_VIZ_SCENE3D_API void setMaterialTemplateName(const std::string& _materialName) override;
 
     /// Tells if there is a texture currently bound.
-    MODULE_VIZ_SCENE3D_API bool hasDiffuseTexture() const;
+    MODULE_VIZ_SCENE3D_API bool hasDiffuseTexture() const override;
 
     /// Gets the shading mode.
-    MODULE_VIZ_SCENE3D_API const std::string& getShadingMode() const;
+    MODULE_VIZ_SCENE3D_API const std::string& getShadingMode() const override;
 
     /// Sets the shading mode.
-    MODULE_VIZ_SCENE3D_API void setShadingMode(const std::string& _shadingMode);
+    MODULE_VIZ_SCENE3D_API void setShadingMode(const std::string& _shadingMode) override;
 
     /// Set the renderable object.
-    MODULE_VIZ_SCENE3D_API void setR2VBObject(sight::viz::scene3d::R2VBRenderable* _r2vbObject);
+    MODULE_VIZ_SCENE3D_API void setR2VBObject(sight::viz::scene3d::R2VBRenderable* _r2vbObject) override;
 
     /// Gets the internal material code.
-    MODULE_VIZ_SCENE3D_API sight::viz::scene3d::Material* getMaterialFw() const;
+    MODULE_VIZ_SCENE3D_API sight::viz::scene3d::Material* getMaterialFw() const override;
 
 protected:
 

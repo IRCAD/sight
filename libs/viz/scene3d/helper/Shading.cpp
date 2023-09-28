@@ -44,9 +44,6 @@
 namespace sight::viz::scene3d::helper
 {
 
-static const std::string s_EDGE_PASS    = "EdgePass";
-static const std::string s_NORMALS_PASS = "NormalsPass";
-
 static const std::regex s_PEEL_REGEX(".*/peel.*");
 static const std::regex s_WEIGHT_BLEND_REGEX(".*/weightBlend.*");
 static const std::regex s_TRANSMITTANCE_BLEND_REGEX(".*/transmittanceBlend.*");

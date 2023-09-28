@@ -24,7 +24,7 @@
 
 #include "service/parser/Object.hpp"
 
-#include <boost/foreach.hpp>
+#include <ranges>
 
 namespace sight::service::parser
 {
@@ -119,8 +119,7 @@ void Object::updateConfig()
 
 void Object::stopConfig()
 {
-    // NOLINTNEXTLINE(bugprone-branch-clone)
-    BOOST_REVERSE_FOREACH(service::IAppConfigManager::sptr ctm, m_ctmContainer)
+    for(auto& ctm : std::views::reverse(m_ctmContainer))
     {
         ctm->stop();
     }
@@ -130,11 +129,11 @@ void Object::stopConfig()
 
 void Object::destroyConfig()
 {
-    // NOLINTNEXTLINE(bugprone-branch-clone)
-    BOOST_REVERSE_FOREACH(service::IAppConfigManager::sptr ctm, m_ctmContainer)
+    for(auto& ctm : std::views::reverse(m_ctmContainer))
     {
         ctm->destroy();
     }
+
     m_ctmContainer.clear();
 }
 

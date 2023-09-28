@@ -140,6 +140,11 @@ std::string SImageMultiDistances::getLength(const Ogre::Vector3& _begin, const O
 
 SImageMultiDistances::SImageMultiDistances() noexcept
 {
+    SIGHT_WARN(
+        "'sight::module::viz::scene3d::adaptor::SImageMultiDistances' is deprecated, please use"
+        " 'sight::module::viz::scene3dQt::adaptor::SImageMultiDistances' instead."
+    );
+
     newSlot(s_REMOVE_DISTANCES_SLOT, &SImageMultiDistances::removeDistances, this);
     newSlot(s_UPDATE_VISIBILITY_FROM_FIELDS_SLOT, &SImageMultiDistances::updateVisibilityFromField, this);
     newSlot(s_ACTIVATE_DISTANCE_TOOL_SLOT, &SImageMultiDistances::activateDistanceTool, this);

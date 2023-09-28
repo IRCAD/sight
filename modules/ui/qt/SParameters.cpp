@@ -600,7 +600,11 @@ void SParameters::updating()
                 else if(auto* buttonGroup = qobject_cast<QButtonGroup*>(child);
                         buttonGroup != nullptr)
                 {
-                    const auto* checkedButton = qobject_cast<QToolButton*>(buttonGroup->checkedButton());
+                    auto* checkedButton = buttonGroup->checkedButton();
+
+                    // Find the currently checked button
+                    int buttonIndex = buttonGroup->buttons().indexOf(checkedButton);
+
                     if(checkedButton != nullptr)
                     {
                         const std::string value = checkedButton->property("value").toString().toStdString();
@@ -611,6 +615,8 @@ void SParameters::updating()
                         SIGHT_DEBUG(
                             "[EMIT] " << signals::ENUM_CHANGED_SIG << "(" << value << ", " << key << ")"
                         );
+                        this->signal<signals::EnumChangedIndexSignalType>(signals::ENUM_INDEX_CHANGED_SIG)
+                        ->asyncEmit(buttonIndex, key);
                     }
                 }
                 else
@@ -1251,7 +1257,7 @@ void SParameters::createBoolWidget(
         layout.addWidget(resetButton, row, 2);
 
         // Connect reset button to the slider
-        QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetBooleanMapped(checkbox);});
+        QObject::connect(resetButton, &QPushButton::clicked, this, [this, checkbox]{onResetBooleanMapped(checkbox);});
     }
 }
 
@@ -1307,7 +1313,14 @@ void SParameters::createColorWidget(
         layout.addWidget(resetButton, row, 2);
 
         // Connect reset button to the button
-        QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetColorMapped(colourButton);});
+        QObject::connect(
+            resetButton,
+            &QPushButton::clicked,
+            this,
+            [this, colourButton]
+            {
+                onResetColorMapped(colourButton);
+            });
     }
 }
 
@@ -1385,7 +1398,7 @@ void SParameters::createDoubleWidget(
         layout.addWidget(resetButton, row, 2);
 
         // Connect reset button to the spinbox
-        QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetDoubleMapped(spinbox);});
+        QObject::connect(resetButton, &QPushButton::clicked, this, [this, spinbox]{onResetDoubleMapped(spinbox);});
     }
 }
 
@@ -1458,7 +1471,14 @@ void SParameters::createDoubleSliderWidget(
     QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onChangeDoubleSlider(int)));
 
     // Connect slider value to the label
-    QObject::connect(slider, &QSlider::valueChanged, this, [ = ]{onDoubleSliderMapped(valueLabel, slider);});
+    QObject::connect(
+        slider,
+        &QSlider::valueChanged,
+        this,
+        [this, valueLabel, slider]
+        {
+            this->onDoubleSliderMapped(valueLabel, slider);
+        });
     QObject::connect(
         slider,
         &QSlider::rangeChanged,
@@ -1483,7 +1503,7 @@ void SParameters::createDoubleSliderWidget(
         layout.addWidget(resetButton, row, 2);
 
         // Connect reset button to the slider
-        QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetDoubleMapped(slider);});
+        QObject::connect(resetButton, &QPushButton::clicked, this, [this, slider]{onResetDoubleMapped(slider);});
     }
 }
 
@@ -1548,7 +1568,14 @@ void SParameters::createIntegerSliderWidget(
     QObject::connect(slider, SIGNAL(valueChanged(int)), this, SLOT(onChangeInteger(int)));
 
     // Connect slider value to the label
-    QObject::connect(slider, &QSlider::valueChanged, this, [ = ]{onSliderMapped(valueLabel, slider);});
+    QObject::connect(
+        slider,
+        &QSlider::valueChanged,
+        this,
+        [this, valueLabel, slider]
+        {
+            this->onSliderMapped(valueLabel, slider);
+        });
     QObject::connect(
         slider,
         &QSlider::rangeChanged,
@@ -1573,7 +1600,7 @@ void SParameters::createIntegerSliderWidget(
         layout.addWidget(resetButton, row, 2);
 
         // Connect reset button to the slider
-        QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetIntegerMapped(slider);});
+        QObject::connect(resetButton, &QPushButton::clicked, this, [this, slider]{onResetIntegerMapped(slider);});
     }
 }
 
@@ -1637,7 +1664,7 @@ void SParameters::createIntegerSpinWidget(
         layout.addWidget(resetButton, row, 2);
 
         // Connect reset button to the spinbox
-        QObject::connect(resetButton, &QPushButton::clicked, this, [ =, this]{onResetIntegerMapped(spinbox);});
+        QObject::connect(resetButton, &QPushButton::clicked, this, [this, spinbox]{onResetIntegerMapped(spinbox);});
     }
 }
 
@@ -1819,7 +1846,7 @@ void SParameters::createSliderEnumWidget(
     QObject::connect(
         slider,
         &sight::ui::qt::widget::NonLinearSlider::valueChanged,
-        [ =, this](int value)
+        [this, key, slider, valueLabel](int value)
         {
             if(!m_blockSignals)
             {
@@ -1945,7 +1972,7 @@ void SParameters::createButtonBarEnumWidget(
         QObject::connect(
             enumButton,
             &QToolButton::clicked,
-            [ =, this]
+            [this, buttonParam, key, buttonIndex]
             {
                 if(!m_blockSignals)
                 {
@@ -1956,6 +1983,8 @@ void SParameters::createButtonBarEnumWidget(
                     SIGHT_DEBUG(
                         "[EMIT] " << signals::ENUM_CHANGED_SIG << "(" << buttonParam.value << ", " << key << ")"
                     );
+                    this->signal<signals::EnumChangedIndexSignalType>(signals::ENUM_INDEX_CHANGED_SIG)
+                    ->asyncEmit(buttonIndex, key);
                 }
             });
 

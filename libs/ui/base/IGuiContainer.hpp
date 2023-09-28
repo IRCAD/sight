@@ -76,6 +76,8 @@ class ISlideViewBuilder;
  * - \b show() : this slot shows the container.
  * - \b hide() : this slot hides the container.
  * - \b toggleVisibility() : this slot shows the container if it is hidden or hides it if it is shown
+ * - \b modifyLayout(ui::base::parameter_t parameter, std::string key) : this slot modifies a layout element, depending
+ *                                                                       of the key.
  *
  * @section XML Example of XML configuration
  *
@@ -142,56 +144,24 @@ public:
 
     UI_BASE_API void setParent(std::string wid);
 
-protected:
+    /// @name Slots
+    /// @{
 
-    UI_BASE_API IGuiContainer();
-    UI_BASE_API ~IGuiContainer() override = default;
+    struct UI_BASE_CLASS_API slots : public IService::slots
+    {
+        using key_t = sight::core::com::Slots::SlotKeyType;
 
-    /**
-     * @brief Initialize managers.
-     *
-       @see ui::base::registry::View::initialize(), ui::base::layoutManager::IViewLayoutManager::initialize(),
-     *::ui::base::builder::IToolBarBuilder::initialize()
-     */
-    UI_BASE_API void initialize();
-
-    /**
-     * @brief Creates view, sub-views and toolbar containers. Manages sub-views and toobar services.
-     *
-     * @pre Parent container must be registered.
-     */
-    UI_BASE_API void create();
-
-    /// Stops sub-views and toobar services. Destroys view, sub-views and toolbar containers.
-    UI_BASE_API void destroy();
-
-    /**
-     * @name Slots
-     * @{
-     */
-
-    /// Slot to enable/disable the action
-    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_ENABLED_SLOT;
-    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_ENABLED_BY_PARAM_SLOT;
-
-    /// Slot to enable the container
-    UI_BASE_API static const core::com::Slots::SlotKeyType s_ENABLE_SLOT;
-
-    /// Slot to disable the container
-    UI_BASE_API static const core::com::Slots::SlotKeyType s_DISABLE_SLOT;
-
-    /// Slot to show/hide the container
-    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
-    UI_BASE_API static const core::com::Slots::SlotKeyType s_SET_VISIBLE_BY_PARAM_SLOT;
-
-    /// Slot to show the container
-    UI_BASE_API static const core::com::Slots::SlotKeyType s_SHOW_SLOT;
-
-    /// Slot to hide the container
-    UI_BASE_API static const core::com::Slots::SlotKeyType s_HIDE_SLOT;
-
-    /// Slot to show the container if it is hidden or hide it if it is shown
-    UI_BASE_API static const core::com::Slots::SlotKeyType s_TOGGLE_VISIBILITY;
+        inline static const key_t s_SET_ENABLED          = "setEnabled";
+        inline static const key_t s_SET_ENABLED_BY_PARAM = "setEnabledByParam";
+        inline static const key_t s_ENABLE               = "enable";
+        inline static const key_t s_DISABLE              = "disable";
+        inline static const key_t s_SET_VISIBLE          = "setVisible";
+        inline static const key_t s_SET_VISIBLE_BY_PARAM = "setVisibleByParam";
+        inline static const key_t s_SHOW                 = "show";
+        inline static const key_t s_HIDE                 = "hide";
+        inline static const key_t s_TOGGLE_VISIBILITY    = "toggleVisibility";
+        inline static const key_t s_MODIFY_LAYOUT        = "modifyLayout";
+    };
 
     /// SLOT: enable/disable the container
     UI_BASE_API virtual void setEnabled(bool isEnabled);
@@ -220,9 +190,33 @@ protected:
     /// SLOT: show the container if it is hidden or hide it if it is shown
     UI_BASE_API void toggleVisibility();
 
-/**
- * @}
- */
+    /// SLOT: modify a layout element, depending of the key. Forwarded to the view layout manager.
+    UI_BASE_API virtual void modifyLayout(ui::base::parameter_t parameter, std::string key);
+
+    /// @}
+
+protected:
+
+    UI_BASE_API IGuiContainer();
+    UI_BASE_API ~IGuiContainer() override = default;
+
+    /**
+     * @brief Initialize managers.
+     *
+       @see ui::base::registry::View::initialize(), ui::base::layoutManager::IViewLayoutManager::initialize(),
+     *::ui::base::builder::IToolBarBuilder::initialize()
+     */
+    UI_BASE_API void initialize();
+
+    /**
+     * @brief Creates view, sub-views and toolbar containers. Manages sub-views and toobar services.
+     *
+     * @pre Parent container must be registered.
+     */
+    UI_BASE_API void create();
+
+    /// Stops sub-views and toobar services. Destroys view, sub-views and toolbar containers.
+    UI_BASE_API void destroy();
 
 private:
 

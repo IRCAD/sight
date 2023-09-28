@@ -73,7 +73,8 @@ namespace sight::module::viz::scene3d::adaptor
  * - \b sliceIndex (optional, axial/frontal/sagittal, default=axial): orientation of the negato.
  * - \b filtering (optional, none/linear/anisotropic, default=none): texture filter type of the negato.
  * - \b tfAlpha (optional, bool, default=false): if true, the alpha channel of the transfer function is used.
- * - \b border (optional, bool, default=true): allows to display the plane border.
+ * - \b border (optional, bool, default=true): displays a border around the plane.
+ * - \b slicesCross (optional, bool, default=true): display the two other slices location as two lines.
  * - \b visible (optional, bool, default=true): the visibility of the adaptor.
  * - \b transform (optional, string, default=""): the name of the Ogre transform node where to attach the negato, as it
  *      was specified in the STransform adaptor.
@@ -222,13 +223,16 @@ private:
     sight::viz::scene3d::Plane::filter_t m_filtering {sight::viz::scene3d::Plane::filter_t::NONE};
 
     /// Stores the current slice index for each axis.
-    std::vector<float> m_currentSliceIndex {0.F, 0.F, 0.F};
+    std::array<float, 3> m_currentSliceIndex {0.F, 0.F, 0.F};
 
     /// Defines the image orientation.
     OrientationMode m_orientation {OrientationMode::Z_AXIS};
 
     /// Defines if the plane border is used or not.
     bool m_border {true};
+
+    /// Defines if the other slices planes are displayed.
+    bool m_slicesCross {true};
 
     /// True if the plane is being picked
     bool m_picked {false};

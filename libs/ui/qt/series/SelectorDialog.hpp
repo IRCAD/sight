@@ -40,7 +40,11 @@ public:
     /// Initializes the selector dialog.
     /// @param series the series to select.
     /// @param parent the parent widget.
-    UI_QT_QT_API SelectorDialog(data::SeriesSet::csptr series_set, QWidget* parent = nullptr);
+    UI_QT_QT_API SelectorDialog(
+        data::SeriesSet::csptr series_set,
+        const std::string& displayedColumn,
+        QWidget* parent = nullptr
+    );
 
     /// Destroys the selector.
     UI_QT_QT_API ~SelectorDialog() noexcept override;

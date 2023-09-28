@@ -46,10 +46,6 @@ namespace sight::module::io::dicomweb
 
 //------------------------------------------------------------------------------
 
-static const service::IService::KeyType s_SERIES_IN = "selectedSeries";
-
-//------------------------------------------------------------------------------
-
 SSeriesPusher::SSeriesPusher() noexcept =
     default;
 

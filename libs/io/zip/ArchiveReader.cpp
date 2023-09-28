@@ -112,11 +112,9 @@ public:
     ZipHandle& operator=(ZipHandle&&)      = delete;
 
     inline explicit ZipHandle(const std::filesystem::path& archive_path) :
-        m_archive_path(archive_path.string())
+        m_archive_path(archive_path.string()),
+        m_zip_reader(mz_zip_reader_create())
     {
-        // Create zip reader instance
-        mz_zip_reader_create(&m_zip_reader);
-
         SIGHT_THROW_EXCEPTION_IF(
             exception::Read(
                 "Cannot create zip reader instance",
@@ -202,20 +200,23 @@ public:
             );
         }
 
+        // NOLINTBEGIN(readability-else-after-return)
         if(const auto result = mz_zip_reader_entry_open(m_zipHandle->m_zip_reader);
            result == MZ_PASSWORD_ERROR)
         {
-            SIGHT_THROW_EXCEPTION(
-                exception::BadPassword(
-                    "File '"
-                    + m_filePath
-                    + "' from archive '"
-                    + m_zipHandle->m_archive_path
-                    + "' is password protected and the provided one does not match. Error code: "
-                    + std::to_string(result),
-                    result
-                )
-            );
+            const auto& message =
+                "File '"
+                + m_filePath
+                + "' from archive '"
+                + m_zipHandle->m_archive_path
+                + "' is password protected and the provided one does not match. Error code: "
+                + std::to_string(result);
+
+            // Log the exception as debug, as it is expected to happen when trying to open a password protected file
+            SIGHT_DEBUG(message);
+
+            // Do not use SIGHT_THROW_EXCEPTION to avoid polluting the logs
+            throw(exception::BadPassword(message, result));
         }
         else if(result != MZ_OK)
         {
@@ -231,6 +232,8 @@ public:
                 )
             );
         }
+
+        // NOLINTEND(readability-else-after-return)
     }
 
     inline ~ZipFileHandle()
@@ -367,6 +370,8 @@ public:
                     files->emplace_back(path);
                     return MZ_OK;
                 });
+
+        // NOLINTBEGIN(readability-else-after-return)
         if(const auto result = mz_zip_reader_save_all(m_zipHandle->m_zip_reader, outputPath.string().c_str());
            result == MZ_PASSWORD_ERROR)
         {
@@ -401,6 +406,8 @@ public:
                 )
             );
         }
+
+        // NOLINTEND(readability-else-after-return)
 
         mz_zip_reader_set_password(m_zipHandle->m_zip_reader, nullptr);
         mz_zip_reader_set_entry_cb(m_zipHandle->m_zip_reader, nullptr, nullptr);

@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -53,6 +53,7 @@ static const std::string s_ALLOWED_REMOVE_CONFIG    = "allowedRemove";
 static const std::string s_INSERT_MODE_CONFIG       = "insertMode";
 static const std::string s_REMOVE_STUDY_ICON_CONFIG = "removeStudyIcon";
 static const std::string s_REMOVE_SERIE_ICON_CONFIG = "removeSerieIcon";
+static const std::string s_DISPLAYED_COLUMN_CONFIG  = "displayedColumns";
 
 //------------------------------------------------------------------------------
 
@@ -129,6 +130,8 @@ void SSelector::configuring()
 
         m_removeAllowed = configAttr->get<bool>(s_ALLOWED_REMOVE_CONFIG, m_removeAllowed);
         m_insertMode    = configAttr->get<bool>(s_INSERT_MODE_CONFIG, m_insertMode);
+
+        m_displayedColumns = configAttr->get(s_DISPLAYED_COLUMN_CONFIG, m_displayedColumns);
     }
 }
 
@@ -142,7 +145,7 @@ void SSelector::starting()
         this->getContainer()
     );
 
-    m_selectorWidget = new sight::ui::qt::series::Selector();
+    m_selectorWidget = new sight::ui::qt::series::Selector(m_displayedColumns);
     m_selectorWidget->setSeriesIcons(m_seriesIcons);
     m_selectorWidget->setSelectionMode(m_selectionMode);
     m_selectorWidget->allowRemove(m_removeAllowed);

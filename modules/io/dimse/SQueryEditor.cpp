@@ -53,10 +53,6 @@ static const std::string s_ICON_PATH_CONFIG   = "icon";
 static const std::string s_ICON_WIDTH_CONFIG  = "width";
 static const std::string s_ICON_HEIGHT_CONFIG = "height";
 
-static const service::IService::KeyType s_PACS_INPUT = "pacsConfig";
-
-static const service::IService::KeyType s_SERIES_SET_INOUT = "seriesSet";
-
 //------------------------------------------------------------------------------
 
 SQueryEditor::SQueryEditor() noexcept :

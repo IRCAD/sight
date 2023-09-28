@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -35,9 +35,9 @@
 namespace sight::ui::qt::series
 {
 
-Selector::Selector(QWidget* _parent) :
+Selector::Selector(const std::string& displayColumn, QWidget* _parent) :
     QTreeView(_parent),
-    m_model(new SelectorModel(this))
+    m_model(new SelectorModel(displayColumn, this))
 {
     this->setModel(m_model);
     this->setSelectionMode(QAbstractItemView::ExtendedSelection);
@@ -140,7 +140,7 @@ Selector::SeriesVectorType Selector::getSeriesFromStudyIndex(const QModelIndex& 
     for(int row = 0 ; row < nbRow ; ++row)
     {
         // Retrieve UID of the series using the DESCRIPTION column.
-        QStandardItem* child = item->child(row, static_cast<int>(SelectorModel::ColumnSeriesType::NAME));
+        QStandardItem* child = item->child(row, 0);
         SIGHT_ASSERT("Child is null", child);
         const std::string uid = child->data(SelectorModel::UID).toString().toStdString();
         SIGHT_ASSERT("UID must not be empty.", !uid.empty());
@@ -178,8 +178,7 @@ void Selector::keyPressEvent(QKeyEvent* _event)
 
 void Selector::deleteSelection()
 {
-    QModelIndexList selection =
-        this->selectionModel()->selectedRows(static_cast<int>(SelectorModel::ColumnSeriesType::NAME));
+    QModelIndexList selection = this->selectionModel()->selectedRows(0);
 
     SeriesVectorType vSeries     = this->getSeries(selection);
     QModelIndexList studyIndexes = this->getStudyIndexes(selection);
@@ -212,8 +211,7 @@ void Selector::onRemoveStudyInstanceUID(const std::string& _uid)
                 selection.push_back(studyItem->index());
                 for(int seriesIdx = 0 ; seriesIdx < studyItem->rowCount() ; ++seriesIdx)
                 {
-                    const QStandardItem* const seriesItem =
-                        studyItem->child(seriesIdx, int(SelectorModel::ColumnSeriesType::NAME));
+                    const QStandardItem* const seriesItem = studyItem->child(seriesIdx, 0);
                     selection.push_back(seriesItem->index());
 
                     const std::string seriesUID = seriesItem->index().data(SelectorModel::UID).toString().toStdString();
@@ -250,9 +248,8 @@ void Selector::onRemoveSeriesID(const std::string& _id)
             const QStandardItem* const studyItem = m_model->item(studyIdx);
             for(int seriesIdx = 0 ; seriesIdx < studyItem->rowCount() ; ++seriesIdx)
             {
-                const QStandardItem* const seriesItem =
-                    studyItem->child(seriesIdx, int(SelectorModel::ColumnSeriesType::NAME));
-                const std::string seriesUID =
+                const QStandardItem* const seriesItem = studyItem->child(seriesIdx, 0);
+                const std::string seriesUID           =
                     seriesItem->index().data(SelectorModel::UID).toString().toStdString();
 
                 if(seriesUID == _id)

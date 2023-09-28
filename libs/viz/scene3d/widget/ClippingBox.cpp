@@ -579,7 +579,7 @@ Ogre::Matrix4 ClippingBox::getClippingTransform() const
 {
     const auto aaBox = this->getClippingBox();
 
-    const Ogre::Vector3 initialCenter = m_volumeSceneNode->convertLocalToWorldPosition(Ogre::Vector3(0.5F));
+    const Ogre::Vector3 initialCenter = Ogre::Vector3(0.5F);
     Ogre::Matrix4 invCenterTransMx    = Ogre::Matrix4::IDENTITY;
     invCenterTransMx.setTrans(-initialCenter);
 
@@ -587,7 +587,7 @@ Ogre::Matrix4 ClippingBox::getClippingTransform() const
     Ogre::Matrix4 scaleMx     = Ogre::Matrix4::IDENTITY;
     scaleMx.setScale(scale);
 
-    const Ogre::Vector3 center  = m_volumeSceneNode->convertLocalToWorldPosition(aaBox.getCenter());
+    const Ogre::Vector3 center  = aaBox.getCenter();
     Ogre::Matrix4 centerTransMx = Ogre::Matrix4::IDENTITY;
     centerTransMx.setTrans(center);
 
@@ -610,11 +610,11 @@ void ClippingBox::applyTransform(const Ogre::Matrix4& _clippingMx)
 {
     // The clipping matrix is the transform from the initial box position to the new one.
     // Convert to world position because that's how VTK stores its crop matrices...
-    const Ogre::Vector3 worldCubeMin = m_volumeSceneNode->convertLocalToWorldPosition(Ogre::Vector3::ZERO);
-    const Ogre::Vector3 worldCubeMax = m_volumeSceneNode->convertLocalToWorldPosition(Ogre::Vector3::UNIT_SCALE);
+    const Ogre::Vector3 worldCubeMin = Ogre::Vector3::ZERO;
+    const Ogre::Vector3 worldCubeMax = Ogre::Vector3::UNIT_SCALE;
 
-    m_clippingCube[0] = m_volumeSceneNode->convertWorldToLocalPosition(_clippingMx * worldCubeMin);
-    m_clippingCube[1] = m_volumeSceneNode->convertWorldToLocalPosition(_clippingMx * worldCubeMax);
+    m_clippingCube[0] = _clippingMx * worldCubeMin;
+    m_clippingCube[1] = _clippingMx * worldCubeMax;
 
     this->updateWidgets();
 }

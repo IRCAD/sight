@@ -54,9 +54,6 @@ static const std::string s_EXPORT_ICON_CONFIG       = "exportIcon";
 static const std::string s_ICON_WIDTH_CONFIG        = "iconWidth";
 static const std::string s_ICON_HEIGHT_CONFIG       = "iconHeight";
 
-static const std::string s_CONTEXT_TF = "TF_PRESET";
-static const std::string s_VERSION_TF = "V1";
-
 const core::com::Slots::SlotKeyType s_UPDATE_DEFAULT_PRESET_SLOT = "updateDefaultPreset";
 const core::com::Slots::SlotKeyType s_UPDATE_PRESETS_SLOT        = "updatePresets";
 

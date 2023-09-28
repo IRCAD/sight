@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2018-2022 IRCAD France
+ * Copyright (C) 2018-2023 IRCAD France
  * Copyright (C) 2018-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -23,6 +23,8 @@
 #include "viz/scene3d/helper/ManualObject.hpp"
 
 #include "viz/scene3d/ogre.hpp"
+
+#include <core/exceptionmacros.hpp>
 
 #include <OgreMath.h>
 
@@ -359,6 +361,51 @@ void ManualObject::createFrustum(
     }
 
     _object->setBoundingBox(Ogre::AxisAlignedBox(min, max));
+}
+
+//------------------------------------------------------------------------------
+
+void ManualObject::drawDashedLine(
+    Ogre::ManualObject* _object,
+    const Ogre::Vector3& _p1,
+    const Ogre::Vector3& _p2,
+    const float _dashLength,
+    const float _dashSpacing,
+    std::optional<Ogre::ColourValue> _color
+)
+{
+    SIGHT_ASSERT("Invalid argument", _object != nullptr);
+
+    const auto vec    = _p2 - _p1;
+    const auto length = vec.length();
+
+    if(length <= (_dashLength + _dashSpacing))
+    {
+        // No need to draw a dashed line
+        return;
+    }
+
+    const auto numDashes  = length / (_dashLength + _dashSpacing);
+    const auto incDash    = vec * _dashLength / length;
+    const auto incSpacing = vec * _dashSpacing / length;
+    const auto inc        = vec / numDashes;
+    Ogre::Vector3 cur     = _p1 + incSpacing;
+    for(std::size_t i = 0 ; i < static_cast<std::size_t>(numDashes) ; ++i)
+    {
+        _object->position(cur);
+        if(_color.has_value())
+        {
+            _object->colour(_color.value());
+        }
+
+        _object->position(cur + incDash);
+        if(_color.has_value())
+        {
+            _object->colour(_color.value());
+        }
+
+        cur += inc;
+    }
 }
 
 } // namespace sight::viz::scene3d::helper

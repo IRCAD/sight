@@ -108,7 +108,7 @@ inline static data::ImageSeries::sptr getUSVolumeImage(
             std::size_t index     = 0;
             std::size_t max_index = (sizes[0] * sizes[1] * sizes[2] * image->numComponents() / 10);
             auto image_it         = image->begin<std::uint8_t>();
-            const auto& end       = image->cend<std::uint8_t>();
+            const auto& end       = image->end<std::uint8_t>();
 
             for( ; image_it != end ; ++image_it)
             {

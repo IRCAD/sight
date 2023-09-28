@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2021-2022 IRCAD France
+ * Copyright (C) 2021-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -30,6 +30,47 @@
 
 namespace sight::module::io::dicom
 {
+
+/**
+ * @brief DICOM generic reader.
+ *
+ * @details Allow reading a DICOM directory. Part of the configuration is managed by IReader class.
+ *          After selecting a folder, it is scanned and if more than one DICOM Series are found, a selection dialog is
+ *          shown allowing to select one or more Series to load. The DICOM series can be filtered by sopFilter and
+ *          typeFilter configuration parameters.
+ *
+ * @section Signals Signals
+ * - \b jobCreated(SPTR(core::jobs::IJob)): emitted to display a progress bar while the image is read (it should be
+ * connected to a SJobBar).
+ *
+ * @section XML XML Configuration
+ * @code{.xml}
+    <service type="sight::module::io::dicom::SReader">
+        <inout key="data" uid="..." />
+        <config>
+            <windowTitle>Open DICOM directory</windowTitle>
+            <dialog sopFilter="1.2.840.10008.5.1.4.1.1.2, 1.2.840.10008.5.1.4.1.1.4.1"/>
+        </config>
+    </service>
+   @endcode
+ *
+ * @subsection In-Out In-Out
+ * - \b data [sight::data::Object]: object to read to.
+ *
+ * @subsection Configuration Configuration
+ * - \b dialog(optional):
+ *      \b sopFilter: The SOP class uids to filter. If empty, and if typeFilter is also empty, the default type filter
+ *                    "image", "model", "report" is used.
+ *      \b typeFilter: The type of DICOM to filter. Currently, "image", "model", "report" and "fiducials" are allowed.
+ *      \b policy:
+ *          - \b "never": never show the open dialog (DEFAULT)
+ *          - \b "once": show only once, store the location as long as the service is started
+ *          - \b "always": always show the location dialog
+ *
+ *
+ * @see sight::io::base::service::IReader
+ * @see sight::io::dicom::Reader
+ */
 
 class MODULE_IO_DICOM_CLASS_API SReader final : public sight::io::base::service::IReader
 {

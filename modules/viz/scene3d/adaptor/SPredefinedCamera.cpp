@@ -68,6 +68,11 @@ void SPredefinedCamera::configuring()
 
     m_manualRotation = config.get<bool>(s_CONFIG + "mouseRotation", m_manualRotation);
 
+    const auto& defaultPosition = config.get_optional<std::string>(s_CONFIG + "defaultPosition");
+    m_defaultPosition = defaultPosition ? std::make_optional(*defaultPosition) : std::nullopt;
+
+    m_animate = config.get<bool>(s_CONFIG + "animate", m_animate);
+
     const auto positions = config.get_child("positions");
 
     const auto posCfg = positions.equal_range("position");
@@ -97,11 +102,14 @@ void SPredefinedCamera::starting()
     this->initialize();
 
     const auto layer = this->getLayer();
+
     m_interactor =
         std::make_shared<sight::viz::scene3d::interactor::PredefinedPositionInteractor>(
             layer,
             m_layerOrderDependant,
-            m_cameraPositions
+            m_cameraPositions,
+            m_defaultPosition,
+            m_animate
         );
 
     m_interactor->setMouseRotation(m_manualRotation);

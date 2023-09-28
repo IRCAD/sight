@@ -57,6 +57,9 @@ include(${FWCMAKE_BUILD_FILES_DIR}/plugin_config.cmake)
 include(${FWCMAKE_BUILD_FILES_DIR}/profile_config.cmake)
 include(${FWCMAKE_INSTALL_FILES_DIR}/generic_install.cmake)
 include(${FWCMAKE_INSTALL_FILES_DIR}/get_git_rev.cmake)
+if(UNIX)
+    include(${FWCMAKE_BUILD_FILES_DIR}/linux/manpage.cmake)
+endif()
 
 # Create the target sources group
 macro(group_maker SIGHT_TARGET)
@@ -307,6 +310,8 @@ macro(fw_exec SIGHT_TARGET)
                 WORLD_READ
                 WORLD_EXECUTE
         )
+
+        add_man_page(${SIGHT_TARGET})
 
     elseif(WIN32)
         string(TOLOWER ${SIGHT_TARGET}.bat ${SIGHT_TARGET}_SCRIPT)
@@ -722,6 +727,8 @@ macro(fw_lib SIGHT_TARGET OBJECT_LIBRARY)
 endmacro()
 
 # Create a module target
+# Disable too many statements error for cmake-lint
+# cmake-lint: disable=R0915
 macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
 
     if(SIGHT_ENABLE_PCH AND MSVC AND NOT ${SIGHT_TARGET}_DISABLE_PCH)
@@ -830,6 +837,9 @@ macro(fw_module SIGHT_TARGET TARGET_TYPE TARGET_REQUIRE_ADMIN)
                     WORLD_READ
                     WORLD_EXECUTE
             )
+
+            add_man_page(${SIGHT_TARGET})
+
         elseif(WIN32)
             # Install shortcut
             string(TOLOWER ${SIGHT_TARGET} APP_NAME)

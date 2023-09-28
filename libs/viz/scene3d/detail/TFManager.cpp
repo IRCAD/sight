@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -53,7 +53,7 @@ TFLoader::return_t TFLoader::load(const sight::data::TransferFunction& _tf, Ogre
 
     if(_texture->getTextureType() != Ogre::TEX_TYPE_1D)
     {
-        SIGHT_INFO("Allocate transfer function: " << _tf.getID() << " " << TEXTURE_SIZE);
+        SIGHT_DEBUG("Allocate transfer function: " << _tf.getID() << " " << TEXTURE_SIZE);
         viz::scene3d::Utils::allocateTexture(
             _texture,
             TEXTURE_SIZE,

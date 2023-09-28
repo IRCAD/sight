@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2019 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -41,7 +41,7 @@ namespace sight::ui::qt
 /**
  * @brief   Defines the cardinal layout manager.
  */
-class UI_QT_CLASS_API CardinalLayoutManager : public ui::base::layoutManager::CardinalLayoutManagerBase
+class UI_QT_CLASS_API CardinalLayoutManager final : public ui::base::layoutManager::CardinalLayoutManagerBase
 {
 public:
 
@@ -53,20 +53,25 @@ public:
 
     UI_QT_API CardinalLayoutManager(ui::base::GuiBaseObject::Key key);
 
-    UI_QT_API ~CardinalLayoutManager() override;
+    UI_QT_API ~CardinalLayoutManager() final = default;
 
     /**
      * @brief Instantiate layout with parent container.
      * @pre LayoutManager must be initialized before.
      * @pre parent containers must be instanced.
      */
-    UI_QT_API void createLayout(ui::base::container::fwContainer::sptr parent, const std::string& id) override;
+    UI_QT_API void createLayout(ui::base::container::fwContainer::sptr parent, const std::string& id) final;
 
     /**
      * @brief Destroy local layout with sub containers.
      * @pre services using this sub containers must be stopped before.
      */
-    UI_QT_API void destroyLayout() override;
+    UI_QT_API void destroyLayout() final;
+
+    /// Modify a layout element, depending of the key.
+    /// @param parameter The parameter of the action.
+    /// @param key The action to perform.
+    UI_QT_API void modifyLayout(const ui::base::parameter_t& parameter, const std::string& key) final;
 
 private:
 

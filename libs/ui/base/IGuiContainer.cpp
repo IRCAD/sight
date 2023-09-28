@@ -37,29 +37,20 @@
 namespace sight::ui::base
 {
 
-const core::com::Slots::SlotKeyType IGuiContainer::s_SET_ENABLED_SLOT          = "setEnabled";
-const core::com::Slots::SlotKeyType IGuiContainer::s_SET_ENABLED_BY_PARAM_SLOT = "setEnabledByParam";
-const core::com::Slots::SlotKeyType IGuiContainer::s_ENABLE_SLOT               = "enable";
-const core::com::Slots::SlotKeyType IGuiContainer::s_DISABLE_SLOT              = "disable";
-const core::com::Slots::SlotKeyType IGuiContainer::s_SET_VISIBLE_SLOT          = "setVisible";
-const core::com::Slots::SlotKeyType IGuiContainer::s_SET_VISIBLE_BY_PARAM_SLOT = "setVisibleByParam";
-const core::com::Slots::SlotKeyType IGuiContainer::s_SHOW_SLOT                 = "show";
-const core::com::Slots::SlotKeyType IGuiContainer::s_HIDE_SLOT                 = "hide";
-const core::com::Slots::SlotKeyType IGuiContainer::s_TOGGLE_VISIBILITY         = "toggleVisibility";
-
 //-----------------------------------------------------------------------------
 
 IGuiContainer::IGuiContainer()
 {
-    newSlot(s_SET_ENABLED_SLOT, &IGuiContainer::setEnabled, this);
-    newSlot(s_SET_ENABLED_BY_PARAM_SLOT, &IGuiContainer::setEnabledByParameter, this);
-    newSlot(s_ENABLE_SLOT, &IGuiContainer::enable, this);
-    newSlot(s_DISABLE_SLOT, &IGuiContainer::disable, this);
-    newSlot(s_SET_VISIBLE_SLOT, &IGuiContainer::setVisible, this);
-    newSlot(s_SET_VISIBLE_BY_PARAM_SLOT, &IGuiContainer::setVisibleByParameter, this);
-    newSlot(s_SHOW_SLOT, &IGuiContainer::show, this);
-    newSlot(s_HIDE_SLOT, &IGuiContainer::hide, this);
-    newSlot(s_TOGGLE_VISIBILITY, &IGuiContainer::toggleVisibility, this);
+    newSlot(slots::s_SET_ENABLED, &IGuiContainer::setEnabled, this);
+    newSlot(slots::s_SET_ENABLED_BY_PARAM, &IGuiContainer::setEnabledByParameter, this);
+    newSlot(slots::s_ENABLE, &IGuiContainer::enable, this);
+    newSlot(slots::s_DISABLE, &IGuiContainer::disable, this);
+    newSlot(slots::s_SET_VISIBLE, &IGuiContainer::setVisible, this);
+    newSlot(slots::s_SET_VISIBLE_BY_PARAM, &IGuiContainer::setVisibleByParameter, this);
+    newSlot(slots::s_SHOW, &IGuiContainer::show, this);
+    newSlot(slots::s_HIDE, &IGuiContainer::hide, this);
+    newSlot(slots::s_TOGGLE_VISIBILITY, &IGuiContainer::toggleVisibility, this);
+    newSlot(slots::s_MODIFY_LAYOUT, &IGuiContainer::modifyLayout, this);
 }
 
 //-----------------------------------------------------------------------------
@@ -367,5 +358,14 @@ void IGuiContainer::toggleVisibility()
 }
 
 //-----------------------------------------------------------------------------
+
+void IGuiContainer::modifyLayout(ui::base::parameter_t parameter, std::string key)
+{
+    if(m_viewLayoutManagerIsCreated)
+    {
+        SIGHT_ASSERT("ViewLayoutManager must be initialized.", m_viewLayoutManager);
+        m_viewLayoutManager->modifyLayout(parameter, key);
+    }
+}
 
 } // namespace sight::ui::base

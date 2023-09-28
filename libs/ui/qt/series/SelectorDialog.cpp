@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2022 IRCAD France
+ * Copyright (C) 2022-2023 IRCAD France
  *
  * This file is part of Sight.
  *
@@ -56,7 +56,7 @@ public:
     QPointer<Selector> m_selector_widget {nullptr};
 };
 
-SelectorDialog::SelectorDialog(data::SeriesSet::csptr series_set, QWidget* parent) :
+SelectorDialog::SelectorDialog(data::SeriesSet::csptr series_set, const std::string& displayedColumn, QWidget* parent) :
     QDialog(parent),
     m_pimpl(std::make_unique<SelectorDialogImpl>(this))
 {
@@ -65,8 +65,7 @@ SelectorDialog::SelectorDialog(data::SeriesSet::csptr series_set, QWidget* paren
     setLayout(layout);
 
     // Create the selector
-    m_pimpl->m_selector_widget = new Selector(this);
-    m_pimpl->m_selector_widget->allowRemove(false);
+    m_pimpl->m_selector_widget = new Selector(displayedColumn, this);
     layout->addWidget(m_pimpl->m_selector_widget);
 
     // Fill the selector

@@ -47,6 +47,7 @@ namespace sight::ui::base
  * - \b check(): check the action.
  * - \b uncheck(): uncheck the action.
  * - \b setVisible(bool): sets whether the action is visible in its container.
+ * - \b setHidden(bool): sets whether the action is hidden in its container.
  * - \b show(): make the action visible.
  * - \b hide(): make the action invisible.
  * - \b toggleVisibility(): make the action visible if it was invisible or invisible if it was visible
@@ -127,16 +128,13 @@ public:
      */
 
     /// Slot to show/hide the action
+    /// @{
     static const core::com::Slots::SlotKeyType s_SET_VISIBLE_SLOT;
-
-    /// Slot to disable the action
+    static const core::com::Slots::SlotKeyType s_SET_HIDDEN_SLOT;
     static const core::com::Slots::SlotKeyType s_SHOW_SLOT;
-
-    /// Slot to disable the action
     static const core::com::Slots::SlotKeyType s_HIDE_SLOT;
-
-    /// Slot to make the action visible when it is invisible and invisible when it is visible
     static const core::com::Slots::SlotKeyType s_TOGGLE_VISIBILITY_SLOT;
+    /// @}
 
     /// Deprecated: Slot to check or uncheck the action
     static const core::com::Slots::SlotKeyType s_SET_IS_ACTIVE_SLOT;

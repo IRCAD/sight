@@ -98,11 +98,11 @@ void SSwitchMatrices::switchMatrix()
 
 // ----------------------------------------------------------------------------
 
-void SSwitchMatrices::switchToMatrix(std::size_t index)
+void SSwitchMatrices::switchToMatrix(int index)
 {
-    if(index < m_matrix.size())
+    if(index >= 0 && static_cast<std::size_t>(index) < m_matrix.size())
     {
-        m_indexOfDesiredMatrix = index;
+        m_indexOfDesiredMatrix = static_cast<std::size_t>(index);
     }
     else
     {

@@ -29,8 +29,6 @@
 namespace sight::module::memory
 {
 
-static const service::IService::KeyType s_TARGET_INOUT = "target";
-
 //-----------------------------------------------------------------------------
 
 LockDumpSrv::LockDumpSrv() noexcept =
@@ -46,7 +44,7 @@ LockDumpSrv::~LockDumpSrv() noexcept =
 void LockDumpSrv::starting()
 {
     const auto object = m_target.lock();
-    SIGHT_ASSERT("The inout key '" << s_TARGET_INOUT << "' is not correctly set.", object);
+    SIGHT_ASSERT("The inout key 'target' is not correctly set.", object);
 
     const auto buffered = std::dynamic_pointer_cast<core::memory::IBuffered>(object.get_shared());
 

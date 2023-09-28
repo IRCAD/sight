@@ -47,7 +47,7 @@ public:
     using SeriesVectorType = QVector<data::Series::sptr>;
 
     /// Initializes the tree view.
-    UI_QT_QT_API Selector(QWidget* _parent = nullptr);
+    UI_QT_QT_API Selector(const std::string& displayColumns, QWidget* _parent = nullptr);
 
     /// Destroys the selector.
     UI_QT_QT_API ~Selector() override = default;

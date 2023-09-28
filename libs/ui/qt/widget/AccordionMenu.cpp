@@ -202,7 +202,24 @@ void AccordionMenu::update()
     std::for_each(widgets.begin() + 1, widgets.end(), [this](QWidget* w){w->setVisible(!m_folded);});
     m_firstButtonConnection =
         QObject::connect(firstButton, &QAbstractButton::toggled, this, &AccordionMenu::setUnfolded);
-    std::ranges::for_each(widgets, [&firstButton](QWidget* w){w->resize(firstButton->size());});
+
+    std::for_each(
+        widgets.begin() + 1,
+        widgets.end(),
+        [&firstButton, this](QWidget* w)
+        {
+            if(m_orientation == Qt::Horizontal)
+            {
+                w->setMinimumHeight(firstButton->height());
+            }
+            else
+            {
+                w->setMinimumWidth(firstButton->width());
+            }
+
+            w->adjustSize();
+        });
+
     m_bracket->adjustSize();
     auto* minAccordionSizeAnim = new QPropertyAnimation(
         this,

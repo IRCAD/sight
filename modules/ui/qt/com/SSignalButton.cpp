@@ -41,6 +41,7 @@ static const core::com::Signals::SignalKeyType s_TOGGLED_SIG = "toggled";
 static const core::com::Slots::SlotKeyType s_SET_CHECKED_SLOT = "setChecked";
 static const core::com::Slots::SlotKeyType s_CHECK_SLOT       = "check";
 static const core::com::Slots::SlotKeyType s_UNCHECK_SLOT     = "uncheck";
+
 static const core::com::Slots::SlotKeyType s_SET_ENABLED_SLOT = "setEnabled";
 static const core::com::Slots::SlotKeyType s_ENABLE_SLOT      = "enable";
 static const core::com::Slots::SlotKeyType s_DISABLE_SLOT     = "disable";

@@ -40,6 +40,8 @@ lint:sheldon:
     - >
       cmake $CI_PROJECT_DIR
       -G Ninja
+      -DCMAKE_CXX_COMPILER_LAUNCHER=ccache
+      -DCMAKE_C_COMPILER_LAUNCHER=ccache
       -DCMAKE_INSTALL_PREFIX=$CI_PROJECT_DIR/.install
       -DCMAKE_BUILD_TYPE=${BUILD_TYPE}
       -DSIGHT_ARCH=sandybridge
@@ -51,6 +53,7 @@ lint:sheldon:
       -DSIGHT_ENABLE_REALSENSE=${SIGHT_ENABLE_REALSENSE}
       -DSIGHT_ENABLE_COVERAGE=${SIGHT_ENABLE_COVERAGE}
       -DSIGHT_ENABLE_GDB=${SIGHT_ENABLE_GDB}
+      -DSIGHT_BUILD_MANPAGES=ON
     # Touch all generated files to improve CCache performance
     - find . -type f -name '*.?pp' -o -name '*.?xx' -exec touch -t 197001010000 {} \;
     # Build
@@ -151,8 +154,8 @@ build:linux-22.04-debug-gcc:
     BUILD_TYPE: "Debug"
     SIGHT_BUILD_SDK: "ON"
     SIGHT_ENABLE_GDB: "ON"
-    CC: "/usr/lib/ccache/gcc"
-    CXX: "/usr/lib/ccache/g++"
+    CC: "gcc"
+    CXX: "g++"
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
@@ -165,8 +168,8 @@ build:linux-22.04-release-gcc:
     SIGHT_BUILD_SDK: "ON"
     SIGHT_BUILD_PACKAGES: "ON"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
-    CC: "/usr/lib/ccache/gcc"
-    CXX: "/usr/lib/ccache/g++"
+    CC: "gcc"
+    CXX: "g++"
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
@@ -178,8 +181,8 @@ build:linux-22.04-RelWithDebInfo-clang:
     BUILD_TYPE: "RelWithDebInfo"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
     SIGHT_ENABLE_GDB: "ON"
-    CC: "/usr/lib/ccache/clang"
-    CXX: "/usr/lib/ccache/clang++"
+    CC: "clang"
+    CXX: "clang++"
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
@@ -192,8 +195,8 @@ build:linux-22.04-coverage-gcc:
     SIGHT_BUILD_DOC: "ON"
     SIGHT_ENABLE_COVERAGE: "ON"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
-    CC: "/usr/lib/ccache/gcc"
-    CXX: "/usr/lib/ccache/g++"
+    CC: "gcc"
+    CXX: "g++"
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE !~ "/^Draft.*/"
     - if: $CI_COMMIT_BRANCH == "master" || $CI_COMMIT_BRANCH == "dev"
@@ -205,8 +208,8 @@ build:linux-22.04-coverage-gcc-draft:
     BUILD_TYPE: "RelWithDebInfo"
     SIGHT_ENABLE_COVERAGE: "ON"
     SIGHT_IGNORE_UNSTABLE_TESTS: 1
-    CC: "/usr/lib/ccache/gcc"
-    CXX: "/usr/lib/ccache/g++"
+    CC: "gcc"
+    CXX: "g++"
   rules:
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event' && $CI_MERGE_REQUEST_TITLE =~ "/^Draft.*/"
 

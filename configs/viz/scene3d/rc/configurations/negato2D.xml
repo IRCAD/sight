@@ -4,30 +4,31 @@
         <param name="WID_PARENT" />
         <param name="image" />
         <param name="transferFunction" />
-        <param name="landmarks" />
         <param name="sliceIndex" default="axial" />
         <param name="enableSliceType" default="true" />
-        <param name="PICKER_SENDER_CHANNEL" default="PICKER_SENDER_CHANNEL"/>
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" default="WORLD_COORDS_LANDMARKS_CHANNEL"/>
         <param name="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" default="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL"/>
         <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL"/>
         <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL"/>
+        <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" />
+        <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" />
+        <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" />
     </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
-        <object uid="${image}" type="sight::data::Image" src="deferred" />
-        <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
+        <object uid="${image}" type="sight::data::ImageSeries" src="deferred" />
         <object uid="${transferFunction}" type="sight::data::TransferFunction" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
         <service uid="sceneView" type="sight::module::ui::base::SView">
             <gui>
-                <layout type="sight::ui::base::OverlayLayoutManager">
-                    <view />
-                    <view x="0" y="-0" width="100%" height="48" opacity="0.75" />
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" backgroundColor="#36393E" spacing="0" />
                 </layout>
             </gui>
             <registry>
@@ -59,7 +60,7 @@
             <config sliceIndex="${sliceIndex}" filtering="anisotropic" />
         </service>
 
-        <service uid="negatoMultiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true">
+        <service uid="negatoMultiDistancesAdp" type="sight::module::viz::scene3dQt::adaptor::SImageMultiDistances" autoConnect="true">
             <inout key="image" uid="${image}" />
             <config fontSize="16" radius="3" queryFlags="0x40000000" />
         </service>
@@ -74,10 +75,9 @@
             <config queryMask="0x40000000" />
         </service>
 
-        <service uid="landmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="true">
-            <inout key="landmarks" uid="${landmarks}" />
-            <in key="image" uid="${image}" />
-            <config label="false" orientation="${sliceIndex}" priority="4" />
+        <service uid="landmarksAdp" type="sight::module::viz::scene3dQt::adaptor::SLandmarks" autoConnect="true">
+            <inout key="imageSeries" uid="${image}" />
+            <config label="false" orientation="${sliceIndex}" priority="4" initialGroup="Group_0" initialSize="10.0" />
         </service>
 
         <service uid="pickedVoxelTextAdp" type="sight::module::viz::scene3d::adaptor::SText">
@@ -103,10 +103,6 @@
 
         <!-- ******************************* Connections ***************************************** -->
 
-        <connect channel="${PICKER_SENDER_CHANNEL}">
-            <signal>pickerInteractorAdp/picked</signal>
-        </connect>
-
         <connect channel="${WORLD_COORDS_LANDMARKS_CHANNEL}">
             <signal>landmarksAdp/sendWorldCoord</signal>
         </connect>
@@ -131,6 +127,18 @@
 
         <connect channel="${DISTANCE_DEACTIVATION_CHANNEL}">
             <signal>negatoMultiDistancesAdp/deactivateDistanceTool</signal>
+        </connect>
+
+        <connect channel="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}">
+            <slot>landmarksAdp/changeEditMode</slot>
+        </connect>
+
+        <connect channel="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}">
+            <slot>landmarksAdp/setCurrentGroup</slot>
+        </connect>
+
+        <connect channel="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}">
+            <signal>landmarksAdp/editModeChanged</signal>
         </connect>
 
         <!-- ******************************* Start/Stop services ***************************************** -->

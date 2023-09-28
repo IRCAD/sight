@@ -262,7 +262,7 @@ void SWizard::createActivity(std::string activityID)
             m_okButton->setText("Next");
         }
 
-        this->slot(s_SHOW_SLOT)->asyncRun();
+        this->slot(slots::s_SHOW)->asyncRun();
     }
     else
     {

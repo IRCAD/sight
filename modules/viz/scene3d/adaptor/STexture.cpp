@@ -40,10 +40,7 @@
 namespace sight::module::viz::scene3d::adaptor
 {
 
-const core::com::Signals::SignalKeyType module::viz::scene3d::adaptor::STexture::s_TEXTURE_SWAPPED_SIG =
-    "textureSwapped";
-
-const std::string DEFAULT_TEXTURE_FILENAME = "default.png";
+const core::com::Signals::SignalKeyType STexture::s_TEXTURE_SWAPPED_SIG = "textureSwapped";
 
 //------------------------------------------------------------------------------
 

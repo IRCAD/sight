@@ -89,9 +89,9 @@ std::filesystem::path getModuleResourceFilePath(const std::filesystem::path& pat
 
     // Strip the module name
     std::filesystem::path pathWithoutModule;
-    for(auto itPath = ++path.begin() ; itPath != path.end() ; itPath++)
+    for(const auto& itPath : std::views::drop(path, 1))
     {
-        pathWithoutModule /= *itPath;
+        pathWithoutModule /= itPath;
     }
 
     try

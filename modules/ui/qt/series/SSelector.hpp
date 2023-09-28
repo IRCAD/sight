@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -177,6 +177,10 @@ private:
 
     /// Defines the path of the remove series button icon.
     std::filesystem::path m_removeSeriesIcon;
+
+    /// Defines the columns to be displayed in the widget
+    std::string m_displayedColumns =
+        "PatientName/SeriesInstanceUID,PatientSex,PatientBirthDate/Icon,Modality,StudyDescription/SeriesDescription,StudyDate/SeriesDate,StudyTime/SeriesTime,PatientAge,BodyPartExamined,PatientPositionString,ContrastBolusAgent,AcquisitionTime,ContrastBolusStartTime";
 
     static constexpr std::string_view s_SERIES_SET = "seriesSet";
     static constexpr std::string_view s_SELECTION  = "selection";

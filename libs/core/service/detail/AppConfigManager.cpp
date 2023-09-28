@@ -41,9 +41,9 @@
 
 #include <data/Object.hpp>
 
-#include <boost/foreach.hpp>
 #include <boost/range/iterator_range_core.hpp>
 #include <boost/thread/futures/wait_for_all.hpp>
+#include <ranges>
 
 namespace sight::service::detail
 {
@@ -228,8 +228,7 @@ void AppConfigManager::stop()
             }
         }
 
-        // NOLINTNEXTLINE(bugprone-branch-clone)
-        BOOST_REVERSE_FOREACH(service::IService::wptr w_srv, m_startedSrv)
+        for(auto& w_srv : std::views::reverse(m_startedSrv))
         {
             const service::IService::sptr srv = w_srv.lock();
             SIGHT_ASSERT("Service expired.", srv);
@@ -246,6 +245,7 @@ void AppConfigManager::stop()
                 futures.emplace_back(srv->stop());
             }
         }
+
         m_startedSrv.clear();
         m_state = STATE_STOPPED;
     }
@@ -424,8 +424,7 @@ service::IService::sptr AppConfigManager::getNewService(const std::string& uid, 
 
 void AppConfigManager::destroyCreatedServices()
 {
-    // NOLINTNEXTLINE(bugprone-branch-clone)
-    BOOST_REVERSE_FOREACH(service::IService::wptr w_srv, m_createdSrv)
+    for(auto& w_srv : std::views::reverse(m_createdSrv))
     {
         const service::IService::sptr srv = w_srv.lock();
         SIGHT_ASSERT("Service expired.", srv);
@@ -440,6 +439,7 @@ void AppConfigManager::destroyCreatedServices()
 
         service::unregisterService(srv);
     }
+
     m_createdSrv.clear();
 
     std::ranges::for_each(m_createdWorkers, [](auto& x){core::thread::removeWorker(x);});
@@ -736,7 +736,7 @@ service::IService::sptr AppConfigManager::createService(const detail::ServiceCon
 
         SIGHT_ASSERT(
             this->msgHead() + "Object '" << objectCfg.m_uid << "' has not been found" << errMsgTail,
-            (!objectCfg.m_optional && obj) || objectCfg.m_optional
+            obj || objectCfg.m_optional
         );
         if((obj || !objectCfg.m_optional) && objectCfg.m_access != data::Access::out)
         {
@@ -1106,7 +1106,7 @@ void AppConfigManager::addObjects(data::Object::sptr _obj, const std::string& _i
         if(createService)
         {
             // Create the service
-            newServices.emplace(std::make_pair(uid, this->createService(*srvCfg)));
+            newServices.emplace(uid, this->createService(*srvCfg));
 
             // Debug message
             SIGHT_INFO(

@@ -48,7 +48,8 @@ public:
     enum Role
     {
         ITEM_TYPE = Qt::UserRole, ///< Role for the item type (STUDY or SERIES)
-        UID                       ///< Role for the fwID of the object
+        UID,                      ///< Role for the fwID of the object
+        ICON                      ///< Role to determine whether it holds the icon
     };
 
     /// Defines item type (STUDY or SERIES), it is used in items data (ITEM_TYPE role).
@@ -58,32 +59,13 @@ public:
         SERIES     ///< Type to represent Series
     };
 
-    /// Defines header columns used in the tree widget of all series.
-    enum class ColumnSeriesType : int
-    {
-        NAME = 0,
-        SEX,
-        BIRTHDATE,
-        MODALITY,
-        DESCRIPTION,
-        DATE,
-        TIME,
-        PATIENT_AGE,
-        BODY_PART_EXAMINED,
-        PATIENT_POSITION,
-        CONTRAST_AGENT,
-        ACQUISITION_TIME,
-        CONTRAST_BOLUS_START_TIME,
-        REMOVE
-    };
-
     /// Defines the map associating icons to series (map\<series classname, icon path\>)
     typedef std::map<std::string, std::string> SeriesIconType;
 
     using QStandardItemModel::removeRows;
 
     /// Initializes the model.
-    UI_QT_QT_API SelectorModel(QWidget* _parent = nullptr);
+    UI_QT_QT_API SelectorModel(const std::string& displayColumns, QWidget* _parent = nullptr, bool allowRemove = false);
 
     /// Destroys the selector.
     UI_QT_QT_API ~SelectorModel() override = default;
@@ -199,13 +181,16 @@ private:
     SeriesIconType m_seriesIcons;
 
     /// Allows to remove items.
-    bool m_removeAllowed {true};
+    bool m_removeAllowed;
 
     /// Defines the path of the remove study button icon.
     std::filesystem::path m_removeStudyIcon;
 
     /// Defines the path of the remove series button icon.
     std::filesystem::path m_removeSeriesIcon;
+
+    /// A list of columns to be displayed
+    std::vector<std::string> m_displayColumns;
 };
 
 //------------------------------------------------------------------------------

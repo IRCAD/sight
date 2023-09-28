@@ -40,6 +40,7 @@ namespace sight::module::viz::scene3d::adaptor
 
 /**
  * @brief This adaptor displays landmarks.
+ * @deprecated Use sight::module::viz::scene3dQt::adaptor::SLandmarks instead.
  *
  * @section Slots Slots
  * - \b removeAll(): removes all groups.

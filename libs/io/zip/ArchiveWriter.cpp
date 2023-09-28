@@ -199,16 +199,14 @@ public:
 
     inline ZipHandle(const std::filesystem::path& archive_path, const Archive::ArchiveFormat format) :
         m_archive_path(archive_path.string()),
-        m_format(format)
+        m_format(format),
+        m_zip_writer(mz_zip_writer_create())
     {
         // Create the sub directories if needed
         if(archive_path.has_parent_path())
         {
             std::filesystem::create_directories(archive_path.parent_path());
         }
-
-        // Create zip writer instance
-        mz_zip_writer_create(&m_zip_writer);
 
         SIGHT_THROW_EXCEPTION_IF(
             exception::Write(
@@ -334,8 +332,8 @@ public:
 
         if(use_encryption)
         {
-            zip_file.aes_version         = MZ_AES_VERSION;
-            zip_file.aes_encryption_mode = MZ_AES_ENCRYPTION_MODE_256;
+            zip_file.aes_version  = MZ_AES_VERSION;
+            zip_file.aes_strength = MZ_AES_STRENGTH_256;
         }
 
         const auto result = mz_zip_writer_entry_open(m_zipHandle->m_zip_writer, &zip_file);

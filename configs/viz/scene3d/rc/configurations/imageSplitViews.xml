@@ -19,26 +19,28 @@
         <param name="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" />
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
-        <param name="PICKER_SENDER_CHANNEL" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
         <param name="DISTANCE_ACTIVATION_CHANNEL" />
         <param name="DISTANCE_DEACTIVATION_CHANNEL" />
+        <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" />
+        <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" />
+        <param name="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" />
+        <param name="REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL" />
+        <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" />
         <param name="modelSeries" />
         <param name="image" />
         <param name="volumeTF" />
         <param name="extrudedModelSeries" />
-        <param name="landmarks" />
     </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${modelSeries}" type="sight::data::ModelSeries" src="deferred" />
-        <object uid="${image}" type="sight::data::Image" src="deferred" />
+        <object uid="${image}" type="sight::data::ImageSeries" src="deferred" />
         <object uid="${volumeTF}" type="sight::data::TransferFunction" src="ref" />
         <object uid="${extrudedModelSeries}" type="sight::data::ModelSeries" src="ref" />
-        <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
 
         <!-- ******************************* UI declaration *********************************** -->
 
@@ -46,8 +48,8 @@
             <gui>
                 <layout type="sight::ui::base::LineLayoutManager">
                     <orientation value="vertical" />
-                    <view proportion="0" />
-                    <view proportion="0" />
+                    <view proportion="0" spacing="2" />
+                    <view proportion="0" spacing="2" />
                 </layout>
             </gui>
             <registry>
@@ -63,7 +65,7 @@
               <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" minWidth="0" />
-                    <view proportion="1" minWidth="0" visible="false" />
+                    <view proportion="1" minWidth="0" visible="false" spacing="2" />
                </layout>
            </gui>
            <registry>
@@ -77,7 +79,7 @@
               <layout type="sight::ui::base::LineLayoutManager" >
                     <orientation value="horizontal" />
                     <view proportion="1" minWidth="0" visible="false" />
-                    <view proportion="1" minWidth="0" visible="false" />
+                    <view proportion="1" minWidth="0" visible="false" spacing="2" />
                </layout>
            </gui>
            <registry>
@@ -106,17 +108,20 @@
             <parameter replace="SHAPE_EXTRUDER_CANCEL_LAST_CLICK_RECEIVER_CHANNEL" by="${SHAPE_EXTRUDER_CANCEL_LAST_CLICK_RECEIVER_CHANNEL}" />
             <parameter replace="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" by="${SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL}" />
             <parameter replace="AXIS_VISIBILITY_RECEIVER_CHANNEL" by="${AXIS_VISIBILITY_RECEIVER_CHANNEL}" />
-            <parameter replace="PICKER_SENDER_CHANNEL" by="${PICKER_SENDER_CHANNEL}" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="${WORLD_COORDS_LANDMARKS_CHANNEL}" />
             <parameter replace="NEGATO3D_TRANSPARENCY_CHANNEL" by="${NEGATO3D_TRANSPARENCY_CHANNEL}" />
             <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
             <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
+            <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
+            <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
+            <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />
+            <parameter replace="REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL" by="${REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL}" />
+            <parameter replace="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" by="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}" />
             <inout group="data">
                 <key name="modelSeries" uid="${modelSeries}" optional="true"/>
                 <key name="image" uid="${image}" optional="true"/>
                 <key name="volumeTF" uid="${volumeTF}" />
                 <key name="extrudedModelSeries" uid="${extrudedModelSeries}" />
-                <key name="landmarks" uid="${landmarks}" />
             </inout>
         </service>
 
@@ -125,48 +130,54 @@
         <service uid="axialNegatoCfg" type="sight::service::SConfigController" >
             <appConfig id="sight::config::viz::scene3d::negato2D" />
             <parameter replace="WID_PARENT" by="axialSceneView" />
-            <parameter replace="PICKER_SENDER_CHANNEL" by="${PICKER_SENDER_CHANNEL}" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_AXIAL_VISIBILITY_RECEIVER_CHANNEL" />
             <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
             <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
+            <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
+            <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
+            <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />
+            <parameter replace="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" by="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}" />
             <parameter replace="sliceIndex" by="axial" />
             <inout group="data">
                 <key name="image" uid="${image}" optional="true"/>
                 <key name="transferFunction" uid="${volumeTF}" />
-                <key name="landmarks" uid="${landmarks}" />
             </inout>
         </service>
 
         <service uid="sagittalNegatoCfg" type="sight::service::SConfigController" >
             <appConfig id="sight::config::viz::scene3d::negato2D" />
             <parameter replace="WID_PARENT" by="sagittalSceneView" />
-            <parameter replace="PICKER_SENDER_CHANNEL" by="${PICKER_SENDER_CHANNEL}" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_SAGITTAL_VISIBILITY_RECEIVER_CHANNEL" />
             <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
             <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
+            <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
+            <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
+            <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />
+            <parameter replace="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" by="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}" />
             <parameter replace="sliceIndex" by="sagittal" />
             <inout group="data">
                 <key name="image" uid="${image}" optional="true"/>
                 <key name="transferFunction" uid="${volumeTF}" />
-                <key name="landmarks" uid="${landmarks}" />
             </inout>
         </service>
 
         <service uid="frontalNegatoCfg" type="sight::service::SConfigController" >
             <appConfig id="sight::config::viz::scene3d::negato2D" />
             <parameter replace="WID_PARENT" by="frontalSceneView" />
-            <parameter replace="PICKER_SENDER_CHANNEL" by="${PICKER_SENDER_CHANNEL}" />
             <parameter replace="WORLD_COORDS_LANDMARKS_CHANNEL" by="WORLD_COORDS_LANDMARKS_CHANNEL" />
             <parameter replace="TOGGLE_VIEW_VISIBILITY_SENDER_CHANNEL" by="TOGGLE_FRONTAL_VISIBILITY_RECEIVER_CHANNEL" />
             <parameter replace="DISTANCE_ACTIVATION_CHANNEL" by="${DISTANCE_ACTIVATION_CHANNEL}" />
             <parameter replace="DISTANCE_DEACTIVATION_CHANNEL" by="${DISTANCE_DEACTIVATION_CHANNEL}" />
+            <parameter replace="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" by="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}" />
+            <parameter replace="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" by="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}" />
+            <parameter replace="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" by="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}" />
+            <parameter replace="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" by="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}" />
             <parameter replace="sliceIndex" by="frontal" />
             <inout group="data">
                 <key name="image" uid="${image}" optional="true"/>
                 <key name="transferFunction" uid="${volumeTF}" />
-                <key name="landmarks" uid="${landmarks}" />
             </inout>
         </service>
 

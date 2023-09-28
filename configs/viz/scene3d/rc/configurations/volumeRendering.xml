@@ -17,26 +17,28 @@
         <param name="SHAPE_EXTRUDER_RESET_RECEIVER_CHANNEL" />
         <param name="SHAPE_EXTRUDER_REVERT_RECEIVER_CHANNEL" />
         <param name="AXIS_VISIBILITY_RECEIVER_CHANNEL" />
-        <param name="PICKER_SENDER_CHANNEL" />
         <param name="WORLD_COORDS_LANDMARKS_CHANNEL" />
         <param name="NEGATO3D_TRANSPARENCY_CHANNEL" />
         <param name="DISTANCE_ACTIVATION_CHANNEL" default="DISTANCE_ACTIVATION_CHANNEL"/>
         <param name="DISTANCE_DEACTIVATION_CHANNEL" default="DISTANCE_DEACTIVATION_CHANNEL"/>
+        <param name="LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL" />
+        <param name="LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL" />
+        <param name="REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL" />
+        <param name="REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL" />
+        <param name="LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL" />
         <param name="modelSeries" />
         <param name="image" />
         <param name="volumeTF" />
         <param name="extrudedModelSeries" />
-        <param name="landmarks" />
     </parameters>
     <config>
 
         <!-- ******************************* Objects declaration ****************************** -->
 
         <object uid="${modelSeries}" type="sight::data::ModelSeries" src="deferred" />
-        <object uid="${image}" type="sight::data::Image" src="deferred" />
+        <object uid="${image}" type="sight::data::ImageSeries" src="deferred" />
         <object uid="${volumeTF}" type="sight::data::TransferFunction" src="ref" />
         <object uid="${extrudedModelSeries}" type="sight::data::ModelSeries" src="ref" />
-        <object uid="${landmarks}" type="sight::data::Landmarks" src="ref" />
 
         <object uid="mask" type="sight::data::Image" />
         <object uid="clippingMatrix" type="sight::data::Matrix4" />
@@ -46,7 +48,7 @@
 
         <!-- ******************************* UI declaration *********************************** -->
 
-        <service uid="sceneView" type="sight::module::ui::base::SView">
+        <service uid="sceneOverlayView" type="sight::module::ui::base::SView">
             <gui>
                 <layout type="sight::ui::base::OverlayLayoutManager">
                     <view />
@@ -55,8 +57,22 @@
             </gui>
             <registry>
                 <parent wid="${WID_PARENT}" />
-                <view sid="sceneSrv" start="true" />
+                <view sid="sceneView" start="true" />
                 <view sid="topToolbarSliderView" start="true" />
+            </registry>
+        </service>
+
+        <service uid="sceneView" type="sight::module::ui::base::SView">
+            <gui>
+                <layout type="sight::ui::base::LineLayoutManager">
+                    <orientation value="vertical" />
+                    <view proportion="1" />
+                    <view proportion="0" backgroundColor="#36393E" spacing="0" />
+                </layout>
+            </gui>
+            <registry>
+                <view sid="sceneSrv" start="true"/>
+                <view wid="sliderView" />
             </registry>
         </service>
 
@@ -140,7 +156,7 @@
             <in key="mask" uid="mask" />
             <in key="tf" uid="${volumeTF}" />
             <inout key="clippingMatrix" uid="clippingMatrix" />
-            <config widgets="false" preintegration="false" autoresetcamera="false" samples="1024" />
+            <config widgets="false" preintegration="false" autoresetcamera="false" samples="1200" />
         </service>
 
         <service uid="3DNegatoAdp" type="sight::module::viz::scene3d::adaptor::SNegato3D">
@@ -149,12 +165,12 @@
             <config queryFlags="0x40000000" interactive="true" priority="2" />
         </service>
 
-        <service uid="landmarksAdp" type="sight::module::viz::scene3d::adaptor::SLandmarks" autoConnect="true">
-            <inout key="landmarks" uid="${landmarks}" />
-            <config fontSize="16" priority="4" />
+        <service uid="landmarksAdp" type="sight::module::viz::scene3dQt::adaptor::SLandmarks" autoConnect="true">
+            <inout key="imageSeries" uid="${image}" />
+            <config fontSize="16" priority="4" initialGroup="Group_0" initialSize="10.0" viewDistance="allSlices" />
         </service>
 
-        <service uid="multiDistancesAdp" type="sight::module::viz::scene3d::adaptor::SImageMultiDistances" autoConnect="true">
+        <service uid="multiDistancesAdp" type="sight::module::viz::scene3dQt::adaptor::SImageMultiDistances" autoConnect="true">
             <inout key="image" uid="${image}" />
             <config fontSize="16" radius="4.5" queryFlags="0x40000000" priority="3" />
         </service>
@@ -209,6 +225,19 @@
             <in key="data" uid="snapshot" />
             <dialog policy="always" />
             <backends enable="all" mode="best"/>
+        </service>
+
+        <service uid="sliderCfg" type="sight::service::SConfigController" >
+            <appConfig id="sight::config::viz::image::imageSlider" />
+            <parameter replace="WID_PARENT" by="sliderView" />
+            <parameter replace="sliceIndex" by="axial" />
+            <parameter replace="enableSliceSlider" by="false" />
+            <parameter replace="enableSliceType" by="false" />
+            <parameter replace="enableOpacity" by="true" />
+            <inout group="data">
+                <key name="image" uid="${image}" />
+                <key name="transferFunction" uid="${volumeTF}" />
+            </inout>
         </service>
 
         <!-- ************************************* Actions ************************************ -->
@@ -287,16 +316,32 @@
             <slot>axisAdp/updateVisibility</slot>
         </connect>
 
-        <connect channel="${PICKER_SENDER_CHANNEL}">
-            <signal>pickerInteractorAdp/picked</signal>
-        </connect>
-
         <connect channel="${WORLD_COORDS_LANDMARKS_CHANNEL}">
             <slot>3DNegatoAdp/updateSlicesFromWorld</slot>
         </connect>
 
         <connect channel="${NEGATO3D_TRANSPARENCY_CHANNEL}">
             <slot>3DNegatoAdp/setTransparency</slot>
+        </connect>
+
+        <connect channel="${LANDMARKS_EDIT_MODE_RECEIVER_CHANNEL}">
+            <slot>landmarksAdp/changeEditMode</slot>
+        </connect>
+
+        <connect channel="${LANDMARKS_GROUP_SELECTED_RECEIVER_CHANNEL}">
+            <slot>landmarksAdp/setCurrentGroup</slot>
+        </connect>
+
+        <connect channel="${REMOVE_ALL_LANDMARKS_RECEIVER_CHANNEL}">
+            <slot>landmarksAdp/removeAll</slot>
+        </connect>
+
+        <connect channel="${REMOVE_ALL_DISTANCES_RECEIVER_CHANNEL}">
+            <slot>multiDistancesAdp/removeAll</slot>
+        </connect>
+
+        <connect channel="${LANDMARKS_EDIT_MODE_CHANGED_SENDER_CHANNEL}">
+            <signal>landmarksAdp/editModeChanged</signal>
         </connect>
 
         <!-- Slide view -->
@@ -369,7 +414,7 @@
 
         <!-- ******************************* Start/Stop services ***************************************** -->
 
-        <start uid="sceneView" />
+        <start uid="sceneOverlayView" />
         <start uid="clippingBoxResetSrv" />
         <start uid="imageExtruderSrv" />
         <start uid="notifierSrv" />
@@ -389,6 +434,7 @@
         <start uid="eventAdp" />
         <start uid="orientationMarkerAdp" />
         <start uid="3DNegatoAdp" />
+        <start uid="sliderCfg" />
 
         <update uid="imageExtruderSrv" />
         <update uid="shapeExtruderAdp" />

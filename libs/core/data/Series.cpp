@@ -1858,6 +1858,11 @@ Series::DicomType Series::getDicomType() const noexcept
         return DicomType::MODEL;
     }
 
+    if(dynamic_cast<const FiducialsSeries*>(this) != nullptr)
+    {
+        return DicomType::FIDUCIALS;
+    }
+
     // Then try with the SOPClassUID
     if(const auto& sop_class_uid = getSOPClassUID(); !sop_class_uid.empty())
     {
@@ -1889,11 +1894,10 @@ Series::DicomType Series::getDicomType() const noexcept
 }
 
 //------------------------------------------------------------------------------
-
-Series::DicomType Series::getDicomType(const std::string& sop_class_uid) noexcept
+inline static Series::DicomType sopKeywordToDicomType(const dicom::sop::Keyword& keyword)
 {
     // cspell:ignore Multiframe Radiofluoroscopic Tomosynthesis Bscan Dermoscopic
-    switch(dicom::sop::keyword(sop_class_uid))
+    switch(keyword)
     {
         // Found using dicom_parser.py --mandatory-tags "(0062,0002)" "(0066,0002)" "(0066,0011)"
         case dicom::sop::Keyword::GenericImplantTemplateStorage:
@@ -1901,7 +1905,7 @@ Series::DicomType Series::getDicomType(const std::string& sop_class_uid) noexcep
         case dicom::sop::Keyword::SurfaceSegmentationStorage:
         case dicom::sop::Keyword::SurfaceScanMeshStorage:
         case dicom::sop::Keyword::SurfaceScanPointCloudStorage:
-            return DicomType::MODEL;
+            return Series::DicomType::MODEL;
 
         // Found using dicom_parser.py --mandatory-tags "(7FE0,0010)"
         case dicom::sop::Keyword::ComputedRadiographyImageStorage:
@@ -1921,6 +1925,7 @@ Series::DicomType Series::getDicomType(const std::string& sop_class_uid) noexcep
         case dicom::sop::Keyword::LegacyConvertedEnhancedMRImageStorage:
         case dicom::sop::Keyword::UltrasoundImageStorage:
         case dicom::sop::Keyword::EnhancedUSVolumeStorage:
+        case dicom::sop::Keyword::PhotoacousticImageStorage:
         case dicom::sop::Keyword::SecondaryCaptureImageStorage:
         case dicom::sop::Keyword::MultiFrameSingleBitSecondaryCaptureImageStorage:
         case dicom::sop::Keyword::MultiFrameGrayscaleByteSecondaryCaptureImageStorage:
@@ -1962,11 +1967,21 @@ Series::DicomType Series::getDicomType(const std::string& sop_class_uid) noexcep
         case dicom::sop::Keyword::LegacyConvertedEnhancedPETImageStorage:
         case dicom::sop::Keyword::RTImageStorage:
         case dicom::sop::Keyword::RTDoseStorage:
-            return DicomType::IMAGE;
+            return Series::DicomType::IMAGE;
+
+        case dicom::sop::Keyword::SpatialFiducialsStorage:
+            return Series::DicomType::FIDUCIALS;
 
         default:
-            return DicomType::UNKNOWN;
+            return Series::DicomType::UNKNOWN;
     }
+}
+
+//------------------------------------------------------------------------------
+
+Series::DicomType Series::getDicomType(const std::string& sop_class_uid) noexcept
+{
+    return sopKeywordToDicomType(dicom::sop::keyword(sop_class_uid));
 }
 
 //------------------------------------------------------------------------------
@@ -2005,6 +2020,16 @@ std::string Series::dicomTypesToString(Series::DicomTypes types) noexcept
         dicom_types += dicomTypeToString(DicomType::REPORT);
     }
 
+    if((types & static_cast<DicomTypes>(DicomType::FIDUCIALS)) == types)
+    {
+        if(!dicom_types.empty())
+        {
+            dicom_types += ", ";
+        }
+
+        dicom_types += dicomTypeToString(DicomType::FIDUCIALS);
+    }
+
     return dicom_types;
 }
 
@@ -2031,6 +2056,164 @@ Series::DicomTypes Series::stringToDicomTypes(const std::string& types) noexcept
     }
 
     return dicom_types;
+}
+
+//------------------------------------------------------------------------------
+
+Series::SopKeywords Series::dicomTypesToSops(DicomTypes types) noexcept
+{
+    SopKeywords keywords;
+
+    if((types & std::uint64_t(DicomType::IMAGE)) == std::uint64_t(DicomType::IMAGE))
+    {
+        keywords.insert(
+            {
+                // Found using dicom_parser.py --mandatory-tags "(7FE0,0010)"
+                dicom::sop::Keyword::ComputedRadiographyImageStorage,
+                dicom::sop::Keyword::DigitalXRayImageStorageForPresentation,
+                dicom::sop::Keyword::DigitalXRayImageStorageForProcessing,
+                dicom::sop::Keyword::DigitalMammographyXRayImageStorageForPresentation,
+                dicom::sop::Keyword::DigitalMammographyXRayImageStorageForProcessing,
+                dicom::sop::Keyword::DigitalIntraOralXRayImageStorageForPresentation,
+                dicom::sop::Keyword::DigitalIntraOralXRayImageStorageForProcessing,
+                dicom::sop::Keyword::CTImageStorage,
+                dicom::sop::Keyword::EnhancedCTImageStorage,
+                dicom::sop::Keyword::LegacyConvertedEnhancedCTImageStorage,
+                dicom::sop::Keyword::UltrasoundMultiFrameImageStorage,
+                dicom::sop::Keyword::MRImageStorage,
+                dicom::sop::Keyword::EnhancedMRImageStorage,
+                dicom::sop::Keyword::EnhancedMRColorImageStorage,
+                dicom::sop::Keyword::LegacyConvertedEnhancedMRImageStorage,
+                dicom::sop::Keyword::UltrasoundImageStorage,
+                dicom::sop::Keyword::EnhancedUSVolumeStorage,
+                dicom::sop::Keyword::PhotoacousticImageStorage,
+                dicom::sop::Keyword::SecondaryCaptureImageStorage,
+                dicom::sop::Keyword::MultiFrameSingleBitSecondaryCaptureImageStorage,
+                dicom::sop::Keyword::MultiFrameGrayscaleByteSecondaryCaptureImageStorage,
+                dicom::sop::Keyword::MultiFrameGrayscaleWordSecondaryCaptureImageStorage,
+                dicom::sop::Keyword::MultiFrameTrueColorSecondaryCaptureImageStorage,
+                dicom::sop::Keyword::XRayAngiographicImageStorage,
+                dicom::sop::Keyword::EnhancedXAImageStorage,
+                dicom::sop::Keyword::XRayRadiofluoroscopicImageStorage,
+                dicom::sop::Keyword::EnhancedXRFImageStorage,
+                dicom::sop::Keyword::XRay3DAngiographicImageStorage,
+                dicom::sop::Keyword::XRay3DCraniofacialImageStorage,
+                dicom::sop::Keyword::BreastTomosynthesisImageStorage,
+                dicom::sop::Keyword::BreastProjectionXRayImageStorageForPresentation,
+                dicom::sop::Keyword::BreastProjectionXRayImageStorageForProcessing,
+                dicom::sop::Keyword::IntravascularOpticalCoherenceTomographyImageStorageForPresentation,
+                dicom::sop::Keyword::IntravascularOpticalCoherenceTomographyImageStorageForProcessing,
+                dicom::sop::Keyword::NuclearMedicineImageStorage,
+                dicom::sop::Keyword::ParametricMapStorage,
+                dicom::sop::Keyword::VLEndoscopicImageStorage,
+                dicom::sop::Keyword::VideoEndoscopicImageStorage,
+                dicom::sop::Keyword::VLMicroscopicImageStorage,
+                dicom::sop::Keyword::VideoMicroscopicImageStorage,
+                dicom::sop::Keyword::VLSlideCoordinatesMicroscopicImageStorage,
+                dicom::sop::Keyword::VLPhotographicImageStorage,
+                dicom::sop::Keyword::VideoPhotographicImageStorage,
+                dicom::sop::Keyword::OphthalmicPhotography8BitImageStorage,
+                dicom::sop::Keyword::OphthalmicPhotography16BitImageStorage,
+                dicom::sop::Keyword::OphthalmicTomographyImageStorage,
+                dicom::sop::Keyword::WideFieldOphthalmicPhotographyStereographicProjectionImageStorage,
+                dicom::sop::Keyword::WideFieldOphthalmicPhotography3DCoordinatesImageStorage,
+                dicom::sop::Keyword::OphthalmicOpticalCoherenceTomographyEnFaceImageStorage,
+                dicom::sop::Keyword::OphthalmicOpticalCoherenceTomographyBscanVolumeAnalysisStorage,
+                dicom::sop::Keyword::VLWholeSlideMicroscopyImageStorage,
+                dicom::sop::Keyword::DermoscopicPhotographyImageStorage,
+                dicom::sop::Keyword::OphthalmicThicknessMapStorage,
+                dicom::sop::Keyword::CornealTopographyMapStorage,
+                dicom::sop::Keyword::PositronEmissionTomographyImageStorage,
+                dicom::sop::Keyword::EnhancedPETImageStorage,
+                dicom::sop::Keyword::LegacyConvertedEnhancedPETImageStorage,
+                dicom::sop::Keyword::RTImageStorage,
+                dicom::sop::Keyword::RTDoseStorage
+            });
+    }
+
+    if((types & std::uint64_t(DicomType::MODEL)) == std::uint64_t(DicomType::MODEL))
+    {
+        keywords.insert(
+            {
+                // Found using dicom_parser.py --mandatory-tags "(0062,0002)" "(0066,0002)" "(0066,0011)"
+                dicom::sop::Keyword::GenericImplantTemplateStorage,
+                dicom::sop::Keyword::SegmentationStorage,
+                dicom::sop::Keyword::SurfaceSegmentationStorage,
+                dicom::sop::Keyword::SurfaceScanMeshStorage,
+                dicom::sop::Keyword::SurfaceScanPointCloudStorage,
+            });
+    }
+
+    if((types & std::uint64_t(DicomType::FIDUCIALS)) == std::uint64_t(DicomType::FIDUCIALS))
+    {
+        keywords.insert(
+            {
+                dicom::sop::Keyword::SpatialFiducialsStorage
+            });
+    }
+
+    return keywords;
+}
+
+//------------------------------------------------------------------------------
+
+Series::DicomTypes Series::sopsToDicomTypes(const SopKeywords& keywords) noexcept
+{
+    DicomTypes types {static_cast<DicomTypes>(DicomType::UNKNOWN)};
+
+    for(const auto& keyword : keywords)
+    {
+        if(const auto& type = sopKeywordToDicomType(keyword); type != DicomType::UNKNOWN)
+        {
+            types |= static_cast<DicomTypes>(type);
+        }
+    }
+
+    return types;
+}
+
+//------------------------------------------------------------------------------
+
+Series::SopKeywords Series::stringToSops(const std::string& uids) noexcept
+{
+    SopKeywords sop_keywords;
+
+    std::vector<std::string> split;
+    boost::split(split, uids, boost::is_any_of(","));
+
+    for(const auto& uid : split)
+    {
+        const auto& trimmed = boost::trim_copy(uid);
+
+        if(!trimmed.empty())
+        {
+            if(const auto& sop_keyword = dicom::sop::keyword(trimmed); sop_keyword != dicom::sop::Keyword::INVALID)
+            {
+                sop_keywords.insert(sop_keyword);
+            }
+        }
+    }
+
+    return sop_keywords;
+}
+
+//------------------------------------------------------------------------------
+
+std::string Series::sopsToString(const SopKeywords& keywords) noexcept
+{
+    std::string sop_keywords;
+
+    for(const auto& keyword : keywords)
+    {
+        if(!sop_keywords.empty())
+        {
+            sop_keywords += ", ";
+        }
+
+        sop_keywords += dicom::sop::get(keyword).m_uid;
+    }
+
+    return sop_keywords;
 }
 
 //------------------------------------------------------------------------------

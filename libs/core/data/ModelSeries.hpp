@@ -30,6 +30,7 @@
 #include "data/types.hpp"
 
 #include "FiducialsSeries.hpp"
+#include "IHasFiducials.hpp"
 
 #include <core/com/Signal.hpp>
 #include <core/com/Signals.hpp>
@@ -42,7 +43,8 @@ namespace sight::data
 /**
  * @brief Holds models series.
  */
-class DATA_CLASS_API ModelSeries final : public Series
+class DATA_CLASS_API ModelSeries final : public Series,
+                                         public IHasFiducials
 {
 public:
 

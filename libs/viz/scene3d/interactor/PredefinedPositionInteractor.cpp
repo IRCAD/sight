@@ -42,19 +42,33 @@ namespace sight::viz::scene3d::interactor
 PredefinedPositionInteractor::PredefinedPositionInteractor(
     Layer::sptr _layer,
     bool _layerOrderDependant,
-    std::vector<predefined_position_t> _positions
+    std::vector<predefined_position_t> _positions,
+    const std::optional<std::string>& _default_position,
+    bool _animate
 ) :
     IInteractor(_layer, _layerOrderDependant),
-    m_predefined_positions(std::move(_positions))
+    m_timer(core::thread::getDefaultWorker()->createTimer()),
+    m_predefined_positions(std::move(_positions)),
+    m_animate(_animate)
 {
-    const Ogre::Quaternion initRotation(Ogre::Degree(180), Ogre::Vector3::NEGATIVE_UNIT_X);
-    m_cameraInitRotation = initRotation;
-
     this->init();
-    _layer->requestRender();
 
-    const auto worker = core::thread::getDefaultWorker();
-    m_timer = worker->createTimer();
+    if(_default_position)
+    {
+        if(const auto& found = std::find_if(
+               m_predefined_positions.begin(),
+               m_predefined_positions.end(),
+               [&](auto& _pos)
+            {
+                return _pos.name == *_default_position;
+            });
+           found != m_predefined_positions.end())
+        {
+            toPredefinedPosition(std::size_t(found - m_predefined_positions.begin()), false);
+        }
+    }
+
+    _layer->requestRender();
 }
 
 // ----------------------------------------------------------------------------
@@ -282,7 +296,7 @@ void PredefinedPositionInteractor::nextPosition()
         m_current_position_idx.value()++;
     }
 
-    this->toPredefinedPosition(m_current_position_idx.value());
+    this->toPredefinedPosition(m_current_position_idx.value(), m_animate);
 }
 
 // ----------------------------------------------------------------------------
@@ -299,57 +313,43 @@ void PredefinedPositionInteractor::previousPosition()
         m_current_position_idx.value()--;
     }
 
-    this->toPredefinedPosition(m_current_position_idx.value());
+    this->toPredefinedPosition(m_current_position_idx.value(), m_animate);
 }
 
 // ----------------------------------------------------------------------------
 
-void PredefinedPositionInteractor::toPredefinedPosition(std::size_t _idx)
+void PredefinedPositionInteractor::toPredefinedPosition(std::size_t _idx, bool _animate)
 {
-    if(_idx >= m_predefined_positions.size())
-    {
-        SIGHT_ERROR("Cannot move to position '" << _idx << " / " << m_predefined_positions.size() << "'");
-        return;
-    }
+    SIGHT_ASSERT(
+        "Cannot move to position '" << _idx << " / " << m_predefined_positions.size() << "'",
+        _idx < m_predefined_positions.size()
+    );
 
     if(auto layer = m_layer.lock())
     {
-        const auto pos          = m_predefined_positions[_idx];
-        static float percentage = 0.F;
+        // 1. Stop timer if needed
+        if(m_timer->isRunning())
+        {
+            m_timer->stop();
+        }
+
+        // Reset the percentage
+        m_percentage = 0.F;
 
         Ogre::Camera* const camera     = layer->getDefaultCamera();
         Ogre::SceneNode* const camNode = camera->getParentSceneNode();
 
-        // 1. Stop timer if needed
-
-        if(m_timer->isRunning())
-        {
-            m_timer->stop();
-            percentage = 0.F;
-        }
-
-        // Get current orientation.
-        const auto origin = camNode->getOrientation();
+        // Get destination orientation.
+        const auto& pos = m_predefined_positions[_idx];
 
         // Relative destination in  regard of reference (this->init()).
         const Ogre::Quaternion rotateX(Ogre::Degree(pos.rx), Ogre::Vector3(1, 0, 0));
         const Ogre::Quaternion rotateY(Ogre::Degree(pos.ry), Ogre::Vector3(0, 1, 0));
         const Ogre::Quaternion rotateZ(Ogre::Degree(pos.rz), Ogre::Vector3(0, 0, 1));
-        const auto initRot = this->transformQuaternion();
+        const auto destination = this->transformQuaternion() * m_cameraInitRotation * rotateZ * rotateY * rotateX;
 
-        const auto destination = initRot * m_cameraInitRotation * rotateZ * rotateY * rotateX;
-
-        const auto rotation_path = destination * origin.Inverse();
-
-        Ogre::Degree angle;
-        Ogre::Vector3 axis;
-        rotation_path.ToAngleAxis(angle, axis);
-
-        // Convert to short angle if needed.
-        const Ogre::Degree shortAngle = angle > Ogre::Degree(180) ? Ogre::Degree(360) - angle : angle;
-        const float nb_step           = std::ceil(shortAngle.valueDegrees() * 100.F / 180.F);
-        // Avoid to have gigantic step.
-        const float step = (nb_step > 0.001F) ? 1.F / nb_step : 1.F;
+        // Get current orientation.
+        const auto origin = camNode->getOrientation();
 
         // TODO: find a threshold.
         if(destination.equals(origin, Ogre::Degree(0.1F)))
@@ -357,30 +357,77 @@ void PredefinedPositionInteractor::toPredefinedPosition(std::size_t _idx)
             return;
         }
 
-        m_timer->setFunction(
-            [this, layer, origin, destination, camNode, step]()
-            {
-                if(percentage > 1.F)
+        if(_animate)
+        {
+            // Compute the number of step.
+            const auto rotation_path = destination * origin.Inverse();
+
+            Ogre::Degree angle;
+            Ogre::Vector3 axis;
+            rotation_path.ToAngleAxis(angle, axis);
+
+            // Convert to short angle if needed.
+            const Ogre::Degree shortAngle = angle > Ogre::Degree(180) ? Ogre::Degree(360) - angle : angle;
+            const float nb_step           = std::ceil(shortAngle.valueDegrees() * 100.F / 180.F);
+
+            // Avoid to have gigantic step.
+            const float step = (nb_step > 0.001F) ? 1.F / nb_step : 1.F;
+
+            m_timer->setFunction(
+                [this, layer, origin, destination, camNode, step]()
                 {
-                    m_timer->stop();
-                    percentage = 0.F;
-                    return;
-                }
+                    if(m_timer->isRunning())
+                    {
+                        m_timer->stop();
+                    }
 
-                percentage                    += step;
-                const auto percentage_to_apply = percentage > 1.F ? 1.F : percentage;
+                    m_percentage += step;
 
-                const Ogre::Quaternion rotation =
-                    Ogre::Quaternion::Slerp(Ogre::Real(percentage_to_apply), origin, destination, true);
+                    const bool is_last_step        = m_percentage >= 1.F;
+                    const auto percentage_to_apply = is_last_step ? 1.F : m_percentage;
 
-                this->rotateCamera(camNode, rotation);
+                    const auto rotation = Ogre::Quaternion::Slerp(
+                        Ogre::Real(percentage_to_apply),
+                        origin,
+                        destination,
+                        true
+                    );
 
-                m_currentOrientation = camNode->getOrientation();
+                    this->rotateCamera(camNode, rotation);
 
-                layer->requestRender();
-            });
-        m_timer->setDuration(std::chrono::milliseconds(10));
-        m_timer->start();
+                    m_currentOrientation = camNode->getOrientation();
+
+                    layer->requestRender();
+
+                    if(is_last_step)
+                    {
+                        m_percentage = 0.F;
+                    }
+                    else
+                    {
+                        m_timer->setDuration(
+                            std::max(
+                                std::chrono::milliseconds(0),
+                                std::chrono::milliseconds(10) - std::chrono::duration_cast<std::chrono::milliseconds>(
+                                    std::chrono::system_clock::now() - m_last_step_time
+                                )
+                            )
+                        );
+
+                        m_last_step_time = std::chrono::system_clock::now();
+                        m_timer->setOneShot(true);
+                        m_timer->start();
+                    }
+                });
+
+            m_timer->setDuration(std::chrono::milliseconds(0));
+            m_timer->setOneShot(true);
+            m_timer->start();
+        }
+        else
+        {
+            this->rotateCamera(camNode, destination);
+        }
 
         m_current_position_idx = _idx;
         m_currentOrientation   = camNode->getOrientation();
@@ -402,9 +449,15 @@ void PredefinedPositionInteractor::setParameter(ui::base::parameter_t _value, st
                 return _p.name == predefined_position_name;
             });
 
-        const auto index = it - m_predefined_positions.begin();
+        const auto index = std::size_t(it - m_predefined_positions.begin());
 
-        this->toPredefinedPosition(static_cast<std::size_t>(index));
+        if(index >= m_predefined_positions.size())
+        {
+            SIGHT_ERROR("Cannot move to position '" << index << " / " << m_predefined_positions.size() << "'");
+            return;
+        }
+
+        this->toPredefinedPosition(static_cast<std::size_t>(index), m_animate);
     }
 }
 

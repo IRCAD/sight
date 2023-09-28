@@ -42,6 +42,7 @@ static const core::com::Slots::SlotKeyType s_ENABLE_TOOL_SLOT       = "enableToo
 static const core::com::Slots::SlotKeyType s_DELETE_LAST_MESH_SLOT  = "deleteLastMesh";
 static const core::com::Slots::SlotKeyType s_CANCEL_LAST_CLICK_SLOT = "cancelLastClick";
 static const core::com::Slots::SlotKeyType s_RESET_SLOT             = "reset";
+static const core::com::Slots::SlotKeyType s_VALIDATE_SLOT          = "validate";
 
 static const core::com::Slots::SlotKeyType s_TOOL_DISABLED_SIG = "toolDisabled";
 
@@ -148,6 +149,8 @@ SShapeExtruder::SShapeExtruder() noexcept :
     newSlot(s_DELETE_LAST_MESH_SLOT, &SShapeExtruder::deleteLastMesh, this);
     newSlot(s_CANCEL_LAST_CLICK_SLOT, &SShapeExtruder::cancelLastClick, this);
     newSlot(s_RESET_SLOT, &SShapeExtruder::reset, this);
+    newSlot(s_VALIDATE_SLOT, &SShapeExtruder::validate, this);
+
     m_toolDisabledSig = this->newSignal<core::com::Signal<void()> >(s_TOOL_DISABLED_SIG);
 }
 
@@ -159,13 +162,15 @@ void SShapeExtruder::configuring()
 
     const ConfigType config = this->getConfiguration();
 
-    static const std::string s_PRIORITY_CONFIG   = s_CONFIG + "priority";
-    static const std::string s_EXTRUDE_CONFIG    = s_CONFIG + "extrude";
-    static const std::string s_LINE_COLOR_CONFIG = s_CONFIG + "lineColor";
-    static const std::string s_EDGE_COLOR_CONFIG = s_CONFIG + "edgeColor";
+    static const std::string s_PRIORITY_CONFIG         = s_CONFIG + "priority";
+    static const std::string s_EXTRUDE_CONFIG          = s_CONFIG + "extrude";
+    static const std::string s_LINE_COLOR_CONFIG       = s_CONFIG + "lineColor";
+    static const std::string s_EDGE_COLOR_CONFIG       = s_CONFIG + "edgeColor";
+    static const std::string s_DOUBLE_CLICK_VALIDATION = s_CONFIG + "validation_on_double_click";
 
-    m_priority = config.get<int>(s_PRIORITY_CONFIG, m_priority);
-    m_extrude  = config.get<bool>(s_EXTRUDE_CONFIG, m_extrude);
+    m_priority                = config.get<int>(s_PRIORITY_CONFIG, m_priority);
+    m_extrude                 = config.get<bool>(s_EXTRUDE_CONFIG, m_extrude);
+    m_validationByDoubleClick = config.get<bool>(s_DOUBLE_CLICK_VALIDATION, m_validationByDoubleClick);
 
     const auto divideBy255 = [](auto&& PH1, auto&& ...)
                              {
@@ -503,6 +508,32 @@ void SShapeExtruder::modifyLasso(Action _action, int _x, int _y)
     }
 }
 
+//------------------------------------------------------------------------------
+
+void SShapeExtruder::validate()
+{
+    this->getRenderService()->makeCurrent();
+
+    // When coming from touch, mouseReleaseEvent is not always called.
+    if(m_leftButtonMoveState)
+    {
+        // Add a new point to the lasso edge list.
+        m_lassoEdgePositions.push_back(m_lassoToolPositions.back());
+        this->drawLasso();
+
+        // Cancel the left button move state.
+        m_leftButtonMoveState = false;
+    }
+
+    this->triangulatePoints();
+
+    this->enableTool(false);
+    m_toolDisabledSig->asyncEmit();
+
+    // Send a render request.
+    this->requestRender();
+}
+
 //-----------------------------------------------------------------------------
 
 void SShapeExtruder::wheelEvent(Modifier /*_mods*/, double /*_angleDelta*/, int /*_x*/, int /*_y*/)
@@ -533,32 +564,13 @@ void SShapeExtruder::buttonPressEvent(MouseButton _button, Modifier /*_mods*/, i
 
 void SShapeExtruder::buttonDoublePressEvent(MouseButton _button, Modifier /*_mods*/, int /*_x*/, int /*_y*/)
 {
-    if(m_interactionEnableState && _button == MouseButton::LEFT)
+    if(m_validationByDoubleClick && m_interactionEnableState && _button == MouseButton::LEFT)
     {
-        this->getRenderService()->makeCurrent();
-
         // Cancel others interactions.
         const sight::viz::scene3d::Layer::sptr layer = this->getLayer();
         layer->cancelFurtherInteraction();
 
-        // When coming from touch, mouseReleaseEvent is not always called.
-        if(m_leftButtonMoveState)
-        {
-            // Add a new point to the lasso edge list.
-            m_lassoEdgePositions.push_back(m_lassoToolPositions.back());
-            this->drawLasso();
-
-            // Cancel the left button move state.
-            m_leftButtonMoveState = false;
-        }
-
-        this->triangulatePoints();
-
-        this->enableTool(false);
-        m_toolDisabledSig->asyncEmit();
-
-        // Send a render request.
-        this->requestRender();
+        this->validate();
     }
 }
 

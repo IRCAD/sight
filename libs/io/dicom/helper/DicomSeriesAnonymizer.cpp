@@ -29,8 +29,6 @@
 #include <core/jobs/Observer.hpp>
 #include <core/os/TempPath.hpp>
 
-#include <boost/foreach.hpp>
-
 namespace sight::io::dicom::helper
 {
 

@@ -33,6 +33,81 @@ namespace sight::data::ut
 
 //------------------------------------------------------------------------------
 
+data::FiducialsSeries::sptr initFiducialsSeries()
+{
+    data::FiducialsSeries::sptr fs = data::FiducialsSeries::New();
+    fs->setContentLabel("TestLabel");
+    fs->setContentLabel("1");
+    fs->setContentDescription("FS");
+    fs->setContentCreatorName("John Doe");
+
+    // Adds a dummy fiducial set
+    FiducialsSeries::FiducialSet fiducialSet;
+
+    FiducialsSeries::ReferencedImage referencedImage;
+    referencedImage.referencedSOPClassUID    = "1";
+    referencedImage.referencedSOPInstanceUID = "2";
+    referencedImage.referencedFrameNumber    = {3};
+    referencedImage.referencedSegmentNumber  = {4};
+    fiducialSet.referencedImageSequence      = {referencedImage};
+
+    fiducialSet.frameOfReferenceUID = "5";
+
+    FiducialsSeries::Fiducial fiducial;
+    fiducial.shapeType           = FiducialsSeries::Shape::POINT;
+    fiducial.fiducialDescription = "6";
+    fiducial.fiducialIdentifier  = "7";
+
+    FiducialsSeries::GraphicCoordinatesData graphicCoordinatesData;
+    graphicCoordinatesData.referencedImageSequence.referencedSOPClassUID    = "8";
+    graphicCoordinatesData.referencedImageSequence.referencedSOPInstanceUID = "9";
+    graphicCoordinatesData.referencedImageSequence.referencedFrameNumber    = {10};
+    graphicCoordinatesData.referencedImageSequence.referencedSegmentNumber  = {11};
+    graphicCoordinatesData.graphicData                                      = {{12, 13}};
+    fiducial.graphicCoordinatesDataSequence                                 = {graphicCoordinatesData};
+
+    fiducial.fiducialUID = "14";
+    fiducial.contourData = {{15, 16, 17}};
+    fiducialSet.fiducialSequence.push_back(fiducial);
+
+    fiducialSet.groupName  = "18";
+    fiducialSet.color      = {{19, 20, 21, 22}};
+    fiducialSet.size       = 23.F;
+    fiducialSet.shape      = FiducialsSeries::PrivateShape::CUBE;
+    fiducialSet.visibility = true;
+
+    // Test setFiducialSets method
+    fs->setFiducialSets({fiducialSet});
+
+    return fs;
+}
+
+//------------------------------------------------------------------------------
+
+void FiducialsSeriesTest::shallowCopyTest()
+{
+    data::FiducialsSeries::sptr fs1 = initFiducialsSeries();
+    data::FiducialsSeries::sptr fs2 = data::FiducialsSeries::New();
+
+    CPPUNIT_ASSERT(*fs1 != *fs2);
+    fs2->shallowCopy(fs1);
+    CPPUNIT_ASSERT(*fs1 == *fs2);
+}
+
+//------------------------------------------------------------------------------
+
+void FiducialsSeriesTest::deepCopyTest()
+{
+    data::FiducialsSeries::sptr fs1 = initFiducialsSeries();
+    data::FiducialsSeries::sptr fs2 = data::FiducialsSeries::New();
+
+    CPPUNIT_ASSERT(*fs1 != *fs2);
+    fs2->deepCopy(fs1);
+    CPPUNIT_ASSERT(*fs1 == *fs2);
+}
+
+//------------------------------------------------------------------------------
+
 void FiducialsSeriesTest::simpleSetterGetterTest()
 {
     // This method checks that plain method getters/setters work correctly.
@@ -104,6 +179,20 @@ void FiducialsSeriesTest::simpleSetterGetterTest()
     COMPARE_GETSETTERS_ARRAYS(ContourData, (std::vector<FiducialsSeries::Point3> {{{18, 19, 20}}}), 0, 0);
 
     COMPARE_GETSETTERS_DEMI_OPTIONAL(GroupName, std::optional<std::string> {}, std::optional {"21"s}, 0);
+    COMPARE_GETSETTERS_DEMI_OPTIONAL(
+        Color,
+        (std::optional<std::array<float, 4> > {}),
+        (std::optional {std::array {22.F, 23.F, 24.F, 25.F}}),
+        0
+    );
+    COMPARE_GETSETTERS_DEMI_OPTIONAL(Size, std::optional<float> {}, std::optional {26.F}, 0);
+    COMPARE_GETSETTERS_DEMI_OPTIONAL(
+        Shape,
+        std::optional<FiducialsSeries::PrivateShape> {},
+        std::optional {FiducialsSeries::PrivateShape::SPHERE},
+        0
+    );
+    COMPARE_GETSETTERS_DEMI_OPTIONAL(Visibility, std::optional<bool> {}, std::optional {true}, 0);
 }
 
 //------------------------------------------------------------------------------
@@ -181,6 +270,9 @@ static void compareFiducialSets(FiducialsSeries::FiducialSet expected, Fiducials
     }
 
     CPPUNIT_ASSERT(expected.groupName == actual.groupName);
+    CPPUNIT_ASSERT(expected.color == actual.color);
+    CPPUNIT_ASSERT(expected.size == actual.size);
+    CPPUNIT_ASSERT(expected.shape == actual.shape);
 }
 
 //------------------------------------------------------------------------------
@@ -220,7 +312,11 @@ void FiducialsSeriesTest::fiducialSetSetterGetterTest()
     fiducial.contourData = {{15, 16, 17}};
     fiducialSet.fiducialSequence.push_back(fiducial);
 
-    fiducialSet.groupName = "18";
+    fiducialSet.groupName  = "18";
+    fiducialSet.color      = {{19, 20, 21, 22}};
+    fiducialSet.size       = 23.F;
+    fiducialSet.shape      = FiducialsSeries::PrivateShape::CUBE;
+    fiducialSet.visibility = true;
 
     // Test setFiducialSets method
     fiducialsSeries->setFiducialSets({fiducialSet});

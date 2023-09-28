@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2021 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -33,16 +33,6 @@ namespace sight::ui::base::layoutManager
 
 //-----------------------------------------------------------------------------
 
-IViewLayoutManager::IViewLayoutManager()
-= default;
-
-//-----------------------------------------------------------------------------
-
-IViewLayoutManager::~IViewLayoutManager()
-= default;
-
-//-----------------------------------------------------------------------------
-
 void IViewLayoutManager::destroySubViews()
 {
     for(const ui::base::container::fwContainer::sptr& container : m_subViews)
@@ -58,6 +48,15 @@ void IViewLayoutManager::destroySubViews()
 std::vector<ui::base::container::fwContainer::sptr> IViewLayoutManager::getSubViews()
 {
     return this->m_subViews;
+}
+
+//------------------------------------------------------------------------------
+
+void IViewLayoutManager::modifyLayout(const ui::base::parameter_t& /*parameter*/, const std::string& key)
+{
+    SIGHT_THROW(
+        "'" + std::string(__func__) + "' is not implemented for this layout manager with the key '" + key + "'."
+    );
 }
 
 //-----------------------------------------------------------------------------

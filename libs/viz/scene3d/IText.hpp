@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include "core/com/HasSignals.hpp"
+
 #include "viz/scene3d/config.hpp"
 #include "viz/scene3d/factory/new.hpp"
 
@@ -42,7 +44,8 @@ namespace sight::viz::scene3d
  * It can also be displayed in 2D if not attached to anything and it's position can be set and updated through
  * the 'setPosition' method.
  */
-class VIZ_SCENE3D_CLASS_API IText : public sight::core::BaseObject
+class VIZ_SCENE3D_CLASS_API IText : public sight::core::BaseObject,
+                                    public core::com::HasSignals
 {
 public:
 
@@ -78,6 +81,18 @@ public:
 
     using Key = viz::scene3d::textFactory::Key;
 
+    static const inline std::string s_TEXT_EDITED_SIGNAL = "textEdited";
+    using TextEditedSignal = core::com::Signal<void (std::string)>;
+
+    static const inline std::string s_EDITING_FINISHED_SIGNAL = "editingFinished";
+    using EditingFinishedSignal = core::com::Signal<void ()>;
+
+    IText()
+    {
+        newSignal<TextEditedSignal>(s_TEXT_EDITED_SIGNAL);
+        newSignal<EditingFinishedSignal>(s_EDITING_FINISHED_SIGNAL);
+    }
+
     /// Attach to a scene node.
     VIZ_SCENE3D_API virtual void attachToNode(Ogre::SceneNode* _node, Ogre::Camera* _camera) = 0;
 
@@ -107,6 +122,9 @@ public:
 
     /// Sets the font size to be used for rendering.
     VIZ_SCENE3D_API virtual void setFontSize(std::size_t size) = 0;
+
+    /// Sets the edit mode. If true, the label can be modified, else it is read-only.
+    VIZ_SCENE3D_API virtual void setEditMode(bool editMode) = 0;
 };
 
 } // namespace sight::viz::scene3d

@@ -41,6 +41,7 @@ const core::com::Signals::SignalKeyType ModelSeries::s_RECONSTRUCTIONS_REMOVED_S
 
 ModelSeries::ModelSeries(data::Object::Key _key) :
     Series(_key),
+    IHasFiducials(m_signals),
     m_sigReconstructionsAdded(ReconstructionsAddedSignalType::New()),
     m_sigReconstructionsRemoved(ReconstructionsRemovedSignalType::New())
 {

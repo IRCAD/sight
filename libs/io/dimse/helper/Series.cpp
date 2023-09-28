@@ -1,6 +1,6 @@
 /************************************************************************
  *
- * Copyright (C) 2009-2022 IRCAD France
+ * Copyright (C) 2009-2023 IRCAD France
  * Copyright (C) 2012-2020 IHU Strasbourg
  *
  * This file is part of Sight.
@@ -31,8 +31,6 @@
 #include <data/DicomSeries.hpp>
 #include <data/ImageSeries.hpp>
 #include <data/ModelSeries.hpp>
-
-#include <boost/foreach.hpp>
 
 namespace sight::io::dimse::helper
 {
@@ -282,7 +280,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(DicomSeriesCon
 
     for(const auto& s : _series)
     {
-        result.push_back(s->getSeriesInstanceUID());
+        result.emplace_back(s->getSeriesInstanceUID());
     }
 
     return result;
@@ -307,7 +305,7 @@ Series::InstanceUIDContainer Series::toSeriesInstanceUIDContainer(OFList<QRRespo
             if(const auto result = (*it)->m_dataset->findAndGetOFStringArray(DCM_SeriesInstanceUID, seriesInstanceUID);
                result.good())
             {
-                instanceUIDContainer.push_back(seriesInstanceUID.c_str());
+                instanceUIDContainer.emplace_back(seriesInstanceUID.c_str());
             }
             else
             {
