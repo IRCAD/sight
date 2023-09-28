@@ -1,3 +1,96 @@
+# sight 23.1.0
+
+## New features:
+
+### io
+
+*Filters dicom series by sop class.*
+
+Use the new `module`::io::dicom::SReader``configuration: `sopFilter="1.2.840.10008.5.1.4.1.1.2"`
+-or- call `sight::io::dicom::Reader::setFilters({sight::data::dicom::sop::Keyword::CTImageStorage})`
+
+*Add the Spatial Fiducials IOD read/write feature.*
+
+These changes add the Spatial Fiducials IOD read/write feature to the existing DICOM reader/writer.
+
+### ui
+
+*Predefined camera enhancement, cardinalLayout area maximization and accordion menu fix.*
+
+also:
+- add a modifyLayout slot for custom layouting actions
+- SAction can now trigger custom "parameter_t" signals
+- Remove various unused constants which were breaking clang build
+- Make the animation to take render time into account. This makes the RPM speed somewhat constant.
+- Bad size for non button widget in accordion menu
+
+*Add a slider to modify transfer function opacity.*
+
+### viz
+
+*Allow disabling predefined camera animation.*
+
+*Allow moving landmarks from selected groups outside edit mode.*
+
+`sight::module::viz::scene3dQt`::adaptor::SLandmarks``has been improved to support a `MOVE` mode when not in `EDIT` mode. The `MOVE` mode is controlled by `enableMoveMode()`, `disableMoveMode()`, `toggleMoveMode()` and `changeMoveMode(bool)` slots. The move can be restricted to specific groups when `modify="groups"` adaptor configuration is used, by setting a list of group in a new parameter of the `configureLandmarks()`. `configureLandmarks()` takes now a `sight::viz::scene3d`::LandmarksConfiguration``structure, which is shared by signals, reducing the risk of typo and unwanted API modification.
+
+## Enhancement:
+
+### io
+
+*Update minizip to 4.0.1.*
+
+### ui
+
+*Improve SSequencer appearance.*
+
+This improves a bit the appearance of SSequencer and above all, make it more customizable. The buttons and the fonts size can now be adjusted as well.
+
+ExActivities was also fixed.
+
+*Add the possibility to only allow moving landmarks from a given group.*
+
+We added the possibility to allow moving landmarks only for a given group. It adds the configuration key `modify` for `sight::modules::viz::scene3DQt`::adaptor::SLandmarks``with the possible values `all` (the default, which allows to modify all landmarks, ignoring the current group) and `group` (which allows to modify only the landmarks belonging to the current group).
+
+*Allow modifying the displayed columns in the series selector widget.*
+
+Add a new configuration in `module`::io::dicom::SReader``like: `displayedColumns="PatientID,Modality,Description,Date,Time,BodyPart,PatientPosition"` to configure the displayed columns
+
+*Password must be strong enough.*
+
+*Add contextual mode and menu for fiducials.*
+
+These changes introduce an editing mode for landmarks and distance. Landmarks and distances are now immutable by default, their respecting editing mode must be on in order to be created, removed, moved and renamed. Now, in order to remove a landmark or a distance, one must click on it while the editing mode is on and then click on the bin button which appears. In order to rename a landmark, one can click on the label and directly edit it. Note that, right now, the landmark groups have names, not individual landmarks; therefore, to rename a landmark will actually modify the name of its group.
+
+### viz
+
+*Add option to disable validation through double click for SShapeExtruder.*
+
+*Add other slice lines on negato 2D views.*
+
+*Update landmark/distance adaptors to work on data::Series.*
+
+## Bug fixes:
+
+### build
+
+*Fix clang-15 build.*
+
+### core
+
+*Add missing copy operators in FiducialsSeries.*
+
+### viz
+
+*Display of 2D image in a 3D scene.*
+
+*Store the VR clipping matrix in local instead of world.*
+
+This makes this transform more portable, for instance when the image is moved/registered between the time the clipping is made and the image is rendered.
+
+*Respect the number of samples set in SVolumeRender config.*
+
+
 # sight 23.0.0
 
 ## Bug fixes:
